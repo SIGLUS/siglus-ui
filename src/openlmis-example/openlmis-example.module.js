@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function(){
-	'use strict';
+(function() {
+    'use strict';
 
-	angular.module('openlmis-example', [
-		'openlmis-i18n',
-		'ui.router'
-		]);
+    angular.module('openlmis-example', [
+        'openlmis-i18n',
+        'ui.router'
+    ]);
 })();

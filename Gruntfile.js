@@ -13,23 +13,9 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
-    'use strict';
+module.exports = function(grunt) {
+    var configSetup = require('dev-ui/tasks/config.js');
+    configSetup(grunt);
 
-    angular
-        .module('openlmis-example')
-        .config(routes);
-
-    routes.$inject = ['$stateProvider'];
-
-    function routes($stateProvider) {
-        $stateProvider.state('example', {
-            url: '^/example',
-            label: 'openlmis-example.title',
-            priority: 1,
-            showInNavigation: true,
-            templateUrl: 'openlmis-example/openlmis-example.html'
-        });
-    }
-
-})();
+    grunt.loadNpmTasks('/dev-ui');
+};

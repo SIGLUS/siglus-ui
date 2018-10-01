@@ -13,23 +13,10 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
-    'use strict';
+describe('openlmis-example', function() {
 
-    angular
-        .module('openlmis-example')
-        .config(routes);
+    it('example test', function() {
+        expect(1 + 1).toBe(2);
+    });
 
-    routes.$inject = ['$stateProvider'];
-
-    function routes($stateProvider) {
-        $stateProvider.state('example', {
-            url: '^/example',
-            label: 'openlmis-example.title',
-            priority: 1,
-            showInNavigation: true,
-            templateUrl: 'openlmis-example/openlmis-example.html'
-        });
-    }
-
-})();
+});
