@@ -1,7 +1,7 @@
 version: "2"
 services:
-  example-ui:
-    image: openlmis/dev-ui:8.1.0-SNAPSHOT
+  siglus-ui:
+    image: openlmis/dev-ui:9.0.1
     ports:
       - "9000:9000"
       - "9876:9876"
@@ -9,6 +9,44 @@ services:
     volumes:
       - '.:/app'
     env_file: .env
+    volumes_from:
+      - auth-ui
+      - referencedata-ui
+      - requisition-ui
+      - stockmanagement-ui
+      - ui-components
+      - ui-layout
+    depends_on:
+      - auth-ui
+      - referencedata-ui
+      - requisition-ui
+      - stockmanagement-ui
+      - ui-components
+      - ui-layout
+  auth-ui:
+    image: openlmis/auth-ui:6.2.1
+    volumes:
+      - '/openlmis-auth-ui'
+  referencedata-ui:
+    image: openlmis/referencedata-ui:5.6.0
+    volumes:
+      - '/openlmis-referencedata-ui'
+  requisition-ui:
+    image: openlmis/requisition-ui:7.0.0
+    volumes:
+      - '/openlmis-requisition-ui'
+  stockmanagement-ui:
+    image: openlmis/stockmanagement-ui:2.0.4
+    volumes:
+      - '/openlmis-stockmanagement-ui'
+  ui-components:
+    image: openlmis/ui-components:7.2.0
+    volumes:
+      - '/openlmis-ui-components'
+  ui-layout:
+    image: openlmis/ui-layout:5.1.4
+    volumes:
+      - '/openlmis-ui-layout'
   image:
     build: .
-    image: openlmis/example-ui
+    image: siglusdevops/siglus-ui

@@ -1,31 +1,3 @@
-# OpenLMIS-UI Template
-This is a template for OpenLMIS-UI projects, that make additions to the
-OpenLMIS-UI framework. This repository can be used to:
-* Create UI for OpenLMIS Services
-* Create reusable UI components, so they can be reused by other OpenLMIS-UI projects
-* Create build process tasks to change how other OpenLMIS-UI projects are compiled
-* Create running OpenLMIS-UI images, but we suggest you fork the [OpenLMIS Reference UI](https://github.com/OpenLMIS/openlmis-reference-ui)
-
-## Using the OpenLMIS-UI Template
-To get started, *fork this repository.* Then modify the docker-compose.yml to
-pull in the other OpenLMIS-UI projects your project needs as dependancies.
-
-This template repository contains the required dependencies to start an
-OpenLMIS-UI for a new service. The included dependencies are:
-* *OpenLMIS-UI Components* The base components that are reused within the OpenLMIS-UI
-* *OpenLMIS-UI Layout* Base page layout
-* *OpenLMIS Reference Data UI* UI services for core data in OpenLMIS 
-* *OpenLMIS Auth UI* UI that allows for authentication
-* There is also an 'example' page to get UI implementations started
-
-*Remove the components you are not using.*
-
-The rest of this document contains generic instructions for building and
-working with this OpenLMIS-UI project, and *should be modified for your project.*
-
-## Use with:
-* *LIST REQUIRED OPENLMIS SERVICE VERSION HERE* (if applicable) 
-
 ## Prerequisites
 * Docker 1.11+
 * Docker Compose 1.6+
@@ -34,9 +6,9 @@ working with this OpenLMIS-UI project, and *should be modified for your project.
 1. Fork/clone this repository from GitHub.
 
  ```shell
- git clone https://github.com/OpenLMIS/openlmis-requisition-refUI.git
+ git clone https://github.com/SIGLUS/siglus-ui.git
  ```
-2. Develop w/ Docker by running `docker-compose run --service-ports requisition-ui`.
+2. Develop w/ Docker by running `docker-compose run --service-ports siglus-ui`.
 3. You should now be in an interactive shell inside the newly created development environment, build the project with: `npm install && grunt bower` and then you can build and start it with `grunt build --serve`.
 4. Go to `http://localhost:9000/webapp/` to see the login page.
 
@@ -79,7 +51,7 @@ the UI module.
 
 ```shell
 > docker-compose pull
-> docker-compose run ./build.sh requisition-ui
+> docker-compose run ./build.sh siglus-ui
 > docker-compose build image
 ```
 

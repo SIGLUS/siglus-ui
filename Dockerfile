@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-WORKDIR /openlmis-example-ui
+WORKDIR /siglus-ui
 
 COPY package.json .
 COPY bower.json .

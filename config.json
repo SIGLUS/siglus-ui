@@ -3,6 +3,11 @@
         "src": "./src"
     },
     "orderedBuildDirectories": [
-
+        "/openlmis-ui-components",
+        "/openlmis-ui-layout",
+        "/openlmis-auth-ui",
+        "/openlmis-referencedata-ui",
+        "/openlmis-requisition-ui",
+        "/openlmis-stockmanagement-ui"
     ]
 }
