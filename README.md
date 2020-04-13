@@ -19,7 +19,7 @@ See the [OpenLMIS/dev-ui project](https://github.com/OpenLMIS/dev-ui) for more i
 
 ```shell
 // Open docker in an interactive shell
-> docker-compose run --service-ports requisition-ui
+> docker-compose run --service-ports siglus-ui
 
 // Install dependencies 
 $ npm install
