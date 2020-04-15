@@ -14,6 +14,25 @@
 
 *Note:* To change the location of where the OpenLMIS-UI attemps to access OpenLMIS, use the command `grunt build --openlmisServerUrl=<openlmis server url> --serve`.
 
+## Guide
+See the [UI Extension Guide](http://docs.openlmis.org/en/latest/components/uiExtensionGuide.html) for more information.
+See the [OpenLMIS Malawi](https://github.com/OpenLMIS-Malawi) for more example.
+File naming and comment format:
+1. Override file. Use the same name and path with original file when replacing the original file.
+2. Css extension file. Add a new css file named [original name]-diff.scss with the same path of original file when modifying css.
+3. Js extension file. Add a new file named [original name]-decorator.js with the same path of original file when using Angular decorator to modify js file.
+4. Comment format.
+```
+// Html comment format
+<!-- SIGLUS-REFACTOR/JIRA number: some comments/starts here—> 
+<!-- SIGLUS-REFACTOR/JIRA number: ends here -->
+
+// Js comment format
+// SIGLUS-REFACTOR/JIRA number: some comments/starts here
+// SIGLUS-REFACTOR/JIRA number: ends here
+
+```
+
 ## Building & Testing
 See the [OpenLMIS/dev-ui project](https://github.com/OpenLMIS/dev-ui) for more information on what commands are available, below are the command you might use during a normal work day.
 
@@ -23,7 +42,6 @@ See the [OpenLMIS/dev-ui project](https://github.com/OpenLMIS/dev-ui) for more i
 
 // Install dependencies 
 $ npm install
-$ grunt bower
 
 // Build and run the UI against a OpenLMIS server
 $ grunt build --openlmisServerUrl=<openlmis server url> --serve
