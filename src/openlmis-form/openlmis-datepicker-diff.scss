@@ -1,0 +1,7 @@
+.datepicker {
+    table tr td.disabled,
+    table tr td span.disabled {
+        color: black !important;
+        opacity: 0.3 !important;
+    }
+}
