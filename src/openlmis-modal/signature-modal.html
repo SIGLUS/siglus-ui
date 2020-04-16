@@ -1,0 +1,26 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h1 class="modal-title" style="height:16px"></h1>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="is-required">{{vm.message | message}}</label>
+                    <input type="text" ng-model="vm.signature" ng-required="vm.signatureIsRequired" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="primary" ng-click="vm.confirm()">
+                    {{vm.confirmMessage | message}}
+                </button>
+                <button class="cancel" ng-click="vm.cancel()">
+                    {{vm.cancelMessage | message}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
