@@ -1,0 +1,30 @@
+<form id="orderableForm" ng-submit="vm.saveOrderable()">
+    <label for="productCode">{{'adminOrderableEdit.productCode' | message}}</label>
+    <input id="productCode" type="text" ng-model="vm.orderable.productCode" required />
+    <label for="fullProductName">{{'adminOrderableEdit.name' | message}}</label>
+    <input id="fullProductName" type="text" ng-model="vm.orderable.fullProductName" />
+    <label for="description">{{'adminOrderableEdit.description' | message}}</label>
+    <input id="description" type="text" ng-model="vm.orderable.description" />
+    <h3>{{'adminOrderableEdit.packSizeInformation' | message}}</h3>
+    <label for="dispensingUnit">{{'adminOrderableEdit.dispensingUnit' | message}}</label>
+    <input id="dispensingUnit" type="text" ng-model="vm.orderable.dispensable.dispensingUnit" />
+    <p class="note">
+        {{ 'adminOrderableEdit.dispensingUnit.info' | message}}
+    </p>
+    <label for="netContent">{{'adminOrderableEdit.netContent' | message}}</label>
+    <input positive-integer id="netContent" type="text" ng-model="vm.orderable.netContent" required />
+    <label for="packRoundingThreshold">{{'adminOrderableEdit.packRoundingThreshold' | message}}</label>
+    <input positive-integer id="packRoundingThreshold" type="text" ng-model="vm.orderable.packRoundingThreshold" required />
+    <!-- SIGLUS-REFACTOR: Add basic product checkbox -->
+    <fieldset class="form-group" ng-style="{'padding-bottom': '10px'}">
+        <label>
+            <input type="checkbox" ng-model="vm.orderable.roundToZero" />
+            {{'adminOrderableEdit.roundToZero' | message}}
+        </label>
+        <label>
+            <input type="checkbox" ng-model="vm.orderable.extraData.isBasic" />
+            {{'adminOrderableEdit.basicProduct' | message}}
+        </label>
+    </fieldset>
+    <!-- SIGLUS-REFACTOR: ends here -->
+</form>
