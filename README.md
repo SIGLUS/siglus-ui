@@ -24,7 +24,7 @@ File naming and comment format:
 4. Comment format.
 ```
 // Html comment format
-<!-- SIGLUS-REFACTOR/JIRA number: some comments/starts here—> 
+<!-- SIGLUS-REFACTOR/JIRA number: some comments/starts here -->
 <!-- SIGLUS-REFACTOR/JIRA number: ends here -->
 
 // Js comment format
