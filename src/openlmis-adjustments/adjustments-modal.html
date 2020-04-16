@@ -7,7 +7,9 @@
             <div class="modal-body">
                 <p ng-if="vm.message">{{vm.message | message}}</p>
                 <form class="form-inline" ng-if="!vm.isDisabled" ng-submit="vm.addAdjustment()" reload-form>
+                    <!-- SIGLUS-REFACTOR: Add class max-width-form-group -->
                     <div class="form-group max-width-form-group">
+                    <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="reason">
                             {{'openlmisAdjustments.reason' | message}}
                         </label>
@@ -17,7 +19,9 @@
                                 required>
                         </select>
                     </div>
+                    <!-- SIGLUS-REFACTOR: Add class max-width-form-group -->
                     <div class="form-group max-width-form-group">
+                    <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="quantity">
                             {{'openlmisAdjustments.quantity' | message}}
                         </label>
@@ -26,7 +30,9 @@
                                ng-model="vm.quantity"
                                required positive-integer/>
                     </div>
+                    <!-- SIGLUS-REFACTOR: Add class adjust-add -->
                     <button class="add adjust-add" type="submit">
+                    <!-- SIGLUS-REFACTOR: ends here -->
                         {{'openlmisAdjustments.add' | message}}
                     </button>
                 </form>
