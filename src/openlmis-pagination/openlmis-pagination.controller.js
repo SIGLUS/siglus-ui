@@ -122,6 +122,24 @@
             }
         }
 
+        // SIGLUS-REFACTOR: starts here
+        function stockManagementChangePage(stockManagementStateParams) {
+            if (pagination.paginationId === 'stock-management-physical-inventory') {
+                stockManagementStateParams = _.defaults(stockManagementStateParams, $state.params);
+                stockManagementStateParams.draft.lineItems = _.flatten(pagination.list);
+            } else {
+                stockManagementStateParams = _.extend(stockManagementStateParams, $state.params);
+                if ((stockManagementStateParams.hasOwnProperty('displayItems') &&
+                    stockManagementStateParams.displayItems === undefined)
+                    || (_.isArray(stockManagementStateParams.displayItems) &&
+                        stockManagementStateParams.displayItems.length === 0)) {
+                    stockManagementStateParams.displayItems = pagination.list;
+                }
+            }
+            return stockManagementStateParams;
+        }
+        // SIGLUS-REFACTOR: ends here
+
         /**
          * @ngdoc method
          * @methodOf openlmis-pagination.controller:PaginationController
@@ -136,19 +154,11 @@
         function changePage(newPage) {
             if (newPage >= 0 && newPage < getTotalPages()) {
                 var stateParams = angular.copy($stateParams);
-                // SIGLUS-REFACTOR: starts here
                 // when change page, then displayItems will be undefined then cause empty table
                 if (pagination.paginationId && pagination.paginationId.indexOf('stock-management') !== -1) {
-                    if (pagination.paginationId === 'stock-management-physical-inventory') {
-                        stateParams = _.defaults(stateParams, $state.params);
-                        stateParams.draft.lineItems = _.flatten(pagination.list);
-                    } else {
-                        stateParams = _.extend(stateParams, $state.params);
-                        if ((stateParams.hasOwnProperty('displayItems') && stateParams.displayItems === undefined)
-                            || (_.isArray(stateParams.displayItems) && stateParams.displayItems.length === 0)) {
-                            stateParams.displayItems = pagination.list;
-                        }
-                    }
+                    // SIGLUS-REFACTOR: starts here
+                    stateParams = stockManagementChangePage(stateParams);
+                    // SIGLUS-REFACTOR: ends here
                 }
 
                 if (pagination.paginationId && pagination.paginationId.indexOf('select-products-modal') !== -1) {
@@ -158,8 +168,6 @@
                 }
                 // flag for change page
                 stateParams.hasChangePage = true;
-                // SIGLUS-REFACTOR: ends here
-
                 stateParams[paginationService.getPageParamName(pagination.paginationId)] = newPage;
 
                 $state.go($state.current.name, stateParams);
