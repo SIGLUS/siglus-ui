@@ -1,0 +1,45 @@
+<div class="modal add-Regime-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{'addRegimesModal.addRegimes' | message}}</h4>
+            </div>
+            <div class="modal-body">
+                <form id="RegimeForm" ng-submit="vm.selectRegimes()">
+                    <fieldset class="form-group">
+                        <label for="search">
+                            {{'addRegimesModal.searchRegime' | message}}
+                        </label>
+                        <input type="text" id="search" name="search" ng-model="vm.searchText"
+                               ng-change="vm.search()"/>
+                        <p class="note">{{'addRegimesModal.searchByCodeInfo' | message}}</p>
+                    </fieldset>
+                    <br/>
+                    <div class="openlmis-table-container">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>{{'addRegimesModal.select' | message}}</th>
+                                <th>{{'addRegimesModal.Regime' | message}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="regimen in vm.lineItems">
+                                <td><input type="checkbox" ng-model="vm.selections[regimen.regimen.id]"/></td>
+                                <td>{{regimen.regimen.name}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <openlmis-pagination
+                                list="vm.filteredRegimes"
+                                paged-list="vm.lineItems"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.close()">{{'addRegimesModal.cancel' | message}}</button>
+                <button class="primary" type="submit" form="RegimeForm">{{'addRegimesModal.addRegimes' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>
