@@ -33,8 +33,8 @@
         $provide.decorator('programService', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource'];
-    function decorator($delegate, openlmisUrlFactory, $resource) {
+    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource', 'PROGRAM_CODE'];
+    function decorator($delegate, openlmisUrlFactory, $resource, PROGRAM_CODE) {
         var resource = $resource(openlmisUrlFactory('/api/requisitionTemplates/programs'), {}, {
             getReportPrograms: {
                 method: 'GET',
@@ -44,6 +44,7 @@
 
         $delegate.getReportPrograms = getReportPrograms;
         $delegate.getTruePrograms = getTruePrograms;
+        $delegate.getVirtualPrograms = getVirtualPrograms;
 
         return $delegate;
 
@@ -75,6 +76,23 @@
                 .then(function(programs) {
                     return _.filter(programs, function(p) {
                         return !p.isVirtual;
+                    });
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-program-decorator.programService
+         * @name getVirtualPrograms
+         *
+         * @description
+         * Get virtual programs.
+         */
+        function getVirtualPrograms() {
+            return $delegate.getAll()
+                .then(function(programs) {
+                    return _.filter(programs, function(p) {
+                        return p.code !== PROGRAM_CODE.ALL && p.isVirtual;
                     });
                 });
         }
