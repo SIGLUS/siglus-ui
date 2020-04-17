@@ -1,0 +1,8 @@
+{
+  "adminProcessingScheduleEdit.startDate": "Period Start Date",
+  "adminProcessingScheduleEdit.endDate": "Period End Date",
+  "adminProcessingScheduleEdit.submitStartDate": "Submit Start Date",
+  "adminProcessingScheduleEdit.submitEndDate": "Submit End Date",
+  "adminProcessingScheduleEdit.period": "Period",
+  "adminProcessingScheduleEdit.submitDuration": "Submit Duration"
+}

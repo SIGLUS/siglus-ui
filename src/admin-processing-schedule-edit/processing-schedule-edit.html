@@ -1,0 +1,84 @@
+<div class="modal edit-schedule-modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>{{'adminProcessingScheduleEdit.addProcessingPeriod.title' | message:({scheduleCode: vm.processingSchedule.code})}}</h1>
+            </div>
+            <div class="modal-body">
+                <p>{{'adminProcessingScheduleEdit.addProcessingPeriod.description' | message}}</p>
+                <form id="add-processing-period-form" ng-submit="vm.add()">
+                    <label for="name">{{'adminProcessingScheduleEdit.name' | message}}</label>
+                    <input type="text" id="name" ng-model="vm.newPeriod.name" required />
+
+                    <label for="description">{{'adminProcessingScheduleEdit.description' | message}}</label>
+                    <input type="text" id="description" ng-model="vm.newPeriod.description" />
+
+                    <label for="start-date">{{'adminProcessingScheduleEdit.startDate' | message}}</label>
+                    <input id="start-date" type="date"
+                           max-date="vm.newPeriod.endDate"
+                           ng-model="vm.newPeriod.startDate"
+                           ng-disabled="vm.processingPeriods && vm.processingPeriods.length > 0"
+                           required/>
+
+                    <label for="end-date">{{'adminProcessingScheduleEdit.endDate' | message}}</label>
+                    <input id="end-date" type="date" min-date="vm.newPeriod.startDate" ng-model="vm.newPeriod.endDate" required/>
+
+                    <!-- SIGLUS-REFACTOR: add start date and end date of submit -->
+                    <label for="submit-start-date">{{'adminProcessingScheduleEdit.submitStartDate' | message}}</label>
+                    <input id="submit-start-date" type="date"
+                           min-date="vm.getLatterDate(vm.newPeriod.startDate, vm.theDayAfterLastSubmitEndDate)"
+                           max-date="vm.newPeriod.submitEndDate"
+                           ng-model="vm.newPeriod.submitStartDate"
+                           required/>
+
+                    <label for="submit-end-date">{{'adminProcessingScheduleEdit.submitEndDate' | message}}</label>
+                    <input id="submit-end-date" type="date" min-date="vm.newPeriod.submitStartDate" ng-model="vm.newPeriod.submitEndDate" required/>
+                    <!-- SIGLUS-REFACTOR: ends here -->
+
+                    <label>{{'adminProcessingScheduleEdit.requisitionSettings' | message}}</label>
+                    <label class="checkbox">
+                        <input id="report-only" type="checkbox" ng-model="vm.newPeriod.extraData.reportOnly" />
+                        {{'adminProcessingScheduleEdit.reportOnly' | message}}
+                    </label>
+
+                    <button class="add" type="submit">{{'adminProcessingScheduleEdit.add' | message}}</button>
+                </form>
+                <section class="openlmis-table-container">
+                    <table>
+                        <caption ng-if="!vm.processingPeriods || vm.processingPeriods.length === 0">
+                            {{'adminProcessingScheduleEdit.noPeriodsAssigned' | message:({scheduleCode: vm.processingSchedule.code})}}
+                        </caption>
+                        <!-- SIGLUS-REFACTOR: starts here -->
+                        <thead>
+                        <tr>
+                            <th class="white-space-nowrap">{{'adminProcessingScheduleEdit.name' | message}}</th>
+                            <th class="white-space-nowrap">{{'adminProcessingScheduleEdit.description' | message}}</th>
+                            <th class="white-space-nowrap" popover="{{'adminProcessingScheduleEdit.startDate.description' | message}}">
+                                {{'adminProcessingScheduleEdit.period' | message}}
+                            </th>
+                            <th class="white-space-nowrap">{{'adminProcessingScheduleEdit.submitDuration' | message}}</th>
+                            <th class="white-space-nowrap">{{'adminProcessingScheduleEdit.reportOnly' | message}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="period in vm.processingPeriods">
+                            <td class="white-space-nowrap">{{period.name}}</td>
+                            <td class="white-space-nowrap">{{period.description}}</td>
+                            <td class="white-space-nowrap">{{period.startDate | openlmisDate}} - {{period.endDate | openlmisDate}}</td>
+                            <td class="white-space-nowrap">{{period.submitStartDate | openlmisDate}} - {{period.submitEndDate | openlmisDate}}</td>
+                            <td class="white-space-nowrap">
+                                <i ng-class="{'is-report-only': period.extraData.reportOnly == 'true' || period.extraData.reportOnly == true}"></i>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <!-- SIGLUS-REFACTOR: ends here -->
+                    </table>
+                    <openlmis-pagination/>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.goToPreviousState()">{{'adminProcessingScheduleEdit.cancel' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

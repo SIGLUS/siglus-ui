@@ -207,7 +207,9 @@ describe('openlmis.administration.orderables.edit route', function() {
         });
 
         it('should not change state if fetching programs fails', function() {
+            <!-- SIGLUS-REFACTOR: starts here -->
             this.programService.getTruePrograms.andReturn(this.$q.reject());
+            <!-- SIGLUS-REFACTOR: ends here -->
 
             this.goToState('/programs');
 
