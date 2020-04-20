@@ -1,4 +1,5 @@
 <ul>
+    <!-- SIGLUS-REFACTOR: change the navigation -->
     <li ng-repeat="state in vm.states"
         ng-class="{'dropdown':vm.hasChildren(state), 'dropdown-submenu':vm.isSubmenu(state)}"
         ng-if="state.$shouldDisplay">
@@ -8,4 +9,5 @@
         <openlmis-navigation ng-if="vm.hasChildren(state)" class="dropdown-menu"
                              states="state.children"></openlmis-navigation>
     </li>
+    <!-- SIGLUS-REFACTOR: ends here -->
 </ul>

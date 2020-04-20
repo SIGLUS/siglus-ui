@@ -65,19 +65,25 @@ describe('NavigationController', function() {
         it('should expose navigationStateService.isSubmenu method', function() {
             this.initController();
 
+            // SIGLUS-REFACTOR: change toBe() to toEqual()
             expect(this.vm.isSubmenu).toEqual(this.navigationStateService.isSubmenu);
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should expose navigationStateService.shouldDisplay method', function() {
             this.initController();
 
+            // SIGLUS-REFACTOR: change toBe() to toEqual()
             expect(this.vm.shouldDisplay).toEqual(this.navigationStateService.shouldDisplay);
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should get root children if no root state or state list was given', function() {
             this.initController();
 
+            // SIGLUS-REFACTOR: change toBe() to toEqual()
             expect(this.vm.states).toEqual(this.mainRoot);
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should get state children if root states was given', function() {
@@ -85,7 +91,9 @@ describe('NavigationController', function() {
 
             this.initController();
 
+            // SIGLUS-REFACTOR: change toBe() to toEqual()
             expect(this.vm.states).toEqual(this.subRoot);
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should expose states if the state list was given', function() {
@@ -93,7 +101,9 @@ describe('NavigationController', function() {
 
             this.initController();
 
+            // SIGLUS-REFACTOR: change toBe() to toEqual()
             expect(this.vm.states).toEqual(this.states);
+            // SIGLUS-REFACTOR: ends here
         });
 
     });
@@ -110,7 +120,9 @@ describe('NavigationController', function() {
 
             var result = this.vm.hasChildren('state');
 
+            // SIGLUS-REFACTOR: change toBe() to toEqual()
             expect(result).toEqual(true);
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should call navigationStateService.hasChildren', function() {

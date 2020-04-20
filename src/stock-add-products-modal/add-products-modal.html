@@ -15,6 +15,7 @@
                 <form name="productForm" class="form-inline" ng-submit="vm.addOneProduct()">
                     <!-- SIGLUS-REFACTOR: Add max-width-form-group and limit width for add product model-->
                     <div class="form-group max-width-form-group">
+                    <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
                         <select id="productSelect" ng-model="vm.selectedOrderableGroup"
                                 ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
@@ -24,6 +25,7 @@
                     </div>
                     <!-- SIGLUS-REFACTOR: Add max-width-form-group and limit width for add product model-->
                     <div class="form-group max-width-form-group" ng-if="vm.selectedOrderableHasLots">
+                    <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                         <select id="lotSelect" ng-model="vm.selectedLot"
                                 ng-options="lot.lotCode for lot in vm.lots"
@@ -33,6 +35,7 @@
 
                     <!-- SIGLUS-REFACTOR: Add stock-actions and fix width for add button-->
                     <button type="submit" class="add stock-actions">{{'stockAddProductsModal.add' | message}}</button>
+                    <!-- SIGLUS-REFACTOR: ends here -->
                 </form>
                 <section class="openlmis-table-container">
                     <table>

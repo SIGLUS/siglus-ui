@@ -67,7 +67,7 @@
                 programId: program.id,
                 program: program,
                 facility: facility,
-                /* SIGLUS-REFACTOR: recovery draft */
+                // SIGLUS-REFACTOR: recovery draft
                 draft: draft,
                 draftId: draft && draft.id
             });
@@ -112,7 +112,7 @@
                 });
             }, function() {
                 loadingModalService.close();
-                /* SIGLUS-REFACTOR: ends here */
+                // SIGLUS-REFACTOR: ends here
             });
         };
     }

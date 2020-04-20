@@ -60,10 +60,10 @@
          */
         function onInit() {
             setStates();
-            /* <!-- SIGLUS-RAFACTOR: Add background/starts here—> */
+            // SIGLUS-REFACTOR: hide state and check requisition rights
             hideState();
-            checkRequsitionRights();
-            /**/
+            checkRequisitionRights();
+            // SIGLUS-REFACTOR: ends here
         }
 
         function setStates() {
@@ -76,6 +76,7 @@
             }
         }
 
+        // SIGLUS-REFACTOR: hide state and check requisition rights
         function hideState() {
             if (vm.states) {
                 vm.states = vm.states.filter(function(state) {
@@ -91,7 +92,7 @@
             }
         }
 
-        function checkRequsitionRights() {
+        function checkRequisitionRights() {
             _.forEach(vm.states, function(state) {
                 if (state.name === 'openlmis.requisitions' && _.isArray(state.children)) {
                     _.forEach(state.children, function(child) {
@@ -116,5 +117,6 @@
                 }
             });
         }
+        // SIGLUS-REFACTOR: ends here
     }
 })();
