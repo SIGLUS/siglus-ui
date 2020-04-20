@@ -1,0 +1,5 @@
+{
+  "adminProgramTemplate.enableConsultationNumber": "Patient module",
+  "adminProgramTemplate.enableKITUsage": "Kit module",
+  "adminProgramTemplate.enableProductModule": "Product module"
+}

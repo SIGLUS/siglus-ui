@@ -1,0 +1,25 @@
+.page {
+    //show move to correct file later
+    flex-grow: 1 !important;
+}
+
+.requisition-template-module-container {
+    font-size: 20px;
+    margin-bottom: 1em;
+    display: flex;
+    align-items: center;
+
+    input {
+        font-size: 14px;
+        margin: 0;
+        margin-right: 6px;
+    }
+
+    &:last-child {
+        margin-bottom: 5em;
+    }
+}
+
+.openlmis-table-container {
+    margin-bottom: 2em !important;
+}
