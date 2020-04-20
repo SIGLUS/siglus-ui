@@ -160,12 +160,12 @@
                 return !item.quantityInvalid;
             });
             if (noErrors) {
+                // SIGLUS-REFACTOR: remove added products
                 modalDeferred.resolve(angular.copy(vm.addedItems));
-                /* SIGLUS-REFACTOR: remove added products */
                 _.forEach(vm.addedItems, function(item) {
                     return vm.removeAddedProduct(item);
                 });
-                /* SIGLUS-REFACTOR: ends here */
+                // SIGLUS-REFACTOR: ends here
             }
         };
 

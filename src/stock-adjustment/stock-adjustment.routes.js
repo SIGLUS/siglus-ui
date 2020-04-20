@@ -44,9 +44,9 @@
                     return authorizationService.getUser();
                 },
                 programs: function(user, stockProgramUtilService) {
-                    /* SIGLUS-REFACTOR*/
+                    // SIGLUS-REFACTOR: starts here
                     return stockProgramUtilService.getAllProductsProgram();
-                    /* SIGLUS-REFACTOR*/
+                    // SIGLUS-REFACTOR: ends here
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ADJUSTMENT;

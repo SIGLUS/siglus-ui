@@ -39,21 +39,21 @@ describe('StockAdjustmentController', function() {
                     supportedPrograms: programs
                 };
 
-                /* SIGLUS-REFACTOR: recovery draft */
+                // SIGLUS-REFACTOR: recovery draft
                 drafts = [];
 
                 user = {};
-                /* SIGLUS-REFACTOR: ends here */
+                // SIGLUS-REFACTOR: ends here
 
                 vm = $controller('StockAdjustmentController', {
                     facility: facility,
                     programs: programs,
                     adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
                     $state: state,
-                    /* SIGLUS-REFACTOR: recovery draft */
+                    // SIGLUS-REFACTOR: recovery draft
                     drafts: drafts,
                     user: user
-                    /* SIGLUS-REFACTOR: ends here */
+                    // SIGLUS-REFACTOR: ends here
                 });
             }
         );

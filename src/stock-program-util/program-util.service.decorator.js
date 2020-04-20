@@ -43,6 +43,14 @@
 
         return stockProgramUtilService;
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-program-util.stockProgramUtilService
+         * @name getAllProductsProgram
+         *
+         * @description
+         * Get all products programs.
+         */
         function getAllProductsProgram() {
             var url = openlmisUrlFactory('/api/siglus/programs?code=ALL');
             var deferred = $q.defer();
