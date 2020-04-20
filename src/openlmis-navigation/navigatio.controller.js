@@ -80,7 +80,7 @@
         function hideState() {
             if (vm.states) {
                 vm.states = vm.states.filter(function(state) {
-                    return state.url !== '/cce' && state.url !== '/orders' && state.url !== '/reports';
+                    return state.url !== '/cce' && state.url !== '/reports';
                 });
                 vm.states.forEach(function(state) {
                     if (state.url === '/stockmanagement') {
