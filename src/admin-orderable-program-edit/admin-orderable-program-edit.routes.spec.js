@@ -18,7 +18,7 @@ describe('openlmis.administration.orderables.edit.programs.edit route', function
     beforeEach(function() {
         <!-- SIGLUS-REFACTOR: inject mock service -->
         module('admin-orderable-program-edit', function($provide) {
-            var programServiceMock = jasmine.createSpyObj('programService', ['getTruePrograms']);
+            var programServiceMock = jasmine.createSpyObj('programService', ['getRealPrograms']);
             $provide.service('programService', function() {
                 return programServiceMock;
             });
@@ -76,8 +76,8 @@ describe('openlmis.administration.orderables.edit.programs.edit route', function
         spyOn(this.OrderableDisplayCategoryResource.prototype, 'query')
             .andReturn(this.$q.resolve(this.orderableDisplayCategories));
         spyOn(this.OrderableResource.prototype, 'query').andReturn(this.$q.resolve(this.orderablesPage));
-        <!-- SIGLUS-REFACTOR: getTruePrograms is already a mock function -->
-        this.programService.getTruePrograms.andReturn(this.$q.resolve(this.programs));
+        <!-- SIGLUS-REFACTOR: getRealPrograms is already a mock function -->
+        this.programService.getRealPrograms.andReturn(this.$q.resolve(this.programs));
         <!-- SIGLUS-REFACTOR: ends here -->
 
         this.goToState = function() {

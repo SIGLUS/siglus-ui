@@ -18,7 +18,7 @@ describe('openlmis.administration.orderables.edit route', function() {
     beforeEach(function() {
         <!-- SIGLUS-REFACTOR: inject mock service -->
         module('admin-orderable-edit', function($provide) {
-            var programServiceMock = jasmine.createSpyObj('programService', ['getTruePrograms']);
+            var programServiceMock = jasmine.createSpyObj('programService', ['getRealPrograms']);
             $provide.service('programService', function() {
                 return programServiceMock;
             });
@@ -100,8 +100,8 @@ describe('openlmis.administration.orderables.edit route', function() {
             .build();
 
         spyOn(this.OrderableResource.prototype, 'query').andReturn(this.$q.resolve(this.orderablesPage));
-        <!-- SIGLUS-REFACTOR: getTruePrograms is already a mock function -->
-        this.programService.getTruePrograms.andReturn(this.$q.resolve(this.programs));
+        <!-- SIGLUS-REFACTOR: getRealPrograms is already a mock function -->
+        this.programService.getRealPrograms.andReturn(this.$q.resolve(this.programs));
         <!-- SIGLUS-REFACTOR: ends here -->
         spyOn(this.OrderableResource.prototype, 'get').andReturn(this.$q.resolve(this.orderable));
         spyOn(this.FacilityTypeApprovedProductResource.prototype, 'query').andReturn(this.$q.resolve(this.ftapsPage));
@@ -208,7 +208,7 @@ describe('openlmis.administration.orderables.edit route', function() {
 
         it('should not change state if fetching programs fails', function() {
             <!-- SIGLUS-REFACTOR: starts here -->
-            this.programService.getTruePrograms.andReturn(this.$q.reject());
+            this.programService.getRealPrograms.andReturn(this.$q.reject());
             <!-- SIGLUS-REFACTOR: ends here -->
 
             this.goToState('/programs');
