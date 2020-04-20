@@ -1,0 +1,6 @@
+{
+  "stockUnpackKit.kit": "KIT Name",
+  "stockUnpackKit.soh": "Stock on hand",
+  "stockUnpackKit.proceed": "Unpack KIT",
+  "stockUnpackKit.noKitAvailable": "There are no kits for this facility. Please contact the Admin."
+}
