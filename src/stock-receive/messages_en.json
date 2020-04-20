@@ -1,0 +1,7 @@
+{
+  "stockReceive.start": "Make Receive",
+  "stockReceive.continue": "Continue",
+  "stockReceive.notStarted": "Not yet started",
+  "stockReceive.draft": "Draft",
+  "stockReceive.status": "Status"
+}
