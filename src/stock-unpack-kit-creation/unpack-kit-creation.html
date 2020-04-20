@@ -1,0 +1,117 @@
+<h2>
+    {{'stockUnpackKitCreation.title' | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'kit': vm.kit.fullProductName} }}
+</h2>
+
+<section class="openlmis-table-container">
+    <table class="unpack-table" suppress-tr-openlmis-invalid>
+        <caption ng-if="!vm.kit">{{'stockUnpackKitCreation.noKitAvailable' | message}}</caption>
+        <thead>
+        <tr>
+            <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
+            <th>{{'stockUnpackKitCreation.product' | message}}</th>
+            <th>{{'stockUnpackKitCreation.soh' | message}}</th>
+            <th>{{'stockUnpackKitCreation.unpackQuantity' | message}}</th>
+            <th>{{'stockUnpackKitCreation.documentationNo' | message}}</th>
+            <th>{{'stockUnpackKitCreation.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{vm.kit.productCode}}</td>
+            <td>{{vm.kit.fullProductName}}</td>
+            <td align="right">{{vm.kit.stockOnHand}}</td>
+            <td ng-if="!vm.showProducts" class="digit-cell">
+                <input class="form-control"
+                       ng-blur="vm.validateKitQuantity()"
+                       ng-change="vm.validateKitQuantity()"
+                       ng-model="vm.kit.unpackQuantity"
+                       openlmis-invalid="{{vm.kit.quantityInvalid ? vm.kit.quantityInvalid : ''}}"
+                       positive-integer />
+            </td>
+            <td ng-if="vm.showProducts" align="right">{{vm.kit.unpackQuantity}}</td>
+            <td ng-if="!vm.showProducts" class="digit-cell">
+                <input class="form-control"
+                       ng-blur="vm.validateDocumentationNo()"
+                       ng-change="vm.validateDocumentationNo()"
+                       ng-model="vm.kit.documentationNo"
+                       ng-required="vm.kit.documentationNoInvalid"
+                       maxlength="100"/>
+            </td>
+            <td ng-if="vm.showProducts">{{vm.kit.documentationNo}}</td>
+            <td>
+                <button ng-class="{'primary': !vm.showProducts}" ng-disabled="vm.showProducts" ng-click="vm.unpack()">{{'stockUnpackKitCreation.unpack' | message}}</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<div ng-if="vm.showProducts">
+    <section class="openlmis-table-container unpack-kit-products">
+        <table suppress-tr-openlmis-invalid>
+            <caption ng-if="!vm.products.length">{{'stockUnpackKitCreation.noProducts' | message}}</caption>
+            <thead>
+            <tr>
+                <th>{{'stockUnpackKitCreation.productCode' | message}}</th>
+                <th>{{'stockUnpackKitCreation.productName' | message}}</th>
+                <th>{{'stockUnpackKitCreation.lotCode' | message}}</th>
+                <th>{{'stockUnpackKitCreation.expiryDate' | message}}</th>
+                <th>{{'stockUnpackKitCreation.quantityInKit' | message}}</th>
+                <th>{{'stockUnpackKitCreation.quantity' | message}}</th>
+                <th>{{'stockUnpackKitCreation.date' | message}}</th>
+                <th class="stock-actions">{{'stockUnpackKitCreation.actions' | message}}</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="products in vm.groupedProducts">
+            <tr ng-if="products.length > 1">
+                <td>{{products[0].productCode}}</td>
+                <td>{{products[0].fullProductName}}</td>
+                <td></td>
+                <td></td>
+                <td align="right">{{products[0].quantityInKit*vm.kit.unpackQuantity}}</td>
+                <td align="right">{{vm.calculate(products, 'quantity')}}</td>
+                <td></td>
+                <td>
+                    <button class="stock-actions add" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
+                </td>
+            </tr>
+            <tr ng-repeat="product in products">
+                <td>{{products.length > 1 ? '' : product.productCode}}</td>
+                <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
+                <td>
+                    <stock-input-select line-items="products" line-item="product"></stock-input-select>
+                </td>
+                <td openlmis-invalid="{{product.$errors.lotDateInvalid}}">
+                    <input type="date" ng-model="product.lot.expirationDate"
+                           class="min-width-date-input"
+                           ng-disabled="product.lot.id"
+                           ng-change="vm.expirationDateChange(product)" />
+                </td>
+                <td align="right">{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
+                <td align="right" class="digit-cell">
+                    <input positive-integer
+                           type="text"
+                           class="form-control min-width-input"
+                           ng-blur="vm.validateProductQuantity(product)"
+                           ng-change="vm.validateProductQuantity(product)"
+                           ng-model="product.quantity"
+                           openlmis-invalid="{{product.quantityInvalid ? product.quantityInvalid : ''}}" />
+                </td>
+                <td>
+                    <input type="date" class="min-width-date-input"
+                           ng-model="product.occurredDate"
+                           ng-blur="vm.validateDate(product)"
+                           ng-change="vm.validateDate(product)"
+                           max-date="vm.maxDate"
+                           ng-required="product.dateInvalid" />
+                </td>
+                <td>
+                    <button ng-if="products.length === 1" class="stock-actions add" ng-click="vm.addLot(product)">{{'stockUnpackKitCreation.addLot' | message}}</button>
+                    <button ng-if="products.length > 1" class="danger stock-actions" ng-click="vm.removeLot(product)">{{'stockUnpackKitCreation.remove' | message}}</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <ng-include src="'stock-unpack-kit-creation/unpack-kit-creation-toolbar.html'"></ng-include>
+</div>

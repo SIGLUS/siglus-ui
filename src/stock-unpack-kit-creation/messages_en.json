@@ -1,0 +1,20 @@
+{
+  "stockUnpackKitCreation.title": "${facilityCode} - ${facilityName} - ${kit}",
+  "stockUnpackKitCreation.product": "Kit Name",
+  "stockUnpackKitCreation.noProducts": "There is no product in the KIT. Please contact the Admin.",
+  "stockUnpackKitCreation.productName": "Product Name",
+  "stockUnpackKitCreation.quantityInKit": "Quantity in KIT",
+  "stockUnpackKitCreation.addLot": "Add Lot",
+  "stockUnpackKitCreation.unpackQuantity": "Unpack quantity",
+  "stockUnpackKitCreation.documentationNo": "Documentation No.",
+  "stockUnpackKitCreation.unpack": "Unpack KIT",
+  "stockUnpackKitCreation.tooLarge": "The quantity is too large",
+  "stockUnpackKitCreation.required": "This field is required",
+  "stockUnpackKitCreation.positiveInteger": "You must input a positive number",
+  "stockUnpackKitCreation.lessThanSOH": "Unpack quantity must be less than Stock on Hand",
+  "stockUnpackKitCreation.unpackInvalid": "Unpack kit has invalid input",
+  "stockUnpackKitCreation.noKitAvailable": "There are no kits for this facility. Please contact the Admin.",
+  "stockUnpackKitCreation.signature": "Signature",
+  "stockPhysicalInventoryDraft.submitted": "Physical Inventory has successfully been submitted",
+  "stockUnpackKitCreation.saveFailed": "Save has failed"
+}
