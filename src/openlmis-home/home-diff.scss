@@ -1,51 +1,51 @@
 .home-page{
-  flex-direction: column;
-  justify-content: center;
-  align-items: center!important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center!important;
 
-  &::after{
-    content: none!important;
-  }
+    &::after{
+        content: none!important;
+    }
 
-  .bg {
-    background-image: url("openlmis-home/home-background.png");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 100% 100%;
-    width: 400px;
-    height: 400px;
-  }
-
-  h2 {
-    margin-top: 20px;
-    height: 40px;
-    text-align: center;
-    font-size: 40px;
-    color: #777777;
-  }
-
-  .system-notification-list {
-    position: absolute;
-    top: 1.2em;
-    right: 1.2em;
-    text-align: right;
-    width: calc(300px + 10%);
+    .bg {
+        background-image: url("openlmis-home/home-background.png");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 100% 100%;
+        width: 400px;
+        height: 400px;
+    }
 
     h2 {
-      margin-top: 0px;
-      text-align: right;
-      font-size: 22px;
-      color: #58585a;
+        margin-top: 20px;
+        height: 40px;
+        text-align: center;
+        font-size: 40px;
+        color: #777777;
     }
 
-    .scroll {
-      .message {
-        .title {
-          p {
-            margin: 0px;
-          }
+    .system-notification-list {
+        position: absolute;
+        top: 1.2em;
+        right: 1.2em;
+        text-align: right;
+        width: calc(300px + 10%);
+
+        h2 {
+            margin-top: 0px;
+            text-align: right;
+            font-size: 22px;
+            color: #58585a;
         }
-      }
+
+        .scroll {
+            .message {
+                .title {
+                    p {
+                        margin: 0px;
+                    }
+                }
+            }
+        }
     }
-  }
 }

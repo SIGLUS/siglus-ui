@@ -43,7 +43,7 @@
         });
 
         $delegate.getReportPrograms = getReportPrograms;
-        $delegate.getTruePrograms = getTruePrograms;
+        $delegate.getRealPrograms = getRealPrograms;
         $delegate.getVirtualPrograms = getVirtualPrograms;
 
         return $delegate;
@@ -66,12 +66,12 @@
         /**
          * @ngdoc method
          * @methodOf referencedata-program-decorator.programService
-         * @name getTruePrograms
+         * @name getRealPrograms
          *
          * @description
          * Get true programs.
          */
-        function getTruePrograms() {
+        function getRealPrograms() {
             return $delegate.getAll()
                 .then(function(programs) {
                     return _.filter(programs, function(p) {

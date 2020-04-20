@@ -41,7 +41,7 @@
             resolve: {
                 programs: function(programService) {
                     // SIGLUS-REFACTOR: get true program
-                    return programService.getTruePrograms();
+                    return programService.getRealPrograms();
                     //SIGLUS-REFACTOR: ends here
                 },
                 orderables: function(paginationService, OrderableResource, $stateParams) {

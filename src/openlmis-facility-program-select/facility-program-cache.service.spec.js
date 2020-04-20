@@ -16,7 +16,7 @@
 describe('facilityProgramCacheService', function() {
 
     beforeEach(function() {
-        // SIGLUS-REFACTOR: nject mock service
+        // SIGLUS-REFACTOR: inject mock service
         module('openlmis-facility-program-select', function($provide) {
             var programServiceMock = jasmine.createSpyObj('programService', ['getReportPrograms']);
             $provide.service('programService', function() {
