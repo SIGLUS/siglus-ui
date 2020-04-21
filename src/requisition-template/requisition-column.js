@@ -22,20 +22,15 @@
      * @name requisition-template.RequisitionColumn
      *
      * @description
-     * Decorates RequisitionColumn with additional attribute.
+     * Provides requisition column object with additional methods and info.
      */
-    angular.module('requisition-template')
-        .config(config);
+    angular
+        .module('requisition-template')
+        .factory('RequisitionColumn', requisitionColumn);
 
-    config.$inject = ['$provide'];
+    requisitionColumn.$inject = ['TEMPLATE_COLUMNS', 'COLUMN_SOURCES'];
 
-    function config($provide) {
-        $provide.decorator('RequisitionColumn', decorator);
-    }
-
-    decorator.$inject = ['$delegate', 'TEMPLATE_COLUMNS', 'COLUMN_SOURCES'];
-
-    function decorator($delegate, TEMPLATE_COLUMNS, COLUMN_SOURCES) {
+    function requisitionColumn(TEMPLATE_COLUMNS, COLUMN_SOURCES) {
 
         /**
          * @ngdoc property
@@ -145,8 +140,9 @@
             TEMPLATE_COLUMNS.REMARKS
         ];
 
-        angular.copy($delegate, RequisitionColumn);
-        RequisitionColumn.prototype = $delegate.prototype;
+        RequisitionColumn.columnDependencies = columnDependencies;
+
+        RequisitionColumn.prototype.isSkipColumn = isSkipColumn;
 
         return RequisitionColumn;
 
@@ -195,6 +191,22 @@
             return column.isDisplayed && (
                 [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
                 requisition.$isAfterAuthorize());
+        }
+
+        function columnDependencies(column) {
+            return dependencies[column.name];
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf requisition-template.RequisitionColumn
+         * @name isSkipColumn
+         *
+         * @description
+         * Checks whether the columns is a 'Skip' column.
+         */
+        function isSkipColumn() {
+            return this.name === TEMPLATE_COLUMNS.SKIPPED;
         }
     }
 })();

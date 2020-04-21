@@ -37,6 +37,11 @@
     decorator.$inject = ['$delegate', 'TEMPLATE_COLUMNS'];
 
     function decorator($delegate, TEMPLATE_COLUMNS) {
+        var A = TEMPLATE_COLUMNS.BEGINNING_BALANCE,
+            B = TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
+            C = TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
+            E = TEMPLATE_COLUMNS.STOCK_ON_HAND;
+
         $delegate.theoreticalQuantityToRequest = calculateTheoreticalQuantityToRequest;
         $delegate.theoreticalStockAtEndofPeriod = calculateTheoreticalStockAtEndOfPeriod;
 
@@ -54,9 +59,7 @@
          * @return {Number}          the calculated Total Theoretical Quantity to request
          */
         function calculateTheoreticalQuantityToRequest(lineItem) {
-            var result = 2 * getItem(lineItem, TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY)
-                - getItem(lineItem, TEMPLATE_COLUMNS.STOCK_ON_HAND);
-
+            var result = 2 * getItem(lineItem, C) - getItem(lineItem, E);
             return result >= 0 ? result : 0;
         }
 
@@ -72,10 +75,7 @@
          * @return {Number}          the calculated Theoretical Stock at end of period
          */
         function calculateTheoreticalStockAtEndOfPeriod(lineItem) {
-            var result = getItem(lineItem, TEMPLATE_COLUMNS.BEGINNING_BALANCE)
-                + getItem(lineItem, TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY)
-                - getItem(lineItem, TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY);
-
+            var result = getItem(lineItem, A) + getItem(lineItem, B) - getItem(lineItem, C);
             return result >= 0 ? result : 0;
         }
 

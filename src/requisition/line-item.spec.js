@@ -164,7 +164,7 @@ describe('LineItem', function() {
     it('should get pricePerPack value from line item if $program.pricePerPack is undefined', function() {
         requisitionLineItem = {
             $program: {
-                fullSupply: true,
+                fullSupply: true
                 // pricePerPack: 5.2
             },
             orderable: {
