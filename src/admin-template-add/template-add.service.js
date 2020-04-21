@@ -22,26 +22,37 @@
      * @name admin-template-add.TemplateAddService
      *
      * @description
-     * Decorates TemplateAddService with additional attribute.
+     * Responsible for preparing an instance of the Template class to be displayed on the view by wrapping its methods
+     * with utilities like alerts, notifications and loading modal.
      */
+    angular
+        .module('admin-template-add')
+        .factory('TemplateAddService', TemplateAddService);
 
-    angular.module('admin-template-add')
-        .config(config);
-
-    config.$inject = ['$provide'];
-
-    function config($provide) {
-        $provide.decorator('TemplateAddService', decorator);
-    }
-
-    decorator.$inject = [
-        '$delegate', 'notificationService', 'loadingModalService', 'Template', '$state', '$q'
+    TemplateAddService.inject = [
+        'notificationService', 'loadingModalService', 'alertService', 'Template', 'TemplateRepository', '$state', '$q'
     ];
 
-    function decorator($delegate, notificationService, loadingModalService, Template, $state, $q) {
-        $delegate.prototype.initiateTemplate = initiateTemplate;
+    function TemplateAddService(
+        notificationService, loadingModalService, alertService, Template, TemplateRepository, $state, $q
+    ) {
 
-        return $delegate;
+        TemplateAddService.prototype.initiateTemplate = initiateTemplate;
+
+        return TemplateAddService;
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template-add.TemplateAddService
+         * @name TemplateAddService
+         * @constructor
+         *
+         * @description
+         * Creates an instance of the TemplateAddService class.
+         */
+        function TemplateAddService() {
+            this.repository = new TemplateRepository();
+        }
 
         /**
          * @ngdoc method
