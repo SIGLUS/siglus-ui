@@ -1,0 +1,7 @@
+{
+  "requisitionViewTab.products": "Product(s)",
+  "requisitionViewTab.normalRequisition": "Normal Requisition",
+  "requisitionViewTab.externalConsultationPerformedNo": "No.of External Consultations Performed",
+  "requisitionViewTab.receivedKitNo": "No.of Kit Received",
+  "requisitionViewTab.openedKitNo": "No.of Kit Opened"
+}

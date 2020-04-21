@@ -1,0 +1,8 @@
+.save-button-group {
+    display: flex;
+    align-items: center;
+    >.requisition-indicator{
+        margin-left: 1em;
+        color: white;
+    }
+}
