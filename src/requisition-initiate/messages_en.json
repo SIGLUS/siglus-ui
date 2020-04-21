@@ -1,0 +1,4 @@
+{
+  "requisitionInitiate.confirm.label": "Please finish physcial inventory before creating a requisition.",
+  "requisitionInitiate.confirm.button": "Physical Inventory"
+}
