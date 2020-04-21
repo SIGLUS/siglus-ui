@@ -40,17 +40,9 @@
                     return new ReasonCategoryResource().query();
                 },
                 programs: function(programService) {
-                    return programService.getAll()
-                    /* SIGLUS-REFACTOR: only show virtual program and ML in add reason page */
-                        .then(function(programs) {
-                            return _.filter(programs, function(p) {
-                                if (p.code === 'ALL') {
-                                    return false;
-                                }
-                                return p.isVirtual;
-                            });
-                        });
-                    /* SIGLUS-REFACTOR: ends here */
+                    // SIGLUS-REFACTOR: get virtual program
+                    return programService.getVirtualPrograms();
+                    // SIGLUS-REFACTOR: ends here
                 },
                 facilityTypes: function(facilityTypeService) {
                     return facilityTypeService.query({
