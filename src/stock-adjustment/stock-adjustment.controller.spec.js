@@ -59,6 +59,12 @@ describe('StockAdjustmentController', function() {
         );
     });
 
+    it('should init programs properly', function() {
+        // SIGLUS-REFACTOR: starts here
+        expect(vm.programs).toEqual([]);
+        // SIGLUS-REFACTOR: ends here
+    });
+
     it('should go to stock adjustment draft page when proceed', function() {
         var chooseProgram = {
             name: 'HIV',
