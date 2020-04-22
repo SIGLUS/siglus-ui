@@ -28,10 +28,12 @@
         .module('requisition-view-tab')
         .controller('SelectProductsModalEmergencyController', controller);
 
-    controller.$inject = ['modalDeferred', 'products', 'lengthOfAllProducts', 'alertService'];
+    controller.$inject = ['$scope', 'modalDeferred', 'products', 'amountCanAdd', 'alertService'];
 
-    function controller(modalDeferred, products, lengthOfAllProducts, alertService) {
+    function controller($scope, modalDeferred, products, amountCanAdd, alertService) {
         var vm = this;
+
+        vm.paginationId = 'select-products-modal-emergency';
 
         vm.$onInit = onInit;
         vm.selectProducts = selectProducts;
@@ -103,7 +105,7 @@
 
             if (selectedProducts.length < 1) {
                 alertService.error('selectProductsModal.addProducts.emptyList');
-            } else if (selectedProducts.length > 10 - (lengthOfAllProducts - vm.products.length)) {
+            } else if (selectedProducts.length > amountCanAdd) {
                 vm.showSelectTooManyError = true;
             } else {
                 vm.showSelectTooManyError = false;
@@ -141,6 +143,16 @@
             }
             return foundInFullProductName || foundInProductCode;
         }
+
+        $scope.$watch('vm.selections', function(newVal) {
+            var count = 0;
+            for (var key in newVal) {
+                if (newVal.hasOwnProperty(key) && newVal[key]) {
+                    count++;
+                }
+            }
+            vm.showSelectTooManyError = count >= amountCanAdd;
+        }, true);
     }
 
 })();
