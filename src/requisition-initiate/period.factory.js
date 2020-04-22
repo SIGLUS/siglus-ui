@@ -66,14 +66,11 @@
         function getPeriodGridLineItems(periods, emergency) {
             var periodGridLineItems = [];
 
+            // SIGLUS-REFACTOR: starts here
             angular.forEach(periods, function(period, id) {
-                // SIGLUS-REFACTOR: starts here
-                if (_.isEmpty(period.requisitionStatus)
-                    || period.requisitionStatus === REQUISITION_STATUS.INITIATED) {
-                // SIGLUS-REFACTOR: ends here
-                    periodGridLineItems.push(createPeriodGridItem(period, emergency, id));
-                }
+                periodGridLineItems.push(createPeriodGridItem(period, emergency, id));
             });
+            // SIGLUS-REFACTOR: ends here
 
             return periodGridLineItems;
         }

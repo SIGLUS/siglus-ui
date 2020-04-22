@@ -523,16 +523,18 @@ describe('ViewTabController', function() {
             expect(this.requisition.addLineItems).not.toHaveBeenCalled();
         });
 
-        it('should unskip full supply products', function() {
-            this.initController();
-            this.vm.addFullSupplyProducts();
-            this.$rootScope.$apply();
-
-            expect(this.requisition.addLineItems).toHaveBeenCalledWith([
-                this.availableFullSupplyProducts[0],
-                this.availableFullSupplyProducts[2]
-            ]);
-        });
+        // SIGLUS-REFACTOR: starts here
+        // it('should unskip full supply products', function() {
+        //     this.initController();
+        //     this.vm.addFullSupplyProducts();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(this.requisition.addLineItems).toHaveBeenCalledWith([
+        //         this.availableFullSupplyProducts[0],
+        //         this.availableFullSupplyProducts[2]
+        //     ]);
+        // });
+        // SIGLUS-REFACTOR: ends here
 
         it('should show products in alphabetical order', function() {
             this.initController();
@@ -590,16 +592,18 @@ describe('ViewTabController', function() {
             expect(this.requisition.addLineItems).not.toHaveBeenCalled();
         });
 
-        it('should add non-full supply products', function() {
-            this.initController();
-            this.vm.addNonFullSupplyProducts();
-            this.$rootScope.$apply();
-
-            expect(this.requisition.addLineItems).toHaveBeenCalledWith([
-                this.availableNonFullSupplyProducts[0],
-                this.availableNonFullSupplyProducts[2]
-            ]);
-        });
+        // SIGLUS-REFACTOR: starts here
+        // it('should add non-full supply products', function() {
+        //     this.initController();
+        //     this.vm.addNonFullSupplyProducts();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(this.requisition.addLineItems).toHaveBeenCalledWith([
+        //         this.availableNonFullSupplyProducts[0],
+        //         this.availableNonFullSupplyProducts[2]
+        //     ]);
+        // });
+        // SIGLUS-REFACTOR: ends here
 
         it('should show products in alphabetical order', function() {
             this.initController();

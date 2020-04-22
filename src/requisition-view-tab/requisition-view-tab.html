@@ -12,12 +12,12 @@
                 </span>
             </div>
             <div class="openlmis-flex-table">
-                <table class="left-sub-table" ng-if="vm.requisition.template.enableConsultationNumber">
+                <table class="left-sub-table" ng-if="vm.requisition.template.enableConsultationNumber && !vm.requisition.emergency">
                     <tbody>
-                    <tr class="center-item">
+                    <tr class="center-item" style="height: 55px">
                         <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
                     </tr>
-                    <tr>
+                    <tr style="height: 55px">
                         <td class="cell-text">{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
                         <td>
                             <input positive-integer ng-model="vm.requisition.extraData.consultationNumber" required />
@@ -25,29 +25,21 @@
                     </tr>
                     </tbody>
                 </table>
-                <table class="right-sub-table" ng-if="vm.requisition.template.enableKitUsage">
+                <table class="right-sub-table" ng-if="vm.requisition.template.enableKitUsage && !vm.requisition.emergency">
                     <tbody>
-                    <tr>
-                        <td>{{'requisitionViewTab.receivedKitNo' | message}}</td>
-                        <td>HF</td>
-                        <td>
-                            <input positive-integer ng-model="vm.requisition.extraData.receivedKitByHF" required />
-                        </td>
-                        <td>CHW</td>
-                        <td>
-                            <input positive-integer ng-model="vm.requisition.extraData.receivedKitByCHW" required />
-                        </td>
+                    <tr style="height: 55px">
+                        <td style="width: 180px">{{'requisitionViewTab.receivedKitNo' | message}}</td>
+                        <td style="width: 80px">HF</td>
+                        <td style="min-width: 40px" align="right" class="ng-binding ng-scope">{{vm.requisition.extraData.receivedKitByHF}}</td>
+                        <td style="width: 80px">CHW</td>
+                        <td style="min-width: 40px" align="right" class="ng-binding ng-scope">{{vm.requisition.extraData.receivedKitByCHW}}</td>
                     </tr>
-                    <tr>
+                    <tr style="height: 55px">
                         <td>{{'requisitionViewTab.openedKitNo' | message}}</td>
                         <td>HF</td>
-                        <td>
-                            <input positive-integer ng-model="vm.requisition.extraData.openedKitByHF" required />
-                        </td>
+                        <td align="right" class="ng-binding ng-scope">{{vm.requisition.extraData.openedKitByHF}}</td>
                         <td>CHW</td>
-                        <td>
-                            <input positive-integer ng-model="vm.requisition.extraData.openedKitByCHW" required/>
-                        </td>
+                        <td align="right" class="ng-binding ng-scope">{{vm.requisition.extraData.openedKitByCHW}}</td>
                     </tr>
                     </tbody>
                 </table>

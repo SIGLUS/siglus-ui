@@ -2,5 +2,6 @@
   "adminProgramTemplate.enableConsultationNumber": "Patient module",
   "adminProgramTemplate.enableKITUsage": "Kit module",
   "adminProgramTemplate.enableProductModule": "Product module",
-  "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option"
+  "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option",
+  "adminProgramTemplate.shouldDisplayRequestedQuantity": "If ${calculatedOrderQuantity} is not displayed, then ${requestedQuantity} should be displayed"
 }

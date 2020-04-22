@@ -44,6 +44,7 @@
 
         $delegate.theoreticalQuantityToRequest = calculateTheoreticalQuantityToRequest;
         $delegate.theoreticalStockAtEndofPeriod = calculateTheoreticalStockAtEndOfPeriod;
+        $delegate.difference = calculateDifference;
 
         return $delegate;
 
@@ -77,6 +78,23 @@
         function calculateTheoreticalStockAtEndOfPeriod(lineItem) {
             var result = getItem(lineItem, A) + getItem(lineItem, B) - getItem(lineItem, C);
             return result >= 0 ? result : 0;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf requisition-calculations.calculationFactory
+         * @name totalLossesAndAdjustments
+         *
+         * @description
+         * Calculates the value of the Total Losses and Adjustments column based on the
+         * given line item and adjustment reasons.
+         *
+         * @param  {Array}  adjustments     the list of adjustments to sum up
+         * @param  {Array}  reasons         the list of stock adjustment reasons
+         * @return {Number}                 the calculated Total Losses and Adjustments value
+         */
+        function calculateDifference(lineItem) {
+            return getItem(lineItem, E) - (getItem(lineItem, A) + getItem(lineItem, B) - getItem(lineItem, C));
         }
 
         function getItem(lineItem, name) {

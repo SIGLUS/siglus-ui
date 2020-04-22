@@ -1,0 +1,50 @@
+<div class="modal add-product-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{'selectProductsModal.addProducts' | message}}</h4>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" ng-submit="vm.selectProducts()">
+                    <fieldset class="form-group">
+                        <label for="search">
+                            {{'selectProductsModal.searchProduct' | message}}
+                        </label>
+                        <input type="text" id="search" name="search" ng-model="vm.searchText"
+                               ng-change="vm.search()"/>
+                        <p class="note">{{'selectProductsModal.searchByCodeInfo' | message}}</p>
+                    </fieldset>
+                    <br/>
+                    <div ng-if="vm.showSelectTooManyError" class="error">{{'requisitionViewTab.selectTooMany' | message}}</div>
+                    <div class="openlmis-table-container">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>{{'selectProductsModal.select' | message}}</th>
+                                <th>{{'selectProductsModal.code' | message}}</th>
+                                <th>{{'selectProductsModal.product' | message}}</th>
+                                <th>{{'selectProductsModal.uoi' | message}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="orderable in vm.lineItems">
+                                <td><input type="checkbox" ng-model="vm.selections[orderable.id]"/></td>
+                                <td>{{orderable.productCode}}</td>
+                                <td>{{orderable.fullProductName}}</td>
+                                <td>{{orderable.dispensable.displayUnit}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <openlmis-pagination
+                                list="vm.filteredProducts"
+                                paged-list="vm.lineItems"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.close()">{{'selectProductsModal.cancel' | message}}</button>
+                <button class="primary" type="submit" form="productForm">{{'selectProductsModal.addProducts' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

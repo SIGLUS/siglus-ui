@@ -66,7 +66,6 @@
                 TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
                 TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
                 TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS
-
             ],
             totalConsumedQuantity: [
                 TEMPLATE_COLUMNS.BEGINNING_BALANCE,
@@ -188,6 +187,13 @@
                 return (column.option.optionName === 'showPackToShipInApprovalPage' &&
                     requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
             }
+
+            // SIGLUS-REFACTOR: starts here
+            if (column.isDisplayed && TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED === column.name) {
+                return requisition.$hasAuthorizeRight(requisition);
+            }
+            // SIGLUS-REFACTOR: ends here
+
             return column.isDisplayed && (
                 [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
                 requisition.$isAfterAuthorize());
