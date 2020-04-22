@@ -28,7 +28,7 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="orderable in vm.lineItems">
-                                <td><input type="checkbox" ng-model="vm.selections[orderable.id]"/></td>
+                                <td><input type="checkbox" ng-disabled="vm.showSelectTooManyError && !vm.selections[orderable.id]" ng-model="vm.selections[orderable.id]"/></td>
                                 <td>{{orderable.productCode}}</td>
                                 <td>{{orderable.fullProductName}}</td>
                                 <td>{{orderable.dispensable.displayUnit}}</td>
@@ -36,6 +36,7 @@
                             </tbody>
                         </table>
                         <openlmis-pagination
+                                pagination-id="vm.paginationId"
                                 list="vm.filteredProducts"
                                 paged-list="vm.lineItems"/>
                     </div>

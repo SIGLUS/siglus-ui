@@ -4,5 +4,6 @@
   "requisitionViewTab.externalConsultationPerformedNo": "No.of External Consultations Performed",
   "requisitionViewTab.receivedKitNo": "No.of Kit Received",
   "requisitionViewTab.openedKitNo": "No.of Kit Opened",
-  "requisitionViewTab.selectTooMany": "Select Too Many Items!"
+  "requisitionViewTab.selectTooMany": "You can just add no more than 10 products per emergency requisition",
+  "requisitionViewTab.noFullSupplyProducts": "No items have been added."
 }

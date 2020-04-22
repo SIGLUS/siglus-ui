@@ -46,7 +46,7 @@
          * @param  {Array}   products the list of available products
          * @return {promise}          the promise resolving to a list of selected products
          */
-        function show(products, lengthOfAllProducts) {
+        function show(products, amountCanAdd) {
             if (dialog) {
                 return dialog.promise;
             }
@@ -63,11 +63,12 @@
                                 return products;
                             }, {
                                 customPageParamName: 'pPage',
-                                customSizeParamName: 'pSize'
+                                customSizeParamName: 'pSize',
+                                paginationId: 'select-products-modal-emergency'
                             });
                     },
-                    lengthOfAllProducts: function() {
-                        return  lengthOfAllProducts;
+                    amountCanAdd: function() {
+                        return  amountCanAdd;
                     }
                 }
             });

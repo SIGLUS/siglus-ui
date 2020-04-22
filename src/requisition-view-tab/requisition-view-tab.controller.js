@@ -30,7 +30,11 @@
 
     ViewTabController.$inject = [
         '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
-        'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'canSubmitAndAuthorize', 'fullSupply',
+        'lineItems', 'alertService', 'canSubmit', 'canAuthorize',
+        // SIGLUS-REFACTOR: starts here
+        'canSubmitAndAuthorize',
+        // SIGLUS-REFACTOR: ends here
+        'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams',
         // SIGLUS-REFACTOR: starts here

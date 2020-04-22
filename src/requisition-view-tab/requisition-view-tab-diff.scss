@@ -38,6 +38,10 @@
             float: left;
             margin-right: 10em;
 
+            tr {
+                height: 55px;
+            }
+
             td {
                 height: 51px;
             }
@@ -45,6 +49,23 @@
 
         .right-sub-table {
             width: 40%;
+
+            tr {
+                height: 55px;
+            }
+
+            .table-column-first {
+                width: 180px;
+            }
+
+            .table-column-second {
+                width: 80px;
+            }
+
+            .table-column-third {
+                min-width: 40px;
+                text-align: right;
+            }
         }
 
         .center-item {
@@ -59,9 +80,17 @@
             text-align: right;
         }
     }
+
+    .hide-line-item {
+        @extend button.danger;
+        @include icon-only('remove');
+    }
 }
 
 #productForm .error {
-    color: red;
-    font-weight: bold;
+    color: #b24c4b;
+}
+
+.text-center {
+    text-align:center;
 }

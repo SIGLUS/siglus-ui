@@ -1,51 +1,55 @@
+<header>
+    <h2>{{'requisitionView.reportAndRequisitionFor' | message}} {{vm.program.name}} ({{vm.facility.type.name}})</h2>
+    <!--<button ng-disabled="vm.isOffline()" ng-click="vm.syncRnrAndPrint()" class="primary">{{'requisitionView.print' | message}}</button>-->
+</header>
+<ng-include src="'requisition-view/header.html'"></ng-include>
+<status-messages requisition="vm.requisition"></status-messages>
+
 <div class="view-tab openlmis-table-container">
-    <!-- SIGLUS-REFACTOR: starts here -->
     <div class="row">
         <div class="main">
             <div class="toolbar">
                 <header>
                     <h3>{{'requisitionViewTab.products' | message}}</h3>
-                    <button class="add" ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10" ng-click="vm.addFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
                 </header>
                 <span ng-if="vm.showAddFullSupplyProductControls">
-                    {{ vm.skippedFullSupplyProductCountMessage() }}
-                </span>
+					{{ vm.skippedFullSupplyProductCountMessage() }}
+				</span>
             </div>
             <div class="openlmis-flex-table">
                 <table class="left-sub-table" ng-if="vm.requisition.template.enableConsultationNumber && !vm.requisition.emergency">
                     <tbody>
-                    <tr class="center-item">
+                    <tr class="center-item" style="height: 55px">
                         <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
                     </tr>
-                    <tr>
+                    <tr style="height: 55px">
                         <td class="cell-text">{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
-                        <td>
-                            <input positive-integer ng-model="vm.requisition.extraData.consultationNumber" maxlength="8" required />
+                        <td class="text-center">
+                            {{vm.requisition.extraData.consultationNumber}}
                         </td>
                     </tr>
                     </tbody>
                 </table>
                 <table class="right-sub-table" ng-if="vm.requisition.template.enableKitUsage && !vm.requisition.emergency">
                     <tbody>
-                    <tr>
-                        <td class="table-column-first">{{'requisitionViewTab.receivedKitNo' | message}}</td>
-                        <td class="table-column-second">HF</td>
-                        <td class="ng-binding ng-scope table-column-third">{{vm.requisition.extraData.receivedKitByHF}}</td>
-                        <td class="table-column-second">CHW</td>
-                        <td class="ng-binding ng-scope table-column-third">{{vm.requisition.extraData.receivedKitByCHW}}</td>
+                    <tr style="height: 55px">
+                        <td style="width: 180px">{{'requisitionViewTab.receivedKitNo' | message}}</td>
+                        <td style="width: 80px">HF</td>
+                        <td style="min-width: 40px" class="text-center">{{vm.requisition.extraData.receivedKitByHF}}</td>
+                        <td style="width: 80px">CHW</td>
+                        <td style="min-width: 40px" class="text-center">{{vm.requisition.extraData.receivedKitByCHW}}</td>
                     </tr>
-                    <tr>
+                    <tr style="height: 55px">
                         <td>{{'requisitionViewTab.openedKitNo' | message}}</td>
                         <td>HF</td>
-                        <td align="right" class="ng-binding ng-scope">{{vm.requisition.extraData.openedKitByHF}}</td>
+                        <td class="text-center">{{vm.requisition.extraData.openedKitByHF}}</td>
                         <td>CHW</td>
-                        <td align="right" class="ng-binding ng-scope">{{vm.requisition.extraData.openedKitByCHW}}</td>
+                        <td class="text-center">{{vm.requisition.extraData.openedKitByCHW}}</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <div class="openlmis-flex-table" ng-if="vm.requisition.template.enableProductModule">
-    <!-- SIGLUS-REFACTOR: ends here -->
                 <table>
                     <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
                     <thead>
@@ -64,7 +68,10 @@
                             column="column"
                             line-item="lineItem"
                             user-can-edit="vm.userCanEdit"
-                            can-approve="vm.canApproveAndReject">
+                            can-approve="vm.canApproveAndReject"
+                            is-history="true"
+                            hide="vm.isHideAuthorizedQuantity(column)"
+                        >
                         </td>
                         <td ng-if="vm.showDeleteColumn()">
                             <button class="hide-line-item"
@@ -76,12 +83,9 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- SIGLUS-REFACTOR: starts here -->
                 <openlmis-pagination
                         list="vm.lineItems"
-                        paged-list="vm.items"
-                        pagination-id="vm.paginationId"/>
-                <!-- SIGLUS-REFACTOR: ends here -->
+                        paged-list="vm.items"/>
             </div>
         </div>
     </div>
