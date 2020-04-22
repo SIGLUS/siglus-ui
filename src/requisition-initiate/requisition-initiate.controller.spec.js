@@ -172,17 +172,16 @@ describe('RequisitionInitiateController', function() {
         expect(this.UuidGenerator.prototype.generate.calls.length).toEqual(2);
     });
 
-    // SIGLUS-REFACTOR: starts here
-    // it('should open loading modal', function() {
-    //     spyOn(this.loadingModalService, 'open');
-    //     this.vm.program = this.programs[0];
-    //     this.vm.facility = this.facility;
-    //
-    //     this.vm.initRnr(this.periods[0]);
-    //
-    //     expect(this.loadingModalService.open).toHaveBeenCalled();
-    // });
-    // SIGLUS-REFACTOR: ends here
+    it('should open loading modal', function() {
+        spyOn(this.loadingModalService, 'open');
+        this.vm.program = this.programs[0];
+        this.vm.facility = this.facility;
+
+        this.vm.initRnr(this.periods[0]);
+        this.$rootScope.$apply();
+
+        expect(this.loadingModalService.open).toHaveBeenCalled();
+    });
 
     it('should reload periods with proper data', function() {
         spyOn(this.$state, 'go');
