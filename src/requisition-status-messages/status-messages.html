@@ -24,7 +24,9 @@
             <label class="title" for="requisition-status-message-textarea">{{'requisitionStatusMessages.addComment.message' | message}}</label>
             <button class="close" ng-click="vm.removeComment()">{{'requisitionStatusMessages.removeComment' | message}}</button>
         </header>
+<!-- SIGLUS-REFACTOR: starts here -->
 <!--        <saving-indicator object="vm.requisition.draftStatusMessage"/>-->
+<!-- SIGLUS-REFACTOR: ends here -->
         <textarea id="requisition-status-message-textarea" ng-model="vm.requisition.draftStatusMessage"></textarea>
     </article>
 </section>
