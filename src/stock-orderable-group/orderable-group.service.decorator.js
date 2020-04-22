@@ -34,9 +34,9 @@
     }
 
     decorator.$inject = ['$delegate', 'messageService', 'StockCardSummaryRepositoryImpl',
-        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository', 'SiglusStockCardSummaryResource'];
+        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
     function decorator($delegate, messageService, StockCardSummaryRepositoryImpl,
-                       FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository, SiglusStockCardSummaryResource) {
+                       FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
         var orderableGroupService = $delegate;
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
@@ -90,19 +90,15 @@
                                                                includeApprovedProducts, userId, rightName) {
             var repository;
             if (includeApprovedProducts) {
-                // SIGLUS-REFACTOR: starts here
-                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl(
-                    new SiglusStockCardSummaryResource()
-                ));
+                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
             } else {
-                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl(
-                    new SiglusStockCardSummaryResource()
-                ));
+                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
             }
 
             return repository.query({
                 programId: programId,
                 facilityId: facilityId,
+                // SIGLUS-REFACTOR: starts here
                 userId: userId,
                 rightName: rightName
                 // SIGLUS-REFACTOR: ends here
