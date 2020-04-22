@@ -29,9 +29,9 @@
         .module('requisition-view')
         .factory('RequisitionWatcher', factory);
 
-    factory.$inject = ['$timeout'];
+    factory.$inject = ['$timeout', 'requisitionCacheService'];
 
-    function factory($timeout) {
+    function factory($timeout, requisitionCacheService) {
 
         RequisitionWatcher.prototype.disableWatcher = disableWatcher;
         RequisitionWatcher.prototype.enableWatcher = enableWatcher;
@@ -76,7 +76,7 @@
                     $timeout.cancel(watcher.syncTimeout);
                     watcher.syncTimeout = $timeout(function() {
                         requisition.$modified = true;
-                        storage.put(requisition);
+                        requisitionCacheService.cacheRequisitionToStorage(requisition, storage);
                         watcher.syncTimeout = undefined;
                     }, 500);
                 }

@@ -51,17 +51,17 @@ describe('RequisitionWatcher', function() {
 
     describe('line items watcher', function() {
 
-        // it('should save requisition after changes', function() {
-        //     this.requisition.requisitionLineItems[0].beginningBalance = 20;
-        //     this.scope.$digest();
-        //     this.$timeout.flush();
-        //
-        //     expect(this.requisitionCacheService.cacheRequisitionToStorage).toHaveBeenCalledWith(
-        //         this.requisition, requisitionsStorage
-        //     );
-        //
-        //     expect(this.requisition.$modified).toBe(true);
-        // });
+        it('should save requisition after changes', function() {
+            this.requisition.requisitionLineItems[0].beginningBalance = 20;
+            this.scope.$digest();
+            this.$timeout.flush();
+
+            expect(this.requisitionCacheService.cacheRequisitionToStorage).toHaveBeenCalledWith(
+                this.requisition, requisitionsStorage
+            );
+
+            expect(this.requisition.$modified).toBe(true);
+        });
 
         it('should not save requisition if quantity has not changed', function() {
             this.requisition.requisitionLineItems[0].beginningBalance = 50;
@@ -75,17 +75,17 @@ describe('RequisitionWatcher', function() {
 
     describe('comment watcher', function() {
 
-        // it('should save requisition after changes', function() {
-        //     this.requisition.draftStatusMessage = 'newMessage';
-        //     this.scope.$digest();
-        //     this.$timeout.flush();
-        //
-        //     expect(this.requisitionCacheService.cacheRequisitionToStorage).toHaveBeenCalledWith(
-        //         this.requisition, requisitionsStorage
-        //     );
-        //
-        //     expect(this.requisition.$modified).toBe(true);
-        // });
+        it('should save requisition after changes', function() {
+            this.requisition.draftStatusMessage = 'newMessage';
+            this.scope.$digest();
+            this.$timeout.flush();
+
+            expect(this.requisitionCacheService.cacheRequisitionToStorage).toHaveBeenCalledWith(
+                this.requisition, requisitionsStorage
+            );
+
+            expect(this.requisition.$modified).toBe(true);
+        });
 
         it('should not save requisition if value has not changed', function() {
             this.requisition.draftStatusMessage = 'Requisition 1 status message draft';
