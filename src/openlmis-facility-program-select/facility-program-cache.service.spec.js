@@ -16,14 +16,7 @@
 describe('facilityProgramCacheService', function() {
 
     beforeEach(function() {
-        // SIGLUS-REFACTOR: inject mock service
-        module('openlmis-facility-program-select', function($provide) {
-            var programServiceMock = jasmine.createSpyObj('programService', ['getReportPrograms']);
-            $provide.service('programService', function() {
-                return programServiceMock;
-            });
-        });
-        // SIGLUS-REFACTOR: ends here
+        module('openlmis-facility-program-select');
 
         inject(function($injector) {
             this.$q = $injector.get('$q');
@@ -81,8 +74,8 @@ describe('facilityProgramCacheService', function() {
         ];
 
         spyOn(this.authorizationService, 'getUser').andReturn(this.user);
-        // SIGLUS-REFACTOR: mock getReportPrograms instead of getUserPrograms
-        this.programService.getReportPrograms.andReturn(this.$q.when(this.programs));
+        // SIGLUS-REFACTOR: starts here
+        spyOn(this.programService, 'getReportPrograms').andReturn(this.$q.when(this.programs));
         // SIGLUS-REFACTOR: ends here
         spyOn(this.facilityService, 'getAllMinimal').andReturn(this.$q.when(this.facilities));
         spyOn(this.permissionService, 'load').andReturn(this.$q.when(permissions));
