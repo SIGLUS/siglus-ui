@@ -17,9 +17,6 @@ describe('ViewTabController', function() {
 
     beforeEach(function() {
         module('requisition-view-tab');
-        // SIGLUS-REFACTOR: starts here
-        module('requisition-view');
-        // SIGLUS-REFACTOR: ends here
 
         var RequisitionLineItemDataBuilder, RequisitionDataBuilder, RequisitionColumnDataBuilder, OrderableDataBuilder;
         inject(function($injector) {
@@ -36,6 +33,10 @@ describe('ViewTabController', function() {
             this.messageService = $injector.get('messageService');
             this.requisitionValidator = $injector.get('requisitionValidator');
             this.selectProductsModalService = $injector.get('selectProductsModalService');
+            // SIGLUS-REFACTOR: starts here
+            this.requisitionService = $injector.get('requisitionService');
+            this.loadingModalService = $injector.get('loadingModalService');
+            // SIGLUS-REFACTOR: ends here
         });
 
         var requisitionDataBuilder = new RequisitionDataBuilder();
@@ -58,15 +59,6 @@ describe('ViewTabController', function() {
                     .buildJson()
             ])
             .build();
-        // SIGLUS-REFACTOR: starts here
-        this.requisition.extraData = {
-            consultationNumber: 1,
-            openedKitByCHW: 7,
-            openedKitByHF: 4,
-            receivedKitByCHW: 4,
-            receivedKitByHF: 2
-        };
-        // SIGLUS-REFACTOR: ends here
 
         this.initController = initController;
 
@@ -116,6 +108,9 @@ describe('ViewTabController', function() {
         this.fullSupply = false;
         this.canSubmit = false;
         this.canAuthorize = false;
+        // SIGLUS-REFACTOR: starts here
+        this.hasAuthorizeRight = false;
+        // SIGLUS-REFACTOR: ends here
         this.canApproveAndReject = true;
 
         spyOn(this.alertService, 'error');
@@ -150,11 +145,22 @@ describe('ViewTabController', function() {
             expect(this.vm.canApproveAndReject).toEqual(this.canApproveAndReject);
         });
 
+        // SIGLUS-REFACTOR: starts here
+        it('should expose paginationId property', function() {
+            this.initController();
+
+            expect(this.vm.paginationId).toEqual('fullSupplyList');
+        });
+        // SIGLUS-REFACTOR: ends here
+
         describe('Add (Full Supply) Products button', function() {
 
             beforeEach(function() {
                 this.canSubmit = true;
                 this.canAuthorize = true;
+                // SIGLUS-REFACTOR: starts here
+                this.hasAuthorizeRight = true;
+                // SIGLUS-REFACTOR: ends here
                 this.fullSupply = true;
                 this.requisition.emergency = true;
             });
@@ -184,6 +190,9 @@ describe('ViewTabController', function() {
             it('should be hidden if user can\'t submit and authorize', function() {
                 this.canSubmit = false;
                 this.canAuthorize = false;
+                // SIGLUS-REFACTOR: starts here
+                this.hasAuthorizeRight = false;
+                // SIGLUS-REFACTOR: ends here
 
                 this.initController();
 
@@ -529,14 +538,12 @@ describe('ViewTabController', function() {
             this.initController();
             this.vm.addFullSupplyProducts();
 
-            // SIGLUS-REFACTOR: starts here
-            var actualProducts = this.selectProductsModalService.show.calls[0].args[0].products;
-            // SIGLUS-REFACTOR: ends here
+            var actualProducts = this.selectProductsModalService.show.calls[0].args[0];
 
-            expect(actualProducts.length).toEqual(3);
-            expect(actualProducts[0]).toEqual(this.availableFullSupplyProducts[1]);
-            expect(actualProducts[1]).toEqual(this.availableFullSupplyProducts[2]);
-            expect(actualProducts[2]).toEqual(this.availableFullSupplyProducts[0]);
+            expect(actualProducts.products.length).toEqual(3);
+            expect(actualProducts.products[0]).toEqual(this.availableFullSupplyProducts[1]);
+            expect(actualProducts.products[1]).toEqual(this.availableFullSupplyProducts[2]);
+            expect(actualProducts.products[2]).toEqual(this.availableFullSupplyProducts[0]);
         });
 
     });
@@ -598,14 +605,12 @@ describe('ViewTabController', function() {
             this.initController();
             this.vm.addNonFullSupplyProducts();
 
-            // SIGLUS-REFACTOR: starts here
-            var actualProducts = this.selectProductsModalService.show.calls[0].args[0].products;
-            // SIGLUS-REFACTOR: ends here
+            var actualProducts = this.selectProductsModalService.show.calls[0].args[0];
 
-            expect(actualProducts.length).toEqual(3);
-            expect(actualProducts[0]).toEqual(this.availableNonFullSupplyProducts[2]);
-            expect(actualProducts[1]).toEqual(this.availableNonFullSupplyProducts[1]);
-            expect(actualProducts[2]).toEqual(this.availableNonFullSupplyProducts[0]);
+            expect(actualProducts.products.length).toEqual(3);
+            expect(actualProducts.products[0]).toEqual(this.availableNonFullSupplyProducts[2]);
+            expect(actualProducts.products[1]).toEqual(this.availableNonFullSupplyProducts[1]);
+            expect(actualProducts.products[2]).toEqual(this.availableNonFullSupplyProducts[0]);
         });
 
     });
@@ -668,14 +673,12 @@ describe('ViewTabController', function() {
             this.initController();
             this.vm.unskipFullSupplyProducts();
 
-            // SIGLUS-REFACTOR: starts here
-            var actualProducts = this.selectProductsModalService.show.calls[0].args[0].products;
-            // SIGLUS-REFACTOR: ends here
+            var actualProducts = this.selectProductsModalService.show.calls[0].args[0];
 
-            expect(actualProducts.length).toEqual(3);
-            expect(actualProducts[0]).toEqual(this.skippedFullSupplyProducts[1]);
-            expect(actualProducts[1]).toEqual(this.skippedFullSupplyProducts[0]);
-            expect(actualProducts[2]).toEqual(this.skippedFullSupplyProducts[2]);
+            expect(actualProducts.products.length).toEqual(3);
+            expect(actualProducts.products[0]).toEqual(this.skippedFullSupplyProducts[1]);
+            expect(actualProducts.products[1]).toEqual(this.skippedFullSupplyProducts[0]);
+            expect(actualProducts.products[2]).toEqual(this.skippedFullSupplyProducts[2]);
         });
 
     });
@@ -777,9 +780,17 @@ describe('ViewTabController', function() {
             columns: [],
             requisition: this.requisition,
             canSubmit: this.canSubmit,
+            // SIGLUS-REFACTOR: starts here
+            canSubmitAndAuthorize: this.canSubmit && this.hasAuthorizeRight,
+            hasAuthorizeRight: this.hasAuthorizeRight,
+            // SIGLUS-REFACTOR: ends here
             canAuthorize: this.canAuthorize,
             fullSupply: this.fullSupply,
-            canApproveAndReject: this.canApproveAndReject
+            // SIGLUS-REFACTOR: starts here
+            canApproveAndReject: this.canApproveAndReject,
+            requisitionService: this.requisitionService,
+            loadingModalService: this.loadingModalService
+            // SIGLUS-REFACTOR: ends here
         });
         this.vm.$onInit();
     }

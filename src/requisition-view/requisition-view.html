@@ -8,6 +8,7 @@
 </p>
 <ng-include src="'requisition-view/header.html'"></ng-include>
 <status-messages requisition="vm.requisition"></status-messages>
+<!-- SIGLUS-REFACTOR: starts here -->
 <!--<nav>-->
 <!--    <ul>-->
 <!--        <li ui-sref-active="active" role="presentation"-->
@@ -26,6 +27,9 @@
 <!--        </li>-->
 <!--    </ul>-->
 <!--</nav>-->
+<!-- SIGLUS-REFACTOR: ends here -->
 <div ui-view=""></div>
+<!-- SIGLUS-REFACTOR: starts here -->
 <!--<requisition-summary requisition="vm.requisition"></requisition-summary>-->
+<!-- SIGLUS-REFACTOR: ends here -->
 <ng-include src="'requisition-view/requisition-toolbar.html'"></ng-include>
