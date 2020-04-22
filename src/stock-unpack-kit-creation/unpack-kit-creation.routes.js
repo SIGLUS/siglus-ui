@@ -111,6 +111,7 @@
                     }
                     return $stateParams.reasons;
                 }
+                //SIGLUS-REFACTOR: ends here
             }
         });
     }
