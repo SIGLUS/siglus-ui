@@ -16,14 +16,7 @@
 describe('openlmis.administration.requisitionGroupList', function() {
 
     beforeEach(function() {
-        <!-- SIGLUS-REFACTOR: inject mock service -->
-        module('admin-requisition-group-list', function($provide) {
-            var programServiceMock = jasmine.createSpyObj('programService', ['getVirtualPrograms']);
-            $provide.service('programService', function() {
-                return programServiceMock;
-            });
-        });
-        <!-- SIGLUS-REFACTOR: inject mock service -->
+        module('admin-requisition-group-list');
 
         inject(function($injector) {
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
@@ -74,8 +67,8 @@ describe('openlmis.administration.requisitionGroupList', function() {
             .andReturn(this.$q.resolve(new this.PageDataBuilder()
                 .withContent(this.requisitionGroups)
                 .build()));
-        <!-- SIGLUS-REFACTOR: getVirtualPrograms is already a mock function -->
-        this.programService.getVirtualPrograms.andReturn(this.$q.resolve(this.programs));
+        <!-- SIGLUS-REFACTOR: starts here -->
+        spyOn(this.programService, 'getVirtualPrograms').andReturn(this.$q.resolve(this.programs));
         <!-- SIGLUS-REFACTOR: ends here -->
         spyOn(this.geographicZoneService, 'getAll')
             .andReturn(this.$q.resolve(new this.PageDataBuilder()

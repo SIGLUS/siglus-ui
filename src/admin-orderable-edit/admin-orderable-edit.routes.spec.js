@@ -16,14 +16,7 @@
 describe('openlmis.administration.orderables.edit route', function() {
 
     beforeEach(function() {
-        <!-- SIGLUS-REFACTOR: inject mock service -->
-        module('admin-orderable-edit', function($provide) {
-            var programServiceMock = jasmine.createSpyObj('programService', ['getRealPrograms']);
-            $provide.service('programService', function() {
-                return programServiceMock;
-            });
-        });
-        <!-- SIGLUS-REFACTOR: ends here -->
+        module('admin-orderable-edit');
 
         inject(function($injector) {
             this.$q = $injector.get('$q');
@@ -32,7 +25,9 @@ describe('openlmis.administration.orderables.edit route', function() {
             this.$rootScope = $injector.get('$rootScope');
             this.$templateCache = $injector.get('$templateCache');
             this.OrderableResource = $injector.get('OrderableResource');
+            <!-- SIGLUS-REFACTOR: starts here -->
             this.programService = $injector.get('programService');
+            <!-- SIGLUS-REFACTOR: ends here -->
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.PageDataBuilder = $injector.get('PageDataBuilder');
@@ -100,8 +95,8 @@ describe('openlmis.administration.orderables.edit route', function() {
             .build();
 
         spyOn(this.OrderableResource.prototype, 'query').andReturn(this.$q.resolve(this.orderablesPage));
-        <!-- SIGLUS-REFACTOR: getRealPrograms is already a mock function -->
-        this.programService.getRealPrograms.andReturn(this.$q.resolve(this.programs));
+        <!-- SIGLUS-REFACTOR: starts here -->
+        spyOn(this.programService, 'getRealPrograms').andReturn(this.$q.resolve(this.programs));
         <!-- SIGLUS-REFACTOR: ends here -->
         spyOn(this.OrderableResource.prototype, 'get').andReturn(this.$q.resolve(this.orderable));
         spyOn(this.FacilityTypeApprovedProductResource.prototype, 'query').andReturn(this.$q.resolve(this.ftapsPage));

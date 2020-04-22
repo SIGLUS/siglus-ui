@@ -19,12 +19,12 @@
 
     /**
      * @ngdoc service
-     * @name referencedata-program-decorator.programService
+     * @name referencedata-program.programService
      *
      * @description
      * Decorates programService with additional method.
      */
-    angular.module('referencedata-program-decorator')
+    angular.module('referencedata-program')
         .config(config);
 
     config.$inject = ['$provide'];
@@ -50,7 +50,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf referencedata-program-decorator.programService
+         * @methodOf referencedata-program.programService
          * @name getReportPrograms
          *
          * @description
@@ -65,7 +65,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf referencedata-program-decorator.programService
+         * @methodOf referencedata-program.programService
          * @name getRealPrograms
          *
          * @description
@@ -82,7 +82,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf referencedata-program-decorator.programService
+         * @methodOf referencedata-program.programService
          * @name getVirtualPrograms
          *
          * @description
