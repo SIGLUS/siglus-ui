@@ -59,6 +59,8 @@
             // SIGLUS-REFACTOR: starts here
             THEORETICAL_QUANTITY_TO_REQUEST: 'theoreticalQuantityToRequest',
             THEORETICAL_STOCK_AT_END_OF_PERIOD: 'theoreticalStockAtEndofPeriod',
+            QUANTITY_AUTHORIZED: 'authorizedQuantity',
+            DIFFERENCE: 'difference',
             // SIGLUS-REFACTOR: ends here
             getStockBasedColumns: getStockBasedColumns
         };

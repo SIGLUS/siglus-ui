@@ -158,12 +158,19 @@
                     name: availableColumn.name,
                     label: availableColumn.label,
                     indicator: availableColumn.indicator,
-                    displayOrder: getNewDisplayOrder(this),
+                    // SIGLUS-REFACTOR: starts here
+                    displayOrder: availableColumn.displayOrder,
+                    // SIGLUS-REFACTOR: ends here
                     isDisplayed: isDisplayed,
-                    source: getSource(availableColumn.sources),
+                    // SIGLUS-REFACTOR: starts here
+                    source: getSource(availableColumn.sources, availableColumn.defaultSource),
+                    // SIGLUS-REFACTOR: ends here
                     columnDefinition: availableColumn,
                     option: availableColumn.options[0],
-                    definition: availableColumn.definition
+                    definition: availableColumn.definition,
+                    // SIGLUS-REFACTOR: starts here
+                    tag: availableColumn.defaultTag
+                    // SIGLUS-REFACTOR: ends here
                 };
             }
         }
@@ -438,19 +445,26 @@
             }
         }
 
-        function getNewDisplayOrder(template) {
-            var newDisplayOrder = 0;
-            Object.keys(template.columnsMap).forEach(function(templateName) {
-                if (template.columnsMap[templateName].displayOrder >= newDisplayOrder) {
-                    newDisplayOrder = template.columnsMap[templateName].displayOrder + 1;
-                }
-            });
-            return newDisplayOrder;
-        }
+        // SIGLUS-REFACTOR: starts here
+        // function getNewDisplayOrder(template) {
+        //     var newDisplayOrder = 0;
+        //     Object.keys(template.columnsMap).forEach(function(templateName) {
+        //         if (template.columnsMap[templateName].displayOrder >= newDisplayOrder) {
+        //             newDisplayOrder = template.columnsMap[templateName].displayOrder + 1;
+        //         }
+        //     });
+        //     return newDisplayOrder;
+        // }
+        // SIGLUS-REFACTOR: ends here
 
-        function getSource(sources) {
-            return sources.indexOf(COLUMN_SOURCES.USER_INPUT) > -1 ? COLUMN_SOURCES.USER_INPUT : sources[0];
+        // SIGLUS-REFACTOR: starts here
+        function getSource(sources, defaultSource) {
+            if (defaultSource && sources.indexOf(defaultSource) > -1) {
+                return defaultSource;
+            }
+            return sources.indexOf(COLUMN_SOURCES.STOCK_CARDS) > -1 ? COLUMN_SOURCES.STOCK_CARDS : sources[0];
         }
+        // SIGLUS-REFACTOR: ends here
 
         function shouldIncrementDisplayOrder(column, droppedItem, newDisplayOrder, isMovingUpTheList) {
             return isMovingUpTheList

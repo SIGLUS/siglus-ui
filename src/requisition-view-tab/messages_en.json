@@ -3,5 +3,6 @@
   "requisitionViewTab.normalRequisition": "Normal Requisition",
   "requisitionViewTab.externalConsultationPerformedNo": "No.of External Consultations Performed",
   "requisitionViewTab.receivedKitNo": "No.of Kit Received",
-  "requisitionViewTab.openedKitNo": "No.of Kit Opened"
+  "requisitionViewTab.openedKitNo": "No.of Kit Opened",
+  "requisitionViewTab.selectTooMany": "Select Too Many Items!"
 }

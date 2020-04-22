@@ -33,7 +33,7 @@
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
         // SIGLUS-REFACTOR: starts here
-        'confirmService', 'requisitionInitiateService'
+        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -41,18 +41,31 @@
                                            REQUISITION_RIGHTS, permissionService, authorizationService, $stateParams,
                                            periods, canInitiateRnr, UuidGenerator,
                                            // SIGLUS-REFACTOR: starts here
-                                           confirmService, requisitionInitiateService) {
+                                           confirmService, requisitionInitiateService, REQUISITION_STATUS) {
     // SIGLUS-REFACTOR: ends here
 
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
 
+        // SIGLUS-REFACTOR: starts here
+        var rights = authorizationService.getRights();
+        var createRight = _.find(rights, function(right) {
+            return right.name === 'REQUISITION_CREATE';
+        });
+        var authorizeRight = _.find(rights, function(right) {
+            return right.name === 'REQUISITION_AUTHORIZE';
+        });
+        // SIGLUS-REFACTOR: ends here
+
         vm.$onInit = onInit;
         vm.loadPeriods = loadPeriods;
         vm.initRnr = initRnr;
         vm.periodHasRequisition = periodHasRequisition;
         vm.goToRequisition = goToRequisition;
+        // SIGLUS-REFACTOR: starts here
+        vm.checkRnrStatus = checkRnrStatus;
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -226,6 +239,37 @@
         // SIGLUS-REFACTOR: starts here
         function goToPhysicalInventory() {
             $state.go('openlmis.stockmanagement.physicalInventory');
+        }
+
+        function checkRnrStatus(status) {
+            if (vm.program && vm.facility) {
+                var hasCreateRight = getHasCreateRight();
+                var hasAuthorizeRight = getHasAuthorizeRight();
+
+                if (status === REQUISITION_STATUS.INITIATED && !hasCreateRight) {
+                    return false;
+                }
+                if (status === REQUISITION_STATUS.SUBMITTED && !hasAuthorizeRight) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function getHasCreateRight() {
+            return !!createRight && _.some(createRight.programIds, function(id) {
+                return id === vm.program.id;
+            }) && _.some(createRight.facilityIds, function(id) {
+                return id === vm.facility.id;
+            });
+        }
+
+        function getHasAuthorizeRight() {
+            return !!authorizeRight && _.some(authorizeRight.programIds, function(id) {
+                return id === vm.program.id;
+            }) && _.some(authorizeRight.facilityIds, function(id) {
+                return id === vm.facility.id;
+            });
         }
         // SIGLUS-REFACTOR: ends here
     }

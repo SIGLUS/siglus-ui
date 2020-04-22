@@ -79,12 +79,18 @@
         }
 
         function validateExtraData(requisition) {
-            return requisition.extraData !== null
-                && isNotEmpty(requisition.extraData.consultationNumber)
-                && isNotEmpty(requisition.extraData.openedKitByCHW)
-                && isNotEmpty(requisition.extraData.openedKitByHF)
-                && isNotEmpty(requisition.extraData.receivedKitByCHW)
-                && isNotEmpty(requisition.extraData.receivedKitByHF);
+            var flag = true;
+
+            if (requisition.template.enableKitUsage) {
+                flag = isNotEmpty(requisition.extraData.openedKitByCHW)
+                    && isNotEmpty(requisition.extraData.openedKitByHF)
+                    && isNotEmpty(requisition.extraData.receivedKitByCHW)
+                    && isNotEmpty(requisition.extraData.receivedKitByHF);
+            }
+            if (requisition.template.enableConsultationNumber) {
+                flag = flag && isNotEmpty(requisition.extraData.consultationNumber);
+            }
+            return flag;
         }
 
         function isNotEmpty(value) {

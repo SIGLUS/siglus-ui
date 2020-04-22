@@ -213,7 +213,20 @@
             vm.displayRejectButton = canApproveAndReject && !vm.requisition.extraData.originalRequisition;
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
+            // SIGLUS-REFACTOR: init kit usage
+            initKitUsage();
         }
+
+        function initKitUsage() {
+            var receviedKitCount = 0;
+            angular.forEach(vm.requisition.requisitionLineItems, function(liteItem) {
+                if (liteItem.orderable.isKit) {
+                    receviedKitCount += liteItem.totalReceivedQuantity;
+                }
+            });
+            vm.requisition.extraData.receivedKitByHF = receviedKitCount;
+        }
+        // SIGLUS-REFACTOR: ends here
 
         function setTypeAndClass() {
             if (vm.requisition.emergency) {

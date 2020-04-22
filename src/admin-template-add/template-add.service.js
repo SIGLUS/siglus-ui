@@ -64,8 +64,8 @@
          */
         function initiateTemplate() {
             var template = new Template({
-                populateStockOnHandFromStockCards: false,
                 // SIGLUS-REFACTOR: starts here
+                populateStockOnHandFromStockCards: true,
                 enableConsultationNumber: false,
                 enableKitUsage: false,
                 enableProductModule: false,
