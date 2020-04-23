@@ -7,7 +7,9 @@
     <!-- SIGLUS-REFACTOR: ends here -->
     <div class="button-group primary">
         <button ng-if="vm.displaySubmitButton" class="primary" ng-disabled="vm.isOffline()" ng-click="vm.submitRnr()">{{'requisitionView.submit.label' | message}}</button>
-        <button ng-if="vm.displaySubmitAndAuthorizeButton" class="primary" ng-disabled="vm.isOffline()" ng-click="vm.submitRnr()">{{'requisitionView.submitAndAuthorize.label' | message}}</button>
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <button ng-if="vm.displaySubmitAndAuthorizeButton" class="primary" ng-disabled="vm.isOffline()" ng-click="vm.submitAndAuthorizeRnr()">{{'requisitionView.submitAndAuthorize.label' | message}}</button>
+        <!-- SIGLUS-REFACTOR: ends here -->
         <button ng-if="vm.displayAuthorizeButton" class="primary" ng-disabled="vm.isOffline()" ng-click="vm.authorizeRnr()">{{'requisitionView.authorize.label' | message}}</button>
         <button ng-if="vm.displayApproveAndRejectButtons" class="primary" ng-disabled="vm.isOffline()" ng-click="vm.approveRnr()">{{'requisitionView.approve.label' | message}}</button>
         <button ng-if="vm.displayRejectButton" class="danger" ng-disabled="vm.isOffline()" ng-click="vm.rejectRnr()">{{'requisitionView.reject.label' | message}}</button>
