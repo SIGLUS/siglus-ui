@@ -67,9 +67,9 @@ describe('openlmis.administration.requisitionGroupList', function() {
             .andReturn(this.$q.resolve(new this.PageDataBuilder()
                 .withContent(this.requisitionGroups)
                 .build()));
-        <!-- SIGLUS-REFACTOR: starts here -->
+        // SIGLUS-REFACTOR: starts here
         spyOn(this.programService, 'getVirtualPrograms').andReturn(this.$q.resolve(this.programs));
-        <!-- SIGLUS-REFACTOR: ends here -->
+        // SIGLUS-REFACTOR: ends here
         spyOn(this.geographicZoneService, 'getAll')
             .andReturn(this.$q.resolve(new this.PageDataBuilder()
                 .withContent(this.geographicZones)
@@ -113,9 +113,9 @@ describe('openlmis.administration.requisitionGroupList', function() {
             this.goToUrl('/administration/requisitionGroups');
 
             expect(this.getResolvedValue('programs')).toEqual(this.programs);
-            <!-- SIGLUS-REFACTOR: replace getAll with getVirtualPrograms function -->
+            // SIGLUS-REFACTOR: replace getAll with getVirtualPrograms function
             expect(this.programService.getVirtualPrograms).toHaveBeenCalled();
-            <!-- SIGLUS-REFACTOR: ends here -->
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should resolve facilitiesMap', function() {

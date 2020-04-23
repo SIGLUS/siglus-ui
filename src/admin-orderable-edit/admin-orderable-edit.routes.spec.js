@@ -25,9 +25,9 @@ describe('openlmis.administration.orderables.edit route', function() {
             this.$rootScope = $injector.get('$rootScope');
             this.$templateCache = $injector.get('$templateCache');
             this.OrderableResource = $injector.get('OrderableResource');
-            <!-- SIGLUS-REFACTOR: starts here -->
+            // SIGLUS-REFACTOR: starts here
             this.programService = $injector.get('programService');
-            <!-- SIGLUS-REFACTOR: ends here -->
+            // SIGLUS-REFACTOR: ends here
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.PageDataBuilder = $injector.get('PageDataBuilder');
@@ -95,9 +95,9 @@ describe('openlmis.administration.orderables.edit route', function() {
             .build();
 
         spyOn(this.OrderableResource.prototype, 'query').andReturn(this.$q.resolve(this.orderablesPage));
-        <!-- SIGLUS-REFACTOR: starts here -->
+        // SIGLUS-REFACTOR: starts here
         spyOn(this.programService, 'getRealPrograms').andReturn(this.$q.resolve(this.programs));
-        <!-- SIGLUS-REFACTOR: ends here -->
+        // SIGLUS-REFACTOR: ends here
         spyOn(this.OrderableResource.prototype, 'get').andReturn(this.$q.resolve(this.orderable));
         spyOn(this.FacilityTypeApprovedProductResource.prototype, 'query').andReturn(this.$q.resolve(this.ftapsPage));
         spyOn(this.$templateCache, 'get').andCallThrough();
@@ -202,9 +202,9 @@ describe('openlmis.administration.orderables.edit route', function() {
         });
 
         it('should not change state if fetching programs fails', function() {
-            <!-- SIGLUS-REFACTOR: starts here -->
+            // SIGLUS-REFACTOR: starts here
             this.programService.getRealPrograms.andReturn(this.$q.reject());
-            <!-- SIGLUS-REFACTOR: ends here -->
+            // SIGLUS-REFACTOR: ends here
 
             this.goToState('/programs');
 

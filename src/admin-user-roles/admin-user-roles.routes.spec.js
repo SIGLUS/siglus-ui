@@ -82,9 +82,9 @@ describe('openlmis.administration.users.roles', function() {
         spyOn(this.referencedataRoleFactory, 'getAllWithType').andReturn(this.$q.resolve(this.roles));
         spyOn(this.facilityService, 'getAllMinimal').andReturn(this.$q.resolve(this.warehouses));
         spyOn(this.currentUserService, 'getUserInfo').andReturn(this.$q.resolve(this.user));
-        <!-- SIGLUS-REFACTOR: starts here -->
+        // SIGLUS-REFACTOR: starts here
         spyOn(this.programService, 'getReportPrograms').andReturn(this.$q.resolve(this.programs));
-        <!-- SIGLUS-REFACTOR: ends here -->
+        // SIGLUS-REFACTOR: ends here
         spyOn(this.userRoleAssignmentFactory, 'getUser').andReturn(this.$q.resolve(this.user));
         spyOn(this.$templateCache, 'get').andCallThrough();
         spyOn(this.paginationService, 'registerUrl').andReturn(this.$q.resolve([this.user]));
@@ -107,9 +107,9 @@ describe('openlmis.administration.users.roles', function() {
 
             expect(this.getResolvedValue('programs')).toEqual(this.programs);
 
-            <!-- SIGLUS-REFACTOR: starts here -->
+            // SIGLUS-REFACTOR: starts here
             expect(this.programService.getReportPrograms).toHaveBeenCalled();
-            <!-- SIGLUS-REFACTOR: ends here -->
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should resolve supervisoryNodes', function() {
