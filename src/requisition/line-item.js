@@ -70,6 +70,13 @@
 
         function getFieldValue(name) {
             var value = this;
+
+            // SIGLUS-REFACTOR: starts here
+            if (name === 'pricePerPack') {
+                name = '$program.pricePerPack';
+            }
+            // SIGLUS-REFACTOR: ends here
+
             angular.forEach(name.split('.'), function(property) {
                 value = value[property];
             });
