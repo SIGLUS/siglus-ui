@@ -31,15 +31,20 @@
     requisitionFactory.$inject = [
         '$q', '$resource', 'requisitionUrlFactory', 'RequisitionTemplate', 'LineItem', 'REQUISITION_STATUS',
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
-        'REQUISITION_RIGHTS', 'UuidGenerator'
+        'REQUISITION_RIGHTS', 'UuidGenerator',
+        // SIGLUS-REFACTOR: starts here
+        'requisitionCacheService'
+        // SIGLUS-REFACTOR: ends here
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
                                 COLUMN_SOURCES, localStorageFactory, dateUtils, $filter, TEMPLATE_COLUMNS,
-                                authorizationService, REQUISITION_RIGHTS, UuidGenerator) {
+                                authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
-            resource = $resource(requisitionUrlFactory('/api/requisitions/:id'), {}, {
+            // SIGLUS-REFACTOR: use new api
+            resource = $resource(requisitionUrlFactory('/api/v2/requisitions/:id'), {}, {
+            // SIGLUS-REFACTOR: ends here
                 authorize: {
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
@@ -109,6 +114,7 @@
         Requisition.prototype.$isAfterAuthorize = isAfterAuthorize;
         // SIGLUS-REFACTOR: starts here
         Requisition.prototype.$hasAuthorizeRight = hasAuthorizeRight;
+        Requisition.prototype.$hasCreateRight = hasCreateRight;
         // SIGLUS-REFACTOR: ends here
         Requisition.prototype.$getProducts = getProducts;
         Requisition.prototype.skipAllFullSupplyLineItems = skipAllFullSupplyLineItems;
@@ -118,6 +124,9 @@
         Requisition.prototype.getSkippedFullSupplyProducts = getSkippedFullSupplyProducts;
         Requisition.prototype.addLineItem = addLineItem;
         Requisition.prototype.addLineItems = addLineItems;
+        // SIGLUS-REFACTOR: starts here
+        Requisition.prototype.addLineItemWithLineItem = addLineItemWithLineItem;
+        // SIGLUS-REFACTOR: ends here
         Requisition.prototype.deleteLineItem = deleteLineItem;
         Requisition.prototype.unskipFullSupplyProducts = unskipFullSupplyProducts;
 
@@ -138,7 +147,9 @@
         function Requisition(source, statusMessages) {
             var requisition = this;
 
-            angular.copy(source, this);
+            // SIGLUS-REFACTOR: starts here
+            Object.assign(this, source);
+            // SIGLUS-REFACTOR: ends here
 
             this.template = new RequisitionTemplate(this.template, this);
             this.$statusMessages = $filter('orderBy')(statusMessages, '-createdDate');
@@ -476,6 +487,10 @@
         }
 
         // SIGLUS-REFACTOR: starts here
+        function hasCreateRight(requisition) {
+            return hasRight(REQUISITION_RIGHTS.REQUISITION_CREATE, requisition);
+        }
+
         function hasAuthorizeRight(requisition) {
             return hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, requisition);
         }
@@ -565,7 +580,7 @@
          */
         function addLineItem(orderable, requestedQuantity, requestedQuantityExplanation) {
             // SIGLUS-REFACTOR: starts here
-            var orderableProgram = getOrderableProgramByParentId(orderable.programs, this.program.id);
+            var orderableProgram = getOrderableProgramByParentId(orderable.programs, this.program);
             // SIGLUS-REFACTOR: ends here
 
             this.requisitionLineItems.push(new LineItem({
@@ -576,6 +591,20 @@
                 $deletable: true
             }, this));
         }
+
+        // SIGLUS-REFACTOR: add new method addLineItemWithLineItem
+        function addLineItemWithLineItem(lineItem, requestedQuantity, requestedQuantityExplanation) {
+            var orderableProgram = getOrderableProgramByParentId(lineItem.orderable.programs, this.program);
+            var newLineItem = new LineItem(_.extend(lineItem, {
+                requestedQuantity: requestedQuantity,
+                requestedQuantityExplanation: requestedQuantityExplanation,
+                pricePerPack: orderableProgram.pricePerPack,
+                $deletable: true
+            }), this);
+            this.requisitionLineItems.push(newLineItem);
+            return newLineItem;
+        }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -700,9 +729,14 @@
         //     })[0];
         // }
 
-        function getOrderableProgramByParentId(programs, programId) {
+        function getOrderableProgramByParentId(programs, requisitionProgram) {
             return programs.filter(function(program) {
-                return program.parentId === programId;
+                //handle special program malaria
+                if (program.programId === requisitionProgram.id
+                    && requisitionProgram.id === 'dfbbd880-cfd2-11e9-9535-0242ac130005') {
+                    return true;
+                }
+                return program.parentId === requisitionProgram.id;
             })[0];
         }
         // SIGLUS-REFACTOR: ends here
@@ -757,7 +791,9 @@
             if (shouldSave) {
                 requisition.$modified = false;
                 requisition.$availableOffline = true;
-                offlineRequisitions.put(requisition);
+                // SIGLUS-REFACTOR: starts here
+                requisitionCacheService.cacheRequisition(requisition);
+                // SIGLUS-REFACTOR: ends here
             }
         }
 
@@ -791,7 +827,10 @@
                 delete lineItem.$errors;
 
                 lineItem.orderable = {
-                    id: lineItem.orderable.id
+                    id: lineItem.orderable.id,
+                    // SIGLUS-REFACTOR: starts here
+                    versionNumber: lineItem.orderable.meta.versionNumber
+                    // SIGLUS-REFACTOR: ends here
                 };
             });
 
@@ -812,6 +851,9 @@
 
             delete requestBody.availableNonFullSupplyProducts;
             delete requestBody.availableFullSupplyProducts;
+            // SIGLUS-REFACTOR: starts here
+            delete requestBody.availableProducts;
+            // SIGLUS-REFACTOR: ends here
             delete requestBody.stockAdjustmentReasons;
             delete requestBody.template;
 

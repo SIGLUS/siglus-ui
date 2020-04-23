@@ -65,8 +65,9 @@
             validateStatusForManipulatingLineItems(this.status);
             validateOrderableDoesNotHaveLineItem(this.requisitionLineItems, orderable);
             validateOrderableIsAvailable(this, orderable);
-            validateNotAddingFullSupplyLineItemToRegularRequisition(this, orderable);
-
+            // SIGLUS-REFACTOR: starts here
+            // validateNotAddingFullSupplyLineItemToRegularRequisition(this, orderable);
+            // SIGLUS-REFACTOR: ends here
             return originalAddLineItem.apply(this, arguments);
         }
 
@@ -113,7 +114,7 @@
 
         function validateOrderableIsAvailable(requisition, orderable) {
             // SIGLUS-REFACTOR: starts here
-            var program = getOrderableProgramByParentId(orderable.programs, requisition.program.id);
+            var program = getOrderableProgramByParentId(orderable.programs, requisition.program);
             // SIGLUS-REFACTOR: ends here
 
             if (!program) {
@@ -136,15 +137,15 @@
             }
         }
 
-        function validateNotAddingFullSupplyLineItemToRegularRequisition(requisition, orderable) {
-            // SIGLUS-REFACTOR: starts here
-            var program = getOrderableProgramByParentId(orderable.programs, requisition.program.id);
-            // SIGLUS-REFACTOR: ends here
-
-            if (program.fullSupply && !requisition.emergency) {
-                throw 'Can not add full supply line items to regular requisition';
-            }
-        }
+        // SIGLUS-REFACTOR: starts here
+        // function validateNotAddingFullSupplyLineItemToRegularRequisition(requisition, orderable) {
+        //     var program = getOrderableProgramByParentId(orderable.programs, requisition.program.id);
+        //
+        //     if (program.fullSupply && !requisition.emergency) {
+        //         throw 'Can not add full supply line items to regular requisition';
+        //     }
+        // }
+        // SIGLUS-REFACTOR: ends here
 
         function validateLineItemIsPartOfRequisition(requisition, lineItem) {
             var lineItemIndex = requisition.requisitionLineItems.indexOf(lineItem);
@@ -166,9 +167,12 @@
         //     })[0];
         // }
 
-        function getOrderableProgramByParentId(programs, programId) {
+        function getOrderableProgramByParentId(programs, requisitionProgram) {
             return programs.filter(function(program) {
-                return program.parentId === programId;
+                if (program.programId === requisitionProgram.id && requisitionProgram.code === 'ML') {
+                    return true;
+                }
+                return program.parentId === requisitionProgram.id;
             })[0];
         }
         // SIGLUS-REFACTOR: ends here
