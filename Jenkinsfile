@@ -10,17 +10,21 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                fetch_setting_env()
-                sh '''
-                    if [ "$GIT_BRANCH" != "master" ]; then
-                        sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
-                    fi
-                    docker-compose pull
-                    docker-compose down --volumes
-                    docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
-                    docker-compose build image
-                    docker-compose down --volumes
-                '''
+                withCredentials([file(credentialsId: 'setting_env', variable: 'ENV_FILE')]) {
+                    sh '''
+                        rm -f .env
+                        cp $ENV_FILE .env
+                        if [ "$GIT_BRANCH" != "master" ]; then
+                            sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
+                        fi
+                        docker-compose pull
+                        docker-compose down --volumes
+                        docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
+                        docker-compose build image
+                        docker-compose down --volumes
+                        rm -rf node_modules build .tmp yarn.lock
+                    '''
+                }
             }
         }
         stage('Push image') {
@@ -53,14 +57,5 @@ pipeline {
                 build job: '../siglus-reference-ui/release-*', wait: false
             }
         }
-    }
-}
-
-def fetch_setting_env() {
-    withCredentials([file(credentialsId: 'setting_env', variable: 'SETTING_ENV')]) {
-        sh '''
-            rm -f .env
-            cp $SETTING_ENV .env
-        '''
     }
 }
