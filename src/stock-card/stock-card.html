@@ -1,0 +1,94 @@
+<header>
+    <h2>
+        <!-- SIGLUS-REFACTOR: starts here -->
+        {{'stockCard.binCardName' | message: {'name': vm.binCardName} }}
+    </h2>
+
+    <!--<button class="primary" ng-click="vm.print()">{{'stockCard.print' | message}}</button>-->
+    <!-- SIGLUS-REFACTOR: ends here -->
+</header>
+
+<aside class="stock-card-info">
+    <div class="product-name-header">
+        <span>{{vm.stockCard.orderable | productName}}</span>
+    </div>
+
+    <ul>
+        <li>
+            <strong>{{'stockCard.productCode'|message}}</strong>
+            {{vm.stockCard.orderable.productCode}}
+        </li>
+        <li>
+            <strong>{{'stockCard.facilityName' | message}}</strong>
+            {{vm.stockCard.facility.name}}
+        </li>
+        <li>
+            <strong>{{'stockCard.program' | message}}</strong>
+            {{vm.stockCard.program.name}}
+        </li>
+        <li align="right">
+            <strong>{{'stockCard.soh' | message}}</strong>
+            {{vm.stockCard.stockOnHand}}
+        </li>
+        <li ng-if="vm.stockCard.lot">
+            <strong>{{'stockCard.lot' | message}}</strong>
+            {{vm.stockCard.lot.lotCode}}
+        </li>
+        <li ng-if="vm.stockCard.lot">
+            <strong>{{'stockCard.expiryDate' | message}}</strong>
+            {{vm.stockCard.lot.expirationDate | openlmisDate}}
+        </li>
+    </ul>
+</aside>
+
+<section class="openlmis-table-container">
+
+    <table>
+        <thead>
+        <tr>
+            <th>{{'stockCard.date' | message}}</th>
+            <th>{{'stockCard.from' | message}}</th>
+            <th>{{'stockCard.to' | message}}</th>
+            <th>{{'stockCard.reason' | message}}</th>
+            <th>{{'stockCard.adjustment' | message}}</th>
+            <th>{{'stockCard.soh' | message}}</th>
+            <!-- SIGLUS-REFACTOR: starts here -->
+            <th>{{'stockCard.documentNumber' | message}}</th>
+            <!-- SIGLUS-REFACTOR: ends here -->
+            <th>{{'stockCard.signature' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <tr ng-repeat="lineItem in vm.displayedLineItems track by $index">
+            <!-- SIGLUS-REFACTOR: ends here -->
+            <td>{{lineItem.occurredDate | openlmisDate}}</td>
+            <td>
+                {{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
+                message: {name:lineItem.source.name, freeText: lineItem.sourceFreeText}) : lineItem.source.name}}
+            </td>
+            <td>
+                {{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
+                message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}
+            </td>
+            <td>
+                {{ vm.getReason(lineItem) }}
+            </td>
+            <td align="right">{{lineItem.quantity}}</td>
+            <td align="right">{{lineItem.stockOnHand}}</td>
+            <!-- SIGLUS-REFACTOR: starts here -->
+            <td>{{lineItem.documentNumber}}</td>
+            <!-- SIGLUS-REFACTOR: ends here -->
+            <td>{{lineItem.signature}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <openlmis-pagination
+            list="vm.stockCard.lineItems"
+            paged-list="vm.displayedLineItems"
+    <!-- SIGLUS-REFACTOR: starts here -->
+            pagination-id="vm.paginationId">
+    <!-- SIGLUS-REFACTOR: ends here -->
+    </openlmis-pagination>
+</section>
