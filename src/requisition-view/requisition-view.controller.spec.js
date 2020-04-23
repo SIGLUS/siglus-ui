@@ -24,12 +24,18 @@ describe('RequisitionViewController', function() {
                 return context.RequisitionStockCountDateModalMock;
             });
         });
+        module('referencedata-facility-type-approved-product');
+        module('referencedata-facility');
+        module('referencedata-program');
+        module('referencedata-period');
 
         var RequisitionDataBuilder, RequisitionLineItemDataBuilder, ProgramDataBuilder;
         inject(function($injector) {
             RequisitionDataBuilder = $injector.get('RequisitionDataBuilder');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             RequisitionLineItemDataBuilder = $injector.get('RequisitionLineItemDataBuilder');
+            this.FacilityDataBuilder = $injector.get('FacilityDataBuilder');
+            this.PeriodDataBuilder = $injector.get('PeriodDataBuilder');
 
             this.$rootScope = $injector.get('$rootScope');
             this.$scope = this.$rootScope.$new();
@@ -54,20 +60,25 @@ describe('RequisitionViewController', function() {
             this.accessTokenFactory = $injector.get('accessTokenFactory');
             this.requisitionService = $injector.get('requisitionService');
             this.offlineService = $injector.get('offlineService');
+            this.facilityService = $injector.get('facilityService');
+            this.programService = $injector.get('programService');
+            this.periodService = $injector.get('periodService');
         });
 
-        var program = new ProgramDataBuilder()
+        this.program = new ProgramDataBuilder()
             .withEnabledDatePhysicalStockCountCompleted()
             .build();
+        this.facility = new this.FacilityDataBuilder().build();
+        this.period = new this.PeriodDataBuilder().build();
 
         this.requisition = new RequisitionDataBuilder()
-            .withProgram(program)
+            .withProgram(this.program)
             .withRequisitionLineItems([
                 new RequisitionLineItemDataBuilder()
-                    .fullSupplyForProgram(program)
+                    .fullSupplyForProgram(this.program)
                     .buildJson(),
                 new RequisitionLineItemDataBuilder()
-                    .nonFullSupplyForProgram(program)
+                    .nonFullSupplyForProgram(this.program)
                     .buildJson()
             ])
             .build();
@@ -90,6 +101,10 @@ describe('RequisitionViewController', function() {
 
         this.canSubmit = true;
         this.canAuthorize = false;
+        // SIGLUS-REFACTOR: starts here
+        this.hasAuthorizeRight = true;
+        this.canSubmitAndAuthorize = false;
+        // SIGLUS-REFACTOR: ends here
         this.canApproveAndReject = false;
         this.canDelete = true;
         this.canSkip = true;
@@ -116,16 +131,24 @@ describe('RequisitionViewController', function() {
         spyOn(this.accessTokenFactory, 'addAccessToken');
         spyOn(this.offlineService, 'isOffline');
         spyOn(this.requisitionService, 'removeOfflineRequisition');
+        spyOn(this.programService, 'getUserPrograms').andReturn(this.$q.resolve(this.program));
+        spyOn(this.facilityService, 'get').andReturn(this.$q.resolve(this.facility));
+        spyOn(this.periodService, 'get').andReturn(this.$q.resolve(this.period));
+        // SIGLUS-REFACTOR: ends here
 
         this.initController = initController;
     });
 
     describe('$onInit', function() {
 
-        it('should display submit button when user can submit requisition and skip authorization is not configured',
+        // SIGLUS-REFACTOR: starts here
+        it('should display submit button when user can submit requisition and has authorization is not configured',
+        // SIGLUS-REFACTOR: ends here
             function() {
                 this.canSubmit = true;
-                this.requisition.program.skipAuthorization = false;
+                // SIGLUS-REFACTOR: starts here
+                this.hasAuthorizeRight = false;
+                // SIGLUS-REFACTOR: ends here
 
                 this.initController();
 
@@ -133,10 +156,14 @@ describe('RequisitionViewController', function() {
                 expect(this.vm.displaySubmitAndAuthorizeButton).toBe(false);
             });
 
-        it('should display submit and authorize button when user can submit requisition and skip authorization is' +
+        // SIGLUS-REFACTOR: starts here
+        it('should display submit and authorize button when user can submit requisition and has authorization is' +
+        // SIGLUS-REFACTOR: ends here
             ' configured', function() {
             this.canSubmit = true;
-            this.requisition.program.skipAuthorization = true;
+            // SIGLUS-REFACTOR: starts here
+            this.canSubmitAndAuthorize = true;
+            // SIGLUS-REFACTOR: ends here
 
             this.initController();
 
@@ -401,6 +428,14 @@ describe('RequisitionViewController', function() {
 
         beforeEach(function() {
             this.confirmService.confirm.andReturn(this.$q.resolve(true));
+            // SIGLUS-REFACTOR: different data structure
+            this.signatureModalService.confirm.andReturn(this.$q.resolve(true));
+            this.requisition.extraData = {
+                signaure: {
+                    authorize: undefined
+                }
+            };
+            // SIGLUS-REFACTOR: ends here
             this.requisition.$save.andReturn(this.$q.resolve(true));
             this.requisition.$authorize.andReturn(this.$q.resolve(true));
 
@@ -446,7 +481,7 @@ describe('RequisitionViewController', function() {
         });
 
         it('should not call RequisitionStockCountDateModal if disabled', function() {
-            this.vm.requisition.program.enableDatePhysicalStockCountCompleted = false;
+            this.vm.program.enableDatePhysicalStockCountCompleted = false;
 
             this.vm.authorizeRnr();
             this.$rootScope.$apply();
@@ -496,7 +531,9 @@ describe('RequisitionViewController', function() {
         });
 
         it('should not call RequisitionStockCountDateModal if disabled', function() {
-            this.vm.requisition.program.enableDatePhysicalStockCountCompleted = false;
+            // SIGLUS-REFACTOR: starts here
+            this.vm.program.enableDatePhysicalStockCountCompleted = false;
+            // SIGLUS-REFACTOR: ends here
 
             this.vm.submitRnr();
             this.$rootScope.$apply();
@@ -694,6 +731,20 @@ describe('RequisitionViewController', function() {
 
             expect(this.loadingModalService.open.callCount).toEqual(1);
         });
+
+        it('should reload state with proper parameters', function() {
+            this.requisition.$save.andReturn(this.$q.resolve(true));
+
+            this.vm.syncRnrAndPrint();
+            this.$rootScope.$apply();
+
+            expect(this.$state.go).toHaveBeenCalledWith(this.$state.current, {
+                rnr: this.vm.requisition.id,
+                requisition: undefined
+            }, {
+                reload: true
+            });
+        });
     });
 
     describe('updateRequisition', function() {
@@ -749,9 +800,16 @@ describe('RequisitionViewController', function() {
     function initController() {
         this.vm = this.$controller('RequisitionViewController', {
             $scope: this.$scope,
+            program: this.program,
+            facility: this.facility,
+            processingPeriod: this.period,
             requisition: this.requisition,
             canSubmit: this.canSubmit,
             canAuthorize: this.canAuthorize,
+            // SIGLUS-REFACTOR: starts here
+            hasAuthorizeRight: this.hasAuthorizeRight,
+            canSubmitAndAuthorize: this.canSubmitAndAuthorize,
+            // SIGLUS-REFACTOR: ends here
             canApproveAndReject: this.canApproveAndReject,
             canDelete: this.canDelete,
             canSkip: this.canSkip,

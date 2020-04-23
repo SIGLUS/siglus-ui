@@ -32,9 +32,11 @@
         '$state', 'requisition', 'requisitionValidator', 'requisitionService', 'loadingModalService', 'alertService',
         'notificationService', 'confirmService', 'offlineService', '$window', 'requisitionUrlFactory', '$filter',
         '$scope', 'RequisitionWatcher', 'accessTokenFactory', 'messageService', 'stateTrackerService',
-        'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize', 'canApproveAndReject',
-        // SIGLUS-REFACTOR: add signatureModalService
-        'canDelete', 'canSkip', 'canSync', 'signatureModalService'
+        'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize',
+        'canApproveAndReject', 'canDelete', 'canSkip', 'canSync',
+        // SIGLUS-REFACTOR: starts here
+        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'program', 'facility',
+        'processingPeriod', 'signatureModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -42,11 +44,20 @@
                                        loadingModalService, alertService, notificationService, confirmService,
                                        offlineService, $window, requisitionUrlFactory, $filter, $scope,
                                        RequisitionWatcher, accessTokenFactory, messageService, stateTrackerService,
-                                       RequisitionStockCountDateModal, localStorageFactory, canSubmit, canAuthorize,
-                                       canApproveAndReject, canDelete, canSkip, canSync, signatureModalService) {
-
+                                       RequisitionStockCountDateModal, localStorageFactory, canSubmit,
+                                       canAuthorize, canApproveAndReject, canDelete, canSkip, canSync,
+                                       // SIGLUS-REFACTOR: starts here
+                                       /* eslint-disable */
+                                       hasAuthorizeRight, canSubmitAndAuthorize, program, facility,
+                                       processingPeriod, signatureModalService
+                                       // SIGLUS-REFACTOR: ends here
+    ) {
+        // SIGLUS-REFACTOR: starts here
+        var storage = localStorageFactory('requisitions');
+        storage.put(requisition);
         var vm = this,
-            watcher = new RequisitionWatcher($scope, requisition, localStorageFactory('requisitions'));
+            watcher = new RequisitionWatcher($scope, requisition, storage);
+        // SIGLUS-REFACTOR: ends here
         /**
          * @ngdoc property
          * @propertyOf requisition-view.controller:RequisitionViewController
@@ -57,6 +68,41 @@
          * Holds requisition.
          */
         vm.requisition = requisition;
+
+        // SIGLUS-REFACTOR: starts here
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-view.controller:RequisitionViewController
+         * @name program
+         * @type {Object}
+         *
+         * @description
+         * Holds requisition program.
+         */
+        vm.program = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-view.controller:RequisitionViewController
+         * @name facility
+         * @type {Object}
+         *
+         * @description
+         * Holds requisition facility.
+         */
+        vm.facility = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-view.controller:RequisitionViewController
+         * @name processingPeriod
+         * @type {Object}
+         *
+         * @description
+         * Holds requisition processing period.
+         */
+        vm.processingPeriod = undefined;
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -186,6 +232,9 @@
         vm.syncRnrAndPrint = syncRnrAndPrint;
         vm.submitRnr = submitRnr;
         vm.authorizeRnr = authorizeRnr;
+        // SIGLUS-REFACTOR: starts here
+        vm.submitAndAuthorizeRnr = submitAndAuthorizeRnr;
+        // SIGLUS-REFACTOR: ends here
         vm.removeRnr = removeRnr;
         vm.approveRnr = approveRnr;
         vm.rejectRnr = rejectRnr;
@@ -203,28 +252,21 @@
          * @description
          * Initialization method of the RequisitionViewController.
          */
+        // SIGLUS-REFACTOR: starts here
         function onInit() {
             setTypeAndClass();
-            vm.displaySubmitButton = canSubmit && !vm.requisition.program.skipAuthorization;
-            vm.displaySubmitAndAuthorizeButton = canSubmit && vm.requisition.program.skipAuthorization;
+            vm.program = program;
+            vm.facility = facility;
+            vm.processingPeriod = processingPeriod;
+            vm.displaySubmitButton = canSubmit && !hasAuthorizeRight;
+            vm.displaySubmitAndAuthorizeButton = canSubmitAndAuthorize;
             vm.displayAuthorizeButton = canAuthorize;
             vm.displayDeleteButton = canDelete;
             vm.displayApproveAndRejectButtons = canApproveAndReject;
-            vm.displayRejectButton = canApproveAndReject && !vm.requisition.extraData.originalRequisition;
+            vm.displayRejectButton = canApproveAndReject && !(vm.requisition.extraData &&
+                vm.requisition.extraData.originalRequisition);
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
-            // SIGLUS-REFACTOR: init kit usage
-            initKitUsage();
-        }
-
-        function initKitUsage() {
-            var receviedKitCount = 0;
-            angular.forEach(vm.requisition.requisitionLineItems, function(liteItem) {
-                if (liteItem.orderable.isKit) {
-                    receviedKitCount += liteItem.totalReceivedQuantity;
-                }
-            });
-            vm.requisition.extraData.receivedKitByHF = receviedKitCount;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -285,12 +327,9 @@
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
-                $state.go($state.current, {
-                    rnr: vm.requisition.id,
-                    requisition: undefined
-                }, {
-                    reload: true
-                });
+                // SIGLUS-REFACTOR: extract method
+                reloadAfterSync();
+                // SIGLUS-REFACTOR: ends here
             }, function(response) {
                 handleSaveError(response.status);
             });
@@ -319,7 +358,9 @@
                         notificationService.success('requisitionView.sync.success');
                     });
                     popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    reloadState();
+                    // SIGLUS-REFACTOR: starts here
+                    reloadAfterSync();
+                    // SIGLUS-REFACTOR: ends here
                 }, function(response) {
                     handleSaveError(response.status);
                     popup.close();
@@ -349,12 +390,13 @@
             // SIGLUS-REFACTOR: starts here
             if (requisitionValidator.validateRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function(signature) {
-                    vm.requisition.extraData.signaure = {
-                        submit: signature
-                    };
+                    if (!vm.requisition.extraData.signaure) {
+                        vm.requisition.extraData.signaure = {};
+                    }
+                    vm.requisition.extraData.signaure.submit = signature;
                     if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
                         failWithMessage('requisitionView.allLineItemsSkipped')();
-                    } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                    } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                         var modal = new RequisitionStockCountDateModal(vm.requisition);
                         modal.then(saveThenSubmit);
                     } else {
@@ -396,19 +438,28 @@
          * Otherwise, a success notification modal will be shown.
          */
         function authorizeRnr() {
+            console.log(1, "Hello, world!");
             confirmService.confirm(
                 'requisitionView.authorize.confirm',
                 'requisitionView.authorize.label'
             ).then(function() {
+                // SIGLUS-REFACTOR: starts here
+                console.log("Hello, world!");
                 if (requisitionValidator.validateRequisition(requisition)) {
-                    if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
-                        failWithMessage('requisitionView.allLineItemsSkipped')();
-                    } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
-                        var modal = new RequisitionStockCountDateModal(vm.requisition);
-                        modal.then(saveThenAuthorize);
-                    } else {
-                        saveThenAuthorize();
-                    }
+                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                        .then(function(signature) {
+                            vm.requisition.extraData.signaure.authorize = signature;
+                            if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                                failWithMessage('requisitionView.allLineItemsSkipped')();
+                            } else if (vm.program.enableDatePhysicalStockCountCompleted) {
+                                var modal = new RequisitionStockCountDateModal(vm.requisition);
+                                modal.then(saveThenAuthorize);
+                            } else {
+                                console.log("I'm here!");
+                                saveThenAuthorize();
+                            }
+                        });
+                // SIGLUS-REFACTOR: ends here
                 } else {
                     $scope.$broadcast('openlmis-form-submit');
                     failWithMessage('requisitionView.rnrHasErrors')();
@@ -430,6 +481,52 @@
                 });
             }
         }
+
+        // SIGLUS-REFACTOR: starts here
+        function submitAndAuthorizeRnr() {
+            if (requisitionValidator.validateRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                    .then(function(signature) {
+                        if (!vm.requisition.extraData.signaure) {
+                            vm.requisition.extraData.signaure = {
+                                submit: signature
+                            };
+                        }
+                        vm.requisition.extraData.signaure.authorize = signature;
+                        if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                            failWithMessage('requisitionView.allLineItemsSkipped')();
+                        } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenSubmitThenAuthorize);
+                        } else {
+                            saveThenSubmitThenAuthorize();
+                        }
+                    });
+            } else {
+                $scope.$broadcast('openlmis-form-submit');
+                failWithMessage('requisitionView.rnrHasErrors')();
+            }
+
+            function saveThenSubmitThenAuthorize() {
+                var loadingPromise = loadingModalService.open();
+                vm.requisition.$save().then(function() {
+                    vm.requisition.$submit().then(function() {
+                        vm.requisition.$authorize().then(function() {
+                            watcher.disableWatcher();
+                            loadingPromise.then(function() {
+                                notificationService.success('requisitionView.authorize.success');
+                            });
+                            stateTrackerService.goToPreviousState('openlmis.requisitions.initRnr');
+                        }, loadingModalService.close);
+                    }, loadingModalService.close);
+
+                }, function(response) {
+                    loadingModalService.close();
+                    handleSaveError(response.status);
+                });
+            }
+        }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -626,6 +723,17 @@
         function reloadState() {
             $state.reload();
         }
+
+        // SIGLUS-REFACTOR: starts here
+        function reloadAfterSync() {
+            $state.go($state.current, {
+                rnr: vm.requisition.id,
+                requisition: undefined
+            }, {
+                reload: true
+            });
+        }
+        // SIGLUS-REFACTOR: ends here
 
         function failWithMessage(message) {
             return function() {

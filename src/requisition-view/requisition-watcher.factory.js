@@ -29,9 +29,13 @@
         .module('requisition-view')
         .factory('RequisitionWatcher', factory);
 
+    // SIGLUS-REFACTOR: starts here
     factory.$inject = ['$timeout', 'requisitionCacheService'];
+    // SIGLUS-REFACTOR: ends here
 
+    // SIGLUS-REFACTOR: starts here
     function factory($timeout, requisitionCacheService) {
+    // SIGLUS-REFACTOR: ends here
 
         RequisitionWatcher.prototype.disableWatcher = disableWatcher;
         RequisitionWatcher.prototype.enableWatcher = enableWatcher;
@@ -57,6 +61,12 @@
             addWatcher(scope, requisition, 'draftStatusMessage', this, storage);
             // SIGLUS-REFACTOR: starts here
             addWatcher(scope, requisition, 'extraData', this, storage);
+            addWatcher(scope, requisition, 'requisitionLineItems', this, storage);
+            addWatcher(scope, requisition, 'regimenLineItems', this, storage);
+            addWatcher(scope, requisition, 'regimenDispatchLineItems', this, storage);
+            addWatcher(scope, requisition, 'patientLineItems', this, storage);
+            addWatcher(scope, requisition, 'alLineItems', this, storage);
+            addWatcher(scope, requisition, 'serviceLineItems', this, storage);
             // SIGLUS-REFACTOR: ends here
         }
 
@@ -76,7 +86,9 @@
                     $timeout.cancel(watcher.syncTimeout);
                     watcher.syncTimeout = $timeout(function() {
                         requisition.$modified = true;
+                        // SIGLUS-REFACTOR: starts here
                         requisitionCacheService.cacheRequisitionToStorage(requisition, storage);
+                        // SIGLUS-REFACTOR: ends here
                         watcher.syncTimeout = undefined;
                     }, 500);
                 }
