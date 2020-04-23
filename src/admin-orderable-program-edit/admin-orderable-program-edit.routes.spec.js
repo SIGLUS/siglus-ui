@@ -25,9 +25,9 @@ describe('openlmis.administration.orderables.edit.programs.edit route', function
             this.$rootScope = $injector.get('$rootScope');
             this.OrderableResource = $injector.get('OrderableResource');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
-            <!-- SIGLUS-REFACTOR: starts here -->
+            // SIGLUS-REFACTOR: starts here
             this.programService = $injector.get('programService');
-            <!-- SIGLUS-REFACTOR: ends here -->
+            // SIGLUS-REFACTOR: ends here
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.ProgramOrderableDataBuilder = $injector.get('ProgramOrderableDataBuilder');
             this.OrderableDisplayCategoryResource = $injector.get('OrderableDisplayCategoryResource');
@@ -71,9 +71,9 @@ describe('openlmis.administration.orderables.edit.programs.edit route', function
         spyOn(this.OrderableDisplayCategoryResource.prototype, 'query')
             .andReturn(this.$q.resolve(this.orderableDisplayCategories));
         spyOn(this.OrderableResource.prototype, 'query').andReturn(this.$q.resolve(this.orderablesPage));
-        <!-- SIGLUS-REFACTOR: starts here -->
+        // SIGLUS-REFACTOR: starts here
         spyOn(this.programService, 'getRealPrograms').andReturn(this.$q.resolve(this.programs));
-        <!-- SIGLUS-REFACTOR: ends here -->
+        // SIGLUS-REFACTOR: ends here
 
         this.goToState = function() {
             this.$location.url('/administration/orderables/' + this.orderable.id + '/programs'
