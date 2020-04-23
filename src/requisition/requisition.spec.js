@@ -1153,52 +1153,67 @@ describe('Requisition', function() {
                 requisition.addLineItem(orderable, 10, 'explanation');
             }).toThrow('The given product is not available for this requisition');
         });
-        // comment for program match strategy change
-        // it('should add new available full supply line item to emergency requisition', function() {
-        //     this.requisition = new this.RequisitionDataBuilder().buildEmergency();
-        //     this.requisition.availableFullSupplyProducts = [
-        //         this.requisition.availableProducts[0]
-        //     ];
-        //
-        //     var orderable = this.requisition.availableFullSupplyProducts[0];
-        //
-        //     this.requisition.addLineItem(orderable, 16, 'explanation');
-        //
-        //     expect(this.requisition.requisitionLineItems.length).toBe(3);
-        //     expect(this.requisition.requisitionLineItems[2].orderable).toEqual(orderable);
-        //     expect(this.requisition.requisitionLineItems[2].requestedQuantity).toEqual(16);
-        //     expect(this.requisition.requisitionLineItems[2].requestedQuantityExplanation)
-        //         .toEqual('explanation');
-        // });
-        //
-        // it('should add new available non full supply line item', function() {
-        //     this.requisition = new this.RequisitionDataBuilder().build();
-        //     this.requisition.availableNonFullSupplyProducts = [
-        //         this.requisition.availableProducts[3]
-        //     ];
-        //
-        //     var orderable = this.requisition.availableNonFullSupplyProducts[0];
-        //
-        //     this.requisition.addLineItem(orderable, 16, 'explanation');
-        //
-        //     expect(this.requisition.requisitionLineItems.length).toBe(3);
-        //     expect(this.requisition.requisitionLineItems[2].orderable).toEqual(orderable);
-        //     expect(this.requisition.requisitionLineItems[2].requestedQuantity).toEqual(16);
-        //     expect(this.requisition.requisitionLineItems[2].requestedQuantityExplanation)
-        //         .toEqual('explanation');
-        // });
-        //
-        // it('should add instance of the LineItem class', function() {
-        //     this.requisition = new this.RequisitionDataBuilder().buildSubmitted();
-        //     this.requisition.availableNonFullSupplyProducts = [
-        //         this.requisition.availableProducts[3]
-        //     ];
-        //     var orderable = this.requisition.availableNonFullSupplyProducts[0];
-        //
-        //     this.requisition.addLineItem(orderable, 16, 'explanation');
-        //
-        //     expect(this.requisition.requisitionLineItems[2] instanceof this.LineItem).toBe(true);
-        // });
+
+        it('should add new available full supply line item to emergency requisition', function() {
+            this.requisition = new this.RequisitionDataBuilder().buildEmergency();
+            this.requisition.availableFullSupplyProducts = [
+                this.requisition.availableProducts[0]
+            ];
+
+            var orderable = this.requisition.availableFullSupplyProducts[0];
+            // SIGLUS-REFACTOR: starts here
+            orderable.programs.forEach(function(program) {
+                program.parentId = program.programId;
+            });
+            // SIGLUS-REFACTOR: ends here
+
+            this.requisition.addLineItem(orderable, 16, 'explanation');
+
+            expect(this.requisition.requisitionLineItems.length).toBe(3);
+            expect(this.requisition.requisitionLineItems[2].orderable).toEqual(orderable);
+            expect(this.requisition.requisitionLineItems[2].requestedQuantity).toEqual(16);
+            expect(this.requisition.requisitionLineItems[2].requestedQuantityExplanation)
+                .toEqual('explanation');
+        });
+
+        it('should add new available non full supply line item', function() {
+            this.requisition = new this.RequisitionDataBuilder().build();
+            this.requisition.availableNonFullSupplyProducts = [
+                this.requisition.availableProducts[3]
+            ];
+
+            var orderable = this.requisition.availableNonFullSupplyProducts[0];
+            // SIGLUS-REFACTOR: starts here
+            orderable.programs.forEach(function(program) {
+                program.parentId = program.programId;
+            });
+            // SIGLUS-REFACTOR: ends here
+
+            this.requisition.addLineItem(orderable, 16, 'explanation');
+
+            expect(this.requisition.requisitionLineItems.length).toBe(3);
+            expect(this.requisition.requisitionLineItems[2].orderable).toEqual(orderable);
+            expect(this.requisition.requisitionLineItems[2].requestedQuantity).toEqual(16);
+            expect(this.requisition.requisitionLineItems[2].requestedQuantityExplanation)
+                .toEqual('explanation');
+        });
+
+        it('should add instance of the LineItem class', function() {
+            this.requisition = new this.RequisitionDataBuilder().buildSubmitted();
+            this.requisition.availableNonFullSupplyProducts = [
+                this.requisition.availableProducts[3]
+            ];
+            var orderable = this.requisition.availableNonFullSupplyProducts[0];
+            // SIGLUS-REFACTOR: starts here
+            orderable.programs.forEach(function(program) {
+                program.parentId = program.programId;
+            });
+            // SIGLUS-REFACTOR: ends here
+
+            this.requisition.addLineItem(orderable, 16, 'explanation');
+
+            expect(this.requisition.requisitionLineItems[2] instanceof this.LineItem).toBe(true);
+        });
 
     });
 
