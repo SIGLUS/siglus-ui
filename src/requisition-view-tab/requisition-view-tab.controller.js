@@ -30,23 +30,24 @@
 
     ViewTabController.$inject = [
         '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
-        'lineItems', 'alertService', 'canSubmit', 'canAuthorize',
-        // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize',
-        // SIGLUS-REFACTOR: ends here
-        'fullSupply',
+        'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams',
         // SIGLUS-REFACTOR: starts here
-        'selectProductsModalEmergencyService', 'requisitionService', 'loadingModalService'
+        'canSubmitAndAuthorize', 'selectProductsModalEmergencyService', 'requisitionService', 'loadingModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function ViewTabController($filter, selectProductsModalService, requisitionValidator, requisition, columns,
-                               messageService, lineItems, alertService, canSubmit, canAuthorize, canSubmitAndAuthorize,
+                               messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
-                               paginationService, $stateParams, selectProductsModalEmergencyService,
-                               requisitionService, loadingModalService) {
+                               paginationService, $stateParams,
+                               // SIGLUS-REFACTOR: starts here
+                               /* eslint-disable */
+                               canSubmitAndAuthorize, selectProductsModalEmergencyService,
+                               requisitionService, loadingModalService
+                               // SIGLUS-REFACTOR: ends here
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -271,11 +272,9 @@
          * products to be added an alert will be shown.
          */
         function unskipFullSupplyProducts() {
-            // SIGLUS-REFACTOR: starts here
             selectProducts({
                 products: vm.requisition.getSkippedFullSupplyProducts()
             })
-            // SIGLUS-REFACTOR: ends here
                 .then(function(selectedProducts) {
                     vm.requisition.unskipFullSupplyProducts(selectedProducts);
                     refreshLineItems();
