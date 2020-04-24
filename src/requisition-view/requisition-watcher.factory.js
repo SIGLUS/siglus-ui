@@ -29,13 +29,9 @@
         .module('requisition-view')
         .factory('RequisitionWatcher', factory);
 
-    // SIGLUS-REFACTOR: starts here
     factory.$inject = ['$timeout', 'requisitionCacheService'];
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
     function factory($timeout, requisitionCacheService) {
-    // SIGLUS-REFACTOR: ends here
 
         RequisitionWatcher.prototype.disableWatcher = disableWatcher;
         RequisitionWatcher.prototype.enableWatcher = enableWatcher;
@@ -86,9 +82,7 @@
                     $timeout.cancel(watcher.syncTimeout);
                     watcher.syncTimeout = $timeout(function() {
                         requisition.$modified = true;
-                        // SIGLUS-REFACTOR: starts here
                         requisitionCacheService.cacheRequisitionToStorage(requisition, storage);
-                        // SIGLUS-REFACTOR: ends here
                         watcher.syncTimeout = undefined;
                     }, 500);
                 }
