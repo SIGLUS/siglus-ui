@@ -34,12 +34,19 @@
             BEGINNING_BALANCE: 'beginningBalance',
             REMARKS: 'remarks',
             REQUESTED_QUANTITY: 'requestedQuantity',
+            // SIGLUS-REFACTOR: starts here
+            QUANTITY_AUTHORIZED: 'authorizedQuantity',
+            QUANTITY_APPROVED: 'approvedQuantity',
+            // SIGLUS-REFACTOR: ends here
             REQUESTED_QUANTITY_EXPLANATION: 'requestedQuantityExplanation',
             STOCK_ON_HAND: 'stockOnHand',
             SKIPPED: 'skipped',
             TOTAL_RECEIVED_QUANTITY: 'totalReceivedQuantity',
             TOTAL_CONSUMED_QUANTITY: 'totalConsumedQuantity',
             TOTAL_LOSSES_AND_ADJUSTMENTS: 'totalLossesAndAdjustments',
+            // SIGLUS-REFACTOR: starts here
+            DIFFERENCE: 'difference',
+            // SIGLUS-REFACTOR: ends here
             TOTAL: 'total',
             PACKS_TO_SHIP: 'packsToShip',
             PRODUCT_CODE: 'orderable.productCode',
@@ -59,8 +66,6 @@
             // SIGLUS-REFACTOR: starts here
             THEORETICAL_QUANTITY_TO_REQUEST: 'theoreticalQuantityToRequest',
             THEORETICAL_STOCK_AT_END_OF_PERIOD: 'theoreticalStockAtEndofPeriod',
-            QUANTITY_AUTHORIZED: 'authorizedQuantity',
-            DIFFERENCE: 'difference',
             // SIGLUS-REFACTOR: ends here
             getStockBasedColumns: getStockBasedColumns
         };
