@@ -41,13 +41,8 @@
     function ViewTabController($filter, selectProductsModalService, requisitionValidator, requisition, columns,
                                messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
-                               paginationService, $stateParams,
-                               // SIGLUS-REFACTOR: starts here
-                               /* eslint-disable */
-                               canSubmitAndAuthorize, selectProductsModalEmergencyService,
-                               requisitionService, loadingModalService
-                               // SIGLUS-REFACTOR: ends here
-    ) {
+                               paginationService, $stateParams, canSubmitAndAuthorize,
+                               selectProductsModalEmergencyService, requisitionService, loadingModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -296,11 +291,11 @@
             });
         }
 
-        // SIGLUS-REFACTOR: starts here
         function addProducts(availableProducts) {
             selectProducts({
                 products: availableProducts
             })
+            // SIGLUS-REFACTOR: starts here
                 .then(function(selectedProducts) {
                     loadingModalService.open();
                     var ids = selectedProducts.map(function(product) {
@@ -325,14 +320,15 @@
                         });
                     })
                         .finally(function() {
+                        // SIGLUS-REFACTOR: ends here
                             refreshLineItems();
+                            // SIGLUS-REFACTOR: starts here
                             loadingModalService.close();
+                            // SIGLUS-REFACTOR: ends here
                         });
                 });
         }
-        // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
         function selectProducts(availableProducts) {
             refreshLineItems();
 
@@ -347,6 +343,7 @@
                 return $q.reject();
             }
 
+            // SIGLUS-REFACTOR: starts here
             var amountCanAdd = 10 - vm.requisition.requisitionLineItems.length;
 
             return vm.requisition.emergency ?
@@ -354,8 +351,8 @@
                 selectProductsModalService.show({
                     products: decoratedAvailableProducts
                 });
+            // SIGLUS-REFACTOR: ends here
         }
-        // SIGLUS-REFACTOR: ends here
 
         function refreshLineItems() {
             var filterObject = (fullSupply &&
