@@ -16,12 +16,9 @@
 describe('Requisition', function() {
 
     beforeEach(function() {
-        this.offlineRequisitions = jasmine.createSpyObj('offlineRequisitions', [
-            // SIGLUS-REFACTOR: starts here
-            // 'put',
-            // SIGLUS-REFACTOR: ends here
-            /* eslint-disable */
-            'remove', 'removeBy']);
+        // SIGLUS-REFACTOR: dont spy on put method
+        this.offlineRequisitions = jasmine.createSpyObj('offlineRequisitions', ['remove', 'removeBy']);
+        // SIGLUS-REFACTOR: ends here
 
         var context = this;
         module('requisition', function($provide) {

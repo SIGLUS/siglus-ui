@@ -38,10 +38,7 @@
 
     function service($q, $resource, requisitionUrlFactory, Requisition, dateUtils, localStorageFactory, offlineService,
                      $filter, requisitionCacheService,
-                     // SIGLUS-REFACTOR: starts here
-                     /* eslint-disable */
                      OrderableResource, FacilityTypeApprovedProductResource, periodService, TEMPLATE_COLUMNS) {
-                     // SIGLUS-REFACTOR: ends here
 
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
@@ -299,12 +296,12 @@
          */
         function convertToOrder(requisitions, key) {
             return resource.batchRelease({
-                    idempotencyKey: key
-                },
-                {
-                    createOrder: true,
-                    requisitions: requisitions
-                }).$promise
+                idempotencyKey: key
+            },
+            {
+                createOrder: true,
+                requisitions: requisitions
+            }).$promise
                 .then(function() {
                     requisitions.forEach(function(requisition) {
                         requisitionCacheService.removeById(requisition.requisition.id);
@@ -326,12 +323,12 @@
          */
         function releaseWithoutOrder(requisitions, key) {
             return resource.batchRelease({
-                    idempotencyKey: key
-                },
-                {
-                    createOrder: false,
-                    requisitions: requisitions
-                }).$promise
+                idempotencyKey: key
+            },
+            {
+                createOrder: false,
+                requisitions: requisitions
+            }).$promise
                 .then(function() {
                     requisitions.forEach(function(requisition) {
                         requisitionCacheService.removeById(requisition.requisition.id);

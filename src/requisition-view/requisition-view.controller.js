@@ -46,12 +46,8 @@
                                        RequisitionWatcher, accessTokenFactory, messageService, stateTrackerService,
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync,
-                                       // SIGLUS-REFACTOR: starts here
-                                       /* eslint-disable */
                                        hasAuthorizeRight, canSubmitAndAuthorize, program, facility,
-                                       processingPeriod, signatureModalService
-                                       // SIGLUS-REFACTOR: ends here
-    ) {
+                                       processingPeriod, signatureModalService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -438,13 +434,11 @@
          * Otherwise, a success notification modal will be shown.
          */
         function authorizeRnr() {
-            console.log(1, "Hello, world!");
             confirmService.confirm(
                 'requisitionView.authorize.confirm',
                 'requisitionView.authorize.label'
             ).then(function() {
                 // SIGLUS-REFACTOR: starts here
-                console.log("Hello, world!");
                 if (requisitionValidator.validateRequisition(requisition)) {
                     signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
                         .then(function(signature) {
@@ -455,7 +449,6 @@
                                 var modal = new RequisitionStockCountDateModal(vm.requisition);
                                 modal.then(saveThenAuthorize);
                             } else {
-                                console.log("I'm here!");
                                 saveThenAuthorize();
                             }
                         });
