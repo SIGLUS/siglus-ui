@@ -248,23 +248,25 @@
          * @description
          * Initialization method of the RequisitionViewController.
          */
-        // SIGLUS-REFACTOR: starts here
         function onInit() {
             setTypeAndClass();
             vm.program = program;
             vm.facility = facility;
             vm.processingPeriod = processingPeriod;
+            // SIGLUS-REFACTOR: starts here
             vm.displaySubmitButton = canSubmit && !hasAuthorizeRight;
             vm.displaySubmitAndAuthorizeButton = canSubmitAndAuthorize;
+            // SIGLUS-REFACTOR: ends here
             vm.displayAuthorizeButton = canAuthorize;
             vm.displayDeleteButton = canDelete;
             vm.displayApproveAndRejectButtons = canApproveAndReject;
+            // SIGLUS-REFACTOR: starts here
             vm.displayRejectButton = canApproveAndReject && !(vm.requisition.extraData &&
                 vm.requisition.extraData.originalRequisition);
+            // SIGLUS-REFACTOR: ends here
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
         }
-        // SIGLUS-REFACTOR: ends here
 
         function setTypeAndClass() {
             if (vm.requisition.emergency) {
@@ -323,9 +325,7 @@
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
-                // SIGLUS-REFACTOR: extract method
                 reloadAfterSync();
-                // SIGLUS-REFACTOR: ends here
             }, function(response) {
                 handleSaveError(response.status);
             });
@@ -354,9 +354,7 @@
                         notificationService.success('requisitionView.sync.success');
                     });
                     popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    // SIGLUS-REFACTOR: starts here
                     reloadAfterSync();
-                    // SIGLUS-REFACTOR: ends here
                 }, function(response) {
                     handleSaveError(response.status);
                     popup.close();
@@ -717,7 +715,6 @@
             $state.reload();
         }
 
-        // SIGLUS-REFACTOR: starts here
         function reloadAfterSync() {
             $state.go($state.current, {
                 rnr: vm.requisition.id,
@@ -726,7 +723,6 @@
                 reload: true
             });
         }
-        // SIGLUS-REFACTOR: ends here
 
         function failWithMessage(message) {
             return function() {

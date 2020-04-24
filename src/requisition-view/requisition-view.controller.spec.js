@@ -531,9 +531,7 @@ describe('RequisitionViewController', function() {
         });
 
         it('should not call RequisitionStockCountDateModal if disabled', function() {
-            // SIGLUS-REFACTOR: starts here
             this.vm.program.enableDatePhysicalStockCountCompleted = false;
-            // SIGLUS-REFACTOR: ends here
 
             this.vm.submitRnr();
             this.$rootScope.$apply();

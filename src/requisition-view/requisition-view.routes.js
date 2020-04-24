@@ -57,22 +57,6 @@
                     }
                     return requisitionService.get($stateParams.rnr);
                 },
-                canSubmit: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canSubmit(user.id, requisition);
-                },
-                canAuthorize: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canAuthorize(user.id, requisition);
-                },
-                canApproveAndReject: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canApproveAndReject(user, requisition);
-                },
-                canDelete: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canDelete(user.id, requisition);
-                },
-                canSync: function(canSubmit, canAuthorize, canApproveAndReject) {
-                    return canSubmit || canAuthorize || canApproveAndReject;
-                },
-                // SIGLUS-REFACTOR: starts here
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);
                 },
@@ -82,16 +66,34 @@
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
                 },
+                canSubmit: function(requisitionViewFactory, user, requisition) {
+                    return requisitionViewFactory.canSubmit(user.id, requisition);
+                },
+                // SIGLUS-REFACTOR: starts here
                 canSubmitAndAuthorize: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canSubmitAndAuthorize(user.id, requisition);
                 },
+                // SIGLUS-REFACTOR: ends here
+                canAuthorize: function(requisitionViewFactory, user, requisition) {
+                    return requisitionViewFactory.canAuthorize(user.id, requisition);
+                },
+                // SIGLUS-REFACTOR: starts here
                 hasAuthorizeRight: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.hasAuthorizeRight(user.id, requisition);
                 },
+                // SIGLUS-REFACTOR: ends here
+                canApproveAndReject: function(requisitionViewFactory, user, requisition) {
+                    return requisitionViewFactory.canApproveAndReject(user, requisition);
+                },
+                canDelete: function(requisitionViewFactory, user, requisition) {
+                    return requisitionViewFactory.canDelete(user.id, requisition);
+                },
                 canSkip: function(requisitionViewFactory, user, requisition, program) {
                     return requisitionViewFactory.canSkip(user.id, requisition, program);
+                },
+                canSync: function(canSubmit, canAuthorize, canApproveAndReject) {
+                    return canSubmit || canAuthorize || canApproveAndReject;
                 }
-                // SIGLUS-REFACTOR: ends here
             }
         });
 

@@ -6,33 +6,25 @@
     <ul>
         <!-- SIGLUS-REFACTOR: starts here -->
         <li class="max-facility-width">
+        <!-- SIGLUS-REFACTOR: ends here -->
             <strong>{{'requisitionView.facility'|message}}</strong>
             {{vm.facility.code}} - {{vm.facility.name}}
-        <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <li>
             <strong>{{'requisitionView.operatedBy' | message}}</strong>
-            <!-- SIGLUS-REFACTOR: starts here -->
             {{vm.facility.operator.name}}
-            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <li>
             <strong>{{'requisitionView.region' | message}}</strong>
-            <!-- SIGLUS-REFACTOR: starts here -->
             {{vm.facility.geographicZone.name}}
-            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <li ng-if="requisition.facility.geographicZone.parent.name">
             <strong>{{'requisitionView.province' | message}}</strong>
-            <!-- SIGLUS-REFACTOR: starts here -->
             {{vm.facility.geographicZone.parent.name}}
-            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <li>
             <strong>{{'requisitionView.reportingPeriod' | message}}</strong>
-            <!-- SIGLUS-REFACTOR: starts here -->
             {{vm.processingPeriod | period}}
-            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <li ng-if="vm.requisition.datePhysicalStockCountCompleted">
             <strong>{{'requisitionView.datePhysicalStockCountCompleted' | message}}</strong>

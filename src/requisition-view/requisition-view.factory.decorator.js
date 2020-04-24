@@ -40,7 +40,6 @@
         $delegate.hasSubmitRight = hasSubmitRight;
         $delegate.canSubmitAndAuthorize = canSubmitAndAuthorize;
         $delegate.hasAuthorizeRight = hasAuthorizeRight;
-        $delegate.canSkip = canSkip;
 
         return $delegate;
 
@@ -104,27 +103,6 @@
          */
         function hasAuthorizeRight(userId, requisition) {
             return hasRightForProgramAndFacility(userId, REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, requisition);
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-view.requisitionViewFactory
-         * @name canSkip
-         *
-         * @description
-         * Determines whether the user can skip requisition or not.
-         *
-         * @param  {String} userId id of user to check
-         * @param  {Object} requisition requisition to check
-         * @param  {Object} program
-         * @return {Boolean} can user skip this requisition
-         */
-        function canSkip(userId, requisition, program) {
-            if ((requisition.$isInitiated() || requisition.$isRejected()) &&
-                program.periodsSkippable && !requisition.emergency) {
-                return hasRightForProgramAndFacility(userId, REQUISITION_RIGHTS.REQUISITION_CREATE, requisition);
-            }
-            return $q.resolve(false);
         }
 
         function hasRightForProgramAndFacility(userId, rightName, requisition) {
