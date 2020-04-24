@@ -1,0 +1,17 @@
+.datepicker {
+  z-index: 1151 !important;
+  //  show date picker above modal
+}
+
+.modal .modal-header {
+  min-height: 30px;
+}
+
+.datepicker-model {
+  width: 400px!important;
+}
+
+.requisition-date-picker {
+  display: flex;
+  justify-content: center;
+}

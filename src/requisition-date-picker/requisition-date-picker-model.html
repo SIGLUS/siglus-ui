@@ -1,0 +1,30 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog datepicker-model">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    {{'requisitionDatePicker.chooseInventoryDate' | message}}
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <requisition-date-picker
+                        ng-model="vm.inventoryDate"
+                        start-date="vm.startDate"
+                        end-date="vm.endDate"
+                        dates-disabled="vm.datesDisabled"
+                </requisition-date-picker>
+            </div>
+
+            <div class="modal-footer">
+                <button ng-click="$hide()">{{'requisitionDatePicker.cancel' | message}}</button>
+                <button class="primary" ng-disabled="!vm.inventoryDate" ng-click="vm.submit()">{{'requisitionDatePicker.confirm' | message}}</button>
+            </div>
+
+        </div>
+    </div>
+</div>
