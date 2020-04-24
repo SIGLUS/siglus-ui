@@ -37,6 +37,9 @@ describe('RequisitionInitiateController', function() {
             // SIGLUS-REFACTOR: starts here
             this.confirmService = $injector.get('confirmService');
             this.requisitionInitiateService = $injector.get('requisitionInitiateService');
+            this.requisitionDatePickerService = $injector.get('requisitionDatePickerService');
+            this.dateUtils = $injector.get('dateUtils');
+            this.TEMPLATE_TYPE = $injector.get('TEMPLATE_TYPE');
             // SIGLUS-REFACTOR: ends here
 
             this.user = {
@@ -49,7 +52,12 @@ describe('RequisitionInitiateController', function() {
             ];
             this.facility = new FacilityDataBuilder().build();
             this.periods = [
-                new PeriodDataBuilder().build()
+                new PeriodDataBuilder()
+                    // SIGLUS-REFACTOR: starts here
+                    .withStartDate(this.dateUtils.toStringDate(new Date()))
+                    .withEndDate(this.dateUtils.toStringDate(new Date()))
+                    // SIGLUS-REFACTOR: ends here
+                    .build()
             ];
             this.$stateParams = {
                 facility: this.facility.id
@@ -78,7 +86,10 @@ describe('RequisitionInitiateController', function() {
             this.vm = $injector.get('$controller')('RequisitionInitiateController', {
                 periods: this.periods,
                 $stateParams: this.$stateParams,
-                canInitiateRnr: this.canInitiateRnr
+                canInitiateRnr: this.canInitiateRnr,
+                // SIGLUS-REFACTOR: starts here
+                inventoryDates: []
+                // SIGLUS-REFACTOR: ends here
             });
 
             // SIGLUS-REFACTOR: starts here
@@ -91,115 +102,184 @@ describe('RequisitionInitiateController', function() {
         });
     });
 
-    it('should change page to requisitions.requisition for with selected period with rnrId', function() {
-        spyOn(this.$state, 'go');
+    // SIGLUS-REFACTOR: delete goToRequisition relevant
+    // it('should change page to requisitions.requisition for with selected period with rnrId', function() {
+    //     spyOn(this.$state, 'go');
+    //
+    //     this.vm.goToRequisition(1);
+    //
+    //     expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
+    //         rnr: 1
+    //     });
+    // });
+    // SIGLUS-REFACTOR: ends here
 
-        this.vm.goToRequisition(1);
+    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // it('should change page to requisition full supply for newly initialized requisition in selected period',
+    //     function() {
+    //         this.vm.$onInit();
+    //         spyOn(this.$state, 'go');
+    //         spyOn(this.requisitionService, 'siglusInitiate').andReturn(this.$q.when(this.requisition));
+    //         this.vm.program = this.programs[0];
+    //         this.vm.facility = this.facility;
+    //
+    //         this.vm.initRnr(this.periods[0]);
+    //         this.$rootScope.$apply();
+    //
+    //         expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
+    //             rnr: this.requisition.id,
+    //             requisition: this.requisition
+    //         });
+    //
+    //         expect(this.permissionService.hasPermission).toHaveBeenCalledWith('user_id', {
+    //             right: this.REQUISITION_RIGHTS.REQUISITION_CREATE,
+    //             programId: this.programs[0].id,
+    //             facilityId: this.facility.id
+    //         });
+    //     });
+    // SIGLUS-REFACTOR: ends here
 
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
-            rnr: 1
-        });
-    });
+    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // it('should initiate requisition with idempotency key', function() {
+    //     this.vm.$onInit();
+    //     spyOn(this.$state, 'go');
+    //     spyOn(this.requisitionService, 'siglusInitiate').andReturn(this.$q.when(this.requisition));
+    //
+    //     this.vm.program = this.programs[0];
+    //     this.vm.facility = this.facility;
+    //
+    //     this.vm.initRnr(this.periods[0]);
+    //     this.$rootScope.$apply();
+    //
+    //     expect(this.requisitionService.siglusInitiate)
+    //         .toHaveBeenCalledWith(this.vm.facility.id, this.vm.program.id, this.periods[0].id,
+    //             this.vm.emergency, this.key, this.periods[0].startDate);
+    // });
+    // SIGLUS-REFACTOR: ends here
 
-    it('should change page to requisition full supply for newly initialized requisition in selected period',
-        function() {
-            this.vm.$onInit();
-            spyOn(this.$state, 'go');
-            spyOn(this.requisitionService, 'initiate').andReturn(this.$q.when(this.requisition));
-            this.vm.program = this.programs[0];
-            this.vm.facility = this.facility;
+    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // it('should display error when user has no right to init requisition', function() {
+    //     this.permissionService.hasPermission.andReturn(this.$q.reject());
+    //
+    //     this.vm.$onInit();
+    //     spyOn(this.$state, 'go');
+    //     spyOn(this.requisitionService, 'initiate');
+    //     this.vm.program = this.programs[0];
+    //     this.vm.facility = this.facility;
+    //
+    //     this.vm.initRnr(this.periods[0]);
+    //     this.$rootScope.$apply();
+    //
+    //     expect(this.$state.go).not.toHaveBeenCalled();
+    //     expect(this.permissionService.hasPermission).toHaveBeenCalled();
+    //     expect(this.requisitionService.initiate).not.toHaveBeenCalled();
+    // });
+    // SIGLUS-REFACTOR: ends here
 
-            this.vm.initRnr(this.periods[0]);
-            this.$rootScope.$apply();
+    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // it('should not change page to requisitions.requisition with selected period without rnrId and when invalid' +
+    //     ' response from service', function() {
+    //
+    //     spyOn(this.requisitionService, 'initiate').andReturn(this.$q.reject(this.requisition));
+    //     spyOn(this.$state, 'go');
+    //     this.vm.program = this.programs[0];
+    //     this.vm.facility = this.facility;
+    //
+    //     this.vm.initRnr(selectedPeriod);
+    //     this.$rootScope.$apply();
+    //
+    //     expect(this.$state.go).not.toHaveBeenCalled();
+    //     expect(this.UuidGenerator.prototype.generate.calls.length).toEqual(2);
+    // });
+    // SIGLUS-REFACTOR: ends here
 
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
-                rnr: this.requisition.id,
-                requisition: this.requisition
-            });
-
-            expect(this.permissionService.hasPermission).toHaveBeenCalledWith('user_id', {
-                right: this.REQUISITION_RIGHTS.REQUISITION_CREATE,
-                programId: this.programs[0].id,
-                facilityId: this.facility.id
-            });
-        });
-
-    it('should initiate requisition with idempotency key', function() {
-        this.vm.$onInit();
-        spyOn(this.$state, 'go');
-        spyOn(this.requisitionService, 'initiate').andReturn(this.$q.when(this.requisition));
-
-        this.vm.program = this.programs[0];
-        this.vm.facility = this.facility;
-
-        this.vm.initRnr(this.periods[0]);
-        this.$rootScope.$apply();
-
-        expect(this.requisitionService.initiate)
-            .toHaveBeenCalledWith(this.vm.facility.id, this.vm.program.id, this.periods[0].id,
-                this.vm.emergency, this.key);
-    });
-
-    it('should display error when user has no right to init requisition', function() {
-        this.permissionService.hasPermission.andReturn(this.$q.reject());
-
-        this.vm.$onInit();
-        spyOn(this.$state, 'go');
-        spyOn(this.requisitionService, 'initiate');
-        this.vm.program = this.programs[0];
-        this.vm.facility = this.facility;
-
-        this.vm.initRnr(this.periods[0]);
-        this.$rootScope.$apply();
-
-        expect(this.$state.go).not.toHaveBeenCalled();
-        expect(this.permissionService.hasPermission).toHaveBeenCalled();
-        expect(this.requisitionService.initiate).not.toHaveBeenCalled();
-    });
-
-    it('should not change page to requisitions.requisition with selected period without rnrId and when invalid' +
-        ' response from service', function() {
-        var selectedPeriod = {};
-        spyOn(this.requisitionService, 'initiate').andReturn(this.$q.reject(this.requisition));
-        spyOn(this.$state, 'go');
-        this.vm.program = this.programs[0];
-        this.vm.facility = this.facility;
-
-        this.vm.initRnr(selectedPeriod);
-        this.$rootScope.$apply();
-
-        expect(this.$state.go).not.toHaveBeenCalled();
-        expect(this.UuidGenerator.prototype.generate.calls.length).toEqual(2);
-    });
-
-    it('should open loading modal', function() {
-        spyOn(this.loadingModalService, 'open');
-        this.vm.program = this.programs[0];
-        this.vm.facility = this.facility;
-
-        this.vm.initRnr(this.periods[0]);
-        this.$rootScope.$apply();
-
-        expect(this.loadingModalService.open).toHaveBeenCalled();
-    });
+    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // it('should open loading modal', function() {
+    //     spyOn(this.loadingModalService, 'open');
+    //     this.vm.program = this.programs[0];
+    //     this.vm.facility = this.facility;
+    //
+    //     this.vm.initRnr(this.periods[0]);
+    //
+    //     expect(this.loadingModalService.open).toHaveBeenCalled();
+    // });
+    // SIGLUS-REFACTOR: ends here
 
     it('should reload periods with proper data', function() {
         spyOn(this.$state, 'go');
+        // SIGLUS-REFACTOR: starts here
+        this.$state.current = {
+            name: 'openlmis.requisitions.initRnr.requisition'
+        };
+        // SIGLUS-REFACTOR: ends here
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
         this.vm.isSupervised = false;
+        // SIGLUS-REFACTOR: starts here
+        // this.vm.report = false;
+        // SIGLUS-REFACTOR: ends here
 
         this.vm.$onInit();
         this.vm.loadPeriods();
         this.$rootScope.$apply();
 
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr', {
+        // SIGLUS-REFACTOR: starts here
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
+            report: false,
+            // SIGLUS-REFACTOR: ends here
             supervised: false,
             emergency: false,
             program: this.vm.program.id,
             facility: this.vm.facility.id
         }, {
-            reload: true
+            // SIGLUS-REFACTOR: starts here
+            reload: 'openlmis.requisitions.initRnr.requisition'
+            // SIGLUS-REFACTOR: ends here
         });
     });
+
+    // SIGLUS-REFACTOR: add test for goToHistory
+    it('should change page to openlmis.requisitions.initRnr.history', function() {
+        spyOn(this.$state, 'go');
+
+        this.vm.goToHistory();
+
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.history', {});
+    });
+    // SIGLUS-REFACTOR: ends here
+
+    // SIGLUS-REFACTOR: add test for isHistory
+    it('should return true when current state name is openlmis.requisitions.initRnr.history', function() {
+        this.$state.current.name = 'openlmis.requisitions.initRnr.history';
+
+        expect(this.vm.isHistory()).toBe(true);
+    });
+    // SIGLUS-REFACTOR: ends here
+
+    // SIGLUS-REFACTOR: add test for goToRequsition
+    it('should change page to openlmis.requisitions.initRnr.requisition', function() {
+        spyOn(this.$state, 'go');
+
+        this.vm.goToRequsition();
+
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {});
+    });
+    // SIGLUS-REFACTOR: ends here
+
+    // SIGLUS-REFACTOR: add test for isRequisition
+    it('should return true when current state name is openlmis.requisitions.initRnr.requisition', function() {
+        this.$state.current.name = 'openlmis.requisitions.initRnr.requisition';
+
+        expect(this.vm.isRequisition()).toBe(true);
+    });
+    // SIGLUS-REFACTOR: ends here
+
+    // SIGLUS-REFACTOR: add test for isUsageReport
+    it('should return true when template type of the program is USAGE_REPORT', function() {
+        this.vm.program = this.programs[0];
+        this.vm.program.templateType = this.TEMPLATE_TYPE.USAGE_REPORT;
+
+        expect(this.vm.isUsageReport()).toBe(true);
+    });
+    // SIGLUS-REFACTOR: ends here
 });

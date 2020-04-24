@@ -30,9 +30,9 @@
             $provide.decorator('periodFactory', decorator);
         });
 
-    decorator.$inject = ['$delegate', 'periodService', 'messageService',
-        // '$q',
-        'REQUISITION_STATUS'];
+    // SIGLUS-REFACTOR: delete $q
+    decorator.$inject = ['$delegate', 'periodService', 'messageService', 'REQUISITION_STATUS'];
+    // SIGLUS-REFACTOR: ends here
 
     function decorator($delegate, periodService, messageService, REQUISITION_STATUS) {
         var periodFactory = $delegate;
@@ -66,11 +66,9 @@
         function getPeriodGridLineItems(periods, emergency) {
             var periodGridLineItems = [];
 
-            // SIGLUS-REFACTOR: starts here
             angular.forEach(periods, function(period, id) {
                 periodGridLineItems.push(createPeriodGridItem(period, emergency, id));
             });
-            // SIGLUS-REFACTOR: ends here
 
             return periodGridLineItems;
         }
@@ -80,9 +78,16 @@
                 name: period.name,
                 startDate: period.startDate,
                 endDate: period.endDate,
+                // SIGLUS-REFACTOR: starts here
+                submitStartDate: period.submitStartDate,
+                submitEndDate: period.submitEndDate,
+                // SIGLUS-REFACTOR: ends here
                 rnrStatus: messageService.get(getRnrStatus(period, emergency, id)),
                 activeForRnr: (emergency || id === 0),
-                rnrId: (period.requisitionId) ? period.requisitionId : null
+                rnrId: (period.requisitionId) ? period.requisitionId : null,
+                // SIGLUS-REFACTOR: starts here
+                currentPeriodRegularRequisitionAuthorized: period.currentPeriodRegularRequisitionAuthorized
+                // SIGLUS-REFACTOR: ends here
             };
         }
 

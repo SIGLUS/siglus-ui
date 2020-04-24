@@ -1,0 +1,55 @@
+.requisition-tab-container {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+
+    form {
+        align-self: flex-start;
+
+        fieldset.disabled {
+            opacity: 0.5;
+        }
+    }
+    .requisition-table-tab {
+        margin-top: 0.5em;
+        padding-left: 76px;
+        flex-grow: 1;
+
+        ul {
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 0;
+            padding-left: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            li {
+                &.active {
+                    color: #58585a;
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-bottom-color: transparent;
+                }
+                color: #0099cc;
+                background-color: #f2f2f2;
+                border-bottom-color: transparent;
+                border-radius: 4px 4px 0 0;
+                cursor: pointer;
+                font-size: 15px;
+                padding: 9px 49px;
+                margin-bottom: -1px;
+                margin-right: 3px;
+                min-width: 240px;
+                text-align: center;
+            }
+        }
+
+        .openlmis-flex-table {
+            &>table {
+                td {
+                    height: 53px;
+                }
+            }
+        }
+    }
+}

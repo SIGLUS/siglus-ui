@@ -29,42 +29,43 @@
         .module('requisition-initiate')
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
+    // SIGLUS-REFACTOR: delete 'periods' and 'canInitiateRnr'
+    // add 'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS'
+    // add 'TEMPLATE_TYPE', '$rootScope'
     RequisitionInitiateController.$inject = [
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
-        'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
-        // SIGLUS-REFACTOR: starts here
-        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS'
-        // SIGLUS-REFACTOR: ends here
+        'permissionService', 'authorizationService', '$stateParams', 'UuidGenerator',
+        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'TEMPLATE_TYPE', '$rootScope'
     ];
+    // SIGLUS-REFACTOR: ends here
 
     function RequisitionInitiateController(requisitionService, $state, loadingModalService, notificationService,
                                            REQUISITION_RIGHTS, permissionService, authorizationService, $stateParams,
-                                           periods, canInitiateRnr, UuidGenerator,
-                                           // SIGLUS-REFACTOR: starts here
-                                           confirmService, requisitionInitiateService, REQUISITION_STATUS) {
-    // SIGLUS-REFACTOR: ends here
-
-        var vm = this,
-            uuidGenerator = new UuidGenerator(),
-            key = uuidGenerator.generate();
-
+                                           UuidGenerator, confirmService, requisitionInitiateService,
+                                           REQUISITION_STATUS, TEMPLATE_TYPE, $rootScope) {
         // SIGLUS-REFACTOR: starts here
-        var rights = authorizationService.getRights();
-        var createRight = _.find(rights, function(right) {
-            return right.name === 'REQUISITION_CREATE';
+        $rootScope.$on('$stateChangeStart', function(event, toState) {
+            if (toState.name === 'openlmis.requisitions.initRnr') {
+                event.preventDefault();
+                $state.go('openlmis.requisitions.initRnr.requisition', {}, {
+                    reload: 'openlmis.requisitions.initRnr.requisition'
+                });
+            }
         });
-        var authorizeRight = _.find(rights, function(right) {
-            return right.name === 'REQUISITION_AUTHORIZE';
-        });
+        // SIGLUS-REFACTOR: ends here
+
+        var vm = this;
+        // SIGLUS-REFACTOR: starts here
+        // uuidGenerator = new UuidGenerator(),
+        // key = uuidGenerator.generate();
         // SIGLUS-REFACTOR: ends here
 
         vm.$onInit = onInit;
         vm.loadPeriods = loadPeriods;
-        vm.initRnr = initRnr;
-        vm.periodHasRequisition = periodHasRequisition;
-        vm.goToRequisition = goToRequisition;
         // SIGLUS-REFACTOR: starts here
-        vm.checkRnrStatus = checkRnrStatus;
+        // vm.initRnr = initRnr;
+        // vm.periodHasRequisition = periodHasRequisition;
+        // vm.goToRequisition = goToRequisition;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -78,27 +79,33 @@
          */
         vm.emergency = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-         * @name periods
-         * @type {List}
-         *
-         * @description
-         * The list of all periods displayed in the table.
-         */
-        vm.periods = undefined;
+        // SIGLUS-REFACTOR: starts here
+        // /**
+        //  * @ngdoc property
+        //  * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+        //  * @name periods
+        //  * @type {List}
+        //  *
+        //  * @description
+        //  * The list of all periods displayed in the table.
+        //  */
+        // vm.periods = undefined;
+        //
+        // /**
+        //  * @ngdoc property
+        //  * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+        //  * @name canInitiateRnr
+        //  * @type {boolean}
+        //  *
+        //  * @description
+        //  * True if user has permission to initiate requisition.
+        //  */
+        // vm.canInitiateRnr = undefined;
+        // SIGLUS-REFACTOR: ends here
 
-        /**
-         * @ngdoc property
-         * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-         * @name canInitiateRnr
-         * @type {boolean}
-         *
-         * @description
-         * True if user has permission to initiate requisition.
-         */
-        vm.canInitiateRnr = undefined;
+        // SIGLUS-REFACTOR: starts here
+        vm.usageReport = undefined;
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -108,11 +115,17 @@
          * @description
          * Initialization method of the RequisitionInitiateController controller.
          */
+        // SIGLUS-REFACTOR: starts here
         function onInit() {
-            vm.emergency = $stateParams.emergency === 'true';
-            vm.periods = periods;
-            vm.canInitiateRnr = canInitiateRnr;
+            if ($state.current.name === 'openlmis.requisitions.initRnr') {
+                $state.go('openlmis.requisitions.initRnr.requisition', {}, {
+                    reload: 'openlmis.requisitions.initRnr.requisition'
+                });
+            }
+            vm.emergency = $state.params.emergency === 'true';
+            vm.usageReport = $state.params.report === 'true';
         }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -127,150 +140,130 @@
          * status.
          */
         function loadPeriods() {
-            $state.go('openlmis.requisitions.initRnr', {
+            // SIGLUS-REFACTOR: starts here
+            $state.go($state.current.name, {
+            // SIGLUS-REFACTOR: ends here
                 supervised: vm.isSupervised,
                 program: vm.program.id,
                 facility: vm.facility.id,
-                emergency: vm.emergency
+                emergency: vm.emergency,
+                // SIGLUS-REFACTOR: starts here
+                report: vm.isUsageReport()
+                // SIGLUS-REFACTOR: ends here
             }, {
-                reload: true
+                // SIGLUS-REFACTOR: starts here
+                reload: $state.current.name
+                // SIGLUS-REFACTOR: ends here
             });
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf requisition-initiate.controller:RequisitionInitiateController
-         * @name initRnr
-         *
-         * @description
-         * Responsible for initiating a requisition for a specified period. If
-         * creating the requisition is successful, then the user is sent to the
-         * requisition view page. Otherwise an error message is shown.
-         *
-         * @param {Object} selectedPeriod a period to initiate or proceed with the requisition for
-         */
-        function initRnr(selectedPeriod) {
-            var user = authorizationService.getUser();
+        // SIGLUS-REFACTOR: delete method
+        // /**
+        //  * @ngdoc method
+        //  * @methodOf requisition-initiate.controller:RequisitionInitiateController
+        //  * @name initRnr
+        //  *
+        //  * @description
+        //  * Responsible for initiating a requisition for a specified period. If
+        //  * creating the requisition is successful, then the user is sent to the
+        //  * requisition view page. Otherwise an error message is shown.
+        //  *
+        //  * @param {Object} selectedPeriod a period to initiate or proceed with the requisition for
+        //  */
+        // function initRnr(selectedPeriod) {
+        //     var user = authorizationService.getUser();
+        //
+        //     vm.error = '';
+        //
+        //     loadingModalService.open();
+        //     permissionService.hasPermission(user.user_id, {
+        //         right: REQUISITION_RIGHTS.REQUISITION_CREATE,
+        //         programId: vm.program.id,
+        //         facilityId: vm.facility.id
+        //     })
+        //         .then(function() {
+        //             requisitionService.initiate(vm.facility.id, vm.program.id, selectedPeriod.id, vm.emergency, key)
+        //                 .then(function(data) {
+        //                     goToInitiatedRequisition(data);
+        //                 })
+        //                 .catch(function() {
+        //                     notificationService.error('requisitionInitiate.couldNotInitiateRequisition');
+        //                     loadingModalService.close();
+        //                     key = uuidGenerator.generate();
+        //                 });
+        //         })
+        //         .catch(function() {
+        //             notificationService.error('requisitionInitiate.noPermissionToInitiateRequisition');
+        //             loadingModalService.close();
+        //         });
+        // }
+        //
+        // /**
+        //  * @ngdoc method
+        //  * @methodOf requisition-initiate.controller:RequisitionInitiateController
+        //  * @name periodHasRequisition
+        //  *
+        //  * @description
+        //  * Checks a period object to make sure no requisition is associated with
+        //  * the period.
+        //  *
+        //  * @param {Object} period a period to check if it has a requisition
+        //  */
+        // function periodHasRequisition(period) {
+        //     if (period.rnrId) {
+        //         return true;
+        //     }
+        //     return false;
+        //
+        // }
+        //
+        // /**
+        //  * @ngdoc method
+        //  * @methodOf requisition-initiate.controller:RequisitionInitiateController
+        //  * @name goToRequisition
+        //  *
+        //  * @description
+        //  * Directs a user to the requisition view data for a specific period
+        //  *
+        //  * @param {Object} id A requisition id
+        //  */
+        // function goToRequisition(id) {
+        //     $state.go('openlmis.requisitions.requisition.fullSupply', {
+        //         rnr: id
+        //     });
+        // }
+        //
+        // function goToInitiatedRequisition(requisition) {
+        //     $state.go('openlmis.requisitions.requisition.fullSupply', {
+        //         rnr: requisition.id,
+        //         requisition: requisition
+        //     });
+        // }
+        // SIGLUS-REFACTOR: ends here
 
-            vm.error = '';
+        // SIGLUS-REFACTOR: add new method
+        vm.goToHistory = function() {
+            $state.go('openlmis.requisitions.initRnr.history', $state.params);
+        };
 
-            // SIGLUS-REFACTOR: starts here
-            permissionService.hasPermission(user.user_id, {
-                right: REQUISITION_RIGHTS.REQUISITION_CREATE,
-                programId: vm.program.id,
-                facilityId: vm.facility.id
-            })
-                .then(function() {
-                    requisitionInitiateService.getLatestPhysicalInventory(vm.facility.id).then(function(result) {
-                        var today = new Date().toJSON()
-                            .slice(0, 10);
-                        if (result.occurredDate === today) {
-                            loadingModalService.open();
-                            // SIGLUS-REFACTOR: ends here
-                            requisitionService.initiate(vm.facility.id, vm.program.id,
-                                selectedPeriod.id, vm.emergency, key)
-                                .then(function(data) {
-                                    goToInitiatedRequisition(data);
-                                })
-                                .catch(function() {
-                                    notificationService.error('requisitionInitiate.couldNotInitiateRequisition');
-                                    loadingModalService.close();
-                                    key = uuidGenerator.generate();
-                                });
-                        // SIGLUS-REFACTOR: starts here
-                        } else {
-                            confirmService.confirm('requisitionInitiate.confirm.label',
-                                'requisitionInitiate.confirm.button')
-                                .then(function() {
-                                    goToPhysicalInventory();
-                                });
-                        }
-                        // SIGLUS-REFACTOR: ends here
-                    });
-                })
-                .catch(function() {
-                    notificationService.error('requisitionInitiate.noPermissionToInitiateRequisition');
-                    loadingModalService.close();
-                });
-        }
+        vm.isHistory = function() {
+            return $state.current.name === 'openlmis.requisitions.initRnr.history';
+        };
 
-        /**
-         * @ngdoc method
-         * @methodOf requisition-initiate.controller:RequisitionInitiateController
-         * @name periodHasRequisition
-         *
-         * @description
-         * Checks a period object to make sure no requisition is associated with
-         * the period.
-         *
-         * @param {Object} period a period to check if it has a requisition
-         */
-        function periodHasRequisition(period) {
-            if (period.rnrId) {
-                return true;
+        vm.goToRequsition = function() {
+            $state.go('openlmis.requisitions.initRnr.requisition', $state.params);
+        };
+
+        vm.isRequisition = function() {
+            return $state.current.name === 'openlmis.requisitions.initRnr.requisition';
+        };
+
+        vm.isUsageReport = function() {
+            if (vm.program) {
+                return vm.program.templateType === TEMPLATE_TYPE.USAGE_REPORT;
             }
-            return false;
-
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-initiate.controller:RequisitionInitiateController
-         * @name goToRequisition
-         *
-         * @description
-         * Directs a user to the requisition view data for a specific period
-         *
-         * @param {Object} id A requisition id
-         */
-        function goToRequisition(id) {
-            $state.go('openlmis.requisitions.requisition.fullSupply', {
-                rnr: id
-            });
-        }
-
-        function goToInitiatedRequisition(requisition) {
-            $state.go('openlmis.requisitions.requisition.fullSupply', {
-                rnr: requisition.id,
-                requisition: requisition
-            });
-        }
-
-        // SIGLUS-REFACTOR: starts here
-        function goToPhysicalInventory() {
-            $state.go('openlmis.stockmanagement.physicalInventory');
-        }
-
-        function checkRnrStatus(status) {
-            if (vm.program && vm.facility) {
-                var hasCreateRight = getHasCreateRight();
-                var hasAuthorizeRight = getHasAuthorizeRight();
-
-                if (status === REQUISITION_STATUS.INITIATED && !hasCreateRight) {
-                    return false;
-                }
-                if (status === REQUISITION_STATUS.SUBMITTED && !hasAuthorizeRight) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function getHasCreateRight() {
-            return !!createRight && _.some(createRight.programIds, function(id) {
-                return id === vm.program.id;
-            }) && _.some(createRight.facilityIds, function(id) {
-                return id === vm.facility.id;
-            });
-        }
-
-        function getHasAuthorizeRight() {
-            return !!authorizeRight && _.some(authorizeRight.programIds, function(id) {
-                return id === vm.program.id;
-            }) && _.some(authorizeRight.facilityIds, function(id) {
-                return id === vm.facility.id;
-            });
-        }
+            return vm.usageReport;
+        };
         // SIGLUS-REFACTOR: ends here
     }
 })();

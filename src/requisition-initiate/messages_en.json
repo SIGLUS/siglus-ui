@@ -1,6 +1,15 @@
 {
+  "requisitionInitiate.view": "View",
+  "requisitionInitiate.requisition": "Requisitions/Reports",
+  "requisitionInitiate.history": "History",
+  "requisitionInitiate.create": "Create",
+  "requisitionInitiate.authorize": "Authorize",
+  "requisitionInitiate.endDate": "End Date",
+  "requisitionInitiate.submitDate": "Submit Date",
+  "requisitionInitiate.status": "Status",
+  "requisitionInitiate.noHistory": "There is no history",
+  "requisitionInitiate.startDate": "Start Date",
   "requisitionInitiate.confirm.label": "Please finish physcial inventory before creating a requisition.",
   "requisitionInitiate.confirm.button": "Physical Inventory",
-  "requisitionInitiate.create": "Create",
-  "requisitionInitiate.authorize": "Authorize"
+  "requisitionInitiate.submitDuration": "Submit Duration"
 }
