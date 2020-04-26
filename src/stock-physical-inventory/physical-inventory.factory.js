@@ -1,0 +1,335 @@
+/*
+ * This program is part of the OpenLMIS logistics management information system platform software.
+ * Copyright © 2017 VillageReach
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU Affero General Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details. You should have received a copy of
+ * the GNU Affero General Public License along with this program. If not, see
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ */
+
+(function() {
+
+    'use strict';
+
+    /**
+     * @ngdoc service
+     * @name stock-physical-inventory.physicalInventoryFactory
+     *
+     * @description
+     * Allows the user to retrieve physical inventory enhanced informations.
+     */
+    angular
+        .module('stock-physical-inventory')
+        .factory('physicalInventoryFactory', factory);
+
+    // SIGLUS-REFACTOR: add '$http', 'openlmisUrlFactory', 'SiglusStockCardSummaryResource'
+    factory.$inject = [
+        '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
+        'FullStockCardSummaryRepositoryImpl', '$http', 'openlmisUrlFactory', 'SiglusStockCardSummaryResource'
+    ];
+    // SIGLUS-REFACTOR: ends here
+
+    function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
+                     FullStockCardSummaryRepositoryImpl, $http, openlmisUrlFactory, SiglusStockCardSummaryResource) {
+
+        return {
+            getDrafts: getDrafts,
+            getDraft: getDraft,
+            getPhysicalInventory: getPhysicalInventory,
+            saveDraft: saveDraft
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name getDrafts
+         *
+         * @description
+         * Retrieves physical inventory drafts by facility and program.
+         *
+         * @param  {Array}   programIds An array of program UUID
+         * @param  {String}  facility   Facility UUID
+         * @return {Promise}            Physical inventories promise
+         */
+
+        // SIGLUS-REFACTOR: starts here
+        function getDrafts(programIds, facility, userId, rightName) {
+            var promises = [];
+            angular.forEach(programIds, function(program) {
+                promises.push(getDraft(program, facility, userId, rightName));
+            });
+            // SIGLUS-REFACTOR: ends here
+            return $q.all(promises);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name getDraft
+         *
+         * @description
+         * Retrieves physical inventory draft by facility and program.
+         *
+         * @param  {String}  programId  Program UUID
+         * @param  {String}  facilityId Facility UUID
+         * @return {Promise}          Physical inventory promise
+         */
+        // SIGLUS-REFACTOR: starts here
+        function getDraft(programId, facilityId, userId, rightName) {
+            return $q.all([
+                getStockAllProducts(programId, facilityId, userId, rightName),
+                physicalInventoryService.getDraft(programId, facilityId)
+                // SIGLUS-REFACTOR: ends here
+            ]).then(function(responses) {
+                var summaries = responses[0],
+                    draft = responses[1],
+                    draftToReturn = {
+                        programId: programId,
+                        facilityId: facilityId,
+                        lineItems: []
+                    };
+
+                // no saved draft
+                if (draft.length === 0) {
+                    // SIGLUS-REFACTOR: starts here
+                    prepareLineItems(undefined, summaries, draftToReturn);
+                    // SIGLUS-REFACTOR: ends here
+                    draftToReturn.isStarter = true;
+                    // draft was saved
+                } else {
+                    prepareLineItems(draft[0], summaries, draftToReturn);
+                    draftToReturn.id = draft[0].id;
+                }
+
+                return draftToReturn;
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name getPhysicalInventory
+         *
+         * @description
+         * Retrieves physical inventory by id.
+         *
+         * @param  {String}  id       Draft UUID
+         * @return {Promise}          Physical inventory promise
+         */
+        // SIGLUS-REFACTOR: starts here
+        function getPhysicalInventory(id, userId, rightName) {
+            return physicalInventoryService.getPhysicalInventory(id)
+                .then(function(physicalInventory) {
+                    return getStockAllProducts(physicalInventory.programId,
+                        physicalInventory.facilityId, userId, rightName)
+                    // SIGLUS-REFACTOR: ends here
+                        .then(function(summaries) {
+                            var draftToReturn = {
+                                programId: physicalInventory.programId,
+                                facilityId: physicalInventory.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            draftToReturn.id = physicalInventory.id;
+
+                            return draftToReturn;
+                        });
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name saveDraft
+         *
+         * @description
+         * Performs logic on physical inventory draft and calls save method from draft service.
+         *
+         * @param  {draft}   draft Physical Inventory Draft to be saved
+         * @return {Promise}       Saved draft
+         */
+        function saveDraft(draft) {
+            var physicalInventory = angular.copy(draft);
+
+            // SIGLUS-REFACTOR: Filter not added items
+            physicalInventory.lineItems = _.map(draft.lineItems, function(item) {
+                return {
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    lotCode: item.lot ? item.lot.lotCode : null,
+                    expirationDate: item.lot ? item.lot.expirationDate : null,
+                    quantity: item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    stockAdjustments: item.stockAdjustments,
+                    reasonFreeText: item.reasonFreeText,
+                    stockCardId: item.stockCardId,
+                    programId: item.programId
+                    // SIGLUS-REFACTOR: ends here
+                };
+            });
+
+            return physicalInventoryService.saveDraft(physicalInventory);
+        }
+
+        // SIGLUS-REFACTOR: starts here
+        function prepareLineItems(physicalInventory, summaries, draftToReturn) {
+            /*var quantities = {},
+                extraData = {};
+
+            angular.forEach(physicalInventory.lineItems, function(lineItem) {
+                quantities[identityOfLines(lineItem)] = lineItem.quantity;
+                extraData[identityOfLines(lineItem)] = lineItem.extraData;
+            });*/
+
+            var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
+            var stockCardLineItems = [];
+            angular.forEach(summaries, function(summary) {
+                var stockCardId = summary.stockCard && summary.stockCard.id;
+                var virtualProgramId = getVirtualProgramId(summary.orderable);
+                stockCardLineItems.push({
+                    stockOnHand: summary.stockOnHand,
+                    lot: summary.lot,
+                    orderable: summary.orderable,
+                    quantity: null,
+                    vvmStatus: null,
+                    stockAdjustments: [],
+                    stockCardId: stockCardId,
+                    programId: virtualProgramId
+                });
+                summary.stockAdjustments = [];
+                summary.stockCardId = stockCardId;
+                summary.programId = virtualProgramId;
+            });
+            draftToReturn.summaries = summaries;
+            if (_.isEmpty(draftLineItems)) {
+                draftToReturn.lineItems = _.filter(stockCardLineItems, function(item) {
+                    return item.stockCardId;
+                });
+            } else {
+                angular.forEach(draftLineItems, function(item) {
+                    var summary = _.find(summaries, function(summary) {
+                        if (item.stockCardId) {
+                            return item.stockCardId === (summary.stockCard && summary.stockCard.id);
+                        } else if (item.lotId) {
+                            return item.lotId === (summary.lot && summary.lot.id) &&
+                                item.orderableId === summary.orderable.id;
+                        }
+                        return summary.orderable.id === item.orderableId;
+                    });
+                    draftToReturn.lineItems.push({
+                        stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
+                        lot: getLot(summary, item),
+                        orderable: summary.orderable,
+                        quantity: item.quantity,
+                        vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
+                        stockAdjustments: item.stockAdjustments || [],
+                        reasonFreeText: item.reasonFreeText,
+                        stockCardId: item.stockCardId,
+                        programId: getVirtualProgramId(summary.orderable)
+                    });
+                });
+                draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
+                    return !kit.stockCardId;
+                });
+            }
+        }
+
+        function getLot(summary, item) {
+            var draftLOt = item.lotCode || item.expirationDate ? {
+                lotCode: item.lotCode,
+                expirationDate: item.expirationDate
+            } : null;
+            if (item.lotId) {
+                draftLOt = angular.copy(summary.lot);
+            }
+            return draftLOt;
+        }
+
+        function getVirtualProgramId(orderable) {
+            var program = _.find(orderable.programs, function(program) {
+                return !!program.parentId;
+            });
+            return program && program.parentId;
+        }
+
+        /*function identityOfLines(identifiable) {
+            return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
+        }
+
+        function identityOf(identifiable) {
+            return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
+        }
+
+        function getStockAdjustments(lineItems, summary) {
+            var filtered;
+
+            if (summary.lot) {
+                filtered = $filter('filter')(lineItems, {
+                    orderableId: summary.orderable.id,
+                    lotId: summary.lot.id
+                });
+            } else {
+                filtered = $filter('filter')(lineItems, function(lineItem) {
+                    return lineItem.orderableId === summary.orderable.id && !lineItem.lotId;
+                });
+            }
+
+            if (filtered.length === 1) {
+                return filtered[0].stockAdjustments;
+            }
+
+            return [];
+        }*/
+
+        // function getStockProducts(programId, facilityId) {
+        //     var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+        //
+        //     return repository.query({
+        //         programId: programId,
+        //         facilityId: facilityId
+        //     }).then(function(summaries) {
+        //         return summaries.content.reduce(function(items, summary) {
+        //             summary.canFulfillForMe.forEach(function(fulfill) {
+        //                 items.push(fulfill);
+        //             });
+        //             return items;
+        //         }, []);
+        //     });
+        //
+        // }
+
+        function getStockAllProducts(programId, facilityId, userId, rightName) {
+
+            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl(
+                new SiglusStockCardSummaryResource()
+            ));
+
+            return repository.query({
+                programId: programId,
+                facilityId: facilityId,
+                userId: userId,
+                rightName: rightName
+            }).then(function(summaries) {
+                return summaries.content.reduce(function(items, summary) {
+                    summary.canFulfillForMe.forEach(function(fulfill) {
+                        items.push(fulfill);
+                    });
+                    return items;
+                }, []);
+            });
+        }
+
+        // function getQuantity(item) {
+        //     return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
+        // }
+        // SIGLUS-REFACTOR: ends here
+    }
+})();
