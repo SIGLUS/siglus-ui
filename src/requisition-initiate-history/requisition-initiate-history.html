@@ -1,0 +1,33 @@
+<section class="openlmis-table-container">
+    <table>
+        <caption ng-if="!vm.requisitions.length && vm.selectedProgram">
+            {{'requisitionInitiate.noHistory' | message}}
+        </caption>
+        <caption ng-if="!vm.requisitions.length && !vm.selectedProgram">
+            {{'requisitionInitiate.selectRequiredFields' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th>{{'requisitionInitiate.periods' | message}}</th>
+            <th>{{'requisitionInitiate.startDate' | message}}</th>
+            <th>{{'requisitionInitiate.endDate' | message}}</th>
+            <th>{{'requisitionInitiate.submitDate' | message}}</th>
+            <th>{{'requisitionInitiate.status' | message}}</th>
+            <th class="col-sticky sticky-right">{{'requisitionInitiate.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="requisition in vm.requisitions">
+            <td>{{requisition.processingPeriod.name}}</td>
+            <td>{{requisition.processingPeriod.startDate | openlmisDate}}</td>
+            <td>{{requisition.processingPeriod.endDate | openlmisDate}}</td>
+            <td>{{requisition.statusChanges.SUBMITTED.changeDate | openlmisDate}}</td>
+            <td>{{requisition.status | requisitionStatus}}</td>
+            <td >
+                <input id="proceedButton" type="button" ng-click="vm.openRnr(requisition.id)"
+                       value="{{'requisitionInitiate.view'| message}}" class="primary"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
