@@ -28,7 +28,12 @@
         .module('openlmis-navigation')
         .controller('NavigationController', NavigationController);
 
-    NavigationController.$inject = ['$scope', 'navigationStateService', 'authorizationService'];
+    NavigationController.$inject = [
+        '$scope', 'navigationStateService',
+        // SIGLUS-REFACTOR: starts here
+        'authorizationService'
+        // SIGLUS-REFACTOR: ends here
+    ];
 
     function NavigationController($scope, navigationStateService, authorizationService) {
 
@@ -79,9 +84,6 @@
         // SIGLUS-REFACTOR: hide state and check requisition rights
         function hideState() {
             if (vm.states) {
-                vm.states = vm.states.filter(function(state) {
-                    return state.url !== '/cce' && state.url !== '/reports';
-                });
                 vm.states.forEach(function(state) {
                     if (state.url === '/stockmanagement') {
                         state.children = state.children.filter(function(child) {
