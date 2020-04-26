@@ -15,8 +15,10 @@
 
 describe('requisitionValidator', function() {
 
+    // SIGLUS-REFACTOR: add requisitionUtils
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
-        lineItems, column, columns, requisition;
+        lineItems, column, columns, requisition, requisitionUtils;
+    // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
         module('requisition-validation', function($provide) {
@@ -26,10 +28,18 @@ describe('requisitionValidator', function() {
                 'requestedQuantityExplanation'
             ];
             validationFactory = jasmine.createSpyObj('validationFactory', methods);
+            // SIGLUS-REFACTOR: add requisitionUtils
+            requisitionUtils = jasmine.createSpyObj('requisitionUtils', ['isEmpty', 'calculateTotal']);
+            // SIGLUS-REFACTOR: ends here
 
             $provide.service('validationFactory', function() {
                 return validationFactory;
             });
+            // SIGLUS-REFACTOR: add requisitionUtils
+            $provide.factory('requisitionUtils', function() {
+                return requisitionUtils;
+            });
+            // SIGLUS-REFACTOR: ends here
         });
 
         inject(function(_requisitionValidator_, _TEMPLATE_COLUMNS_, _COLUMN_SOURCES_,
