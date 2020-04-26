@@ -145,13 +145,11 @@ describe('ViewTabController', function() {
             expect(this.vm.canApproveAndReject).toEqual(this.canApproveAndReject);
         });
 
-        // SIGLUS-REFACTOR: starts here
         it('should expose paginationId property', function() {
             this.initController();
 
             expect(this.vm.paginationId).toEqual('fullSupplyList');
         });
-        // SIGLUS-REFACTOR: ends here
 
         describe('Add (Full Supply) Products button', function() {
 
@@ -825,8 +823,8 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: ends here
             canAuthorize: this.canAuthorize,
             fullSupply: this.fullSupply,
-            // SIGLUS-REFACTOR: starts here
             canApproveAndReject: this.canApproveAndReject,
+            // SIGLUS-REFACTOR: starts here
             requisitionService: this.requisitionService,
             loadingModalService: this.loadingModalService
             // SIGLUS-REFACTOR: ends here
