@@ -1,6 +1,8 @@
 <section>
     <header>
-        <h3>{{'requisitionStatusMessages.comments' | message}}</h3>
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <h3 ng-class="{'no-margin': !vm.displayAddComment()}">{{'requisitionStatusMessages.comments' | message}}</h3>
+        <!-- SIGLUS-REFACTOR: ends here -->
         <a ng-show="vm.requisition.$statusMessages.length > 0" ng-click="vm.displayRequisitionHistory()">{{'requisitionStatusMessages.viewHistory' | message}}</a>
         <button class="add" ng-click="vm.addComment()" ng-if="vm.displayAddComment()">{{'requisitionStatusMessages.addComment.label' | message}}</button>
     </header>
@@ -26,7 +28,7 @@
         </header>
 <!-- SIGLUS-REFACTOR: starts here -->
 <!--        <saving-indicator object="vm.requisition.draftStatusMessage"/>-->
+        <textarea id="requisition-status-message-textarea" ng-model="vm.requisition.draftStatusMessage" ng-required="commentsRequired"></textarea>
 <!-- SIGLUS-REFACTOR: ends here -->
-        <textarea id="requisition-status-message-textarea" ng-model="vm.requisition.draftStatusMessage"></textarea>
     </article>
 </section>
