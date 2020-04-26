@@ -83,15 +83,13 @@
         /**
          * @ngdoc method
          * @methodOf requisition-calculations.calculationFactory
-         * @name totalLossesAndAdjustments
+         * @name calculateDifference
          *
          * @description
-         * Calculates the value of the Total Losses and Adjustments column based on the
-         * given line item and adjustment reasons.
+         * Calculates the value of the difference.
          *
-         * @param  {Array}  adjustments     the list of adjustments to sum up
-         * @param  {Array}  reasons         the list of stock adjustment reasons
-         * @return {Number}                 the calculated Total Losses and Adjustments value
+         * @param  {Object}  lineItem     the line item object
+         * @return {Number}               the calculated difference value
          */
         function calculateDifference(lineItem) {
             return getItem(lineItem, E) - (getItem(lineItem, A) + getItem(lineItem, B) - getItem(lineItem, C));
