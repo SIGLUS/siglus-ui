@@ -1,0 +1,56 @@
+<header>
+    <h2>{{'requisitionView.reportAndRequisitionFor' | message}} {{vm.program.name}} ({{vm.facility.type.name}})</h2>
+</header>
+<requisition-outdated
+        requisition="vm.requisition">
+</requisition-outdated>
+<ng-include src="'requisition-view/header.html'"></ng-include>
+<status-messages
+        requisition="vm.requisition"
+        comments-required="vm.commentsRequired"
+        force-open="vm.forceOpen">
+</status-messages>
+<section>
+    <header>
+        <h3>{{'requisitionViewReport.reports' | message}}</h3>
+    </header>
+</section>
+<div class="report-container scroll-x" ng-if="vm.requisition.template.enableALUsageModule">
+    <al-report
+        line-items="vm.requisition.alLineItems"
+    ></al-report>
+</div>
+<div class="report-container" ng-if="vm.requisition.template.enableARVProductModule">
+    <arv-product-report
+            line-items="vm.requisition.requisitionLineItems">
+    </arv-product-report>
+</div>
+<div class="max-width-regiment report-container"
+     ng-if="vm.requisition.template.enableARVTherapeuticLinesModule ||
+     vm.requisition.template.enableARVTherapeuticRegimentModule">
+    <arv-regiment-report
+            ng-if="vm.requisition.template.enableARVTherapeuticRegimentModule"
+            line-items="vm.requisition.regimenLineItems"
+            custom-regimes="vm.requisition.customRegimens">
+    </arv-regiment-report>
+    <arv-regiment-summary-report
+            ng-if="vm.requisition.template.enableARVTherapeuticLinesModule"
+            line-items="vm.requisition.regimenDispatchLineItems">
+    </arv-regiment-summary-report>
+</div>
+<div class="report-container" ng-if="vm.requisition.template.enableARVPatientModule">
+    <arv-patient-report
+            line-items="vm.requisition.patientLineItems">
+    </arv-patient-report>
+</div>
+<div class="report-container" ng-if="vm.requisition.template.enableRapidTestProductModule">
+    <rapid-test-product-report
+            requisition="vm.requisition">
+    </rapid-test-product-report>
+</div>
+<div class="report-container" ng-if="vm.requisition.template.enableRapidTestServiceModule">
+    <rapid-test-report
+            requisition="vm.requisition">
+    </rapid-test-report>
+</div>
+<ng-include src="'requisition-report/requisition-report-toolbar.html'"></ng-include>

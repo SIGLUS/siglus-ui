@@ -1,0 +1,11 @@
+.max-width-regiment {
+  max-width: 900px;
+}
+.report-container {
+  margin-bottom: 30px !important;
+
+  &.scroll-x {
+    width: 100%;
+    overflow-x: scroll;
+  }
+}

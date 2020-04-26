@@ -1,0 +1,6 @@
+{
+  "requisitionViewReport.viewReport": "View Usage Report",
+  "requisitionViewReport.reports": "Reports",
+  "requisitionViewReport.emptyTable": "Rapid test report list cannot be empty",
+  "requisitionViewReport.apeOnly": "Rapid test report cannot be APE only"
+}
