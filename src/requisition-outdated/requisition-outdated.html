@@ -1,0 +1,4 @@
+<p class="alert is-error outdated" ng-if="vm.requisition.$outdated">
+    {{ 'requisitionView.outdated' | message}}
+    <button ng-click="vm.updateRequisition();">{{ 'requisitionViewReport.update' | message }}</button>
+</p>
