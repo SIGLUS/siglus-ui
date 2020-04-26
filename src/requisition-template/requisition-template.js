@@ -71,23 +71,34 @@
          * @description
          * Retrieves all non-full/full supply columns from requisition template.
          *
+         * @param  {Boolean} nonFullSupply indicates if user wants to get full/non-full supply columns
          * @return {Array}                 the matching columns
          */
-        // SIGLUS-REFACTOR: delete params nonFullSupply
-        function getColumns() {
+        function getColumns(nonFullSupply) {
             var columns = [],
                 columnsMap = this.columnsMap;
-            var columnName;
-            for (columnName in columnsMap) {
-                if (columnsMap.hasOwnProperty(columnName) &&
-                    columnsMap[columnName].$display) {
-                    columns.push(columnsMap[columnName]);
+
+            // SIGLUS-REFACTOR: starts here
+            if (nonFullSupply && !this.emergency) {
+            // SIGLUS-REFACTOR: ends here
+                var columnName;
+                for (columnName in columnsMap) {
+                    if (columnsMap.hasOwnProperty(columnName) &&
+                        columnsMap[columnName].$display && !columnsMap[columnName].$fullSupplyOnly) {
+                        columns.push(columnsMap[columnName]);
+                    }
+                }
+            } else {
+                for (columnName in columnsMap) {
+                    if (columnsMap.hasOwnProperty(columnName) &&
+                        columnsMap[columnName].$display) {
+                        columns.push(columnsMap[columnName]);
+                    }
                 }
             }
 
             return columns;
         }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
