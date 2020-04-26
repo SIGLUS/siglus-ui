@@ -1,0 +1,82 @@
+<div class="modal template-add" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- SIGLUS-REFACTOR: starts here -->
+                <h1>{{'adminTemplateAdd.addTemplate' | message}}</h1>
+                <!-- SIGLUS-REFACTOR: ends here -->
+            </div>
+            <div class="modal-body">
+                <form id="template-form" ng-submit="vm.create()">
+                    <label for="name">{{'adminTemplateAdd.name' | message}}</label>
+                    <input type="text" id="name" ng-model="vm.template.name" required/>
+                    <label for="program">{{'adminTemplateAdd.program' | message}}</label>
+                    <select id="program" ng-model="vm.template.program" ng-change="vm.populateFacilityTypes()"
+                            ng-options="program.name for program in vm.programs" required>
+                    </select>
+                    <!-- SIGLUS-REFACTOR: starts here -->
+                    <label ng-if-start="vm.canSelectTemplateType" for="template-type">Template Type</label>
+                    <select
+                        ng-if-end
+                        id="template-type"
+                        ng-model="vm.templateTypeOption"
+                        ng-options="tto.name for tto in vm.templateTypeOptions"
+                        required
+                    >
+                    </select>
+                    <label ng-if-start="!vm.canSelectTemplateType">Template Type</label>
+                    <div ng-if-end
+                         class="non-select-template-type"
+                    >{{vm.templateTypeOption ? vm.templateTypeOption.name : ''}}</div>
+                    <!-- SIGLUS-REFACTOR: ends here -->
+                </form>
+                <div><label for="facilityType">{{'adminTemplateAdd.facilityType' | message}}</label>
+                    <p class="note">{{'adminTemplateAdd.programNeedsToBeSelected' | message}}</p></div>
+                <form class="form-inline" ng-submit="vm.addFacilityType()" reload-form>
+                    <div>
+                        <label for="facilityType">{{'adminTemplateAdd.facilityType' | message}}</label>
+                        <select id="facilityType" ng-model="vm.selectedFacilityType"
+                                ng-options="facilityType.name for facilityType in vm.facilityTypes | orderBy: 'name'"
+                                ng-disabled="!vm.template.program"
+                                openlmis-invalid="{{vm.validateFacilityType() | message}}" required>
+                        </select>
+                    </div>
+                    <button type="submit" class="add">
+                        {{'adminTemplateAdd.addFacilityType' | message}}
+                    </button>
+                </form>
+                <section class="openlmis-table-container">
+                    <table>
+                        <caption ng-if="!vm.template.facilityTypes.length">
+                            {{'adminTemplateAdd.noFacilityTypesAdded' | message}}
+                        </caption>
+                        <thead>
+                        <tr>
+                            <th>{{'adminTemplateAdd.facilityTypeName' | message}}</th>
+                            <th>{{'adminTemplateAdd.actions' | message}}</th>
+                        </tr>
+                        </thead>
+                        <tbody ng-if="vm.template.facilityTypes.length">
+                        <tr ng-repeat="facilityType in vm.template.facilityTypes">
+                            <td>{{facilityType.name}}</td>
+                            <td>
+                                <button class="danger" ng-click="vm.removeFacilityType(facilityType)">
+                                    {{'adminTemplateAdd.remove' | message}}
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ui-sref="^">{{'adminTemplateAdd.cancel' | message}}</button>
+                <!-- SIGLUS-REFACTOR: starts here -->
+                <button class="primary" type="submit" form="template-form">{{'adminTemplateAdd.confirm' |
+                    message}}
+                </button>
+                <!-- SIGLUS-REFACTOR: ends here -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
-<!-- SIGLUS-REFACTOR: add module -->
-<div class="requisition-template-admin">
+<!-- SIGLUS-REFACTOR: starts here -->
+<div class="requisition-template-admin" ng-show="vm.isRequisition">
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.enableConsultationNumber"/>{{'adminProgramTemplate.enableConsultationNumber' | message}}
     </div>
@@ -7,9 +7,9 @@
         <input type="checkbox" ng-model="vm.template.enableKitUsage"/>{{'adminProgramTemplate.enableKITUsage' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.showProductModule"/>{{'adminProgramTemplate.enableProductModule' | message}}
+        <input type="checkbox" ng-model="vm.template.enableProductModule"/>{{'adminProgramTemplate.enableProductModule' | message}}
     </div>
-    <div ng-show="vm.showProductModule">
+    <div ng-show="vm.template.enableProductModule">
 <!-- SIGLUS-REFACTOR: ends here -->
         <aside>
             <label>
@@ -32,8 +32,8 @@
                     <th>{{'adminProgramTemplate.source' | message}}</th>
                     <th>{{'adminProgramTemplate.additionalOptions' | message}}</th>
                 </tr>
-                </thead>
-                <tbody dnd-list="vm.template.columnsMap" dnd-drop="vm.dropCallback(event, index, item)">
+            </thead>
+            <tbody dnd-list="vm.template.columnsMap" dnd-drop="vm.dropCallback(event, index, item)">
                 <tr ng-repeat="column in vm.template.columnsMap | orderObjectBy:'displayOrder'" dnd-draggable="column" dnd-disable-if="!column.columnDefinition.canChangeOrder" dnd-effect-allowed="move">
                     <dnd-nodrag>
                         <td ng-class="{'dnd-handle': column.columnDefinition.canChangeOrder}">
@@ -91,12 +91,43 @@
                 </tr>
                 </tbody>
             </table>
-        <!-- SIGLUS-REFACTOR: starts here -->
         </div>
-        <!-- SIGLUS-REFACTOR: ends here -->
+    <!-- SIGLUS-REFACTOR: starts here -->
+    </div>
+    <!-- SIGLUS-REFACTOR: ends here -->
+</div>
+<!-- SIGLUS-REFACTOR: starts here -->
+<div class="requisition-template-admin" ng-show="vm.isUsageReport">
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.enableALUsageModule"/>{{'adminProgramTemplate.enableALUsageModule' | message}}
+    </div>
+    <div class="requisition-template-module-container has-tips">
+        <div class="first-line">
+            <input type="checkbox" ng-model="vm.template.enableARVProductModule" ng-disabled="vm.template.enableRapidTestProductModule"/>{{'adminProgramTemplate.enableARVProductModule' | message}}
+        </div>
+        <div class="second-line" ng-show="vm.template.enableRapidTestProductModule">Each usage report can only has one product module</div>
+    </div>
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.enableARVTherapeuticRegimentModule"/>{{'adminProgramTemplate.enableARVTherapeuticRegimentModule' | message}}
+    </div>
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.enableARVTherapeuticLinesModule"/>{{'adminProgramTemplate.enableARVTherapeuticLinesModule' | message}}
+    </div>
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.enableARVPatientModule"/>{{'adminProgramTemplate.enableARVPatientModule' | message}}
+    </div>
+    <div class="requisition-template-module-container has-tips">
+        <div class="first-line">
+            <input type="checkbox" ng-model="vm.template.enableRapidTestProductModule" ng-disabled="vm.template.enableARVProductModule"/>{{'adminProgramTemplate.enableRapidTestProductModule' | message}}
+        </div>
+        <div class="second-line" ng-show="vm.template.enableARVProductModule">Each usage report can only has one product module</div>
+    </div>
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.enableRapidTestServiceModule"/>{{'adminProgramTemplate.enableRapidTestServiceModule' | message}}
     </div>
 </div>
 <div class="openlmis-toolbar">
-    <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.save' | message}}"/>
+    <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.confirm' | message}}"/>
     <input type="button" ng-click="vm.goToTemplateList()" value="{{'adminProgramTemplate.cancel' | message}}">
 </div>
+<!-- SIGLUS-REFACTOR: ends here -->

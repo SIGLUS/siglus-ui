@@ -1,7 +1,17 @@
 {
-  "adminProgramTemplate.enableConsultationNumber": "Patient module",
-  "adminProgramTemplate.enableKITUsage": "Kit module",
+  "adminProgramTemplate.enableConsultationNumber": "Consultation number module",
+  "adminProgramTemplate.enableKITUsage": "KIT usage module",
   "adminProgramTemplate.enableProductModule": "Product module",
-  "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option",
-  "adminProgramTemplate.shouldDisplayRequestedQuantity": "If ${calculatedOrderQuantity} is not displayed, then ${requestedQuantity} should be displayed"
+  "adminProgramTemplate.enableALUsageModule": "AL usage module",
+  "adminProgramTemplate.enableARVPatientModule": "ARV patient module",
+  "adminProgramTemplate.enableARVProductModule": "ARV product module",
+  "adminProgramTemplate.enableARVTherapeuticLinesModule": "ARV therapeutic lines module",
+  "adminProgramTemplate.enableARVTherapeuticRegimentModule": "ARV therapeutic regiment module",
+  "adminProgramTemplate.enableRapidTestProductModule": "Rapid test product module",
+  "adminProgramTemplate.enableRapidTestServiceModule": "Rapid test module",
+  "adminProgramTemplate.confirm": "Confirm",
+  "adminProgramTemplate.shouldDisplayRequestedQuantity": "If ${calculatedOrderQuantity} is not displayed, then ${requestedQuantity} should be displayed",
+  "adminProgramTemplate.templateSave.title": "Save changes to the template",
+  "adminProgramTemplate.templateSave.description": "All changes to the template columns and settings will only affect future initiated requisitions/reports.",
+  "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option"
 }
