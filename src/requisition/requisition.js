@@ -31,10 +31,7 @@
     requisitionFactory.$inject = [
         '$q', '$resource', 'requisitionUrlFactory', 'RequisitionTemplate', 'LineItem', 'REQUISITION_STATUS',
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
-        'REQUISITION_RIGHTS', 'UuidGenerator',
-        // SIGLUS-REFACTOR: starts here
-        'requisitionCacheService'
-        // SIGLUS-REFACTOR: ends here
+        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService'
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
@@ -42,9 +39,7 @@
                                 authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
-            // SIGLUS-REFACTOR: use new api
             resource = $resource(requisitionUrlFactory('/api/v2/requisitions/:id'), {}, {
-            // SIGLUS-REFACTOR: ends here
                 authorize: {
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
@@ -147,9 +142,7 @@
         function Requisition(source, statusMessages) {
             var requisition = this;
 
-            // SIGLUS-REFACTOR: starts here
             Object.assign(this, source);
-            // SIGLUS-REFACTOR: ends here
 
             this.template = new RequisitionTemplate(this.template, this);
             this.$statusMessages = $filter('orderBy')(statusMessages, '-createdDate');
@@ -791,9 +784,7 @@
             if (shouldSave) {
                 requisition.$modified = false;
                 requisition.$availableOffline = true;
-                // SIGLUS-REFACTOR: starts here
                 requisitionCacheService.cacheRequisition(requisition);
-                // SIGLUS-REFACTOR: ends here
             }
         }
 
@@ -828,9 +819,7 @@
 
                 lineItem.orderable = {
                     id: lineItem.orderable.id,
-                    // SIGLUS-REFACTOR: starts here
                     versionNumber: lineItem.orderable.meta.versionNumber
-                    // SIGLUS-REFACTOR: ends here
                 };
             });
 
@@ -851,9 +840,7 @@
 
             delete requestBody.availableNonFullSupplyProducts;
             delete requestBody.availableFullSupplyProducts;
-            // SIGLUS-REFACTOR: starts here
             delete requestBody.availableProducts;
-            // SIGLUS-REFACTOR: ends here
             delete requestBody.stockAdjustmentReasons;
             delete requestBody.template;
 

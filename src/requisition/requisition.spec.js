@@ -16,9 +16,7 @@
 describe('Requisition', function() {
 
     beforeEach(function() {
-        // SIGLUS-REFACTOR: dont spy on put method
         this.offlineRequisitions = jasmine.createSpyObj('offlineRequisitions', ['remove', 'removeBy']);
-        // SIGLUS-REFACTOR: ends here
 
         var context = this;
         module('requisition', function($provide) {
@@ -49,11 +47,9 @@ describe('Requisition', function() {
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.LineItem = $injector.get('LineItem');
             this.UuidGenerator = $injector.get('UuidGenerator');
-            // SIGLUS-REFACTOR: starts here
             this.requisitionCacheService = $injector.get('requisitionCacheService');
             this.ProgramOrderableDataBuilder = $injector.get('ProgramOrderableDataBuilder');
             this.ProgramDataBuilder = $injector.get('ProgramDataBuilder');
-            // SIGLUS-REFACTOR: ends here
         });
 
         var requisitionDataBuilder = new this.RequisitionDataBuilder();
@@ -81,9 +77,7 @@ describe('Requisition', function() {
 
         spyOn(this.requisition.template, 'getColumn').andReturn(this.calculatedOrderQuantity);
         spyOn(this.authorizationService, 'isAuthenticated');
-        // SIGLUS-REFACTOR: starts here
         spyOn(this.requisitionCacheService, 'cacheRequisition').andCallThrough();
-        // SIGLUS-REFACTOR: ends here
 
         var REQUISITION_RIGHTS = this.REQUISITION_RIGHTS;
         spyOn(this.authorizationService, 'hasRight').andCallFake(function(right) {
@@ -107,9 +101,7 @@ describe('Requisition', function() {
 
         it('should submit requisition that is available offline', function() {
             var storedRequisition;
-            // SIGLUS-REFACTOR: starts here
             this.requisitionCacheService.cacheRequisition.andCallFake(function(argument) {
-            // SIGLUS-REFACTOR: ends here
                 storedRequisition = argument;
             });
 
@@ -130,9 +122,7 @@ describe('Requisition', function() {
             this.$rootScope.$apply();
 
             expect(this.requisition.$isSubmitted()).toBe(true);
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).toHaveBeenCalledWith(this.requisition);
-            // SIGLUS-REFACTOR: ends here
             expect(storedRequisition.$modified).toBe(false);
             expect(storedRequisition.$availableOffline).toBe(true);
             expect(storedRequisition.id).toEqual(this.requisition.id);
@@ -141,9 +131,7 @@ describe('Requisition', function() {
 
         it('should update modifiedDate, status and statusChanges of a requisition', function() {
             var storedRequisition, updatedRequisition;
-            // SIGLUS-REFACTOR: starts here
             this.requisitionCacheService.cacheRequisition.andCallFake(function(argument) {
-            // SIGLUS-REFACTOR: ends here
                 storedRequisition = argument;
             });
 
@@ -162,9 +150,7 @@ describe('Requisition', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).toHaveBeenCalledWith(this.requisition);
-            // SIGLUS-REFACTOR: ends here
             expect(storedRequisition.modifiedDate).toEqual(updatedRequisition.modifiedDate);
             expect(storedRequisition.status).toEqual(updatedRequisition.status);
             expect(storedRequisition.statusChanges).toEqual(updatedRequisition.statusChanges);
@@ -172,9 +158,7 @@ describe('Requisition', function() {
 
         it('should save requisition to local storage after updating it', function() {
             var storedRequisition, updatedRequisition;
-            // SIGLUS-REFACTOR: starts here
             this.requisitionCacheService.cacheRequisition.andCallFake(function(argument) {
-            // SIGLUS-REFACTOR: ends here
                 storedRequisition = argument;
             });
 
@@ -190,9 +174,7 @@ describe('Requisition', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).toHaveBeenCalledWith(this.requisition);
-            // SIGLUS-REFACTOR: ends here
             expect(storedRequisition.id).toEqual(updatedRequisition.id);
         });
 
@@ -212,9 +194,7 @@ describe('Requisition', function() {
             this.$rootScope.$apply();
 
             expect(this.requisition.$isSubmitted()).toBe(true);
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).not.toHaveBeenCalled();
-            // SIGLUS-REFACTOR: ends here
         });
     });
 
@@ -222,9 +202,7 @@ describe('Requisition', function() {
 
         it('should authorize requisition that is available offline', function() {
             var storedRequisition;
-            // SIGLUS-REFACTOR: starts here
             this.requisitionCacheService.cacheRequisition.andCallFake(function(argument) {
-            // SIGLUS-REFACTOR: ends here
                 storedRequisition = argument;
             });
 
@@ -245,9 +223,7 @@ describe('Requisition', function() {
             this.$rootScope.$apply();
 
             expect(this.requisition.$isAuthorized()).toBe(true);
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).toHaveBeenCalledWith(this.requisition);
-            // SIGLUS-REFACTOR: ends here
             expect(storedRequisition.$modified).toBe(false);
             expect(storedRequisition.$availableOffline).toBe(true);
             expect(storedRequisition.id).toEqual(this.requisition.id);
@@ -270,9 +246,7 @@ describe('Requisition', function() {
             this.$rootScope.$apply();
 
             expect(this.requisition.$isAuthorized()).toBe(true);
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).not.toHaveBeenCalled();
-            // SIGLUS-REFACTOR: ends here
         });
 
         it('should set approved quantity to requested quantity when requested quantity is not empty', function() {
@@ -353,9 +327,7 @@ describe('Requisition', function() {
 
         it('should approve requisition that is available offline', function() {
             var storedRequisition;
-            // SIGLUS-REFACTOR: starts here
             this.requisitionCacheService.cacheRequisition.andCallFake(function(argument) {
-            // SIGLUS-REFACTOR: ends here
                 storedRequisition = argument;
             });
 
@@ -374,9 +346,7 @@ describe('Requisition', function() {
             this.$rootScope.$apply();
 
             expect(this.requisition.$isApproved()).toBe(true);
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).toHaveBeenCalledWith(this.requisition);
-            // SIGLUS-REFACTOR: ends here
             expect(storedRequisition.$modified).toBe(false);
             expect(storedRequisition.$availableOffline).toBe(true);
             expect(storedRequisition.id).toEqual(this.requisition.id);
@@ -399,9 +369,7 @@ describe('Requisition', function() {
             this.$rootScope.$apply();
 
             expect(this.requisition.$isApproved()).toBe(true);
-            // SIGLUS-REFACTOR: starts here
             expect(this.requisitionCacheService.cacheRequisition).not.toHaveBeenCalled();
-            // SIGLUS-REFACTOR: ends here
         });
     });
 
@@ -486,9 +454,7 @@ describe('Requisition', function() {
             var data;
 
             this.$httpBackend
-                // SIGLUS-REFACTOR: starts here
                 .whenPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id))
-                // SIGLUS-REFACTOR: ends here
                 .respond(200, this.requisition);
 
             this.requisition.name = 'Saved requisition';
@@ -505,9 +471,7 @@ describe('Requisition', function() {
 
         it('should remove offline when 403', function() {
             this.$httpBackend
-                // SIGLUS-REFACTOR: starts here
                 .whenPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id))
-                // SIGLUS-REFACTOR: ends here
                 .respond(403, this.requisition);
 
             this.requisition.$save();
@@ -520,9 +484,7 @@ describe('Requisition', function() {
 
         it('should remove offline when 409', function() {
             this.$httpBackend
-                // SIGLUS-REFACTOR: starts here
                 .whenPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id))
-                // SIGLUS-REFACTOR: ends here
                 .respond(403, this.requisition);
 
             this.requisition.$save();
@@ -550,22 +512,16 @@ describe('Requisition', function() {
 
             expected.requisitionLineItems[0].orderable = {
                 id: expected.requisitionLineItems[0].orderable.id,
-                // SIGLUS-REFACTOR: starts here
                 versionNumber: expected.requisitionLineItems[0].orderable.meta.versionNumber
-                // SIGLUS-REFACTOR: ends here
             };
             expected.requisitionLineItems[1].orderable = {
                 id: expected.requisitionLineItems[1].orderable.id,
-                // SIGLUS-REFACTOR: starts here
                 versionNumber: expected.requisitionLineItems[1].orderable.meta.versionNumber
-                // SIGLUS-REFACTOR: ends here
 
             };
             expected.requisitionLineItems[2].orderable = {
                 id: expected.requisitionLineItems[2].orderable.id,
-                // SIGLUS-REFACTOR: starts here
                 versionNumber: expected.requisitionLineItems[2].orderable.meta.versionNumber
-                // SIGLUS-REFACTOR: ends here
             };
 
             expected.processingPeriod.startDate = '2017-01-01';
@@ -581,17 +537,13 @@ describe('Requisition', function() {
 
             delete expected.availableNonFullSupplyProducts;
             delete expected.availableFullSupplyProducts;
-            // SIGLUS-REFACTOR: starts here
             delete expected.availableProducts;
-            // SIGLUS-REFACTOR: ends here
             delete expected.stockAdjustmentReasons;
             delete expected.template;
 
             var $httpBackend = this.$httpBackend;
             $httpBackend
-                // SIGLUS-REFACTOR: starts here
                 .expectPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id), expected)
-                // SIGLUS-REFACTOR: ends here
                 .respond(200, this.requisition);
 
             this.requisition.$save();
@@ -1112,11 +1064,9 @@ describe('Requisition', function() {
             var requisition = new this.RequisitionDataBuilder().buildSubmitted(),
                 orderable = this.orderable;
 
-            // SIGLUS-REFACTOR: starts here
             requisition.availableFullSupplyProducts = [
                 new this.OrderableDataBuilder().buildJson()
             ];
-            // SIGLUS-REFACTOR: ends here
 
             this.orderable = new this.OrderableDataBuilder()
                 .withPrograms(requisition.availableFullSupplyProducts[0].programs)
@@ -1137,13 +1087,10 @@ describe('Requisition', function() {
         });
 
         it('should throw exception if trying to add full supply product to regular requisition', function() {
-            // SIGLUS-REFACTOR: starts here
             var requisition = new this.RequisitionDataBuilder().build();
             requisition.availableFullSupplyProducts = [
                 requisition.availableProducts[0]
             ];
-            // SIGLUS-REFACTOR: ends here
-
             var orderable = requisition.availableFullSupplyProducts[0];
 
             expect(function() {

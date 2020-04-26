@@ -43,9 +43,7 @@
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
 
-        // SIGLUS-REFACTOR: use new api
         var resource = $resource(requisitionUrlFactory('/api/v2/requisitions/:id'), {}, {
-        // SIGLUS-REFACTOR: ends here
             get: {
                 method: 'GET',
                 transformResponse: transformGetResponse
@@ -54,9 +52,7 @@
                 headers: {
                     'Idempotency-Key': getIdempotencyKey
                 },
-                // SIGLUS-REFACTOR: use new api
                 url: requisitionUrlFactory('/api/v2/requisitions/initiate'),
-                // SIGLUS-REFACTOR: ends here
                 method: 'POST'
             },
             search: {
@@ -142,9 +138,7 @@
                 statusMessages = offlineStatusMessages.search({
                     requisitionId: requisition.id
                 });
-                // SIGLUS-REFACTOR: starts here
                 return extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages);
-                // SIGLUS-REFACTOR: ends here
             } else if (requisition && requisition.$modified) {
                 return getRequisition(id).then(prepareRequisition);
             }
@@ -159,16 +153,12 @@
                     if (requisition.$availableOffline) {
                         storeResponses(requisition, response);
                     }
-                    // SIGLUS-REFACTOR: starts here
                     return extendLineItemsWithOrderablesAndFtaps(requisition, response);
-                    // SIGLUS-REFACTOR: ends here
                 }, function() {
                     if (requisition.$availableOffline) {
                         requisitionCacheService.cacheRequisition(requisition);
                     }
-                    // SIGLUS-REFACTOR: starts here
                     return extendLineItemsWithOrderablesAndFtaps(requisition);
-                    // SIGLUS-REFACTOR: ends here
                 });
             });
         }
@@ -190,25 +180,31 @@
          */
         // SIGLUS-REFACTOR: starts here
         function initiate(facility, program, suggestedPeriod, emergency, key, inventoryDate) {
+        // SIGLUS-REFACTOR: ends here
             return resource.initiate({
                 facility: facility,
                 program: program,
                 suggestedPeriod: suggestedPeriod,
                 emergency: emergency,
                 idempotencyKey: key,
+                // SIGLUS-REFACTOR: starts here
                 physicalInventoryDate: inventoryDate
+                // SIGLUS-REFACTOR: ends here
             }, {}).$promise
                 .then(function(requisition) {
                     filterRequisitionStockAdjustmentReasons(requisition);
+                    // SIGLUS-REFACTOR: starts here
                     requisition.$modified = false;
+                    // SIGLUS-REFACTOR: ends here
                     requisition.$availableOffline = true;
                     requisitionCacheService.cacheRequisition(requisition);
+                    // SIGLUS-REFACTOR: starts here
                     var initiateRequisition = prepareRequisition(requisition);
                     populateRequestedAndAuthorizedQuantity(initiateRequisition);
                     return initiateRequisition;
+                    // SIGLUS-REFACTOR: ends here
                 });
         }
-        // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
         function populateRequestedAndAuthorizedQuantity(requisition) {
@@ -521,12 +517,9 @@
                 requisitionId: requisition.id
             });
 
-            // SIGLUS-REFACTOR: starts here
             return extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages);
-            // SIGLUS-REFACTOR: ends here
         }
 
-        // SIGLUS-REFACTOR: starts here
         function extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages) {
             return $q.all([getByVersionIdentities(requisition.availableProducts, new OrderableResource()),
                 periodService.get(requisition.processingPeriod.id)])
@@ -585,11 +578,14 @@
 
         function filterOrderables(fullSupply, availableProducts, programId) {
             return availableProducts.filter(function(product) {
+                // SIGLUS-REFACTOR: starts here
                 var requisitionProgram = getProgramById(product.programs, programId);
                 return requisitionProgram;
+                // SIGLUS-REFACTOR: ends here
             });
         }
 
+        // SIGLUS-REFACTOR: starts here
         function getProgramById(programs, programId) {
             var match;
             programs.forEach(function(program) {
