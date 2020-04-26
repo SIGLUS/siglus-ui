@@ -1,0 +1,52 @@
+<table class="openlmis-table al-report" suppress-tr-openlmis-invalid>
+    <caption ng-if="!vm.lineItems.length">{{'requisitionReportModule.noItems' | message}}</caption>
+    <thead>
+    <tr>
+        <th rowspan="2" width="70px"></th>
+        <th class="center" colspan="{{vm.lineItems.length}}">{{'requisitionReportModule.al.nTreatmentsAttendedInThisMonth' | message}}</th>
+        <th class="center border-left" colspan="{{vm.lineItems.length}}">{{'requisitionReportModule.al.existentStockAtTheEndOfThePeriod' | message}}</th>
+    </tr>
+    <tr>
+        <th ng-repeat="item in vm.lineItems" title="{{item.orderable.fullProductName}}">{{item.orderable.fullProductName}}</th>
+        <th ng-repeat="(idx, item) in vm.lineItems" title="{{item.orderable.fullProductName}}" class="{{idx === 0 ? 'border-left' : ''}}">{{item.orderable.fullProductName}}</th>
+    </tr>
+    </thead>
+
+    <tbody ng-if="vm.lineItems.length > 0">
+    <tr ng-if-start="!vm.readOnly">
+        <td>HF</td>
+        <td ng-repeat="item in vm.lineItems">
+            <input ng-model="vm.getHF(item.alDepartmentList).consumeCount" positive-integer maxlength="8" ng-blur="vm.validateConsumeCount(vm.getHF(item.alDepartmentList))" ng-required="vm.getHF(item.alDepartmentList).isRequiredConsumeCount">
+        </td>
+        <td ng-repeat="(idx, item) in vm.lineItems" class="{{idx === 0 ? 'border-left' : ''}}">
+            <input ng-model="vm.getHF(item.alDepartmentList).stockCount" positive-integer maxlength="8" ng-blur="vm.validateStockCount(vm.getHF(item.alDepartmentList))" ng-required="vm.getHF(item.alDepartmentList).isRequiredStockCount">
+        </td>
+    </tr>
+    <tr ng-if-end>
+        <td>CHW</td>
+        <td ng-repeat="item in vm.lineItems">
+            <input ng-model="vm.getCHW(item.alDepartmentList).consumeCount" positive-integer maxlength="8" ng-blur="vm.validateConsumeCount(vm.getCHW(item.alDepartmentList))" ng-required="vm.getCHW(item.alDepartmentList).isRequiredConsumeCount">
+        </td>
+        <td ng-repeat="(idx, item) in vm.lineItems" class="{{idx === 0 ? 'border-left' : ''}}">
+            <input ng-model="vm.getCHW(item.alDepartmentList).stockCount" positive-integer maxlength="8" ng-blur="vm.validateStockCount(vm.getCHW(item.alDepartmentList))" ng-required="vm.getCHW(item.alDepartmentList).isRequiredStockCount">
+        </td>
+    </tr>
+
+    <tr ng-if-start="vm.readOnly">
+        <td>HF</td>
+        <td ng-repeat="item in vm.lineItems" align="right">{{vm.getHF(item.alDepartmentList).consumeCount}}</td>
+        <td ng-repeat="(idx, item) in vm.lineItems" align="right" class="{{idx === 0 ? 'border-left' : ''}}">{{vm.getHF(item.alDepartmentList).stockCount}}</td>
+    </tr>
+    <tr ng-if-end>
+        <td>CHW</td>
+        <td ng-repeat="item in vm.lineItems" align="right">{{vm.getCHW(item.alDepartmentList).consumeCount}}</td>
+        <td ng-repeat="(idx, item) in vm.lineItems" align="right" class="{{idx === 0 ? 'border-left' : ''}}">{{vm.getCHW(item.alDepartmentList).stockCount}}</td>
+    </tr>
+
+    <tr>
+        <td>{{'requisitionReportModule.total' | message}}</td>
+        <td ng-repeat="item in vm.lineItems" align="right">{{vm.getTotalConsume(item)}}</td>
+        <td ng-repeat="(idx, item) in vm.lineItems" align="right" class="{{idx === 0 ? 'border-left' : ''}}">{{vm.getTotalStock(item)}}</td>
+    </tr>
+    </tbody>
+</table>

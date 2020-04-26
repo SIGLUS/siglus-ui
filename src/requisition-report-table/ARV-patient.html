@@ -1,0 +1,19 @@
+<div class="max-width-patient">
+    <table suppress-tr-openlmis-invalid class="openlmis-table" ng-repeat="items in vm.types | orderObjectBy : 'patientCategory.patientGroup.displayOrder'">
+        <caption ng-if="!vm.lineItems.length">{{'requisitionReportModule.noItems' | message}}</caption>
+        <thead>
+        <tr>
+            <th colspan="2">{{items[0].patientCategory.patientGroup.name}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in items | orderBy : 'patientCategory.displayOrder'">
+            <td class="patient-category">{{item.patientCategory.name}}</td>
+            <td align="right" ng-if="vm.readOnly" class="min-cel-width">{{item.total}}</td>
+            <td ng-if="!vm.readOnly" openlmis-invalid="{{item.$error.totalInvalid | message}}">
+                <input ng-model="item.total" positive-integer maxlength="8" ng-change="vm.validateTotal(item)" ng-blur="vm.validateTotal(item)">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

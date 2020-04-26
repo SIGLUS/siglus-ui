@@ -1,0 +1,30 @@
+<div class="openlmis-table-container">
+    <div class="openlmis-flex-table rapid-test-service-report">
+        <table suppress-tr-openlmis-invalid>
+            <caption ng-if="!vm.services.length">{{'requisitionReportModule.noItems' | message}}</caption>
+            <div class="table-header">{{'requisitionReportModule.rapidTest.reportHeader' | message}}</div>
+            <thead>
+                <tr class="parent-col">
+                    <td rowspan="2" colspan="1" class="empty-td"></td>
+                    <td colspan="3" class="text-center" ng-repeat="name in vm.parentColumns track by $index">
+                        {{name}}
+                    </td>
+                </tr>
+                <tr class="sub-col">
+                    <td class="sub-name" ng-repeat="column in vm.subColumns track by $index">
+                        {{column.subname}}
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="service in vm.services | orderBy : 'displayorder' track by $index">
+                    <td ng-class="{'highlighted': service.code === 'TOTAL'||service.code === 'APES'}">{{service.name}}</td>
+                    <td ng-repeat="item in vm.groupedRows[service.code] | orderBy : 'serviceColumn.displayorder' track by $index" openlmis-invalid="{{item.error | message}}">
+                        <input ng-if="service.code !== 'TOTAL' && !vm.readOnly" ng-model="item.value" ng-change="vm.updateTotal(item)" ng-blur="vm.validate()" class="body-input" positive-integer maxlength="8">
+                        <div class="text-align-right" ng-if="service.code === 'TOTAL' || vm.readOnly">{{item.value}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
