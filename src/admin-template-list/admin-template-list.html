@@ -1,0 +1,41 @@
+<h2>{{'adminTemplateList.templates' | message}}</h2>
+<!-- SIGLUS-REFACTOR: starts here -->
+<div ng-repeat="program in vm.programs | orderBy: 'name'" class="admin-template-list">
+<!-- SIGLUS-REFACTOR: ends here -->
+    <div class="openlmis-table-container">
+        <h2>{{program.name}}</h2>
+        <table class="openlmis-table">
+            <caption ng-if="!vm.programTemplates[program.id].length">
+                {{'adminTemplateList.noRequisitionTemplates' | message: {'program': program.name} }}
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{'adminTemplateList.templateName' | message}}</th>
+                    <th>{{'adminTemplateList.facilityType' | message}}</th>
+                    <th>{{'adminTemplateList.action' | message}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="template in vm.programTemplates[program.id] | orderBy: 'name'">
+                    <td>{{template.name}}</td>
+                    <td ng-if="template.facilityTypes.length > 1"
+                        popover-template="admin-template-list/facility-types-popover.html">
+                        {{'adminTemplateList.facilityTypes' | message: {'number': vm.templateFacilityTypes[template.id].length } }}</td>
+                    <td ng-if="!(template.facilityTypes.length > 1)">{{vm.templateFacilityTypes[template.id][0].name}}</td>
+                    <td>
+                        <button ui-sref="openlmis.administration.requisitionTemplates.configure.columns({id: template.id})">{{'adminTemplateList.configure' | message}}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="openlmis-toolbar button-group">
+    <div class="button-group primary">
+        <button id="add-template" class="add" ui-sref=".add">
+            <!-- SIGLUS-REFACTOR: starts here -->
+            {{'adminTemplateList.addTemplate' | message}}
+            <!-- SIGLUS-REFACTOR: ends here -->
+        </button>
+    </div>
+</div>

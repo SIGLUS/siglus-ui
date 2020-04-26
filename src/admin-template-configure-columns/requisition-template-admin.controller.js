@@ -31,13 +31,16 @@
     RequisitionTemplateAdminController.$inject = [
         '$state', 'template', 'program', 'tags', 'notificationService', 'messageService', 'templateValidator',
         'MAX_COLUMN_DESCRIPTION_LENGTH', 'COLUMN_SOURCES', 'TEMPLATE_COLUMNS', 'loadingModalService', 'confirmService',
-        'requisitionTemplateService', '$window'
+        'requisitionTemplateService',
+        // SIGLUS-REFACTOR: starts here
+        '$window', 'TEMPLATE_TYPE'
+        // SIGLUS-REFACTOR: ends here
     ];
 
     function RequisitionTemplateAdminController($state, template, program, tags, notificationService, messageService,
                                                 templateValidator, MAX_COLUMN_DESCRIPTION_LENGTH, COLUMN_SOURCES,
                                                 TEMPLATE_COLUMNS, loadingModalService, confirmService,
-                                                requisitionTemplateService, $window) {
+                                                requisitionTemplateService, $window, TEMPLATE_TYPE) {
         // SIGLUS-REFACTOR: starts here
         $window.scrollTo(0, 0);
         // SIGLUS-REFACTOR: ends here
@@ -113,6 +116,10 @@
             vm.program = program;
             vm.availableTags = {};
             refreshAvailableTags();
+            // SIGLUS-REFACTOR: starts here
+            vm.isRequisition = vm.template.templateType === TEMPLATE_TYPE.REQUISITION;
+            vm.isUsageReport = vm.template.templateType === TEMPLATE_TYPE.USAGE_REPORT;
+            // SIGLUS-REFACTOR: ends here
         }
 
         /**
@@ -140,7 +147,9 @@
          * list view page. If saving is unsuccessful error notification is displayed.
          */
         function saveTemplate() {
-            if (vm.template.isValid()) {
+            // SIGLUS-REFACTOR: starts here
+            if (vm.isUsageReport || vm.template.isValid()) {
+            // SIGLUS-REFACTOR: starts here
                 confirmService.confirm(
                     'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
                     undefined, 'adminProgramTemplate.templateSave.title'

@@ -1,0 +1,49 @@
+<div class="requisition-template-admin">
+  <h2>{{'adminTemplateConfigureSettings.title' | message}}</h2>
+  <section class="openlmis-table-container">
+    <section class="is-primary">
+      <div class="form-group">
+        <label for="name">{{'adminTemplateConfigureSettings.templateName' | message}}</label>
+        <input id="name" class="form-control" ng-model="vm.template.name" required/>
+      </div>
+      <form class="form-inline" ng-submit="vm.add()" reload-form>
+        <div class="form-group">
+          <label for="facilityTypeSelect">{{'adminTemplateConfigureSettings.facilityType' | message}}</label>
+          <select id="facilityTypeSelect" ng-model="vm.facilityType"
+                  ng-options="facilityType.name for facilityType in vm.facilityTypes" required>
+          </select>
+        </div>
+        <button class="add" type="submit">
+          {{'adminTemplateConfigureSettings.add' | message}}
+        </button>
+      </form>
+    </section>
+    <table>
+      <caption ng-if="!vm.template.facilityTypes.length">
+        {{'adminTemplateConfigureSettings.noFacilityTypeFound' | message}}
+      </caption>
+      <thead>
+      <tr>
+        <th>{{'adminTemplateConfigureSettings.facilityType' | message}}</th>
+        <th class="col-sticky sticky-right">{{'adminTemplateConfigureSettings.action' | message}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="facilityType in vm.template.facilityTypes">
+        <td>{{facilityType.name}}</td>
+        <td>
+          <button ng-click="vm.remove(facilityType)">
+            {{'adminTemplateConfigureSettings.remove' | message}}
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+<div class="openlmis-toolbar">
+  <!-- SIGLUS-REFACTOR: starts here -->
+  <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminTemplateConfigureSettings.confirm' | message}}"/>
+  <!-- SIGLUS-REFACTOR: ends here -->
+  <input type="button" ng-click="vm.goToTemplateList()" value="{{'adminTemplateConfigureSettings.cancel' | message}}">
+</div>

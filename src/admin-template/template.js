@@ -68,6 +68,15 @@
             this.enableConsultationNumber = template.enableConsultationNumber;
             this.enableKitUsage = template.enableKitUsage;
             this.enableProductModule = template.enableProductModule;
+            this.enableALUsageModule = template.enableALUsageModule;
+            this.enableARVPatientModule = template.enableARVPatientModule;
+            this.enableARVProductModule = template.enableARVProductModule;
+            this.enableARVTherapeuticLinesModule = template.enableARVTherapeuticLinesModule;
+            this.enableARVTherapeuticRegimentModule = template.enableARVTherapeuticRegimentModule;
+            this.enableRapidTestProductModule = template.enableRapidTestProductModule;
+            this.enableRapidTestServiceModule = template.enableRapidTestServiceModule;
+            this.templateType = template.templateType;
+
             // SIGLUS-REFACTOR: ends here
 
             for (var columnName in template.columnsMap) {
@@ -239,7 +248,7 @@
 
             if (isMovingUpTheList) {
                 newDisplayOrder = columns[dropSpotIndex].displayOrder;
-                // new displayOrder value depends on if column was dropped below or above
+            // new displayOrder value depends on if column was dropped below or above
             } else {
                 newDisplayOrder = columns[dropSpotIndex - 1].displayOrder;
             }
@@ -251,12 +260,12 @@
                     if (isInDroppableArea(column.displayOrder) && column.columnDefinition.canChangeOrder) {
                         if (droppedItem.name === column.name) {
                             column.displayOrder = newDisplayOrder;
-                            // setting new displayOrder for dropped column
+                        // setting new displayOrder for dropped column
                         } else if (shouldIncrementDisplayOrder(
                             column, droppedItem, newDisplayOrder, isMovingUpTheList
                         )) {
                             column.displayOrder++;
-                            // columns between old and new position must be
+                        // columns between old and new position must be
                         } else if (shouldDecrementDisplayOrder(column, droppedItem, newDisplayOrder)) {
                             // incremented or decremented
                             column.displayOrder--;

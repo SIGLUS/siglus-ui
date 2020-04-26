@@ -66,9 +66,6 @@
             var template = new Template({
                 // SIGLUS-REFACTOR: starts here
                 populateStockOnHandFromStockCards: true,
-                enableConsultationNumber: false,
-                enableKitUsage: false,
-                enableProductModule: false,
                 // SIGLUS-REFACTOR: ends here
                 columnsMap: {},
                 facilityTypes: []

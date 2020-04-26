@@ -72,23 +72,26 @@
             var isValid = true,
                 validator = this;
 
-            // SIGLUS-REFACTOR: starts here
-            var isOptionsValid = template.enableConsultationNumber || template.enableKitUsage
-                || template.enableProductModule;
-            // SIGLUS-REFACTOR: ends here
-
             angular.forEach(template.columnsMap, function(column) {
                 isValid = isValid && !validator.getColumnError(column, template);
             });
 
             // SIGLUS-REFACTOR: starts here
-            isValid = isValid && isOptionsValid;
-            if (!isOptionsValid) {
+            isValid = isValid && isOptionsValid(template);
+            if (!isOptionsValid(template)) {
                 notificationService.error('adminProgramTemplate.template.invalidOptions');
             }
             // SIGLUS-REFACTOR: ends here
 
             return isValid;
+        }
+
+        function isOptionsValid(template) {
+            return template.enableConsultationNumber || template.enableKitUsage
+                || template.enableProductModule || template.enableALUsageModule
+                || template.enableARVPatientModule || template.enableARVProductModule
+                || template.enableARVTherapeuticLinesModule || template.enableARVTherapeuticRegimentModule
+                || template.enableRapidTestProductModule || template.enableRapidTestServiceModule;
         }
 
         /**
@@ -111,7 +114,8 @@
                 validateCalculated(column, template) ||
                 validateUserInput(column) ||
                 validateColumn(column, template) ||
-                validateTag(column, template);
+                validateTag(column, template) ||
+                validateSelectedStockCard(column, template);
 
             return error;
         }
@@ -248,22 +252,25 @@
             // SIGLUS-REFACTOR: starts here
             // var requestedQuantityExplanationColumn =
             //     template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION];
-            // SIGLUS-REFACTOR: ends here
 
-            // SIGLUS-REFACTOR: starts here
             if (!column.isDisplayed && !requestedQuantityColumn.isDisplayed) {
                 return messageService.get('adminProgramTemplate.shouldDisplayRequestedQuantity', {
                     calculatedOrderQuantity: column.label,
                     requestedQuantity: requestedQuantityColumn.label
-                    // requestedQuantityExplanation: requestedQuantityExplanationColumn.label
                 });
-            // SIGLUS-REFACTOR: ends here
             }
+            // SIGLUS-REFACTOR: ends here
         }
 
         function validateCalculatedOrderQuantityIsa(column, template) {
             if (column.isDisplayed && !template.populateStockOnHandFromStockCards) {
                 return messageService.get('adminProgramTemplate.calculatedOrderQuantityIsaCannotBeDisplayed');
+            }
+        }
+
+        function validateSelectedStockCard(column, template) {
+            if (!template.populateStockOnHandFromStockCards && column.source === COLUMN_SOURCES.STOCK_CARDS) {
+                return messageService.get('adminProgramTemplate.cannotSelectStockCard');
             }
         }
 

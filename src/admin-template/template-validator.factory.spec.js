@@ -584,5 +584,32 @@ describe('templateValidator', function() {
                 expect(result).toBe('adminProgramTemplate.calculatedOrderQuantityIsaCannotBeDisplayed');
             });
         });
+
+        describe('for cannot select stock card', function() {
+
+            it('should return error if populateStockOnHandFromStockCards is false and when has STOCK_CARDS source',
+                function() {
+                    column.name = TEMPLATE_COLUMNS.STOCK_ON_HAND;
+                    column.source = COLUMN_SOURCES.STOCK_CARDS;
+                    column.isDisplayed = true;
+                    template.populateStockOnHandFromStockCards = false;
+
+                    var result = templateValidator.getColumnError(column, template);
+
+                    expect(result).toBe('adminProgramTemplate.cannotSelectStockCard');
+                });
+
+            it('should return undefined if populateStockOnHandFromStockCards is true and when has STOCK_CARDS source',
+                function() {
+                    column.name = TEMPLATE_COLUMNS.STOCK_ON_HAND;
+                    column.source = COLUMN_SOURCES.STOCK_CARDS;
+                    column.isDisplayed = true;
+                    template.populateStockOnHandFromStockCards = true;
+
+                    var result = templateValidator.getColumnError(column, template);
+
+                    expect(result).toBeUndefined();
+                });
+        });
     });
 });

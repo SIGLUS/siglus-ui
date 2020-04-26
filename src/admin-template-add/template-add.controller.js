@@ -30,14 +30,16 @@
 
     TemplateAddController.$inject = [
         '$q', 'programs', 'facilityTypes', 'availableColumns', 'confirmService', 'messageService', 'programTemplates',
-        'template', 'TEMPLATE_COLUMNS', 'DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE'
+        'template', 'TEMPLATE_COLUMNS', 'DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE',
         // SIGLUS-REFACTOR: starts here
         // 'LOCKED_TEMPLATE_COLUMNS_ORDER'
+        '$scope', 'TEMPLATE_TYPE'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function TemplateAddController($q, programs, facilityTypes, availableColumns, confirmService, messageService,
-                                   programTemplates, template, TEMPLATE_COLUMNS, DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE) {
+                                   programTemplates, template, TEMPLATE_COLUMNS, DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE,
+                                   $scope, TEMPLATE_TYPE) {
 
         var vm = this;
 
@@ -46,6 +48,21 @@
         vm.addFacilityType = addFacilityType;
         vm.removeFacilityType = removeFacilityType;
         vm.populateFacilityTypes = populateFacilityTypes;
+
+        // SIGLUS-REFACTOR: starts here
+        vm.templateTypeOption = null;
+        vm.canSelectTemplateType = true;
+        vm.templateTypeOptions = [
+            {
+                id: TEMPLATE_TYPE.REQUISITION,
+                name: 'Requisition'
+            },
+            {
+                id: TEMPLATE_TYPE.USAGE_REPORT,
+                name: 'Usage Report'
+            }
+        ];
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -125,6 +142,32 @@
             vm.programs = programs;
             vm.availableColumns = availableColumns;
             vm.template = template;
+            // SIGLUS-REFACTOR: starts here
+            $scope.$watch(function() {
+                return vm.template;
+            }, function(newVal, oldVal) {
+                var newProgramId = newVal && newVal.program && newVal.program.id;
+                var oldProgramId = oldVal && oldVal.program && oldVal.program.id;
+                var templateTypeOption = null;
+
+                if (newProgramId !== oldProgramId) {
+                    if (newVal.program && _.isString(newVal.program.templateType)) {
+                        templateTypeOption = vm.templateTypeOptions.find(function(tto) {
+                            return tto.id === newVal.program.templateType;
+                        });
+                    }
+
+                    if (templateTypeOption) {
+                        vm.templateTypeOption = templateTypeOption;
+                        vm.canSelectTemplateType = false;
+                    } else {
+                        vm.templateTypeOption = null;
+                        vm.canSelectTemplateType = true;
+                    }
+                }
+
+            }, true);
+            // SIGLUS-REFACTOR: ends here
         }
 
         /**
@@ -136,6 +179,18 @@
          * Saves program to the server. Before action confirm modal will be shown.
          */
         function create() {
+            // SIGLUS-REFACTOR: starts here
+            if (vm.templateTypeOption) {
+                vm.template.templateType = vm.templateTypeOption.id;
+                if (vm.template.templateType === TEMPLATE_TYPE.USAGE_REPORT) {
+                    vm.template.enableProductModule = false;
+                    vm.template.enableALUsageModule = true;
+                } else {
+                    vm.template.enableProductModule = true;
+                    vm.template.enableALUsageModule = false;
+                }
+            }
+            // SIGLUS-REFACTOR: ends here
             vm.template = prepareDefaultColumns();
             var confirmMessage = messageService.get('adminTemplateAdd.createTemplate.confirm', {
                 program: vm.template.program.name
@@ -205,14 +260,14 @@
             }
         }
 
+        // SIGLUS-REFACTOR: starts here
         function prepareDefaultColumns() {
-            // SIGLUS-REFACTOR: starts here
             vm.availableColumns.forEach(function(column) {
                 vm.template.addColumn(column, column.isDisplayed);
             });
             vm.template.numberOfPeriodsToAverage = DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE;
             return vm.template;
-            // SIGLUS-REFACTOR: ends here
         }
+        // SIGLUS-REFACTOR: ends here
     }
 })();

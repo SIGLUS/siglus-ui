@@ -326,9 +326,7 @@ describe('Template', function() {
                 tag: this.columnWithDefaultSource.defaultTag
             });
         });
-        // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
         it('should add hidden column', function() {
             this.template.addColumn(this.columnWithDefaultSource, false);
 
@@ -370,9 +368,7 @@ describe('Template', function() {
                 tag: this.columnWithoutDefaultSource.defaultTag
             });
         });
-        // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
         it('should fallback to the first source option', function() {
             this.columnWithDefaultSource.sources =
                 [this.COLUMN_SOURCES.CALCULATED, this.COLUMN_SOURCES.PREVIOUS_REQUISITION];

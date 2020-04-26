@@ -1,0 +1,5 @@
+{
+    "adminTemplateConfigureSettings.confirm": "Confirm",
+    "adminTemplateConfigureSettings.templateSettingsSave.description": "All changes to the template columns and settings will only affect future initiated requisitions/reports.",
+    "adminTemplateConfigureSettings.save": "Save"
+}
