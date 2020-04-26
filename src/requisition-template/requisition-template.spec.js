@@ -42,9 +42,7 @@ describe('RequisitionTemplate', function() {
         it('should respect $display', function() {
             requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.BEGINNING_BALANCE].$display = false;
 
-            // SIGLUS-REFACTOR: starts here
-            expect(requisitionTemplate.getColumns()).toEqual([
-            // SIGLUS-REFACTOR: ends here
+            expect(requisitionTemplate.getColumns(false)).toEqual([
                 requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_CODE],
                 requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_NAME],
                 requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.STOCK_ON_HAND],
@@ -54,9 +52,7 @@ describe('RequisitionTemplate', function() {
         });
 
         it('should return all columns for full supply columns', function() {
-            // SIGLUS-REFACTOR: starts here
-            expect(requisitionTemplate.getColumns()).toEqual([
-            // SIGLUS-REFACTOR: ends here
+            expect(requisitionTemplate.getColumns(false)).toEqual([
                 requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_CODE],
                 requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_NAME],
                 requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.STOCK_ON_HAND],
@@ -66,29 +62,31 @@ describe('RequisitionTemplate', function() {
             ]);
         });
 
-        // SIGLUS-REFACTOR: delete nonFullSupply relevant
-        // it('should return non reporting columns only for non full supply', function() {
-        //     expect(requisitionTemplate.getColumns(true)).toEqual([
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_CODE],
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_NAME],
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY],
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION]
-        //     ]);
-        // });
+        it('should return non reporting columns only for non full supply', function() {
+            expect(requisitionTemplate.getColumns(true)).toEqual([
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_CODE],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_NAME],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION]
+            ]);
+        });
 
-        // it('should return non reporting columns only for emergence full supply', function() {
-        //     requisitionTemplate = new RequisitionTemplate(
-        //         new RequisitionTemplateDataBuilder().buildJson(),
-        //         new RequisitionDataBuilder().buildEmergency()
-        //     );
-        //
-        //     expect(requisitionTemplate.getColumns(true)).toEqual([
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_CODE],
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_NAME],
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY],
-        //         requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION]
-        //     ]);
-        // });
+        // SIGLUS-REFACTOR: logic of getColumns is different
+        it('should return all columns for emergence full supply', function() {
+            requisitionTemplate = new RequisitionTemplate(
+                new RequisitionTemplateDataBuilder().buildJson(),
+                new RequisitionDataBuilder().buildEmergency()
+            );
+
+            expect(requisitionTemplate.getColumns(true)).toEqual([
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_CODE],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.PRODUCT_NAME],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.STOCK_ON_HAND],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION],
+                requisitionTemplate.columnsMap[TEMPLATE_COLUMNS.BEGINNING_BALANCE]
+            ]);
+        });
         // SIGLUS-REFACTOR: ends here
 
     });

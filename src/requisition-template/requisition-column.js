@@ -46,7 +46,9 @@
             TEMPLATE_COLUMNS.REMARKS,
             TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS,
             TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION,
-            TEMPLATE_COLUMNS.REQUESTED_QUANTITY,
+            // SIGLUS-REFACTOR: starts here
+            // TEMPLATE_COLUMNS.REQUESTED_QUANTITY,
+            // SIGLUS-REFACTOR: ends here
             TEMPLATE_COLUMNS.ADJUSTED_CONSUMPTION,
             TEMPLATE_COLUMNS.NUMBER_OF_NEW_PATIENTS_ADDED
         ];
@@ -115,6 +117,12 @@
                 TEMPLATE_COLUMNS.BEGINNING_BALANCE,
                 TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
                 TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY
+            ],
+            difference: [
+                TEMPLATE_COLUMNS.BEGINNING_BALANCE,
+                TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
+                TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
+                TEMPLATE_COLUMNS.STOCK_ON_HAND
             ]
             // SIGLUS-REFACTOR: ends here
         };
@@ -181,14 +189,20 @@
          * @param  {Object}            requisition requisition object from server
          * @return {RequisitionColumn}             column with additional info
          */
+        /* eslint-disable complexity */
         function displayColumn(column, requisition) {
             if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
                 typeof column.option !== 'undefined') {
                 return (column.option.optionName === 'showPackToShipInApprovalPage' &&
                     requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
             }
-
             // SIGLUS-REFACTOR: starts here
+            if ((TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED === column.name
+                || TEMPLATE_COLUMNS.QUANTITY_APPROVED === column.name)
+                && requisition.isHistory) {
+                return true;
+            }
+
             if (column.isDisplayed && TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED === column.name) {
                 return requisition.$hasAuthorizeRight(requisition);
             }
