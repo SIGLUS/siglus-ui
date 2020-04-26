@@ -1,0 +1,31 @@
+<table class="openlmis-table" suppress-tr-openlmis-invalid>
+    <caption ng-if="!vm.lineItems.length">{{'requisitionReportModule.noItems' | message}}</caption>
+    <thead>
+    <tr>
+        <th colspan="2">{{'requisitionReportModule.regiment.productName' | message}}</th>
+        <th>{{'requisitionReportModule.regiment.totalPatients' | message}}</th>
+        <th>{{'requisitionReportModule.regiment.communityPharmacy' | message}}</th>
+        <th ng-if="!vm.readOnly" class="min-cel-width"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in vm.lineItems | orderBy : 'regimenDispatchLine.displayOrder'">
+        <td colspan="2" align="right">{{item.regimenDispatchLine.name}}</td>
+        <td align="right" ng-if="vm.readOnly">{{item.hfPatients}}</td>
+        <td ng-if="!vm.readOnly">
+            <input ng-model="item.hfPatients" positive-integer maxlength="8" ng-blur="vm.validateHFPatients(item)" ng-required="item.isRequiredHFPatients">
+        </td>
+        <td align="right" ng-if="vm.readOnly">{{item.chwPatients}}</td>
+        <td ng-if="!vm.readOnly">
+            <input ng-model="item.chwPatients" positive-integer maxlength="8" ng-blur="vm.validateCHWPatients(item)" ng-required="item.isRequiredCHWPatients">
+        </td>
+        <td ng-if="!vm.readOnly"></td>
+    </tr>
+    <tr align="right" ng-if="vm.lineItems.length">
+        <td colspan="2" class="regime-total">{{'requisitionReportModule.total' | message}}</td>
+        <td>{{vm.calculateTotal(vm.lineItems, 'hfPatients')}}</td>
+        <td>{{vm.calculateTotal(vm.lineItems, 'chwPatients')}}</td>
+        <td ng-if="!vm.readOnly"></td>
+    </tr>
+    </tbody>
+</table>
