@@ -85,9 +85,7 @@
                     return ADJUSTMENT_TYPE.ADJUSTMENT;
                 },
                 srcDstAssignments: function() {
-                    // SIGLUS-REFACTOR: adjustment will not include destination cols
-                    return null;
-                    // SIGLUS-REFACTOR: ends here
+                    return undefined;
                 }
             }
         });

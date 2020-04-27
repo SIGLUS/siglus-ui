@@ -26,9 +26,9 @@
         'stock-valid-reason',
         'referencedata-program',
         'referencedata-facility',
+        'stock-reasons-modal',
         // SIGLUS-REFACTOR: starts here
         // 'stock-unpack-kit',
-        'stock-reasons-modal',
         'referencedata-lot',
         'stock-input-select'
         // SIGLUS-REFACTOR: ends here
