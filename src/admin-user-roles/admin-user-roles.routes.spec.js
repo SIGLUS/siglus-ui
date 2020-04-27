@@ -83,7 +83,7 @@ describe('openlmis.administration.users.roles', function() {
         spyOn(this.facilityService, 'getAllMinimal').andReturn(this.$q.resolve(this.warehouses));
         spyOn(this.currentUserService, 'getUserInfo').andReturn(this.$q.resolve(this.user));
         // SIGLUS-REFACTOR: starts here
-        spyOn(this.programService, 'getReportPrograms').andReturn(this.$q.resolve(this.programs));
+        spyOn(this.programService, 'getVirtualPrograms').andReturn(this.$q.resolve(this.programs));
         // SIGLUS-REFACTOR: ends here
         spyOn(this.userRoleAssignmentFactory, 'getUser').andReturn(this.$q.resolve(this.user));
         spyOn(this.$templateCache, 'get').andCallThrough();
@@ -108,7 +108,7 @@ describe('openlmis.administration.users.roles', function() {
             expect(this.getResolvedValue('programs')).toEqual(this.programs);
 
             // SIGLUS-REFACTOR: starts here
-            expect(this.programService.getReportPrograms).toHaveBeenCalled();
+            expect(this.programService.getVirtualPrograms).toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
         });
 

@@ -36,14 +36,8 @@
                 REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
             ],
             resolve: {
-                program: function(authorizationService, programService, $stateParams) {
-                    var userId = authorizationService.getUser().user_id;
-                    return programService.getReportPrograms(userId)
-                        .then(function(programs) {
-                            return _.find(programs, {
-                                id: $stateParams.program
-                            });
-                        });
+                program: function($stateParams, programService) {
+                    return programService.get($stateParams.program);
                 },
                 periods: function(periodFactory, $stateParams, program, TEMPLATE_TYPE) {
                     if ($stateParams.program && $stateParams.facility) {
