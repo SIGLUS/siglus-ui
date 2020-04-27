@@ -42,14 +42,8 @@
                 facilities: function(requisitionSearchService) {
                     return requisitionSearchService.getFacilities();
                 },
-                program: function(authorizationService, programService, $stateParams) {
-                    var userId = authorizationService.getUser().user_id;
-                    return programService.getReportPrograms(userId)
-                        .then(function(programs) {
-                            return _.find(programs, {
-                                id: $stateParams.program
-                            });
-                        });
+                program: function($stateParams, programService) {
+                    return programService.get($stateParams.program);
                 },
                 requisitions: function(paginationService, requisitionService, $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {

@@ -51,7 +51,7 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
         spyOn(periodFactory, 'get').andReturn($q.resolve(periods));
         spyOn(requisitionInitiateService, 'getPhysicalInventoryDates').andReturn($q.resolve([]));
         spyOn(authorizationService, 'getUser').andReturn($q.resolve({}));
-        spyOn(programService, 'getReportPrograms').andReturn($q.resolve([]));
+        spyOn(programService, 'get').andReturn($q.resolve([]));
     });
 
     describe('periods resolve', function() {

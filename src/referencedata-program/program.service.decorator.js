@@ -33,35 +33,19 @@
         $provide.decorator('programService', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource', 'PROGRAM_CODE'];
-    function decorator($delegate, openlmisUrlFactory, $resource, PROGRAM_CODE) {
-        var resource = $resource(openlmisUrlFactory('/api/requisitionTemplates/programs'), {}, {
-            getReportPrograms: {
+    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource'];
+    function decorator($delegate, openlmisUrlFactory, $resource) {
+        var resource = $resource(openlmisUrlFactory('/api/siglusintegration/programs'), {}, {
+            getAll: {
                 method: 'GET',
                 isArray: true
             }
         });
 
-        $delegate.getReportPrograms = getReportPrograms;
         $delegate.getRealPrograms = getRealPrograms;
         $delegate.getVirtualPrograms = getVirtualPrograms;
 
         return $delegate;
-
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-program.programService
-         * @name getReportPrograms
-         *
-         * @description
-         * Get report programs.
-         */
-        function getReportPrograms() {
-            return resource.getReportPrograms({
-                isReport: true
-            })
-                .$promise;
-        }
 
         /**
          * @ngdoc method
@@ -72,7 +56,8 @@
          * Get real programs.
          */
         function getRealPrograms() {
-            return $delegate.getAll()
+            return resource.getAll()
+                .$promise
                 .then(function(programs) {
                     return _.filter(programs, function(p) {
                         return !p.isVirtual;
@@ -89,10 +74,11 @@
          * Get virtual programs.
          */
         function getVirtualPrograms() {
-            return $delegate.getAll()
+            return resource.getAll()
+                .$promise
                 .then(function(programs) {
                     return _.filter(programs, function(p) {
-                        return p.code !== PROGRAM_CODE.ALL && p.isVirtual;
+                        return p.isVirtual;
                     });
                 });
         }

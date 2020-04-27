@@ -34,7 +34,7 @@
                 },
                 programs: function(programService) {
                     // SIGLUS-REFACTOR: filter program
-                    return programService.getReportPrograms();
+                    return programService.getVirtualPrograms();
                     // SIGLUS-REFACTOR: ends here
                 },
                 facilitiesMap: function(facilityService, ObjectMapper) {
