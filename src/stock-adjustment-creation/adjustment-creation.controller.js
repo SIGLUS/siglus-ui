@@ -528,7 +528,7 @@
 
             if (!_.isString(draftId) || _.isEmpty(vm.draft)) {
                 // first save
-                $http.post(stockmanagementUrlFactory('/api/drafts'), {
+                $http.post(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {
                     programId: program.id,
                     facilityId: facility.id,
                     userId: user.user_id,

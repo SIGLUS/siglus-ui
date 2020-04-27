@@ -74,7 +74,7 @@
         };
 
         vm.$onInit = function() {
-            var url = stockmanagementUrlFactory('/api/drafts');
+            var url = stockmanagementUrlFactory('/api/siglusintegration/drafts');
             loadingModalService.open();
             var promises = _.map(programs, function(program) {
                 return $http.get(url, {
