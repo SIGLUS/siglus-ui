@@ -40,7 +40,7 @@
             areAllRightsRequired: false,
             resolve: {
                 programs: function(programService) {
-                    // SIGLUS-REFACTOR: get true program
+                    // SIGLUS-REFACTOR: get real program
                     return programService.getRealPrograms();
                     //SIGLUS-REFACTOR: ends here
                 },
