@@ -12,7 +12,6 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-/* eslint-disable */
 
 (function() {
 
@@ -30,10 +29,12 @@
         .controller('StockCardController', controller);
 
     // SIGLUS-REFACTOR: starts here
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService', 'Reason', 'alertService', '$scope'];
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
+        'Reason', 'alertService', '$scope'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService, Reason, alertService, $scope) {
+    function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService,
+                        Reason, alertService, $scope) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -62,8 +63,8 @@
             $state.current.label = stockCard.orderable.fullProductName;
 
             var items = [];
-            var previousSoh;
             // SIGLUS-REFACTOR: starts here
+            // var previousSoh;
             var hasAddFirstInventory = false;
             var firstInventoryItem = {
                 occurredDate: stockCard.createDate,
@@ -105,15 +106,15 @@
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
         }
+
+        // function getSignedQuantity(adjustment) {
+        //     if (adjustment.reason.reasonType === REASON_TYPES.DEBIT) {
+        //         return -adjustment.quantity;
+        //     }
+        //     return adjustment.quantity;
+        //
+        // }
         // SIGLUS-REFACTOR: ends here
-
-        function getSignedQuantity(adjustment) {
-            if (adjustment.reason.reasonType === REASON_TYPES.DEBIT) {
-                return -adjustment.quantity;
-            }
-            return adjustment.quantity;
-
-        }
 
         /**
          * @ngdoc method
@@ -141,7 +142,7 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        $scope.$on('$viewContentLoaded', function () {
+        $scope.$on('$viewContentLoaded', function() {
             var lastItemStockOnHand = vm.stockCard.lineItems[0].stockOnHand;
 
             if (stockCard.isViewProductCard && lastItemStockOnHand !== stockCard.stockOnHand) {
