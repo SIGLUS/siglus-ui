@@ -473,7 +473,10 @@
                 });
             } else if ($stateParams.keyword) {
                 cancelFilter();
-                //alertService.error('stockAdjustmentCreation.submitInvalid');
+            } else {
+                vm.keyword = null;
+                reorderItems();
+                // alertService.error('stockAdjustmentCreation.submitInvalid');
                 // SIGLUS-REFACTOR: ends here
             }
         };
@@ -596,6 +599,7 @@
         function reorderItems() {
             var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
 
+            console.log(sorted);
             vm.displayItems = _.chain(sorted).groupBy(function(item) {
                 return item.lot ? item.lot.id : item.orderable.id;
             })
@@ -606,6 +610,7 @@
                 })
                 .flatten(true)
                 .value();
+            console.log(vm.displayItems);
         }
 
         // SIGLUS-REFACTOR: starts here

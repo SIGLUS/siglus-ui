@@ -138,7 +138,8 @@ describe('StockAdjustmentCreationController', function() {
             expect(lineItem.$errors.quantityInvalid).toBeFalsy();
         });
 
-        it('line item quantity is invalid given 0', function() {
+        // SIGLUS-REFACTOR: starts here
+        it('line item quantity is valid given 0', function() {
             var lineItem = {
                 id: '1',
                 quantity: 0,
@@ -146,7 +147,6 @@ describe('StockAdjustmentCreationController', function() {
             };
             vm.validateQuantity(lineItem);
 
-            // SIGLUS-REFACTOR: starts here
             // expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
             expect(lineItem.$errors.quantityInvalid).toBeFalsy();
             // SIGLUS-REFACTOR: ends here
@@ -165,69 +165,69 @@ describe('StockAdjustmentCreationController', function() {
     });
 
     // SIGLUS-REFACTOR: starts here
-    // it('should reorder all added items when quantity validation failed', function() {
-    //     var date1 = new Date(2017, 3, 20);
-    //     var lineItem1 = {
-    //         reason: {
-    //             id: '123',
-    //             reasonType: 'DEBIT'
-    //         },
-    //         orderable: {
-    //             productCode: 'C100'
-    //         },
-    //         occurredDate: date1,
-    //         $errors: {}
-    //     };
-    //
-    //     var lineItem2 = {
-    //         reason: {
-    //             id: '123',
-    //             reasonType: 'DEBIT'
-    //         },
-    //         orderable: {
-    //             productCode: 'C150'
-    //         },
-    //         occurredDate: date1,
-    //         $errors: {}
-    //     };
-    //
-    //     var date2 = new Date(2017, 3, 25);
-    //     var lineItem3 = {
-    //         reason: {
-    //             id: '123',
-    //             reasonType: 'DEBIT'
-    //         },
-    //         orderable: {
-    //             productCode: 'C100'
-    //         },
-    //         occurredDate: date2,
-    //         $errors: {
-    //             quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
-    //         }
-    //     };
-    //
-    //     var lineItem4 = {
-    //         reason: {
-    //             id: '123',
-    //             reasonType: 'DEBIT'
-    //         },
-    //         orderable: {
-    //             productCode: 'C120'
-    //         },
-    //         occurredDate: date2,
-    //         $errors: {
-    //             quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
-    //         }
-    //     };
-    //
-    //     vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
-    //
-    //     vm.submit();
-    //
-    //     var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
-    //
-    //     expect(vm.displayItems).toEqual(expectItems);
-    // });
+    it('should reorder all added items when quantity validation failed', function() {
+        var date1 = new Date(2017, 3, 20);
+        var lineItem1 = {
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C100'
+            },
+            occurredDate: date1,
+            $errors: {}
+        };
+
+        var lineItem2 = {
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C150'
+            },
+            occurredDate: date1,
+            $errors: {}
+        };
+
+        var date2 = new Date(2017, 3, 25);
+        var lineItem3 = {
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C100'
+            },
+            occurredDate: date2,
+            $errors: {
+                quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+            }
+        };
+
+        var lineItem4 = {
+            reason: {
+                id: '123',
+                reasonType: 'DEBIT'
+            },
+            orderable: {
+                productCode: 'C120'
+            },
+            occurredDate: date2,
+            $errors: {
+                quantityInvalid: 'stockAdjustmentCreation.sohCanNotBeNegative'
+            }
+        };
+
+        vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
+
+        vm.submit();
+
+        var expectItems = [lineItem3, lineItem1, lineItem4, lineItem2];
+
+        expect(vm.displayItems).toEqual(expectItems);
+    });
     // SIGLUS-REFACTOR: ends here
 
     it('should remove all line items', function() {
@@ -274,7 +274,7 @@ describe('StockAdjustmentCreationController', function() {
         expect(vm.addedLineItems).toEqual([lineItem2]);
     });
 
-    // SIGLUS-REFACTOR: starts here
+    // SIGLUS-REFACTOR: addProduct function has been removed from StockAdjustmentCreationController
     // describe('addProduct', function() {
     //
     //     beforeEach(function() {
@@ -372,15 +372,15 @@ describe('StockAdjustmentCreationController', function() {
             vm.submit();
             rootScope.$apply();
 
-            // SIGLUS-REFACTOR: starts here
-            // expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
-            //     facility: facility.id,
-            //     program: program.id
-            // });
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
+            });
 
-            //expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
+            // SIGLUS-REFACTOR: starts here
             expect(signatureModalService.confirm).toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
+            expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
             expect(alertService.error).not.toHaveBeenCalled();
         });
 
@@ -398,11 +398,13 @@ describe('StockAdjustmentCreationController', function() {
 
             // SIGLUS-REFACTOR: starts here
             expect(signatureModalService.confirm).toHaveBeenCalled();
+            // SIGLUS-REFACTOR: ends here
             expect(state.go).not.toHaveBeenCalled();
-            //expect(alertService.error).toHaveBeenCalledWith('error occurred');
+            expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
         });
 
+        // SIGLUS-REFACTOR: unit tests for unpacking
         // it('should generate kit constituent if the state is unpacking', function() {
         //     spyOn(stockAdjustmentCreationService, 'submitAdjustments');
         //     stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
