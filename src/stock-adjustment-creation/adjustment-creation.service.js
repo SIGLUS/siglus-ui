@@ -109,7 +109,7 @@
         };
 
         this.getDraftById = function(draftId, adjustmentType, programId, facilityId, userId) {
-            return $http.get(stockmanagementUrlFactory('/api/drafts'), {
+            return $http.get(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {
                 params: {
                     program: programId,
                     facility: facilityId,
@@ -164,12 +164,12 @@
                 return newLine;
             });
 
-            var url = stockmanagementUrlFactory('/api/drafts') + '/' + draft.id;
+            var url = stockmanagementUrlFactory('/api/siglusintegration/drafts') + '/' + draft.id;
             return $http.put(url, draft);
         }
 
         function deleteDraft(draftId) {
-            var url = stockmanagementUrlFactory('/api/drafts') + '/' + draftId;
+            var url = stockmanagementUrlFactory('/api/siglusintegration/drafts') + '/' + draftId;
             return $http.delete(url);
         }
         // SIGLUS-REFACTOR: ends here
