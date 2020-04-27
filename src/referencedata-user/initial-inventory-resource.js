@@ -22,7 +22,7 @@
      * @name referencedata-user.InitialInventoryResource
      *
      * @description
-     * Implementation of the AuthUserResource interface. Communicates with the REST API of the OpenLMIS
+     * Implementation of the InitialInventoryResource interface. Communicates with the REST API of the OpenLMIS
      * server.
      */
     angular

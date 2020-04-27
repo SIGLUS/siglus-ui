@@ -22,7 +22,7 @@
      * @name referencedata-period.periodService
      *
      * @description
-     * Responsible for retrieving all processing period information from the server.
+     * Decorates periodService with new create method.
      */
     angular
         .module('referencedata-period')

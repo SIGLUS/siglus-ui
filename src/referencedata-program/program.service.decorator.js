@@ -69,7 +69,7 @@
          * @name getRealPrograms
          *
          * @description
-         * Get true programs.
+         * Get real programs.
          */
         function getRealPrograms() {
             return $delegate.getAll()
