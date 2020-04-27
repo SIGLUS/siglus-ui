@@ -20,6 +20,7 @@ describe('StockAdjustmentCreationController', function() {
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
         orderableGroups, LotDataBuilder, signatureModalService;
+    // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
 
@@ -44,10 +45,13 @@ describe('StockAdjustmentCreationController', function() {
             alertService = $injector.get('alertService');
             notificationService = $injector.get('notificationService');
             LotDataBuilder = $injector.get('LotDataBuilder');
+            // SIGLUS-REFACTOR: starts here
             // UNPACK_REASONS = $injector.get('UNPACK_REASONS');
+            // SIGLUS-REFACTOR: ends here
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
 
+            // SIGLUS-REFACTOR: starts here
             signatureModalService = jasmine.createSpyObj('signatureModalService', ['confirm']);
 
             var deferred = q.defer();
