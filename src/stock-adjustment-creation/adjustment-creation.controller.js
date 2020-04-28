@@ -471,11 +471,10 @@
                     loadingModalService.open();
                     confirmSubmit(signature);
                 });
-            } else if ($stateParams.keyword) {
-                cancelFilter();
             } else {
-                vm.keyword = null;
-                reorderItems();
+                cancelFilter();
+                // vm.keyword = null;
+                // reorderItems();
                 // alertService.error('stockAdjustmentCreation.submitInvalid');
                 // SIGLUS-REFACTOR: ends here
             }
