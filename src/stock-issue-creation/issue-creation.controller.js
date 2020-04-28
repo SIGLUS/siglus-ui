@@ -622,7 +622,7 @@
                     stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems).then(function(ret) {
                         mapOfIdAndLot = ret;
 
-                        $http.get(stockmanagementUrlFactory('/api/siglus/stockCardSummaries'), {
+                        $http.get(stockmanagementUrlFactory('/api/siglusintegration/stockCardSummaries'), {
                             params: {
                                 programId: vm.draft.programId,
                                 facilityId: vm.draft.facilityId
