@@ -35,7 +35,7 @@
 
     decorator.$inject = ['$delegate', '$resource', 'stockmanagementUrlFactory'];
     function decorator($delegate, $resource, stockmanagementUrlFactory) {
-        var resource = $resource(stockmanagementUrlFactory('/api/physicalInventories')),
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories')),
             physicalInventoryService = $delegate;
 
         physicalInventoryService.getInitialDraft = getInitialDraft;

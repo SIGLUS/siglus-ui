@@ -30,17 +30,19 @@
 
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl'
+        'FullStockCardSummaryRepositoryImpl', 'loadingModalService', '$state', 'alertService', 'currentUserService'
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-                     FullStockCardSummaryRepositoryImpl) {
+                     FullStockCardSummaryRepositoryImpl, loadingModalService, $state, alertService,
+                     currentUserService) {
 
         return {
             getDrafts: getDrafts,
             getDraft: getDraft,
             getPhysicalInventory: getPhysicalInventory,
-            saveDraft: saveDraft
+            saveDraft: saveDraft,
+            getInitialInventory: getInitialInventory
         };
 
         /**
@@ -131,6 +133,35 @@
 
                             return draftToReturn;
                         });
+                });
+        }
+
+        function getInitialInventory(programId, facilityId) {
+            return physicalInventoryService.getInitialDraft(programId, facilityId)
+                .then(function(drafts) {
+                    var draft = _.first(drafts);
+                    return getStockProducts(draft.programId, draft.facilityId)
+                        .then(function(summaries) {
+                            var initialInventory = {
+                                programId: draft.programId,
+                                facilityId: draft.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(draft, summaries, initialInventory);
+                            initialInventory.id = draft.id;
+
+                            return initialInventory;
+                        });
+                }, function(err) {
+                    loadingModalService.close();
+                    currentUserService.clearCache();
+                    if (err.status === 406) {
+                        delete $state.get('openlmis.stockmanagement.initialInventory').showInNavigation;
+                        alertService.error('stockInitialInventory.initialFailed');
+                    }
+                    $state.go('openlmis.home', {}, {
+                        reload: true
+                    });
                 });
         }
 

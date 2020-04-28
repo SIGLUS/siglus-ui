@@ -29,12 +29,12 @@
 
     initialInventoryNavigationInterceptor.$inject = [
         '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
-        '$http', 'programService', 'facilityFactory', 'physicalInventoryService', 'currentUserService', 'alertService'
+        '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService'
     ];
 
     function initialInventoryNavigationInterceptor($rootScope, loadingModalService, confirmService, $state,
                                                    stockmanagementUrlFactory, $http, programService, facilityFactory,
-                                                   physicalInventoryService, currentUserService, alertService) {
+                                                   physicalInventoryFactory, currentUserService) {
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             if (checkInitialInventoryStatus() && !toState.url.contains('/initialInventory')
                 && toState.showInNavigation && toState.url !== '/home') {
@@ -74,31 +74,7 @@
             confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialDiscard.confirm')
                 .then(function() {
                     loadingModalService.open();
-                    facilityFactory.getUserHomeFacility().then(function(facility) {
-                        programService.getAll().then(function(programs) {
-                            var program = _.find(programs, function(progarm) {
-                                return progarm.code === 'ALL';
-                            });
-                            physicalInventoryService.getInitialDraft(program.id, facility.id).then(function(drafts) {
-                                $state.go('openlmis.stockmanagement.initialInventory', {
-                                    id: _.first(drafts).id,
-                                    program: program,
-                                    facility: facility
-                                });
-                            }, function(err) {
-                                loadingModalService.close();
-                                currentUserService.clearCache();
-                                if (err.status === 406) {
-                                    delete $state.get('openlmis.stockmanagement.initialInventory').showInNavigation;
-                                    alertService.error('stockInitialInventory.initialFailed');
-                                }
-                                $state.go('openlmis.home', {}, {
-                                    reload: true
-                                });
-                            });
-                        });
-                    });
-
+                    $state.go('openlmis.stockmanagement.initialInventory');
                 });
         }
     }
