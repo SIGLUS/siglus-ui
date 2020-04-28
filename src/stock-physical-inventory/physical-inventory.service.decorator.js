@@ -202,7 +202,7 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, draft).$promise;
+            }, formatPayload(draft)).$promise;
         }
 
         /**
@@ -235,7 +235,7 @@
          */
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
-            return resource.submitPhysicalInventory(formatEvent(event)).$promise;
+            return resource.submitPhysicalInventory(formatPayload(event)).$promise;
         }
 
         function getLot(item, hasLot) {
@@ -244,20 +244,22 @@
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
         <!-- SIGLUS-REFACTOR: starts here -->
-        function formatEvent(event) {
-            event.lineItems.forEach(function(lineItem) {
-                lineItem.extraData.lotCode = lineItem.lotCode;
-                lineItem.extraData.expirationDate = lineItem.expirationDate;
-                lineItem.extraData.stockCardId = lineItem.stockCardId;
-                lineItem.extraData.reasonFreeText = lineItem.reasonFreeText;
+        function formatPayload(payload) {
+            payload.lineItems.forEach(function(lineItem) {
+                if (lineItem.extraData) {
+                    lineItem.extraData.lotCode = lineItem.lotCode;
+                    lineItem.extraData.expirationDate = lineItem.expirationDate;
+                    lineItem.extraData.stockCardId = lineItem.stockCardId;
+                    lineItem.extraData.reasonFreeText = lineItem.reasonFreeText;
 
-                delete lineItem.lotCode;
-                delete lineItem.expirationDate;
-                delete lineItem.stockCardId;
-                delete lineItem.reasonFreeText;
+                    delete lineItem.lotCode;
+                    delete lineItem.expirationDate;
+                    delete lineItem.stockCardId;
+                    delete lineItem.reasonFreeText;
+                }
             });
 
-            return event;
+            return payload;
         }
         <!-- SIGLUS-REFACTOR: ends here -->
     }
