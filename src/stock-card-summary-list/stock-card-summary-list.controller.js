@@ -28,15 +28,15 @@
         .module('stock-card-summary-list')
         .controller('StockCardSummaryListController', controller);
 
-    // SIGLUS-REFACTOR: add 'stockCardSummaryListService', 'user', 'facility', 'localStorageService'
+    // SIGLUS-REFACTOR: add 'user', 'facility', 'programs', 'localStorageService'
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'stockCardSummaryListService', 'user', 'facility', 'localStorageService'
+        'user', 'facility', 'programs', 'localStorageService'
     ];
     // SIGLUS-REFACTOR: ends here
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        stockCardSummaryListService, user, facility, localStorageService) {
+                        user, facility, programs, localStorageService) {
         var vm = this;
         // SIGLUS-REFACTOR: starts here
         var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
@@ -72,11 +72,9 @@
          */
         function onInit() {
             vm.stockCardSummaries = stockCardSummaries;
-            stockCardSummaryListService.getPrograms(user.user_id).then(function(res) {
-                vm.programs = res;
-                vm.program = _.find(res, function(p) {
-                    return p.id === $stateParams.program;
-                });
+            vm.programs = programs;
+            vm.program = _.find(programs, function(p) {
+                return p.id === $stateParams.program;
             });
         }
 
