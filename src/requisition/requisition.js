@@ -572,9 +572,7 @@
          * @param   {string}    requestedQuantityExplanation    the explanation
          */
         function addLineItem(orderable, requestedQuantity, requestedQuantityExplanation) {
-            // SIGLUS-REFACTOR: starts here
-            var orderableProgram = getOrderableProgramByParentId(orderable.programs, this.program);
-            // SIGLUS-REFACTOR: ends here
+            var orderableProgram = getOrderableProgramById(orderable.programs, this.program.id);
 
             this.requisitionLineItems.push(new LineItem({
                 orderable: orderable,
@@ -587,7 +585,7 @@
 
         // SIGLUS-REFACTOR: add new method addLineItemWithLineItem
         function addLineItemWithLineItem(lineItem, requestedQuantity, requestedQuantityExplanation) {
-            var orderableProgram = getOrderableProgramByParentId(lineItem.orderable.programs, this.program);
+            var orderableProgram = getOrderableProgramById(lineItem.orderable.programs, this.program.id);
             var newLineItem = new LineItem(_.extend(lineItem, {
                 requestedQuantity: requestedQuantity,
                 requestedQuantityExplanation: requestedQuantityExplanation,
@@ -715,24 +713,13 @@
             });
         }
 
-        // SIGLUS-REFACTOR: get program by parent id
-        // function getOrderableProgramById(programs, programId) {
-        //     return programs.filter(function(program) {
-        //         return program.programId === programId;
-        //     })[0];
-        // }
-
-        function getOrderableProgramByParentId(programs, requisitionProgram) {
+        function getOrderableProgramById(programs, programId) {
             return programs.filter(function(program) {
-                //handle special program malaria
-                if (program.programId === requisitionProgram.id
-                    && requisitionProgram.id === 'dfbbd880-cfd2-11e9-9535-0242ac130005') {
-                    return true;
-                }
-                return program.parentId === requisitionProgram.id;
+                // SIGLUS-REFACTOR: get program by parent id
+                return program.parentId === programId;
+                // SIGLUS-REFACTOR: ends here
             })[0];
         }
-        // SIGLUS-REFACTOR: ends here
 
         function filterOutOrderablesWithLineItems(orderables, lineItems) {
             return orderables.filter(function(orderable) {

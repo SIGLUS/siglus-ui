@@ -113,9 +113,7 @@
         }
 
         function validateOrderableIsAvailable(requisition, orderable) {
-            // SIGLUS-REFACTOR: starts here
-            var program = getOrderableProgramByParentId(orderable.programs, requisition.program);
-            // SIGLUS-REFACTOR: ends here
+            var program = getOrderableProgramById(orderable.programs, requisition.program.id);
 
             if (!program) {
                 throw 'The given product is not available for this requisition';
@@ -139,7 +137,7 @@
 
         // SIGLUS-REFACTOR: starts here
         // function validateNotAddingFullSupplyLineItemToRegularRequisition(requisition, orderable) {
-        //     var program = getOrderableProgramByParentId(orderable.programs, requisition.program.id);
+        //     var program = getOrderableProgramById(orderable.programs, requisition.program.id);
         //
         //     if (program.fullSupply && !requisition.emergency) {
         //         throw 'Can not add full supply line items to regular requisition';
@@ -160,21 +158,12 @@
             }
         }
 
-        // SIGLUS-REFACTOR: get program by parent id
-        // function getOrderableProgramById(programs, programId) {
-        //     return programs.filter(function(program) {
-        //         return program.programId === programId;
-        //     })[0];
-        // }
-
-        function getOrderableProgramByParentId(programs, requisitionProgram) {
+        function getOrderableProgramById(programs, programId) {
             return programs.filter(function(program) {
-                if (program.programId === requisitionProgram.id && requisitionProgram.code === 'ML') {
-                    return true;
-                }
-                return program.parentId === requisitionProgram.id;
+                // SIGLUS-REFACTOR: get program by parent id
+                return program.parentId === programId;
+                // SIGLUS-REFACTOR: ends here
             })[0];
         }
-        // SIGLUS-REFACTOR: ends here
     }
 })();

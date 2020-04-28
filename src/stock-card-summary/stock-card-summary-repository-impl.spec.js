@@ -101,9 +101,12 @@ describe('StockCardSummaryRepositoryImpl', function() {
 
     describe('query', function() {
 
-        var summariesPage, params;
+        // SIGLUS-REFACTOR: strats here
+        var summariesPage, params, url;
 
         beforeEach(function() {
+            url = '/api/siglusintegration/stockCardSummaries?page=0&param=param&size=10';
+            // SIGLUS-REFACTOR: ends here
             params = {
                 page: 0,
                 size: 10,
@@ -123,7 +126,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         it('should resolve to combined server responses if requests were successful', function() {
             $httpBackend
             // SIGLUS-REFACTOR: strats here
-                .expectGET(stockmanagementUrlFactory('/api/siglus/stockCardSummaries?page=0&param=param&size=10'))
+                .expectGET(stockmanagementUrlFactory(url))
                 .respond(200, angular.copy(summariesPage));
             // SIGLUS-REFACTOR: ends here
 
@@ -163,7 +166,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         it('should reject if shipment repository rejects', function() {
             $httpBackend
             // SIGLUS-REFACTOR: strats here
-                .expectGET(stockmanagementUrlFactory('/api/siglus/stockCardSummaries?page=0&param=param&size=10'))
+                .expectGET(stockmanagementUrlFactory(url))
                 .respond(200, angular.copy(summariesPage));
             // SIGLUS-REFACTOR: ends here
 
@@ -183,7 +186,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         it('should reject if request was unsuccessful', function() {
             $httpBackend
             // SIGLUS-REFACTOR: strats here
-                .expectGET(stockmanagementUrlFactory('/api/siglus/stockCardSummaries?page=0&param=param&size=10'))
+                .expectGET(stockmanagementUrlFactory(url))
                 .respond(400);
             // SIGLUS-REFACTOR: ends here
 
@@ -200,7 +203,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         it('should reject if lot repository rejectes', function() {
             $httpBackend
             // SIGLUS-REFACTOR: strats here
-                .expectGET(stockmanagementUrlFactory('/api/siglus/stockCardSummaries?page=0&param=param&size=10'))
+                .expectGET(stockmanagementUrlFactory(url))
                 .respond(200, angular.copy(summariesPage));
             // SIGLUS-REFACTOR: ends here
 
