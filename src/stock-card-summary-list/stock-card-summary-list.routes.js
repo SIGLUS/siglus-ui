@@ -42,6 +42,10 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
+                // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
@@ -51,25 +55,19 @@
                             paramsCopy.facilityId = stateParams.facility;
                             paramsCopy.programId = stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
-                            paramsCopy.userId = user.user_id;
-                            paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
                             delete paramsCopy.supervised;
 
-                            return new StockCardSummaryRepository(
-                                new StockCardSummaryRepositoryImpl()
-                            ).query(paramsCopy);
-
+                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                                .query(paramsCopy);
                         }
+                        // SIGLUS-REFACTOR: ends here
                         return [];
+                        // SIGLUS-REFACTOR: ends here
                     });
-                },
-                facility: function(facilityFactory) {
-                    return facilityFactory.getUserHomeFacility();
                 }
-                // SIGLUS-REFACTOR: ends here
             }
         });
     }

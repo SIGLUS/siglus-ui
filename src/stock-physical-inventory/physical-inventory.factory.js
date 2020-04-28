@@ -28,15 +28,13 @@
         .module('stock-physical-inventory')
         .factory('physicalInventoryFactory', factory);
 
-    // SIGLUS-REFACTOR: add '$http', 'openlmisUrlFactory', 'SiglusStockCardSummaryResource'
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl', '$http', 'openlmisUrlFactory', 'SiglusStockCardSummaryResource'
+        'FullStockCardSummaryRepositoryImpl'
     ];
-    // SIGLUS-REFACTOR: ends here
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
-                     FullStockCardSummaryRepositoryImpl, $http, openlmisUrlFactory, SiglusStockCardSummaryResource) {
+                     FullStockCardSummaryRepositoryImpl) {
 
         return {
             getDrafts: getDrafts,
@@ -57,14 +55,12 @@
          * @param  {String}  facility   Facility UUID
          * @return {Promise}            Physical inventories promise
          */
-
-        // SIGLUS-REFACTOR: starts here
-        function getDrafts(programIds, facility, userId, rightName) {
+        function getDrafts(programIds, facility) {
             var promises = [];
             angular.forEach(programIds, function(program) {
-                promises.push(getDraft(program, facility, userId, rightName));
+                promises.push(getDraft(program, facility));
             });
-            // SIGLUS-REFACTOR: ends here
+
             return $q.all(promises);
         }
 
@@ -80,12 +76,10 @@
          * @param  {String}  facilityId Facility UUID
          * @return {Promise}          Physical inventory promise
          */
-        // SIGLUS-REFACTOR: starts here
-        function getDraft(programId, facilityId, userId, rightName) {
+        function getDraft(programId, facilityId) {
             return $q.all([
-                getStockAllProducts(programId, facilityId, userId, rightName),
+                getStockProducts(programId, facilityId),
                 physicalInventoryService.getDraft(programId, facilityId)
-                // SIGLUS-REFACTOR: ends here
             ]).then(function(responses) {
                 var summaries = responses[0],
                     draft = responses[1],
@@ -122,13 +116,10 @@
          * @param  {String}  id       Draft UUID
          * @return {Promise}          Physical inventory promise
          */
-        // SIGLUS-REFACTOR: starts here
-        function getPhysicalInventory(id, userId, rightName) {
+        function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
-                    return getStockAllProducts(physicalInventory.programId,
-                        physicalInventory.facilityId, userId, rightName)
-                    // SIGLUS-REFACTOR: ends here
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -289,34 +280,12 @@
             return [];
         }*/
 
-        // function getStockProducts(programId, facilityId) {
-        //     var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
-        //
-        //     return repository.query({
-        //         programId: programId,
-        //         facilityId: facilityId
-        //     }).then(function(summaries) {
-        //         return summaries.content.reduce(function(items, summary) {
-        //             summary.canFulfillForMe.forEach(function(fulfill) {
-        //                 items.push(fulfill);
-        //             });
-        //             return items;
-        //         }, []);
-        //     });
-        //
-        // }
-
-        function getStockAllProducts(programId, facilityId, userId, rightName) {
-
-            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl(
-                new SiglusStockCardSummaryResource()
-            ));
+        function getStockProducts(programId, facilityId) {
+            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
 
             return repository.query({
                 programId: programId,
-                facilityId: facilityId,
-                userId: userId,
-                rightName: rightName
+                facilityId: facilityId
             }).then(function(summaries) {
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {

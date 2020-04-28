@@ -51,11 +51,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             size: '10',
             facilityId: 'facility-id',
             programId: 'program-id',
-            nonEmptyOnly: true,
-            // SIGLUS-REFACTOR: starts here
-            userId: undefined,
-            rightName: 'STOCK_CARDS_VIEW'
-            // SIGLUS-REFACTOR: ends here
+            nonEmptyOnly: true
         });
     });
 
