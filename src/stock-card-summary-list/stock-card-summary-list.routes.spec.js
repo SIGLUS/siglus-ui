@@ -18,7 +18,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     // SIGLUS-REFACTOR: add facilityFactory, MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
         stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries, facilityFactory,
-        MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user;
+        MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user, programService, stockProgramUtilService;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -76,6 +76,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
                 };
             });
         });
+        module('stock-program-util');
     }
 
     function injectServices() {
@@ -92,6 +93,8 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             facilityFactory = $injector.get('facilityFactory');
             MinimalFacilityDataBuilder = $injector.get('MinimalFacilityDataBuilder');
             UserDataBuilder = $injector.get('UserDataBuilder');
+            programService = $injector.get('programService');
+            stockProgramUtilService = $injector.get('stockProgramUtilService');
             // SIGLUS-REFACTOR: ends here
         });
     }
@@ -118,6 +121,8 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         // SIGLUS-REFACTOR: starts here
         spyOn(authorizationService, 'getUser').andReturn($q.resolve(user));
         spyOn(facilityFactory, 'getUserHomeFacility').andReturn($q.resolve(homeFacility));
+        spyOn(programService, 'getAllProductsProgram').andReturn($q.resolve([]));
+        spyOn(stockProgramUtilService, 'getPrograms').andReturn($q.resolve([]));
         // SIGLUS-REFACTOR: ends here
     }
 

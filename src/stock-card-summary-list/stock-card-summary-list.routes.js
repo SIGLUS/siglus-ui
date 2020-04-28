@@ -45,6 +45,14 @@
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
+                programs: function(user, $q, programService, stockProgramUtilService) {
+                    return $q.all([
+                        programService.getAllProductsProgram(),
+                        stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
+                    ]).then(function(responses) {
+                        return responses[0].concat(responses[1]);
+                    });
+                },
                 // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams) {

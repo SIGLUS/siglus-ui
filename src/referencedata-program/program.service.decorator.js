@@ -39,11 +39,19 @@
             getAll: {
                 method: 'GET',
                 isArray: true
+            },
+            getAllProductsProgram: {
+                method: 'GET',
+                params: {
+                    code: 'ALL'
+                },
+                isArray: true
             }
         });
 
         $delegate.getRealPrograms = getRealPrograms;
         $delegate.getVirtualPrograms = getVirtualPrograms;
+        $delegate.getAllProductsProgram = getAllProductsProgram;
 
         return $delegate;
 
@@ -80,6 +88,22 @@
                     return _.filter(programs, function(p) {
                         return p.isVirtual;
                     });
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-program.programService
+         * @name getAllProductsProgram
+         *
+         * @description
+         * Get all products program.
+         */
+        function getAllProductsProgram() {
+            return resource.getAllProductsProgram()
+                .$promise
+                .then(function(programs) {
+                    return programs;
                 });
         }
     }
