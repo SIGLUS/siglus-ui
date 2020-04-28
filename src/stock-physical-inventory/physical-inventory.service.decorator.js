@@ -37,6 +37,7 @@
         'openlmisDateFilter', 'productNameFilter', 'stockEventFactory'];
     function decorator($delegate, $resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
                        productNameFilter, stockEventFactory) {
+        <!-- SIGLUS-REFACTOR: starts here -->
         var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'), {}, {
             get: {
                 method: 'GET',
@@ -56,6 +57,7 @@
             }
         });
         var physicalInventoryService = $delegate;
+        <!-- SIGLUS-REFACTOR: ends here -->
 
         physicalInventoryService.getInitialDraft = getInitialDraft;
         physicalInventoryService.getDraft = getDraft;
@@ -233,7 +235,7 @@
          */
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
-            return resource.submitPhysicalInventory(event).$promise;
+            return resource.submitPhysicalInventory(formatEvent(event)).$promise;
         }
 
         function getLot(item, hasLot) {
@@ -241,5 +243,22 @@
                 item.lot.lotCode :
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
+        <!-- SIGLUS-REFACTOR: starts here -->
+        function formatEvent(event) {
+            event.lineItems.forEach(function(lineItem) {
+                lineItem.extraData.lotCode = lineItem.lotCode;
+                lineItem.extraData.expirationDate = lineItem.expirationDate;
+                lineItem.extraData.stockCardId = lineItem.stockCardId;
+                lineItem.extraData.reasonFreeText = lineItem.reasonFreeText;
+
+                delete lineItem.lotCode;
+                delete lineItem.expirationDate;
+                delete lineItem.stockCardId;
+                delete lineItem.reasonFreeText;
+            });
+
+            return event;
+        }
+        <!-- SIGLUS-REFACTOR: ends here -->
     }
 })();
