@@ -625,9 +625,7 @@
                         $http.get(stockmanagementUrlFactory('/api/siglus/stockCardSummaries'), {
                             params: {
                                 programId: vm.draft.programId,
-                                facilityId: vm.draft.facilityId,
-                                userId: user.user_id,
-                                rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
+                                facilityId: vm.draft.facilityId
                             }
                         }).then(function(res) {
                             loadingModalService.close();

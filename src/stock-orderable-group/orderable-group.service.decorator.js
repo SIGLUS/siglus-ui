@@ -35,16 +35,13 @@
 
     decorator.$inject = ['$delegate', 'messageService', 'StockCardSummaryRepositoryImpl',
         'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
-    function decorator($delegate, messageService, StockCardSummaryRepositoryImpl,
-                       FullStockCardSummaryRepositoryImpl, StockCardSummaryRepository) {
+    function decorator($delegate, messageService) {
         var orderableGroupService = $delegate;
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
         };
 
         orderableGroupService.determineLotMessage = determineLotMessage;
-        orderableGroupService.findAvailableProductsAndCreateOrderableGroups =
-            findAvailableProductsAndCreateOrderableGroups;
         orderableGroupService.findByLotInOrderableGroup = findByLotInOrderableGroup;
 
         orderableGroupService.lotsOfWithNull = lotsOfWithNull;
@@ -75,41 +72,6 @@
                 var messageKey = $delegate.lotsOf(orderableGroup).length > 0 ? 'noLotDefined' : 'productHasNoLots';
                 selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
             }
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-orderable-group.orderableGroupService
-         * @name findAvailableProductsAndCreateOrderableGroups
-         *
-         * @description
-         * Finds available Stock Products by facility and program, then groups product items
-         * by orderable id.
-         */
-        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId,
-                                                               includeApprovedProducts, userId, rightName) {
-            var repository;
-            if (includeApprovedProducts) {
-                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
-            } else {
-                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
-            }
-
-            return repository.query({
-                programId: programId,
-                facilityId: facilityId,
-                // SIGLUS-REFACTOR: starts here
-                userId: userId,
-                rightName: rightName
-                // SIGLUS-REFACTOR: ends here
-            }).then(function(summaries) {
-                return $delegate.groupByOrderableId(summaries.content.reduce(function(items, summary) {
-                    summary.canFulfillForMe.forEach(function(fulfill) {
-                        items.push(fulfill);
-                    });
-                    return items;
-                }, []));
-            });
         }
 
         /**
