@@ -37,7 +37,6 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             params: {
-                id: undefined,
                 program: undefined,
                 facility: undefined,
                 draft: undefined,
@@ -47,9 +46,6 @@
                 canInitialInventory: true
             },
             resolve: {
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
                 facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
                         return facilityFactory.getUserHomeFacility();
@@ -58,7 +54,7 @@
                 },
                 program: function($stateParams, programService) {
                     if (_.isUndefined($stateParams.program)) {
-                        return programService.getAll().then(function(programs) {
+                        return programService.getAllProductsProgram().then(function(programs) {
                             return _.find(programs, function(progarm) {
                                 return progarm.code === 'ALL';
                             });
@@ -66,28 +62,12 @@
                     }
                     return $stateParams.program;
                 },
-                id: function($stateParams, physicalInventoryService, program, facility, alertService, $state,
-                    currentUserService) {
-                    if (_.isUndefined($stateParams.id)) {
-                        return physicalInventoryService.getInitialDraft(program.id, facility.id).then(function(drafts) {
-                            return _.first(drafts).id;
-                        }, function(err) {
-                            currentUserService.clearCache();
-                            if (err.status === 406) {
-                                delete $state.get('openlmis.stockmanagement.initialInventory').showInNavigation;
-                                alertService.error('stockInitialInventory.initialFailed');
-                            }
-                            $state.go('openlmis.home', {}, {
-                                reload: true
-                            });
-                        });
-                    }
-                    return $stateParams.id;
-                },
-                draft: function($stateParams, physicalInventoryFactory, physicalInventoryService, user, id) {
+                draft: function($stateParams, physicalInventoryFactory, program, facility) {
                     if (_.isUndefined($stateParams.draft && !$stateParams.hasChangePage)) {
-                        return physicalInventoryFactory.getPhysicalInventory(id,
-                            user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
+                        return physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                            .then(function(draft) {
+                                return draft;
+                            });
                     }
                     return $stateParams.draft;
                 },

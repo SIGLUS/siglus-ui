@@ -79,7 +79,8 @@
                     }
                     isConfirmModalOpening = true;
                     // SIGLUS-REFACTOR: starts here
-                } else if (scope.isInitialInventory) {
+                } else if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) &&
+                    scope.isInitialInventory) {
                     $state.go('openlmis.home');
                     // SIGLUS-REFACTOR: ends here
                 } else {
