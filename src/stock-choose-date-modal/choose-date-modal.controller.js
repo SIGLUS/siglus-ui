@@ -28,7 +28,9 @@
         .module('stock-choose-date-modal')
         .controller('ChooseDateModalController', controller);
 
+    // SIGLUS-REFACTOR: add currentUserService
     controller.$inject = ['$filter', 'modalDeferred', 'authorizationService', 'currentUserService'];
+    // SIGLUS-REFACTOR: ends here
 
     function controller($filter, modalDeferred, authorizationService, currentUserService) {
         var vm = this;
