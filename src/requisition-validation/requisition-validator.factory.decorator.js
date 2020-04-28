@@ -102,97 +102,72 @@
             return _.isNumber(value) && !_.isNaN(value);
         }
 
-        // extract method to reduce eslint complexity
-        function usageReportARVProductModuleHelper(requisition, isValid) {
-            requisition.requisitionLineItems.forEach(function(item) {
-                item.isRequiredTotalConsumedQuantity = true;
-                item.isRequiredTotalLossesAndAdjustments = true;
-                item.isRequiredStockOnHand = true;
-            });
-            isValid = !_.some(requisition.requisitionLineItems, function(item) {
-                return nonEmpty(item.totalConsumedQuantity) || nonEmpty(item.totalLossesAndAdjustments) ||
-                    nonEmpty(item.stockOnHand);
-            }) && isValid;
-            return isValid;
-        }
-
-        // extract method to reduce eslint complexity
-        function usageReportARVTherapeuticRegimentModuleHelper(requisition, isValid) {
-            requisition.regimenLineItems.forEach(function(item) {
-                item.isRequiredHFPatients = true;
-                item.isRequiredCHWPatients = true;
-            });
-            isValid = !_.some(requisition.regimenLineItems, function(item) {
-                return nonEmpty(item.hfPatients) || nonEmpty(item.chwPatients);
-            }) && isValid;
-            return isValid;
-        }
-
-        // extract method to reduce eslint complexity
-        function usageReportARVTherapeuticLinesModuleHelper(requisition, isValid) {
-            requisition.regimenDispatchLineItems.forEach(function(item) {
-                item.isRequiredHFPatients = true;
-                item.isRequiredCHWPatients = true;
-            });
-            isValid = !_.some(requisition.regimenDispatchLineItems, function(item) {
-                return nonEmpty(item.hfPatients) || nonEmpty(item.chwPatients);
-            }) && isValid;
-            return isValid;
-        }
-
-        // extract method to reduce eslint complexity
-        function usageReportARVPatientModuleHelper(requisition, isValid) {
-            requisition.patientLineItems.forEach(function(item) {
-                validateARVPatientTotal(item);
-            });
-            isValid = !_.some(requisition.patientLineItems, function(item) {
-                return nonEmpty(item.total);
-            }) && isValid;
-            return isValid;
-        }
-
-        // extract method to reduce eslint complexity
-        function usageReportALUsageModuleHelper(requisition, isValid) {
-            requisition.alLineItems.forEach(function(item) {
-                item.alDepartmentList.forEach(function(d) {
-                    d.isRequiredConsumeCount = true;
-                    d.isRequiredStockCount = true;
-                });
-            });
-            isValid = _.every(requisition.alLineItems, function(item) {
-                return _.every(item.alDepartmentList, function(d) {
-                    return notNull(d.consumeCount) && notNull(d.stockCount);
-                });
-            }) && isValid;
-            return isValid;
-        }
-
-        /* eslint-disable complexity */
         function validateUsageReport(requisition) {
-            var isValid = true;
-            if (requisition.template.enableARVProductModule) {
-                isValid = usageReportARVProductModuleHelper(requisition, isValid);
-            }
-            if (requisition.template.enableARVTherapeuticRegimentModule) {
-                isValid = usageReportARVTherapeuticRegimentModuleHelper(requisition, isValid);
-            }
-            if (requisition.template.enableARVTherapeuticLinesModule) {
-                isValid = usageReportARVTherapeuticLinesModuleHelper(requisition, isValid);
-            }
-            if (requisition.template.enableARVPatientModule) {
-                isValid = usageReportARVPatientModuleHelper(requisition, isValid);
-            }
+            var isValide = true;
+            isValide = validateARVUsageReport(requisition, isValide);
             if (requisition.template.enableALUsageModule) {
-                isValid = usageReportALUsageModuleHelper(requisition, isValid);
+                requisition.alLineItems.forEach(function(item) {
+                    item.alDepartmentList.forEach(function(d) {
+                        d.isRequiredConsumeCount = true;
+                        d.isRequiredStockCount = true;
+                    });
+                });
+                isValide = _.every(requisition.alLineItems, function(item) {
+                    return _.every(item.alDepartmentList, function(d) {
+                        return notNull(d.consumeCount) && notNull(d.stockCount);
+                    });
+                }) && isValide;
             }
             if (requisition.template.enableRapidTestProductModule) {
-                isValid = validateRapidTestProduct(requisition) && isValid;
+                isValide = validateRapidTestProduct(requisition) && isValide;
             }
             if (requisition.template.enableRapidTestServiceModule) {
-                isValid = validateRapidTestReport(requisition) && isValid;
+                isValide = validateRapidTestReport(requisition) && isValide;
             }
-            isValid = validateTotalOfRegiment(requisition) && isValid;
-            return isValid;
+            isValide = validateTotalOfRegiment(requisition) && isValide;
+            return isValide;
+        }
+
+        // extract method to reduce eslint complexity
+        function validateARVUsageReport(requisition, isValide) {
+            if (requisition.template.enableARVProductModule) {
+                requisition.requisitionLineItems.forEach(function(item) {
+                    item.isRequiredTotalConsumedQuantity = true;
+                    item.isRequiredTotalLossesAndAdjustments = true;
+                    item.isRequiredStockOnHand = true;
+                });
+                isValide = !_.some(requisition.requisitionLineItems, function(item) {
+                    return nonEmpty(item.totalConsumedQuantity) || nonEmpty(item.totalLossesAndAdjustments) ||
+                        nonEmpty(item.stockOnHand);
+                }) && isValide;
+            }
+            if (requisition.template.enableARVTherapeuticRegimentModule) {
+                requisition.regimenLineItems.forEach(function(item) {
+                    item.isRequiredHFPatients = true;
+                    item.isRequiredCHWPatients = true;
+                });
+                isValide = !_.some(requisition.regimenLineItems, function(item) {
+                    return nonEmpty(item.hfPatients) || nonEmpty(item.chwPatients);
+                }) && isValide;
+            }
+            if (requisition.template.enableARVTherapeuticLinesModule) {
+                requisition.regimenDispatchLineItems.forEach(function(item) {
+                    item.isRequiredHFPatients = true;
+                    item.isRequiredCHWPatients = true;
+                });
+                isValide = !_.some(requisition.regimenDispatchLineItems, function(item) {
+                    return nonEmpty(item.hfPatients) || nonEmpty(item.chwPatients);
+                }) && isValide;
+            }
+            if (requisition.template.enableARVPatientModule) {
+                requisition.patientLineItems.forEach(function(item) {
+                    validateARVPatientTotal(item);
+                });
+                isValide = !_.some(requisition.patientLineItems, function(item) {
+                    return nonEmpty(item.total);
+                }) && isValide;
+            }
+            return isValide;
         }
 
         function validateRapidTestReport(requisition) {
