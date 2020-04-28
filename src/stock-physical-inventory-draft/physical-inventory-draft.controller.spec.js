@@ -258,32 +258,44 @@ describe('PhysicalInventoryDraftController', function() {
         expect(chooseDateModalService.show).not.toHaveBeenCalled();
     });
 
-    // it('should show modal for occurred date if no quantity missing', function() {
-    //     lineItem3.quantity = 123;
-    //     lineItem3.stockAdjustments = [{
-    //         quantity: 123,
-    //         reason: {
-    //             reasonType: 'CREDIT'
-    //         }
-    //     }];
-    //     lineItem3.lot = {
-    //         id: 3,
-    //         lotCode: 'test3',
-    //         expirationDate: '31/08/2019'
-    //     };
-    //     lineItem1.lot = {
-    //         id: 1,
-    //         lotCode: 'test1',
-    //         expirationDate: '31/08/2019'
-    //     };
-    //     var deferred = $q.defer();
-    //     deferred.resolve();
-    //     chooseDateModalService.show.andReturn(deferred.promise);
-    //
-    //     vm.submit();
-    //
-    //     // expect(chooseDateModalService.show).toHaveBeenCalled();
-    // });
+    it('should show modal for occurred date if no quantity missing', function() {
+        lineItem3.quantity = 123;
+        lineItem3.stockAdjustments = [{
+            quantity: 123,
+            reason: {
+                reasonType: 'CREDIT'
+            }
+        }];
+        lineItem3.lot = {
+            id: 3,
+            lotCode: 'test3',
+            expirationDate: '31/08/2019'
+        };
+        lineItem1.lot = {
+            id: 1,
+            lotCode: 'test1',
+            expirationDate: '31/08/2019'
+        };
+        lineItem2.quantity = 456;
+        lineItem2.lot = {
+            id: 2,
+            lotCode: 'test2',
+            expirationDate: '31/08/2019'
+        };
+        lineItem4.quantity = 789;
+        lineItem4.lot = {
+            id: 4,
+            lotCode: 'test4',
+            expirationDate: '31/08/2019'
+        };
+        var deferred = $q.defer();
+        deferred.resolve();
+        chooseDateModalService.show.andReturn(deferred.promise);
+
+        vm.submit();
+
+        expect(chooseDateModalService.show).toHaveBeenCalled();
+    });
 
     describe('when submit pass validations', function() {
         beforeEach(function() {
@@ -340,6 +352,18 @@ describe('PhysicalInventoryDraftController', function() {
                 .andReturn($q.when());
             confirmService.confirm.andReturn($q.reject());
             accessTokenFactory.addAccessToken.andReturn('url');
+            lineItem2.quantity = 456;
+            lineItem2.lot = {
+                id: 2,
+                lotCode: 'test2',
+                expirationDate: '31/08/2019'
+            };
+            lineItem4.quantity = 789;
+            lineItem4.lot = {
+                id: 4,
+                lotCode: 'test4',
+                expirationDate: '31/08/2019'
+            };
 
             draft.id = 1;
             vm.submit();
@@ -348,13 +372,13 @@ describe('PhysicalInventoryDraftController', function() {
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: starts here
-            // expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-            //     {
-            //         program: program.id,
-            //         facility: facility.id
-            //     }, {
-            //         reload: true
-            //     });
+            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+                {
+                    program: program.id,
+                    facility: facility.id
+                }, {
+                    reload: true
+                });
             // SIGLUS-REFACTOR: ends here
         });
 
