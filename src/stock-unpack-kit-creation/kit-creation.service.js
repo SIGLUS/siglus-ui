@@ -32,27 +32,21 @@
 
     function service($resource, stockmanagementUrlFactory) {
         this.getKitProducts = getKitProducts;
-        this.getSourceAndDestination = getSourceAndDestination;
         this.submitUnpack = submitUnpack;
 
         function getKitProducts(orderableId) {
-            var resource = $resource(stockmanagementUrlFactory('/api/siglus/orderables/orderableChild'));
+            // SIGLUS-REFACTOR: starts here
+            var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/orderableInKit'));
+            // SIGLUS-REFACTOR: ends here
             return resource.query({
                 kitProductId: orderableId
             }).$promise;
         }
 
-        function getSourceAndDestination(facilityId, programId, kitName) {
-            var resource = $resource(stockmanagementUrlFactory('/api/siglus/kitSourceAndDestination'));
-            return resource.get({
-                facilityId: facilityId,
-                program: programId,
-                kitName: kitName
-            }).$promise;
-        }
-
         function submitUnpack(facilityId, programId, signature, lineItems) {
-            var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
+            // SIGLUS-REFACTOR: starts here
+            var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'));
+            // SIGLUS-REFACTOR: ends here
             var event = {
                 facilityId: facilityId,
                 programId: programId,
