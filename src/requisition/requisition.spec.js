@@ -1095,7 +1095,9 @@ describe('Requisition', function() {
 
             expect(function() {
                 requisition.addLineItem(orderable, 10, 'explanation');
+                // SIGLUS-REFACTOR: starts here
             }).toThrow('The given product is not available for this requisition');
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should add new available full supply line item to emergency requisition', function() {
