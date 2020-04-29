@@ -1,5 +1,7 @@
 .requisition-info {
-    .max-facility-width {
-        max-width: 25%;
+    ul {
+        li:first-child {
+            max-width: 25%;
+        }
     }
 }

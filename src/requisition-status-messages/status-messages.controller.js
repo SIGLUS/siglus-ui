@@ -138,7 +138,9 @@
          * Only if add button is not displayed and requisition is editable.
          */
         function displayEditComment() {
+            // SIGLUS-REFACTOR: starts here
             return !vm.displayAddComment() && vm.requisition.$isEditable && !vm.requisition.isHistory;
+            // SIGLUS-REFACTOR: ends here
         }
     }
 })();

@@ -134,7 +134,6 @@ describe('RequisitionViewController', function() {
         spyOn(this.programService, 'getUserPrograms').andReturn(this.$q.resolve(this.program));
         spyOn(this.facilityService, 'get').andReturn(this.$q.resolve(this.facility));
         spyOn(this.periodService, 'get').andReturn(this.$q.resolve(this.period));
-        // SIGLUS-REFACTOR: ends here
 
         this.initController = initController;
     });

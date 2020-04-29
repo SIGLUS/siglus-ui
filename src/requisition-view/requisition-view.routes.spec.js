@@ -78,204 +78,124 @@ describe('openlmis.requisitions.requisition state', function() {
         spyOn(this.requisitionViewFactory, 'canApproveAndReject').andReturn(this.$q.resolve(true));
         spyOn(this.requisitionViewFactory, 'canDelete').andReturn(this.$q.resolve(true));
         spyOn(this.requisitionViewFactory, 'canSkip').andReturn(this.$q.resolve(true));
+        // SIGLUS-REFACTOR: starts here
+        spyOn(this.requisitionViewFactory, 'canSubmitAndAuthorize').andReturn(this.$q.resolve(true));
+        spyOn(this.requisitionViewFactory, 'hasAuthorizeRight').andReturn(this.$q.resolve(true));
+        // SIGLUS-REFACTOR: ends here
 
         this.state = this.$state.get('openlmis.requisitions.requisition');
     });
 
-    // SIGLUS-REFACTOR: starts here
-    it('should fetch user', function(done) {
+    it('should fetch user', function() {
+        this.goToUrl('/requisition/requisition-id');
+
+        expect(this.getResolvedValue('user')).toEqual(this.user);
+    });
+
+    it('should fetch requisition', function() {
+        this.goToUrl('/requisition/requisition-id');
+
+        expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
+    });
+
+    it('should fetch requisition from state params if is defined', function() {
         this.$state.go('openlmis.requisitions.requisition', {
             requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('user')).toEqual(true);
-            done();
         });
-    });
-    // SIGLUS-REFACTOR: ends here
+        this.$rootScope.$apply();
 
-    // SIGLUS-REFACTOR: starts here
-    it('should fetch requisition', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
-            done();
-        });
+        expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
+        expect(this.requisitionService.get).not.toHaveBeenCalled();
     });
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
-    it('should fetch requisition from state params if is defined', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            this.$rootScope.$apply();
+    it('should fetch facility', function() {
+        this.goToUrl('/requisition/requisition-id');
 
-            expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
-            expect(this.requisitionService.get).not.toHaveBeenCalled();
-            done();
-        });
+        expect(this.getResolvedValue('facility')).toEqual(this.facility);
     });
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
-    it('should fetch facility', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('facility')).toEqual(this.facility);
-            done();
-        });
-    });
-    // SIGLUS-REFACTOR: ends here
+    it('should fetch program', function() {
+        this.goToUrl('/requisition/requisition-id');
 
-    // SIGLUS-REFACTOR: starts here
-    it('should fetch program', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('program')).toEqual(this.program);
-            done();
-        });
+        expect(this.getResolvedValue('program')).toEqual(this.program);
     });
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
-    it('should fetch period', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('processingPeriod')).toEqual(this.period);
-            done();
-        });
-    });
-    // SIGLUS-REFACTOR: ends here
+    it('should fetch period', function() {
+        this.goToUrl('/requisition/requisition-id');
 
-    // SIGLUS-REFACTOR: starts here
-    it('should resolve if user has right to submit', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('canSubmit')).toEqual(true);
-            done();
-        });
+        expect(this.getResolvedValue('processingPeriod')).toEqual(this.period);
     });
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
-    it('should resolve if user has right to authorize', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('canAuthorize')).toEqual(true);
-            done();
-        });
-    });
-    // SIGLUS-REFACTOR: ends here
+    it('should resolve if user has right to submit', function() {
+        this.goToUrl('/requisition/requisition-id');
 
-    // SIGLUS-REFACTOR: starts here
-    it('should resolve if user has right to approve or reject', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('canApproveAndReject')).toEqual(true);
-            done();
-        });
+        expect(this.getResolvedValue('canSubmit')).toEqual(true);
     });
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
-    it('should resolve if user has right to delete', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('canDelete')).toEqual(true);
-            done();
-        });
-    });
-    // SIGLUS-REFACTOR: ends here
+    it('should resolve if user has right to authorize', function() {
+        this.goToUrl('/requisition/requisition-id');
 
-    // SIGLUS-REFACTOR: starts here
-    it('should resolve if user has right to skip', function(done) {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        }).then(function() {
-            expect(this.getResolvedValue('canSkip')).toEqual(true);
-            done();
-        });
+        expect(this.getResolvedValue('canAuthorize')).toEqual(true);
     });
-    // SIGLUS-REFACTOR: ends here
+
+    it('should resolve if user has right to approve or reject', function() {
+        this.goToUrl('/requisition/requisition-id');
+
+        expect(this.getResolvedValue('canApproveAndReject')).toEqual(true);
+    });
+
+    it('should resolve if user has right to delete', function() {
+        this.goToUrl('/requisition/requisition-id');
+
+        expect(this.getResolvedValue('canDelete')).toEqual(true);
+    });
+
+    it('should resolve if user has right to skip', function() {
+        this.goToUrl('/requisition/requisition-id');
+
+        expect(this.getResolvedValue('canSkip')).toEqual(true);
+    });
 
     describe('canSync', function() {
 
-        // SIGLUS-REFACTOR: starts here
-        it('should resolve to false if user can not submit, authorize,reject and approve requisitions', function(done) {
-        // SIGLUS-REFACTOR: ends here
+        it('should resolve to false if user can not submit, authorize,reject and approve requisitions', function() {
             this.requisitionViewFactory.canSubmit.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canAuthorize.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canApproveAndReject.andReturn(this.$q.resolve(false));
 
-            // SIGLUS-REFACTOR: starts here
-            this.$state.go('openlmis.requisitions.requisition', {
-                requisition: this.requisition
-            }).then(function() {
-                expect(this.getResolvedValue('canSync')).toEqual(false);
-                done();
-            });
-        });
-        // SIGLUS-REFACTOR: ends here
+            this.goToUrl('/requisition/requisition-id');
 
-        // SIGLUS-REFACTOR: starts here
-        it('should resolve to true if user can submit', function(done) {
-        // SIGLUS-REFACTOR: ends here
+            expect(this.getResolvedValue('canSync')).toEqual(false);
+        });
+
+        it('should resolve to true if user can submit', function() {
             this.requisitionViewFactory.canSubmit.andReturn(this.$q.resolve(true));
             this.requisitionViewFactory.canAuthorize.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canApproveAndReject.andReturn(this.$q.resolve(false));
 
-            // SIGLUS-REFACTOR: starts here
-            this.$state.go('openlmis.requisitions.requisition', {
-                requisition: this.requisition
-            }).then(function() {
-                expect(this.getResolvedValue('canSync')).toEqual(true);
-                done();
-            });
-            // SIGLUS-REFACTOR: ends here
+            this.goToUrl('/requisition/requisition-id');
 
+            expect(this.getResolvedValue('canSync')).toEqual(true);
         });
 
-        // SIGLUS-REFACTOR: starts here
-        it('should resolve to true if user can authorize requisitions', function(done) {
-        // SIGLUS-REFACTOR: ends here
+        it('should resolve to true if user can authorize requisitions', function() {
             this.requisitionViewFactory.canSubmit.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canAuthorize.andReturn(this.$q.resolve(true));
             this.requisitionViewFactory.canApproveAndReject.andReturn(this.$q.resolve(false));
 
-            // SIGLUS-REFACTOR: starts here
-            this.$state.go('openlmis.requisitions.requisition', {
-                requisition: this.requisition
-            }).then(function() {
-                expect(this.getResolvedValue('canSync')).toEqual(true);
-                done();
-            });
-            // SIGLUS-REFACTOR: ends here
+            this.goToUrl('/requisition/requisition-id');
 
+            expect(this.getResolvedValue('canSync')).toEqual(true);
         });
 
-        // SIGLUS-REFACTOR: starts here
-        it('should resolve to false if user can reject and approve requisitions', function(done) {
-        // SIGLUS-REFACTOR: ends here
+        it('should resolve to false if user can reject and approve requisitions', function() {
             this.requisitionViewFactory.canSubmit.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canAuthorize.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canApproveAndReject.andReturn(this.$q.resolve(true));
 
-            // SIGLUS-REFACTOR: starts here
-            this.$state.go('openlmis.requisitions.requisition', {
-                requisition: this.requisition
-            }).then(function() {
-                expect(this.getResolvedValue('canSync')).toEqual(true);
-                done();
-            });
-            // SIGLUS-REFACTOR: ends here
+            this.goToUrl('/requisition/requisition-id');
+
+            expect(this.getResolvedValue('canSync')).toEqual(true);
         });
 
     });
