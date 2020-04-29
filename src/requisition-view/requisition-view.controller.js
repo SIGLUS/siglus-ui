@@ -33,10 +33,9 @@
         'notificationService', 'confirmService', 'offlineService', '$window', 'requisitionUrlFactory', '$filter',
         '$scope', 'RequisitionWatcher', 'accessTokenFactory', 'messageService', 'stateTrackerService',
         'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize',
-        'canApproveAndReject', 'canDelete', 'canSkip', 'canSync',
+        'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
-        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'program', 'facility',
-        'processingPeriod', 'signatureModalService'
+        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'signatureModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -45,9 +44,9 @@
                                        offlineService, $window, requisitionUrlFactory, $filter, $scope,
                                        RequisitionWatcher, accessTokenFactory, messageService, stateTrackerService,
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
-                                       canAuthorize, canApproveAndReject, canDelete, canSkip, canSync,
-                                       hasAuthorizeRight, canSubmitAndAuthorize, program, facility,
-                                       processingPeriod, signatureModalService) {
+                                       canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
+                                       facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
+                                        signatureModalService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
