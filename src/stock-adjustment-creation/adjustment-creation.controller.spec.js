@@ -164,7 +164,6 @@ describe('StockAdjustmentCreationController', function() {
         });
     });
 
-    // SIGLUS-REFACTOR: starts here
     it('should reorder all added items when quantity validation failed', function() {
         var date1 = new Date(2017, 3, 20);
         var lineItem1 = {
@@ -228,7 +227,6 @@ describe('StockAdjustmentCreationController', function() {
 
         expect(vm.displayItems).toEqual(expectItems);
     });
-    // SIGLUS-REFACTOR: ends here
 
     it('should remove all line items', function() {
         var lineItem1 = {
