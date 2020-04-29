@@ -195,11 +195,11 @@ describe('stockAdjustmentCreationService', function() {
                     orderableId: orderableId,
                     lotId: null,
                     // SIGLUS-REFACTOR: starts here
-                    lotCode: null,
-                    expirationDate: null,
                     quantity: 100,
                     extraData: {
-                        vvmStatus: 'STAGE_1'
+                        vvmStatus: 'STAGE_1',
+                        lotCode: null,
+                        expirationDate: null
                     },
                     occurredDate: date,
                     reasonId: reasonId,

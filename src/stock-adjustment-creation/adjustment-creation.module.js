@@ -30,7 +30,8 @@
         // SIGLUS-REFACTOR: starts here
         // 'stock-unpack-kit',
         'referencedata-lot',
-        'stock-input-select'
+        'stock-input-select',
+        'stock-event'
         // SIGLUS-REFACTOR: ends here
     ]);
 })();

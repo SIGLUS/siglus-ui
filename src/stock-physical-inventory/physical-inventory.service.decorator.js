@@ -34,9 +34,9 @@
     }
 
     decorator.$inject = ['$delegate', '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService',
-        'openlmisDateFilter', 'productNameFilter', 'stockEventFactory'];
+        'openlmisDateFilter', 'productNameFilter', 'stockEventFactory', 'stockEventFormatService'];
     function decorator($delegate, $resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                       productNameFilter, stockEventFactory) {
+                       productNameFilter, stockEventFactory, stockEventFormatService) {
         <!-- SIGLUS-REFACTOR: starts here -->
         var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'), {}, {
             get: {
@@ -202,7 +202,7 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, formatPayload(draft)).$promise;
+            }, stockEventFormatService.formatPayload(draft)).$promise;
         }
 
         /**
@@ -235,7 +235,7 @@
          */
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
-            return resource.submitPhysicalInventory(formatPayload(event)).$promise;
+            return resource.submitPhysicalInventory(stockEventFormatService.formatPayload(event)).$promise;
         }
 
         function getLot(item, hasLot) {
@@ -243,24 +243,5 @@
                 item.lot.lotCode :
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
-        <!-- SIGLUS-REFACTOR: starts here -->
-        function formatPayload(payload) {
-            payload.lineItems.forEach(function(lineItem) {
-                if (lineItem.extraData) {
-                    lineItem.extraData.lotCode = lineItem.lotCode;
-                    lineItem.extraData.expirationDate = lineItem.expirationDate;
-                    lineItem.extraData.stockCardId = lineItem.stockCardId;
-                    lineItem.extraData.reasonFreeText = lineItem.reasonFreeText;
-
-                    delete lineItem.lotCode;
-                    delete lineItem.expirationDate;
-                    delete lineItem.stockCardId;
-                    delete lineItem.reasonFreeText;
-                }
-            });
-
-            return payload;
-        }
-        <!-- SIGLUS-REFACTOR: ends here -->
     }
 })();
