@@ -66,10 +66,10 @@ describe('physicalInventoryService', function() {
 
     it('should get draft', function() {
         var result;
-
+        <!-- SIGLUS-REFACTOR: starts here -->
         $httpBackend.when('GET', stockmanagementUrlFactory('/api/siglusintegration/physicalInventories?program='
             + draft.programId + '&facility=' + draft.facilityId + '&isDraft=true')).respond(200, [draft]);
-
+        <!-- SIGLUS-REFACTOR: ends here -->
         physicalInventoryService.getDraft(draft.programId, draft.facilityId).then(function(response) {
             result = response;
         });
@@ -82,10 +82,10 @@ describe('physicalInventoryService', function() {
 
     it('should get physical inventory', function() {
         var result;
-
+        <!-- SIGLUS-REFACTOR: starts here -->
         $httpBackend.when('GET', stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/' + draft.id))
             .respond(200, draft);
-
+        <!-- SIGLUS-REFACTOR: ends here -->
         physicalInventoryService.getPhysicalInventory(draft.id).then(function(response) {
             result = response;
         });
@@ -98,13 +98,13 @@ describe('physicalInventoryService', function() {
 
     it('should create new draft', function() {
         var result;
-
+        <!-- SIGLUS-REFACTOR: starts here -->
         $httpBackend.when('POST', stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'))
             .respond(function(method, url, data) {
                 //return whatever was passed to http backend.
                 return [201, data];
             });
-
+        <!-- SIGLUS-REFACTOR: ends here -->
         physicalInventoryService.createDraft(draft.programId, draft.facilityId).then(function(response) {
             result = response;
         });
@@ -161,12 +161,13 @@ describe('physicalInventoryService', function() {
     });
 
     it('should save physical inventory draft', function() {
+        <!-- SIGLUS-REFACTOR: starts here -->
         $httpBackend.when('PUT', stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/' + draft.id))
             .respond(function(method, url, data) {
                 //return whatever was passed to http backend.
                 return [200, data];
             });
-
+        <!-- SIGLUS-REFACTOR: ends here -->
         var result = [];
         physicalInventoryService.saveDraft(draft).then(function(response) {
             result = response;
@@ -182,10 +183,11 @@ describe('physicalInventoryService', function() {
     });
 
     it('should delete physical inventory draft', function() {
+        <!-- SIGLUS-REFACTOR: starts here -->
         $httpBackend
             .expectDELETE(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/' + draft.id))
             .respond(200);
-
+        <!-- SIGLUS-REFACTOR: ends here -->
         physicalInventoryService.deleteDraft(draft.id);
         $httpBackend.flush();
     });

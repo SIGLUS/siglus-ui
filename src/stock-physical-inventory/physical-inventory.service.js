@@ -22,21 +22,19 @@
      * @name stock-physical-inventory.physicalInventoryService
      *
      * @description
-     * Decorator physicalInventoryService .
+     * Responsible for retrieving physical inventory information from server.
      */
-    angular.module('stock-physical-inventory')
-        .config(config);
+    angular
+        .module('stock-physical-inventory')
+        .service('physicalInventoryService', service);
 
-    config.$inject = ['$provide'];
+    service.$inject = [
+        '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
+        'productNameFilter', 'stockEventFactory', 'stockEventFormatService'
+    ];
 
-    function config($provide) {
-        $provide.decorator('physicalInventoryService', decorator);
-    }
-
-    decorator.$inject = ['$delegate', '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService',
-        'openlmisDateFilter', 'productNameFilter', 'stockEventFactory', 'stockEventFormatService'];
-    function decorator($delegate, $resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                       productNameFilter, stockEventFactory, stockEventFormatService) {
+    function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
+                     productNameFilter, stockEventFactory, stockEventFormatService) {
         <!-- SIGLUS-REFACTOR: starts here -->
         var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'), {}, {
             get: {
@@ -56,40 +54,16 @@
                 url: stockmanagementUrlFactory('/api/siglusintegration/stockEvents')
             }
         });
-        var physicalInventoryService = $delegate;
         <!-- SIGLUS-REFACTOR: ends here -->
 
-        physicalInventoryService.getInitialDraft = getInitialDraft;
-        physicalInventoryService.getDraft = getDraft;
-        physicalInventoryService.createDraft = createDraft;
-        physicalInventoryService.getPhysicalInventory = getPhysicalInventory;
-        physicalInventoryService.search = search;
-        physicalInventoryService.saveDraft = saveDraft;
-        physicalInventoryService.deleteDraft = deleteDraft;
-        physicalInventoryService.submitPhysicalInventory = submit;
-
-        return physicalInventoryService;
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory.physicalInventoryService
-         * @name getInitialDraft
-         *
-         * @description
-         * Retrieves Initial inventory by facility and program from server.
-         *
-         * @param  {String}  program  Program UUID
-         * @param  {String}  facility Facility UUID
-         * @return {Promise}          physical inventory promise
-         */
-        function getInitialDraft(program, facility) {
-            return resource.query({
-                program: program,
-                facility: facility,
-                isDraft: true,
-                canInitialInventory: true
-            }).$promise;
-        }
+        this.getDraft = getDraft;
+        this.createDraft = createDraft;
+        this.getPhysicalInventory = getPhysicalInventory;
+        this.search = search;
+        this.saveDraft = saveDraft;
+        this.deleteDraft = deleteDraft;
+        this.submitPhysicalInventory = submit;
+        this.getInitialDraft = getInitialDraft;
 
         /**
          * @ngdoc method
@@ -243,5 +217,15 @@
                 item.lot.lotCode :
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
+
+        function getInitialDraft(program, facility) {
+            return resource.query({
+                program: program,
+                facility: facility,
+                isDraft: true,
+                canInitialInventory: true
+            }).$promise;
+        }
+
     }
 })();
