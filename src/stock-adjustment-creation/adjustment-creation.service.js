@@ -36,7 +36,7 @@
 
     function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
                      messageService, productNameFilter, $http, LotRepositoryImpl, stockEventFormatService) {
-        var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'));
         var lotRepositoryImpl = new LotRepositoryImpl();
 
         this.search = search;

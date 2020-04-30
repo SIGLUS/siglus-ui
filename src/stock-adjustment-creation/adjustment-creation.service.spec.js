@@ -177,7 +177,7 @@ describe('stockAdjustmentCreationService', function() {
             }];
 
             var postData = undefined;
-            httpBackend.when('POST', stockmanagementUrlFactory('/api/stockEvents'))
+            httpBackend.when('POST', stockmanagementUrlFactory('/api/siglusintegration/stockEvents'))
                 .respond(function(method, url, data) {
                     postData = data;
                     return [201, 'e01'];
