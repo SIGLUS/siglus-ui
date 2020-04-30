@@ -55,7 +55,7 @@
                     }
                     return $stateParams.facility;
                 },
-                // SIGLUS-REFACTOR: removed programs, orderableGroups, user, reasons, displayItems, srcDstAssignments
+                // SIGLUS-REFACTOR: removed programs, orderableGroups, user, displayItems, srcDstAssignments
                 // adjustmentType and added kit, sourceAndDestination, receivedReasons, issuedReasons
                 /*program: function(programService, $stateParams) {
                     if (!$stateParams.program) {
@@ -74,12 +74,6 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                reasons: function($stateParams, facility, stockReasonsFactory) {
-                    if (!$stateParams.reasons) {
-                        return stockReasonsFactory.getUnpackReasons($stateParams.programId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
-                },
                 displayItems: function(registerDisplayItemsService, $stateParams) {
                     return registerDisplayItemsService($stateParams);
                 },
@@ -95,19 +89,9 @@
                     }
                     return $stateParams.kit;
                 },
-                sourceAndDestination: function(facility, kit, kitCreationService) {
-                    return kitCreationService.getSourceAndDestination(facility.id,
-                        kit.parentProgramId, kit.fullProductName);
-                },
-                receivedReasons: function($stateParams, stockReasonsFactory, facility) {
-                    if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
-                },
-                issuedReasons: function($stateParams, stockReasonsFactory, facility) {
-                    if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
+                reasons: function($stateParams, facility, stockReasonsFactory, kit) {
+                    if (!$stateParams.reasons) {
+                        return stockReasonsFactory.getUnpackReasons(kit.parentProgramId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 }
