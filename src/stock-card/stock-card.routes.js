@@ -44,10 +44,7 @@
                     var viewProductStockCard = angular.fromJson(localStorageService.get(VIEW_PRODUCT_STOCK_CARD));
 
                     if (isViewProductCard) {
-                        stockCardResource = stockCardService.getProductStockCard(
-                            $stateParams.orderable,
-                            getVirtualProgramId(viewProductStockCard.orderable)
-                        );
+                        stockCardResource = stockCardService.getProductStockCard($stateParams.orderable);
                     } else {
                         stockCardResource = stockCardService.getStockCard($stateParams.stockCardId);
                     }
@@ -77,13 +74,6 @@
                 }
             }
         });
-    }
-
-    function getVirtualProgramId(orderable) {
-        var program = _.find(orderable.programs, function(program) {
-            return !!program.parentId;
-        });
-        return program && program.parentId;
     }
     // SIGLUS-REFACTOR: ends here
 })();
