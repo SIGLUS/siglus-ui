@@ -189,7 +189,6 @@
          * @param  {Object}            requisition requisition object from server
          * @return {RequisitionColumn}             column with additional info
          */
-        /* eslint-disable complexity */
         function displayColumn(column, requisition) {
             if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
                 typeof column.option !== 'undefined') {
@@ -197,11 +196,7 @@
                     requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
             }
             // SIGLUS-REFACTOR: starts here
-            if ((TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED === column.name
-                || TEMPLATE_COLUMNS.QUANTITY_APPROVED === column.name)
-                && requisition.isHistory) {
-                return true;
-            }
+            displayHistoryColumn(column, requisition);
 
             if (column.isDisplayed && TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED === column.name) {
                 return requisition.$hasAuthorizeRight(requisition);
@@ -212,6 +207,15 @@
                 [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
                 requisition.$isAfterAuthorize());
         }
+
+        // SIGLUS-REFACTOR: starts here
+        function displayHistoryColumn(column, requisition) {
+            if ([TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED, TEMPLATE_COLUMNS.APPROVED_QUANTITY].indexOf(column.name) !== -1
+                && requisition.isHistory) {
+                return true;
+            }
+        }
+        // SIGLUS-REFACTOR: ends here
 
         function columnDependencies(column) {
             return dependencies[column.name];

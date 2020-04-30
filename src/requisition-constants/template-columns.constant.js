@@ -36,7 +36,6 @@
             REQUESTED_QUANTITY: 'requestedQuantity',
             // SIGLUS-REFACTOR: starts here
             QUANTITY_AUTHORIZED: 'authorizedQuantity',
-            QUANTITY_APPROVED: 'approvedQuantity',
             // SIGLUS-REFACTOR: ends here
             REQUESTED_QUANTITY_EXPLANATION: 'requestedQuantityExplanation',
             STOCK_ON_HAND: 'stockOnHand',
