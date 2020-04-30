@@ -52,6 +52,7 @@
         $delegate.getRealPrograms = getRealPrograms;
         $delegate.getVirtualPrograms = getVirtualPrograms;
         $delegate.getAllProductsProgram = getAllProductsProgram;
+        $delegate.get = get;
 
         return $delegate;
 
@@ -104,6 +105,27 @@
                 .$promise
                 .then(function(programs) {
                     return programs;
+                });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-program.programService
+         * @name get
+         *
+         * @description
+         * Gets program by id.
+         *
+         * @param  {String}  id Program UUID
+         * @return {Promise}    Program info
+         */
+        function get(id) {
+            return resource.getAll()
+                .$promise
+                .then(function(programs) {
+                    return _.find(programs, function(p) {
+                        return p.id === id;
+                    });
                 });
         }
     }
