@@ -21,7 +21,6 @@
     service.$inject = [];
 
     function service() {
-        <!-- SIGLUS-REFACTOR: starts here -->
         this.formatPayload = function(payload) {
             payload.lineItems.forEach(function(lineItem) {
                 if (lineItem.extraData) {
@@ -39,7 +38,6 @@
 
             return payload;
         };
-        <!-- SIGLUS-REFACTOR: ends here -->
     }
 
 })();

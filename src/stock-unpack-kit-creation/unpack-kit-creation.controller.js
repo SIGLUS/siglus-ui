@@ -31,16 +31,17 @@
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
         'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
-        'kitCreationService', 'signatureModalService', 'sourceAndDestination', 'notificationService',
-        'dateUtils', 'receivedReasons', 'issuedReasons'
+        'kitCreationService', 'signatureModalService', 'notificationService', 'dateUtils', 'reasons',
+        'UNPACK_REASONS'
     ];
 
     function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
                         confirmDiscardService, loadingModalService, stockKitUnpackService, alertService,
-                        kitCreationService, signatureModalService, sourceAndDestination, notificationService,
-                        dateUtils, receivedReasons, issuedReasons) {
+                        kitCreationService, signatureModalService, notificationService, dateUtils, reasons,
+                        UNPACK_REASONS) {
         var vm = this;
 
+        console.log(reasons);
         vm.showProducts = false;
         vm.kitChildren = [];
         vm.products = [];
@@ -195,8 +196,6 @@
                 occurredDate: dateUtils.toStringDate(new Date()),
                 dateInvalid: false,
                 orderableId: product.id,
-                sourceId: sourceAndDestination && sourceAndDestination.source && sourceAndDestination.source.node &&
-                    sourceAndDestination.source.node.id,
                 programId: vm.kit.parentProgramId,
                 documentationNo: vm.kit.documentationNo
             });
@@ -247,21 +246,14 @@
             } else {
                 signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
-                    var receiveReason = _.find(receivedReasons, {
-                        name: 'Receive'
-                    });
-                    var issueReason = _.find(issuedReasons, {
-                        name: 'Issue'
-                    });
                     var kitItem = {
                         orderableId: vm.kit.id,
                         quantity: vm.kit.unpackQuantity,
                         occurredDate: dateUtils.toStringDate(new Date()),
                         documentationNo: vm.kit.documentationNo,
                         programId: vm.kit.parentProgramId,
-                        destinationId: sourceAndDestination && sourceAndDestination.destination &&
-                            sourceAndDestination.destination.node && sourceAndDestination.destination.node.id,
-                        reasonId: issueReason ? issueReason.id : null
+                        reasonId: UNPACK_REASONS.KIT_UNPACK_REASON_ID,
+                        extraData: {}
                     };
                     var lineItems = _.map(vm.products, function(product) {
                         return  {
@@ -273,8 +265,8 @@
                             occurredDate: product.occurredDate,
                             documentationNo: product.documentationNo,
                             programId: product.programId,
-                            sourceId: product.sourceId,
-                            reasonId: receiveReason ? receiveReason.id : null
+                            reasonId: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID,
+                            extraData: {}
                         };
                     });
                     lineItems.unshift(kitItem);
