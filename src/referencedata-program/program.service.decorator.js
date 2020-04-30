@@ -46,6 +46,10 @@
                     code: 'ALL'
                 },
                 isArray: true
+            },
+            getById: {
+                url: openlmisUrlFactory('/api/siglusintegration/programs/:id'),
+                method: 'GET'
             }
         });
 
@@ -120,13 +124,16 @@
          * @return {Promise}    Program info
          */
         function get(id) {
-            return resource.getAll()
-                .$promise
-                .then(function(programs) {
-                    return _.find(programs, function(p) {
-                        return p.id === id;
+            if (id) {
+                return resource.getById({
+                    id: id
+                })
+                    .$promise
+                    .then(function(program) {
+                        return program;
                     });
-                });
+            }
+            return undefined;
         }
     }
 })();
