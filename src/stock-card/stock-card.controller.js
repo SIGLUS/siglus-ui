@@ -62,46 +62,30 @@
         function onInit() {
             $state.current.label = stockCard.orderable.fullProductName;
 
-            var items = [];
             // SIGLUS-REFACTOR: starts here
-            // var previousSoh;
-            var hasAddFirstInventory = false;
-            var firstInventoryItem = {
-                occurredDate: stockCard.createDate,
-                stockOnHand: 0,
-                reason: new Reason({
-                    name: 'Inventory'
-                })
-            };
             var isViewProductCard = stockCard.isViewProductCard;
-            angular.forEach(stockCard.lineItems, function(lineItem) {
-                if (!isViewProductCard && !hasAddFirstInventory && stockCard.createDate > lineItem.occurredDate) {
-                    items.push(firstInventoryItem);
-                    hasAddFirstInventory = true;
-                }
-                // if (lineItem.stockAdjustments.length > 0) {
-                //     angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
-                //         var lineValue = angular.copy(lineItem);
-                //         if (i !== 0) {
-                //             lineValue.stockOnHand = previousSoh;
-                //         }
-                //         // lineValue.reason = adjustment.reason;
-                //         lineValue.quantity = adjustment.quantity;
-                //         lineValue.stockAdjustments = [];
-                //         items.push(lineValue);
-                //         previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
-                //     });
-                // } else {
-                //     items.push(lineItem);
-                // }
-                items.push(lineItem);
-            });
-            if (!isViewProductCard && !hasAddFirstInventory) {
-                items.push(firstInventoryItem);
-            }
+            // var items = [];
+            // var previousSoh;
+            // angular.forEach(stockCard.lineItems, function(lineItem) {
+            //     if (lineItem.stockAdjustments.length > 0) {
+            //         angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
+            //             var lineValue = angular.copy(lineItem);
+            //             if (i !== 0) {
+            //                 lineValue.stockOnHand = previousSoh;
+            //             }
+            //             lineValue.reason = adjustment.reason;
+            //             lineValue.quantity = adjustment.quantity;
+            //             lineValue.stockAdjustments = [];
+            //             items.push(lineValue);
+            //             previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
+            //         });
+            //     } else {
+            //         items.push(lineItem);
+            //     }
+            // });
 
             vm.stockCard = stockCard;
-            vm.stockCard.lineItems = items;
+            // vm.stockCard.lineItems = items;
             vm.binCardName = isViewProductCard
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
