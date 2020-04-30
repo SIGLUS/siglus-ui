@@ -28,14 +28,14 @@
         classExtender.extend(OrderableResource, OpenlmisCachedResource);
 
         return OrderableResource;
-
+        <!-- SIGLUS-REFACTOR: starts here -->
         function OrderableResource() {
             this.super('/api/siglusintegration/orderables', 'orderables', {
                 versioned: true,
                 offlineMessage: 'orderable.notCachedOfflineError'
             });
         }
-
+        <!-- SIGLUS-REFACTOR: ends here -->
     }
 
 })();

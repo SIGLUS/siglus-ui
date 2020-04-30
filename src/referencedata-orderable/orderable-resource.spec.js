@@ -32,11 +32,12 @@ describe('OrderableResource', function() {
 
     it('should extend OpenlmisResource', function() {
         new this.OrderableResource();
-
+        <!-- SIGLUS-REFACTOR: starts here -->
         expect(this.OpenlmisCachedResourceMock).toHaveBeenCalledWith('/api/siglusintegration/orderables',
             'orderables', {
                 versioned: true,
                 offlineMessage: 'orderable.notCachedOfflineError'
             });
+        <!-- SIGLUS-REFACTOR: ends here -->
     });
 });
