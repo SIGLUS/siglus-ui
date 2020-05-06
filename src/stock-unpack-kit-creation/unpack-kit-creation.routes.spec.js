@@ -13,7 +13,6 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-/*
 describe('openlmis.stockmanagement.kitunpack.creation state', function() {
 
     var UserDataBuilder, ProgramDataBuilder, ReasonDataBuilder, FacilityDataBuilder;
@@ -47,6 +46,9 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             this.registerDisplayItemsService = $injector.get('registerDisplayItemsService');
             this.orderableGroupService = $injector.get('orderableGroupService');
             this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            // SIGLUS-REFACTOR: starts here
+            this.stockKitUnpackService = $injector.get('stockKitUnpackService');
+            // SIGLUS-REFACTOR: ends here
         });
 
         this.program = new ProgramDataBuilder().build();
@@ -68,6 +70,10 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         spyOn(this.$templateCache, 'get').andCallThrough();
         spyOn(this.authorizationService, 'getUser').andReturn(this.$q.resolve(this.user));
         spyOn(this.orderableGroupService, 'getKitOnlyOrderablegroup').andCallThrough();
+        // SIGLUS-REFACTOR: starts here
+        spyOn(this.stockKitUnpackService, 'getUnpackKits').andReturn('kits');
+        spyOn(this.stockKitUnpackService, 'getUnpackKit').andReturn('kit');
+        // SIGLUS-REFACTOR: ends here
 
         this.state = this.$state.get('openlmis.stockmanagement.kitunpack.creation');
 
@@ -85,25 +91,27 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             expect(this.$state.current.name).toEqual('openlmis.stockmanagement.kitunpack.creation');
         });
 
-        it('should resolve user', function() {
-            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
-
-            expect(this.getResolvedValue('user')).toEqual(this.user);
-        });
-
-        it('should resolve program', function() {
-            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
-
-            expect(this.getResolvedValue('program')).toEqual(this.program);
-        });
-
-        it('should resolve program from stateParam if it is already set ', function() {
-            this.$state.program = this.program;
-
-            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
-
-            expect(this.getResolvedValue('program')).toEqual(this.$state.program);
-        });
+        // SIGLUS-REFACTOR: remove user, program relevant
+        // it('should resolve user', function() {
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('user')).toEqual(this.user);
+        // });
+        //
+        // it('should resolve program', function() {
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('program')).toEqual(this.program);
+        // });
+        //
+        // it('should resolve program from stateParam if it is already set ', function() {
+        //     this.$state.program = this.program;
+        //
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('program')).toEqual(this.$state.program);
+        // });
+        // SIGLUS-REFACTOR: ends here
 
         it('should resolve facility', function() {
             this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
@@ -119,37 +127,56 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             expect(this.getResolvedValue('facility')).toEqual(this.$state.facility);
         });
 
-        it('should resolve unpack reasons', function() {
+        // SIGLUS-REFACTOR: remove reasons, srcDstAssignments, adjustmentType,
+        // getKitOnlyOrderablegroup relevant
+        // it('should resolve unpack reasons', function() {
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('reasons')).toEqual(this.unpackReasons);
+        // });
+        //
+        // it('should resolve reasons from stateParam if it is already set ', function() {
+        //     this.$state.reasons = this.unpackReasons;
+        //
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('reasons')).toEqual(this.$state.reasons);
+        // });
+        //
+        // it('should resolve srcDstAssignments and value should empty for unpacking', function() {
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('srcDstAssignments')).toEqual(null);
+        // });
+        //
+        // it('should resolve adjustmentType to ADJUSTMENT_TYPE.KIT_UNPACK', function() {
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.getResolvedValue('adjustmentType')).toEqual(this.ADJUSTMENT_TYPE.KIT_UNPACK);
+        // });
+        //
+        // it('should call getKitOnlyOrderablegroup', function() {
+        //     this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
+        //
+        //     expect(this.orderableGroupService.getKitOnlyOrderablegroup).toHaveBeenCalled();
+        // });
+        // SIGLUS-REFACTOR: ends here
+
+        // SIGLUS-REFACTOR: add kit relevant
+        it('should resolve kit', function() {
             this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            expect(this.getResolvedValue('reasons')).toEqual(this.unpackReasons);
+            expect(this.getResolvedValue('kit')).toEqual('kit');
         });
 
-        it('should resolve reasons from stateParam if it is already set ', function() {
-            this.$state.reasons = this.unpackReasons;
+        it('should resolve kit from stateParam if it is already set ', function() {
+            this.$state.kit = 'kit';
 
             this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
 
-            expect(this.getResolvedValue('reasons')).toEqual(this.$state.reasons);
+            expect(this.getResolvedValue('kit')).toEqual('kit');
         });
-
-        it('should resolve srcDstAssignments and value should empty for unpacking', function() {
-            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
-
-            expect(this.getResolvedValue('srcDstAssignments')).toEqual(null);
-        });
-
-        it('should resolve adjustmentType to ADJUSTMENT_TYPE.KIT_UNPACK', function() {
-            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
-
-            expect(this.getResolvedValue('adjustmentType')).toEqual(this.ADJUSTMENT_TYPE.KIT_UNPACK);
-        });
-
-        it('should call getKitOnlyOrderablegroup', function() {
-            this.goToUrl('stockmanagement/unpack/3/create?page=0&size=10');
-
-            expect(this.orderableGroupService.getKitOnlyOrderablegroup).toHaveBeenCalled();
-        });
+        // SIGLUS-REFACTOR: ends here
     });
 
     function getResolvedValue(name) {
@@ -160,4 +187,4 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         this.$location.url(url);
         this.$rootScope.$apply();
     }
-});*/
+});

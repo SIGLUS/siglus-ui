@@ -80,6 +80,12 @@
                 srcDstAssignments: function() {
                     return null;
                 },
+                reasons: function($stateParams, facility, stockReasonsFactory, kit) {
+                    if (!$stateParams.reasons) {
+                        return stockReasonsFactory.getUnpackReasons(kit.parentProgramId, facility.type.id);
+                    }
+                    return $stateParams.reasons;
+                }
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.KIT_UNPACK;
                 }*/
@@ -88,12 +94,6 @@
                         return stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
                     }
                     return $stateParams.kit;
-                },
-                reasons: function($stateParams, facility, stockReasonsFactory, kit) {
-                    if (!$stateParams.reasons) {
-                        return stockReasonsFactory.getUnpackReasons(kit.parentProgramId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
                 }
                 //SIGLUS-REFACTOR: ends here
             }
