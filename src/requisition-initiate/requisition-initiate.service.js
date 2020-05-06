@@ -37,14 +37,14 @@
         this.getPhysicalInventoryDates = getPhysicalInventoryDates;
 
         function getLatestPhysicalInventory(facilityId) {
-            var resource = $resource(requisitionUrlFactory('/api/physicalInventories/latest'));
+            var resource = $resource(requisitionUrlFactory('/api/siglusintegration/physicalInventories/latest'));
             return resource.get({
                 facilityId: facilityId
             }).$promise;
         }
 
         function getPhysicalInventoryDates(facilityId, startDate, endDate) {
-            var resource = $resource(requisitionUrlFactory('/api/physicalInventories/dates'));
+            var resource = $resource(requisitionUrlFactory('/api/siglusintegration/physicalInventories/dates'));
             return resource.query({
                 facilityId: facilityId,
                 startDate: startDate,
