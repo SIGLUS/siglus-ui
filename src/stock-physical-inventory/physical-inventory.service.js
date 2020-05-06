@@ -30,11 +30,11 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'stockEventFormatService'
+        'productNameFilter', 'stockEventFactory', 'stockEventService'
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, stockEventFormatService) {
+                     productNameFilter, stockEventFactory, stockEventService) {
         <!-- SIGLUS-REFACTOR: starts here -->
         var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'), {}, {
             get: {
@@ -176,7 +176,7 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, stockEventFormatService.formatPayload(draft)).$promise;
+            }, stockEventService.format(draft)).$promise;
         }
 
         /**
@@ -209,7 +209,7 @@
          */
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
-            return resource.submitPhysicalInventory(stockEventFormatService.formatPayload(event)).$promise;
+            return stockEventService.submit(event);
         }
 
         function getLot(item, hasLot) {
