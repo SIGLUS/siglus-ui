@@ -1,109 +1,109 @@
 .max-width-patient {
-  max-width: 500px;
+    max-width: 500px;
 }
 .regime-total {
-  background-color: $background-color-alt!important;
+    background-color: $background-color-alt!important;
 }
 .regime-total,
 .patient-category {
-  width: 400px;
+    width: 400px;
 }
 
 .min-cel-width {
-  width: 120px;
+    width: 120px;
 }
 
 .align-center {
-  text-align: center;
+    text-align: center;
 }
 
 table.openlmis-table {
-  th.center {
-    text-align: center;
-  }
+    th.center {
+        text-align: center;
+    }
 }
 
 .rapid-test-product-table {
-  max-width: 70%;
+    max-width: 70%;
 }
 
 .text-align-right {
-  text-align: right;
+    text-align: right;
 }
 
 .table-header {
-  color: #777777;
-  padding: 8px 20px;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-bottom: none;
+    color: #777777;
+    padding: 8px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-bottom: none;
 }
 
 .static-thread {
-  position: static !important;
+    position: static !important;
 }
 
 .openlmis-table-container {
-  .openlmis-flex-table.rapid-test-service-report {
-    .table-header {
-      padding-left: 40px;
-    }
+    .openlmis-flex-table.rapid-test-service-report {
+        .table-header {
+            padding-left: 40px;
+        }
 
-    &>table {
-      .empty-td {
-        min-width: 60px;
-      }
-      .text-center {
-        font-weight: bold;
-      }
-      .body-input {
-        border: none;
-        outline: none;
-      }
-      thead {
-        &>tr {
-          &>td {
-            background: white;
-            color: black;
-            &.sub-name:first-child {
-              border-left: #ddd 1px solid;
+        &>table {
+            .empty-td {
+                min-width: 60px;
             }
-          }
-        }
-        .parent-col td:nth-child(n+2) {
-          border-left: #ddd 3px solid !important;
-        }
-        .sub-col td:nth-child(3n+1) {
-          border-left: #ddd 3px solid !important;
-        }
-      }
+            .text-center {
+                font-weight: bold;
+            }
+            .body-input {
+                border: none;
+                outline: none;
+            }
+            thead {
+                &>tr {
+                    &>td {
+                        background: white;
+                        color: black;
+                        &.sub-name:first-child {
+                            border-left: #ddd 1px solid;
+                        }
+                    }
+                }
+                .parent-col td:nth-child(n+2) {
+                    border-left: #ddd 3px solid !important;
+                }
+                .sub-col td:nth-child(3n+1) {
+                    border-left: #ddd 3px solid !important;
+                }
+            }
 
-      tbody {
-        tr:first-child {
-          td {
-            border-top: #ddd 1px solid;
-          }
-        }
+            tbody {
+                tr:first-child {
+                    td {
+                        border-top: #ddd 1px solid;
+                    }
+                }
 
-        td.highlighted {
-          background: #f0f0f0;
-          font-weight: bold;
-          color: #777777;
-        }
+                td.highlighted {
+                    background: #f0f0f0;
+                    font-weight: bold;
+                    color: #777777;
+                }
 
-        td:nth-child(3n+2) {
-          border-left: #ddd 3px solid !important;
-        }
+                td:nth-child(3n+2) {
+                    border-left: #ddd 3px solid !important;
+                }
 
-        .text-align-right {
-          text-align: right;
+                .text-align-right {
+                    text-align: right;
+                }
+            }
         }
-      }
     }
-  }
 }
 
 header>.navbar .navbar-nav>.open>a:focus{
-  color: #fff !important;
-  background-color: #3A95BC !important;
+    color: #fff !important;
+    background-color: #3A95BC !important;
 }
