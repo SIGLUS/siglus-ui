@@ -46,7 +46,7 @@
         /**
          * @ngdoc method
          * @methodOf requisition-view.requisitionViewFactory
-         * @name canSkip
+         * @name hasSubmitRight
          *
          * @description
          * Determines whether the user has submit right or not.
@@ -62,7 +62,7 @@
         /**
          * @ngdoc method
          * @methodOf requisition-view.requisitionViewFactory
-         * @name canSkip
+         * @name canSubmitAndAuthorize
          *
          * @description
          * Determines whether the user has authorize right and submit right or not.
@@ -92,7 +92,7 @@
         /**
          * @ngdoc method
          * @methodOf requisition-view.requisitionViewFactory
-         * @name canSkip
+         * @name hasAuthorizeRight
          *
          * @description
          * Determines whether the user has authorize right or not.

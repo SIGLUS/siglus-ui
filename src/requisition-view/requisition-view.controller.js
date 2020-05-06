@@ -64,7 +64,6 @@
          */
         vm.requisition = requisition;
 
-        // SIGLUS-REFACTOR: starts here
         /**
          * @ngdoc property
          * @propertyOf requisition-view.controller:RequisitionViewController
@@ -97,7 +96,6 @@
          * Holds requisition processing period.
          */
         vm.processingPeriod = undefined;
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -473,6 +471,18 @@
         }
 
         // SIGLUS-REFACTOR: starts here
+        /**
+         * @ngdoc method
+         * @methodOf requisition-view.controller:RequisitionViewController
+         * @name submitAndAuthorizeRnr
+         *
+         * @description
+         * Responsible for submitting and authorizing requisition. Displays confirmation dialog, and checks
+         * requisition validity before authorization. If the requisition is not valid, fails to
+         * save or an error occurs during authorization, an error notification modal will be
+         * displayed.
+         * Otherwise, a success notification modal will be shown.
+         */
         function submitAndAuthorizeRnr() {
             if (requisitionValidator.validateRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.submit.confirmWithSignature')

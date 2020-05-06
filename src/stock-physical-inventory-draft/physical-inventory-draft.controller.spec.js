@@ -266,6 +266,7 @@ describe('PhysicalInventoryDraftController', function() {
                 reasonType: 'CREDIT'
             }
         }];
+        // SIGLUS-REFACTOR: starts here
         lineItem3.lot = {
             id: 3,
             lotCode: 'test3',
@@ -288,6 +289,7 @@ describe('PhysicalInventoryDraftController', function() {
             lotCode: 'test4',
             expirationDate: '31/08/2019'
         };
+        // SIGLUS-REFACTOR: ends here
         var deferred = $q.defer();
         deferred.resolve();
         chooseDateModalService.show.andReturn(deferred.promise);
@@ -352,6 +354,7 @@ describe('PhysicalInventoryDraftController', function() {
                 .andReturn($q.when());
             confirmService.confirm.andReturn($q.reject());
             accessTokenFactory.addAccessToken.andReturn('url');
+            // SIGLUS-REFACTOR: starts here
             lineItem2.quantity = 456;
             lineItem2.lot = {
                 id: 2,
@@ -364,6 +367,7 @@ describe('PhysicalInventoryDraftController', function() {
                 lotCode: 'test4',
                 expirationDate: '31/08/2019'
             };
+            // SIGLUS-REFACTOR: ends here
 
             draft.id = 1;
             vm.submit();
