@@ -55,9 +55,7 @@
                 program: function($stateParams, programService) {
                     if (_.isUndefined($stateParams.program)) {
                         return programService.getAllProductsProgram().then(function(programs) {
-                            return _.find(programs, function(progarm) {
-                                return progarm.code === 'ALL';
-                            });
+                            return programs[0];
                         });
                     }
                     return $stateParams.program;
