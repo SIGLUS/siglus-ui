@@ -31,17 +31,16 @@
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
         'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
-        'kitCreationService', 'signatureModalService', 'notificationService', 'dateUtils', 'reasons',
+        'kitCreationService', 'signatureModalService', 'notificationService', 'dateUtils',
         'UNPACK_REASONS'
     ];
 
     function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
                         confirmDiscardService, loadingModalService, stockKitUnpackService, alertService,
-                        kitCreationService, signatureModalService, notificationService, dateUtils, reasons,
+                        kitCreationService, signatureModalService, notificationService, dateUtils,
                         UNPACK_REASONS) {
         var vm = this;
 
-        console.log(reasons);
         vm.showProducts = false;
         vm.kitChildren = [];
         vm.products = [];
