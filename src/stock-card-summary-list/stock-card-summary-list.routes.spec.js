@@ -76,7 +76,9 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
                 };
             });
         });
+        // SIGLUS-REFACTOR: starts here
         module('stock-program-util');
+        // SIGLUS-REFACTOR: ends here
     }
 
     function injectServices() {
