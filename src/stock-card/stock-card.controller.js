@@ -62,43 +62,42 @@
         function onInit() {
             $state.current.label = stockCard.orderable.fullProductName;
 
-            // SIGLUS-REFACTOR: starts here
-            var isViewProductCard = stockCard.isViewProductCard;
-            // var items = [];
-            // var previousSoh;
-            // angular.forEach(stockCard.lineItems, function(lineItem) {
-            //     if (lineItem.stockAdjustments.length > 0) {
-            //         angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
-            //             var lineValue = angular.copy(lineItem);
-            //             if (i !== 0) {
-            //                 lineValue.stockOnHand = previousSoh;
-            //             }
-            //             lineValue.reason = adjustment.reason;
-            //             lineValue.quantity = adjustment.quantity;
-            //             lineValue.stockAdjustments = [];
-            //             items.push(lineValue);
-            //             previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
-            //         });
-            //     } else {
-            //         items.push(lineItem);
-            //     }
-            // });
+            var items = [];
+            var previousSoh;
+            angular.forEach(stockCard.lineItems, function(lineItem) {
+                if (lineItem.stockAdjustments.length > 0) {
+                    angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
+                        var lineValue = angular.copy(lineItem);
+                        if (i !== 0) {
+                            lineValue.stockOnHand = previousSoh;
+                        }
+                        lineValue.reason = adjustment.reason;
+                        lineValue.quantity = adjustment.quantity;
+                        lineValue.stockAdjustments = [];
+                        items.push(lineValue);
+                        previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
+                    });
+                } else {
+                    items.push(lineItem);
+                }
+            });
 
             vm.stockCard = stockCard;
-            // vm.stockCard.lineItems = items;
-            vm.binCardName = isViewProductCard
+            vm.stockCard.lineItems = items;
+            // SIGLUS-REFACTOR: starts here
+            vm.binCardName = stockCard.isViewProductCard
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
+            // SIGLUS-REFACTOR: ends here
         }
 
-        // function getSignedQuantity(adjustment) {
-        //     if (adjustment.reason.reasonType === REASON_TYPES.DEBIT) {
-        //         return -adjustment.quantity;
-        //     }
-        //     return adjustment.quantity;
-        //
-        // }
-        // SIGLUS-REFACTOR: ends here
+        function getSignedQuantity(adjustment) {
+            if (adjustment.reason.reasonType === REASON_TYPES.DEBIT) {
+                return -adjustment.quantity;
+            }
+            return adjustment.quantity;
+
+        }
 
         /**
          * @ngdoc method
@@ -112,9 +111,7 @@
          * @return {object} message for reason
          */
         function getReason(lineItem) {
-            // SIGLUS-REFACTOR: starts here
-            if (lineItem.reasonFreeText && lineItem.reason.isFreeTextAllowed) {
-                // SIGLUS-REFACTOR: ends here
+            if (lineItem.reasonFreeText) {
                 return messageService.get('stockCard.reasonAndFreeText', {
                     name: lineItem.reason.name,
                     freeText: lineItem.reasonFreeText
