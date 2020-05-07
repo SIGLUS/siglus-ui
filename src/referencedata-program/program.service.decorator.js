@@ -106,10 +106,7 @@
          */
         function getAllProductsProgram() {
             return resource.getAllProductsProgram()
-                .$promise
-                .then(function(programs) {
-                    return programs;
-                });
+                .$promise;
         }
 
         /**

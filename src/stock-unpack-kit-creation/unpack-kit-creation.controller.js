@@ -29,15 +29,15 @@
         .controller('UnpackKitCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'facility', 'kit', 'messageService', 'MAX_INTEGER_VALUE',
-        'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
+        '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'kit', 'messageService',
+        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
         'kitCreationService', 'signatureModalService', 'notificationService', 'dateUtils',
         'UNPACK_REASONS'
     ];
 
-    function controller($scope, $state, $stateParams, facility, kit, messageService, MAX_INTEGER_VALUE,
-                        confirmDiscardService, loadingModalService, stockKitUnpackService, alertService,
-                        kitCreationService, signatureModalService, notificationService, dateUtils,
+    function controller($scope, $state, $stateParams, facility, allProductsProgram, kit, messageService,
+                        MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService, stockKitUnpackService,
+                        alertService, kitCreationService, signatureModalService, notificationService, dateUtils,
                         UNPACK_REASONS) {
         var vm = this;
 
@@ -195,7 +195,7 @@
                 occurredDate: dateUtils.toStringDate(new Date()),
                 dateInvalid: false,
                 orderableId: product.id,
-                programId: vm.kit.parentProgramId,
+                programId: product.parentProgramId,
                 documentationNo: vm.kit.documentationNo
             });
         }
@@ -269,7 +269,7 @@
                         };
                     });
                     lineItems.unshift(kitItem);
-                    kitCreationService.submitUnpack(facility.id, vm.kit.parentProgramId, signature, lineItems)
+                    kitCreationService.submitUnpack(facility.id, allProductsProgram.id, signature, lineItems)
                         .then(function() {
                             notificationService.success('stockUnpackKitCreation.submitted');
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
