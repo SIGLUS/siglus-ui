@@ -30,12 +30,14 @@ describe('StockCardSummaryRepositoryImpl', function() {
                 };
             });
 
-            $provide.factory('OrderableResource', function() {
+            // SIGLUS-REFACTOR: strats here
+            $provide.factory('SiglusOrderableResource', function() {
                 return function() {
-                    OrderableResource = jasmine.createSpyObj('OrderableResource', ['query']);
+                    OrderableResource = jasmine.createSpyObj('SiglusOrderableResource', ['query']);
                     return OrderableResource;
                 };
             });
+            // SIGLUS-REFACTOR: ends here
         });
 
         inject(function($injector) {
