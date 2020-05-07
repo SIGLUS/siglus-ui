@@ -1,7 +1,18 @@
 {
   "dependencies": {
+    "@bower_components/perfect-scrollbar": "noraesae/perfect-scrollbar-bower#^0.6.12"
   },
   "engines": {
     "yarn": ">= 1.0.0"
+  },
+  "overrides": {
+    "@bower_components/perfect-scrollbar": {
+      "main": [
+        "src/perfect-scrollbar.css",
+        "src/perfect-scrollbar.js",
+        "src/perfect-scrollbar.css",
+        "src/perfect-scrollbar.js"
+      ]
+    }
   }
 }

@@ -30,7 +30,10 @@
 
     factory.$inject = [
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
-        'FullStockCardSummaryRepositoryImpl', 'loadingModalService', '$state', 'alertService', 'currentUserService'
+        'FullStockCardSummaryRepositoryImpl',
+        // SIGLUS-REFACTOR: starts here
+        'loadingModalService', '$state', 'alertService', 'currentUserService'
+        // SIGLUS-REFACTOR: ends here
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
@@ -42,7 +45,9 @@
             getDraft: getDraft,
             getPhysicalInventory: getPhysicalInventory,
             saveDraft: saveDraft,
+            // SIGLUS-REFACTOR: starts here
             getInitialInventory: getInitialInventory
+            // SIGLUS-REFACTOR: ends here
         };
 
         /**
@@ -136,6 +141,7 @@
                 });
         }
 
+        // SIGLUS-REFACTOR: starts here
         function getInitialInventory(programId, facilityId) {
             return physicalInventoryService.getInitialDraft(programId, facilityId)
                 .then(function(drafts) {
@@ -164,6 +170,7 @@
                     });
                 });
         }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -194,9 +201,9 @@
                     reasonFreeText: item.reasonFreeText,
                     stockCardId: item.stockCardId,
                     programId: item.programId
-                    // SIGLUS-REFACTOR: ends here
                 };
             });
+            // SIGLUS-REFACTOR: ends here
 
             return physicalInventoryService.saveDraft(physicalInventory);
         }
@@ -310,6 +317,7 @@
 
             return [];
         }*/
+        // SIGLUS-REFACTOR: ends here
 
         function getStockProducts(programId, facilityId) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
@@ -327,6 +335,7 @@
             });
         }
 
+        // SIGLUS-REFACTOR: starts here
         // function getQuantity(item) {
         //     return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
         // }

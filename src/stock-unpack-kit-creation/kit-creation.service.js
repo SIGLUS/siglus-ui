@@ -28,9 +28,9 @@
         .module('stock-unpack-kit-creation')
         .service('kitCreationService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'stockEventFormatService'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'stockEventService'];
 
-    function service($resource, stockmanagementUrlFactory, stockEventFormatService) {
+    function service($resource, stockmanagementUrlFactory, stockEventService) {
         this.getKitProducts = getKitProducts;
         this.submitUnpack = submitUnpack;
 
@@ -42,14 +42,13 @@
         }
 
         function submitUnpack(facilityId, programId, signature, lineItems) {
-            var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'));
             var event = {
                 facilityId: facilityId,
                 programId: programId,
                 signature: signature
             };
             event.lineItems = lineItems;
-            return resource.save(stockEventFormatService.formatPayload(event)).$promise;
+            return stockEventService.submit(event);
         }
     }
 })();

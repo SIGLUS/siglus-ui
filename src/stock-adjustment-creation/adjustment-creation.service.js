@@ -31,12 +31,11 @@
     // SIGLUS-REFACTOR: starts here
     service.$inject = [
         '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService',
-        'productNameFilter', '$http', 'LotRepositoryImpl', 'stockEventFormatService'
+        'productNameFilter', '$http', 'LotRepositoryImpl', 'stockEventService'
     ];
 
     function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
-                     messageService, productNameFilter, $http, LotRepositoryImpl, stockEventFormatService) {
-        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'));
+                     messageService, productNameFilter, $http, LotRepositoryImpl, stockEventService) {
         var lotRepositoryImpl = new LotRepositoryImpl();
 
         this.search = search;
@@ -247,7 +246,7 @@
                     // SIGLUS-REFACTOR: ends here
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
-            return resource.save(stockEventFormatService.formatPayload(event)).$promise;
+            return stockEventService.submit(event);
         }
 
         function buildSourceDestinationInfo(item, adjustmentType) {
