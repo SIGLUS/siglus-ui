@@ -48,10 +48,6 @@
             delete: {
                 method: 'DELETE',
                 url: stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/:id')
-            },
-            submitPhysicalInventory: {
-                method: 'POST',
-                url: stockmanagementUrlFactory('/api/siglusintegration/stockEvents')
             }
         });
         <!-- SIGLUS-REFACTOR: ends here -->
