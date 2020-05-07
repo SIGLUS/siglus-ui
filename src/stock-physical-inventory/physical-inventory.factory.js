@@ -43,6 +43,7 @@
         return {
             getDrafts: getDrafts,
             getDraft: getDraft,
+            getDraftByProgramAndFacility: getDraftByProgramAndFacility,
             getPhysicalInventory: getPhysicalInventory,
             saveDraft: saveDraft,
             // SIGLUS-REFACTOR: starts here
@@ -65,10 +66,41 @@
         function getDrafts(programIds, facility) {
             var promises = [];
             angular.forEach(programIds, function(program) {
-                promises.push(getDraft(program, facility));
+                promises.push(getDraftByProgramAndFacility(program, facility));
             });
 
             return $q.all(promises);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory.physicalInventoryFactory
+         * @name getDraftByProgramAndFacility
+         *
+         * @description
+         * Retrieves simple physical inventory draft by facility and program.
+         *
+         * @param  {String}  programId  Program UUID
+         * @param  {String}  facilityId Facility UUID
+         * @return {Promise}          Physical inventory promise
+         */
+        function getDraftByProgramAndFacility(programId, facilityId) {
+            return physicalInventoryService.getDraft(programId, facilityId)
+                .then(function(response) {
+                    var draft = response,
+                        draftToReturn = {
+                            programId: programId,
+                            facilityId: facilityId,
+                            lineItems: []
+                        };
+
+                    // no saved draft
+                    if (draft.length === 0) {
+                        draftToReturn.isStarter = true;
+                    }
+
+                    return draftToReturn;
+                });
         }
 
         /**
@@ -101,7 +133,6 @@
                     // SIGLUS-REFACTOR: starts here
                     prepareLineItems(undefined, summaries, draftToReturn);
                     // SIGLUS-REFACTOR: ends here
-                    draftToReturn.isStarter = true;
                     // draft was saved
                 } else {
                     prepareLineItems(draft[0], summaries, draftToReturn);
