@@ -4,12 +4,12 @@
         <input type="checkbox" ng-model="vm.template.enableConsultationNumber"/>{{'adminProgramTemplate.enableConsultationNumber' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableKitUsage"/>{{'adminProgramTemplate.enableKITUsage' | message}}
+        <input type="checkbox" ng-model="vm.template.enableKitUsage"/>{{'adminProgramTemplate.enableKitUsage' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableProductModule"/>{{'adminProgramTemplate.enableProductModule' | message}}
+        <input type="checkbox" ng-model="vm.template.enableProduct"/>{{'adminProgramTemplate.enableProduct' | message}}
     </div>
-    <div ng-show="vm.template.enableProductModule">
+    <div ng-show="vm.template.enableProduct">
 <!-- SIGLUS-REFACTOR: ends here -->
         <aside>
             <label>
@@ -99,31 +99,16 @@
 <!-- SIGLUS-REFACTOR: starts here -->
 <div class="requisition-template-admin">
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableALUsageModule"/>{{'adminProgramTemplate.enableALUsageModule' | message}}
-    </div>
-    <div class="requisition-template-module-container has-tips">
-        <div class="first-line">
-            <input type="checkbox" ng-model="vm.template.enableARVProductModule" ng-disabled="vm.template.enableRapidTestProductModule"/>{{'adminProgramTemplate.enableARVProductModule' | message}}
-        </div>
-        <div class="second-line" ng-show="vm.template.enableRapidTestProductModule">Each usage report can only has one product module</div>
+        <input type="checkbox" ng-model="vm.template.enablePatientLineItem"/>{{'adminProgramTemplate.enablePatientLineItem' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableARVTherapeuticRegimentModule"/>{{'adminProgramTemplate.enableARVTherapeuticRegimentModule' | message}}
+        <input type="checkbox" ng-model="vm.template.enableRegimen"/>{{'adminProgramTemplate.enableRegimen' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableARVTherapeuticLinesModule"/>{{'adminProgramTemplate.enableARVTherapeuticLinesModule' | message}}
+        <input type="checkbox" ng-model="vm.template.enableRapidTestConsumption"/>{{'adminProgramTemplate.enableRapidTestConsumption' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableARVPatientModule"/>{{'adminProgramTemplate.enableARVPatientModule' | message}}
-    </div>
-    <div class="requisition-template-module-container has-tips">
-        <div class="first-line">
-            <input type="checkbox" ng-model="vm.template.enableRapidTestProductModule" ng-disabled="vm.template.enableARVProductModule"/>{{'adminProgramTemplate.enableRapidTestProductModule' | message}}
-        </div>
-        <div class="second-line" ng-show="vm.template.enableARVProductModule">Each usage report can only has one product module</div>
-    </div>
-    <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.enableRapidTestServiceModule"/>{{'adminProgramTemplate.enableRapidTestServiceModule' | message}}
+        <input type="checkbox" ng-model="vm.template.enableUsageInformation"/>{{'adminProgramTemplate.enableUsageInformation' | message}}
     </div>
 </div>
 <div class="openlmis-toolbar">

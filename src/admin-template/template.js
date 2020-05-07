@@ -65,18 +65,13 @@
             this.facilityTypes = template.facilityTypes;
             this.name = template.name;
             // SIGLUS-REFACTOR: starts here
-            this.enableConsultationNumber = template.enableConsultationNumber;
-            this.enableKitUsage = template.enableKitUsage;
-            this.enableProductModule = template.enableProductModule;
-            this.enableALUsageModule = template.enableALUsageModule;
-            this.enableARVPatientModule = template.enableARVPatientModule;
-            this.enableARVProductModule = template.enableARVProductModule;
-            this.enableARVTherapeuticLinesModule = template.enableARVTherapeuticLinesModule;
-            this.enableARVTherapeuticRegimentModule = template.enableARVTherapeuticRegimentModule;
-            this.enableRapidTestProductModule = template.enableRapidTestProductModule;
-            this.enableRapidTestServiceModule = template.enableRapidTestServiceModule;
-            this.templateType = template.templateType;
-
+            this.enableConsultationNumber = template.enableConsultationNumber || false;
+            this.enableKitUsage = template.enableKitUsage || false;
+            this.enableProduct = template.enableProduct || false;
+            this.enablePatientLineItem = template.enablePatientLineItem || false;
+            this.enableRegimen = template.enableRegimen || false;
+            this.enableRapidTestConsumption = template.enableRapidTestConsumption || false;
+            this.enableUsageInformation = template.enableUsageInformation || false;
             // SIGLUS-REFACTOR: ends here
 
             for (var columnName in template.columnsMap) {
