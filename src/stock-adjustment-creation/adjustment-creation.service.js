@@ -31,11 +31,11 @@
     // SIGLUS-REFACTOR: starts here
     service.$inject = [
         '$filter', '$resource', 'stockmanagementUrlFactory', 'openlmisDateFilter', 'messageService',
-        'productNameFilter', '$http', 'LotRepositoryImpl', 'stockEventService'
+        'productNameFilter', 'dateUtils', '$http', 'LotRepositoryImpl', 'stockEventService'
     ];
 
     function service($filter, $resource, stockmanagementUrlFactory, openlmisDateFilter,
-                     messageService, productNameFilter, $http, LotRepositoryImpl, stockEventService) {
+                     messageService, productNameFilter, dateUtils, $http, LotRepositoryImpl, stockEventService) {
         var lotRepositoryImpl = new LotRepositoryImpl();
 
         this.search = search;
@@ -187,18 +187,20 @@
                         item.orderable.productCode,
                         productNameFilter(item.orderable),
                         hasStockOnHand ? item.stockOnHand.toString() : '',
-                        item.reason ? item.reason.name : '',
+                        item.reason && item.reason.name ? item.reason.name : '',
                         safeGet(item.reasonFreeText),
                         hasQuantity ? item.quantity.toString() : '',
                         getLot(item, hasLot),
                         item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
                         item.assignment ? item.assignment.name : '',
                         safeGet(item.srcDstFreeText),
-                        openlmisDateFilter(item.occurredDate)
+                        openlmisDateFilter(dateUtils.toDate(item.occurredDate))
                     ];
                     return _.any(searchableFields, function(field) {
-                        // SIGLUS-REFACTOR: starts here
-                        return field && field.toLowerCase().contains(keyword.toLowerCase());
+                        if (field === undefined) {
+                            return false;
+                        }
+                        return field.toLowerCase().contains(keyword.toLowerCase());
                     });
                 });
             }
@@ -206,6 +208,7 @@
             return result;
         }
 
+        // SIGLUS-REFACTOR: starts here
         function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature) {
             var event = {
                 programId: programId,
