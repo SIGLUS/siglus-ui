@@ -153,12 +153,11 @@
          */
         function changePage(newPage) {
             if (newPage >= 0 && newPage < getTotalPages()) {
-                var stateParams = angular.copy($stateParams);
+                var stateParams = JSON.parse(JSON.stringify($stateParams));
+                // SIGLUS-REFACTOR: starts here
                 // when change page, then displayItems will be undefined then cause empty table
                 if (pagination.paginationId && pagination.paginationId.indexOf('stock-management') !== -1) {
-                    // SIGLUS-REFACTOR: starts here
                     stateParams = stockManagementChangePage(stateParams);
-                    // SIGLUS-REFACTOR: ends here
                 }
 
                 if (pagination.paginationId && pagination.paginationId.indexOf('select-products-modal') !== -1) {
@@ -168,7 +167,14 @@
                 }
                 // flag for change page
                 stateParams.hasChangePage = true;
+                // SIGLUS-REFACTOR: ends here
                 stateParams[paginationService.getPageParamName(pagination.paginationId)] = newPage;
+
+                if (pagination.onPageChange instanceof Function) {
+                    return pagination.onPageChange().then(function(params) {
+                        $state.go($state.current.name, Object.assign(stateParams, params));
+                    });
+                }
 
                 $state.go($state.current.name, stateParams);
             }
