@@ -37,9 +37,6 @@ describe('StockCardController', function() {
             creditReason = new ReasonDataBuilder().buildCreditReason();
             var stockCard = {
                 id: stockCardId,
-                // SIGLUS-REFACTOR: starts here
-                isViewProductCard: true,
-                // SIGLUS-REFACTOR: ends here
                 orderable: {
                     fullProductName: 'Glibenclamide'
                 },
@@ -69,7 +66,10 @@ describe('StockCardController', function() {
                         stockOnHand: 30,
                         stockAdjustments: []
                     }
-                ]
+                ],
+                // SIGLUS-REFACTOR: starts here
+                program: {}
+                // SIGLUS-REFACTOR: ends here
             };
 
             // SIGLUS-REFACTOR: starts here
@@ -83,8 +83,8 @@ describe('StockCardController', function() {
                 $state: $state,
                 stockCardService: stockCardService,
                 alertService: alertService
-                // SIGLUS-REFACTOR: ends here
             });
+            // SIGLUS-REFACTOR: ends here
         });
     });
 
@@ -98,25 +98,27 @@ describe('StockCardController', function() {
                 orderable: {
                     fullProductName: 'Glibenclamide'
                 },
-                // SIGLUS-REFACTOR: starts here
                 lineItems: [
                     {
                         id: 1,
-                        stockAdjustments: [],
+                        reason: creditReason,
+                        quantity: 20,
                         stockOnHand: 35,
-                        quantity: 20
+                        stockAdjustments: []
                     },
                     {
                         id: 1,
-                        stockAdjustments: [],
+                        reason: debitReason,
+                        quantity: 5,
                         stockOnHand: 15,
-                        quantity: 5
+                        stockAdjustments: []
                     },
                     {
                         id: 1,
-                        stockAdjustments: [],
+                        reason: debitReason,
+                        quantity: 10,
                         stockOnHand: 20,
-                        quantity: 10
+                        stockAdjustments: []
                     },
                     {
                         id: 2,
@@ -124,35 +126,19 @@ describe('StockCardController', function() {
                         quantity: 30,
                         stockOnHand: 30,
                         stockAdjustments: []
-                    },
-                    {
-                        occurredDate: undefined,
-                        stockOnHand: 0,
-                        reason: {
-                            id: undefined,
-                            name: 'Inventory',
-                            reasonType: undefined,
-                            reasonCategory: undefined,
-                            isFreeTextAllowed: undefined,
-                            tags: undefined,
-                            assignments: undefined,
-                            repository: undefined,
-                            addedAssignments: [],
-                            removedAssignments: []
-                        }
                     }
-                ]
+                ],
+                // SIGLUS-REFACTOR: starts here
+                program: {}
                 // SIGLUS-REFACTOR: ends here
             };
         });
 
-        // SIGLUS-REFACTOR: starts here
-        // it('should initiate valid stock card', function() {
-        //     vm.$onInit();
-        //
-        //     expect(vm.stockCard).toEqual(stockCard);
-        // });
-        // SIGLUS-REFACTOR: ends here
+        it('should initiate valid stock card', function() {
+            vm.$onInit();
+
+            expect(vm.stockCard).toEqual(stockCard);
+        });
 
         it('should set state label to product name', function() {
             vm.$onInit();
@@ -183,9 +169,6 @@ describe('StockCardController', function() {
                 reasonFreeText: true,
                 reason: new ReasonDataBuilder().buildAdjustmentReason()
             };
-            // SIGLUS-REFACTOR: starts here
-            lineItem.reason.isFreeTextAllowed = true;
-            // SIGLUS-REFACTOR: ends here
 
             expect(vm.getReason(lineItem)).toEqual('test message');
             expect(messageService.get).toHaveBeenCalledWith('stockCard.reasonAndFreeText', {

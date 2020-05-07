@@ -16,28 +16,42 @@
 
     angular
         .module('stock-event')
-        .service('stockEventFormatService', service);
+        .service('stockEventService', service);
 
-    service.$inject = [];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-    function service() {
-        this.formatPayload = function(payload) {
+    function service($resource, stockmanagementUrlFactory) {
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'), {}, {
+            save: {
+                method: 'POST',
+                transformRequest: formatPayload
+            }
+        });
+
+        return {
+            submit: submitStockEvent,
+            format: formatPayload
+        };
+
+        function submitStockEvent(event) {
+            return resource.save(event).$promise;
+        }
+
+        function formatPayload(payload) {
             payload.lineItems.forEach(function(lineItem) {
                 if (lineItem.extraData) {
                     lineItem.extraData.lotCode = lineItem.lotCode;
                     lineItem.extraData.expirationDate = lineItem.expirationDate;
                     lineItem.extraData.stockCardId = lineItem.stockCardId;
-                    lineItem.extraData.reasonFreeText = lineItem.reasonFreeText;
 
                     delete lineItem.lotCode;
                     delete lineItem.expirationDate;
                     delete lineItem.stockCardId;
-                    delete lineItem.reasonFreeText;
                 }
             });
 
-            return payload;
-        };
+            return angular.toJson(payload);
+        }
     }
 
 })();
