@@ -24,6 +24,7 @@ describe('PaginationController', function() {
             this.paginationService = $injector.get('paginationService');
             this.paginationFactory = $injector.get('paginationFactory');
             this.$rootScope = $injector.get('$rootScope');
+            this.$q = $injector.get('$q');
         });
 
         this.$stateParams = {
@@ -109,6 +110,21 @@ describe('PaginationController', function() {
             });
         });
         // SIGLUS-REFACTOR: ends here
+
+        it('should call given function and then change page', function() {
+            var deferred = this.$q.defer();
+
+            this.newPage = 1;
+            this.pagination.onPageChange = function() {
+                deferred.resolve();
+            };
+
+            spyOn(this.pagination, 'onPageChange').andReturn(deferred.promise);
+
+            this.pagination.changePage(this.newPage);
+
+            expect(this.pagination.onPageChange).toHaveBeenCalled();
+        });
 
         // SIGLUS-REFACTOR: starts here
         it('should change page for local pagination', function() {
