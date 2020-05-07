@@ -89,6 +89,12 @@
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.KIT_UNPACK;
                 }*/
+                allProductsProgram: function(programService) {
+                    return programService.getAllProductsProgram()
+                        .then(function(programs) {
+                            return programs[0];
+                        });
+                },
                 kit: function($stateParams, facility, stockKitUnpackService) {
                     if (_.isUndefined($stateParams.kit)) {
                         return stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
