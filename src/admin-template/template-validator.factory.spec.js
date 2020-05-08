@@ -43,7 +43,7 @@ describe('templateValidator', function() {
             template.columnsMap = columns;
 
             // SIGLUS-REFACTOR: starts here
-            template.enableProduct = true;
+            template.extension = {};
             // SIGLUS-REFACTOR: ends here
 
             spyOn(templateValidator, 'getColumnError').andCallFake(function(column) {

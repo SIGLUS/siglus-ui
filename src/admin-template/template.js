@@ -64,15 +64,7 @@
             this.columnsMap = {};
             this.facilityTypes = template.facilityTypes;
             this.name = template.name;
-            // SIGLUS-REFACTOR: starts here
-            this.enableConsultationNumber = template.enableConsultationNumber || false;
-            this.enableKitUsage = template.enableKitUsage || false;
-            this.enableProduct = template.enableProduct || false;
-            this.enablePatientLineItem = template.enablePatientLineItem || false;
-            this.enableRegimen = template.enableRegimen || false;
-            this.enableRapidTestConsumption = template.enableRapidTestConsumption || false;
-            this.enableUsageInformation = template.enableUsageInformation || false;
-            // SIGLUS-REFACTOR: ends here
+            this.extension = template.extension;
 
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);
