@@ -87,7 +87,10 @@
         }
 
         function isOptionsValid(template) {
-            return !!template.extension;
+            return template.extension.enableConsultationNumber || template.extension.enableKitUsage
+                || template.extension.enableProduct || template.extension.enablePatientLineItem
+                || template.extension.enableRegimen || template.extension.enableRapidTestConsumption
+                || template.extension.enableUsageInformation;
         }
 
         /**
