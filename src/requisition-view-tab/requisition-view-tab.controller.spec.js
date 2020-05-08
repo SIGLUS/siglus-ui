@@ -33,6 +33,7 @@ describe('ViewTabController', function() {
             this.messageService = $injector.get('messageService');
             this.requisitionValidator = $injector.get('requisitionValidator');
             this.selectProductsModalService = $injector.get('selectProductsModalService');
+            this.requisitionCacheService = $injector.get('requisitionCacheService');
             // SIGLUS-REFACTOR: starts here
             this.requisitionService = $injector.get('requisitionService');
             this.loadingModalService = $injector.get('loadingModalService');
@@ -476,6 +477,21 @@ describe('ViewTabController', function() {
             this.vm.deleteLineItem(lineItem);
 
             expect(this.requisition.deleteLineItem).toHaveBeenCalledWith(lineItem);
+        });
+
+    });
+
+    describe('cacheRequisition', function() {
+
+        beforeEach(function() {
+            this.initController();
+            spyOn(this.requisitionCacheService, 'cacheRequisition');
+        });
+
+        it('should delete line item if it exist', function() {
+            this.vm.cacheRequisition();
+
+            expect(this.requisitionCacheService.cacheRequisition).toHaveBeenCalledWith(this.requisition);
         });
 
     });

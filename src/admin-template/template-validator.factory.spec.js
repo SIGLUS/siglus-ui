@@ -571,20 +571,6 @@ describe('templateValidator', function() {
 
         });
 
-        describe('for calculated order quantity isa', function() {
-
-            it('should return error if populateStockOnHandFromStockCards is false and calculatedOrderQuantityIsa is' +
-                ' displayed', function() {
-                column.name = TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY_ISA;
-                column.isDisplayed = true;
-                template.populateStockOnHandFromStockCards = false;
-
-                var result = templateValidator.getColumnError(column, template);
-
-                expect(result).toBe('adminProgramTemplate.calculatedOrderQuantityIsaCannotBeDisplayed');
-            });
-        });
-
         describe('for cannot select stock card', function() {
 
             it('should return error if populateStockOnHandFromStockCards is false and when has STOCK_CARDS source',
