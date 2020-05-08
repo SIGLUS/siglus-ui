@@ -18,10 +18,7 @@ describe('TemplateAddController', function() {
     var $rootScope, $q, $state, $controller, ProgramDataBuilder, vm, program, FacilityTypeDataBuilder,
         TemplateDataBuilder, TemplateColumnDataBuilder, facilityTypes, productCodeColumn, Template,
         confirmService, messageService, templateOne, templateTwo, healthCenter, districtHospital,
-        programTemplates, programTwo, calculatedOrderQuantityIsaColumn, skippedColumn,
-        // SIGLUS-REFACTOR: starts here
-        $scope;
-        // SIGLUS-REFACTOR: ends here
+        programTemplates, programTwo, calculatedOrderQuantityIsaColumn, skippedColumn;
 
     beforeEach(function() {
         module('admin-template-add');
@@ -40,9 +37,6 @@ describe('TemplateAddController', function() {
             confirmService = $injector.get('confirmService');
             messageService = $injector.get('messageService');
             Template = $injector.get('Template');
-            // SIGLUS-REFACTOR: starts here
-            $scope = $injector.get('$rootScope').$new();
-            // SIGLUS-REFACTOR: ends here
         });
 
         program = new ProgramDataBuilder().withId('program-1')
@@ -89,10 +83,7 @@ describe('TemplateAddController', function() {
                 populateStockOnHandFromStockCards: false,
                 columnsMap: {},
                 facilityTypes: []
-            }),
-            // SIGLUS-REFACTOR: starts here
-            $scope: $scope
-            // SIGLUS-REFACTOR: ends here
+            })
         });
         vm.$onInit();
 

@@ -88,10 +88,9 @@
 
         function isOptionsValid(template) {
             return template.enableConsultationNumber || template.enableKitUsage
-                || template.enableProductModule || template.enableALUsageModule
-                || template.enableARVPatientModule || template.enableARVProductModule
-                || template.enableARVTherapeuticLinesModule || template.enableARVTherapeuticRegimentModule
-                || template.enableRapidTestProductModule || template.enableRapidTestServiceModule;
+                || template.enableProduct || template.enablePatientLineItem
+                || template.enableRegimen || template.enableRapidTestConsumption
+                || template.enableUsageInformation;
         }
 
         /**
