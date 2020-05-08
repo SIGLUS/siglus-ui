@@ -14,21 +14,6 @@
                     <select id="program" ng-model="vm.template.program" ng-change="vm.populateFacilityTypes()"
                             ng-options="program.name for program in vm.programs" required>
                     </select>
-                    <!-- SIGLUS-REFACTOR: starts here -->
-                    <label ng-if-start="vm.canSelectTemplateType" for="template-type">Template Type</label>
-                    <select
-                        ng-if-end
-                        id="template-type"
-                        ng-model="vm.templateTypeOption"
-                        ng-options="tto.name for tto in vm.templateTypeOptions"
-                        required
-                    >
-                    </select>
-                    <label ng-if-start="!vm.canSelectTemplateType">Template Type</label>
-                    <div ng-if-end
-                         class="non-select-template-type"
-                    >{{vm.templateTypeOption ? vm.templateTypeOption.name : ''}}</div>
-                    <!-- SIGLUS-REFACTOR: ends here -->
                 </form>
                 <div><label for="facilityType">{{'adminTemplateAdd.facilityType' | message}}</label>
                     <p class="note">{{'adminTemplateAdd.programNeedsToBeSelected' | message}}</p></div>

@@ -32,7 +32,7 @@
                     function($scope, orderableGroupService, autoGenerateService,
                         orderableLotMapping, $timeout, messageService) {
                         $scope.$watch('lineItem.lot', function(newLot, oldLot) {
-                            if (newLot && newLot.lotCode && (!_.isEqual(newLot, oldLot))) {
+                            if ((!_.isEqual(newLot, oldLot))) {
                                 $scope.$emit('lotCodeChange', {
                                     lineItem: $scope.lineItem
                                 });

@@ -33,9 +33,9 @@
         $provide.decorator('StockCardSummaryRepositoryImpl', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'LotResource', 'OrderableResource', 'SiglusStockCardSummaryResource'];
+    decorator.$inject = ['$delegate', 'LotResource', 'SiglusOrderableResource', 'SiglusStockCardSummaryResource'];
 
-    function decorator($delegate,  LotResource, OrderableResource, SiglusStockCardSummaryResource) {
+    function decorator($delegate,  LotResource, SiglusOrderableResource, SiglusStockCardSummaryResource) {
 
         StockCardSummaryRepositoryImpl.prototype = $delegate.prototype;
 
@@ -52,11 +52,8 @@
          */
         function StockCardSummaryRepositoryImpl() {
             this.LotResource = new LotResource();
-            this.orderableResource = new OrderableResource();
-
-            // SIGLUS-REFACTOR: starts here
+            this.orderableResource = new SiglusOrderableResource();
             this.resource = new SiglusStockCardSummaryResource();
-            // SIGLUS-REFACTOR: ends here
         }
 
     }

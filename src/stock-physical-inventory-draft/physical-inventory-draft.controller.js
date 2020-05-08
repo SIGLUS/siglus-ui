@@ -674,8 +674,8 @@
                 messageService.get('stockPhysicalInventoryDraft.required'))) {
                 vm.addStockAdjustments(lineItem);
                 vm.checkUnaccountedStockAdjustments(lineItem);
-                vm.updateProgress();
             }
+            vm.updateProgress();
         }
 
         function letCodeChanged(lineItem) {

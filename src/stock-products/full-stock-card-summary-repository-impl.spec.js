@@ -31,12 +31,14 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 };
             });
 
-            orderableResourceMock = jasmine.createSpyObj('orderableResource', ['query']);
-            $provide.factory('OrderableResource', function() {
+            // SIGLUS-REFACTOR: starts here
+            orderableResourceMock = jasmine.createSpyObj('SiglusOrderableResource', ['query']);
+            $provide.factory('SiglusOrderableResource', function() {
                 return function() {
                     return orderableResourceMock;
                 };
             });
+            // SIGLUS-REFACTOR: ends here
 
             orderableFulfillsResourceMock = jasmine.createSpyObj('orderableFulfillsResource', ['query']);
             $provide.factory('OrderableFulfillsResource', function() {
