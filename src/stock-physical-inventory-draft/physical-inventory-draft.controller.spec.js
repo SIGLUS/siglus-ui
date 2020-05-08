@@ -203,7 +203,8 @@ describe('PhysicalInventoryDraftController', function() {
             program: program,
             facility: facility,
             // SIGLUS-REFACTOR: starts here
-            reasons: reasons
+            reasons: reasons,
+            hasChangePage: true
             // SIGLUS-REFACTOR: ends here
         };
 
