@@ -56,6 +56,14 @@
                 }
             }
             scope.$on('$stateChangeStart', function(event, toState) {
+                // SIGLUS-REFACTOR: starts here
+                // skip check when just change page
+                if (scope.isInitialInventory
+                    && (toState.name === 'openlmis.stockmanagement.initialInventory'
+                        || toState.name === 'auth.login')) {
+                    return;
+                }
+                // SIGLUS-REFACTOR: ends here
 
                 if (shouldConfirmTransition(transitionStateName, toState, isConfirmQuit) && scope.needToConfirm) {
                     event.preventDefault();

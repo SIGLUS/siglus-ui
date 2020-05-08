@@ -82,16 +82,26 @@
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
                     // SIGLUS-REFACTOR: starts here
+                    var flag = false;
                     if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
-                        return !isEmpty(lineItem.quantity) &&
+                        flag = !isEmpty(lineItem.quantity) &&
                             !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText));
+                    } else {
+                        flag = updateInitialInventory(lineItem);
                     }
-                    return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
-                        && !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText));
+                    return flag;
                     // SIGLUS-REFACTOR: ends here
                 });
             });
         };
+
+        function updateInitialInventory(lineItem) {
+            if (vm.isInitialInventory) {
+                return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
+            }
+            return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
+                && !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText));
+        }
 
         /**
          * @ngdoc property
@@ -271,6 +281,8 @@
             $stateParams.draft = draft;
             // SIGLUS-REFACTOR: starts here
             $stateParams.reasons = vm.reasons;
+            //flag used in
+            $stateParams.hasChangePage = true;
             // SIGLUS-REFACTOR: ends here
             //Only reload current state and avoid reloading parent state
             $state.go($state.current.name, $stateParams, {
@@ -760,7 +772,7 @@
             refreshLotOptions();
             vm.validateLotCode(lineItem);
             vm.validExpirationDate(lineItem);
-            vm.updateProgress(lineItem);
+            vm.updateProgress();
         });
 
         function refreshLotOptions() {
