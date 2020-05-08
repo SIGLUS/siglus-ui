@@ -37,10 +37,11 @@
     decorator.$inject = ['$delegate', '$resource', 'referencedataUrlFactory', 'dateUtils'];
 
     function decorator($delegate, $resource, referencedataUrlFactory, dateUtils) {
-
-        var resource = $resource(referencedataUrlFactory('/api/processingPeriods/:id'));
-
+        // SIGLUS-REFACTOR: starts here
+        var resource = $resource(referencedataUrlFactory('/api/siglusintegration/processingPeriods/:id'));
+        // SIGLUS-REFACTOR: ends here
         $delegate.create = create;
+        $delegate.query = query;
 
         return $delegate;
 
@@ -61,6 +62,12 @@
             period.submitStartDate = dateUtils.toStringDate(period.submitStartDate);
             period.submitEndDate = dateUtils.toStringDate(period.submitEndDate);
             return resource.save(period).$promise;
+        }
+
+        function query(params) {
+            // SIGLUS-REFACTOR: starts here, resource.query -> resource.get
+            return resource.get(params).$promise;
+            // SIGLUS-REFACTOR: ends here
         }
     }
 })();
