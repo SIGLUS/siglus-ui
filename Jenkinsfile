@@ -37,7 +37,6 @@ pipeline {
                         docker tag siglusdevops/siglus-ui:latest siglusdevops/siglus-ui:${IMAGE_TAG}
                         docker push siglusdevops/siglus-ui:${IMAGE_TAG}
                         docker push siglusdevops/siglus-ui:latest
-                        docker rmi siglusdevops/siglus-ui:${IMAGE_TAG} siglusdevops/siglus-ui:latest
                     '''
                 }
             }
