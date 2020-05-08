@@ -36,7 +36,7 @@
             controller: 'RequisitionSearchController',
             templateUrl: 'requisition-search/requisition-search.html',
             canAccess: function(permissionService, REQUISITION_RIGHTS) {
-                return permissionService.hasRoleWithRight(REQUISITION_RIGHTS.REQUISITION_VIEW);
+                return permissionService.hasRoleWithRightAndFacility(REQUISITION_RIGHTS.REQUISITION_VIEW);
             },
             controllerAs: 'vm',
             resolve: {

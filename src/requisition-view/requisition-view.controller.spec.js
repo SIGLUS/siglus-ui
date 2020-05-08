@@ -344,7 +344,7 @@ describe('RequisitionViewController', function() {
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
-        it('should reload state without requisition param', function() {
+        it('should reload state', function() {
             this.requisition.$save.andReturn(this.$q.resolve(true));
             this.loadingModalService.open.andReturn(this.$q.resolve());
 
@@ -352,12 +352,7 @@ describe('RequisitionViewController', function() {
             this.vm.syncRnr();
             this.$rootScope.$apply();
 
-            expect(this.$state.go).toHaveBeenCalledWith(this.$state.current, {
-                rnr: this.requisition.id,
-                requisition: undefined
-            }, {
-                reload: true
-            });
+            expect(this.$state.reload).toHaveBeenCalled();
         });
 
     });
@@ -729,18 +724,13 @@ describe('RequisitionViewController', function() {
             expect(this.loadingModalService.open.callCount).toEqual(1);
         });
 
-        it('should reload state with proper parameters', function() {
+        it('should reload state', function() {
             this.requisition.$save.andReturn(this.$q.resolve(true));
 
             this.vm.syncRnrAndPrint();
             this.$rootScope.$apply();
 
-            expect(this.$state.go).toHaveBeenCalledWith(this.$state.current, {
-                rnr: this.vm.requisition.id,
-                requisition: undefined
-            }, {
-                reload: true
-            });
+            expect(this.$state.reload).toHaveBeenCalled();
         });
     });
 
