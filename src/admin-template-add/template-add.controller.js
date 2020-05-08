@@ -217,6 +217,9 @@
             // SIGLUS-REFACTOR: ends here
 
             vm.availableColumns.forEach(function(column) {
+                // SIGLUS-REFACTOR: starts here
+                addDefaultTag(column);
+                // SIGLUS-REFACTOR: ends here
                 var isDisplayed = column.name !== TEMPLATE_COLUMNS.AVERAGE_CONSUMPTION
                     && column.name !== TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY_ISA;
                 vm.template.addColumn(column, isDisplayed);
@@ -226,5 +229,26 @@
 
             return vm.template;
         }
+
+        // SIGLUS-REFACTOR: add default tag for totalReceivedQuantity,
+        // totalConsumedQuantity, totalLossesAndAdjustments
+        function addDefaultTag(column) {
+            if (column.name === TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY
+                && column.supportsTag
+                && !column.tag) {
+                column.defaultTag = 'received';
+            }
+            if (column.name === TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY
+                && column.supportsTag
+                && !column.tag) {
+                column.defaultTag = 'consumed';
+            }
+            if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS
+                && column.supportsTag
+                && !column.tag) {
+                column.defaultTag = 'adjustment';
+            }
+        }
+        // SIGLUS-REFACTOR: ends here
     }
 })();
