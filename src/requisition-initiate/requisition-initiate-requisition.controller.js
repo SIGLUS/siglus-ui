@@ -33,14 +33,14 @@
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
         'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'requisitionDatePickerService',
-        'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'TEMPLATE_TYPE', 'hasAuthorizeRight',
+        'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'hasAuthorizeRight',
         'TEMPLATE_COLUMNS'
     ];
 
     function Controller(requisitionService, $state, loadingModalService, notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods, canInitiateRnr, UuidGenerator,
                         confirmService, requisitionInitiateService, REQUISITION_STATUS, requisitionDatePickerService,
-                        alertService, dateUtils, moment, inventoryDates, program, TEMPLATE_TYPE, hasAuthorizeRight,
+                        alertService, dateUtils, moment, inventoryDates, program, hasAuthorizeRight,
                         TEMPLATE_COLUMNS) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
@@ -90,8 +90,6 @@
 
         vm.program = undefined;
 
-        vm.isUsageReport = undefined;
-
         /**
          * @ngdoc method
          * @methodOf requisition-initiate.controller:RequisitionInitiateController
@@ -107,7 +105,6 @@
             vm.hasAuthorizeRight = hasAuthorizeRight;
             vm.inventoryDates = inventoryDates;
             vm.program = program;
-            vm.isUsageReport = (program && program.templateType) === TEMPLATE_TYPE.USAGE_REPORT;
         }
 
         function isCurrentSubmitDuration(period) {
@@ -236,29 +233,16 @@
 
         function goToRequisition(id) {
             loadingModalService.open();
-            if (vm.isUsageReport) {
-                $state.go('openlmis.requisitions.report', {
-                    rnr: id
-                });
-            } else {
-                $state.go('openlmis.requisitions.requisition.fullSupply', {
-                    rnr: id
-                });
-            }
+            $state.go('openlmis.requisitions.requisition.fullSupply', {
+                rnr: id
+            });
         }
 
         function goToInitiatedRequisition(requisition) {
-            if (vm.isUsageReport) {
-                $state.go('openlmis.requisitions.report', {
-                    rnr: requisition.id,
-                    requisition: requisition
-                });
-            } else {
-                $state.go('openlmis.requisitions.requisition.fullSupply', {
-                    rnr: requisition.id,
-                    requisition: requisition
-                });
-            }
+            $state.go('openlmis.requisitions.requisition.fullSupply', {
+                rnr: requisition.id,
+                requisition: requisition
+            });
         }
 
         function goToPhysicalInventory() {
@@ -278,9 +262,8 @@
                 }
             }
 
-            if (!vm.isUsageReport && vm.emergency) {
+            if (vm.emergency) {
                 return period.currentPeriodRegularRequisitionAuthorized;
-                //console.log(vm.periods);
             }
 
             return true;
