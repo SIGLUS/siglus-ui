@@ -31,7 +31,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONARQUBE_TOKEN')]) {
                     sh '''
                         cp -r .tmp/javascript/src/ .
-                        sed 's|SF:/app/.tmp/javascript/|SF:|g' build/test/coverage/HeadlessChrome\ 74.0.3723\ \(Linux\ 0.0.0\)/lcov.info > lcov.info
+                        sed 's|SF:/app/.tmp/javascript/|SF:|g' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov.info > lcov.info
                         /ebs2/sonar/sonar-scanner-4.3.0.2102-linux/bin/sonar-scanner -Dsonar.projectKey=siglus-ui -Dsonar.sources=. -Dsonar.host.url=http://13.234.176.65:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.javascript.lcov.reportPaths=lcov.info
                         rm -rf node_modules build .tmp yarn.lock lcov.info
                     '''
