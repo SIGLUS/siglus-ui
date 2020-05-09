@@ -117,11 +117,6 @@
          */
         // SIGLUS-REFACTOR: starts here
         function onInit() {
-            if ($state.current.name === 'openlmis.requisitions.initRnr') {
-                $state.go('openlmis.requisitions.initRnr.requisition', {}, {
-                    reload: 'openlmis.requisitions.initRnr.requisition'
-                });
-            }
             vm.emergency = $state.params.emergency === 'true';
             vm.usageReport = $state.params.report === 'true';
         }

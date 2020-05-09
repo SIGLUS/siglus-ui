@@ -32,16 +32,14 @@
         '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
         'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
-        '$stateParams', 'selectProductsModalEmergencyService', 'REQUISITION_STATUS', 'hasSubmitRight',
-        'hasAuthorizeRight', 'processingPeriod', 'program', 'facility'
+        '$stateParams', 'selectProductsModalEmergencyService', 'processingPeriod', 'program', 'facility'
     ];
 
     function HistoryViewTabController($filter, selectProductsModalService, requisitionValidator, requisition, columns,
                                       messageService, lineItems, alertService, canSubmit, canAuthorize,
                                       fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator,
                                       canApproveAndReject, items, paginationService, $stateParams,
-                                      selectProductsModalEmergencyService, REQUISITION_STATUS, hasSubmitRight,
-                                      hasAuthorizeRight, processingPeriod, program, facility) {
+                                      selectProductsModalEmergencyService, processingPeriod, program, facility) {
         var vm = this;
         vm.processingPeriod = processingPeriod;
         vm.program = program;
@@ -355,9 +353,8 @@
                 'requisitionViewTab.noNonFullSupplyProducts';
         }
 
-        function isHideAuthorizedQuantity(column) {
-            return vm.requisition.status === REQUISITION_STATUS.SUBMITTED && hasSubmitRight && !hasAuthorizeRight
-                && column.name === TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED;
+        function isHideAuthorizedQuantity() {
+            return !vm.requisition.$isAfterAuthorize();
         }
 
     }

@@ -27,33 +27,24 @@
      */
     angular
         .module('requisition-initiate')
-        .controller('RequisitionInitiateRequisitionController', RequisitionInitiateRequisitionController);
+        .controller('RequisitionInitiateRequisitionController', Controller);
 
-    RequisitionInitiateRequisitionController.$inject = [
+    Controller.$inject = [
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
         'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'requisitionDatePickerService',
-        'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'TEMPLATE_TYPE'
+        'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'TEMPLATE_TYPE', 'hasAuthorizeRight',
+        'TEMPLATE_COLUMNS'
     ];
 
-    function RequisitionInitiateRequisitionController(requisitionService, $state, loadingModalService,
-                                                      notificationService, REQUISITION_RIGHTS,
-                                                      permissionService, authorizationService, $stateParams,
-                                                      periods, canInitiateRnr, UuidGenerator, confirmService,
-                                                      requisitionInitiateService, REQUISITION_STATUS,
-                                                      requisitionDatePickerService, alertService, dateUtils,
-                                                      moment, inventoryDates, program, TEMPLATE_TYPE) {
+    function Controller(requisitionService, $state, loadingModalService, notificationService, REQUISITION_RIGHTS,
+                        permissionService, authorizationService, $stateParams, periods, canInitiateRnr, UuidGenerator,
+                        confirmService, requisitionInitiateService, REQUISITION_STATUS, requisitionDatePickerService,
+                        alertService, dateUtils, moment, inventoryDates, program, TEMPLATE_TYPE, hasAuthorizeRight,
+                        TEMPLATE_COLUMNS) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
-
-        var rights = authorizationService.getRights();
-        var createRight = _.find(rights, function(right) {
-            return right.name === REQUISITION_RIGHTS.REQUISITION_CREATE;
-        });
-        var authorizeRight = _.find(rights, function(right) {
-            return right.name === REQUISITION_RIGHTS.REQUISITION_AUTHORIZE;
-        });
 
         vm.$onInit = onInit;
         vm.initRnr = initRnr;
@@ -95,6 +86,8 @@
          */
         vm.canInitiateRnr = undefined;
 
+        vm.hasAuthorizeRight = undefined;
+
         vm.program = undefined;
 
         vm.isUsageReport = undefined;
@@ -111,6 +104,7 @@
             vm.emergency = $stateParams.emergency === 'true';
             vm.periods = periods;
             vm.canInitiateRnr = canInitiateRnr;
+            vm.hasAuthorizeRight = hasAuthorizeRight;
             vm.inventoryDates = inventoryDates;
             vm.program = program;
             vm.isUsageReport = (program && program.templateType) === TEMPLATE_TYPE.USAGE_REPORT;
@@ -141,6 +135,7 @@
             var startDate = dateUtils.toStringDate(selectedPeriod.submitStartDate);
             var endDate = dateUtils.toStringDate(selectedPeriod.submitEndDate);
             var datesDisabled = getDiffDates(startDate, endDate, vm.inventoryDates);
+            loadingModalService.open();
             requisitionDatePickerService.show(startDate, endDate, datesDisabled)
                 .then(function(inventoryDate) {
                     initiate(selectedPeriod, inventoryDate);
@@ -153,14 +148,30 @@
             loadingModalService.open();
             requisitionService.initiate($stateParams.facility, $stateParams.program,
                 selectedPeriod.id, vm.emergency, key, inventoryDate)
-                .then(function(data) {
-                    goToInitiatedRequisition(data);
+                .then(function(requisition) {
+                    populateRequestedAndAuthorizedQuantity(requisition);
+                    goToInitiatedRequisition(requisition);
                 })
                 .catch(function() {
                     notificationService.error('requisitionInitiate.couldNotInitiateRequisition');
                     loadingModalService.close();
                     key = uuidGenerator.generate();
                 });
+        }
+
+        function populateRequestedAndAuthorizedQuantity(requisition) {
+            if (vm.canInitiateRnr &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY].$display) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
+                });
+            }
+            if (vm.hasAuthorizeRight &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].$display) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.authorizedQuantity = lineItem.requestedQuantity;
+                });
+            }
         }
 
         /**
@@ -176,41 +187,33 @@
          * @param {Object} selectedPeriod a period to initiate or proceed with the requisition for
          */
         function initRnr(selectedPeriod) {
-            loadingModalService.open();
-            var user = authorizationService.getUser();
-
             vm.error = '';
 
-            permissionService.hasPermission(user.user_id, {
-                right: REQUISITION_RIGHTS.REQUISITION_CREATE,
-                programId: $stateParams.program,
-                facilityId: $stateParams.facility
-            })
-                .then(function() {
-                    if (isCurrentSubmitDuration(selectedPeriod) || vm.emergency) {
-                        requisitionInitiateService.getLatestPhysicalInventory($stateParams.facility)
-                            .then(function(result) {
-                                var today = dateUtils.toStringDate(new Date());
-                                if (result.occurredDate === today) {
-                                    initiate(selectedPeriod, today);
-                                } else {
-                                    confirmService.confirm('requisitionInitiate.confirm.label',
-                                        'requisitionInitiate.confirm.button')
-                                        .then(function() {
-                                            goToPhysicalInventory();
-                                        }, function() {
-                                            loadingModalService.close();
-                                        });
-                                }
-                            });
-                    } else {
-                        pickInventoryDate(selectedPeriod);
-                    }
-                })
-                .catch(function() {
-                    notificationService.error('requisitionInitiate.noPermissionToInitiateRequisition');
-                    loadingModalService.close();
-                });
+            if (!vm.canInitiateRnr) {
+                notificationService.error('requisitionInitiate.noPermissionToInitiateRequisition');
+                return;
+            }
+            if (isCurrentSubmitDuration(selectedPeriod) || vm.emergency) {
+                loadingModalService.open();
+                requisitionInitiateService.getLatestPhysicalInventory($stateParams.facility)
+                    .then(function(result) {
+                        var today = dateUtils.toStringDate(new Date());
+                        if (result.occurredDate === today) {
+                            initiate(selectedPeriod, today);
+                        } else {
+                            confirmService.confirm('requisitionInitiate.confirm.label',
+                                'requisitionInitiate.confirm.button')
+                                .then(function() {
+                                    goToPhysicalInventory();
+                                });
+                        }
+                    })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            } else {
+                pickInventoryDate(selectedPeriod);
+            }
         }
 
         /**
@@ -291,32 +294,13 @@
                 return false;
             }
 
-            var hasCreateRight = getHasCreateRight();
-            var hasAuthorizeRight = getHasAuthorizeRight();
-
-            if (status === REQUISITION_STATUS.INITIATED && !hasCreateRight) {
+            if (status === REQUISITION_STATUS.INITIATED && !vm.canInitiateRnr) {
                 return false;
             }
-            if (status === REQUISITION_STATUS.SUBMITTED && !hasAuthorizeRight) {
+            if (status === REQUISITION_STATUS.SUBMITTED && !vm.hasAuthorizeRight) {
                 return false;
             }
             return true;
-        }
-
-        function getHasCreateRight() {
-            return !!createRight && _.some(createRight.programIds, function(id) {
-                return id === $stateParams.program;
-            }) && _.some(createRight.facilityIds, function(id) {
-                return id === $stateParams.facility;
-            });
-        }
-
-        function getHasAuthorizeRight() {
-            return !!authorizeRight && _.some(authorizeRight.programIds, function(id) {
-                return id === $stateParams.program;
-            }) && _.some(authorizeRight.facilityIds, function(id) {
-                return id === $stateParams.facility;
-            });
         }
 
         vm.isAfterSubmitStartDate = function(period) {

@@ -68,7 +68,6 @@ describe('RequisitionInitiateRequisitionController', function() {
             this.canInitiateRnr = true;
 
             this.permissionService = $injector.get('permissionService');
-            spyOn(this.permissionService, 'hasPermission').andReturn(this.$q.resolve());
 
             spyOn(this.authorizationService, 'getUser').andReturn(this.user);
 
@@ -83,6 +82,7 @@ describe('RequisitionInitiateRequisitionController', function() {
                 periods: this.periods,
                 $stateParams: this.$stateParams,
                 canInitiateRnr: this.canInitiateRnr,
+                hasAuthorizeRight: false,
                 inventoryDates: [],
                 program: []
             });
@@ -125,12 +125,6 @@ describe('RequisitionInitiateRequisitionController', function() {
                 rnr: this.requisition.id,
                 requisition: this.requisition
             });
-
-            expect(this.permissionService.hasPermission).toHaveBeenCalledWith('user_id', {
-                right: this.REQUISITION_RIGHTS.REQUISITION_CREATE,
-                programId: this.programs[0].id,
-                facilityId: this.facility.id
-            });
         });
 
     it('should initiate requisition with idempotency key', function() {
@@ -154,19 +148,17 @@ describe('RequisitionInitiateRequisitionController', function() {
     });
 
     it('should display error when user has no right to init requisition', function() {
-        this.permissionService.hasPermission.andReturn(this.$q.reject());
-
         this.vm.$onInit();
         spyOn(this.$state, 'go');
         spyOn(this.requisitionService, 'initiate');
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
+        this.vm.canInitiateRnr = false;
 
         this.vm.initRnr(this.periods[0]);
         this.$rootScope.$apply();
 
         expect(this.$state.go).not.toHaveBeenCalled();
-        expect(this.permissionService.hasPermission).toHaveBeenCalled();
         expect(this.requisitionService.initiate).not.toHaveBeenCalled();
     });
 
@@ -177,6 +169,7 @@ describe('RequisitionInitiateRequisitionController', function() {
         spyOn(this.$state, 'go');
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
+        this.vm.canInitiateRnr = this.canInitiateRnr;
 
         this.vm.initRnr(selectedPeriod);
         this.$rootScope.$apply();
@@ -189,6 +182,7 @@ describe('RequisitionInitiateRequisitionController', function() {
         spyOn(this.loadingModalService, 'open');
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
+        this.vm.canInitiateRnr = this.canInitiateRnr;
 
         this.vm.initRnr(this.periods[0]);
 
