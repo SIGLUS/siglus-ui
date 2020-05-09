@@ -530,12 +530,9 @@
 
             if (!_.isString(draftId) || _.isEmpty(vm.draft)) {
                 // first save
-                $http.post(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {
-                    programId: program.id,
-                    facilityId: facility.id,
-                    userId: user.user_id,
-                    draftType: adjustmentType.state
-                }).then(function(res) {
+                stockAdjustmentCreationService.createDraft(
+                    program.id, facility.id, user.user_id, adjustmentType
+                ).then(function(res) {
                     vm.draft = res.data;
                     var draft = angular.copy(vm.draft);
                     stockAdjustmentCreationService
@@ -780,12 +777,9 @@
                     stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems).then(function(ret) {
                         mapOfIdAndLot = ret;
 
-                        $http.get(stockmanagementUrlFactory('/api/siglusintegration/stockCardSummaries'), {
-                            params: {
-                                programId: vm.draft.programId,
-                                facilityId: vm.draft.facilityId
-                            }
-                        }).then(function(res) {
+                        stockAdjustmentCreationService.getStockCardSummaries(
+                            vm.draft.programId, vm.draft.facilityId
+                        ).then(function(res) {
                             loadingModalService.close();
                             stockCardSummaries = res.data.content;
 
