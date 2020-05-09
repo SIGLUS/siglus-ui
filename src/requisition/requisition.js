@@ -107,10 +107,6 @@
         Requisition.prototype.$isRejected = isRejected;
         Requisition.prototype.$isSkipped = isSkipped;
         Requisition.prototype.$isAfterAuthorize = isAfterAuthorize;
-        // SIGLUS-REFACTOR: starts here
-        Requisition.prototype.$hasAuthorizeRight = hasAuthorizeRight;
-        Requisition.prototype.$hasCreateRight = hasCreateRight;
-        // SIGLUS-REFACTOR: ends here
         Requisition.prototype.$getProducts = getProducts;
         Requisition.prototype.skipAllFullSupplyLineItems = skipAllFullSupplyLineItems;
         Requisition.prototype.unskipAllFullSupplyLineItems = unskipAllFullSupplyLineItems;
@@ -119,11 +115,12 @@
         Requisition.prototype.getSkippedFullSupplyProducts = getSkippedFullSupplyProducts;
         Requisition.prototype.addLineItem = addLineItem;
         Requisition.prototype.addLineItems = addLineItems;
-        // SIGLUS-REFACTOR: starts here
-        Requisition.prototype.addLineItemWithLineItem = addLineItemWithLineItem;
-        // SIGLUS-REFACTOR: ends here
         Requisition.prototype.deleteLineItem = deleteLineItem;
         Requisition.prototype.unskipFullSupplyProducts = unskipFullSupplyProducts;
+        // SIGLUS-REFACTOR: starts here
+        Requisition.prototype.$isAfterSubmit = isAfterSubmit;
+        Requisition.prototype.addLineItemWithLineItem = addLineItemWithLineItem;
+        // SIGLUS-REFACTOR: ends here
 
         return Requisition;
 
@@ -452,6 +449,12 @@
                 REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED].indexOf(this.status) !== -1;
         }
 
+        // SIGLUS-REFACTOR: starts here
+        function isAfterSubmit() {
+            return this.isSubmitted() || this.isAfterAuthorize();
+        }
+        // SIGLUS-REFACTOR: ends here
+
         /**
          * @ngdoc method
          * @methodOf requisition.Requisition
@@ -478,16 +481,6 @@
             return hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, requisition)
                 && (requisition.$isInitiated() || requisition.$isRejected() || requisition.$isSubmitted());
         }
-
-        // SIGLUS-REFACTOR: starts here
-        function hasCreateRight(requisition) {
-            return hasRight(REQUISITION_RIGHTS.REQUISITION_CREATE, requisition);
-        }
-
-        function hasAuthorizeRight(requisition) {
-            return hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, requisition);
-        }
-        // SIGLUS-REFACTOR: ends here
 
         function canApprove(requisition) {
             return hasRight(REQUISITION_RIGHTS.REQUISITION_APPROVE, requisition)

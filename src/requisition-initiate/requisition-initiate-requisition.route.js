@@ -69,6 +69,17 @@
                         );
                     }
                     return false;
+                },
+                hasAuthorizeRight: function(authorizationService, permissionService,  $stateParams) {
+                    if ($stateParams.program && $stateParams.facility) {
+                        var user = authorizationService.getUser();
+                        return permissionService.hasPermission(user.user_id, {
+                            right: REQUISITION_RIGHTS.REQUISITION_AUTHORIZE,
+                            programId: $stateParams.program,
+                            facilityId: $stateParams.facility
+                        });
+                    }
+                    return false;
                 }
             }
         });

@@ -47,17 +47,11 @@
                 canSubmit: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canSubmit(user.id, requisition);
                 },
-                hasSubmitRight: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.hasSubmitRight(user.id, requisition);
-                },
                 canSubmitAndAuthorize: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canSubmitAndAuthorize(user.id, requisition);
                 },
                 canAuthorize: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canAuthorize(user.id, requisition);
-                },
-                hasAuthorizeRight: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.hasAuthorizeRight(user.id, requisition);
                 },
                 canApproveAndReject: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canApproveAndReject(user, requisition);

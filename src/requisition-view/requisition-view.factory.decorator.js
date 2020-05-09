@@ -37,27 +37,10 @@
     decorator.$inject = ['$delegate', '$q', 'permissionService', 'REQUISITION_RIGHTS'];
 
     function decorator($delegate, $q, permissionService, REQUISITION_RIGHTS) {
-        $delegate.hasSubmitRight = hasSubmitRight;
         $delegate.canSubmitAndAuthorize = canSubmitAndAuthorize;
         $delegate.hasAuthorizeRight = hasAuthorizeRight;
 
         return $delegate;
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-view.requisitionViewFactory
-         * @name hasSubmitRight
-         *
-         * @description
-         * Determines whether the user has submit right or not.
-         *
-         * @param  {String} userId id of user to check
-         * @param  {Object} requisition requisition to check
-         * @return {Boolean}
-         */
-        function hasSubmitRight(userId, requisition) {
-            return hasRightForProgramAndFacility(userId, REQUISITION_RIGHTS.REQUISITION_CREATE, requisition);
-        }
 
         /**
          * @ngdoc method

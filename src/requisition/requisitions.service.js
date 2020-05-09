@@ -32,13 +32,13 @@
         '$q', '$resource', 'requisitionUrlFactory', 'Requisition', 'dateUtils', 'localStorageFactory', 'offlineService',
         '$filter', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService', 'TEMPLATE_COLUMNS'
+        'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($q, $resource, requisitionUrlFactory, Requisition, dateUtils, localStorageFactory, offlineService,
                      $filter, requisitionCacheService,
-                     OrderableResource, FacilityTypeApprovedProductResource, periodService, TEMPLATE_COLUMNS) {
+                     OrderableResource, FacilityTypeApprovedProductResource, periodService) {
 
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
@@ -198,30 +198,10 @@
                     // SIGLUS-REFACTOR: ends here
                     requisition.$availableOffline = true;
                     requisitionCacheService.cacheRequisition(requisition);
-                    // SIGLUS-REFACTOR: starts here
-                    var initiateRequisition = prepareRequisition(requisition);
-                    populateRequestedAndAuthorizedQuantity(initiateRequisition);
-                    return initiateRequisition;
-                    // SIGLUS-REFACTOR: ends here
-                });
-        }
 
-        // SIGLUS-REFACTOR: starts here
-        function populateRequestedAndAuthorizedQuantity(requisition) {
-            if (requisition.$hasCreateRight &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY].isDisplayed) {
-                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
-                    lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
+                    return prepareRequisition(requisition);
                 });
-            }
-            if (requisition.$hasAuthorizeRight &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED].isDisplayed) {
-                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
-                    lineItem.authorizedQuantity = lineItem.requestedQuantity;
-                });
-            }
         }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method

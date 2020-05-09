@@ -189,31 +189,31 @@
          * @param  {Object}            requisition requisition object from server
          * @return {RequisitionColumn}             column with additional info
          */
+        // SIGLUS-REFACTOR: starts here
         function displayColumn(column, requisition) {
             if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
                 typeof column.option !== 'undefined') {
                 return (column.option.optionName === 'showPackToShipInApprovalPage' &&
                     requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
             }
-            // SIGLUS-REFACTOR: starts here
-            displayHistoryColumn(column, requisition);
-
-            if (column.isDisplayed && TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED === column.name) {
-                return requisition.$hasAuthorizeRight(requisition);
+            if (TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY === column.name) {
+                return displayQuantityAuthorized(column, requisition);
             }
-            // SIGLUS-REFACTOR: ends here
-
-            return column.isDisplayed && (
-                [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
-                requisition.$isAfterAuthorize());
+            if (TEMPLATE_COLUMNS.APPROVED_QUANTITY === column.name) {
+                return displayQuantityApproved(column, requisition);
+            }
+            if (TEMPLATE_COLUMNS.REMARKS === column.name) {
+                return column.isDisplayed && requisition.$isAfterAuthorize();
+            }
+            return column.isDisplayed;
         }
 
-        // SIGLUS-REFACTOR: starts here
-        function displayHistoryColumn(column, requisition) {
-            if ([TEMPLATE_COLUMNS.QUANTITY_AUTHORIZED, TEMPLATE_COLUMNS.APPROVED_QUANTITY].indexOf(column.name) !== -1
-                && requisition.isHistory) {
-                return true;
-            }
+        function displayQuantityAuthorized(column, requisition) {
+            return column.isDisplayed && (requisition.isHistory || requisition.$isAfterSubmit());
+        }
+
+        function displayQuantityApproved(column, requisition) {
+            return column.isDisplayed && (requisition.isHistory || requisition.$isAfterAuthorize());
         }
         // SIGLUS-REFACTOR: ends here
 
