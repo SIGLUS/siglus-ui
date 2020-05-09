@@ -273,7 +273,7 @@
                         .then(function() {
                             notificationService.success('stockUnpackKitCreation.submitted');
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                program: vm.kit.parentProgramId,
+                                program: allProductsProgram.id,
                                 facility: facility.id
                             });
                         })
