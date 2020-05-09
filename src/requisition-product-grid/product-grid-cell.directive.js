@@ -53,8 +53,7 @@
                 userCanEdit: '=',
                 canApprove: '=',
                 // SIGLUS-REFACTOR: starts here
-                isHistory: '=',
-                hide: '<'
+                isHistory: '='
                 // SIGLUS-REFACTOR: ends here
             }
         };
@@ -64,8 +63,7 @@
                 column = scope.column,
                 lineItem = scope.lineItem,
                 // SIGLUS-REFACTOR: starts here
-                isHistory = scope.isHistory,
-                hide = scope.hide;
+                isHistory = scope.isHistory;
                 // SIGLUS-REFACTOR: ends here
 
             scope.lineItem = lineItem;
@@ -88,11 +86,7 @@
 
             function updateCellContents() {
                 var templateUrl = '';
-                // SIGLUS-REFACTOR: starts here
-                if (hide) {
-                    templateUrl = 'requisition-product-grid/product-grid-cell-empty.html';
-                // SIGLUS-REFACTOR: ends here
-                } else if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
+                if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-skip.html';
                 } else if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
                     !requisition.template.populateStockOnHandFromStockCards) {

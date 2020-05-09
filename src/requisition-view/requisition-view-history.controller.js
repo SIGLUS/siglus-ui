@@ -51,7 +51,6 @@
         vm.isLineItemValid = requisitionValidator.isLineItemValid;
         vm.getDescriptionForColumn = getDescriptionForColumn;
         vm.skippedFullSupplyProductCountMessage = skippedFullSupplyProductCountMessage;
-        vm.isHideAuthorizedQuantity = isHideAuthorizedQuantity;
 
         /**
          * @ngdoc property
@@ -148,6 +147,7 @@
             vm.items = items;
 
             vm.requisition = requisition;
+            hideAuthorizedQuantity(vm.requisition);
             vm.columns = columns;
             vm.userCanEdit = canAuthorize || canSubmit;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
@@ -157,6 +157,15 @@
             vm.noProductsMessage = getNoProductsMessage();
             vm.canApproveAndReject = canApproveAndReject;
             setTypeAndClass();
+        }
+
+        function hideAuthorizedQuantity(requisition) {
+            if (!vm.requisition.$isAfterAuthorize() &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].$display) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.authorizedQuantity = undefined;
+                });
+            }
         }
 
         function setTypeAndClass() {
@@ -352,11 +361,6 @@
                 'requisitionViewTab.noFullSupplyProducts' :
                 'requisitionViewTab.noNonFullSupplyProducts';
         }
-
-        function isHideAuthorizedQuantity() {
-            return !vm.requisition.$isAfterAuthorize();
-        }
-
     }
 
 })();
