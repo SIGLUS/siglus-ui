@@ -43,6 +43,11 @@
         this.submitAdjustments = submitAdjustments;
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
+        this.createDraft = createDraft;
+        this.getStockCardSummaries = getStockCardSummaries;
+
+        this.draftUrl = stockmanagementUrlFactory('/api/siglusintegration/drafts');
+        this.stockCardSummariesUrl = stockmanagementUrlFactory('/api/siglusintegration/stockCardSummaries');
 
         this.getAssignmentById = function(srcDstAssignments, srcDstId, parentId) {
             var assignment = null;
@@ -108,7 +113,7 @@
         };
 
         this.getDraftById = function(draftId, adjustmentType, programId, facilityId, userId) {
-            return $http.get(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {
+            return $http.get(this.draftUrl, {
                 params: {
                     program: programId,
                     facility: facilityId,
@@ -140,6 +145,15 @@
             };
         }
 
+        function createDraft(programId, facilityId, userId, adjustmentType) {
+            return $http.post(this.draftUrl, {
+                programId: programId,
+                facilityId: facilityId,
+                userId: userId,
+                draftType: adjustmentType.state
+            });
+        }
+
         function saveDraft(draft, lineItems, adjustmentType) {
 
             draft.lineItems = _.map(lineItems, function(item) {
@@ -163,15 +177,23 @@
                 return newLine;
             });
 
-            var url = stockmanagementUrlFactory('/api/siglusintegration/drafts') + '/' + draft.id;
+            var url = this.draftUrl + '/' + draft.id;
             return $http.put(url, draft);
         }
 
         function deleteDraft(draftId) {
-            var url = stockmanagementUrlFactory('/api/siglusintegration/drafts') + '/' + draftId;
+            var url = this.draftUrl + '/' + draftId;
             return $http.delete(url);
         }
-        // SIGLUS-REFACTOR: ends here
+
+        function getStockCardSummaries(programId, facilityId) {
+            return $http.get(this.stockCardSummariesUrl, {
+                params: {
+                    programId: programId,
+                    facilityId: facilityId
+                }
+            });
+        }
 
         function search(keyword, items, hasLot) {
             var result = [];
