@@ -94,7 +94,7 @@
                     );
                 },
                 columns: function(requisition) {
-                    return requisition.template.getColumns(requisition.emergency);
+                    return requisition.template.getColumns();
                 },
                 fullSupply: function() {
                     return true;
