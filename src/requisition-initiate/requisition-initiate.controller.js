@@ -30,21 +30,20 @@
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
     // SIGLUS-REFACTOR: delete 'periods' and 'canInitiateRnr'
-    // add 'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS'
-    // add 'TEMPLATE_TYPE', '$rootScope'
+    // add 'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', '$rootScope'
     RequisitionInitiateController.$inject = [
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'UuidGenerator',
-        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'TEMPLATE_TYPE', '$rootScope'
+        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', '$rootScope'
     ];
     // SIGLUS-REFACTOR: ends here
 
     function RequisitionInitiateController(requisitionService, $state, loadingModalService, notificationService,
                                            REQUISITION_RIGHTS, permissionService, authorizationService, $stateParams,
                                            UuidGenerator, confirmService, requisitionInitiateService,
-                                           REQUISITION_STATUS, TEMPLATE_TYPE, $rootScope) {
+                                           REQUISITION_STATUS, $rootScope) {
         // SIGLUS-REFACTOR: starts here
-        $rootScope.$on('$stateChangeStart', function(event, toState) {
+        $rootScope.$on('$stateChangeStart', function navigateToRequisitionTab(event, toState) {
             if (toState.name === 'openlmis.requisitions.initRnr') {
                 event.preventDefault();
                 $state.go('openlmis.requisitions.initRnr.requisition', {}, {
@@ -118,7 +117,6 @@
         // SIGLUS-REFACTOR: starts here
         function onInit() {
             vm.emergency = $state.params.emergency === 'true';
-            vm.usageReport = $state.params.report === 'true';
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -141,10 +139,7 @@
                 supervised: vm.isSupervised,
                 program: vm.program.id,
                 facility: vm.facility.id,
-                emergency: vm.emergency,
-                // SIGLUS-REFACTOR: starts here
-                report: vm.isUsageReport()
-                // SIGLUS-REFACTOR: ends here
+                emergency: vm.emergency
             }, {
                 // SIGLUS-REFACTOR: starts here
                 reload: $state.current.name
@@ -251,13 +246,6 @@
 
         vm.isRequisition = function() {
             return $state.current.name === 'openlmis.requisitions.initRnr.requisition';
-        };
-
-        vm.isUsageReport = function() {
-            if (vm.program) {
-                return vm.program.templateType === TEMPLATE_TYPE.USAGE_REPORT;
-            }
-            return vm.usageReport;
         };
         // SIGLUS-REFACTOR: ends here
     }

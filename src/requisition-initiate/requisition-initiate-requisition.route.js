@@ -21,12 +21,12 @@
         .module('requisition-initiate')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'TEMPLATE_TYPE'];
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
 
         $stateProvider.state('openlmis.requisitions.initRnr.requisition', {
-            url: '/requisition?supervised&program&facility&emergency&report',
+            url: '/requisition?supervised&program&facility&emergency',
             controller: 'RequisitionInitiateRequisitionController',
             controllerAs: 'vm',
             templateUrl: 'requisition-initiate/requisition-initiate-requisition.html',
@@ -39,13 +39,12 @@
                 program: function($stateParams, programService) {
                     return programService.get($stateParams.program);
                 },
-                periods: function(periodFactory, $stateParams, program, TEMPLATE_TYPE) {
+                periods: function(periodFactory, $stateParams) {
                     if ($stateParams.program && $stateParams.facility) {
-                        var isUsageReport = (program && program.templateType) === TEMPLATE_TYPE.USAGE_REPORT;
                         return periodFactory.get(
                             $stateParams.program,
                             $stateParams.facility,
-                            $stateParams.emergency === 'true' && !isUsageReport
+                            $stateParams.emergency === 'true'
                         );
                     }
                     return [];

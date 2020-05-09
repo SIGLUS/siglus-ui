@@ -10,9 +10,7 @@
                 program="vm.program"
                 module="'requisition-initiate'">
         </openlmis-facility-program-select>
-        <!-- SIGLUS-REFACTOR: starts here -->
-        <fieldset class="form-group" ng-if="!vm.isUsageReport()">
-        <!-- SIGLUS-REFACTOR: ends here -->
+        <fieldset class="form-group">
             <legend>{{'requisitionInitiate.type' | message}}</legend>
             <label class="radio">
                 <input type="radio" ng-model="vm.emergency" ng-value="false" />
@@ -23,20 +21,9 @@
                 {{'requisitionInitiate.emergency' | message}}
             </label>
         </fieldset>
-        <!-- SIGLUS-REFACTOR: starts here -->
-        <fieldset class="form-group disabled" ng-if="vm.isUsageReport()">
-            <legend>{{'requisitionInitiate.type' | message}}</legend>
-            <label class="radio">
-                <input type="radio" ng-value="false" disabled />
-                {{'requisitionInitiate.regular' | message}}
-            </label>
-            <label class="radio">
-                <input type="radio" ng-value="false" disabled />
-                {{'requisitionInitiate.emergency' | message}}
-            </label>
-        </fieldset>
         <input type="submit" value="{{'requisitionInitiate.search'|message}}"/>
     </form>
+<!-- SIGLUS-REFACTOR: starts here -->
     <div class="requisition-table-tab">
         <nav>
             <ul>

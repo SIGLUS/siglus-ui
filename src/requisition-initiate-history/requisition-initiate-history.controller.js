@@ -29,13 +29,13 @@
 
     RequisitionInitiateRequisitionController.$inject = [
         '$state', '$filter', '$stateParams', 'facilities', 'offlineService', 'localStorageFactory', 'confirmService',
-        'requisitions', 'program', 'TEMPLATE_TYPE'
+        'requisitions'
     ];
 
     function RequisitionInitiateRequisitionController($state, $filter, $stateParams,
                                                       facilities, offlineService,
                                                       localStorageFactory, confirmService,
-                                                      requisitions, program, TEMPLATE_TYPE) {
+                                                      requisitions) {
         var vm = this;
         vm.$onInit = onInit;
         vm.openRnr = openRnr;
@@ -99,8 +99,6 @@
             'requisitionSearch.dateInitiated': ['createdDate,desc']
         };
 
-        vm.isUsageReport = undefined;
-
         /**
          * @ngdoc method
          * @methodOf requisition-search.controller:RequisitionViewController
@@ -114,7 +112,6 @@
             vm.requisitions = requisitions;
             vm.facilities = facilities;
             vm.offline = $stateParams.offline === 'true' || offlineService.isOffline();
-            vm.isUsageReport = (program && program.templateType) === TEMPLATE_TYPE.USAGE_REPORT;
 
             if ($stateParams.facility) {
                 vm.selectedFacility = $filter('filter')(vm.facilities, {
@@ -140,15 +137,9 @@
          * @param {String} requisitionId Requisition UUID
          */
         function openRnr(requisitionId) {
-            if (vm.isUsageReport) {
-                $state.go('openlmis.requisitions.reportHistory', {
-                    rnr: requisitionId
-                });
-            } else {
-                $state.go('openlmis.requisitions.history', {
-                    rnr: requisitionId
-                });
-            }
+            $state.go('openlmis.requisitions.history', {
+                rnr: requisitionId
+            });
         }
     }
 })();

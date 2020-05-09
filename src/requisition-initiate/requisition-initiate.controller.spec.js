@@ -39,7 +39,6 @@ describe('RequisitionInitiateController', function() {
             this.requisitionInitiateService = $injector.get('requisitionInitiateService');
             this.requisitionDatePickerService = $injector.get('requisitionDatePickerService');
             this.dateUtils = $injector.get('dateUtils');
-            this.TEMPLATE_TYPE = $injector.get('TEMPLATE_TYPE');
             // SIGLUS-REFACTOR: ends here
 
             this.user = {
@@ -215,18 +214,12 @@ describe('RequisitionInitiateController', function() {
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
         this.vm.isSupervised = false;
-        // SIGLUS-REFACTOR: starts here
-        // this.vm.report = false;
-        // SIGLUS-REFACTOR: ends here
 
         this.vm.$onInit();
         this.vm.loadPeriods();
         this.$rootScope.$apply();
 
-        // SIGLUS-REFACTOR: starts here
         expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
-            report: false,
-            // SIGLUS-REFACTOR: ends here
             supervised: false,
             emergency: false,
             program: this.vm.program.id,
@@ -271,15 +264,6 @@ describe('RequisitionInitiateController', function() {
         this.$state.current.name = 'openlmis.requisitions.initRnr.requisition';
 
         expect(this.vm.isRequisition()).toBe(true);
-    });
-    // SIGLUS-REFACTOR: ends here
-
-    // SIGLUS-REFACTOR: add test for isUsageReport
-    it('should return true when template type of the program is USAGE_REPORT', function() {
-        this.vm.program = this.programs[0];
-        this.vm.program.templateType = this.TEMPLATE_TYPE.USAGE_REPORT;
-
-        expect(this.vm.isUsageReport()).toBe(true);
     });
     // SIGLUS-REFACTOR: ends here
 });
