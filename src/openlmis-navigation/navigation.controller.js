@@ -29,13 +29,10 @@
         .controller('NavigationController', NavigationController);
 
     NavigationController.$inject = [
-        '$scope', 'navigationStateService',
-        // SIGLUS-REFACTOR: starts here
-        'authorizationService'
-        // SIGLUS-REFACTOR: ends here
+        '$scope', 'navigationStateService'
     ];
 
-    function NavigationController($scope, navigationStateService, authorizationService) {
+    function NavigationController($scope, navigationStateService) {
 
         var vm = this;
 
@@ -67,7 +64,6 @@
             setStates();
             // SIGLUS-REFACTOR: hide state and check requisition rights
             hideState();
-            checkRequisitionRights();
             // SIGLUS-REFACTOR: ends here
         }
 
@@ -93,32 +89,5 @@
                 });
             }
         }
-
-        function checkRequisitionRights() {
-            _.forEach(vm.states, function(state) {
-                if (state.name === 'openlmis.requisitions' && _.isArray(state.children)) {
-                    _.forEach(state.children, function(child) {
-                        if (child.name === 'openlmis.requisitions.initRnr') {
-                            var rights = authorizationService.getRights();
-                            var canCreate = _.some(rights, function(right) {
-                                return right.name === 'REQUISITION_CREATE';
-                            });
-                            var canAuthorize = _.some(rights, function(right) {
-                                return right.name === 'REQUISITION_AUTHORIZE';
-                            });
-
-                            if (canCreate && !canAuthorize) {
-                                child.label = 'requisitionInitiate.create';
-                            }
-
-                            if (!canCreate && canAuthorize) {
-                                child.label = 'requisitionInitiate.authorize';
-                            }
-                        }
-                    });
-                }
-            });
-        }
-        // SIGLUS-REFACTOR: ends here
     }
 })();
