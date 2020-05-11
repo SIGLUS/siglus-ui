@@ -41,6 +41,9 @@ describe('openlmis.requisitions.requisition state', function() {
             this.programService = $injector.get('programService');
             this.periodService = $injector.get('periodService');
             this.$location = $injector.get('$location');
+            // SIGLUS-REFACTOR: starts here
+            this.authorizationService = $injector.get('authorizationService');
+            // SIGLUS-REFACTOR: ends here
         });
 
         this.goToUrl = goToUrl;
@@ -80,7 +83,7 @@ describe('openlmis.requisitions.requisition state', function() {
         spyOn(this.requisitionViewFactory, 'canSkip').andReturn(this.$q.resolve(true));
         // SIGLUS-REFACTOR: starts here
         spyOn(this.requisitionViewFactory, 'canSubmitAndAuthorize').andReturn(this.$q.resolve(true));
-        spyOn(this.requisitionViewFactory, 'hasAuthorizeRight').andReturn(this.$q.resolve(true));
+        spyOn(this.authorizationService, 'hasRight').andReturn(this.$q.resolve(true));
         // SIGLUS-REFACTOR: ends here
 
         this.state = this.$state.get('openlmis.requisitions.requisition');

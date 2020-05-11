@@ -73,20 +73,12 @@
                         }
                         return false;
                     },
-                    hasAuthorizeRight: function(authorizationService, permissionService,  $stateParams) {
+                    hasAuthorizeRight: function(authorizationService, $stateParams) {
                         if ($stateParams.program && $stateParams.facility) {
-                            var user = authorizationService.getUser();
-                            return permissionService.hasPermission(user.user_id, {
-                                right: REQUISITION_RIGHTS.REQUISITION_AUTHORIZE,
+                            return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
                                 programId: $stateParams.program,
                                 facilityId: $stateParams.facility
-                            })
-                                .then(function() {
-                                    return true;
-                                })
-                                .catch(function() {
-                                    return false;
-                                });
+                            });
                         }
                         return false;
                     }
