@@ -29,30 +29,15 @@
         .module('requisition-initiate')
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
-    // SIGLUS-REFACTOR: delete 'periods' and 'canInitiateRnr'
-    // add 'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', '$rootScope'
     RequisitionInitiateController.$inject = [
-        'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
-        'permissionService', 'authorizationService', '$stateParams', 'UuidGenerator',
-        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', '$rootScope'
-    ];
-    // SIGLUS-REFACTOR: ends here
-
-    function RequisitionInitiateController(requisitionService, $state, loadingModalService, notificationService,
-                                           REQUISITION_RIGHTS, permissionService, authorizationService, $stateParams,
-                                           UuidGenerator, confirmService, requisitionInitiateService,
-                                           REQUISITION_STATUS, $rootScope) {
+        'requisitionService', '$state'
         // SIGLUS-REFACTOR: starts here
-        $rootScope.$on('$stateChangeStart', function navigateToRequisitionTab(event, toState) {
-            if (toState.name === 'openlmis.requisitions.initRnr') {
-                event.preventDefault();
-                $state.go('openlmis.requisitions.initRnr.requisition', {}, {
-                    reload: 'openlmis.requisitions.initRnr.requisition'
-                });
-            }
-        });
+        // 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
+        // 'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator'
         // SIGLUS-REFACTOR: ends here
+    ];
 
+    function RequisitionInitiateController(requisitionService, $state) {
         var vm = this;
         // SIGLUS-REFACTOR: starts here
         // uuidGenerator = new UuidGenerator(),
