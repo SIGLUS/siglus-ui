@@ -21,49 +21,56 @@
         .module('requisition-initiate-history')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'INITRNR_LABEL', 'REQUISITION_RIGHTS'];
 
-    function routes($stateProvider) {
-
-        $stateProvider.state('openlmis.requisitions.initRnr.history', {
-            url: '/history?supervised&program&facility&emergency&report&page&size',
-            params: {
-                page: '0',
-                size: '1000',
-                sort: ['createdDate,desc']
-            },
-            controller: 'RequisitionInitiateHistoryController',
-            controllerAs: 'vm',
-            templateUrl: 'requisition-initiate-history/requisition-initiate-history.html',
-            canAccess: function(permissionService, REQUISITION_RIGHTS) {
-                return permissionService.hasRoleWithRight(REQUISITION_RIGHTS.REQUISITION_VIEW);
-            },
-            resolve: {
-                facilities: function(requisitionSearchService) {
-                    return requisitionSearchService.getFacilities();
-                },
-                program: function($stateParams, programService) {
-                    return programService.get($stateParams.program);
-                },
-                requisitions: function(paginationService, requisitionService, $stateParams) {
-                    return paginationService.registerUrl($stateParams, function(stateParams) {
-                        if (stateParams.facility) {
-                            var offlineFlag = stateParams.offline;
-                            delete stateParams.offline;
-                            return requisitionService.search(offlineFlag === 'true', {
-                                facility: stateParams.facility,
-                                program: stateParams.program,
-                                emergency: stateParams.emergency,
-                                page: stateParams.page,
-                                size: stateParams.size,
-                                sort: stateParams.sort
-                            });
-                        }
-                        return undefined;
-                    });
-                }
-            }
+    function routes($stateProvider, INITRNR_LABEL, REQUISITION_RIGHTS) {
+        [INITRNR_LABEL.CREATE_AUTHORIZE, INITRNR_LABEL.CREATE, INITRNR_LABEL.AUTHORIZE].forEach(function(right) {
+            addStateForRight(right);
         });
+
+        function addStateForRight(right) {
+            $stateProvider.state('openlmis.requisitions.' + right + '.history', {
+                url: '/history?supervised&program&facility&emergency&report&page&size',
+                params: {
+                    page: '0',
+                    size: '1000',
+                    sort: ['createdDate,desc']
+                },
+                controller: 'RequisitionInitiateHistoryController',
+                controllerAs: 'vm',
+                templateUrl: 'requisition-initiate-history/requisition-initiate-history.html',
+                accessRights: [
+                    REQUISITION_RIGHTS.REQUISITION_CREATE,
+                    REQUISITION_RIGHTS.REQUISITION_DELETE,
+                    REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
+                ],
+                resolve: {
+                    facilities: function(requisitionSearchService) {
+                        return requisitionSearchService.getFacilities();
+                    },
+                    program: function($stateParams, programService) {
+                        return programService.get($stateParams.program);
+                    },
+                    requisitions: function(paginationService, requisitionService, $stateParams) {
+                        return paginationService.registerUrl($stateParams, function(stateParams) {
+                            if (stateParams.facility) {
+                                var offlineFlag = stateParams.offline;
+                                delete stateParams.offline;
+                                return requisitionService.search(offlineFlag === 'true', {
+                                    facility: stateParams.facility,
+                                    program: stateParams.program,
+                                    emergency: stateParams.emergency,
+                                    page: stateParams.page,
+                                    size: stateParams.size,
+                                    sort: stateParams.sort
+                                });
+                            }
+                            return undefined;
+                        });
+                    }
+                }
+            });
+        }
     }
 
 })();
