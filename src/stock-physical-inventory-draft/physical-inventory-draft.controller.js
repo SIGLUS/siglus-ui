@@ -561,7 +561,6 @@
                 return vm.displayLineItemsGroup;
             }, function(newValue) {
                 $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
-                $scope.isInitialInventory = vm.isInitialInventory;
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
