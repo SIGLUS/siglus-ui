@@ -37,7 +37,7 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
         '$timeout', 'autoGenerateService', 'REASON_TYPES', 'REASON_CATEGORIES', 'MAX_STRING_VALUE',
-        'currentUserService'];
+        'currentUserService', 'navigationStateService'];
     // SIGLUS-REFACTOR: ends here
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
@@ -47,7 +47,7 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
                         $timeout, autoGenerateService, REASON_TYPES, REASON_CATEGORIES, MAX_STRING_VALUE,
-                        currentUserService) {
+                        currentUserService, navigationStateService) {
         var vm = this;
 
         // SIGLUS-REFACTOR: starts here
@@ -386,6 +386,7 @@
                         .then(function() {
                             if (vm.isInitialInventory) {
                                 currentUserService.clearCache();
+                                navigationStateService.clearStatesAvailability();
                                 $scope.isInitialInventory = false;
                             }
                             notificationService.success('stockPhysicalInventoryDraft.submitted');
