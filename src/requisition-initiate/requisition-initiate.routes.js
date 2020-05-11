@@ -21,10 +21,12 @@
         .module('requisition-initiate')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+    routes.$inject = ['$urlRouterProvider', '$stateProvider', 'REQUISITION_RIGHTS'];
 
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-
+    function routes($urlRouterProvider, $stateProvider, REQUISITION_RIGHTS) {
+        $urlRouterProvider.when('/requisitions/initiate', ['$state', '$stateParams', function($state, $stateParams) {
+            $state.go('openlmis.requisitions.initRnr.requisition', $stateParams);
+        }]);
         $stateProvider.state('openlmis.requisitions.initRnr', {
             // SIGLUS-REFACTOR: starts here
             url: '/initiate',
