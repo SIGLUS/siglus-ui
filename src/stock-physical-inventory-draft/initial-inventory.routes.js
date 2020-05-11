@@ -35,6 +35,11 @@
                     controllerAs: 'vm'
                 }
             },
+            canAccess: function(currentUserService) {
+                return currentUserService.getUserInfo().then(function(user) {
+                    return user.canInitialInventory;
+                });
+            },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             params: {
                 program: undefined,

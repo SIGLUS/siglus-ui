@@ -64,8 +64,6 @@
 
             if (_.isUndefined(user) || _.isUndefined(user.canInitialInventory)) {
                 return false;
-            } else if (!user.canInitialInventory) {
-                delete $state.get('openlmis.stockmanagement.initialInventory').showInNavigation;
             }
             return user.canInitialInventory;
         }

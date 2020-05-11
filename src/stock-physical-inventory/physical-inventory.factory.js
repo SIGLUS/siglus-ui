@@ -32,13 +32,13 @@
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
         'FullStockCardSummaryRepositoryImpl',
         // SIGLUS-REFACTOR: starts here
-        'loadingModalService', '$state', 'alertService', 'currentUserService'
+        'loadingModalService', '$state', 'alertService', 'currentUserService', 'navigationStateService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
                      FullStockCardSummaryRepositoryImpl, loadingModalService, $state, alertService,
-                     currentUserService) {
+                     currentUserService, navigationStateService) {
 
         return {
             getDrafts: getDrafts,
@@ -160,9 +160,9 @@
                         });
                 }, function(err) {
                     loadingModalService.close();
-                    currentUserService.clearCache();
                     if (err.status === 406) {
-                        delete $state.get('openlmis.stockmanagement.initialInventory').showInNavigation;
+                        currentUserService.clearCache();
+                        navigationStateService.clearStatesAvailability();
                         alertService.error('stockInitialInventory.initialFailed');
                     }
                     $state.go('openlmis.home', {}, {
