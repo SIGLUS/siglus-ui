@@ -38,7 +38,6 @@
 
     function decorator($delegate, $q, permissionService, REQUISITION_RIGHTS) {
         $delegate.canSubmitAndAuthorize = canSubmitAndAuthorize;
-        $delegate.hasAuthorizeRight = hasAuthorizeRight;
 
         return $delegate;
 
@@ -70,22 +69,6 @@
                 });
             }
             return $q.resolve(false);
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-view.requisitionViewFactory
-         * @name hasAuthorizeRight
-         *
-         * @description
-         * Determines whether the user has authorize right or not.
-         *
-         * @param  {String} userId id of user to check
-         * @param  {Object} requisition requisition to check
-         * @return {Boolean}
-         */
-        function hasAuthorizeRight(userId, requisition) {
-            return hasRightForProgramAndFacility(userId, REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, requisition);
         }
 
         function hasRightForProgramAndFacility(userId, rightName, requisition) {

@@ -78,8 +78,11 @@
                     return requisitionViewFactory.canAuthorize(user.id, requisition);
                 },
                 // SIGLUS-REFACTOR: starts here
-                hasAuthorizeRight: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.hasAuthorizeRight(user.id, requisition);
+                hasAuthorizeRight: function(authorizationService, requisition) {
+                    return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
+                        programId: requisition.program.id,
+                        facilityId: requisition.facility.id
+                    });
                 },
                 // SIGLUS-REFACTOR: ends here
                 canApproveAndReject: function(requisitionViewFactory, user, requisition) {

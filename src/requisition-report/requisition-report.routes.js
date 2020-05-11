@@ -62,8 +62,11 @@
                 canAuthorize: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canAuthorize(user.id, requisition);
                 },
-                hasAuthorizeRight: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.hasAuthorizeRight(user.id, requisition);
+                hasAuthorizeRight: function(authorizationService, requisition) {
+                    return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
+                        programId: requisition.program.id,
+                        facilityId: requisition.facility.id
+                    });
                 },
                 canApproveAndReject: function(requisitionViewFactory, user, requisition) {
                     return requisitionViewFactory.canApproveAndReject(user, requisition);
