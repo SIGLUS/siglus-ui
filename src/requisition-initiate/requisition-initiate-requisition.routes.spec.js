@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
+describe('openlmis.requisitions.initRnr.requisition state', function() {
 
     var $q, $state, $rootScope, $stateParams, requisitionInitiateFactory, PeriodDataBuilder, periods,
         periodFactory, requisitionInitiateService, authorizationService, programService;
@@ -62,7 +62,7 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('periods')).toEqual([]);
         });
 
@@ -71,7 +71,7 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('periods')).toEqual([]);
         });
 
@@ -80,13 +80,13 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).not.toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).not.toEqual('openlmis.requisitions.initRnr.requisition');
         });
 
         it('should fetch periods', function() {
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('periods')).toEqual(periods);
             expect(periodFactory.get).toHaveBeenCalledWith(
                 $stateParams.program,
@@ -100,7 +100,7 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('periods')).toEqual(periods);
             expect(periodFactory.get).toHaveBeenCalledWith(
                 $stateParams.program,
@@ -118,7 +118,7 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('canInitiateRnr')).toEqual(false);
         });
 
@@ -127,14 +127,14 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('canInitiateRnr')).toEqual(false);
         });
 
         it('should return true if user can initiate requisitions', function() {
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('canInitiateRnr')).toEqual(true);
             expect(requisitionInitiateFactory.canInitiate).toHaveBeenCalledWith(
                 $stateParams.program, $stateParams.facility
@@ -146,7 +146,7 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.createAuthorize.initRnr');
+            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
             expect(getResolvedValue('canInitiateRnr')).toEqual(false);
             expect(requisitionInitiateFactory.canInitiate).toHaveBeenCalledWith(
                 $stateParams.program, $stateParams.facility
@@ -156,7 +156,7 @@ describe('openlmis.requisitions.createAuthorize.initRnr state', function() {
     });
 
     function goToState() {
-        $state.go('openlmis.requisitions.createAuthorize.initRnr', $stateParams);
+        $state.go('openlmis.requisitions.initRnr.requisition', $stateParams);
         $rootScope.$apply();
     }
 

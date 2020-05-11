@@ -29,15 +29,29 @@
         .module('requisition-initiate')
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
+    // SIGLUS-REFACTOR: delete 'periods' and 'canInitiateRnr'
+    // add 'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', '$rootScope'
     RequisitionInitiateController.$inject = [
-        'requisitionService', '$state'
-        // SIGLUS-REFACTOR: starts here
-        // 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
-        // 'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator'
-        // SIGLUS-REFACTOR: ends here
+        'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
+        'permissionService', 'authorizationService', '$stateParams', 'UuidGenerator',
+        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', '$rootScope'
     ];
+    // SIGLUS-REFACTOR: ends here
 
-    function RequisitionInitiateController(requisitionService, $state) {
+    function RequisitionInitiateController(requisitionService, $state, loadingModalService, notificationService,
+                                           REQUISITION_RIGHTS, permissionService, authorizationService, $stateParams,
+                                           UuidGenerator, confirmService, requisitionInitiateService,
+                                           REQUISITION_STATUS, $rootScope) {
+        // SIGLUS-REFACTOR: starts here
+        $rootScope.$on('$stateChangeStart', function navigateToRequisitionTab(event, toState) {
+            if (toState.name === 'openlmis.requisitions.initRnr') {
+                event.preventDefault();
+                $state.go('openlmis.requisitions.initRnr.requisition', {}, {
+                    reload: 'openlmis.requisitions.initRnr.requisition'
+                });
+            }
+        });
+        // SIGLUS-REFACTOR: ends here
 
         var vm = this;
         // SIGLUS-REFACTOR: starts here
@@ -219,24 +233,20 @@
 
         // SIGLUS-REFACTOR: add new method
         vm.goToHistory = function() {
-            $state.go(getParentState($state) + '.history', $state.params);
+            $state.go('openlmis.requisitions.initRnr.history', $state.params);
         };
 
         vm.isHistory = function() {
-            return $state.current.name.indexOf('history') > -1;
+            return $state.current.name === 'openlmis.requisitions.initRnr.history';
         };
 
-        vm.goToRequisition = function() {
-            $state.go(getParentState($state) + '.initRnr', $state.params);
+        vm.goToRequsition = function() {
+            $state.go('openlmis.requisitions.initRnr.requisition', $state.params);
         };
 
         vm.isRequisition = function() {
-            return $state.current.name.indexOf('initRnr') > -1;
+            return $state.current.name === 'openlmis.requisitions.initRnr.requisition';
         };
-
-        function getParentState(state) {
-            return state.current.name.substring(0, state.current.name.lastIndexOf('.'));
-        }
         // SIGLUS-REFACTOR: ends here
     }
 })();

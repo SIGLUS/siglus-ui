@@ -208,7 +208,7 @@ describe('RequisitionInitiateController', function() {
         spyOn(this.$state, 'go');
         // SIGLUS-REFACTOR: starts here
         this.$state.current = {
-            name: 'openlmis.requisitions.createAuthorize.initRnr'
+            name: 'openlmis.requisitions.initRnr.requisition'
         };
         // SIGLUS-REFACTOR: ends here
         this.vm.program = this.programs[0];
@@ -219,51 +219,49 @@ describe('RequisitionInitiateController', function() {
         this.vm.loadPeriods();
         this.$rootScope.$apply();
 
-        // SIGLUS-REFACTOR: starts here
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.createAuthorize.initRnr', {
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
             supervised: false,
             emergency: false,
             program: this.vm.program.id,
             facility: this.vm.facility.id
         }, {
-            reload: 'openlmis.requisitions.createAuthorize.initRnr'
+            // SIGLUS-REFACTOR: starts here
+            reload: 'openlmis.requisitions.initRnr.requisition'
+            // SIGLUS-REFACTOR: ends here
         });
-        // SIGLUS-REFACTOR: ends here
     });
 
     // SIGLUS-REFACTOR: add test for goToHistory
-    it('should change page to openlmis.requisitions.createAuthorize.history', function() {
-        this.$state.current.name = 'openlmis.requisitions.createAuthorize.initRnr';
+    it('should change page to openlmis.requisitions.initRnr.history', function() {
         spyOn(this.$state, 'go');
 
         this.vm.goToHistory();
 
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.createAuthorize.history', {});
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.history', {});
     });
     // SIGLUS-REFACTOR: ends here
 
     // SIGLUS-REFACTOR: add test for isHistory
-    it('should return true when current state name is openlmis.requisitions.createAuthorize.history', function() {
-        this.$state.current.name = 'openlmis.requisitions.createAuthorize.history';
+    it('should return true when current state name is openlmis.requisitions.initRnr.history', function() {
+        this.$state.current.name = 'openlmis.requisitions.initRnr.history';
 
         expect(this.vm.isHistory()).toBe(true);
     });
     // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: add test for goToRequisition
-    it('should change page to openlmis.requisitions.createAuthorize.initRnr', function() {
-        this.$state.current.name = 'openlmis.requisitions.createAuthorize.history';
+    // SIGLUS-REFACTOR: add test for goToRequsition
+    it('should change page to openlmis.requisitions.initRnr.requisition', function() {
         spyOn(this.$state, 'go');
 
-        this.vm.goToRequisition();
+        this.vm.goToRequsition();
 
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.createAuthorize.initRnr', {});
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {});
     });
     // SIGLUS-REFACTOR: ends here
 
     // SIGLUS-REFACTOR: add test for isRequisition
-    it('should return true when current state name is openlmis.requisitions.createAuthorize.initRnr', function() {
-        this.$state.current.name = 'openlmis.requisitions.createAuthorize.initRnr';
+    it('should return true when current state name is openlmis.requisitions.initRnr.requisition', function() {
+        this.$state.current.name = 'openlmis.requisitions.initRnr.requisition';
 
         expect(this.vm.isRequisition()).toBe(true);
     });
