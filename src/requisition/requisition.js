@@ -451,7 +451,7 @@
 
         // SIGLUS-REFACTOR: starts here
         function isAfterSubmit() {
-            return this.isSubmitted() || this.isAfterAuthorize();
+            return this.$isSubmitted() || this.$isAfterAuthorize();
         }
         // SIGLUS-REFACTOR: ends here
 
