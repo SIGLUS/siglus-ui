@@ -158,13 +158,13 @@
 
         function populateRequestedAndAuthorizedQuantity(requisition) {
             if (vm.canInitiateRnr &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY].isDisplayed) {
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY].$display) {
                 angular.forEach(requisition.requisitionLineItems, function(lineItem) {
                     lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
                 });
             }
             if (vm.hasAuthorizeRight &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].isDisplayed) {
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].$display) {
                 angular.forEach(requisition.requisitionLineItems, function(lineItem) {
                     lineItem.authorizedQuantity = lineItem.requestedQuantity;
                 });
