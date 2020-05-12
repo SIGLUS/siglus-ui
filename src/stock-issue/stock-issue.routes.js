@@ -50,7 +50,18 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ISSUE;
+                },
+                // SIGLUS-REFACTOR: starts here
+                drafts: function(user, programs, facility, adjustmentType, stockAdjustmentFactory) {
+                    if (_.isUndefined(facility)) {
+                        return [];
+                    }
+                    var programIds = _.map(programs, function(program) {
+                        return program.id;
+                    });
+                    return stockAdjustmentFactory.getDrafts(user, programIds, facility, adjustmentType);
                 }
+                // SIGLUS-REFACTOR: starts here
             }
         });
     }

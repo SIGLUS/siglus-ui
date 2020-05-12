@@ -28,13 +28,12 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'stockmanagementUrlFactory',
-        '$http', 'user', '$q', 'loadingModalService'];
+    // SIGLUS-REFACTOR: add drafts
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'drafts'];
+    // SIGLUS-REFACTOR: ends here
 
-    function controller(facility, programs, adjustmentType, $state, stockmanagementUrlFactory, $http, user, $q,
-                        loadingModalService) {
+    function controller(facility, programs, adjustmentType, $state, drafts) {
         var vm = this;
-        vm.drafts = [];
 
         /**
          * @ngdoc property
@@ -56,7 +55,7 @@
          * @description
          * Holds available programs for home facility.
          */
-        vm.programs = [];
+        vm.programs = programs;
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
@@ -67,53 +66,25 @@
                 programId: program.id,
                 program: program,
                 facility: facility,
-                // SIGLUS-REFACTOR: recovery draft
+                // SIGLUS-REFACTOR: starts here
                 draft: draft,
                 draftId: draft && draft.id
             });
         };
 
         vm.$onInit = function() {
-            var url = stockmanagementUrlFactory('/api/siglusintegration/drafts');
-            loadingModalService.open();
-            var promises = _.map(programs, function(program) {
-                return $http.get(url, {
-                    params: {
-                        program: program.id,
-                        facility: facility.id,
-                        isDraft: true,
-                        userId: user.user_id,
-                        draftType: adjustmentType.state
-                    }
-                }).then(function(res) {
-                    var draft = null;
-                    if (res.data.length > 0) {
-                        draft = res.data[0];
-                    }
-                    return draft;
-                }, function() {
-                    loadingModalService.close();
-                });
+            drafts = _.filter(drafts, function(draft) {
+                return draft;
             });
-
-            $q.all(promises).then(function(drafts) {
-                loadingModalService.close();
-
-                drafts = _.filter(drafts, function(draft) {
-                    return draft !== null;
-                });
-                vm.drafts = drafts;
-
-                vm.programs = _.map(programs, function(p) {
-                    p.draft = _.find(vm.drafts, function(d) {
-                        return d.programId === p.id;
+            if (drafts.length > 0) {
+                vm.programs = _.map(programs, function(program) {
+                    program.draft = _.find(drafts, function(draft) {
+                        return draft.programId === program.id;
                     });
-                    return p;
+                    return program;
                 });
-            }, function() {
-                loadingModalService.close();
-                // SIGLUS-REFACTOR: ends here
-            });
+            }
         };
+        // SIGLUS-REFACTOR: ends here
     }
 })();

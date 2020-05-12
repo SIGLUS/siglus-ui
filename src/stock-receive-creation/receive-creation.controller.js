@@ -34,7 +34,7 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
-        '$timeout', 'STOCKMANAGEMENT_RIGHTS', 'orderableLotMapping', '$location'
+        '$timeout', 'STOCKMANAGEMENT_RIGHTS', 'orderableLotMapping', '$location', 'stockAdjustmentService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -42,7 +42,8 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS, orderableLotMapping, $location) {
+                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS, orderableLotMapping, $location,
+                        stockAdjustmentService) {
         var vm = this,
             previousAdded = {};
 
@@ -235,7 +236,7 @@
                     };
 
                     if (vm.draft && vm.draft.id) {
-                        stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(cb, cb);
+                        stockAdjustmentService.deleteDraft(vm.draft.id).then(cb, cb);
                     } else {
                         cb();
                     }
@@ -426,7 +427,7 @@
                 }).then(function(res) {
                     vm.draft = res.data;
                     var draft = angular.copy(vm.draft);
-                    stockAdjustmentCreationService
+                    stockAdjustmentService
                         .saveDraft(draft, addedLineItems, adjustmentType)
                         .then(function() {
                             notificationService.success(vm.key('saved'));
@@ -441,7 +442,7 @@
             } else {
                 // not first save
                 var draft = angular.copy(vm.draft);
-                stockAdjustmentCreationService
+                stockAdjustmentService
                     .saveDraft(draft, addedLineItems, adjustmentType)
                     .then(function() {
                         notificationService.success(vm.key('saved'));
@@ -513,7 +514,7 @@
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
                     if (vm.draft && vm.draft.id) {
-                        stockAdjustmentCreationService.deleteDraft(vm.draft.id).then(function() {
+                        stockAdjustmentService.deleteDraft(vm.draft.id).then(function() {
                             vm.draft = null;
                             $stateParams.draft = null;
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -681,7 +682,7 @@
                                 lot.lotCode = draftLineItem.lotCode;
                                 lot.expirationDate = draftLineItem.expirationDate;
 
-                                var soh = stockAdjustmentCreationService.getStochOnHand(
+                                var soh = stockAdjustmentCreationService.getStockOnHand(
                                     stockCardSummaries,
                                     draftLineItem.orderableId,
                                     draftLineItem.lotId
@@ -748,7 +749,7 @@
             }
 
             if (_.isEmpty(vm.draft)) {
-                stockAdjustmentCreationService.getDraftById(
+                stockAdjustmentService.getDraftById(
                     $stateParams.draftId,
                     adjustmentType,
                     program.id,
