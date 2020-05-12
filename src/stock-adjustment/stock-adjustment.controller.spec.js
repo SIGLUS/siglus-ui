@@ -15,7 +15,9 @@
 
 describe('StockAdjustmentController', function() {
 
-    var vm, state, facility, programs, drafts, user;
+    // SIGLUS-REFACTOR: add drafts
+    var vm, state, facility, programs, drafts;
+    // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
 
@@ -41,8 +43,6 @@ describe('StockAdjustmentController', function() {
 
                 // SIGLUS-REFACTOR: recovery draft
                 drafts = [];
-
-                user = {};
                 // SIGLUS-REFACTOR: ends here
 
                 vm = $controller('StockAdjustmentController', {
@@ -51,8 +51,7 @@ describe('StockAdjustmentController', function() {
                     adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
                     $state: state,
                     // SIGLUS-REFACTOR: recovery draft
-                    drafts: drafts,
-                    user: user
+                    drafts: drafts
                     // SIGLUS-REFACTOR: ends here
                 });
             }
@@ -60,9 +59,7 @@ describe('StockAdjustmentController', function() {
     });
 
     it('should init programs properly', function() {
-        // SIGLUS-REFACTOR: starts here
-        expect(vm.programs).toEqual([]);
-        // SIGLUS-REFACTOR: ends here
+        expect(vm.programs).toEqual(programs);
     });
 
     it('should go to stock adjustment draft page when proceed', function() {
