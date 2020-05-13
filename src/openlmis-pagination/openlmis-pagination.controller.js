@@ -122,24 +122,6 @@
             }
         }
 
-        // SIGLUS-REFACTOR: starts here
-        function stockManagementChangePage(stockManagementStateParams) {
-            if (pagination.paginationId === 'stock-management-physical-inventory') {
-                stockManagementStateParams = _.defaults(stockManagementStateParams, $state.params);
-                stockManagementStateParams.draft.lineItems = _.flatten(pagination.list);
-            } else {
-                stockManagementStateParams = _.extend(stockManagementStateParams, $state.params);
-                if ((stockManagementStateParams.hasOwnProperty('displayItems') &&
-                    stockManagementStateParams.displayItems === undefined)
-                    || (_.isArray(stockManagementStateParams.displayItems) &&
-                        stockManagementStateParams.displayItems.length === 0)) {
-                    stockManagementStateParams.displayItems = pagination.list;
-                }
-            }
-            return stockManagementStateParams;
-        }
-        // SIGLUS-REFACTOR: ends here
-
         /**
          * @ngdoc method
          * @methodOf openlmis-pagination.controller:PaginationController
@@ -153,22 +135,17 @@
          */
         function changePage(newPage) {
             if (newPage >= 0 && newPage < getTotalPages()) {
-                var stateParams = angular.copy($stateParams);
-                // when change page, then displayItems will be undefined then cause empty table
-                if (pagination.paginationId && pagination.paginationId.indexOf('stock-management') !== -1) {
-                    // SIGLUS-REFACTOR: starts here
-                    stateParams = stockManagementChangePage(stateParams);
-                    // SIGLUS-REFACTOR: ends here
-                }
+                // SIGLUS-REFACTOR: starts here
+                var stateParams = JSON.parse(JSON.stringify($state.params));
+                // SIGLUS-REFACTOR: ends here
 
-                if (pagination.paginationId && pagination.paginationId.indexOf('select-products-modal') !== -1) {
-                    pagination.page = newPage;
-                    pagination.pageSize = paginationService.getSize(pagination.paginationId);
-                    pagination.pagedList = paginationFactory.getPage(pagination.list, newPage, pagination.pageSize);
-                }
-                // flag for change page
-                stateParams.hasChangePage = true;
                 stateParams[paginationService.getPageParamName(pagination.paginationId)] = newPage;
+
+                if (pagination.onPageChange instanceof Function) {
+                    return pagination.onPageChange().then(function() {
+                        $state.go($state.current.name, stateParams);
+                    });
+                }
 
                 $state.go($state.current.name, stateParams);
             }

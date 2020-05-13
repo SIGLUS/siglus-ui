@@ -50,17 +50,15 @@
                         currentUserService, navigationStateService) {
         var vm = this;
 
-        // SIGLUS-REFACTOR: starts here
-        vm.paginationId = 'stock-management-physical-inventory';
-
         vm.$onInit = onInit;
 
         vm.quantityChanged = quantityChanged;
+        vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
+        // SIGLUS-REFACTOR: starts here
         vm.letCodeChanged = letCodeChanged;
         vm.expirationDateChanged = expirationDateChanged;
         vm.reasonChanged = reasonChanged;
         vm.reasonTextChanged = reasonTextChanged;
-        vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         vm.addStockAdjustments = addStockAdjustments;
         vm.addLot = addLot;
         vm.removeLot = removeLot;
@@ -95,6 +93,7 @@
             });
         };
 
+        // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
             if (vm.isInitialInventory) {
                 return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
@@ -102,6 +101,7 @@
             return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
                 && !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText));
         }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -227,10 +227,11 @@
                 // $stateParams.isAddProduct = true;
                 //
                 // //Only reload current state and avoid reloading parent state
-                // $stateParams.page = parseInt($state.params.page, 10);
                 // $state.go($state.current.name, $stateParams, {
                 //     reload: $state.current.name
                 // });
+                $stateParams.isAddProduct = true;
+                reload($state.current.name);
             });
         };
         // SIGLUS-REFACTOR: ends here
@@ -276,19 +277,31 @@
         vm.search = function() {
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
+            // SIGLUS-REFACTOR: starts here
+            // $stateParams.program = vm.program;
+            // $stateParams.facility = vm.facility;
+            // $stateParams.draft = draft;
+            //
+            // //Only reload current state and avoid reloading parent state
+            // $state.go($state.current.name, $stateParams, {
+            //     reload: $state.current.name
+            // });
+            reload($state.current.name);
+            // SIGLUS-REFACTOR: ends here
+        };
+
+        // SIGLUS-REFACTOR: starts here
+        function reload(reload) {
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
             $stateParams.draft = draft;
-            // SIGLUS-REFACTOR: starts here
             $stateParams.reasons = vm.reasons;
-            //flag used in
-            $stateParams.hasChangePage = true;
-            // SIGLUS-REFACTOR: ends here
             //Only reload current state and avoid reloading parent state
             $state.go($state.current.name, $stateParams, {
-                reload: $state.current.name
+                reload: reload
             });
-        };
+        }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -298,8 +311,8 @@
          * @description
          * Save physical inventory draft.
          */
+        // SIGLUS-REFACTOR: starts here
         vm.saveDraft = function() {
-            // SIGLUS-REFACTOR: starts here
             if ($stateParams.keyword) {
                 cancelFilter();
             }
@@ -307,7 +320,6 @@
             return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
                 summaries: []
             })).then(function() {
-                loadingModalService.close();
                 notificationService.success('stockPhysicalInventoryDraft.saved');
                 resetWatchItems();
 
@@ -315,16 +327,17 @@
                 // $stateParams.program = vm.program;
                 // $stateParams.facility = vm.facility;
                 // $stateParams.draft = draft;
-                //Reload parent state and current state to keep data consistency.
+                // //Reload parent state and current state to keep data consistency.
                 // $state.go($state.current.name, $stateParams, {
                 //     reload: true
                 // });
-                // SIGLUS-REFACTOR: ends here
+                reload(true);
             }, function() {
                 loadingModalService.close();
                 alertService.error('stockPhysicalInventoryDraft.saveFailed');
             });
         };
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -387,7 +400,6 @@
                             if (vm.isInitialInventory) {
                                 currentUserService.clearCache();
                                 navigationStateService.clearStatesAvailability();
-                                $scope.isInitialInventory = false;
                             }
                             notificationService.success('stockPhysicalInventoryDraft.submitted');
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -504,7 +516,7 @@
         function validate() {
             var anyError = false;
             var lots = getAllLotCode();
-            _.chain(vm.draft.lineItems).flatten()
+            _.chain(displayLineItemsGroup).flatten()
                 .each(function(item) {
                     if (!(item.orderable && item.orderable.isKit)) {
                         anyError = vm.validateLotCode(item, lots) || anyError;
@@ -536,24 +548,25 @@
 
         function onInit() {
             // SIGLUS-REFACTOR: starts here
-            if (vm.isInitialInventory) {
-                $state.current.label = messageService.get('stockInitialInventory.initialInventory');
-            } else {
-                $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
-                    facilityCode: facility.code,
-                    facilityName: facility.name,
-                    program: program.name
-                });
-            }
+            // $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
+            //     facilityCode: facility.code,
+            //     facilityName: facility.name,
+            //     program: program.name
+            // });
+            updateLabel();
+            // SIGLUS-REFACTOR: ends here
+
             vm.reasons = reasons;
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
             $stateParams.draft = draft;
 
+            // SIGLUS-REFACTOR: starts here
             initiateLineItems();
             refreshLotOptions();
             vm.hasLot = vm.existLotCode.length > 0;
+            // SIGLUS-REFACTOR: starts here
 
             vm.updateProgress();
             resetWatchItems();
@@ -566,38 +579,28 @@
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
+
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
+                // SIGLUS-REFACTOR: starts here
                 var categories = $filter('groupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
-                //vm.groupedCategories = categories;
+                // SIGLUS-REFACTOR: ends here
             }, true);
-            $scope.$watchCollection(function() {
-                return draft.lineItems;
-            }, function() {
-                vm.draft = draft;
-                vm.displayLineItemsGroup = getDisplayLineItemsGroup();
-                vm.updateProgress();
-            });
         }
 
-        function getDisplayLineItemsGroup() {
-            var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
-            var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
-
-            var groups = _.chain(lineItems)
-                .groupBy(function(lineItem) {
-                    return lineItem.orderable.id;
-                })
-                .values()
-                .value();
-            groups.forEach(function(group) {
-                group.forEach(function(lineItem) {
-                    orderableGroupService.determineLotMessage(lineItem, group);
+        // SIGLUS-REFACTOR: starts here
+        function updateLabel() {
+            if (vm.isInitialInventory) {
+                $state.current.label = messageService.get('stockInitialInventory.initialInventory');
+            } else {
+                $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
+                    facilityCode: facility.code,
+                    facilityName: facility.name,
+                    program: program.name
                 });
-            });
-            return groups;
+            }
         }
 
         function initiateLineItems() {
@@ -654,6 +657,7 @@
             });
             return addedlotIdAndOrderableId;
         }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -680,6 +684,7 @@
          *
          * @param   {Object}    lineItem    the lineItem containing quantity
          */
+        // SIGLUS-REFACTOR: starts here
         function quantityChanged(lineItem) {
             vm.validateQuantity(lineItem);
             if (!_.isEqual(lineItem.$errors.quantityInvalid,
@@ -754,6 +759,7 @@
             });
             draft.lineItems.push(newLineItem);
             $stateParams.isAddProduct = true;
+            reload($state.current.name);
         }
 
         function removeLot(lineItem) {
@@ -764,7 +770,7 @@
                 return;
             }
             draft.lineItems.splice(index, 1);
-            refreshLotOptions();
+            reload($state.current.name);
         }
 
         $scope.$on('lotCodeChange', function(event, data) {
