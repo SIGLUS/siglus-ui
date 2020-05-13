@@ -45,10 +45,20 @@
             }
         });
 
+        this.createDraft = createDraft;
         this.getDrafts = getDrafts;
         this.getDraftById = getDraftById;
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
+
+        function createDraft(userId, programId, facilityId, adjustmentTypeState) {
+            return resource.save({
+                programId: programId,
+                facilityId: facilityId,
+                userId: userId,
+                draftType: adjustmentTypeState
+            }).$promise;
+        }
 
         function getDrafts(userId, programId, facilityId, adjustmentTypeState) {
             return resource.query({

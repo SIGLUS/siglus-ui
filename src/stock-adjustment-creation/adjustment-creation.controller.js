@@ -518,40 +518,17 @@
         // SIGLUS-REFACTOR: starts here
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
-            var draftId = $location.search().draftId;
 
             if ($stateParams.keyword) {
                 cancelFilter();
             }
 
-            if (!_.isString(draftId) || _.isEmpty(vm.draft)) {
-                // first save
-                stockAdjustmentCreationService.createDraft(
-                    program.id, facility.id, user.user_id, adjustmentType
-                ).then(function(res) {
-                    vm.draft = res.data;
-                    var draft = angular.copy(vm.draft);
-                    stockAdjustmentService
-                        .saveDraft(draft, addedLineItems, adjustmentType)
-                        .then(function() {
-                            notificationService.success(vm.key('saved'));
-                            if (!_.isString(draftId)) {
-                                // $location.search('draftId', res.data.id).replace();
-                                $stateParams.draftId = res.data.id;
-                                vm.search(true);
-                            }
-                        });
-
+            stockAdjustmentService
+                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+                .then(function() {
+                    notificationService.success(vm.key('saved'));
+                    $scope.needToConfirm = false;
                 });
-            } else {
-                // not first save
-                var draft = angular.copy(vm.draft);
-                stockAdjustmentService
-                    .saveDraft(draft, addedLineItems, adjustmentType)
-                    .then(function() {
-                        notificationService.success(vm.key('saved'));
-                    });
-            }
         };
 
         function isEmpty(value) {
@@ -694,6 +671,7 @@
             recoveryDraft();
             // SIGLUS-REFACTOR: ends here
 
+            $scope.needToConfirm = false;
             $scope.$watch(function() {
                 return vm.addedLineItems;
             }, function(newValue) {
