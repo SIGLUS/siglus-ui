@@ -28,11 +28,12 @@
         .module('stock-adjustment')
         .controller('StockAdjustmentController', controller);
 
-    // SIGLUS-REFACTOR: add drafts
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'drafts'];
+    // SIGLUS-REFACTOR: add user, drafts
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
+        'stockAdjustmentService'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller(facility, programs, adjustmentType, $state, drafts) {
+    function controller(facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService) {
         var vm = this;
 
         /**
@@ -61,12 +62,24 @@
             return adjustmentType.prefix + '.' + secondaryKey;
         };
 
+        // SIGLUS-REFACTOR: starts here
         vm.proceed = function(program, draft) {
+            if (_.isUndefined(draft)) {
+                stockAdjustmentService.createDraft(user.user_id, program.id, facility.id, adjustmentType.state)
+                    .then(function(draft) {
+                        $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
+                            programId: program.id,
+                            program: program,
+                            facility: facility,
+                            draft: draft,
+                            draftId: draft && draft.id
+                        });
+                    });
+            }
             $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
                 programId: program.id,
                 program: program,
                 facility: facility,
-                // SIGLUS-REFACTOR: starts here
                 draft: draft,
                 draftId: draft && draft.id
             });

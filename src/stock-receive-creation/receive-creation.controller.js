@@ -407,43 +407,18 @@
 
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
-            var draftId = $location.search().draftId;
 
             if ($stateParams.keyword) {
                 cancelFilter();
             }
 
-            if (!_.isString(draftId) || _.isEmpty(vm.draft)) {
-                // first save
-                $http.post(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {
-                    programId: program.id,
-                    facilityId: facility.id,
-                    userId: user.user_id,
-                    draftType: adjustmentType.state
-                }).then(function(res) {
-                    vm.draft = res.data;
-                    var draft = angular.copy(vm.draft);
-                    stockAdjustmentService
-                        .saveDraft(draft, addedLineItems, adjustmentType)
-                        .then(function() {
-                            notificationService.success(vm.key('saved'));
-                            if (!_.isString(draftId)) {
-                                // $location.search('draftId', res.data.id).replace();
-                                $stateParams.draftId = res.data.id;
-                                vm.search(true);
-                            }
-                        });
-
+            stockAdjustmentService
+                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+                .then(function() {
+                    notificationService.success(vm.key('saved'));
+                    $scope.needToConfirm = false;
                 });
-            } else {
-                // not first save
-                var draft = angular.copy(vm.draft);
-                stockAdjustmentService
-                    .saveDraft(draft, addedLineItems, adjustmentType)
-                    .then(function() {
-                        notificationService.success(vm.key('saved'));
-                    });
-            }
+
         };
 
         function isEmpty(value) {
@@ -579,6 +554,7 @@
             initStateParams();
             recoveryDraft();
 
+            $scope.needToConfirm = false;
             $scope.$watch(function() {
                 return vm.addedLineItems;
             }, function(newValue) {
