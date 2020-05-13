@@ -6,9 +6,6 @@
     <section class="openlmis-table-container">
         <form ng-submit="vm.search()">
             <fieldset>
-                <!-- SIGLUS-REFACTOR: starts here -->
-                <legend>{{"stockAdjustmentCreation.search" | message}}</legend>
-                <!-- SIGLUS-REFACTOR: ends here -->
                 <label for="search">{{vm.key('keyword') | message}}</label>
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
             </fieldset>

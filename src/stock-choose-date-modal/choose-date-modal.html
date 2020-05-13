@@ -14,16 +14,14 @@
             <div class="modal-body">
                 <form id="dateForm" ng-submit="vm.submit()">
                     <fieldset>
-                        <!-- SIGLUS-REFACTOR: starts here-->
-                        <legend>{{"stockChooseDateModal.date" | message}}</legend>
                         <label for="date" class="required">{{'stockChooseDateModal.date' | message}}</label>
+                        <!-- SIGLUS-REFACTOR: starts here-->
                         <input id="date" type="date" ng-model="vm.occurredDate" max-date="vm.maxDate" ng-disabled="vm.isInitialInventory" required/>
                         <!-- SIGLUS-REFACTOR: ends here-->
                     </fieldset>
 
                     <fieldset>
                         <!-- SIGLUS-REFACTOR: starts here-->
-                        <legend>{{"stockChooseDateModal.signature" | message}}</legend>
                         <label class="is-required">{{'stockChooseDateModal.signature' | message}}</label>
                         <input ng-model="vm.signature" type="text" ng-required="vm.signatureIsRequired">
                         <!-- SIGLUS-REFACTOR: ends here-->
