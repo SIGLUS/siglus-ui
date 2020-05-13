@@ -40,22 +40,15 @@
                 program: undefined,
                 facility: undefined,
                 draft: undefined,
-                // SIGLUS-REFACTOR: add reasons, isAddProduct, hasChangePage
+                // SIGLUS-REFACTOR: add reasons, isAddProduct
                 reasons: undefined,
-                isAddProduct: undefined,
-                hasChangePage: undefined
+                isAddProduct: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
-                // SIGLUS-REFACTOR: starts here
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
-                draft: function($stateParams, physicalInventoryFactory,  user) {
-                    if (_.isUndefined($stateParams.draft) && !$stateParams.hasChangePage) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id,
-                            user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
-                        // SIGLUS-REFACTOR: ends here
+                draft: function($stateParams, physicalInventoryFactory) {
+                    if (_.isUndefined($stateParams.draft)) {
+                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
                     }
                     return $stateParams.draft;
                 },
@@ -102,10 +95,6 @@
                             });
                         });
                         return groups;
-                    }, {
-                        customPageParamName: 'page',
-                        customSizeParamName: 'size',
-                        paginationId: 'stock-management-physical-inventory'
                     });
                 },
                 reasons: function($stateParams, facility, program, stockReasonsFactory) {
