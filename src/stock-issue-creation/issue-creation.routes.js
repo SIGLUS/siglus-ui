@@ -47,7 +47,7 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                hasChangePage: undefined
+                srcDstAssignments: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -70,14 +70,14 @@
                 orderableGroups: function($stateParams, program, user, facility, existingStockOrderableGroupsFactory) {
                     if (_.isUndefined($stateParams.orderableGroups)) {
                         return existingStockOrderableGroupsFactory.getGroupsWithoutStock($stateParams, program,
-                            facility, user, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                            facility);
                     }
                     return $stateParams.orderableGroups;
                 },
-                displayItems: function($stateParams, registerDisplayItemsService) {
-                    return registerDisplayItemsService($stateParams, 'stock-management-issue');
-                },
                 // SIGLUS-REFACTOR: ends here
+                displayItems: function($stateParams, registerDisplayItemsService) {
+                    return registerDisplayItemsService($stateParams);
+                },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
@@ -89,9 +89,11 @@
                 },
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {
+                        // SIGLUS-REFACTOR: starts here
                         return sourceDestinationService.getDestinationAssignments(
                             $stateParams.programId, facility.id
                         );
+                        // SIGLUS-REFACTOR: ends here
                     }
                     return $stateParams.srcDstAssignments;
                 }

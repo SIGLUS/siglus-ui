@@ -296,7 +296,6 @@
             $stateParams.facility = vm.facility;
             $stateParams.draft = draft;
             $stateParams.reasons = vm.reasons;
-            //Only reload current state and avoid reloading parent state
             $state.go($state.current.name, $stateParams, {
                 reload: reload
             });
