@@ -24,12 +24,16 @@ describe('PaginationController', function() {
             this.paginationService = $injector.get('paginationService');
             this.paginationFactory = $injector.get('paginationFactory');
             this.$rootScope = $injector.get('$rootScope');
+            this.$q = $injector.get('$q');
         });
 
         this.$stateParams = {
             customPageParamName: 0,
             size: 2
         };
+        // SIGLUS-REFACTOR: starts here
+        this.$state.params = this.$stateParams;
+        // SIGLUS-REFACTOR: ends here
 
         this.validatorSpy = jasmine.createSpy();
 
@@ -48,7 +52,10 @@ describe('PaginationController', function() {
         this.initController = function() {
             this.pagination = this.$controller('PaginationController', {
                 $scope: this.$rootScope.$new(),
-                $stateParams: this.$stateParams
+                $stateParams: this.$stateParams,
+                // SIGLUS-REFACTOR: starts here
+                $state: this.$state
+                // SIGLUS-REFACTOR: ends here
             });
             this.pagination.$onInit();
         };
@@ -96,7 +103,6 @@ describe('PaginationController', function() {
             this.initController();
         });
 
-        // SIGLUS-REFACTOR: starts here
         it('should change current page', function() {
             this.newPage = 1;
 
@@ -104,13 +110,25 @@ describe('PaginationController', function() {
 
             expect(this.$state.go).toHaveBeenCalledWith(this.$state.current.name, {
                 customPageParamName: this.newPage,
-                size: 2,
-                hasChangePage: true
+                size: 2
             });
         });
-        // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
+        it('should call given function and then change page', function() {
+            var deferred = this.$q.defer();
+
+            this.newPage = 1;
+            this.pagination.onPageChange = function() {
+                deferred.resolve();
+            };
+
+            spyOn(this.pagination, 'onPageChange').andReturn(deferred.promise);
+
+            this.pagination.changePage(this.newPage);
+
+            expect(this.pagination.onPageChange).toHaveBeenCalled();
+        });
+
         it('should change page for local pagination', function() {
             this.paginationService.isExternalPagination.andReturn(false);
             this.pagination.list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -121,11 +139,9 @@ describe('PaginationController', function() {
 
             expect(this.$state.go).toHaveBeenCalledWith(this.$state.current.name, {
                 customPageParamName: this.newPage,
-                size: 2,
-                hasChangePage: true
+                size: 2
             });
         });
-        // SIGLUS-REFACTOR: ends here
 
         it('should not change current page if number is out of range', function() {
             this.pagination.changePage(this.pagination.getTotalPages());
@@ -134,7 +150,6 @@ describe('PaginationController', function() {
         });
     });
 
-    // SIGLUS-REFACTOR: starts here
     describe('nextPage', function() {
         it('should change page to the next one', function() {
             var lastPage = this.pagination.page;
@@ -143,14 +158,11 @@ describe('PaginationController', function() {
 
             expect(this.$state.go).toHaveBeenCalledWith(this.$state.current.name, {
                 customPageParamName: lastPage + 1,
-                size: 2,
-                hasChangePage: true
+                size: 2
             });
         });
     });
-    // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: starts here
     describe('previousPage', function() {
         it('should change page to the last one', function() {
             var lastPage = (this.pagination.page = 1);
@@ -159,12 +171,10 @@ describe('PaginationController', function() {
 
             expect(this.$state.go).toHaveBeenCalledWith(this.$state.current.name, {
                 customPageParamName: lastPage - 1,
-                size: 2,
-                hasChangePage: true
+                size: 2
             });
         });
     });
-    // SIGLUS-REFACTOR: ends here
 
     describe('isCurrentPage', function() {
 

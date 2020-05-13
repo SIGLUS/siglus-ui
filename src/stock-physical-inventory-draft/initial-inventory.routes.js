@@ -47,7 +47,6 @@
                 draft: undefined,
                 reasons: undefined,
                 isAddProduct: undefined,
-                hasChangePage: undefined,
                 canInitialInventory: true
             },
             resolve: {
@@ -66,7 +65,7 @@
                     return $stateParams.program;
                 },
                 draft: function($stateParams, physicalInventoryFactory, program, facility) {
-                    if (_.isUndefined($stateParams.draft && !$stateParams.hasChangePage)) {
+                    if (_.isUndefined($stateParams.draft)) {
                         return physicalInventoryFactory.getInitialInventory(program.id, facility.id)
                             .then(function(draft) {
                                 return draft;
