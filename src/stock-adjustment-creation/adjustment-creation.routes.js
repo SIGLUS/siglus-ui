@@ -67,14 +67,14 @@
                 orderableGroups: function($stateParams, program, facility, user, orderableGroupService) {
                     if (_.isUndefined($stateParams.orderableGroups)) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(program.id,
-                            facility.id, true, user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                            facility.id, true);
                     }
                     return $stateParams.orderableGroups;
                 },
-                displayItems: function($stateParams, registerDisplayItemsService) {
-                    return registerDisplayItemsService($stateParams, 'stock-management-adjustment');
-                },
                 // SIGLUS-REFACTOR: ends here
+                displayItems: function($stateParams, registerDisplayItemsService) {
+                    return registerDisplayItemsService($stateParams);
+                },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);

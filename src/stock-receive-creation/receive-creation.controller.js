@@ -93,9 +93,6 @@
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
-            $stateParams.orderableGroups = vm.orderableGroups;
-            $stateParams.program = vm.program;
-            $stateParams.srcDstAssignments = vm.srcDstAssignments;
             $state.go($state.current.name, $stateParams, {
                 reload: true,
                 notify: false,
@@ -623,8 +620,6 @@
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
             $stateParams.orderableGroups = orderableGroups;
-            $stateParams.addedLineItems = vm.addedLineItems;
-            $stateParams.displayItems = vm.displayItems;
         }
 
         function getPageNumber() {
