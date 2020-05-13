@@ -12,7 +12,7 @@
                 </span>
             </div>
             <div class="openlmis-flex-table">
-                <table class="left-sub-table" ng-if="vm.requisition.template.enableConsultationNumber && !vm.requisition.emergency">
+                <table class="left-sub-table" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
                     <tbody>
                     <tr class="center-item">
                         <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
@@ -25,7 +25,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <table class="right-sub-table" ng-if="vm.requisition.template.enableKitUsage && !vm.requisition.emergency">
+                <table class="right-sub-table" ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency">
                     <tbody>
                     <tr>
                         <td class="table-column-first">{{'requisitionViewTab.receivedKitNo' | message}}</td>
@@ -44,7 +44,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="openlmis-flex-table" ng-if="vm.requisition.template.enableProduct">
+            <div class="openlmis-flex-table" ng-if="vm.requisition.template.extension.enableProduct">
     <!-- SIGLUS-REFACTOR: ends here -->
                 <table>
                     <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>

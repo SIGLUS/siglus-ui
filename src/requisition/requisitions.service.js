@@ -43,18 +43,22 @@
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
 
-        var resource = $resource(requisitionUrlFactory('/api/v2/requisitions/:id'), {}, {
+        // SIGLUS-REFACTOR: starts here
+        var resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitions/:id'), {}, {
+        // SIGLUS-REFACTOR: ends here
             get: {
                 method: 'GET',
                 transformResponse: transformGetResponse
             },
+            // SIGLUS-REFACTOR: starts here
             initiate: {
                 headers: {
                     'Idempotency-Key': getIdempotencyKey
                 },
-                url: requisitionUrlFactory('/api/v2/requisitions/initiate'),
+                url: requisitionUrlFactory('/api/siglusintegration/requisitions/initiate'),
                 method: 'POST'
             },
+            // SIGLUS-REFACTOR: ends here
             search: {
                 url: requisitionUrlFactory('/api/requisitions/search'),
                 method: 'GET',
@@ -504,8 +508,9 @@
             return $q.all([getByVersionIdentities(requisition.availableProducts, new OrderableResource()),
                 periodService.get(requisition.processingPeriod.id)])
                 .then(function(result) {
-                    requisition.availableFullSupplyProducts =
-                        filterOrderables(true, result[0], requisition.program.id);
+                    // SIGLUS-REFACTOR: starts here
+                    requisition.availableFullSupplyProducts =  result[0];
+                    // SIGLUS-REFACTOR: ends here
                     requisition.availableNonFullSupplyProducts =
                         filterOrderables(false, result[0], requisition.program.id);
 
@@ -558,24 +563,20 @@
 
         function filterOrderables(fullSupply, availableProducts, programId) {
             return availableProducts.filter(function(product) {
-                // SIGLUS-REFACTOR: starts here
                 var requisitionProgram = getProgramById(product.programs, programId);
-                return requisitionProgram;
-                // SIGLUS-REFACTOR: ends here
+                return requisitionProgram && requisitionProgram.fullSupply === fullSupply;
             });
         }
 
-        // SIGLUS-REFACTOR: starts here
         function getProgramById(programs, programId) {
             var match;
             programs.forEach(function(program) {
-                if (program.programId === programId || program.parentId === programId) {
+                if (program.programId === programId) {
                     match = program;
                 }
             });
             return match;
         }
-        // SIGLUS-REFACTOR: ends here
 
     }
 })();

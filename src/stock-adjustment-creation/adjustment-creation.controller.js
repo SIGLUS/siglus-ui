@@ -531,12 +531,9 @@
 
             if (!_.isString(draftId) || _.isEmpty(vm.draft)) {
                 // first save
-                $http.post(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {
-                    programId: program.id,
-                    facilityId: facility.id,
-                    userId: user.user_id,
-                    draftType: adjustmentType.state
-                }).then(function(res) {
+                stockAdjustmentCreationService.createDraft(
+                    program.id, facility.id, user.user_id, adjustmentType
+                ).then(function(res) {
                     vm.draft = res.data;
                     var draft = angular.copy(vm.draft);
                     stockAdjustmentService

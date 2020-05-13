@@ -25,6 +25,7 @@
 </fieldset>
 <!-- SIGLUS-REFACTOR: starts here -->
 <fieldset class="form-group" ng-if="!vm.isSupervised && !vm.forRequisitionInit">
+    <legend>{{'openlmisFacilityProgramSelect.selectFacility'| message }}</legend>
 <!-- SIGLUS-REFACTOR: ends here -->
 
     <label for="facilityName">{{'openlmisFacilityProgramSelect.facility' | message}}</label>
@@ -38,6 +39,7 @@
 <!-- SIGLUS-REFACTOR: starts here -->
 </fieldset>
 <fieldset class="form-group" ng-if="!vm.isSupervised">
+    <legend>{{'openlmisFacilityProgramSelect.selectProgram' | message}}</legend>
 <!-- SIGLUS-REFACTOR: ends here -->
     <label for="programListMyFacility">{{'openlmisFacilityProgramSelect.program' | message}}</label>
     <select id="programListMyFacility"
@@ -48,7 +50,9 @@
 
 </fieldset>
 <fieldset class="form-group" ng-if="vm.isSupervised">
-
+    <!-- SIGLUS-REFACTOR: starts here -->
+    <legend>{{'openlmisFacilityProgramSelect.selectProgram' | message}}</legend>
+    <!-- SIGLUS-REFACTOR: ends here -->
     <label for="programListSupervisedFacility">{{'openlmisFacilityProgramSelect.program' | message}}</label>
     <select id="programListSupervisedFacility"
             ng-model="vm.program"
@@ -60,6 +64,7 @@
 <!-- SIGLUS-REFACTOR: starts here -->
 </fieldset>
 <fieldset class="form-group" ng-if="vm.isSupervised && !vm.forRequisitionInit">
+    <legend>{{'openlmisFacilityProgramSelect.selectFacility' | message}}</legend>
 <!-- SIGLUS-REFACTOR: ends here -->
 
     <label for="supervisedFacilityName">{{'openlmisFacilityProgramSelect.facility' | message}}</label>
