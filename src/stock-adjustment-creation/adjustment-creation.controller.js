@@ -51,8 +51,6 @@
             previousAdded = {};
 
         // SIGLUS-REFACTOR: starts here
-        vm.paginationId = 'stock-management-adjustment';
-
         orderableLotMapping.setOrderableGroups(orderableGroups);
 
         vm.draft = $stateParams.draft;
@@ -110,7 +108,6 @@
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
-            $stateParams.orderableGroups = vm.orderableGroups;
             $state.go($state.current.name, $stateParams, {
                 reload: true,
                 notify: false,
@@ -174,8 +171,7 @@
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
-
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
+            vm.search();
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -264,7 +260,7 @@
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
+            vm.search();
         };
 
         /**
@@ -467,7 +463,6 @@
                 //     number: vm.addedLineItems.length
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
-
                 signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
                     confirmSubmit(signature);
@@ -743,10 +738,6 @@
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
             $stateParams.orderableGroups = orderableGroups;
-            // SIGLUS-REFACTOR: starts here
-            $stateParams.addedLineItems = vm.addedLineItems;
-            $stateParams.displayItems = vm.displayItems;
-            // SIGLUS-REFACTOR: ends here
         }
 
         function getPageNumber() {
