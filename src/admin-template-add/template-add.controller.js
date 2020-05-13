@@ -28,16 +28,16 @@
         .module('admin-template-add')
         .controller('TemplateAddController', TemplateAddController);
 
+    // SIGLUS-REFACTOR: starts here
     TemplateAddController.$inject = [
         '$q', 'programs', 'facilityTypes', 'availableColumns', 'confirmService', 'messageService', 'programTemplates',
-        'template', 'TEMPLATE_COLUMNS', 'DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE'
-        // SIGLUS-REFACTOR: starts here
-        // 'LOCKED_TEMPLATE_COLUMNS_ORDER'
-        // SIGLUS-REFACTOR: ends here
+        'template', 'TEMPLATE_COLUMNS', 'DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE', 'TEMPLATE_COLUMNS_ORDER'
     ];
+    // SIGLUS-REFACTOR: ends here
 
     function TemplateAddController($q, programs, facilityTypes, availableColumns, confirmService, messageService,
-                                   programTemplates, template, TEMPLATE_COLUMNS, DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE) {
+                                   programTemplates, template, TEMPLATE_COLUMNS, DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE,
+                                   TEMPLATE_COLUMNS_ORDER) {
 
         var vm = this;
 
@@ -205,25 +205,38 @@
             }
         }
 
+        // SIGLUS-REFACTOR: starts here
         function prepareDefaultColumns() {
-            // SIGLUS-REFACTOR: starts here
-            // vm.availableColumns.sort(function(a, b) {
-            //     if (!a.canChangeOrder && !b.canChangeOrder) {
-            //         return LOCKED_TEMPLATE_COLUMNS_ORDER.getLockedColumnDisplayOrder(a.name) -
-            //             LOCKED_TEMPLATE_COLUMNS_ORDER.getLockedColumnDisplayOrder(b.name);
-            //     }
-            //     return a.canChangeOrder - b.canChangeOrder;
-            // });
-            // SIGLUS-REFACTOR: ends here
+            vm.availableColumns.sort(function(a, b) {
+                return TEMPLATE_COLUMNS_ORDER.getColumnDisplayOrder(a.name) -
+                    TEMPLATE_COLUMNS_ORDER.getColumnDisplayOrder(b.name);
+            });
 
             vm.availableColumns.forEach(function(column) {
-                // SIGLUS-REFACTOR: starts here
+                var nonDisplayedColumns = [
+                    TEMPLATE_COLUMNS.SKIPPED,
+                    TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION,
+                    TEMPLATE_COLUMNS.IDEAL_STOCK_AMOUNT,
+                    TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY_ISA,
+                    TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY,
+                    TEMPLATE_COLUMNS.PACKS_TO_SHIP,
+                    TEMPLATE_COLUMNS.REMARKS,
+                    TEMPLATE_COLUMNS.TOTAL,
+                    TEMPLATE_COLUMNS.NUMBER_OF_NEW_PATIENTS_ADDED,
+                    TEMPLATE_COLUMNS.MAXIMUM_STOCK_QUANTITY,
+                    TEMPLATE_COLUMNS.ADJUSTED_CONSUMPTION,
+                    TEMPLATE_COLUMNS.PRICE_PER_PACK,
+                    TEMPLATE_COLUMNS.UNIT_UNIT_OF_ISSUE,
+                    TEMPLATE_COLUMNS.ADDITIONAL_QUANTITY_REQUIRED,
+                    TEMPLATE_COLUMNS.TOTAL_COST,
+                    TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS
+                ];
+                var isDisplayed = nonDisplayedColumns.indexOf(column.name) === -1;
+
                 addDefaultTag(column);
-                // SIGLUS-REFACTOR: ends here
-                var isDisplayed = column.name !== TEMPLATE_COLUMNS.AVERAGE_CONSUMPTION
-                    && column.name !== TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY_ISA;
                 vm.template.addColumn(column, isDisplayed);
             });
+            // SIGLUS-REFACTOR: ends here
 
             vm.template.numberOfPeriodsToAverage = DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE;
 
