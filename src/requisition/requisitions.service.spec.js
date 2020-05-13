@@ -231,7 +231,9 @@ describe('requisitionService', function() {
 
         beforeEach(function() {
             getStatusMessagesUrl = '/api/requisitions/' + this.requisition.id + '/statusMessages';
-            getRequisitionUrl = '/api/v2/requisitions/' + this.requisition.id;
+            // SIGLUS-REFACTOR: starts here
+            getRequisitionUrl = '/api/siglusintegration/requisitions/' + this.requisition.id;
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should return eTag for requisition', function() {
