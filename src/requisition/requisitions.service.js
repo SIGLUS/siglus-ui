@@ -43,7 +43,9 @@
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
 
-        var resource = $resource(requisitionUrlFactory('/api/v2/requisitions/:id'), {}, {
+        // SIGLUS-REFACTOR: starts here
+        var resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitions/:id'), {}, {
+        // SIGLUS-REFACTOR: ends here
             get: {
                 method: 'GET',
                 transformResponse: transformGetResponse
