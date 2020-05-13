@@ -769,6 +769,7 @@
                 return;
             }
             draft.lineItems.splice(index, 1);
+            $stateParams.isAddProduct = true;
             reload($state.current.name);
         }
 

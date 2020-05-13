@@ -101,10 +101,6 @@
                             });
                         });
                         return groups;
-                    }, {
-                        customPageParamName: 'page',
-                        customSizeParamName: 'size',
-                        paginationId: 'stock-management-physical-inventory'
                     });
                 },
                 reasons: function($stateParams, facility, program, stockReasonsFactory) {

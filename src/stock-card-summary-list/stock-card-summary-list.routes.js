@@ -25,7 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
-            url: '/stockCardSummaries?facility&program&supervised&page&size',
+            url: '/stockCardSummaries?facility&program&supervised&stockCardListPage&stockCardListSize',
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
             showInNavigation: true,
@@ -74,6 +74,8 @@
                         // SIGLUS-REFACTOR: ends here
                         return [];
                         // SIGLUS-REFACTOR: ends here
+                    }, {
+                        paginationId: 'stockCardList'
                     });
                 }
             }

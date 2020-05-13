@@ -27,7 +27,7 @@
         var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
 
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-            url: '/:stockCardId?orderable?isViewProductCard',
+            url: '/:stockCardId?orderable?stockCardPage&stockCardSize&isViewProductCard',
             showInNavigation: false,
             views: {
                 '@openlmis': {
@@ -53,14 +53,11 @@
                             var stockCard = new StockCard(json);
                             //display new line item on top
                             stockCard.lineItems.reverse();
-                            $stateParams.page = $stateParams.page ? $stateParams.page : 0;
-                            $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+                            $stateParams.stockCardSize = '@@STOCKMANAGEMENT_PAGE_SIZE';
                             paginationService.registerList(null, $stateParams, function() {
                                 return stockCard.lineItems;
                             }, {
-                                customPageParamName: 'page',
-                                customSizeParamName: 'size',
-                                paginationId: 'stock-management-stock-card'
+                                paginationId: 'stockCard'
                             });
                             if (isViewProductCard) {
                                 // use soh, orderable from Stock on Hand page which store in local storage
