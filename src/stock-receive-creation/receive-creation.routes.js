@@ -47,7 +47,7 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                hasChangePage: undefined
+                srcDstAssignments: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -67,18 +67,18 @@
                     return authorizationService.getUser();
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, orderableGroupService, user) {
+                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (_.isUndefined($stateParams.orderableGroups)) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true, user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
+                            program.id, facility.id, true
                         );
                     }
                     return $stateParams.orderableGroups;
                 },
-                displayItems: function($stateParams, registerDisplayItemsService) {
-                    return registerDisplayItemsService($stateParams, 'stock-management-receive');
-                },
                 // SIGLUS-REFACTOR: ends here
+                displayItems: function($stateParams, registerDisplayItemsService) {
+                    return registerDisplayItemsService($stateParams);
+                },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);

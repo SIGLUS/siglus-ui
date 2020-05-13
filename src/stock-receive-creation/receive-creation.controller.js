@@ -47,8 +47,6 @@
         var vm = this,
             previousAdded = {};
 
-        vm.paginationId = 'stock-management-receive';
-
         vm.draft = $stateParams.draft;
 
         orderableLotMapping.setOrderableGroups(orderableGroups);
@@ -96,6 +94,8 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
             $stateParams.orderableGroups = vm.orderableGroups;
+            $stateParams.program = vm.program;
+            $stateParams.srcDstAssignments = vm.srcDstAssignments;
             $state.go($state.current.name, $stateParams, {
                 reload: true,
                 notify: false,
@@ -134,8 +134,7 @@
 
             previousAdded = vm.addedLineItems[0];
 
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
-            //console.log(vm.addedLineItems);
+            vm.search();
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -205,7 +204,7 @@
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
 
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
+            vm.search();
         };
 
         /**
@@ -615,19 +614,6 @@
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
-
-            // handle the assignment option missing when change page
-            if ($stateParams.hasChangePage) {
-                vm.displayItems.forEach(function(lineItem) {
-                    if (lineItem.assignment && lineItem.assignment.id) {
-                        var options = vm.filterReasonsByProduct(vm.srcDstAssignments, lineItem.orderable.programs);
-                        var assignmentId = lineItem.assignment.id;
-                        lineItem.assignment = options.find(function(option) {
-                            return option.id === assignmentId;
-                        });
-                    }
-                });
-            }
         }
 
         function initStateParams() {
