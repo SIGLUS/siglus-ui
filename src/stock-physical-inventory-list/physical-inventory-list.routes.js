@@ -40,16 +40,16 @@
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
+                // SIGLUS-REFACTOR
+                // user: function(authorizationService) {
+                //     return authorizationService.getUser();
+                // },
                 programs: function(programService) {
-                    // SIGLUS-REFACTOR: get all products program
                     // return stockProgramUtilService.getPrograms(user.user_id,
                     //     STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
                     return programService.getAllProductsProgram();
-                    // SIGLUS-REFACTOR: ends here
                 },
+                // SIGLUS-REFACTOR: ends here
                 drafts: function(physicalInventoryFactory, user, programs, facility) {
                     if (_.isUndefined(facility)) {
                         return [];
@@ -58,10 +58,7 @@
                         return program.id;
                     });
 
-                    // SIGLUS-REFACTOR: starts here
-                    return physicalInventoryFactory.getDrafts(programIds, facility.id,
-                        user.user_id, STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
-                    // SIGLUS-REFACTOR: ends here
+                    return physicalInventoryFactory.getDrafts(programIds, facility.id);
                 }
             }
         });
