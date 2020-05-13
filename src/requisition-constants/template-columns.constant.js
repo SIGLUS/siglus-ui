@@ -51,7 +51,9 @@
             PRODUCT_CODE: 'orderable.productCode',
             PRICE_PER_PACK: 'pricePerPack',
             PRODUCT_NAME: 'orderable.fullProductName',
-            UNIT_UNIT_OF_ISSUE: 'dispensable',
+            // SIGLUS-REFACTOR: starts here
+            UNIT_UNIT_OF_ISSUE: 'orderable.dispensable.displayUnit',
+            // SIGLUS-REFACTOR: ends here
             TOTAL_COST: 'totalCost',
             ADJUSTED_CONSUMPTION: 'adjustedConsumption',
             NUMBER_OF_NEW_PATIENTS_ADDED: 'numberOfNewPatientsAdded',

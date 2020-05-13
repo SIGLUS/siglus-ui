@@ -154,9 +154,7 @@
                     name: availableColumn.name,
                     label: availableColumn.label,
                     indicator: availableColumn.indicator,
-                    // SIGLUS-REFACTOR: starts here
-                    displayOrder: availableColumn.displayOrder,
-                    // SIGLUS-REFACTOR: ends here
+                    displayOrder: getNewDisplayOrder(this),
                     isDisplayed: isDisplayed,
                     // SIGLUS-REFACTOR: starts here
                     source: getSource(availableColumn.sources, availableColumn.defaultSource),
@@ -441,17 +439,15 @@
             }
         }
 
-        // SIGLUS-REFACTOR: starts here
-        // function getNewDisplayOrder(template) {
-        //     var newDisplayOrder = 0;
-        //     Object.keys(template.columnsMap).forEach(function(templateName) {
-        //         if (template.columnsMap[templateName].displayOrder >= newDisplayOrder) {
-        //             newDisplayOrder = template.columnsMap[templateName].displayOrder + 1;
-        //         }
-        //     });
-        //     return newDisplayOrder;
-        // }
-        // SIGLUS-REFACTOR: ends here
+        function getNewDisplayOrder(template) {
+            var newDisplayOrder = 0;
+            Object.keys(template.columnsMap).forEach(function(templateName) {
+                if (template.columnsMap[templateName].displayOrder >= newDisplayOrder) {
+                    newDisplayOrder = template.columnsMap[templateName].displayOrder + 1;
+                }
+            });
+            return newDisplayOrder;
+        }
 
         // SIGLUS-REFACTOR: starts here
         function getSource(sources, defaultSource) {
