@@ -219,16 +219,16 @@ describe('RequisitionInitiateController', function() {
         this.vm.loadPeriods();
         this.$rootScope.$apply();
 
+        // SIGLUS-REFACTOR: starts here
         expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
             supervised: false,
             emergency: false,
             program: this.vm.program.id,
             facility: this.vm.facility.id
         }, {
-            // SIGLUS-REFACTOR: starts here
             reload: 'openlmis.requisitions.initRnr.requisition'
-            // SIGLUS-REFACTOR: ends here
         });
+        // SIGLUS-REFACTOR: ends here
     });
 
     // SIGLUS-REFACTOR: add test for goToHistory
