@@ -18,7 +18,7 @@
     'use strict';
 
     /**
-     * @ngdoc factory
+     * @ngdoc service
      * @name stock-adjustment.stockAdjustmentService
      *
      * @description
