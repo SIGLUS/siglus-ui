@@ -21,70 +21,64 @@
         .module('requisition-initiate')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'INITRNR_LABEL', 'REQUISITION_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
 
-    function routes($stateProvider, INITRNR_LABEL, REQUISITION_RIGHTS) {
-        [INITRNR_LABEL.CREATE_AUTHORIZE, INITRNR_LABEL.CREATE, INITRNR_LABEL.AUTHORIZE].forEach(function(right) {
-            addStateForRight(right);
-        });
-
-        function addStateForRight(right) {
-            $stateProvider.state('openlmis.requisitions.' + right + '.initRnr', {
-                url: '/initiate?supervised&program&facility&emergency',
-                controller: 'RequisitionInitiateRequisitionController',
-                controllerAs: 'vm',
-                templateUrl: 'requisition-initiate/requisition-initiate-requisition.html',
-                accessRights: [
-                    REQUISITION_RIGHTS.REQUISITION_CREATE,
-                    REQUISITION_RIGHTS.REQUISITION_DELETE,
-                    REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
-                ],
-                resolve: {
-                    program: function($stateParams, programService) {
-                        return programService.get($stateParams.program);
-                    },
-                    periods: function(periodFactory, $stateParams) {
-                        if ($stateParams.program && $stateParams.facility) {
-                            return periodFactory.get(
-                                $stateParams.program,
-                                $stateParams.facility,
-                                $stateParams.emergency === 'true'
-                            );
-                        }
-                        return [];
-                    },
-                    inventoryDates: function(periods, requisitionInitiateService, dateUtils, $stateParams) {
-                        if (periods.length) {
-                            var startDate = dateUtils.toStringDate(periods[0].submitStartDate);
-                            var endDate = dateUtils.toStringDate(periods[0].submitEndDate);
-                            return requisitionInitiateService.getPhysicalInventoryDates(
-                                $stateParams.facility,
-                                startDate,
-                                endDate
-                            );
-                        }
-                        return [];
-                    },
-                    canInitiateRnr: function(requisitionInitiateFactory, $stateParams) {
-                        if ($stateParams.program && $stateParams.facility) {
-                            return requisitionInitiateFactory.canInitiate(
-                                $stateParams.program, $stateParams.facility
-                            );
-                        }
-                        return false;
-                    },
-                    hasAuthorizeRight: function(authorizationService, $stateParams) {
-                        if ($stateParams.program && $stateParams.facility) {
-                            return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
-                                programId: $stateParams.program,
-                                facilityId: $stateParams.facility
-                            });
-                        }
-                        return false;
+    function routes($stateProvider, REQUISITION_RIGHTS) {
+        $stateProvider.state('openlmis.requisitions.initRnr.requisition', {
+            url: '/requisition?supervised&program&facility&emergency',
+            controller: 'RequisitionInitiateRequisitionController',
+            controllerAs: 'vm',
+            templateUrl: 'requisition-initiate/requisition-initiate-requisition.html',
+            accessRights: [
+                REQUISITION_RIGHTS.REQUISITION_CREATE,
+                REQUISITION_RIGHTS.REQUISITION_DELETE,
+                REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
+            ],
+            resolve: {
+                program: function($stateParams, programService) {
+                    return programService.get($stateParams.program);
+                },
+                periods: function(periodFactory, $stateParams) {
+                    if ($stateParams.program && $stateParams.facility) {
+                        return periodFactory.get(
+                            $stateParams.program,
+                            $stateParams.facility,
+                            $stateParams.emergency === 'true'
+                        );
                     }
+                    return [];
+                },
+                inventoryDates: function(periods, requisitionInitiateService, dateUtils, $stateParams) {
+                    if (periods.length) {
+                        var startDate = dateUtils.toStringDate(periods[0].submitStartDate);
+                        var endDate = dateUtils.toStringDate(periods[0].submitEndDate);
+                        return requisitionInitiateService.getPhysicalInventoryDates(
+                            $stateParams.facility,
+                            startDate,
+                            endDate
+                        );
+                    }
+                    return [];
+                },
+                canInitiateRnr: function(requisitionInitiateFactory, $stateParams) {
+                    if ($stateParams.program && $stateParams.facility) {
+                        return requisitionInitiateFactory.canInitiate(
+                            $stateParams.program, $stateParams.facility
+                        );
+                    }
+                    return false;
+                },
+                hasAuthorizeRight: function(authorizationService, permissionService,  $stateParams) {
+                    if ($stateParams.program && $stateParams.facility) {
+                        return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
+                            programId: $stateParams.program,
+                            facilityId: $stateParams.facility
+                        });
+                    }
+                    return false;
                 }
-            });
-        }
+            }
+        });
     }
 
 })();

@@ -7,6 +7,9 @@
             <div class="modal-body">
                 <form id="RegimeForm" ng-submit="vm.selectRegimes()">
                     <fieldset class="form-group">
+                        <!-- SIGLUS-REFACTOR: starts here -->
+                        <legend>{{'addRegimesModal.searchRegime' | message}}</legend>
+                        <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="search">
                             {{'addRegimesModal.searchRegime' | message}}
                         </label>

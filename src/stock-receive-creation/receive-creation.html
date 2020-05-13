@@ -6,6 +6,7 @@
     <section class="openlmis-table-container">
         <form ng-submit="vm.search()">
             <fieldset>
+                <legend>{{"stockAdjustmentCreation.search" | message}}</legend>
                 <label for="search">{{vm.key('keyword') | message}}</label>
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
             </fieldset>

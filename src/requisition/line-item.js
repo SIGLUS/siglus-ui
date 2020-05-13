@@ -58,9 +58,9 @@
             this.stockAdjustments = lineItem.stockAdjustments;
 
             this.$errors = {};
-            this.$program = this.orderable.$program ?
-                this.orderable.$program :
-                getProgramById(lineItem.orderable.programs, requisition.program.id);
+            // SIGLUS-REFACTOR: starts here
+            this.$program = this.orderable.$program ? this.orderable.$program : lineItem.orderable.programs[0];
+            // SIGLUS-REFACTOR: ends here
 
             var newLineItem = this;
             requisition.template.getColumns(!this.$program.fullSupply).forEach(function(column) {
@@ -220,18 +220,17 @@
             return !value || !value.toString().trim();
         }
 
-        function getProgramById(programs, programId) {
-            var match;
-            programs.forEach(function(program) {
-                // SIGLUS-REFACTOR: starts here
-                if (program.programId === programId || program.parentId === programId) {
-                // SIGLUS-REFACTOR: ends here
-
-                    match = program;
-                }
-            });
-            return match;
-        }
+        // SIGLUS-REFACTOR: starts here
+        // function getProgramById(programs, programId) {
+        //     var match;
+        //     programs.forEach(function(program) {
+        //         if (program.programId === programId) {
+        //             match = program;
+        //         }
+        //     });
+        //     return match;
+        // }
+        // SIGLUS-REFACTOR: ends here
 
         function getObject(from, path) {
             var object = from;
