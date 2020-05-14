@@ -85,6 +85,10 @@
         @extend button.danger;
         @include icon-only('remove');
     }
+
+    .requisition-product-grid-cell.has-popover {
+        padding-right: $table-cell-padding !important;
+    }
 }
 
 #productForm .error {
