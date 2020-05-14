@@ -21,7 +21,7 @@
                         type="button"
                         value="{{(vm.key('continue')) | message}}"
                         class="primary"
-                        ng-click="vm.proceed(program, program.draft)"
+                        ng-click="vm.proceed(program)"
                 />
             </td>
             <td ng-if="!program.draft">
@@ -30,7 +30,7 @@
                         type="button"
                         value="{{vm.key('start') | message}}"
                         class="primary"
-                        ng-click="vm.proceed(program, program.draft)"
+                        ng-click="vm.proceed(program)"
                 />
             <!-- SIGLUS-REFACTOR: ends here -->
             </td>
