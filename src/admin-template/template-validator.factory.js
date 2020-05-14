@@ -220,11 +220,6 @@
         }
 
         function validateUserInput(column) {
-            // SIGLUS-REFACTOR: dont validate skipped column
-            if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
-                return ;
-            }
-            // SIGLUS-REFACTOR: ends here
             if (!column.isDisplayed
                 && column.source === COLUMN_SOURCES.USER_INPUT
                 && column.columnDefinition.sources.length > 1) {
