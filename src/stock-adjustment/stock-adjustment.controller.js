@@ -63,7 +63,8 @@
         };
 
         // SIGLUS-REFACTOR: starts here
-        vm.proceed = function(program, draft) {
+        vm.proceed = function(program) {
+            var draft = program.draft;
             if (_.isUndefined(draft)) {
                 stockAdjustmentService.createDraft(user.user_id, program.id, facility.id, adjustmentType.state)
                     .then(function(draft) {

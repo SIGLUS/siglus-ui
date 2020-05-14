@@ -41,7 +41,7 @@ describe('StockAdjustmentController', function() {
                     supportedPrograms: programs
                 };
 
-                // SIGLUS-REFACTOR: recovery draft
+                // SIGLUS-REFACTOR: starts here
                 drafts = [];
                 user = {};
                 // SIGLUS-REFACTOR: ends here
@@ -51,7 +51,7 @@ describe('StockAdjustmentController', function() {
                     programs: programs,
                     adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
                     $state: state,
-                    // SIGLUS-REFACTOR: recovery draft
+                    // SIGLUS-REFACTOR: starts here
                     drafts: drafts,
                     user: user
                     // SIGLUS-REFACTOR: ends here
@@ -73,15 +73,13 @@ describe('StockAdjustmentController', function() {
         var draft = {
             id: '123456789'
         };
+        chooseProgram.draft = draft;
 
-        vm.proceed(chooseProgram, draft);
+        vm.proceed(chooseProgram);
 
         expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.adjustment.creation', {
             programId: '1',
-            program: {
-                name: 'HIV',
-                id: '1'
-            },
+            program: chooseProgram,
             facility: facility,
             draft: draft,
             draftId: draft.id
