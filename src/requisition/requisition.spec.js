@@ -111,9 +111,12 @@ describe('Requisition', function() {
 
             this.requisition.status = this.REQUISITION_STATUS.SUBMITTED;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/submit'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = true;
             this.requisition.$submit();
@@ -140,9 +143,12 @@ describe('Requisition', function() {
             updatedRequisition.modifiedDate = [2016, 4, 31, 16, 25, 33];
             updatedRequisition.statusChanges = 'statusChanges';
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/submit'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+            )
                 .respond(200, updatedRequisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = true;
             this.requisition.$submit();
@@ -164,9 +170,12 @@ describe('Requisition', function() {
 
             updatedRequisition = angular.copy(this.requisition);
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/submit'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+            )
                 .respond(200, updatedRequisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = true;
             this.requisition.$submit();
@@ -183,9 +192,12 @@ describe('Requisition', function() {
 
             this.requisition.status = this.REQUISITION_STATUS.SUBMITTED;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/submit'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = false;
             this.requisition.$submit();
@@ -212,9 +224,12 @@ describe('Requisition', function() {
 
             this.requisition.status = this.REQUISITION_STATUS.AUTHORIZED;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/authorize'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = true;
             this.requisition.$authorize();
@@ -235,9 +250,12 @@ describe('Requisition', function() {
 
             this.requisition.status = this.REQUISITION_STATUS.AUTHORIZED;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/authorize'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = false;
             this.requisition.$authorize();
@@ -255,9 +273,12 @@ describe('Requisition', function() {
             this.requisition.requisitionLineItems[0].requestedQuantity = 10;
             this.requisition.requisitionLineItems[1].requestedQuantity = 15;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/authorize'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = false;
             this.requisition.$authorize();
@@ -280,9 +301,12 @@ describe('Requisition', function() {
             this.requisition.requisitionLineItems[0].requestedQuantity = null;
             this.requisition.requisitionLineItems[1].requestedQuantity = null;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/authorize'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: starts here
 
             this.requisition.$availableOffline = false;
             this.requisition.$authorize();
@@ -304,9 +328,12 @@ describe('Requisition', function() {
             this.requisition.requisitionLineItems[0].requestedQuantity = 15;
             this.requisition.requisitionLineItems[1].requestedQuantity = null;
 
-            this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/authorize'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenPOST(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$availableOffline = false;
             this.requisition.$authorize();
@@ -453,9 +480,11 @@ describe('Requisition', function() {
         it('should save requisition', function() {
             var data;
 
+            // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.name = 'Saved requisition';
 
@@ -470,9 +499,11 @@ describe('Requisition', function() {
         });
 
         it('should remove offline when 403', function() {
+            // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
                 .respond(403, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$save();
 
@@ -483,9 +514,11 @@ describe('Requisition', function() {
         });
 
         it('should remove offline when 409', function() {
+            // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
                 .respond(403, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$save();
 
@@ -542,9 +575,12 @@ describe('Requisition', function() {
             delete expected.template;
 
             var $httpBackend = this.$httpBackend;
-            $httpBackend
-                .expectPUT(this.requisitionUrlFactory('/api/v2/requisitions/' + this.requisition.id), expected)
+            // SIGLUS-REFACTOR: starts here
+            $httpBackend.expectPUT(
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id), expected
+            )
                 .respond(200, this.requisition);
+            // SIGLUS-REFACTOR: ends here
 
             this.requisition.$save();
             this.$httpBackend.flush();
