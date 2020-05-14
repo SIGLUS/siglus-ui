@@ -266,7 +266,6 @@
 
         function addAdditionalInfoForSkippedColumn(column) {
             if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
-                column.isDisplayRequired = true;
                 column.defaultSource = 'PREVIOUS_REQUISITION';
             }
         }
