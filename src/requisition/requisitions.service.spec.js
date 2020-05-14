@@ -536,7 +536,9 @@ describe('requisitionService', function() {
 
         this.$httpBackend
             .whenGET(
-                this.requisitionUrlFactory('/api/requisitions/search'
+                // SIGLUS-REFACTOR: starts here
+                this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'
+                // SIGLUS-REFACTOR: ends here
                     + '?initiatedDateFrom=' + this.startDate1.toISOString()
                     + '&initiatedDateTo=' + this.endDate1.toISOString()
                     + '&emergency=' + params.emergency
@@ -574,7 +576,11 @@ describe('requisitionService', function() {
                 facility: this.facility.id
             };
 
-        this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search?facility=' + this.facility.id))
+        // SIGLUS-REFACTOR: starts here
+        this.$httpBackend.whenGET(
+            this.requisitionUrlFactory('/api/siglusintegration/requisitions/search?facility=' + this.facility.id)
+        )
+        // SIGLUS-REFACTOR: ends here
 
             .respond(200, {
                 content: [this.requisitionDto2]
@@ -633,7 +639,11 @@ describe('requisitionService', function() {
             this.requisition.createdDate = null;
 
             this.$httpBackend.when(
-                'GET', this.requisitionUrlFactory('/api/requisitions/search?facility=' + this.facility.id)
+                // SIGLUS-REFACTOR: starts here
+                'GET', this.requisitionUrlFactory(
+                    '/api/siglusintegration/requisitions/search?facility=' + this.facility.id
+                )
+                // SIGLUS-REFACTOR: ends here
             )
                 .respond(200, {
                     content: [
@@ -659,7 +669,11 @@ describe('requisitionService', function() {
             this.requisition.processingPeriod.processingSchedule = null;
 
             this.$httpBackend.when(
-                'GET', this.requisitionUrlFactory('/api/requisitions/search?facility=' + this.facility.id)
+                // SIGLUS-REFACTOR: starts here
+                'GET', this.requisitionUrlFactory(
+                    '/api/siglusintegration/requisitions/search?facility=' + this.facility.id
+                )
+                // SIGLUS-REFACTOR: ends here
             )
                 .respond(200, {
                     content: [
@@ -688,7 +702,9 @@ describe('requisitionService', function() {
 
             this.requisition.modifiedDate = [2016, 4, 30, 16, 21, 33];
 
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
                         this.requisition
@@ -719,7 +735,9 @@ describe('requisitionService', function() {
 
             this.requisitionCacheService.getBatchRequisition.andReturn(this.requisition);
 
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
                         this.requisition
@@ -739,7 +757,9 @@ describe('requisitionService', function() {
 
             this.requisitionCacheService.getRequisition.andReturn(this.requisition);
 
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
                         this.requisition
@@ -759,7 +779,9 @@ describe('requisitionService', function() {
 
             var data = {};
 
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
                         this.requisition
@@ -781,7 +803,9 @@ describe('requisitionService', function() {
 
             var data = {};
 
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
                         this.requisition
@@ -801,7 +825,9 @@ describe('requisitionService', function() {
         it('will not set requisition as available offline if was not found in any storage', function() {
             var data = {};
 
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/search'))
+            // SIGLUS-REFACTOR: starts here
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
                         this.requisition
