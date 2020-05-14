@@ -33,8 +33,6 @@
     function controller($scope, modalDeferred, products, amountCanAdd, alertService) {
         var vm = this;
 
-        vm.paginationId = 'select-products-modal-emergency';
-
         vm.$onInit = onInit;
         vm.selectProducts = selectProducts;
         vm.close = modalDeferred.reject;

@@ -43,7 +43,6 @@
         vm.displayedLineItems = [];
         // SIGLUS-REFACTOR: starts here
         vm.binCardName = '';
-        vm.paginationId = 'stock-management-stock-card';
         // SIGLUS-REFACTOR: ends here
 
         /**
