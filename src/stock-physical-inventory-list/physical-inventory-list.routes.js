@@ -50,7 +50,7 @@
                     return programService.getAllProductsProgram();
                 },
                 // SIGLUS-REFACTOR: ends here
-                drafts: function(physicalInventoryFactory, user, programs, facility) {
+                drafts: function(physicalInventoryFactory, programs, facility) {
                     if (_.isUndefined(facility)) {
                         return [];
                     }

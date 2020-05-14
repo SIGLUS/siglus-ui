@@ -61,10 +61,6 @@
                         return paginationService.registerList(null, $stateParams,
                             function() {
                                 return products;
-                            }, {
-                                customPageParamName: 'pPage',
-                                customSizeParamName: 'pSize',
-                                paginationId: 'select-products-modal-emergency'
                             });
                     },
                     amountCanAdd: function() {
