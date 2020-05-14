@@ -35,7 +35,7 @@ describe('TemplateResource', function() {
         new TemplateResource();
 
         // SIGLUS-REFACTOR: starts here
-        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/siglusintegration/templates'));
+        expect(OpenlmisResourceMock).toHaveBeenCalledWith(('/api/siglusintegration/requisitionTemplates'));
         // SIGLUS-REFACTOR: ends here
     });
 });

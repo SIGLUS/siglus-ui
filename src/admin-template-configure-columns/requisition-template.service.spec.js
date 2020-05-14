@@ -43,7 +43,7 @@ describe('requisitionTemplateService', function() {
         var data;
 
         // SIGLUS-REFACTOR: starts here
-        httpBackend.when('GET', requisitionUrlFactory('/api/siglusintegration/templates/' + template1.id))
+        httpBackend.when('GET', requisitionUrlFactory('/api/siglusintegration/requisitionTemplates/' + template1.id))
             .respond(200, template1);
         // SIGLUS-REFACTOR: ends here
 
@@ -99,7 +99,7 @@ describe('requisitionTemplateService', function() {
         var data;
 
         // SIGLUS-REFACTOR: starts here
-        httpBackend.when('PUT', requisitionUrlFactory('/api/siglusintegration/templates/' + template1.id))
+        httpBackend.when('PUT', requisitionUrlFactory('/api/siglusintegration/requisitionTemplates/' + template1.id))
             .respond(200, template1);
         // SIGLUS-REFACTOR: ends here
 
