@@ -578,7 +578,7 @@
 
         // SIGLUS-REFACTOR: add new method addLineItemWithLineItem
         function addLineItemWithLineItem(lineItem, requestedQuantity, requestedQuantityExplanation) {
-            var orderableProgram = getOrderableProgramById(lineItem.orderable.programs, this.program.id);
+            var orderableProgram = this.program;
             var newLineItem = new LineItem(_.extend(lineItem, {
                 requestedQuantity: requestedQuantity,
                 requestedQuantityExplanation: requestedQuantityExplanation,

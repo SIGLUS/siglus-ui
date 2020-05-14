@@ -304,7 +304,7 @@
 
                     requisitionService.getOrderableLineItem(vm.requisition.id, ids).then(function(response) {
                         selectedProducts.forEach(function(product) {
-                            var lineItem = response.requisitionLineItems.find(function(item) {
+                            var lineItem = response.find(function(item) {
                                 if (item.orderable.id === product.id) {
                                     // response from createLineItem orderable only has id&version,
                                     // we have to manually fill the product info into it
