@@ -13,11 +13,11 @@
                     <h3>{{'requisitionViewTab.products' | message}}</h3>
                 </header>
                 <span ng-if="vm.showAddFullSupplyProductControls">
-					{{ vm.skippedFullSupplyProductCountMessage() }}
-				</span>
+                    {{ vm.skippedFullSupplyProductCountMessage() }}
+                </span>
             </div>
             <div class="openlmis-flex-table">
-                <table class="left-sub-table" ng-if="vm.requisition.template.enableConsultationNumber && !vm.requisition.emergency">
+                <table class="left-sub-table" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
                     <tbody>
                     <tr class="center-item" style="height: 55px">
                         <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
@@ -30,7 +30,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <table class="right-sub-table" ng-if="vm.requisition.template.enableKitUsage && !vm.requisition.emergency">
+                <table class="right-sub-table" ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency">
                     <tbody>
                     <tr style="height: 55px">
                         <td style="width: 180px">{{'requisitionViewTab.receivedKitNo' | message}}</td>
@@ -49,7 +49,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="openlmis-flex-table" ng-if="vm.requisition.template.enableProduct">
+            <div class="openlmis-flex-table" ng-if="vm.requisition.template.extension.enableProduct">
                 <table>
                     <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
                     <thead>
