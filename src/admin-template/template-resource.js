@@ -38,7 +38,7 @@
 
         function TemplateResource() {
             // SIGLUS-REFACTOR: starts here
-            this.super('/api/siglusintegration/templates');
+            this.super('/api/siglusintegration/requisitionTemplates');
             // SIGLUS-REFACTOR: ends here
         }
     }
