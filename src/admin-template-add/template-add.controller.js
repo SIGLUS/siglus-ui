@@ -234,6 +234,7 @@
                 var isDisplayed = nonDisplayedColumns.indexOf(column.name) === -1;
 
                 addDefaultTag(column);
+                addAdditionalInfoForSkippedColumn(column);
                 vm.template.addColumn(column, isDisplayed);
             });
             // SIGLUS-REFACTOR: ends here
@@ -260,6 +261,13 @@
                 && column.supportsTag
                 && !column.tag) {
                 column.defaultTag = 'adjustment';
+            }
+        }
+
+        function addAdditionalInfoForSkippedColumn(column) {
+            if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
+                column.isDisplayRequired = true;
+                column.defaultSource = 'PREVIOUS_REQUISITION';
             }
         }
         // SIGLUS-REFACTOR: ends here
