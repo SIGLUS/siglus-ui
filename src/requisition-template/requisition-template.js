@@ -78,7 +78,8 @@
             var columns = [],
                 columnsMap = this.columnsMap;
             // SIGLUS-REFACTOR: starts here, enable columns for emergency
-            if (nonFullSupply && !this.emergency) {
+            if (nonFullSupply) {
+            // SIGLUS-REFACTOR: ends here
                 var columnName;
                 for (columnName in columnsMap) {
                     if (columnsMap.hasOwnProperty(columnName) &&
@@ -94,7 +95,6 @@
                     }
                 }
             }
-            // SIGLUS-REFACTOR: ends here
             return columns;
         }
 
