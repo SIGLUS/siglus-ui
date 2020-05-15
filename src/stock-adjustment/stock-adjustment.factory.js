@@ -29,14 +29,16 @@
         .factory('stockAdjustmentFactory', factory);
 
     factory.$inject = [
-        '$q', 'stockAdjustmentService'
+        '$q', 'stockAdjustmentService', 'orderableLotMapping', 'orderableGroupService', 'LotRepositoryImpl'
     ];
 
-    function factory($q, stockAdjustmentService) {
+    function factory($q, stockAdjustmentService, orderableLotMapping, orderableGroupService, LotRepositoryImpl) {
 
         return {
             getDrafts: getDrafts,
-            getDraft: getDraft
+            getDraft: getDraft,
+            prepareLineItems: prepareLineItems,
+            getDraftById: getDraftById
         };
 
         function getDrafts(user, programIds, facility, adjustmentType) {
@@ -53,5 +55,166 @@
                     return drafts[0];
                 });
         }
+
+        function getDraftById(userId, programId, facilityId, adjustmentTypeState, draftId) {
+            return stockAdjustmentService.getDrafts(userId, programId, facilityId, adjustmentTypeState)
+                .then(function(drafts) {
+                    return _.find(drafts, function(draft) {
+                        return draft.id === draftId;
+                    });
+                });
+        }
+
+        function prepareLineItems(draft, orderableGroups, assignments, reasons) {
+            var mapOfIdAndOrderable = getMapOfIdAndOrderable(orderableGroups);
+            var srcDstAssignments = assignments || [];
+            return getMapOfIdAndLot(draft.lineItems).then(function(mapOfIdAndLot) {
+                var newLineItems = [];
+                draft.lineItems.forEach(function(draftLineItem) {
+                    var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
+                    var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
+                    lot.lotCode = draftLineItem.lotCode;
+                    lot.expirationDate = draftLineItem.expirationDate;
+                    var soh = getStockOnHand(
+                        orderableGroups,
+                        draftLineItem.orderableId
+                    );
+                    var program = orderable.programs && orderable.programs[0];
+                    var parentId = program && program.parentId;
+                    var newItem = {
+                        $errors: {},
+                        $previewSOH: soh,
+                        orderable: orderable,
+                        lot: lot,
+                        stockOnHand: soh,
+                        occurredDate: draftLineItem.occurredDate,
+                        documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
+                    };
+
+                    if (draft.draftType === 'adjustment' || draft.draftType === 'receive') {
+                        var orderableId = draftLineItem.orderableId;
+                        var selectedOrderableGroup = getOrderableGroup(orderableId, orderableGroups);
+                        var lotOptions = orderableGroupService.lotsOfWithNull(selectedOrderableGroup);
+
+                        newItem.orderableId = orderableId;
+                        newItem.lotOptions = lotOptions;
+                        newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
+                    }
+
+                    newItem.displayLotMessage = lot.lotCode;
+
+                    newItem = _.extend(draftLineItem, newItem);
+
+                    var srcDstId = getSrcDstId(draft.draftType, draftLineItem);
+
+                    newItem.assignment = getAssignmentById(
+                        srcDstAssignments,
+                        srcDstId,
+                        parentId
+                    );
+
+                    var filteredReasons = reasons;
+                    if (draft.draftType === 'adjustment') {
+                        filteredReasons = filterReasonsByProduct(reasons, newItem.orderable.programs);
+                    }
+                    newItem.reason = _.find(filteredReasons, function(reason) {
+                        return reason.id === draftLineItem.reasonId;
+                    });
+                    newLineItems.push(newItem);
+                });
+                return newLineItems;
+            });
+        }
+
+        function getMapOfIdAndOrderable(orderableGroups) {
+            var mapOfIdAndOrderable = {};
+            _.forEach(orderableGroups, function(og) {
+                og.forEach(function(orderableWrapper) {
+                    var orderable = orderableWrapper.orderable;
+                    var id = orderableWrapper.orderable.id;
+                    mapOfIdAndOrderable[id] = orderable;
+                });
+            });
+            return mapOfIdAndOrderable;
+        }
+
+        function getMapOfIdAndLot(lineItems) {
+            var ids = _
+                .chain(lineItems)
+                .map(function(draftLineItem) {
+                    return draftLineItem.lotId;
+                })
+                .uniq()
+                .filter(function(id) {
+                    return !(_.isEmpty(id));
+                })
+                .value();
+
+            return new LotRepositoryImpl().query({
+                id: ids
+            }).
+                then(function(data) {
+                    var mapOfIdAndLot = {};
+                    _.forEach(data.content, function(lot) {
+                        mapOfIdAndLot[lot.id] = lot;
+                    });
+                    return mapOfIdAndLot;
+                });
+        }
+
+        function getStockOnHand(orderableGroups, orderableId) {
+            var stockOnHand = null;
+            _.forEach(orderableGroups, function(orderableGroup) {
+                _.forEach(orderableGroup, function(orderable) {
+                    if (orderable.orderable.id === orderableId) {
+                        stockOnHand = orderable.stockOnHand;
+                    }
+                });
+            });
+            return stockOnHand;
+        }
+
+        function getAssignmentById(srcDstAssignments, srcDstId, parentId) {
+            var assignment = null;
+            _.forEach(srcDstAssignments, function(item) {
+                if (item.programId === parentId && item.node && item.node.id === srcDstId) {
+                    assignment = item;
+                }
+            });
+            return assignment;
+        }
+
+        function filterReasonsByProduct(reasons, programs) {
+            var parentIds = [];
+            programs.forEach(function(program) {
+                parentIds.push(program.parentId);
+            });
+            var updatedReasons = [];
+            reasons.forEach(function(reason) {
+                if (parentIds.indexOf(reason.programId) !== -1) {
+                    updatedReasons.push(reason);
+                }
+            });
+            return updatedReasons;
+        }
+
+        function getOrderableGroup(orderableId, orderableGroups) {
+            for (var i = 0 ; i < orderableGroups.length ; i++) {
+                if (orderableGroups[i][0].orderable.id === orderableId) {
+                    return orderableGroups[i];
+                }
+            }
+        }
+
+        function getSrcDstId(draftType, draftLineItem) {
+            var srcDstId = null;
+            if (draftType === 'receive') {
+                srcDstId = draftLineItem.sourceId;
+            } else if (draftType === 'issue') {
+                srcDstId = draftLineItem.destinationId;
+            }
+            return srcDstId;
+        }
+
     }
 })();
