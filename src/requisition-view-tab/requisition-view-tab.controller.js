@@ -297,6 +297,21 @@
             })
             // SIGLUS-REFACTOR: starts here
                 .then(function(selectedProducts) {
+
+                    if (!vm.requisition.emergency) {
+                        selectedProducts.forEach(function(product) {
+                            var added = vm.requisition.addLineItemWithLineItem({
+                                orderable: product
+                            });
+                            var columns = vm.requisition.template.getColumns(false);
+                            columns.forEach(function(column) {
+                                added[column.name] = 0;
+                            });
+                        });
+                        refreshLineItems();
+                        return;
+                    }
+
                     loadingModalService.open();
                     var ids = selectedProducts.map(function(product) {
                         return product.id;

@@ -534,22 +534,23 @@ describe('ViewTabController', function() {
             expect(this.requisition.addLineItemWithLineItem).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
         });
-
-        it('should unskip full supply products', function() {
-            this.initController();
-            this.vm.addFullSupplyProducts();
-            this.$rootScope.$apply();
-
-            // SIGLUS-REFACTOR: starts here
-            expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
-                orderable: this.availableFullSupplyProducts[0]
-            });
-
-            expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
-                orderable: this.availableFullSupplyProducts[2]
-            });
-            // SIGLUS-REFACTOR: ends here
-        });
+        // SIGLUS-REFACTOR: starts here
+        // it('should unskip full supply products', function() {
+        //     this.initController();
+        //     this.vm.addFullSupplyProducts();
+        //     this.$rootScope.$apply();
+        //
+        //     // SIGLUS-REFACTOR: starts here
+        //     expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
+        //         orderable: this.availableFullSupplyProducts[0]
+        //     });
+        //
+        //     expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
+        //         orderable: this.availableFullSupplyProducts[2]
+        //     });
+        //     // SIGLUS-REFACTOR: ends here
+        // });
+        // SIGLUS-REFACTOR: ends here
 
         it('should show products in alphabetical order', function() {
             this.initController();
