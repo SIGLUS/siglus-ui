@@ -34,7 +34,7 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
-        '$timeout', 'STOCKMANAGEMENT_RIGHTS', '$location', 'stockAdjustmentService'
+        '$timeout', 'STOCKMANAGEMENT_RIGHTS', '$location', 'stockAdjustmentService', 'draft'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -42,11 +42,12 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS, $location, stockAdjustmentService) {
+                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS, $location, stockAdjustmentService,
+                        draft) {
         var vm = this,
             previousAdded = {};
 
-        vm.draft = $stateParams.draft;
+        vm.draft = draft;
 
         /**
          * @ngdoc property
@@ -83,7 +84,7 @@
          * It searches from the total line items with given keyword. If keyword is empty then all line
          * items will be shown.
          */
-        vm.search = function(isReplace) {
+        vm.search = function(reload) {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
             $stateParams.addedLineItems = vm.addedLineItems;
@@ -91,9 +92,8 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
             $state.go($state.current.name, $stateParams, {
-                reload: true,
-                notify: false,
-                location: isReplace ? 'replace' : true
+                reload: reload,
+                notify: false
             });
         };
 
@@ -120,7 +120,7 @@
 
             previousAdded = vm.addedLineItems[0];
 
-            vm.search();
+            vm.search($state.current.name);
         };
 
         // if reason Contains correction then show input
@@ -174,7 +174,7 @@
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
 
-            vm.search();
+            vm.search($state.current.name);
         };
 
         /**
@@ -191,21 +191,9 @@
                     loadingModalService.open();
                     vm.addedLineItems = [];
                     vm.displayItems = [];
-
-                    var cb = function() {
-                        loadingModalService.close();
-                        notificationService.success(vm.key('cleared'));
-                        vm.draft = null;
-                        $stateParams.draft = null;
-                        $stateParams.draftId = null;
-                        vm.search(true);
-                    };
-
-                    if (vm.draft && vm.draft.id) {
-                        stockAdjustmentService.deleteDraft(vm.draft.id).then(cb, cb);
-                    } else {
-                        cb();
-                    }
+                    loadingModalService.close();
+                    notificationService.success(vm.key('cleared'));
+                    vm.search($state.current.name);
                 });
         };
 
@@ -375,6 +363,7 @@
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
+                    vm.search(true);
                 });
         };
 
@@ -507,7 +496,6 @@
 
             initViewModel();
             initStateParams();
-            recoveryDraft();
 
             $scope.needToConfirm = false;
             $scope.$watch(function() {
@@ -560,108 +548,6 @@
                 return totalPages > 0 ? totalPages - 1 : 0;
             }
             return pageNumber;
-        }
-
-        function recoveryDraft() {
-            if (!$stateParams.draftId || (vm.addedLineItems && vm.addedLineItems.length > 0)) {
-                return;
-            }
-
-            function recovery() {
-                var draftId = $location.search().draftId;
-                if (_.isString(draftId) && vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
-
-                    var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
-                    var mapOfIdAndLot = {};
-                    var stockCardSummaries = {};
-                    var srcDstAssignments = vm.srcDstAssignments || [];
-
-                    loadingModalService.open();
-                    stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems).then(function(ret) {
-                        mapOfIdAndLot = ret;
-
-                        $http.get(stockmanagementUrlFactory('/api/siglusintegration/stockCardSummaries'), {
-                            params: {
-                                programId: vm.draft.programId,
-                                facilityId: vm.draft.facilityId
-                            }
-                        }).then(function(res) {
-                            loadingModalService.close();
-                            stockCardSummaries = res.data.content;
-
-                            vm.draft.lineItems.forEach(function(draftLineItem) {
-                                var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
-                                var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-                                var soh = stockAdjustmentCreationService.getStockOnHand(
-                                    stockCardSummaries,
-                                    draftLineItem.orderableId,
-                                    draftLineItem.lotId
-                                );
-                                var program = orderable.programs && orderable.programs[0];
-                                var parentId = program && program.parentId;
-
-                                var newItem = {
-                                    $errors: {},
-                                    $previewSOH: soh,
-                                    orderable: orderable,
-                                    lot: lot,
-                                    stockOnHand: soh,
-                                    occurredDate: draftLineItem.occurredDate,
-                                    documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
-                                };
-
-                                newItem.displayLotMessage = lot.lotCode;
-
-                                newItem = _.extend(draftLineItem, newItem);
-
-                                var srcDstId = null;
-                                if (adjustmentType.state === 'receive') {
-                                    srcDstId = draftLineItem.sourceId;
-                                } else if (adjustmentType.state === 'issue') {
-                                    srcDstId = draftLineItem.destinationId;
-                                }
-
-                                newItem.assignment = stockAdjustmentCreationService.getAssignmentById(
-                                    srcDstAssignments,
-                                    srcDstId,
-                                    parentId
-                                );
-
-                                newItem.reason = _.find(vm.reasons, function(reason) {
-                                    return reason.id === draftLineItem.reasonId;
-                                });
-
-                                vm.addedLineItems.push(newItem);
-                            });
-                            vm.search();
-
-                        }, function(err) {
-                            loadingModalService.close();
-                            alertService.error(JSON.stringify(err));
-                        });
-                    }, function(err) {
-                        loadingModalService.close();
-                        alertService.error(JSON.stringify(err));
-                    });
-                }
-            }
-
-            if (_.isEmpty(vm.draft)) {
-                stockAdjustmentService.getDraftById(
-                    $stateParams.draftId,
-                    adjustmentType,
-                    program.id,
-                    facility.id,
-                    user.user_id
-                ).then(function(res) {
-                    vm.draft = res;
-                    recovery();
-                }, function(err) {
-                    alertService.error(JSON.stringify(err));
-                });
-            } else {
-                recovery();
-            }
         }
 
         function cancelFilter() {

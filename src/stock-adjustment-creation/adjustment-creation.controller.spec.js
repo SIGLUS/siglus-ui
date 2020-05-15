@@ -471,7 +471,8 @@ describe('StockAdjustmentCreationController', function() {
             reasons: reasons,
             orderableGroups: orderableGroups,
             displayItems: [],
-            signatureModalService: signatureModalService
+            signatureModalService: signatureModalService,
+            draft: {}
             // SIGLUS-REFACTOR: ends here
         });
     }

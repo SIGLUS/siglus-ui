@@ -47,7 +47,6 @@
 
         this.createDraft = createDraft;
         this.getDrafts = getDrafts;
-        this.getDraftById = getDraftById;
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
 
@@ -68,20 +67,6 @@
                 userId: userId,
                 draftType: adjustmentTypeState
             }).$promise;
-        }
-
-        function getDraftById(draftId, adjustmentType, programId, facilityId, userId) {
-            return resource.query({
-                program: programId,
-                facility: facilityId,
-                isDraft: true,
-                userId: userId,
-                draftType: adjustmentType.state
-            }).then(function(res) {
-                return _.find(res.data, function(d) {
-                    return d.id === draftId;
-                });
-            });
         }
 
         function saveDraft(draft, lineItems, adjustmentType) {

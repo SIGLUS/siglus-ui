@@ -40,78 +40,10 @@
     function decorator($delegate, $filter, stockmanagementUrlFactory, openlmisDateFilter,
                        messageService, productNameFilter, $http, LotRepositoryImpl, stockEventService) {
 
-        $delegate.getAssignmentById = getAssignmentById;
-        $delegate.getMapOfIdAndOrderable = getMapOfIdAndOrderable;
-        $delegate.getMapOfIdAndLot = getMapOfIdAndLot;
-        $delegate.getStockOnHand = getStockOnHand;
         $delegate.submitAdjustments = submitAdjustments;
         $delegate.search = search;
 
         return $delegate;
-
-        function getAssignmentById(srcDstAssignments, srcDstId, parentId) {
-            var assignment = null;
-            _.forEach(srcDstAssignments, function(item) {
-                if (item.programId === parentId && item.node && item.node.id === srcDstId) {
-                    assignment = item;
-                }
-            });
-            return assignment;
-        }
-
-        function getMapOfIdAndOrderable(orderableGroups) {
-            var mapOfIdAndOrderable = {};
-            _.forEach(orderableGroups, function(og) {
-                og.forEach(function(orderableWrapper) {
-                    var orderable = orderableWrapper.orderable;
-                    var id = orderableWrapper.orderable.id;
-                    mapOfIdAndOrderable[id] = orderable;
-                });
-            });
-            return mapOfIdAndOrderable;
-        }
-
-        function getMapOfIdAndLot(lineItems) {
-            var ids = _
-                .chain(lineItems)
-                .map(function(draftLineItem) {
-                    return draftLineItem.lotId;
-                })
-                .uniq()
-                .filter(function(id) {
-                    return !(_.isEmpty(id));
-                })
-                .value();
-
-            return new LotRepositoryImpl().query({
-                id: ids
-            }).
-                then(function(data) {
-                    var mapOfIdAndLot = {};
-                    _.forEach(data.content, function(lot) {
-                        mapOfIdAndLot[lot.id] = lot;
-                    });
-                    return mapOfIdAndLot;
-                });
-        }
-
-        function getStockOnHand(stockCardSummaries, orderableId, lotId) {
-            var stockOnHand = null;
-            _.forEach(stockCardSummaries, function(product) {
-                _.forEach(product.canFulfillForMe, function(line) {
-                    if (_.isEmpty(lotId)) {
-                        if (_.isEmpty(line.lot) && line.orderable && line.orderable.id === orderableId) {
-                            stockOnHand = line.stockOnHand;
-                        }
-                    } else if (line.lot && line.lot.id === lotId && line.orderable &&
-                        line.orderable.id === orderableId) {
-                        stockOnHand = line.stockOnHand;
-                    }
-                });
-            });
-
-            return stockOnHand;
-        }
 
         // SIGLUS-REFACTOR: starts here
         function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature) {

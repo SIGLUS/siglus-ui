@@ -28,7 +28,8 @@
         .module('stock-adjustment-creation')
         .controller('StockAdjustmentCreationController', controller);
     // SIGLUS-REFACTOR: delete 'UNPACK_REASONS' and add  '$http', 'stockmanagementUrlFactory', 'signatureModalService',
-    // '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS', '$location'
+    // '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS', '$location',
+    // 'stockAdjustmentService', 'draft'
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
@@ -36,7 +37,7 @@
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
         '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS', '$location',
-        'stockAdjustmentService'
+        'stockAdjustmentService', 'draft'
     ];
     // SIGLUS-REFACTOR: ends here
 
@@ -46,14 +47,14 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
                         signatureModalService, $timeout, autoGenerateService, orderableLotMapping,
-                        STOCKMANAGEMENT_RIGHTS, $location, stockAdjustmentService) {
+                        STOCKMANAGEMENT_RIGHTS, $location, stockAdjustmentService, draft) {
         var vm = this,
             previousAdded = {};
 
         // SIGLUS-REFACTOR: starts here
         orderableLotMapping.setOrderableGroups(orderableGroups);
 
-        vm.draft = $stateParams.draft;
+        vm.draft = draft;
         // SIGLUS-REFACTOR: ends here
         /**
          * @ngdoc property
@@ -100,8 +101,8 @@
          * It searches from the total line items with given keyword. If keyword is empty then all line
          * items will be shown.
          */
-        // SIGLUS-REFACTOR: starts here
-        vm.search = function(isReplace) {
+        // SIGLUS-REFACTOR: add parameter
+        vm.search = function(reload) {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
             $stateParams.addedLineItems = vm.addedLineItems;
@@ -109,11 +110,11 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
             $state.go($state.current.name, $stateParams, {
-                reload: true,
-                notify: false,
-                location: isReplace ? 'replace' : true
+                reload: reload,
+                notify: false
             });
         };
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -123,6 +124,7 @@
          * @description
          * Add a product for stock adjustment.
          */
+        // SIGLUS-REFACTOR: starts here
         // Comments for SOUP-10, use vm.addProductWithoutLot instead
         // vm.addProduct = function() {
         //     var selectedItem = orderableGroupService
@@ -171,7 +173,7 @@
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
-            vm.search();
+            vm.search($state.current.name);
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -260,7 +262,7 @@
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
-            vm.search();
+            vm.search($state.current.name);
         };
 
         /**
@@ -277,21 +279,9 @@
                     loadingModalService.open();
                     vm.addedLineItems = [];
                     vm.displayItems = [];
-
-                    var cb = function() {
-                        loadingModalService.close();
-                        notificationService.success(vm.key('cleared'));
-                        vm.draft = null;
-                        $stateParams.draft = null;
-                        $stateParams.draftId = null;
-                        vm.search(true);
-                    };
-
-                    if (vm.draft && vm.draft.id) {
-                        stockAdjustmentService.deleteDraft(vm.draft.id).then(cb, cb);
-                    } else {
-                        cb();
-                    }
+                    loadingModalService.close();
+                    notificationService.success(vm.key('cleared'));
+                    vm.search($state.current.name);
                 });
         };
 
@@ -528,6 +518,7 @@
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
+                    vm.search(true);
                 });
         };
 
@@ -667,9 +658,6 @@
 
             initViewModel();
             initStateParams();
-            // SIGLUS-REFACTOR: starts here
-            recoveryDraft();
-            // SIGLUS-REFACTOR: ends here
 
             $scope.needToConfirm = false;
             $scope.$watch(function() {
@@ -728,124 +716,6 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function recoveryDraft() {
-            // if no draftId or has LineItem will not recover draft
-            if (!$stateParams.draftId || (vm.addedLineItems && vm.addedLineItems.length > 0)) {
-                return;
-            }
-
-            function recovery() {
-                var draftId = $location.search().draftId;
-                if (_.isString(draftId) && vm.draft && vm.draft.lineItems && vm.draft.lineItems.length > 0) {
-
-                    var mapOfIdAndOrderable = stockAdjustmentCreationService.getMapOfIdAndOrderable(vm.orderableGroups);
-                    var mapOfIdAndLot = {};
-                    var stockCardSummaries = {};
-                    var srcDstAssignments = vm.srcDstAssignments || [];
-
-                    loadingModalService.open();
-                    stockAdjustmentCreationService.getMapOfIdAndLot(vm.draft.lineItems).then(function(ret) {
-                        mapOfIdAndLot = ret;
-
-                        $http.get(stockmanagementUrlFactory('/api/siglusintegration/stockCardSummaries'), {
-                            params: {
-                                programId: vm.draft.programId,
-                                facilityId: vm.draft.facilityId
-                            }
-                        }).then(function(res) {
-                            loadingModalService.close();
-                            stockCardSummaries = res.data.content;
-
-                            vm.draft.lineItems.forEach(function(draftLineItem) {
-                                var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
-                                var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-                                lot.lotCode = draftLineItem.lotCode;
-                                lot.expirationDate = draftLineItem.expirationDate;
-                                var soh = stockAdjustmentCreationService.getStockOnHand(
-                                    stockCardSummaries,
-                                    draftLineItem.orderableId,
-                                    draftLineItem.lotId
-                                );
-                                var program = orderable.programs && orderable.programs[0];
-                                var parentId = program && program.parentId;
-
-                                var orderableId = draftLineItem.orderableId;
-                                var selectedOrderableGroup =
-                                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(orderableId);
-                                var lotOptions = orderableGroupService.lotsOfWithNull(selectedOrderableGroup);
-
-                                var newItem = {
-                                    $errors: {},
-                                    $previewSOH: soh,
-                                    orderable: orderable,
-                                    orderableId: draftLineItem.orderableId,
-                                    lotOptions: lotOptions,
-                                    lot: lot,
-                                    stockOnHand: soh,
-                                    occurredDate: draftLineItem.occurredDate,
-                                    documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
-                                };
-
-                                newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
-
-                                // newItem.displayLotMessage = orderableGroupService
-                                //     .determineLotMessage(draftLineItem, );
-
-                                newItem.displayLotMessage = lot.lotCode;
-
-                                newItem = _.extend(draftLineItem, newItem);
-
-                                var srcDstId = null;
-                                if (adjustmentType.state === 'receive') {
-                                    srcDstId = draftLineItem.sourceId;
-                                } else if (adjustmentType.state === 'issue') {
-                                    srcDstId = draftLineItem.destinationId;
-                                }
-
-                                newItem.assignment = stockAdjustmentCreationService.getAssignmentById(
-                                    srcDstAssignments,
-                                    srcDstId,
-                                    parentId
-                                );
-
-                                var filteredReasons = vm.filterReasonsByProduct(vm.reasons, newItem.orderable.programs);
-                                newItem.reason = _.find(filteredReasons, function(reason) {
-                                    return reason.id === draftLineItem.reasonId;
-                                });
-
-                                vm.addedLineItems.push(newItem);
-                            });
-                            vm.search();
-
-                        }, function(err) {
-                            loadingModalService.close();
-                            alertService.error(JSON.stringify(err));
-                        });
-                    }, function(err) {
-                        loadingModalService.close();
-                        alertService.error(JSON.stringify(err));
-                    });
-                }
-            }
-
-            if (_.isEmpty(vm.draft)) {
-                stockAdjustmentService.getDraftById(
-                    $stateParams.draftId,
-                    adjustmentType,
-                    program.id,
-                    facility.id,
-                    user.user_id
-                ).then(function(res) {
-                    vm.draft = res;
-                    recovery();
-                }, function(err) {
-                    alertService.error(JSON.stringify(err));
-                });
-            } else {
-                recovery();
-            }
-        }
-
         function cancelFilter() {
             reorderItems();
             vm.keyword = null;

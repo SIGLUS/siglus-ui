@@ -66,18 +66,15 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
+                    // SIGLUS-REFACTOR: starts here
                     if (_.isUndefined($stateParams.orderableGroups)) {
+                        // SIGLUS-REFACTOR: ends here
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
                             program.id, facility.id, true
                         );
                     }
                     return $stateParams.orderableGroups;
-                },
-                // SIGLUS-REFACTOR: ends here
-                displayItems: function($stateParams, registerDisplayItemsService) {
-                    return registerDisplayItemsService($stateParams);
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
@@ -93,7 +90,34 @@
                         return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
                     }
                     return $stateParams.srcDstAssignments;
+                },
+                // SIGLUS-REFACTOR: starts here
+                draft: function($stateParams, stockAdjustmentFactory, user, program, facility, adjustmentType) {
+                    if (_.isUndefined($stateParams.draft)) {
+                        return stockAdjustmentFactory.getDraftById(user.user_id, program.id, facility.id,
+                            adjustmentType.state, $stateParams.draftId);
+                    }
+                    return $stateParams.draft;
+                },
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                    reasons, draft) {
+                    if (_.isUndefined($stateParams.addedLineItems)) {
+                        if (draft.lineItems && draft.lineItems.length > 0) {
+                            return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
+                                srcDstAssignments, reasons);
+                        }
+                        return [];
+                    }
+                    return $stateParams.addedLineItems;
+                },
+                displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
+                    if (_.isUndefined($stateParams.displayItems && addedLineItems.length > 0)) {
+                        $stateParams.addedLineItems = addedLineItems;
+                        $stateParams.displayItems = addedLineItems;
+                    }
+                    return registerDisplayItemsService($stateParams);
                 }
+                // SIGLUS-REFACTOR: ends here
             }
         });
     }
