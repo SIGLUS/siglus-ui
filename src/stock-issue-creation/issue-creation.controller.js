@@ -497,11 +497,10 @@
             initViewModel();
             initStateParams();
 
-            $scope.needToConfirm = false;
             $scope.$watch(function() {
                 return vm.addedLineItems;
-            }, function(newValue) {
-                $scope.needToConfirm = newValue.length > 0;
+            }, function(newValue, oldValue) {
+                $scope.needToConfirm = !angular.equals(newValue, oldValue);
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
