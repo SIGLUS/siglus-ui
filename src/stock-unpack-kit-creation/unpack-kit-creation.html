@@ -19,7 +19,7 @@
         <tr>
             <td>{{vm.kit.productCode}}</td>
             <td>{{vm.kit.fullProductName}}</td>
-            <td align="right">{{vm.kit.stockOnHand}}</td>
+            <td class="text-align-right">{{vm.kit.stockOnHand}}</td>
             <td ng-if="!vm.showProducts" class="digit-cell">
                 <input class="form-control"
                        ng-blur="vm.validateKitQuantity()"
@@ -28,7 +28,7 @@
                        openlmis-invalid="{{vm.kit.quantityInvalid ? vm.kit.quantityInvalid : ''}}"
                        positive-integer />
             </td>
-            <td ng-if="vm.showProducts" align="right">{{vm.kit.unpackQuantity}}</td>
+            <td ng-if="vm.showProducts" class="text-align-right">{{vm.kit.unpackQuantity}}</td>
             <td ng-if="!vm.showProducts" class="digit-cell">
                 <input class="form-control"
                        ng-blur="vm.validateDocumentationNo()"
@@ -68,8 +68,8 @@
                 <td>{{products[0].fullProductName}}</td>
                 <td></td>
                 <td></td>
-                <td align="right">{{products[0].quantityInKit*vm.kit.unpackQuantity}}</td>
-                <td align="right">{{vm.calculate(products, 'quantity')}}</td>
+                <td class="text-align-right">{{products[0].quantityInKit*vm.kit.unpackQuantity}}</td>
+                <td class="text-align-right">{{vm.calculate(products, 'quantity')}}</td>
                 <td></td>
                 <td>
                     <button class="stock-actions add" ng-click="vm.addLot(products[0])">{{'stockUnpackKitCreation.addLot' | message}}</button>
@@ -87,8 +87,8 @@
                            ng-disabled="product.lot.id"
                            ng-change="vm.expirationDateChange(product)" />
                 </td>
-                <td align="right">{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
-                <td align="right" class="digit-cell">
+                <td class="text-align-right">{{products.length > 1 ? '' : (product.quantityInKit*vm.kit.unpackQuantity)}}</td>
+                <td class="digit-cell text-align-right">
                     <input positive-integer
                            type="text"
                            class="form-control min-width-input"

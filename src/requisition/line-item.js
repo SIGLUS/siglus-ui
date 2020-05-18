@@ -103,7 +103,9 @@
                         calculationFactory[fullName](this, requisition) :
                         null;
                 } else if (column.$type === COLUMN_TYPES.NUMERIC || column.$type === COLUMN_TYPES.CURRENCY) {
-                    checkIfNullOrZero(object[propertyName]);
+                    // SIGLUS-REFACTOR: remove useless code to fix SonarQube
+                    // checkIfNullOrZero(object[propertyName]);
+                    // SIGLUS-REFACTOR: ends here
                 } else {
                     object[propertyName] = object[propertyName] ? object[propertyName] : '';
                 }
@@ -249,13 +251,15 @@
             return id > -1 ? fullPath.substr(id) : fullPath;
         }
 
-        function checkIfNullOrZero(value) {
-            if (value === 0) {
-                value = 0;
-            } else if (value === null) {
-                value = null;
-            }
-        }
+        // SIGLUS-REFACTOR: remove useless code to fix SonarQube
+        // function checkIfNullOrZero(value) {
+        //     if (value === 0) {
+        //         value = 0;
+        //     } else if (value === null) {
+        //         value = null;
+        //     }
+        // }
+        // SIGLUS-REFACTOR: ends here
     }
 
 })();

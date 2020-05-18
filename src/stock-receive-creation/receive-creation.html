@@ -53,7 +53,7 @@
                     <input  ng-if="!lineItem.isKit" id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
                             ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                 </td>
-                <td align="right">{{lineItem.$previewSOH}}</td>
+                <td class="text-align-right">{{lineItem.$previewSOH}}</td>
                 <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                     <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"

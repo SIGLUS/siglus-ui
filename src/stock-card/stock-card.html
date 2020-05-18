@@ -26,7 +26,9 @@
             <strong>{{'stockCard.program' | message}}</strong>
             {{vm.stockCard.program.name}}
         </li>
-        <li align="right">
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <li class="text-align-right">
+        <!-- SIGLUS-REFACTOR: ends here -->
             <strong>{{'stockCard.soh' | message}}</strong>
             {{vm.stockCard.stockOnHand}}
         </li>
@@ -74,9 +76,9 @@
             <td>
                 {{ vm.getReason(lineItem) }}
             </td>
-            <td align="right">{{lineItem.quantity}}</td>
-            <td align="right">{{lineItem.stockOnHand}}</td>
             <!-- SIGLUS-REFACTOR: starts here -->
+            <td class="text-align-right">{{lineItem.quantity}}</td>
+            <td class="text-align-right">{{lineItem.stockOnHand}}</td>
             <td>{{lineItem.documentNumber}}</td>
             <!-- SIGLUS-REFACTOR: ends here -->
             <td>{{lineItem.signature}}</td>
