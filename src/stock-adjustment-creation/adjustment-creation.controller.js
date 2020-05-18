@@ -27,27 +27,24 @@
     angular
         .module('stock-adjustment-creation')
         .controller('StockAdjustmentCreationController', controller);
-    // SIGLUS-REFACTOR: delete 'UNPACK_REASONS' and add  '$http', 'stockmanagementUrlFactory', 'signatureModalService',
-    // '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS', '$location',
-    // 'stockAdjustmentService', 'draft'
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
-        '$timeout', 'autoGenerateService', 'orderableLotMapping', 'STOCKMANAGEMENT_RIGHTS', '$location',
-        'stockAdjustmentService', 'draft', 'REASON_TYPES'
+        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
+        // SIGLUS-REFACTOR: starts here
+        // 'UNPACK_REASONS',
+        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft'
+        // SIGLUS-REFACTOR: ends here
     ];
-    // SIGLUS-REFACTOR: ends here
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, user,
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        signatureModalService, $timeout, autoGenerateService, orderableLotMapping,
-                        STOCKMANAGEMENT_RIGHTS, $location, stockAdjustmentService, draft, REASON_TYPES) {
+                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
+                        signatureModalService, orderableLotMapping, stockAdjustmentService, draft) {
         var vm = this,
             previousAdded = {};
 
@@ -582,7 +579,7 @@
                 lineItem.programId = findParentId(lineItem);
             });
 
-            generateKitConstituentLineItem(addedLineItems);
+            // generateKitConstituentLineItem(addedLineItems);
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
                 addedLineItems, adjustmentType, signature)
             // SIGLUS-REFACTOR: ends here
@@ -599,32 +596,31 @@
                 });
         }
 
-        function generateKitConstituentLineItem(addedLineItems) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                return;
-            }
-
-            // SIGLUS-REFACTOR: CREDIT reason ID
-            var creditReason = reasons
-                .filter(function(reason) {
-                    return reason.reasonType === 'CREDIT';
-                })
-                .pop();
-            // SIGLUS-REFACTOR: ends here
-
-            var constituentLineItems = [];
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.orderable.children.forEach(function(constituent) {
-                    constituent.reason = creditReason;
-                    constituent.occurredDate = lineItem.occurredDate;
-                    constituent.quantity = lineItem.quantity * constituent.quantity;
-                    constituentLineItems.push(constituent);
-                });
-            });
-
-            addedLineItems.push.apply(addedLineItems, constituentLineItems);
-        }
+        // SIGLUS-REFACTOR: starts here
+        // function generateKitConstituentLineItem(addedLineItems) {
+        //     if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
+        //         return;
+        //     }
+        //
+        //     //CREDIT reason ID
+        //     var creditReason = {
+        //         id: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID
+        //     };
+        //
+        //     var constituentLineItems = [];
+        //
+        //     addedLineItems.forEach(function(lineItem) {
+        //         lineItem.orderable.children.forEach(function(constituent) {
+        //             constituent.reason = creditReason;
+        //             constituent.occurredDate = lineItem.occurredDate;
+        //             constituent.quantity = lineItem.quantity * constituent.quantity;
+        //             constituentLineItems.push(constituent);
+        //         });
+        //     });
+        //
+        //     addedLineItems.push.apply(addedLineItems, constituentLineItems);
+        // }
+        // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
         function findParentId(lineItem) {

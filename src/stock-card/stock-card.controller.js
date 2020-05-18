@@ -28,10 +28,12 @@
         .module('stock-card')
         .controller('StockCardController', controller);
 
-    // SIGLUS-REFACTOR: starts here
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
-        'Reason', 'alertService', '$scope'];
-    // SIGLUS-REFACTOR: ends here
+    controller.$inject = [
+        'stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
+        // SIGLUS-REFACTOR: starts here
+        'Reason', 'alertService', '$scope'
+        // SIGLUS-REFACTOR: ends here
+    ];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService,
                         Reason, alertService, $scope) {
