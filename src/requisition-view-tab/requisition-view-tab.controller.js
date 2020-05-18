@@ -34,7 +34,7 @@
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize', 'selectProductsModalEmergencyService', 'requisitionService', 'loadingModalService'
+        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -42,7 +42,7 @@
                                messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
-                               selectProductsModalEmergencyService, requisitionService, loadingModalService) {
+                               requisitionService, loadingModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -375,13 +375,13 @@
             }
 
             // SIGLUS-REFACTOR: starts here
-            var amountCanAdd = 10 - vm.requisition.requisitionLineItems.length;
-
-            return vm.requisition.emergency ?
-                selectProductsModalEmergencyService.show(decoratedAvailableProducts, amountCanAdd) :
-                selectProductsModalService.show({
-                    products: decoratedAvailableProducts
-                });
+            return selectProductsModalService.show({
+                products: decoratedAvailableProducts,
+                limit: vm.requisition.emergency ? {
+                    max: 10,
+                    errorMsg: 'requisitionViewTab.selectTooMany'
+                } : undefined
+            });
             // SIGLUS-REFACTOR: ends here
         }
 

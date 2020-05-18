@@ -41,7 +41,6 @@
                        messageService, productNameFilter, $http, LotRepositoryImpl, stockEventService) {
 
         $delegate.submitAdjustments = submitAdjustments;
-        $delegate.search = search;
 
         return $delegate;
 

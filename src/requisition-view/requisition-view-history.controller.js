@@ -32,14 +32,14 @@
         '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
         'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
-        '$stateParams', 'selectProductsModalEmergencyService', 'processingPeriod', 'program', 'facility'
+        '$stateParams', 'processingPeriod', 'program', 'facility'
     ];
 
     function HistoryViewTabController($filter, selectProductsModalService, requisitionValidator, requisition, columns,
                                       messageService, lineItems, alertService, canSubmit, canAuthorize,
                                       fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator,
                                       canApproveAndReject, items, paginationService, $stateParams,
-                                      selectProductsModalEmergencyService, processingPeriod, program, facility) {
+                                      processingPeriod, program, facility) {
         var vm = this;
         vm.processingPeriod = processingPeriod;
         vm.program = program;
@@ -280,11 +280,7 @@
                 return $q.reject();
             }
 
-            var amountCanAdd = 10 - vm.requisition.requisitionLineItems.length;
-
-            return vm.requisition.emergency ?
-                selectProductsModalEmergencyService.show(decoratedAvailableProducts, amountCanAdd) :
-                selectProductsModalService.show(decoratedAvailableProducts);
+            return selectProductsModalService.show(decoratedAvailableProducts);
         }
 
         function refreshLineItems() {
