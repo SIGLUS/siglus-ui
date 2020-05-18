@@ -553,8 +553,8 @@
                 if (isOrderable) {
                     identities.push(item.orderable);
                 } else {
-                    var program = getProgramById(item.orderable.programs, requisition.program.id);
                     // SIGLUS-REFACTOR: starts here
+                    var program = item.orderable.programs[0];
                     if (item.approvedProduct && program.fullSupply) {
                         identities.push(item.approvedProduct);
                     }
