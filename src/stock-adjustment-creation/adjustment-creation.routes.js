@@ -64,7 +64,7 @@
                     return authorizationService.getUser();
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, user, orderableGroupService) {
+                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (_.isUndefined($stateParams.orderableGroups)) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(program.id,
                             facility.id, true);

@@ -38,14 +38,15 @@
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
                         user, facility, programs, localStorageService) {
         var vm = this;
-        // SIGLUS-REFACTOR: starts here
-        var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
 
         vm.$onInit = onInit;
         vm.loadStockCardSummaries = loadStockCardSummaries;
         vm.viewSingleCard = viewSingleCard;
-        vm.viewProductStockCard = viewProductStockCard;
         vm.print = print;
+
+        // SIGLUS-REFACTOR: starts here
+        var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
+        vm.viewProductStockCard = viewProductStockCard;
 
         vm.programs = [];
         vm.program = null;

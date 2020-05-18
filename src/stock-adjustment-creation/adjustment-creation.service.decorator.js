@@ -33,18 +33,15 @@
         $provide.decorator('stockAdjustmentCreationService', decorator);
     }
     decorator.$inject = [
-        '$delegate', '$filter', 'stockmanagementUrlFactory', 'openlmisDateFilter',
-        'messageService', 'productNameFilter', '$http', 'LotRepositoryImpl', 'stockEventService'
+        '$delegate', 'stockEventService', 'ADJUSTMENT_TYPE'
     ];
 
-    function decorator($delegate, $filter, stockmanagementUrlFactory, openlmisDateFilter,
-                       messageService, productNameFilter, $http, LotRepositoryImpl, stockEventService) {
+    function decorator($delegate, stockEventService, ADJUSTMENT_TYPE) {
 
         $delegate.submitAdjustments = submitAdjustments;
 
         return $delegate;
 
-        // SIGLUS-REFACTOR: starts here
         function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature) {
             var event = {
                 programId: programId,
@@ -82,7 +79,6 @@
                     reasonFreeText: item.reasonFreeText,
                     documentationNo: item.documentationNo ? item.documentationNo : '',
                     programId: item.programId
-                    // SIGLUS-REFACTOR: ends here
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
             return stockEventService.submit(event);
@@ -90,10 +86,10 @@
 
         function buildSourceDestinationInfo(item, adjustmentType) {
             var res = {};
-            if (adjustmentType.state === 'receive') {
+            if (adjustmentType.state === ADJUSTMENT_TYPE.RECEIVE.state) {
                 res.sourceId = item.assignment.node.id;
                 res.sourceFreeText = item.srcDstFreeText;
-            } else if (adjustmentType.state === 'issue') {
+            } else if (adjustmentType.state === ADJUSTMENT_TYPE.ISSUE.state) {
                 res.destinationId = item.assignment.node.id;
                 res.destinationFreeText = item.srcDstFreeText;
             }
