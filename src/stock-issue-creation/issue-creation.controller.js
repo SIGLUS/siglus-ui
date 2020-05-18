@@ -428,21 +428,11 @@
                 addedLineItems, adjustmentType, signature)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
-                    if (vm.draft && vm.draft.id) {
-                        stockAdjustmentService.deleteDraft(vm.draft.id).then(function() {
-                            vm.draft = null;
-                            $stateParams.draft = null;
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                facility: facility.id,
-                                program: program.id
-                            });
-                        });
-                    } else {
-                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                            facility: facility.id,
-                            program: program.id
-                        });
-                    }
+
+                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                        facility: facility.id,
+                        program: program.id
+                    });
                 }, function(errorResponse) {
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
