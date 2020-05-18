@@ -43,7 +43,7 @@
             <td></td>
             <td></td>
             <!-- SIGLUS-REFACTOR: starts here -->
-            <td align="right">{{summary.stockOnHand}}</td>
+            <td class="text-align-right">{{summary.stockOnHand}}</td>
             <td>
                 <button ng-if="summary.orderable"
                         type="button"
@@ -62,7 +62,7 @@
             <td>{{fulfills.lot && !fulfills.orderable.isKit ? fulfills.lot.lotCode : ''}}</td>
             <td>{{fulfills.lot && !fulfills.orderable.isKit ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
             <td>{{fulfills.occurredDate | openlmisDate}}</td>
-            <td align="right">{{fulfills.stockOnHand}}</td>
+            <td class="text-align-right">{{fulfills.stockOnHand}}</td>
             <!-- SIGLUS-REFACTOR: ends here -->
             <td>
                 <button ng-if="fulfills.stockCard"

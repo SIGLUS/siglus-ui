@@ -54,7 +54,7 @@
                 <td>{{lineItem.orderable | productName}}</td>
                 <td>{{lineItem.lot.lotCode}}</td>
                 <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
-                <td align="right">{{lineItem.$previewSOH}}</td>
+                <td class="text-align-right">{{lineItem.$previewSOH}}</td>
                 <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                     <select ng-model="lineItem.assignment"
                             ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"

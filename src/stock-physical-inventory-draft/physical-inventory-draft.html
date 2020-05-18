@@ -51,12 +51,12 @@
             <td></td>
             <td></td>
             <!-- SIGLUS-REFACTOR: starts here -->
-            <td  ng-if="!vm.isInitialInventory" align="right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
-            <td align="right">{{vm.calculate(lineItems, 'quantity')}}</td>
+            <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+            <td class="text-align-right">{{vm.calculate(lineItems, 'quantity')}}</td>
             <td ng-if="vm.showVVMStatusColumn"></td>
-            <td ng-if="!vm.isInitialInventory" align="right"></td>
-            <td ng-if="!vm.isInitialInventory" align="right"></td>
-            <td ng-if="!vm.isInitialInventory" align="right"></td>
+            <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
+            <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
+            <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
             <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
                 <button class="stock-actions add" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
             </td>
@@ -85,7 +85,7 @@
             </td>
             <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
             <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
-            <td  ng-if="!vm.isInitialInventory" align="right">{{lineItem.stockOnHand}}</td>
+            <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.stockOnHand}}</td>
             <td class="digit-cell" >
                 <input
                         class="form-control"
@@ -116,7 +116,7 @@
                        ng-model="lineItem.reasonFreeText" rows="1" cols="15" />
             </td>
             <td ng-if="!vm.isInitialInventory && !vm.isFreeTextAllowed(lineItem)"></td>
-            <td ng-if="!vm.isInitialInventory" align="right">{{lineItem.unaccountedQuantity}}</td>
+            <td ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.unaccountedQuantity}}</td>
             <td>
                 <button ng-if="lineItems.length === 1 && !(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLot(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
                 <button ng-if="vm.isInitialInventory || vm.isEmpty(lineItem.stockCardId)" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>

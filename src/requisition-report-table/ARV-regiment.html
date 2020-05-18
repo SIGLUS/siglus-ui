@@ -17,11 +17,11 @@
         ng-if="(item.regimen.regimenCategory.code === category.code) && !item.regimen.isCustom" ng-repeat-end>
         <td>{{(item.regimen.regimenDispatchLine.name).slice(0, -1)}}</td>
         <td>{{item.regimen.name}}</td>
-        <td align="right" ng-if="vm.readOnly">{{item.hfPatients}}</td>
+        <td class="text-align-right" ng-if="vm.readOnly">{{item.hfPatients}}</td>
         <td ng-if="!vm.readOnly">
             <input ng-model="item.hfPatients" positive-integer maxlength="8" ng-blur="vm.validateHFPatients(item)" ng-required="item.isRequiredHFPatients">
         </td>
-        <td align="right" ng-if="vm.readOnly">{{item.chwPatients}}</td>
+        <td class="text-align-right" ng-if="vm.readOnly">{{item.chwPatients}}</td>
         <td ng-if="!vm.readOnly">
             <input ng-model="item.chwPatients" positive-integer maxlength="8" ng-blur="vm.validateCHWPatients(item)" ng-required="item.isRequiredCHWPatients">
         </td>
@@ -34,11 +34,11 @@
         ng-if="(item.regimen.regimenCategory.code === category.code) && item.regimen.isCustom" ng-repeat-end>
         <td>{{item.regimen.regimenDispatchLine.name}}</td>
         <td>{{item.regimen.name}}</td>
-        <td align="right" ng-if="vm.readOnly">{{item.hfPatients}}</td>
+        <td class="text-align-right" ng-if="vm.readOnly">{{item.hfPatients}}</td>
         <td ng-if="!vm.readOnly">
             <input ng-model="item.hfPatients" positive-integer maxlength="8" ng-blur="vm.validateHFPatients(item)" ng-required="item.isRequiredHFPatients">
         </td>
-        <td align="right" ng-if="vm.readOnly">{{item.chwPatients}}</td>
+        <td class="text-align-right" ng-if="vm.readOnly">{{item.chwPatients}}</td>
         <td ng-if="!vm.readOnly">
             <input ng-model="item.chwPatients" positive-integer maxlength="8" ng-blur="vm.validateCHWPatients(item)" ng-required="item.isRequiredCHWPatients">
         </td>
@@ -52,7 +52,7 @@
             <button class="add" ng-click="vm.addRegimen(category.code)">{{'requisitionReportModule.regiment.addRegime' | message}}</button>
         </td>
     </tr>
-    <tr align="right" ng-if="vm.lineItems.length">
+    <tr class="text-align-right" ng-if="vm.lineItems.length">
         <td colspan="2" class="regime-total">{{'requisitionReportModule.total' | message}}</td>
         <td>{{vm.calculateTotal(vm.lineItems, 'hfPatients')}}</td>
         <td>{{vm.calculateTotal(vm.lineItems, 'chwPatients')}}</td>
@@ -67,10 +67,10 @@
         ng-if="(item.regimen.regimenCategory.code === category.code)" ng-repeat-end>
         <td>{{item.regimen.regimenDispatchLine.name}}</td>
         <td>{{item.regimen.name}}</td>
-        <td align="right">{{item.hfPatients}}</td>
-        <td align="right">{{item.chwPatients}}</td>
+        <td class="text-align-right">{{item.hfPatients}}</td>
+        <td class="text-align-right">{{item.chwPatients}}</td>
     </tr>
-    <tr align="right">
+    <tr class="text-align-right">
         <td colspan="2" class="regime-total">{{'requisitionReportModule.total' | message}}</td>
         <td>{{vm.calculateTotal(vm.lineItems, 'hfPatients')}}</td>
         <td>{{vm.calculateTotal(vm.lineItems, 'chwPatients')}}</td>

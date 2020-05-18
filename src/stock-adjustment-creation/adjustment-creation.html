@@ -63,7 +63,7 @@
                 </td>
                 <td ng-if="lineItem.isKit"></td>
                 <td ng-if="lineItem.isKit"></td>
-                <td align="right">{{lineItem.$previewSOH}}</td>
+                <td class="text-align-right">{{lineItem.$previewSOH}}</td>
                 <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                     <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItem);"

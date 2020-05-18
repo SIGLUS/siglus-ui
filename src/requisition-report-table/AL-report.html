@@ -2,7 +2,7 @@
     <caption ng-if="!vm.lineItems.length">{{'requisitionReportModule.noItems' | message}}</caption>
     <thead>
     <tr>
-        <th rowspan="2" width="70px"></th>
+        <th rowspan="2"></th>
         <th class="center" colspan="{{vm.lineItems.length}}">{{'requisitionReportModule.al.nTreatmentsAttendedInThisMonth' | message}}</th>
         <th class="center border-left" colspan="{{vm.lineItems.length}}">{{'requisitionReportModule.al.existentStockAtTheEndOfThePeriod' | message}}</th>
     </tr>
@@ -34,19 +34,19 @@
 
     <tr ng-if-start="vm.readOnly">
         <td>HF</td>
-        <td ng-repeat="item in vm.lineItems" align="right">{{vm.getHF(item.alDepartmentList).consumeCount}}</td>
-        <td ng-repeat="(idx, item) in vm.lineItems" align="right" class="{{idx === 0 ? 'border-left' : ''}}">{{vm.getHF(item.alDepartmentList).stockCount}}</td>
+        <td ng-repeat="item in vm.lineItems" class="text-align-right">{{vm.getHF(item.alDepartmentList).consumeCount}}</td>
+        <td ng-repeat="(idx, item) in vm.lineItems" class="{{idx === 0 ? 'border-left' : ''}} text-align-right">{{vm.getHF(item.alDepartmentList).stockCount}}</td>
     </tr>
     <tr ng-if-end>
         <td>CHW</td>
-        <td ng-repeat="item in vm.lineItems" align="right">{{vm.getCHW(item.alDepartmentList).consumeCount}}</td>
-        <td ng-repeat="(idx, item) in vm.lineItems" align="right" class="{{idx === 0 ? 'border-left' : ''}}">{{vm.getCHW(item.alDepartmentList).stockCount}}</td>
+        <td ng-repeat="item in vm.lineItems" class="text-align-right">{{vm.getCHW(item.alDepartmentList).consumeCount}}</td>
+        <td ng-repeat="(idx, item) in vm.lineItems" class="{{idx === 0 ? 'border-left' : ''}} text-align-right">{{vm.getCHW(item.alDepartmentList).stockCount}}</td>
     </tr>
 
     <tr>
         <td>{{'requisitionReportModule.total' | message}}</td>
-        <td ng-repeat="item in vm.lineItems" align="right">{{vm.getTotalConsume(item)}}</td>
-        <td ng-repeat="(idx, item) in vm.lineItems" align="right" class="{{idx === 0 ? 'border-left' : ''}}">{{vm.getTotalStock(item)}}</td>
+        <td ng-repeat="item in vm.lineItems" class="text-align-right">{{vm.getTotalConsume(item)}}</td>
+        <td ng-repeat="(idx, item) in vm.lineItems" class="{{idx === 0 ? 'border-left' : ''}} text-align-right">{{vm.getTotalStock(item)}}</td>
     </tr>
     </tbody>
 </table>
