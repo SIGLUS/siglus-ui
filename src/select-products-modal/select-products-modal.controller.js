@@ -28,18 +28,23 @@
         .module('select-products-modal')
         .controller('SelectProductsModalController', controller);
 
-    controller.$inject = ['orderables', '$state', 'selectProductsModalService', 'external', '$stateParams',
-        'isUnpackKitState'];
+    controller.$inject = [
+        'orderables', '$state', 'selectProductsModalService', 'external', '$stateParams',
+        'isUnpackKitState',
+        // SIGLUS-REFACTOR: starts here
+        'alertService'
+        // SIGLUS-REFACTOR: starts here
+    ];
 
     function controller(orderables, $state, selectProductsModalService, external, $stateParams,
-                        isUnpackKitState) {
+                        isUnpackKitState, alertService) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.selectProducts = selectProductsModalService.resolve;
         vm.close = selectProductsModalService.reject;
         vm.search = search;
         // SIGLUS-REFACTOR: starts here
+        vm.selectProducts = selectProducts;
         vm.onSelection = validateSelection;
         // SIGLUS-REFACTOR: ends here
 
@@ -62,6 +67,7 @@
             vm.isUnpackKitState = isUnpackKitState;
             // SIGLUS-REFACTOR: starts here
             vm.limit = selectProductsModalService.getLimit();
+            vm.overLimit = false;
             validateSelection();
             // SIGLUS-REFACTOR: ends here
         }
@@ -115,14 +121,25 @@
 
         // SIGLUS-REFACTOR: starts here
         function validateSelection() {
-            vm.overLimit = false;
             if (vm.limit && vm.limit.max) {
-                var selectItems = Object.keys(vm.selections).filter(function(orderableId) {
-                    return vm.selections[orderableId];
-                }).length;
-                vm.overLimit = selectItems >= vm.limit.max;
+                vm.overLimit = selectItems() >= vm.limit.max;
             }
         }
+
+        function selectItems() {
+            return Object.keys(vm.selections).filter(function(orderableId) {
+                return vm.selections[orderableId];
+            }).length;
+        }
+
+        function selectProducts() {
+            if (selectItems()) {
+                selectProductsModalService.resolve;
+            } else {
+                alertService.error('selectProductsModal.addProducts.emptyList');
+            }
+        }
+
         // SIGLUS-REFACTOR: ends here
     }
 

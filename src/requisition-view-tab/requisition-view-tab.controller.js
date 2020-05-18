@@ -378,7 +378,7 @@
             return selectProductsModalService.show({
                 products: decoratedAvailableProducts,
                 limit: vm.requisition.emergency ? {
-                    max: 10,
+                    max: 10 - vm.requisition.requisitionLineItems.length,
                     errorMsg: 'requisitionViewTab.selectTooMany'
                 } : undefined
             });
