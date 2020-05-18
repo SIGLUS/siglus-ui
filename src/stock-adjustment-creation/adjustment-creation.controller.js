@@ -47,7 +47,7 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
                         signatureModalService, $timeout, autoGenerateService, orderableLotMapping,
-                        STOCKMANAGEMENT_RIGHTS, $location, REASON_TYPES) {
+                        STOCKMANAGEMENT_RIGHTS, $location, stockAdjustmentService, draft, REASON_TYPES) {
         var vm = this,
             previousAdded = {};
 
