@@ -28,14 +28,15 @@
         .module('stock-card')
         .service('stockCardService', service);
 
-    service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory'];
+    service.$inject = ['$resource', '$window', 'stockmanagementUrlFactory', 'accessTokenFactory', 'dateUtils'];
 
-    function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory) {
+    function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, dateUtils) {
         // SIGLUS-REFACTOR: starts here
         var resource = $resource(
             stockmanagementUrlFactory('/api/siglusintegration/stockCards/:stockCardId'), {}, {
                 get: {
-                    method: 'GET'
+                    method: 'GET',
+                    transformResponse: transformResponse
                 },
                 getProduct: {
                     url: stockmanagementUrlFactory('/api/siglusintegration/stockCards/orderable'),
@@ -69,6 +70,17 @@
         function print(stockCardId) {
             var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+        }
+
+        function transformResponse(data, headers, status) {
+            if (status === 200) {
+                var stockCard = angular.fromJson(data);
+                if (stockCard.lot && stockCard.lot.expirationDate) {
+                    stockCard.lot.expirationDate = dateUtils.toDate(stockCard.lot.expirationDate);
+                }
+                return stockCard;
+            }
+            return data;
         }
 
         // SIGLUS-REFACTOR: starts here

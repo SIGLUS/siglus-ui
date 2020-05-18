@@ -124,6 +124,7 @@ describe('physicalInventoryFactory', function() {
 
         StockCardSummaryRepository.query.andReturn($q.when(summaries));
         physicalInventoryService.getPhysicalInventory.andReturn($q.reject());
+        physicalInventoryService.getDraft.andReturn($q.reject());
         physicalInventoryService.saveDraft.andCallFake(function(passedDraft) {
             return $q.when(passedDraft);
         });
@@ -132,6 +133,10 @@ describe('physicalInventoryFactory', function() {
     describe('init', function() {
         it('should expose getDraft method', function() {
             expect(angular.isFunction(physicalInventoryFactory.getDraft)).toBe(true);
+        });
+
+        it('should expose getDraftByProgramAndFacility method', function() {
+            expect(angular.isFunction(physicalInventoryFactory.getDraftByProgramAndFacility)).toBe(true);
         });
 
         it('should expose getDrafts method', function() {
@@ -220,6 +225,61 @@ describe('physicalInventoryFactory', function() {
                 expect(lineItem.quantity).toEqual(summaries.content[0].canFulfillForMe[index].quantity);
                 expect(lineItem.vvmStauts).toEqual(null);
             });
+        });
+    });
+
+    describe('getDraftByProgramAndFacility', function() {
+        var programId,
+            facilityId;
+
+        beforeEach(function() {
+            programId = 'program-id';
+            facilityId = 'facility-id';
+        });
+
+        it('should return promise', function() {
+            var result = physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId);
+
+            expect(result.then).not.toBeUndefined();
+            expect(angular.isFunction(result.then)).toBe(true);
+        });
+
+        it('should call physicalInventoryService', function() {
+            physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId);
+
+            expect(physicalInventoryService.getDraft).toHaveBeenCalledWith(programId, facilityId);
+        });
+
+        it('should get proper response when draft was saved', function() {
+            var returnedDraft;
+
+            physicalInventoryService.getDraft.andReturn($q.when([draft]));
+
+            physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.programId).toEqual(programId);
+            expect(returnedDraft.facilityId).toEqual(facilityId);
+            expect(returnedDraft.lineItems).toEqual([]);
+        });
+
+        it('should get proper response when draft was not saved', function() {
+            var returnedDraft;
+
+            physicalInventoryService.getDraft.andReturn($q.when([]));
+
+            physicalInventoryFactory.getDraftByProgramAndFacility(programId, facilityId).then(function(response) {
+                returnedDraft = response;
+            });
+            $rootScope.$apply();
+
+            expect(returnedDraft).toBeDefined();
+            expect(returnedDraft.programId).toEqual(programId);
+            expect(returnedDraft.facilityId).toEqual(facilityId);
+            expect(returnedDraft.lineItems).toEqual([]);
         });
     });
 

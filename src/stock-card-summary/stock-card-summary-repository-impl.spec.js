@@ -18,7 +18,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
     var $rootScope, $q, $httpBackend, stockCardSummaryRepositoryImpl, StockCardSummaryRepositoryImpl,
         stockmanagementUrlFactory, LotResource, OrderableResource, StockCardSummaryDataBuilder, LotDataBuilder,
         PageDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
-        stockCardSummary1, stockCardSummary2, lots, orderables;
+        stockCardSummary1, stockCardSummary2, lots, orderables, dateUtils;
 
     beforeEach(function() {
         module('openlmis-pagination');
@@ -51,6 +51,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
             LotDataBuilder = $injector.get('LotDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             PageDataBuilder = $injector.get('PageDataBuilder');
+            dateUtils = $injector.get('dateUtils');
         });
 
         stockCardSummaryRepositoryImpl = new StockCardSummaryRepositoryImpl();
@@ -232,7 +233,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         expect(entry.orderable).toEqual(orderable);
         expect(entry.lot).toEqual(lot);
         expect(entry.stockCard).toEqual(stockCard);
-        expect(entry.occurredDate).toEqual(occurredDate);
+        expect(entry.occurredDate).toEqual(dateUtils.toDate(occurredDate));
         expect(entry.processedDate).toEqual(processedDate);
     }
 });
