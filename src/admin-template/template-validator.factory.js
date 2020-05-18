@@ -47,7 +47,6 @@
                 requestedQuantityExplanation: validateRequestedQuantityExplanation,
                 totalStockoutDays: validateTotalStockoutDays,
                 calculatedOrderQuantity: validateCalculatedOrderQuantity,
-                calculatedOrderQuantityIsa: validateCalculatedOrderQuantityIsa,
                 additionalQuantityRequired: validateAdditionalQuantityRequired
             },
             validator = {
@@ -259,12 +258,6 @@
                 });
             }
             // SIGLUS-REFACTOR: ends here
-        }
-
-        function validateCalculatedOrderQuantityIsa(column, template) {
-            if (column.isDisplayed && !template.populateStockOnHandFromStockCards) {
-                return messageService.get('adminProgramTemplate.calculatedOrderQuantityIsaCannotBeDisplayed');
-            }
         }
 
         function validateSelectedStockCard(column, template) {

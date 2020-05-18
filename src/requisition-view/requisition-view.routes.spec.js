@@ -101,16 +101,6 @@ describe('openlmis.requisitions.requisition state', function() {
         expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
     });
 
-    it('should fetch requisition from state params if is defined', function() {
-        this.$state.go('openlmis.requisitions.requisition', {
-            requisition: this.requisition
-        });
-        this.$rootScope.$apply();
-
-        expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
-        expect(this.requisitionService.get).not.toHaveBeenCalled();
-    });
-
     it('should fetch facility', function() {
         this.goToUrl('/requisition/requisition-id');
 

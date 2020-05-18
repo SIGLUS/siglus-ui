@@ -506,31 +506,36 @@
         }
 
         function extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages) {
-            return $q.all([getByVersionIdentities(requisition.availableProducts, new OrderableResource()),
+            var identities = getResourcesFromLineItems(requisition, true);
+            return $q.all([getByVersionIdentities(identities, new OrderableResource()),
                 periodService.get(requisition.processingPeriod.id)])
                 .then(function(result) {
-                    // SIGLUS-REFACTOR: starts here
-                    requisition.availableFullSupplyProducts =  result[0];
-                    // SIGLUS-REFACTOR: ends here
-                    requisition.availableNonFullSupplyProducts =
-                        filterOrderables(false, result[0], requisition.program.id);
+                    requisition.requisitionLineItems.forEach(function(lineItem) {
+                        result[0].forEach(function(orderable) {
+                            if (lineItem.orderable.id === orderable.id) {
+                                lineItem.orderable = orderable;
+                            }
+                        });
+                    });
 
                     requisition.processingPeriod = result[1];
                     return requisition;
                 })
                 .then(function(requisition) {
-                    var indentities = getResourcesFromLineItems(requisition.requisitionLineItems);
+                    var identities = getResourcesFromLineItems(requisition, false);
                     return $q.all([
-                        getByVersionIdentities(indentities.orderables, new OrderableResource()),
-                        getByVersionIdentities(indentities.ftaps, new FacilityTypeApprovedProductResource())
+                        getByVersionIdentities(filterOutOrderablesFromLineItems(requisition),
+                            new OrderableResource()),
+                        getByVersionIdentities(identities, new FacilityTypeApprovedProductResource())
                     ])
                         .then(function(result) {
+                            // SIGLUS-REFACTOR: starts here
+                            requisition.availableFullSupplyProducts =  result[0];
+                            // SIGLUS-REFACTOR: ends here
+                            requisition.availableNonFullSupplyProducts =
+                                filterOrderables(false, result[0], requisition.program.id);
+
                             requisition.requisitionLineItems.forEach(function(lineItem) {
-                                result[0].forEach(function(orderable) {
-                                    if (lineItem.orderable.id === orderable.id) {
-                                        lineItem.orderable = orderable;
-                                    }
-                                });
                                 result[1].forEach(function(ftap) {
                                     if (lineItem.approvedProduct && lineItem.approvedProduct.id === ftap.id) {
                                         lineItem.approvedProduct = ftap;
@@ -542,20 +547,21 @@
                 });
         }
 
-        function getResourcesFromLineItems(lineItems) {
-            var orderableIdentities = [],
-                ftapIdentities = [];
-            lineItems.forEach(function(item) {
-                orderableIdentities.push(item.orderable);
-                if (item.approvedProduct) {
-                    ftapIdentities.push(item.approvedProduct);
+        function getResourcesFromLineItems(requisition, isOrderable) {
+            var identities = [];
+            requisition.requisitionLineItems.forEach(function(item) {
+                if (isOrderable) {
+                    identities.push(item.orderable);
+                } else {
+                    var program = getProgramById(item.orderable.programs, requisition.program.id);
+                    // SIGLUS-REFACTOR: starts here
+                    if (item.approvedProduct && program.fullSupply) {
+                        identities.push(item.approvedProduct);
+                    }
+                    // SIGLUS-REFACTOR: ends here
                 }
             });
-
-            return {
-                ftaps: ftapIdentities,
-                orderables: orderableIdentities
-            };
+            return identities;
         }
 
         function getByVersionIdentities(identities, resource) {
@@ -566,6 +572,19 @@
             return availableProducts.filter(function(product) {
                 var requisitionProgram = getProgramById(product.programs, programId);
                 return requisitionProgram && requisitionProgram.fullSupply === fullSupply;
+            });
+        }
+
+        function filterOutOrderablesFromLineItems(requisition) {
+            return requisition.availableProducts.filter(function(availableProduct) {
+                var shouldBeFetched = true;
+                requisition.requisitionLineItems.forEach(function(lineItem) {
+                    if (lineItem.orderable.id === availableProduct.id
+                        && lineItem.orderable.meta.versionNumber === availableProduct.versionNumber) {
+                        shouldBeFetched = false;
+                    }
+                });
+                return shouldBeFetched;
             });
         }
 

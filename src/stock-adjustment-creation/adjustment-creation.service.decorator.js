@@ -101,48 +101,5 @@
             return res;
         }
 
-        //starts here: delete after upgrade
-        function search(keyword, items, hasLot) {
-            var result = [];
-
-            if (_.isEmpty(keyword)) {
-                result = items;
-            } else {
-                keyword = keyword.trim();
-                result = _.filter(items, function(item) {
-                    var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
-                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
-                    var searchableFields = [
-                        item.orderable.productCode,
-                        productNameFilter(item.orderable),
-                        hasStockOnHand ? item.stockOnHand.toString() : '',
-                        item.reason ? item.reason.name : '',
-                        safeGet(item.reasonFreeText),
-                        hasQuantity ? item.quantity.toString() : '',
-                        getLot(item, hasLot),
-                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
-                        item.assignment ? item.assignment.name : '',
-                        safeGet(item.srcDstFreeText),
-                        openlmisDateFilter(item.occurredDate)
-                    ];
-                    return _.any(searchableFields, function(field) {
-                        return field && field.toLowerCase().contains(keyword.toLowerCase());
-                    });
-                });
-            }
-
-            return result;
-        }
-
-        function safeGet(value) {
-            return value || '';
-        }
-
-        function getLot(item, hasLot) {
-            return item.lot ?
-                item.lot.lotCode :
-                (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
-        }
-        //ends here
     }
 })();

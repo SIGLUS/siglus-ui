@@ -40,7 +40,6 @@
                 FULFILLMENT_RIGHTS.ORDERS_EDIT
             ],
             params: {
-                requisition: undefined,
                 // SIGLUS-REFACTOR: starts here
                 stopSetDefaultValue: false
                 // SIGLUS-REFACTOR: ends here
@@ -50,11 +49,6 @@
                     return currentUserService.getUserInfo();
                 },
                 requisition: function($stateParams, requisitionService) {
-                    if ($stateParams.requisition) {
-                        var rnr = angular.copy($stateParams.requisition);
-                        $stateParams.requisition = undefined;
-                        return rnr;
-                    }
                     return requisitionService.get($stateParams.rnr);
                 },
                 program: function(programService, requisition) {
