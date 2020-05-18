@@ -66,24 +66,26 @@
         }
 
         function prepareLineItems(draft, orderableGroups, assignments, reasons) {
-            var mapOfIdAndOrderableWrapper = getMapOfIdAndOrderableWrapper(orderableGroups);
+            var mapOfIdAndOrderable = getMapOfIdAndOrderable(orderableGroups);
             var srcDstAssignments = assignments || [];
             return getMapOfIdAndLot(draft.lineItems).then(function(mapOfIdAndLot) {
                 var newLineItems = [];
                 draft.lineItems.forEach(function(draftLineItem) {
-                    var orderableWrapper = mapOfIdAndOrderableWrapper[draftLineItem.orderableId] || {};
-                    var orderable = orderableWrapper.orderable;
-                    var soh = orderableWrapper.stockOnHand;
-
+                    var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
                     var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
                     lot.lotCode = draftLineItem.lotCode;
                     lot.expirationDate = draftLineItem.expirationDate;
+                    var soh = getStockOnHand(
+                        orderableGroups,
+                        draftLineItem.orderableId
+                    );
+                    var program = orderable.programs && orderable.programs[0];
+                    var parentId = program && program.parentId;
                     var newItem = {
                         $errors: {},
                         $previewSOH: soh,
                         orderable: orderable,
                         lot: lot,
-                        displayLotMessage: lot.lotCode,
                         stockOnHand: soh,
                         occurredDate: draftLineItem.occurredDate,
                         documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
@@ -99,11 +101,12 @@
                         newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
                     }
 
+                    newItem.displayLotMessage = lot.lotCode;
+
                     newItem = _.extend(draftLineItem, newItem);
 
                     var srcDstId = getSrcDstId(draft.draftType, draftLineItem);
-                    var program = orderable.programs && orderable.programs[0];
-                    var parentId = program && program.parentId;
+
                     newItem.assignment = getAssignmentById(
                         srcDstAssignments,
                         srcDstId,
@@ -123,15 +126,16 @@
             });
         }
 
-        function getMapOfIdAndOrderableWrapper(orderableGroups) {
-            var mapOfIdAndOrderableWrapper = {};
-            _.forEach(orderableGroups, function(orderableGroup) {
-                orderableGroup.forEach(function(orderableWrapper) {
+        function getMapOfIdAndOrderable(orderableGroups) {
+            var mapOfIdAndOrderable = {};
+            _.forEach(orderableGroups, function(og) {
+                og.forEach(function(orderableWrapper) {
+                    var orderable = orderableWrapper.orderable;
                     var id = orderableWrapper.orderable.id;
-                    mapOfIdAndOrderableWrapper[id] = orderableWrapper;
+                    mapOfIdAndOrderable[id] = orderable;
                 });
             });
-            return mapOfIdAndOrderableWrapper;
+            return mapOfIdAndOrderable;
         }
 
         function getMapOfIdAndLot(lineItems) {
@@ -156,6 +160,18 @@
                     });
                     return mapOfIdAndLot;
                 });
+        }
+
+        function getStockOnHand(orderableGroups, orderableId) {
+            var stockOnHand = null;
+            _.forEach(orderableGroups, function(orderableGroup) {
+                _.forEach(orderableGroup, function(orderable) {
+                    if (orderable.orderable.id === orderableId) {
+                        stockOnHand = orderable.stockOnHand;
+                    }
+                });
+            });
+            return stockOnHand;
         }
 
         function getAssignmentById(srcDstAssignments, srcDstId, parentId) {
