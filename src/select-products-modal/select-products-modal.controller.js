@@ -134,7 +134,7 @@
 
         function selectProducts() {
             if (selectItems()) {
-                selectProductsModalService.resolve;
+                selectProductsModalService.resolve();
             } else {
                 alertService.error('selectProductsModal.addProducts.emptyList');
             }
