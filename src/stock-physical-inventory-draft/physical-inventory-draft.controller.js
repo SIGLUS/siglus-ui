@@ -515,7 +515,7 @@
         function validate() {
             var anyError = false;
             var lots = getAllLotCode();
-            _.chain(displayLineItemsGroup).flatten()
+            _.chain(vm.draft.lineItems).flatten()
                 .each(function(item) {
                     if (!(item.orderable && item.orderable.isKit)) {
                         anyError = vm.validateLotCode(item, lots) || anyError;
