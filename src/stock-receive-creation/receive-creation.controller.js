@@ -30,20 +30,17 @@
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
-        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
-        'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
-        'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', '$http', 'stockmanagementUrlFactory', 'signatureModalService',
-        '$timeout', 'STOCKMANAGEMENT_RIGHTS', 'orderableLotMapping', '$location', 'stockAdjustmentService', 'draft'
+        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
+        'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
+        'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
+        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, user,
-                        adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, $http, stockmanagementUrlFactory,
-                        signatureModalService, $timeout, STOCKMANAGEMENT_RIGHTS, orderableLotMapping, $location,
-                        stockAdjustmentService, draft) {
+                        facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
+                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
+                        MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
+                        ADJUSTMENT_TYPE, signatureModalService, orderableLotMapping, stockAdjustmentService, draft) {
         var vm = this,
             previousAdded = {};
 

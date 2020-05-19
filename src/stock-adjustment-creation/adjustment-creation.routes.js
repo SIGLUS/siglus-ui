@@ -63,10 +63,16 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
-                    return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility);
+                // SIGLUS-REFACTOR: starts here
+                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
+                    if (!$stateParams.orderableGroups) {
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                            program.id, facility.id, true
+                        );
+                    }
+                    return $stateParams.orderableGroups;
                 },
+                // SIGLUS-REFACTOR: ends here
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
