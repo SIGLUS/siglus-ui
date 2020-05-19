@@ -69,9 +69,8 @@
         }
 
         function propopConfirm() {
-            confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialDiscard.confirm')
+            confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialInventory.initialInventory')
                 .then(function() {
-                    loadingModalService.open();
                     $state.go('openlmis.stockmanagement.initialInventory');
                 });
         }

@@ -30,12 +30,15 @@
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
-        'productNameFilter', 'stockEventFactory', 'stockEventService'
+        'productNameFilter', 'stockEventFactory',
+        // SIGLUS-REFACTOR: starts here
+        'stockEventService'
+        // SIGLUS-REFACTOR: ends here
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
                      productNameFilter, stockEventFactory, stockEventService) {
-        <!-- SIGLUS-REFACTOR: starts here -->
+        // SIGLUS-REFACTOR: starts here
         var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'), {}, {
             get: {
                 method: 'GET',
@@ -50,7 +53,7 @@
                 url: stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/:id')
             }
         });
-        <!-- SIGLUS-REFACTOR: ends here -->
+        // SIGLUS-REFACTOR: ends here
 
         this.getDraft = getDraft;
         this.createDraft = createDraft;
@@ -59,7 +62,9 @@
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
         this.submitPhysicalInventory = submit;
+        // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -147,7 +152,9 @@
                         hasStockOnHand ? item.stockOnHand.toString() : '',
                         hasQuantity ? item.quantity.toString() : '',
                         getLot(item, hasLot),
+                        // SIGLUS-REFACTOR: starts here
                         item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
+                        // SIGLUS-REFACTOR: ends here
                     ];
                     return _.any(searchableFields, function(field) {
                         return field.toLowerCase().contains(keyword.toLowerCase());
@@ -169,11 +176,13 @@
          * @param  {Object} draft Draft that will be saved
          * @return {Promise}      Saved draft
          */
+        // SIGLUS-REFACTOR: starts here
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
             }, stockEventService.format(draft)).$promise;
         }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -205,7 +214,9 @@
          */
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
+            // SIGLUS-REFACTOR: starts here
             return stockEventService.submit(event);
+            // SIGLUS-REFACTOR: ends here
         }
 
         function getLot(item, hasLot) {
@@ -214,6 +225,7 @@
                 (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
         }
 
+        // SIGLUS-REFACTOR: starts here
         function getInitialDraft(program, facility) {
             return resource.query({
                 program: program,
@@ -222,6 +234,6 @@
                 canInitialInventory: true
             }).$promise;
         }
-
+        // SIGLUS-REFACTOR: ends here
     }
 })();

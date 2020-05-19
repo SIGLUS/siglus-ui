@@ -15,13 +15,11 @@
 
 describe('PhysicalInventoryDraftController', function() {
 
-    // SIGLUS-REFACTOR: add autoGenerateService
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
-        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder, autoGenerateService;
-    // SIGLUS-REFACTOR: ends here
+        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder;
 
     beforeEach(function() {
 
@@ -49,13 +47,9 @@ describe('PhysicalInventoryDraftController', function() {
             spyOn(addProductsModalService, 'show');
             draftFactory = $injector.get('physicalInventoryFactory');
 
-            // SIGLUS-REFACTOR: starts here
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
-                'submitPhysicalInventory', 'deleteDraft', 'search'
+                'submitPhysicalInventory', 'deleteDraft'
             ]);
-
-            autoGenerateService = jasmine.createSpyObj('autoGenerateService', ['autoGenerateLotCode']);
-            // SIGLUS-REFACTOR: ends here
 
             stockmanagementUrlFactory = jasmine.createSpy();
             stockmanagementUrlFactory.andCallFake(function(url) {
@@ -328,24 +322,22 @@ describe('PhysicalInventoryDraftController', function() {
         // it('and choose "print" should open report and change state', function() {
         //     physicalInventoryService.submitPhysicalInventory
         //         .andReturn($q.when());
-        //     // confirmService.confirm.andReturn($q.when());
-        //     // accessTokenFactory.addAccessToken.andReturn('url');
+        //     confirmService.confirm.andReturn($q.when());
+        //     accessTokenFactory.addAccessToken.andReturn('url');
         //
         //     draft.id = 1;
         //     vm.submit();
         //     $rootScope.$apply();
         //
-        //     // expect($window.open).toHaveBeenCalledWith('url', '_blank');
-        //     // expect(accessTokenFactory.addAccessToken)
-        //     //     .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
+        //     expect($window.open).toHaveBeenCalledWith('url', '_blank');
+        //     expect(accessTokenFactory.addAccessToken)
+        //         .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
         //
-        //     // expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-        //     //     {
-        //     //         program: program.id,
-        //     //         facility: facility.id
-        //     //     }, {
-        //     //         reload: true
-        //     //     });
+        //     expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+        //         {
+        //             program: program.id,
+        //             facility: facility.id
+        //         });
         // });
         // SIGLUS-REFACTOR: ends here
 
@@ -540,10 +532,7 @@ describe('PhysicalInventoryDraftController', function() {
             physicalInventoryService: physicalInventoryService,
             stockmanagementUrlFactory: stockmanagementUrlFactory,
             accessTokenFactory: accessTokenFactory,
-            confirmService: confirmService,
-            // SIGLUS-REFACTOR: starts here
-            autoGenerateService: autoGenerateService
-            // SIGLUS-REFACTOR: ends here
+            confirmService: confirmService
         });
     }
 
