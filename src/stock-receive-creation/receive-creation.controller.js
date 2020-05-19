@@ -583,7 +583,9 @@
             $stateParams.keyword = null;
             $stateParams.displayItems = vm.displayItems;
             $stateParams.page = 0;
-            $state.go($state.current.name, $stateParams);
+            $state.go($state.current.name, $stateParams, {
+                notify: false
+            });
         }
 
         onInit();
