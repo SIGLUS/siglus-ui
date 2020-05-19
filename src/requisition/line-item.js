@@ -102,13 +102,13 @@
                     object[propertyName] = calculationFactory[fullName] ?
                         calculationFactory[fullName](this, requisition) :
                         null;
-                } else if (column.$type === COLUMN_TYPES.NUMERIC || column.$type === COLUMN_TYPES.CURRENCY) {
-                    // SIGLUS-REFACTOR: remove useless code to fix SonarQube
+                // SIGLUS-REFACTOR: remove useless code to fix SonarQube
+                // } else if (column.$type === COLUMN_TYPES.NUMERIC || column.$type === COLUMN_TYPES.CURRENCY) {
                     // checkIfNullOrZero(object[propertyName]);
-                    // SIGLUS-REFACTOR: ends here
-                } else {
+                } else if (column.$type !== COLUMN_TYPES.NUMERIC && column.$type !== COLUMN_TYPES.CURRENCY) {
                     object[propertyName] = object[propertyName] ? object[propertyName] : '';
                 }
+                // SIGLUS-REFACTOR: ends here
             }
         }
 
