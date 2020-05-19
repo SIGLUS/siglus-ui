@@ -28,26 +28,25 @@
         .module('stock-physical-inventory-draft')
         .controller('PhysicalInventoryDraftController', controller);
 
-    // SIGLUS-REFACTOR: add '$timeout', 'autoGenerateService', 'REASON_TYPES', 'REASON_CATEGORIES', 'MAX_STRING_VALUE',
-    // and 'currentUserService'
-    controller.$inject = ['$scope', '$state', '$stateParams', 'addProductsModalService',
+    controller.$inject = [
+        '$scope', '$state', '$stateParams', 'addProductsModalService',
         'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
         'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
         'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter',
-        '$timeout', 'autoGenerateService', 'REASON_TYPES', 'REASON_CATEGORIES', 'MAX_STRING_VALUE',
-        'currentUserService', 'navigationStateService'];
-    // SIGLUS-REFACTOR: ends here
+        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
+        // SIGLUS-REFACTOR: starts here
+        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService'
+        // SIGLUS-REFACTOR: ends here
+    ];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
                         chooseDateModalService, program, facility, draft, displayLineItemsGroup,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,
-                        $timeout, autoGenerateService, REASON_TYPES, REASON_CATEGORIES, MAX_STRING_VALUE,
-                        currentUserService, navigationStateService) {
+                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
+                        REASON_TYPES, MAX_STRING_VALUE, currentUserService, navigationStateService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -341,6 +340,20 @@
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name saveOnPageChange
+         *
+         * @description
+         * Save physical inventory draft on page change.
+         */
+        vm.saveOnPageChange = function() {
+            var params = {};
+            params.draft = draft;
+            return $q.resolve(params);
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
          * @name delete
          *
          * @description
@@ -591,9 +604,7 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
-            if (vm.isInitialInventory) {
-                $state.current.label = messageService.get('stockInitialInventory.initialInventory');
-            } else {
+            if (!vm.isInitialInventory) {
                 $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
                     facilityCode: facility.code,
                     facilityName: facility.name,

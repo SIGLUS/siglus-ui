@@ -188,10 +188,8 @@
         vm.removeDisplayItems = function() {
             confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
                 .then(function() {
-                    loadingModalService.open();
                     vm.addedLineItems = [];
                     vm.displayItems = [];
-                    loadingModalService.close();
                     notificationService.success(vm.key('cleared'));
                     vm.search($state.current.name);
                 });
@@ -423,7 +421,6 @@
                 });
             });
 
-            generateKitConstituentLineItem(addedLineItems);
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
                 addedLineItems, adjustmentType, signature)
                 .then(function() {
@@ -437,32 +434,6 @@
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
                 });
-        }
-
-        function generateKitConstituentLineItem(addedLineItems) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                return;
-            }
-
-            //CREDIT reason ID
-            var creditReason = reasons
-                .filter(function(reason) {
-                    return reason.reasonType === 'CREDIT';
-                })
-                .pop();
-
-            var constituentLineItems = [];
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.orderable.children.forEach(function(constituent) {
-                    constituent.reason = creditReason;
-                    constituent.occurredDate = lineItem.occurredDate;
-                    constituent.quantity = lineItem.quantity * constituent.quantity;
-                    constituentLineItems.push(constituent);
-                });
-            });
-
-            addedLineItems.push.apply(addedLineItems, constituentLineItems);
         }
 
         function findParentId(lineItem) {
