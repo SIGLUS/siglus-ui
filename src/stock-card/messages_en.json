@@ -3,5 +3,6 @@
   "stockCard.adjustment": "Quantity",
   "stockCard.binCardName": "Bin Card for ${name}",
   "stockCard.documentNumber": "Documentation No.",
-  "stockCard.viewProductStockCard.failure": "There is a  calculation problem, please reload the page."
+  "stockCard.viewProductStockCard.failure": "There is a  calculation problem, please reload the page.",
+  "stockCard.archive": "Archive"
 }

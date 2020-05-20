@@ -63,9 +63,9 @@
                                 // use soh, orderable from Stock on Hand page which store in local storage
                                 stockCard.stockOnHand = viewProductStockCard.stockOnHandOfOneProduct;
                                 stockCard.orderable = viewProductStockCard.orderable;
-                                stockCard.isViewProductCard = $stateParams.isViewProductCard;
                                 delete stockCard.lot;
                             }
+                            stockCard.isViewProductCard = isViewProductCard;
                             return stockCard;
                         });
                 }
