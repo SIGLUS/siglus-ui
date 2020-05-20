@@ -4,5 +4,9 @@
   "stockCard.binCardName": "Bin Card for ${name}",
   "stockCard.documentNumber": "Documentation No.",
   "stockCard.viewProductStockCard.failure": "There is a  calculation problem, please reload the page.",
-  "stockCard.archive": "Archive"
+  "stockCard.archive": "Archive",
+  "stockCard.cancel": "Cancel",
+  "stockCard.archiveProduct": "Are you sure you want to archive this product?",
+  "stockCard.archiveProduct.success": "Product has been successfully archived",
+  "stockCard.archiveProduct.failure": "Failure to archive the product"
 }
