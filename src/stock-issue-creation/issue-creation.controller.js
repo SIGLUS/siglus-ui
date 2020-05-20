@@ -129,6 +129,9 @@
         };
 
         vm.filterDestinationsByProduct = function(destinations, programs) {
+            if (isEmpty(programs)) {
+                return [];
+            }
             var parentIds = [];
             programs.forEach(function(program) {
                 parentIds.push(program.parentId);
@@ -364,6 +367,10 @@
                     $stateParams.isAddProduct = false;
                     vm.search(true);
                 });
+        };
+
+        vm.getProductName = function(orderable) {
+            return _.isEmpty(orderable) ? '' : $filter('productName')(orderable);
         };
 
         function isEmpty(value) {
