@@ -44,7 +44,8 @@
                 addedLineItems: undefined,
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
-                orderableGroups: undefined
+                orderableGroups: undefined,
+                isAddProduct: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {

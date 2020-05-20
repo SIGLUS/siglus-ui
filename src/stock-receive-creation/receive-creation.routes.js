@@ -47,7 +47,8 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined
+                srcDstAssignments: undefined,
+                isAddProduct: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {

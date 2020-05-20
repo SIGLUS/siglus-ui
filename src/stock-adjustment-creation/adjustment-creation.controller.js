@@ -170,6 +170,7 @@
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
+            $stateParams.isAddProduct = true;
             vm.search($state.current.name);
         };
 
@@ -259,6 +260,7 @@
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
+            $stateParams.isAddProduct = true;
             vm.search($state.current.name);
         };
 
@@ -278,6 +280,7 @@
                     vm.displayItems = [];
                     loadingModalService.close();
                     notificationService.success(vm.key('cleared'));
+                    $stateParams.isAddProduct = true;
                     vm.search($state.current.name);
                 });
         };
@@ -516,6 +519,7 @@
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
+                    $stateParams.isAddProduct = false;
                     vm.search(true);
                 });
         };
@@ -649,7 +653,7 @@
             $scope.$watch(function() {
                 return vm.addedLineItems;
             }, function(newValue, oldValue) {
-                $scope.needToConfirm = !angular.equals(newValue, oldValue);
+                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, oldValue));
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
@@ -709,9 +713,7 @@
             $stateParams.displayItems = vm.displayItems;
             $stateParams.page = 0;
             $stateParams.draft = vm.draft;
-            $state.go($state.current.name, $stateParams, {
-                notify: false
-            });
+            $state.go($state.current.name, $stateParams);
         }
         // SIGLUS-REFACTOR: ends here
 
