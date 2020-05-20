@@ -4,6 +4,7 @@
         {{'stockCard.binCardName' | message: {'name': vm.binCardName} }}
     </h2>
 
+    <button class="danger" ng-click="vm.archive()" ng-if="vm.canArchive">{{'stockCard.archive' | message}}</button>
     <!--<button class="primary" ng-click="vm.print()">{{'stockCard.print' | message}}</button>-->
     <!-- SIGLUS-REFACTOR: ends here -->
 </header>

@@ -45,6 +45,8 @@
         vm.displayedLineItems = [];
         // SIGLUS-REFACTOR: starts here
         vm.binCardName = '';
+        vm.isLoadSOHCorrectly = false;
+        vm.canArchive = false;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -58,6 +60,10 @@
          */
         vm.print = function() {
             stockCardService.print(vm.stockCard.id);
+        };
+
+        vm.archive = function() {
+            stockCardService.archiveProduct(stockCard.orderable.id);
         };
 
         function onInit() {
@@ -89,6 +95,8 @@
             vm.binCardName = stockCard.isViewProductCard
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
+            vm.isLoadSOHCorrectly = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
+            vm.canArchive = stockCard.isViewProductCard && stockCard.stockOnHand === 0 && vm.isLoadSOHCorrectly;
             // SIGLUS-REFACTOR: ends here
         }
 
@@ -125,9 +133,7 @@
 
         // SIGLUS-REFACTOR: starts here
         $scope.$on('$viewContentLoaded', function() {
-            var lastItemStockOnHand = vm.stockCard.lineItems[0].stockOnHand;
-
-            if (stockCard.isViewProductCard && lastItemStockOnHand !== stockCard.stockOnHand) {
+            if (stockCard.isViewProductCard && !vm.isLoadSOHCorrectly) {
                 alertService.error('stockCard.viewProductStockCard.failure');
             }
         });
