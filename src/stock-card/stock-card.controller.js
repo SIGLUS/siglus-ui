@@ -31,12 +31,12 @@
     controller.$inject = [
         'stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
         // SIGLUS-REFACTOR: starts here
-        'Reason', 'alertService', '$scope'
+        'Reason', 'alertService', '$scope', 'confirmService', 'notificationService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService,
-                        Reason, alertService, $scope) {
+                        Reason, alertService, $scope, confirmService, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -63,7 +63,15 @@
         };
 
         vm.archive = function() {
-            stockCardService.archiveProduct(stockCard.orderable.id);
+            confirmService.confirmDestroy('stockCard.archiveProduct', 'stockCard.archive', 'stockCard.cancel')
+                .then(function() {
+                    stockCardService.archiveProduct(stockCard.orderable.id).then(function() {
+                        notificationService.success('stockCard.archiveProduct.success');
+                        $state.go('openlmis.stockmanagement.archivedProductSummaries');
+                    }, function() {
+                        notificationService.error('stockCard.archiveProduct.failure');
+                    });
+                });
         };
 
         function onInit() {
