@@ -24,24 +24,66 @@
      * @description
      * Responsible for search and submit stock adjustments.
      */
-    angular.module('stock-adjustment-creation')
-        .config(config);
+    angular
+        .module('stock-adjustment-creation')
+        .service('stockAdjustmentCreationService', service);
 
-    config.$inject = ['$provide'];
-
-    function config($provide) {
-        $provide.decorator('stockAdjustmentCreationService', decorator);
-    }
-    decorator.$inject = [
-        '$delegate', 'stockEventService', 'ADJUSTMENT_TYPE'
+    service.$inject = [
+        '$filter', 'openlmisDateFilter', 'messageService', 'productNameFilter', 'dateUtils',
+        // SIGLUS-REFACTOR: starts here
+        // '$resource', 'stockmanagementUrlFactory',
+        'stockEventService', 'ADJUSTMENT_TYPE'
+        // SIGLUS-REFACTOR: ends here
     ];
 
-    function decorator($delegate, stockEventService, ADJUSTMENT_TYPE) {
+    function service($filter, openlmisDateFilter, messageService, productNameFilter, dateUtils, stockEventService,
+                     ADJUSTMENT_TYPE) {
+        // SIGLUS-REFACTOR: starts here
+        // var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
+        // SIGLUS-REFACTOR: ends here
 
-        $delegate.submitAdjustments = submitAdjustments;
+        this.search = search;
 
-        return $delegate;
+        this.submitAdjustments = submitAdjustments;
 
+        function search(keyword, items, hasLot) {
+            var result = [];
+
+            if (_.isEmpty(keyword)) {
+                result = items;
+            } else {
+                keyword = keyword.trim();
+                result = _.filter(items, function(item) {
+                    var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
+                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity));
+                    var searchableFields = [
+                        item.orderable.productCode,
+                        productNameFilter(item.orderable),
+                        hasStockOnHand ? item.stockOnHand.toString() : '',
+                        item.reason && item.reason.name ? item.reason.name : '',
+                        safeGet(item.reasonFreeText),
+                        hasQuantity ? item.quantity.toString() : '',
+                        getLot(item, hasLot),
+                        item.lot ? openlmisDateFilter(item.lot.expirationDate) : '',
+                        item.assignment ? item.assignment.name : '',
+                        safeGet(item.srcDstFreeText),
+                        openlmisDateFilter(dateUtils.toDate(item.occurredDate))
+                    ];
+                    return _.any(searchableFields, function(field) {
+                        // SIGLUS-REFACTOR: starts here
+                        if (!field) {
+                            return false;
+                        }
+                        // SIGLUS-REFACTOR: ends here
+                        return field.toLowerCase().contains(keyword.toLowerCase());
+                    });
+                });
+            }
+
+            return result;
+        }
+
+        // SIGLUS-REFACTOR: starts here
         function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature) {
             var event = {
                 programId: programId,
@@ -95,6 +137,16 @@
             }
             return res;
         }
+        // SIGLUS-REFACTOR: ends here
 
+        function safeGet(value) {
+            return value || '';
+        }
+
+        function getLot(item, hasLot) {
+            return item.lot ?
+                item.lot.lotCode :
+                (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
+        }
     }
 })();
