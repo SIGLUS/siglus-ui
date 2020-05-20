@@ -38,14 +38,19 @@
                     method: 'GET',
                     transformResponse: transformResponse
                 },
-                getProduct: {
+                getProductStockCard: {
                     url: stockmanagementUrlFactory('/api/siglusintegration/stockCards/orderable'),
                     method: 'GET'
+                },
+                archiveProduct: {
+                    url: stockmanagementUrlFactory('api/siglusintegration/archiveProduct/:orderableId'),
+                    method: 'POST'
                 }
             }
         );
 
         this.getProductStockCard = getProductStockCard;
+        this.archiveProduct = archiveProduct;
         // SIGLUS-REFACTOR: ends here
         this.getStockCard = getStockCard;
         this.print = print;
@@ -95,10 +100,27 @@
          * @param {String} id orderable id
          * @return {Promise} stock card promise.
          */
-        function getProductStockCard(productId) {
-            return resource.getProduct({
-                id: productId
+        function getProductStockCard(orderableId) {
+            return resource.getProductStockCard({
+                id: orderableId
             }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card.stockCardService
+         * @name archiveProduct
+         *
+         * @description
+         * Archive product by id.
+         *
+         * @param {String} orderableId orderable id
+         * @return {Promise} orderable promise.
+         */
+        function archiveProduct(orderableId) {
+            return resource.archiveProduct({
+                orderableId: orderableId
+            }, {}).$promise;
         }
         // SIGLUS-REFACTOR: ends here
     }
