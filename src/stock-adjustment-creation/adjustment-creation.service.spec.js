@@ -161,7 +161,9 @@ describe('stockAdjustmentCreationService', function() {
             var facilityId = 'f01';
             var orderableId = 'o01';
             var reasonId = 'r01';
-            var date = new Date();
+            // SIGLUS-REFACTOR: starts here
+            var date = new Date('2020-05-20');
+            // SIGLUS-REFACTOR: ends here
             var sourceId = 'wh-001';
             var srcDstFreeText = 'donate';
             var lineItems = [{
@@ -208,9 +210,9 @@ describe('stockAdjustmentCreationService', function() {
                     extraData: {
                         vvmStatus: 'STAGE_1',
                         lotCode: null,
-                        expirationDate: null
+                        expirationDate: 'Invalid date'
                     },
-                    occurredDate: date,
+                    occurredDate: '2020-05-20',
                     reasonId: reasonId,
                     documentationNo: '',
                     // SIGLUS-REFACTOR: ends here
