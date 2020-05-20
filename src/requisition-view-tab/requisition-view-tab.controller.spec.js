@@ -61,6 +61,10 @@ describe('ViewTabController', function() {
             ])
             .build();
 
+        // SIGLUS-REFACTOR: starts here
+        this.requisition.extraData = {};
+        // SIGLUS-REFACTOR: ends here
+
         this.initController = initController;
 
         this.availableFullSupplyProducts = [
