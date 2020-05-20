@@ -33,6 +33,11 @@ describe('stockCardService', function() {
         this.stockCard = new this.StockCardDataBuilder()
             .withLot(new this.LotDataBuilder().build())
             .build();
+        // SIGLUS-REFACTOR: starts here
+        this.orderable = {
+            id: 'id'
+        };
+        // SIGLUS-REFACTOR: ends here
     });
 
     describe('getStockCard', function() {
@@ -65,6 +70,67 @@ describe('stockCardService', function() {
             expect(result.lot.expirationDate).toEqual(this.dateUtils.toDate(this.stockCard.lot.expirationDate));
         });
     });
+
+    // SIGLUS-REFACTOR: starts here
+    describe('getProductStockCard', function() {
+
+        beforeEach(function() {
+            this.$httpBackend.when(
+                'GET', this.stockmanagementUrlFactory('/api/siglusintegration/stockCards/orderable?id='
+                + this.orderable.id)
+            )
+                .respond(200, this.stockCard);
+        });
+
+        it('should return promise', function() {
+            var result = this.stockCardService.getProductStockCard(this.orderable.id);
+            this.$httpBackend.flush();
+
+            expect(result.then).not.toBeUndefined();
+        });
+
+        it('should resolve to stock card', function() {
+            var result;
+
+            this.stockCardService.getProductStockCard(this.orderable.id).then(function(data) {
+                result = data;
+            });
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson(this.stockCard));
+            expect(result.lot.expirationDate).toEqual(this.stockCard.lot.expirationDate);
+        });
+    });
+
+    describe('archiveProduct', function() {
+
+        beforeEach(function() {
+            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archiveProduct/'
+                + this.orderable.id))
+                .respond(200, this.orderable);
+        });
+
+        it('should return promise', function() {
+            var result = this.stockCardService.archiveProduct(this.orderable.id);
+            this.$httpBackend.flush();
+
+            expect(result.then).not.toBeUndefined();
+        });
+
+        it('should return 200', function() {
+            var result;
+
+            this.stockCardService.archiveProduct(this.orderable.id).then(function(data) {
+                result = data;
+            });
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson(this.orderable));
+        });
+    });
+    // SIGLUS-REFACTOR: ends here
 
     afterEach(function() {
         this.$httpBackend.verifyNoOutstandingRequest();
