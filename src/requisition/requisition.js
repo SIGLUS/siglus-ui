@@ -118,7 +118,6 @@
         Requisition.prototype.deleteLineItem = deleteLineItem;
         Requisition.prototype.unskipFullSupplyProducts = unskipFullSupplyProducts;
         // SIGLUS-REFACTOR: starts here
-        Requisition.prototype.$isAfterSubmit = isAfterSubmit;
         Requisition.prototype.addLineItemWithLineItem = addLineItemWithLineItem;
         // SIGLUS-REFACTOR: ends here
 
@@ -448,12 +447,6 @@
             return [REQUISITION_STATUS.AUTHORIZED, REQUISITION_STATUS.IN_APPROVAL,
                 REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED].indexOf(this.status) !== -1;
         }
-
-        // SIGLUS-REFACTOR: starts here
-        function isAfterSubmit() {
-            return this.$isSubmitted() || this.$isAfterAuthorize();
-        }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method

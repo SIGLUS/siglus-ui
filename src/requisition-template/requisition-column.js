@@ -28,9 +28,14 @@
         .module('requisition-template')
         .factory('RequisitionColumn', requisitionColumn);
 
-    requisitionColumn.$inject = ['TEMPLATE_COLUMNS', 'COLUMN_SOURCES'];
+    requisitionColumn.$inject = [
+        'TEMPLATE_COLUMNS', 'COLUMN_SOURCES',
+        // SIGLUS-REFACTOR: starts here
+        'authorizationService', 'REQUISITION_RIGHTS'
+        // SIGLUS-REFACTOR: ends here
+    ];
 
-    function requisitionColumn(TEMPLATE_COLUMNS, COLUMN_SOURCES) {
+    function requisitionColumn(TEMPLATE_COLUMNS, COLUMN_SOURCES, authorizationService, REQUISITION_RIGHTS) {
 
         /**
          * @ngdoc property
@@ -209,7 +214,29 @@
         }
 
         function displayQuantityAuthorized(column, requisition) {
-            return column.isDisplayed && (requisition.isHistory || requisition.$isAfterSubmit());
+            return column.isDisplayed && (requisition.isHistory ||
+                hasAuthorizeRight(requisition) || hasApproveRight(requisition)
+            );
+        }
+
+        function hasAuthorizeRight(requisition) {
+            return authorizationService.hasRight(
+                REQUISITION_RIGHTS.REQUISITION_AUTHORIZE,
+                {
+                    programId: requisition.program.id,
+                    facilityId: requisition.facility.id
+                }
+            );
+        }
+
+        function hasApproveRight(requisition) {
+            return authorizationService.hasRight(
+                REQUISITION_RIGHTS.REQUISITION_APPROVE,
+                {
+                    programId: requisition.program.id,
+                    facilityId: requisition.facility.id
+                }
+            );
         }
 
         function displayQuantityApproved(column, requisition) {

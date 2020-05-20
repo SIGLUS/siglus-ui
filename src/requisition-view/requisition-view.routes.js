@@ -39,11 +39,6 @@
                 REQUISITION_RIGHTS.REQUISITION_APPROVE,
                 FULFILLMENT_RIGHTS.ORDERS_EDIT
             ],
-            params: {
-                // SIGLUS-REFACTOR: starts here
-                stopSetDefaultValue: false
-                // SIGLUS-REFACTOR: ends here
-            },
             resolve: {
                 user: function(currentUserService) {
                     return currentUserService.getUserInfo();

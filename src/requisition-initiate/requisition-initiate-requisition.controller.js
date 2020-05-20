@@ -33,15 +33,13 @@
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
         'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'requisitionDatePickerService',
-        'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'hasAuthorizeRight',
-        'TEMPLATE_COLUMNS'
+        'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'hasAuthorizeRight'
     ];
 
     function Controller(requisitionService, $state, loadingModalService, notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods, canInitiateRnr, UuidGenerator,
                         confirmService, requisitionInitiateService, REQUISITION_STATUS, requisitionDatePickerService,
-                        alertService, dateUtils, moment, inventoryDates, program, hasAuthorizeRight,
-                        TEMPLATE_COLUMNS) {
+                        alertService, dateUtils, moment, inventoryDates, program, hasAuthorizeRight) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
@@ -146,7 +144,6 @@
             requisitionService.initiate($stateParams.facility, $stateParams.program,
                 selectedPeriod.id, vm.emergency, key, inventoryDate)
                 .then(function(requisition) {
-                    populateRequestedAndAuthorizedQuantity(requisition);
                     goToInitiatedRequisition(requisition);
                 })
                 .catch(function() {
@@ -154,21 +151,6 @@
                     loadingModalService.close();
                     key = uuidGenerator.generate();
                 });
-        }
-
-        function populateRequestedAndAuthorizedQuantity(requisition) {
-            if (vm.canInitiateRnr &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY].$display) {
-                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
-                    lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
-                });
-            }
-            if (vm.hasAuthorizeRight &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].$display) {
-                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
-                    lineItem.authorizedQuantity = lineItem.requestedQuantity;
-                });
-            }
         }
 
         /**

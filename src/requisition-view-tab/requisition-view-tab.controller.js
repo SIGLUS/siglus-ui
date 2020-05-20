@@ -34,7 +34,7 @@
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService'
+        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -42,7 +42,7 @@
                                messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
-                               requisitionService, loadingModalService) {
+                               requisitionService, loadingModalService, COLUMN_SOURCES) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -147,8 +147,9 @@
         vm.columns = undefined;
 
         function onInit() {
+            vm.lineItems = lineItems;
+            vm.items = items;
             vm.requisition = requisition;
-
             vm.columns = columns;
             vm.userCanEdit = canAuthorize || canSubmit;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
@@ -157,25 +158,27 @@
             vm.showSkipControls = showSkipControls();
             vm.noProductsMessage = getNoProductsMessage();
             vm.canApproveAndReject = canApproveAndReject;
-            // SIGLUS-REFACTOR: starts here
-            vm.lineItems = _.map(lineItems, setDefaultValue);
-            vm.items = _.map(items, setDefaultValue);
             vm.paginationId = fullSupply ? 'fullSupplyList' : 'nonFullSupplyList';
+            // SIGLUS-REFACTOR: starts here
+            populateDefaultValue();
             // SIGLUS-REFACTOR: ends here
         }
 
         // SIGLUS-REFACTOR: starts here
-        function setDefaultValue(line) {
+        function populateDefaultValue() {
             if (vm.requisition.extraData.isSaved || vm.requisition.$modified) {
-                return line;
+                return;
             }
             if (canSubmit) {
-                line.requestedQuantity = line.theoreticalQuantityToRequest;
+                angular.forEach(vm.requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
+                });
             }
             if (canAuthorize || canSubmitAndAuthorize) {
-                line.authorizedQuantity = line.requestedQuantity;
+                angular.forEach(vm.requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.authorizedQuantity = lineItem.requestedQuantity;
+                });
             }
-            return line;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -313,52 +316,50 @@
             })
             // SIGLUS-REFACTOR: starts here
                 .then(function(selectedProducts) {
-
-                    if (!vm.requisition.emergency) {
-                        selectedProducts.forEach(function(product) {
-                            var added = vm.requisition.addLineItemWithLineItem({
-                                orderable: product
-                            });
-                            var columns = vm.requisition.template.getColumns(false);
-                            columns.forEach(function(column) {
-                                added[column.name] = 0;
-                            });
-                        });
-                        refreshLineItems();
-                        return;
+                    if (vm.requisition.emergency) {
+                        return prepareLineItemsForEmergency(selectedProducts);
                     }
+                    return prepareLineItemsForRegular(selectedProducts);
+                })
+                .then(function() {
+                    refreshLineItems();
+                });
+            // SIGLUS-REFACTOR: ends here
+        }
 
-                    loadingModalService.open();
-                    var ids = selectedProducts.map(function(product) {
-                        return product.id;
+        // SIGLUS-REFACTOR: starts here
+        function prepareLineItemsForRegular(selectedProducts) {
+            selectedProducts.forEach(function(product) {
+                var lineItem = angular.copy(product);
+                vm.columns.forEach(function(column) {
+                    if (column.source !== COLUMN_SOURCES.USER_INPUT) {
+                        lineItem[column.name] = 0;
+                    }
+                });
+                lineItem.orderable = product;
+                vm.requisition.addLineItemWithLineItem(lineItem);
+            });
+        }
+
+        function prepareLineItemsForEmergency(selectedProducts) {
+            var ids = selectedProducts.map(function(product) {
+                return product.id;
+            });
+            loadingModalService.open();
+            return requisitionService.getOrderableLineItem(vm.requisition.id, ids)
+                .then(function(lineItems) {
+                    lineItems.forEach(function(lineItem) {
+                        lineItem.orderable = _.find(selectedProducts, function(product) {
+                            return lineItem.orderable.id === product.id;
+                        });
+                        vm.requisition.addLineItemWithLineItem(lineItem);
                     });
-
-                    requisitionService.getOrderableLineItem(vm.requisition.id, ids).then(function(response) {
-                        selectedProducts.forEach(function(product) {
-                            var lineItem = response.find(function(item) {
-                                if (item.orderable.id === product.id) {
-                                    // response from createLineItem orderable only has id&version,
-                                    // we have to manually fill the product info into it
-                                    item.orderable = product;
-                                    return true;
-                                }
-                                return false;
-                            });
-
-                            if (lineItem) {
-                                vm.requisition.addLineItemWithLineItem(lineItem);
-                            }
-                        });
-                    })
-                        .finally(function() {
-                        // SIGLUS-REFACTOR: ends here
-                            refreshLineItems();
-                            // SIGLUS-REFACTOR: starts here
-                            loadingModalService.close();
-                            // SIGLUS-REFACTOR: ends here
-                        });
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         }
+        // SIGLUS-REFACTOR: ends here
 
         function selectProducts(availableProducts) {
             refreshLineItems();
