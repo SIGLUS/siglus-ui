@@ -83,7 +83,12 @@
                 program: program,
                 facility: facility,
                 isDraft: true
-            }).$promise;
+            })
+                .$promise
+                .then(function(response) {
+                    stockEventService.formatResponse(response[0]);
+                    return response;
+                });
         }
 
         /**
@@ -100,7 +105,11 @@
         function getPhysicalInventory(id) {
             return resource.get({
                 id: id
-            }).$promise;
+            })
+                .$promise
+                .then(function(response) {
+                    return stockEventService.formatResponse(response);
+                });
         }
 
         /**
@@ -180,7 +189,7 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, stockEventService.format(draft)).$promise;
+            }, stockEventService.formatPayload(draft)).$promise;
         }
         // SIGLUS-REFACTOR: ends here
 

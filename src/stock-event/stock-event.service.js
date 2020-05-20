@@ -30,7 +30,8 @@
 
         return {
             submit: submitStockEvent,
-            format: formatPayload
+            formatPayload: formatPayload,
+            formatResponse: formatResponse
         };
 
         function submitStockEvent(event) {
@@ -42,8 +43,10 @@
                 if (!lineItem.extraData) {
                     lineItem.extraData = {};
                 }
-                lineItem.extraData.lotCode = lineItem.lotCode;
-                lineItem.extraData.expirationDate = moment(lineItem.expirationDate).format('YYYY-MM-DD');
+                if (!lineItem.lotId) {
+                    lineItem.extraData.lotCode = lineItem.lotCode;
+                    lineItem.extraData.expirationDate = moment(lineItem.expirationDate).format('YYYY-MM-DD');
+                }
                 lineItem.extraData.stockCardId = lineItem.stockCardId;
                 lineItem.occurredDate = moment(lineItem.occurredDate).format('YYYY-MM-DD');
 
@@ -53,6 +56,18 @@
             });
 
             return angular.toJson(payload);
+        }
+
+        function formatResponse(response) {
+            response.lineItems.forEach(function(lineItem) {
+                if (lineItem.extraData) {
+                    lineItem.lotCode = lineItem.extraData.lotCode;
+                    lineItem.expirationDate = lineItem.extraData.expirationDate;
+                    lineItem.stockCardId = lineItem.extraData.stockCardId;
+                }
+            });
+
+            return response;
         }
     }
 
