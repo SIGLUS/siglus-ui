@@ -51,7 +51,7 @@
             <tbody>
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
-                <td>{{lineItem.orderable | productName}}</td>
+                <td>{{vm.getProductName(lineItem.orderable)}}</td>
                 <td>{{lineItem.lot.lotCode}}</td>
                 <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td class="text-align-right">{{lineItem.$previewSOH}}</td>
