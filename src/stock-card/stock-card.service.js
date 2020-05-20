@@ -43,7 +43,7 @@
                     method: 'GET'
                 },
                 archiveProduct: {
-                    url: stockmanagementUrlFactory('api/siglusintegration/archiveProduct/:orderableId'),
+                    url: stockmanagementUrlFactory('/api/siglusintegration/archiveProduct/:orderableId'),
                     method: 'POST'
                 }
             }

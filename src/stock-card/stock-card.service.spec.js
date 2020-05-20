@@ -118,7 +118,7 @@ describe('stockCardService', function() {
             expect(result.then).not.toBeUndefined();
         });
 
-        it('should return 200', function() {
+        it('should resolve to orderable', function() {
             var result;
 
             this.stockCardService.archiveProduct(this.orderable.id).then(function(data) {
