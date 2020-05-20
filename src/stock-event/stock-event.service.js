@@ -18,9 +18,9 @@
         .module('stock-event')
         .service('stockEventService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'moment'];
 
-    function service($resource, stockmanagementUrlFactory) {
+    function service($resource, stockmanagementUrlFactory, moment) {
         var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'), {}, {
             save: {
                 method: 'POST',
@@ -39,15 +39,17 @@
 
         function formatPayload(payload) {
             payload.lineItems.forEach(function(lineItem) {
-                if (lineItem.extraData) {
-                    lineItem.extraData.lotCode = lineItem.lotCode;
-                    lineItem.extraData.expirationDate = lineItem.expirationDate;
-                    lineItem.extraData.stockCardId = lineItem.stockCardId;
-
-                    delete lineItem.lotCode;
-                    delete lineItem.expirationDate;
-                    delete lineItem.stockCardId;
+                if (!lineItem.extraData) {
+                    lineItem.extraData = {};
                 }
+                lineItem.extraData.lotCode = lineItem.lotCode;
+                lineItem.extraData.expirationDate = moment(lineItem.expirationDate).format('YYYY-MM-DD');
+                lineItem.extraData.stockCardId = lineItem.stockCardId;
+                lineItem.occurredDate = moment(lineItem.occurredDate).format('YYYY-MM-DD');
+
+                delete lineItem.lotCode;
+                delete lineItem.expirationDate;
+                delete lineItem.stockCardId;
             });
 
             return angular.toJson(payload);
