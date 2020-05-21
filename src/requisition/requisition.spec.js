@@ -363,7 +363,8 @@ describe('Requisition', function() {
             this.requisition.status = this.REQUISITION_STATUS.APPROVED;
 
             this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/approve'))
+                .whenPOST(this.requisitionUrlFactory('/api/siglusintegration/requisitions/'
+                    + this.requisition.id + '/approve'))
                 .respond(200, this.requisition);
 
             this.requisition.$availableOffline = true;
@@ -386,7 +387,8 @@ describe('Requisition', function() {
             this.requisition.status = this.REQUISITION_STATUS.APPROVED;
 
             this.$httpBackend
-                .whenPOST(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/approve'))
+                .whenPOST(this.requisitionUrlFactory('/api/siglusintegration/requisitions/'
+                    + this.requisition.id + '/approve'))
                 .respond(200, this.requisition);
 
             this.requisition.$availableOffline = false;

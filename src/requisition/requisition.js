@@ -65,7 +65,7 @@
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
                     },
-                    url: requisitionUrlFactory('/api/requisitions/:id/approve'),
+                    url: requisitionUrlFactory('/api/siglusintegration/requisitions/:id/approve'),
                     method: 'POST'
                 },
                 reject: {
