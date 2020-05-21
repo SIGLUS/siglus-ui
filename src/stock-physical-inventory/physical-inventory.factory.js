@@ -190,15 +190,15 @@
                             return initialInventory;
                         });
                 }, function(err) {
-                    loadingModalService.close();
                     if (err.status === 406) {
                         currentUserService.clearCache();
                         navigationStateService.clearStatesAvailability();
+                        $state.go('openlmis.home', {}, {
+                            reload: true
+                        });
+                        loadingModalService.close();
                         alertService.error('stockInitialInventory.initialFailed');
                     }
-                    $state.go('openlmis.home', {}, {
-                        reload: true
-                    });
                 });
         }
         // SIGLUS-REFACTOR: ends here
