@@ -7,6 +7,6 @@
   "stockCard.archive": "Archive",
   "stockCard.cancel": "Cancel",
   "stockCard.archiveProduct": "Are you sure you want to archive this product?",
-  "stockCard.archiveProduct.success": "Product has been successfully archived",
+  "stockCard.archiveProduct.success": "Product has been successfully archived!\n Related draft has been updated",
   "stockCard.archiveProduct.failure": "Failure to archive the product"
 }
