@@ -65,7 +65,7 @@
                 transformResponse: transformRequisitionSearchResponse
             },
             forApproval: {
-                url: requisitionUrlFactory('/api/requisitions/requisitionsForApproval'),
+                url: requisitionUrlFactory('/api/siglusintegration/requisitions/requisitionsForApproval'),
                 method: 'GET',
                 transformResponse: transformRequisitionListResponse
             },
