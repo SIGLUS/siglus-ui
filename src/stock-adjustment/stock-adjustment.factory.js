@@ -71,7 +71,11 @@
             return getMapOfIdAndLot(draft.lineItems).then(function(mapOfIdAndLot) {
                 var newLineItems = [];
                 draft.lineItems.forEach(function(draftLineItem) {
-                    var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {};
+                    // set default value for orderable
+                    var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {
+                        programs: [],
+                        dispensable: {}
+                    };
                     var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
                     lot.lotCode = draftLineItem.lotCode;
                     lot.expirationDate = draftLineItem.expirationDate;
