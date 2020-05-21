@@ -31,12 +31,13 @@
     controller.$inject = [
         'stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
         // SIGLUS-REFACTOR: starts here
-        'Reason', 'alertService', '$scope', 'confirmService', 'notificationService'
+        'Reason', 'alertService', '$scope', 'confirmService', 'notificationService', 'loadingModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService,
-                        Reason, alertService, $scope, confirmService, notificationService) {
+                        Reason, alertService, $scope, confirmService, notificationService,
+                        loadingModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -45,7 +46,7 @@
         vm.displayedLineItems = [];
         // SIGLUS-REFACTOR: starts here
         vm.binCardName = '';
-        vm.isLoadSOHCorrectly = false;
+        vm.isSOHCorrect = false;
         vm.canArchive = false;
         // SIGLUS-REFACTOR: ends here
 
@@ -65,10 +66,14 @@
         vm.archive = function() {
             confirmService.confirmDestroy('stockCard.archiveProduct', 'stockCard.archive', 'stockCard.cancel')
                 .then(function() {
+                    loadingModalService.open();
                     stockCardService.archiveProduct(stockCard.orderable.id).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
-                        $state.go('openlmis.stockmanagement.archivedProductSummaries');
+                        $state.go('openlmis.stockmanagement.archivedProductSummaries', {
+                            program: stockCard.program.id
+                        });
                     }, function() {
+                        loadingModalService.close();
                         notificationService.error('stockCard.archiveProduct.failure');
                     });
                 });
@@ -103,8 +108,8 @@
             vm.binCardName = stockCard.isViewProductCard
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
-            vm.isLoadSOHCorrectly = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
-            vm.canArchive = stockCard.isViewProductCard && stockCard.stockOnHand === 0 && vm.isLoadSOHCorrectly;
+            vm.isSOHCorrect = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
+            vm.canArchive = stockCard.isViewProductCard && stockCard.stockOnHand === 0 && vm.isSOHCorrect;
             // SIGLUS-REFACTOR: ends here
         }
 
@@ -141,7 +146,7 @@
 
         // SIGLUS-REFACTOR: starts here
         $scope.$on('$viewContentLoaded', function() {
-            if (stockCard.isViewProductCard && !vm.isLoadSOHCorrectly) {
+            if (stockCard.isViewProductCard && !vm.isSOHCorrect) {
                 alertService.error('stockCard.viewProductStockCard.failure');
             }
         });
