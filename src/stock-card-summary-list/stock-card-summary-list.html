@@ -48,7 +48,8 @@
                 <button ng-if="summary.orderable"
                         type="button"
                         ng-click="vm.viewProductStockCard({
-                                stockOnHandOfOneProduct: summary.stockOnHand
+                                stockOnHandOfOneProduct: summary.stockOnHand,
+                                orderable: summary.orderable
                             })"
                         class="primary">
                     {{'stockCardSummaryList.view'| message}}
