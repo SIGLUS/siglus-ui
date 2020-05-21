@@ -59,14 +59,15 @@
         }
 
         function formatResponse(response) {
-            response.lineItems.forEach(function(lineItem) {
-                if (lineItem.extraData) {
-                    lineItem.lotCode = lineItem.extraData.lotCode;
-                    lineItem.expirationDate = lineItem.extraData.expirationDate;
-                    lineItem.stockCardId = lineItem.extraData.stockCardId;
-                }
-            });
-
+            if (response && response.lineItems) {
+                response.lineItems.forEach(function(lineItem) {
+                    if (lineItem.extraData) {
+                        lineItem.lotCode = lineItem.extraData.lotCode;
+                        lineItem.expirationDate = lineItem.extraData.expirationDate;
+                        lineItem.stockCardId = lineItem.extraData.stockCardId;
+                    }
+                });
+            }
             return response;
         }
     }
