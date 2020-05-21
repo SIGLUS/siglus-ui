@@ -62,7 +62,6 @@
                             if (isViewProductCard) {
                                 // use soh, orderable from Stock on Hand page which store in local storage
                                 stockCard.stockOnHand = viewProductStockCard.stockOnHandOfOneProduct;
-                                stockCard.orderable = viewProductStockCard.orderable;
                                 delete stockCard.lot;
                             }
                             stockCard.isViewProductCard = isViewProductCard;
