@@ -63,6 +63,9 @@
                             paramsCopy.facilityId = stateParams.facility;
                             paramsCopy.programId = stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
+                            // SIGLUS-REFACTOR: starts here
+                            paramsCopy.excludeArchived = true;
+                            // SIGLUS-REFACTOR: ends here
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
@@ -71,7 +74,7 @@
                             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
                                 .query(paramsCopy);
                         }
-                        // SIGLUS-REFACTOR: ends here
+                        // SIGLUS-REFACTOR: starts here
                         return [];
                         // SIGLUS-REFACTOR: ends here
                     }, {

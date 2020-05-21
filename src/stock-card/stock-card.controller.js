@@ -63,6 +63,7 @@
             stockCardService.print(vm.stockCard.id);
         };
 
+        // SIGLUS-REFACTOR: starts here
         vm.archive = function() {
             confirmService.confirmDestroy('stockCard.archiveProduct', 'stockCard.archive', 'stockCard.cancel')
                 .then(function() {
@@ -78,6 +79,7 @@
                     });
                 });
         };
+        // SIGLUS-REFACTOR: ends here
 
         function onInit() {
             $state.current.label = stockCard.orderable.fullProductName;
@@ -109,7 +111,8 @@
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
             vm.isSOHCorrect = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
-            vm.canArchive = stockCard.isViewProductCard && stockCard.stockOnHand === 0 && vm.isSOHCorrect;
+            vm.canArchive = stockCard.isViewProductCard && stockCard.stockOnHand === 0
+                && vm.isSOHCorrect && !stockCard.orderable.inKit;
             // SIGLUS-REFACTOR: ends here
         }
 
