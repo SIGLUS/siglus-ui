@@ -175,7 +175,7 @@ describe('physicalInventoryFactory', function() {
                 programId: programId,
                 facilityId: facilityId,
                 // SIGLUS-REFACTOR: starts here
-                excludeArchived : true
+                excludeArchived: true
                 // SIGLUS-REFACTOR: ends here
             });
         });
@@ -310,7 +310,7 @@ describe('physicalInventoryFactory', function() {
                     programId: draft.programId,
                     facilityId: draft.facilityId,
                     // SIGLUS-REFACTOR: starts here
-                    excludeArchived : true
+                    excludeArchived: true
                     // SIGLUS-REFACTOR: ends here
                 });
             });
