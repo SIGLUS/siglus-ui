@@ -17,7 +17,7 @@ describe('StockCardController', function() {
 
     var vm, $state, stockCardService, stockCardId, debitReason, creditReason, ReasonDataBuilder, messageService;
     // SIGLUS-REFACTOR: starts here
-    var alertService, $scope;
+    var alertService, $scope, $q, $rootScope, confirmService, notificationService;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -29,7 +29,11 @@ describe('StockCardController', function() {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             messageService = $injector.get('messageService');
             // SIGLUS-REFACTOR: starts here
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
             alertService = $injector.get('alertService');
+            confirmService = $injector.get('confirmService');
+            notificationService = $injector.get('notificationService');
             // SIGLUS-REFACTOR: ends here
 
             stockCardId = 123;
@@ -69,10 +73,8 @@ describe('StockCardController', function() {
                 ],
                 // SIGLUS-REFACTOR: starts here
                 program: {}
-                // SIGLUS-REFACTOR: ends here
             };
 
-            // SIGLUS-REFACTOR: starts here
             $scope = {
                 $on: function() {}
             };
@@ -82,7 +84,9 @@ describe('StockCardController', function() {
                 stockCard: stockCard,
                 $state: $state,
                 stockCardService: stockCardService,
-                alertService: alertService
+                alertService: alertService,
+                confirmService: confirmService,
+                notificationService: notificationService
             });
             // SIGLUS-REFACTOR: ends here
         });
@@ -197,4 +201,43 @@ describe('StockCardController', function() {
         });
     });
 
+    // SIGLUS-REFACTOR: starts here
+    describe('archive', function() {
+
+        beforeEach(function() {
+            vm.$onInit();
+            spyOn(confirmService, 'confirmDestroy');
+            spyOn(notificationService, 'success');
+            spyOn(notificationService, 'error');
+            spyOn($state, 'go');
+            confirmService.confirmDestroy.andReturn($q.resolve());
+        });
+
+        it('should rediect with proper state params after success', function() {
+            spyOn(stockCardService, 'archiveProduct');
+            stockCardService.archiveProduct.andReturn($q.resolve());
+
+            vm.archive();
+            $rootScope.$apply();
+
+            expect(notificationService.error).not.toHaveBeenCalled();
+            expect(notificationService.success).toHaveBeenCalledWith('stockCard.archiveProduct.success');
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.archivedProductSummaries', {
+                program: vm.stockCard.program.id
+            });
+        });
+
+        it('should not rediect after error', function() {
+            spyOn(stockCardService, 'archiveProduct');
+            stockCardService.archiveProduct.andReturn($q.reject());
+
+            vm.archive();
+            $rootScope.$apply();
+
+            expect($state.go).not.toHaveBeenCalled();
+            expect(notificationService.error).toHaveBeenCalledWith('stockCard.archiveProduct.failure');
+            expect(notificationService.success).not.toHaveBeenCalled();
+        });
+    });
+    // SIGLUS-REFACTOR: ends here
 });
