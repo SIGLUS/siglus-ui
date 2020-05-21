@@ -241,7 +241,12 @@
                 facility: facility,
                 isDraft: true,
                 canInitialInventory: true
-            }).$promise;
+            })
+                .$promise
+                .then(function(response) {
+                    stockEventService.formatResponse(response[0]);
+                    return response;
+                });
         }
         // SIGLUS-REFACTOR: ends here
     }
