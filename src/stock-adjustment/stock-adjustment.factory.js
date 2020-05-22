@@ -81,7 +81,8 @@
                     lot.expirationDate = draftLineItem.expirationDate;
                     var soh = getStockOnHand(
                         orderableGroups,
-                        draftLineItem.orderableId
+                        draftLineItem.orderableId,
+                        draftLineItem.lotId
                     );
                     var program = orderable.programs && orderable.programs[0];
                     var parentId = program && program.parentId;
@@ -166,11 +167,16 @@
                 });
         }
 
-        function getStockOnHand(orderableGroups, orderableId) {
+        function getStockOnHand(orderableGroups, orderableId, lotId) {
             var stockOnHand = null;
             _.forEach(orderableGroups, function(orderableGroup) {
                 _.forEach(orderableGroup, function(orderable) {
-                    if (orderable.orderable.id === orderableId) {
+                    if (_.isEmpty(lotId)) {
+                        if (_.isEmpty(orderable.lot) && orderable.orderable && orderable.orderable.id === orderableId) {
+                            stockOnHand = orderable.stockOnHand;
+                        }
+                    } else if (orderable.lot && orderable.lot.id === lotId && orderable.orderable &&
+                        orderable.orderable.id === orderableId) {
                         stockOnHand = orderable.stockOnHand;
                     }
                 });
