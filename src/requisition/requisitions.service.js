@@ -64,6 +64,11 @@
                 method: 'GET',
                 transformResponse: transformRequisitionSearchResponse
             },
+            searchOriginal: {
+                url: requisitionUrlFactory('/api/requisitions/search'),
+                method: 'GET',
+                transformResponse: transformRequisitionSearchResponse
+            },
             forApproval: {
                 url: requisitionUrlFactory('/api/requisitions/requisitionsForApproval'),
                 method: 'GET',
@@ -100,6 +105,7 @@
             get: get,
             initiate: initiate,
             search: search,
+            searchOriginal: searchOriginal,
             forApproval: forApproval,
             forConvert: forConvert,
             convertToOrder: convertToOrder,
@@ -233,6 +239,13 @@
                 requisitionCacheService.search(searchParams) :
                 resource.search(searchParams).$promise;
         }
+        // SIGLUS-REFACTOR: starts here
+        function searchOriginal(offline, searchParams) {
+            return offline ?
+                requisitionCacheService.search(searchParams) :
+                resource.searchOriginal(searchParams).$promise;
+        }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
