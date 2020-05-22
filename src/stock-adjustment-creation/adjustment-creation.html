@@ -51,7 +51,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="lineItem in vm.items track by $index">
+            <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
                 <td ng-if="!lineItem.isKit">
