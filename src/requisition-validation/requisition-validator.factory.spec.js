@@ -53,7 +53,7 @@ describe('requisitionValidator', function() {
 
         lineItem = lineItemSpy('One');
 
-        var template = jasmine.createSpyObj('template', ['getColumns']);
+        var template = jasmine.createSpyObj('template', ['getColumns', 'extension']);
         template.getColumns.andCallFake(function(nonFullSupply) {
             return nonFullSupply ? nonFullSupplyColumns() : fullSupplyColumns();
         });
