@@ -24,9 +24,7 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.requisitions.search', {
-            // SIGLUS-REFACTOR: starts here
-            showInNavigation: false,
-            // SIGLUS-REFACTOR: ends here
+            showInNavigation: true,
             isOffline: true,
             label: 'requisitionSearch.view',
             url: '/view?program&facility&initiatedDateFrom&initiatedDateTo&page&size&offline&sort&requisitionStatus',
@@ -48,7 +46,9 @@
                         if (stateParams.facility) {
                             var offlineFlag = stateParams.offline;
                             delete stateParams.offline;
-                            return requisitionService.search(offlineFlag === 'true', stateParams);
+                            // SIGLUS-REFACTOR: starts here
+                            return requisitionService.searchOriginal(offlineFlag === 'true', stateParams);
+                            // SIGLUS-REFACTOR: ends here
                         }
                         return undefined;
                     });
