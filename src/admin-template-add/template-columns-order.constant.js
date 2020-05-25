@@ -44,7 +44,8 @@
             theoreticalQuantityToRequest: 12,
             requestedQuantity: 13,
             authorizedQuantity: 14,
-            approvedQuantity: 15
+            suggestedQuantity: 15,
+            approvedQuantity: 16
         };
 
         return {
