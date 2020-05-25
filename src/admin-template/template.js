@@ -65,6 +65,9 @@
             this.facilityTypes = template.facilityTypes;
             this.name = template.name;
             this.extension = template.extension;
+            // #163: add associate program
+            this.associatePrograms = template.associatePrograms;
+            // #163: ends here
 
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);

@@ -45,7 +45,11 @@
         vm.create = create;
         vm.addFacilityType = addFacilityType;
         vm.removeFacilityType = removeFacilityType;
-        vm.populateFacilityTypes = populateFacilityTypes;
+        // #163: add associate program
+        vm.populateFacilityTypesAndAssociatePrograms = populateFacilityTypesAndAssociatePrograms;
+        vm.addAssociateProgram = addAssociateProgram;
+        vm.removeAssociateProgram = removeAssociateProgram;
+        // #163: ends here
 
         /**
          * @ngdoc property
@@ -113,6 +117,30 @@
          */
         vm.selectedColumn = undefined;
 
+        // #163: add associate program
+        /**
+         * @ngdoc property
+         * @propertyOf admin-template-add.controller:TemplateAddController
+         * @name associatePrograms
+         * @type {Object}
+         *
+         * @description
+         * Holds list of available associate programs.
+         */
+        vm.associatePrograms = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf admin-template-add.controller:TemplateAddController
+         * @name selectedAssociateProgram
+         * @type {Object}
+         *
+         * @description
+         * Holds selected Associate Program that will be added to list of Associate Programs.
+         */
+        vm.selectedAssociateProgram = undefined;
+        // #163: ends here
+
         /**
          * @ngdoc property
          * @methodOf admin-template-add.controller:TemplateAddController
@@ -125,6 +153,9 @@
             vm.programs = programs;
             vm.availableColumns = availableColumns;
             vm.template = template;
+            // #163: add associate program
+            vm.associatePrograms = programs;
+            // #163: ends here
         }
 
         /**
@@ -179,15 +210,16 @@
             }
         }
 
+        // #163: add associate program
         /**
          * @ngdoc property
          * @methodOf admin-template-add.controller:TemplateAddController
-         * @name populateFacilityTypes
+         * @name populateFacilityTypesAndAssociatePrograms
          *
          * @description
-         * Populates Facility Type list after selecting a Program.
+         * Populates Facility Type list and Associate Program list after selecting a Program.
          */
-        function populateFacilityTypes() {
+        function populateFacilityTypesAndAssociatePrograms() {
             if (vm.template.program) {
                 vm.selectedFacilityType = undefined;
                 vm.template.facilityTypes = [];
@@ -202,8 +234,48 @@
                         });
                         return !isAssigned;
                     });
+
+                vm.selectedAssociateProgram = undefined;
+                vm.template.associatePrograms = [];
+                vm.associatePrograms = programs.filter(function(program) {
+                    return program !== vm.template.program;
+                });
             }
         }
+
+        /**
+         * @ngdoc property
+         * @methodOf admin-template-add.controller:TemplateAddController
+         * @name addAssociateProgram
+         *
+         * @description
+         * Adds new Associate Program to the Template. Removes it from the list of available Associate Programs.
+         *
+         * @return {Promise} resolved promise
+         */
+        function addAssociateProgram() {
+            vm.template.associatePrograms.push(vm.selectedAssociateProgram);
+            vm.associatePrograms.splice(vm.associatePrograms.indexOf(vm.selectedAssociateProgram), 1);
+            return $q.resolve();
+        }
+
+        /**
+         * @ngdoc property
+         * @methodOf admin-template-add.controller:TemplateAddController
+         * @name removeAssociateProgram
+         *
+         * @description
+         * Removes new Associate Program from the Templates. Adds if back to the list of available Associate Programs.
+         *
+         * @param {Object} associateProgram Associate Program to be removed from list
+         */
+        function removeAssociateProgram(associateProgram) {
+            if (vm.template.associatePrograms.indexOf(associateProgram) > -1) {
+                vm.associatePrograms.push(associateProgram);
+                vm.template.associatePrograms.splice(vm.template.associatePrograms.indexOf(associateProgram), 1);
+            }
+        }
+        // #163: ends here
 
         // SIGLUS-REFACTOR: starts here
         function prepareDefaultColumns() {

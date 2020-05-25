@@ -11,9 +11,11 @@
                     <label for="name">{{'adminTemplateAdd.name' | message}}</label>
                     <input type="text" id="name" ng-model="vm.template.name" required/>
                     <label for="program">{{'adminTemplateAdd.program' | message}}</label>
-                    <select id="program" ng-model="vm.template.program" ng-change="vm.populateFacilityTypes()"
+                    <!-- #163: add associate program -->
+                    <select id="program" ng-model="vm.template.program" ng-change="vm.populateFacilityTypesAndAssociatePrograms()"
                             ng-options="program.name for program in vm.programs" required>
                     </select>
+                    <!-- #163: ends here -->
                 </form>
                 <div><label for="facilityType">{{'adminTemplateAdd.facilityType' | message}}</label>
                     <p class="note">{{'adminTemplateAdd.programNeedsToBeSelected' | message}}</p></div>
@@ -53,6 +55,47 @@
                         </tbody>
                     </table>
                 </section>
+                <!-- #163: add associate program -->
+                <div>
+                    <label for="associateProgram">{{'adminTemplateAdd.associateProgram' | message}}</label>
+                    <p class="note">{{'adminTemplateAdd.associateProgramNeedsToBeSelected' | message}}</p>
+                </div>
+                <form class="form-inline" ng-submit="vm.addAssociateProgram()" reload-form>
+                    <div>
+                        <label for="associateProgram">{{'adminTemplateAdd.associateProgram' | message}}</label>
+                        <select id="associateProgram" ng-model="vm.selectedAssociateProgram"
+                                ng-options="associateProgram.name for associateProgram in vm.associatePrograms | orderBy: 'name'"
+                                ng-disabled="!vm.template.program">
+                        </select>
+                    </div>
+                    <button type="submit" class="add">
+                        {{'adminTemplateAdd.addAssociateProgram' | message}}
+                    </button>
+                </form>
+                <section class="openlmis-table-container">
+                    <table>
+                        <caption ng-if="!vm.template.associatePrograms.length">
+                            {{'adminTemplateAdd.noAssociateProgramsAdded' | message}}
+                        </caption>
+                        <thead>
+                        <tr>
+                            <th>{{'adminTemplateAdd.associateProgram' | message}}</th>
+                            <th>{{'adminTemplateAdd.actions' | message}}</th>
+                        </tr>
+                        </thead>
+                        <tbody ng-if="vm.template.associatePrograms.length">
+                        <tr ng-repeat="associateProgram in vm.template.associatePrograms">
+                            <td>{{associateProgram.name}}</td>
+                            <td>
+                                <button class="danger" ng-click="vm.removeAssociateProgram(associateProgram)">
+                                    {{'adminTemplateAdd.remove' | message}}
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <!-- #163: ends here -->
             </div>
             <div class="modal-footer">
                 <button id="cancel" ui-sref="^">{{'adminTemplateAdd.cancel' | message}}</button>
