@@ -118,7 +118,7 @@
         Requisition.prototype.deleteLineItem = deleteLineItem;
         Requisition.prototype.unskipFullSupplyProducts = unskipFullSupplyProducts;
         // SIGLUS-REFACTOR: starts here
-        Requisition.prototype.addLineItemWithLineItem = addLineItemWithLineItem;
+        Requisition.prototype.addProductLineItem = addProductLineItem;
         // SIGLUS-REFACTOR: ends here
 
         return Requisition;
@@ -569,8 +569,8 @@
             }, this));
         }
 
-        // SIGLUS-REFACTOR: add new method addLineItemWithLineItem
-        function addLineItemWithLineItem(lineItem, requestedQuantity, requestedQuantityExplanation) {
+        // SIGLUS-REFACTOR: add new method addProductLineItem
+        function addProductLineItem(lineItem, requestedQuantity, requestedQuantityExplanation) {
             var orderableProgram = this.program;
             var newLineItem = new LineItem(_.extend(lineItem, {
                 requestedQuantity: requestedQuantity,

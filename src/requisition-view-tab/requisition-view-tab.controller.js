@@ -337,7 +337,7 @@
                     }
                 });
                 lineItem.orderable = product;
-                vm.requisition.addLineItemWithLineItem(lineItem);
+                vm.requisition.addProductLineItem(lineItem);
             });
         }
 
@@ -352,7 +352,7 @@
                         lineItem.orderable = _.find(selectedProducts, function(product) {
                             return lineItem.orderable.id === product.id;
                         });
-                        vm.requisition.addLineItemWithLineItem(lineItem);
+                        vm.requisition.addProductLineItem(lineItem);
                     });
                 })
                 .finally(function() {
