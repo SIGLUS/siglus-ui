@@ -45,10 +45,10 @@
                 }
                 if (!lineItem.lotId) {
                     lineItem.extraData.lotCode = lineItem.lotCode;
-                    lineItem.extraData.expirationDate = moment(lineItem.expirationDate).format('YYYY-MM-DD');
+                    lineItem.extraData.expirationDate = formatDate(lineItem.expirationDate);
                 }
                 lineItem.extraData.stockCardId = lineItem.stockCardId;
-                lineItem.occurredDate = moment(lineItem.occurredDate).format('YYYY-MM-DD');
+                lineItem.occurredDate = formatDate(lineItem.occurredDate);
 
                 delete lineItem.lotCode;
                 delete lineItem.expirationDate;
@@ -56,6 +56,10 @@
             });
 
             return angular.toJson(payload);
+        }
+
+        function formatDate(date) {
+            return date ? moment(date).format('YYYY-MM-DD') : date;
         }
 
         function formatResponse(response) {
