@@ -449,7 +449,9 @@ describe('Requisition', function() {
             var data;
 
             this.$httpBackend
-                .whenDELETE(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id))
+            // SIGLUS-REFACTOR: starts here
+                .whenDELETE(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                // SIGLUS-REFACTOR: ends here
                 .respond(200, this.requisition);
 
             this.requisition.$remove().then(function(response) {
@@ -464,7 +466,9 @@ describe('Requisition', function() {
 
         it('should not approve requisition if request fails', function() {
             this.$httpBackend
-                .whenDELETE(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id))
+            // SIGLUS-REFACTOR: starts here
+                .whenDELETE(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                // SIGLUS-REFACTOR: ends here
                 .respond(500);
 
             var spy = jasmine.createSpy();
