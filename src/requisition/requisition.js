@@ -39,12 +39,16 @@
                                 authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
+            // SIGLUS-REFACTOR: starts here
             resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitions/:id'), {}, {
+            // SIGLUS-REFACTOR: ends here
                 authorize: {
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
                     },
+                    // SIGLUS-REFACTOR: starts here
                     url: requisitionUrlFactory('/api/siglusintegration/requisitions/:id/authorize'),
+                    // SIGLUS-REFACTOR: ends here
                     method: 'POST'
                 },
                 save: {
@@ -58,14 +62,18 @@
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
                     },
+                    // SIGLUS-REFACTOR: starts here
                     url: requisitionUrlFactory('/api/siglusintegration/requisitions/:id/submit'),
+                    // SIGLUS-REFACTOR: ends here
                     method: 'POST'
                 },
                 approve: {
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
                     },
+                    // SIGLUS-REFACTOR: starts here
                     url: requisitionUrlFactory('/api/siglusintegration/requisitions/:id/approve'),
+                    // SIGLUS-REFACTOR: ends here
                     method: 'POST'
                 },
                 reject: {

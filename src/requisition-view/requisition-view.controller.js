@@ -429,30 +429,25 @@
          * Otherwise, a success notification modal will be shown.
          */
         function authorizeRnr() {
-            confirmService.confirm(
-                'requisitionView.authorize.confirm',
-                'requisitionView.authorize.label'
-            ).then(function() {
-                // SIGLUS-REFACTOR: starts here
-                if (requisitionValidator.validateRequisition(requisition)) {
-                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                        .then(function(signature) {
-                            vm.requisition.extraData.signaure.authorize = signature;
-                            if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
-                                failWithMessage('requisitionView.allLineItemsSkipped')();
-                            } else if (vm.program.enableDatePhysicalStockCountCompleted) {
-                                var modal = new RequisitionStockCountDateModal(vm.requisition);
-                                modal.then(saveThenAuthorize);
-                            } else {
-                                saveThenAuthorize();
-                            }
-                        });
-                // SIGLUS-REFACTOR: ends here
-                } else {
-                    $scope.$broadcast('openlmis-form-submit');
-                    failWithMessage('requisitionView.rnrHasErrors')();
-                }
-            });
+            // SIGLUS-REFACTOR: starts here
+            if (requisitionValidator.validateRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                    .then(function(signature) {
+                        vm.requisition.extraData.signaure.authorize = signature;
+                        if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                            failWithMessage('requisitionView.allLineItemsSkipped')();
+                        } else if (vm.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenAuthorize);
+                        } else {
+                            saveThenAuthorize();
+                        }
+                    });
+            // SIGLUS-REFACTOR: ends here
+            } else {
+                $scope.$broadcast('openlmis-form-submit');
+                failWithMessage('requisitionView.rnrHasErrors')();
+            }
 
             function saveThenAuthorize() {
                 var loadingPromise = loadingModalService.open();
