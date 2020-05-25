@@ -201,7 +201,7 @@ describe('StockCardController', function() {
         });
     });
 
-    // SIGLUS-REFACTOR: starts here
+    // #103: archive product
     describe('archive', function() {
 
         beforeEach(function() {
@@ -239,5 +239,5 @@ describe('StockCardController', function() {
             expect(notificationService.success).not.toHaveBeenCalled();
         });
     });
-    // SIGLUS-REFACTOR: ends here
+    // #103: ends here
 });

@@ -71,7 +71,7 @@ describe('stockCardService', function() {
         });
     });
 
-    // SIGLUS-REFACTOR: starts here
+    // #103: archive product
     describe('getProductStockCard', function() {
 
         beforeEach(function() {
@@ -130,7 +130,7 @@ describe('stockCardService', function() {
             expect(angular.toJson(result)).toEqual(angular.toJson(this.orderable));
         });
     });
-    // SIGLUS-REFACTOR: ends here
+    // #103: ends here
 
     afterEach(function() {
         this.$httpBackend.verifyNoOutstandingRequest();

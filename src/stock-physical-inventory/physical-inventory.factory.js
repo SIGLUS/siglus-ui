@@ -356,9 +356,9 @@
             return repository.query({
                 programId: programId,
                 facilityId: facilityId,
-                // SIGLUS-REFACTOR: starts here
+                // #103: archive product
                 excludeArchived: true
-                // SIGLUS-REFACTOR: ends here
+                // #103: ends here
             }).then(function(summaries) {
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
