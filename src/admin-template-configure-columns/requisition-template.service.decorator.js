@@ -36,7 +36,7 @@
     decorator.$inject = ['$delegate', 'requisitionUrlFactory', '$resource', 'Template'];
 
     function decorator($delegate, requisitionUrlFactory, $resource, Template) {
-        var resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitionTemplates/:id'), {}, {
+        var resource = $resource(requisitionUrlFactory('/api/siglusapi/requisitionTemplates/:id'), {}, {
             update: {
                 method: 'PUT'
             },
