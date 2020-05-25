@@ -53,9 +53,9 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             facilityId: 'facility-id',
             programId: 'program-id',
             nonEmptyOnly: true,
-            // SIGLUS-REFACTOR: starts here
+            // #103: archive product
             excludeArchived: true
-            // SIGLUS-REFACTOR: ends here
+            // #103: ends here
         });
     });
 

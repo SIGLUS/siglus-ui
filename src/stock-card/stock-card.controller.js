@@ -63,7 +63,7 @@
             stockCardService.print(vm.stockCard.id);
         };
 
-        // SIGLUS-REFACTOR: starts here
+        // #103: archive product
         vm.archive = function() {
             confirmService.confirmDestroy('stockCard.archiveProduct', 'stockCard.archive', 'stockCard.cancel')
                 .then(function() {
@@ -79,7 +79,7 @@
                     });
                 });
         };
-        // SIGLUS-REFACTOR: ends here
+        // #103: ends here
 
         function onInit() {
             $state.current.label = stockCard.orderable.fullProductName;

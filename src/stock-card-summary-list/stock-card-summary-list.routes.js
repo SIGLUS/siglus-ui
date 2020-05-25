@@ -63,9 +63,9 @@
                             paramsCopy.facilityId = stateParams.facility;
                             paramsCopy.programId = stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
-                            // SIGLUS-REFACTOR: starts here
+                            // #103: archive product
                             paramsCopy.excludeArchived = true;
-                            // SIGLUS-REFACTOR: ends here
+                            // #103: ends here
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;

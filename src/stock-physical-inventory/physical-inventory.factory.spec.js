@@ -174,9 +174,9 @@ describe('physicalInventoryFactory', function() {
             expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
                 programId: programId,
                 facilityId: facilityId,
-                // SIGLUS-REFACTOR: starts here
+                // #103: archive product
                 excludeArchived: true
-                // SIGLUS-REFACTOR: ends here
+                // #103: ends here
             });
         });
 
@@ -309,9 +309,9 @@ describe('physicalInventoryFactory', function() {
                 expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
                     programId: draft.programId,
                     facilityId: draft.facilityId,
-                    // SIGLUS-REFACTOR: starts here
+                    // #103: archive product
                     excludeArchived: true
-                    // SIGLUS-REFACTOR: ends here
+                    // #103: ends here
                 });
             });
 
