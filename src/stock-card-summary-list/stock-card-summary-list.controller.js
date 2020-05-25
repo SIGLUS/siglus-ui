@@ -51,6 +51,7 @@
         vm.programs = [];
         vm.program = null;
         vm.facility = facility;
+        vm.isArchivedProducts = false;
 
         /**
          * @ngdoc property
@@ -77,6 +78,7 @@
             vm.program = _.find(programs, function(p) {
                 return p.id === $stateParams.program;
             });
+            vm.isArchivedProducts = $stateParams.isArchivedProducts;
         }
 
         /**
@@ -94,9 +96,15 @@
             stateParams.program = vm.program && vm.program.id;
             stateParams.supervised = vm.isSupervised;
 
-            $state.go('openlmis.stockmanagement.stockCardSummaries', stateParams, {
-                reload: true
-            });
+            $state.go(
+                vm.isArchivedProducts
+                    ? 'openlmis.stockmanagement.archivedProductSummaries'
+                    : 'openlmis.stockmanagement.stockCardSummaries',
+                stateParams,
+                {
+                    reload: true
+                }
+            );
         }
 
         /**

@@ -83,7 +83,8 @@ describe('StockCardSummaryListController', function() {
 
     describe('loadStockCardSummaries', function() {
 
-        it('should call state go with proper parameters', function() {
+        // #146: archived product list
+        it('should call state go with openlmis.stockmanagement.stockCardSummaries', function() {
             vm.loadStockCardSummaries();
 
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
@@ -95,6 +96,21 @@ describe('StockCardSummaryListController', function() {
                 reload: true
             });
         });
+
+        it('should call state go with openlmis.stockmanagement.archivedProductSummaries', function() {
+            vm.isArchivedProducts = true;
+            vm.loadStockCardSummaries();
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.archivedProductSummaries', {
+                param: 'param',
+                facility: 'facility',
+                program: 'program',
+                supervised: true
+            }, {
+                reload: true
+            });
+        });
+        // #146: ends here
     });
 
     describe('viewSingleCard', function() {
