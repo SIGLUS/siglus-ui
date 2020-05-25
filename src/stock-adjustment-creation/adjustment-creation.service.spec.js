@@ -210,7 +210,7 @@ describe('stockAdjustmentCreationService', function() {
                     extraData: {
                         vvmStatus: 'STAGE_1',
                         lotCode: null,
-                        expirationDate: 'Invalid date'
+                        expirationDate: null
                     },
                     occurredDate: '2020-05-20',
                     reasonId: reasonId,
