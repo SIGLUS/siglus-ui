@@ -96,19 +96,19 @@
     </div>
     <!-- SIGLUS-REFACTOR: ends here -->
 </div>
-<!-- SIGLUS-REFACTOR: starts here -->
+<!-- #173: change display order -->
 <div class="requisition-template-admin">
-    <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.extension.enablePatientLineItem"/>{{'adminProgramTemplate.enablePatientLineItem' | message}}
-    </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableRegimen"/>{{'adminProgramTemplate.enableRegimen' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.extension.enableRapidTestConsumption"/>{{'adminProgramTemplate.enableRapidTestConsumption' | message}}
+        <input type="checkbox" ng-model="vm.template.extension.enableUsageInformation"/>{{'adminProgramTemplate.enableUsageInformation' | message}}
     </div>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.extension.enableUsageInformation"/>{{'adminProgramTemplate.enableUsageInformation' | message}}
+        <input type="checkbox" ng-model="vm.template.extension.enablePatientLineItem"/>{{'adminProgramTemplate.enablePatientLineItem' | message}}
+    </div>
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.extension.enableRapidTestConsumption"/>{{'adminProgramTemplate.enableRapidTestConsumption' | message}}
     </div>
 </div>
 <div class="openlmis-toolbar">
