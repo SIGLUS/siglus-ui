@@ -518,7 +518,7 @@ describe('ViewTabController', function() {
                     }
                 ]
             ));
-            spyOn(this.requisition, 'addLineItemWithLineItem');
+            spyOn(this.requisition, 'addProductLineItem');
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -550,8 +550,8 @@ describe('ViewTabController', function() {
             this.vm.addFullSupplyProducts();
 
             // SIGLUS-REFACTOR: starts here
-            expect(this.requisition.addLineItemWithLineItem).not.toHaveBeenCalled();
-            expect(this.requisition.addLineItemWithLineItem).not.toHaveBeenCalled();
+            expect(this.requisition.addProductLineItem).not.toHaveBeenCalled();
+            expect(this.requisition.addProductLineItem).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
         });
         // SIGLUS-REFACTOR: starts here
@@ -561,11 +561,11 @@ describe('ViewTabController', function() {
         //     this.$rootScope.$apply();
         //
         //     // SIGLUS-REFACTOR: starts here
-        //     expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
+        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
         //         orderable: this.availableFullSupplyProducts[0]
         //     });
         //
-        //     expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
+        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
         //         orderable: this.availableFullSupplyProducts[2]
         //     });
         //     // SIGLUS-REFACTOR: ends here
@@ -604,7 +604,7 @@ describe('ViewTabController', function() {
                     orderable: this.availableFullSupplyProducts[2]
                 }
             ]));
-            spyOn(this.requisition, 'addLineItemWithLineItem');
+            spyOn(this.requisition, 'addProductLineItem');
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -637,7 +637,7 @@ describe('ViewTabController', function() {
 
             expect(this.requisition.unskipFullSupplyProducts).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: starts here
-            expect(this.requisition.addLineItemWithLineItem).not.toHaveBeenCalled();
+            expect(this.requisition.addProductLineItem).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -647,11 +647,11 @@ describe('ViewTabController', function() {
         //     this.$rootScope.$apply();
         //
         //     // SIGLUS-REFACTOR: starts here
-        //     expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
+        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
         //         orderable: this.availableNonFullSupplyProducts[0]
         //     });
         //
-        //     expect(this.requisition.addLineItemWithLineItem).toHaveBeenCalledWith({
+        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
         //         orderable: this.availableNonFullSupplyProducts[2]
         //     });
         //     // SIGLUS-REFACTOR: ends here
