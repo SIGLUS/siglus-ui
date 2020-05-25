@@ -25,9 +25,61 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.archivedProductSummaries', {
+            url: '/archivedProduct?facility&program&supervised&stockCardListPage&stockCardListSize',
             label: 'stockCardSummaryList.archivedProduct',
-            showInNavigation: false,
-            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]
+            priority: -1,
+            showInNavigation: true,
+            params: {
+                isArchivedProducts: true
+            },
+            views: {
+                '@openlmis': {
+                    controller: 'StockCardSummaryListController',
+                    controllerAs: 'vm',
+                    templateUrl: 'stock-card-summary-list/stock-card-summary-list.html'
+                }
+            },
+            accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
+            resolve: {
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
+                programs: function(user, $q, programService, stockProgramUtilService) {
+                    return $q.all([
+                        programService.getAllProductsProgram(),
+                        stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
+                    ]).then(function(responses) {
+                        return responses[0].concat(responses[1]);
+                    });
+                },
+                stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
+                    StockCardSummaryRepositoryImpl, $stateParams) {
+                    return paginationService.registerUrl($stateParams, function(stateParams) {
+                        if (stateParams.program) {
+                            var paramsCopy = angular.copy(stateParams);
+
+                            paramsCopy.facilityId = stateParams.facility;
+                            paramsCopy.programId = stateParams.program;
+                            paramsCopy.nonEmptyOnly = true;
+                            paramsCopy.archivedOnly = true;
+
+                            delete paramsCopy.facility;
+                            delete paramsCopy.program;
+                            delete paramsCopy.supervised;
+                            delete paramsCopy.isArchivedProducts;
+
+                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
+                                .query(paramsCopy);
+                        }
+                        return [];
+                    }, {
+                        paginationId: 'stockCardList'
+                    });
+                }
+            }
         });
     }
 })();
