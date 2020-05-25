@@ -82,7 +82,10 @@ describe('TemplateAddController', function() {
             template: new Template({
                 populateStockOnHandFromStockCards: false,
                 columnsMap: {},
-                facilityTypes: []
+                facilityTypes: [],
+                // #163: add associate program
+                associatePrograms: []
+                // #163: ends here
             })
         });
         vm.$onInit();
@@ -107,7 +110,36 @@ describe('TemplateAddController', function() {
                 skippedColumn.columnDefinition
             ]);
         });
+
+        // #163: add associate program
+        it('should resolve associate programs', function() {
+            expect(vm.associatePrograms).toEqual([program, programTwo]);
+        });
     });
+
+    describe('addAssociateProgram', function() {
+
+        it('should add associate program', function() {
+            vm.selectedAssociateProgram = program;
+            vm.addAssociateProgram();
+
+            expect(vm.template.associatePrograms).toEqual([vm.selectedAssociateProgram]);
+        });
+    });
+
+    describe('removeAssociateProgram', function() {
+
+        beforeEach(function() {
+            vm.template.associatePrograms = [program];
+        });
+
+        it('should remove associate program', function() {
+            vm.removeAssociateProgram(program);
+
+            expect(vm.template.associatePrograms).toEqual([]);
+        });
+    });
+    // #163: ends here
 
     describe('addFacilityType', function() {
 

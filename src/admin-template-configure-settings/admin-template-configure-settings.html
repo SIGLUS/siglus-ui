@@ -1,6 +1,5 @@
 <div class="requisition-template-admin">
   <h2>{{'adminTemplateConfigureSettings.title' | message}}</h2>
-  <section class="openlmis-table-container">
     <section class="is-primary">
       <div class="form-group">
         <label for="name">{{'adminTemplateConfigureSettings.templateName' | message}}</label>
@@ -18,6 +17,9 @@
         </button>
       </form>
     </section>
+    <!-- #163: add associate program -->
+    <section class="openlmis-table-container">
+        <!-- #163: ends here -->
     <table>
       <caption ng-if="!vm.template.facilityTypes.length">
         {{'adminTemplateConfigureSettings.noFacilityTypeFound' | message}}
@@ -40,6 +42,45 @@
       </tbody>
     </table>
   </section>
+    <!-- #163: add associate program -->
+      <section class="is-primary primary-margin">
+        <form class="form-inline" ng-submit="vm.addAssociateProgram()" reload-form>
+          <div class="form-group">
+            <label for="associateProgramSelect">{{'adminTemplateConfigureSettings.associateProgram' |
+              message}}</label>
+            <select id="associateProgramSelect" ng-model="vm.associateProgram"
+              ng-options="associateProgram.name for associateProgram in vm.associatePrograms">
+            </select>
+          </div>
+          <button class="add" type="submit">
+            {{'adminTemplateConfigureSettings.add' | message}}
+          </button>
+        </form>
+      </section>
+      <section class="openlmis-table-container">
+          <table>
+              <caption ng-if="!vm.template.associatePrograms.length">
+                  {{'adminTemplateConfigureSettings.noAssociateProgramFound' | message}}
+              </caption>
+              <thead>
+              <tr>
+                  <th>{{'adminTemplateConfigureSettings.associateProgram' | message}}</th>
+                  <th class="col-sticky sticky-right">{{'adminTemplateConfigureSettings.action' | message}}</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="associateProgram in vm.template.associatePrograms">
+                  <td>{{associateProgram.name}}</td>
+                  <td>
+                      <button ng-click="vm.removeAssociateProgram(associateProgram)">
+                          {{'adminTemplateConfigureSettings.remove' | message}}
+                      </button>
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+      </section>
+    <!-- #163: ends here -->
 </div>
 <div class="openlmis-toolbar">
   <!-- SIGLUS-REFACTOR: starts here -->
