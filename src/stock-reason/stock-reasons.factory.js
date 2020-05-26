@@ -29,9 +29,11 @@
         .module('stock-reason')
         .factory('stockReasonsFactory', stockReasonsFactory);
 
-    stockReasonsFactory.$inject = ['$filter', 'ValidReasonResource', 'REASON_CATEGORIES'];
+    // #200: replace ValidReasonResource with SiglusValidReasonResource to support All Products
+    stockReasonsFactory.$inject = ['$filter', 'SiglusValidReasonResource', 'REASON_CATEGORIES'];
+    // #200: ends here
 
-    function stockReasonsFactory($filter, ValidReasonResource, REASON_CATEGORIES) {
+    function stockReasonsFactory($filter, SiglusValidReasonResource, REASON_CATEGORIES) {
         var factory = {
             getReasons: getReasons,
             getIssueReasons: getIssueReasons,
@@ -139,7 +141,7 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
-            return new ValidReasonResource().query({
+            return new SiglusValidReasonResource().query({
                 program: program,
                 facilityType: facilityType,
                 reasonType: reasonType

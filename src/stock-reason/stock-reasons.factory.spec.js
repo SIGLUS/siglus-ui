@@ -20,11 +20,13 @@ describe('stockReasonsFactory', function() {
     beforeEach(function() {
         module('stock-reasons-modal', function($provide) {
             validReasonResourceMock = jasmine.createSpyObj('validReasonResource', ['query']);
-            $provide.factory('ValidReasonResource', function() {
+            // #200: replace ValidReasonResource with SiglusValidReasonResource to support All Products
+            $provide.factory('SiglusValidReasonResource', function() {
                 return function() {
                     return validReasonResourceMock;
                 };
             });
+            // #200: ends here
         });
 
         inject(function($injector) {
