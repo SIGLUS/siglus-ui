@@ -19,27 +19,25 @@
 
     /**
      * @ngdoc service
-     * @name stock-reason.ValidReasonResource
+     * @name stock-reason.SiglusValidReasonResource
      *
      * @description
      * Communicates with the validReasons endpoint of the OpenLMIS server.
      */
     angular
         .module('stock-valid-reason')
-        .factory('ValidReasonResource', ValidReasonResource);
+        .factory('SiglusValidReasonResource', SiglusValidReasonResource);
 
-    ValidReasonResource.$inject = ['OpenlmisResource', 'classExtender'];
+    SiglusValidReasonResource.$inject = ['OpenlmisResource', 'classExtender'];
 
-    function ValidReasonResource(OpenlmisResource, classExtender) {
+    function SiglusValidReasonResource(OpenlmisResource, classExtender) {
 
-        classExtender.extend(ValidReasonResource, OpenlmisResource);
+        classExtender.extend(SiglusValidReasonResource, OpenlmisResource);
 
-        return ValidReasonResource;
+        return SiglusValidReasonResource;
 
-        function ValidReasonResource() {
-            // SIGLUS-REFACTOR: starts here
+        function SiglusValidReasonResource() {
             this.super('/api/siglusintegration/validReasons', {
-            // SIGLUS-REFACTOR: ends here
                 paginated: false
             });
         }
