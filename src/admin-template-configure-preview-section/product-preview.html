@@ -1,0 +1,18 @@
+<div class="product-preview openlmis-table-container">
+    <div class="openlmis-flex-table">
+        <table>
+            <thead>
+            <tr>
+                <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'">{{column.label}}</th>
+            </tr>
+            </thead>
+            <tr ng-repeat="lineItem in vm.items">
+                <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
+                    ng-class="{'col-source': !vm.isProductInfo(column), 'user-input': vm.isUserInput(column)}">
+                    {{vm.getColumnValue(column, lineItem)}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

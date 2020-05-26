@@ -18,24 +18,14 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview')
-        .config(routes);
-
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
-
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columns', {
-            label: 'adminProgramTemplate.templateColumns',
-            url: '/columns',
-            templateUrl: 'admin-template-configure-preview/template-preview.html',
-            controller: 'RequisitionTemplatePreviewController',
+        .module('admin-template-configure-preview-section')
+        .component('productPreview', {
+            bindings: {
+                columns: '<'
+            },
+            controller: 'ProductPreviewController',
             controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            resolve: {
-                tags: function(StockReasonTagResource) {
-                    return new StockReasonTagResource().query();
-                }
-            }
+            templateUrl: 'admin-template-configure-preview-section/product-preview.html'
         });
-    }
+
 })();
