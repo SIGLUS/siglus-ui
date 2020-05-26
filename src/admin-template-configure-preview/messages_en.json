@@ -10,6 +10,5 @@
   "adminProgramTemplate.shouldDisplayRequestedQuantity": "If ${calculatedOrderQuantity} is not displayed, then ${requestedQuantity} should be displayed",
   "adminProgramTemplate.templateSave.title": "Save changes to the template",
   "adminProgramTemplate.templateSave.description": "All changes to the template columns and settings will only affect future initiated requisitions/reports.",
-  "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option",
-  "adminProgramTemplate.templateColumns.product": "Product Section"
+  "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option"
 }

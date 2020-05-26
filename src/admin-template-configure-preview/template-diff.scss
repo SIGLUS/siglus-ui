@@ -1,0 +1,41 @@
+.page {
+    //show move to correct file later
+    flex-grow: 1 !important;
+}
+
+.page .requisition-template-admin {
+    .requisition-template-module-container{
+        font-size: 20px;
+        margin-bottom: 1em;
+        display: flex;
+        align-items: center;
+
+        &.has-tips {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            .first-line {
+                display: flex;
+                align-items: center;
+            }
+            .second-line {
+                color: #b24c4b;
+                font-size: 14px;
+            }
+        }
+
+        input {
+            font-size: 14px;
+            margin: 0;
+            margin-right: 6px;
+        }
+        &:last-child {
+            margin-bottom: 5em;
+        }
+    }
+
+    .openlmis-table-container {
+        margin-bottom: 2em;
+    }
+}
