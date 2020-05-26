@@ -11,5 +11,6 @@
   "adminProgramTemplate.templateSave.title": "Save changes to the template",
   "adminProgramTemplate.templateSave.description": "All changes to the template columns and settings will only affect future initiated requisitions/reports.",
   "adminProgramTemplate.template.invalidOptions": "Yous Must Select At Least One Option",
-  "adminProgramTemplate.templateColumns.product": "Product Section"
+  "adminProgramTemplate.templateColumns.product": "Product Section",
+  "adminProgramTemplate.template.invalidSuggestedQuantity": "This column should be displayed/not displayed together with \"Approved Quantity\""
 }

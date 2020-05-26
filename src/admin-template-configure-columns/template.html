@@ -57,8 +57,8 @@
                             <input disable-drag positive-integer id="numberOfPeriods" ng-model="vm.template.numberOfPeriodsToAverage" class="form-control"/>
                         </div>
                         <div ng-if="column.columnDefinition.options.length > 0">
-                            <div ng-if="!vm.canChangeSource(column) && !vm.isPackToShip(column) && !vm.shouldShowSuggestedQuantityOption(column)">{{column.option.optionLabel | message}}</div>
-                            <div ng-if="vm.canChangeSource(column) || vm.isPackToShip(column) || vm.shouldShowSuggestedQuantityOption(column)">
+                            <div ng-if="!vm.canChangeSource(column) && !vm.isPackToShip(column)">{{column.option.optionLabel | message}}</div>
+                            <div ng-if="vm.canChangeSource(column) || vm.isPackToShip(column)">
                                 <select ng-model="column.option" ng-options="option as (option.optionLabel | message) for option in column.columnDefinition.options" ng-required="column.isDisplayed"></select>
                             </div>
                         </div>
