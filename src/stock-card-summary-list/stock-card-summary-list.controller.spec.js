@@ -114,18 +114,28 @@ describe('StockCardSummaryListController', function() {
     });
 
     describe('viewSingleCard', function() {
-
-        it('should call state go with proper parameters', function() {
+        // #146: archived product list
+        it('should call state go with openlmis.stockmanagement.stockCardSummaries.singleCard', function() {
             vm.viewSingleCard('stock-card-id');
 
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
                 stockCardId: 'stock-card-id',
-                // SIGLUS-REFACTOR: starts here
                 isViewProductCard: false,
                 page: 0
-                // SIGLUS-REFACTOR: ends here
             });
         });
+
+        it('should call state go with openlmis.stockmanagement.archivedProductSummaries.singleCard', function() {
+            vm.isArchivedProducts = true;
+            vm.viewSingleCard('stock-card-id');
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.archivedProductSummaries.singleCard', {
+                stockCardId: 'stock-card-id',
+                isViewProductCard: false,
+                page: 0
+            });
+        });
+        // #146: ends here
     });
 
     describe('print', function() {
@@ -137,10 +147,10 @@ describe('StockCardSummaryListController', function() {
         });
     });
 
-    // SIGLUS-REFACTOR: starts here
+    // #146: archived product list
     describe('viewProductStockCard', function() {
 
-        it('should call state go with proper parameters', function() {
+        it('should call state go with openlmis.stockmanagement.stockCardSummaries.singleCard', function() {
             vm.viewProductStockCard({
                 orderable: {
                     id: 'orderable-id'
@@ -154,6 +164,22 @@ describe('StockCardSummaryListController', function() {
                 page: 0
             });
         });
+
+        it('should call state go with openlmis.stockmanagement.archivedProductSummaries.singleCard', function() {
+            vm.isArchivedProducts = true;
+            vm.viewProductStockCard({
+                orderable: {
+                    id: 'orderable-id'
+                }
+            });
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.archivedProductSummaries.singleCard', {
+                param: 'param',
+                orderable: 'orderable-id',
+                isViewProductCard: true,
+                page: 0
+            });
+        });
     });
-    // SIGLUS-REFACTOR: ends here
+    // #146: ends here
 });
