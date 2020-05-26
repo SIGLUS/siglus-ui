@@ -115,14 +115,19 @@
          * @description
          * Go to the clicked stock card's page to view its details.
          *
-         * @param {sting} stockCardId the Stock Card UUID
+         * @param {string} stockCardId the Stock Card UUID
          */
         function viewSingleCard(stockCardId) {
-            $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-                stockCardId: stockCardId,
-                isViewProductCard: false,
-                page: 0
-            });
+            $state.go(
+                vm.isArchivedProducts
+                    ? 'openlmis.stockmanagement.archivedProductSummaries.singleCard'
+                    : 'openlmis.stockmanagement.stockCardSummaries.singleCard',
+                {
+                    stockCardId: stockCardId,
+                    isViewProductCard: false,
+                    page: 0
+                }
+            );
         }
 
         /**
@@ -145,7 +150,12 @@
             stateParams.orderable = viewProductCardObject.orderable && viewProductCardObject.orderable.id;
             stateParams.isViewProductCard = true;
             stateParams.page = 0;
-            $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', stateParams);
+            $state.go(
+                vm.isArchivedProducts
+                    ? 'openlmis.stockmanagement.archivedProductSummaries.singleCard'
+                    : 'openlmis.stockmanagement.stockCardSummaries.singleCard',
+                stateParams
+            );
         }
         // SIGLUS-REFACTOR: ends here
     }
