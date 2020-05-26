@@ -58,6 +58,15 @@
         vm.isPackToShip = isPackToShip;
         vm.refreshAvailableTags = refreshAvailableTags;
 
+        // #147: starts here
+        vm.shouldShowSuggestedQuantityOption = shouldShowSuggestedQuantityOption;
+        function shouldShowSuggestedQuantityOption(column) {
+            var isApprovedQuantityDisplayed = template.columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].isDisplayed;
+            var isSuggestedQuantityDisplayed = template.columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].isDisplayed;
+            return column.name === TEMPLATE_COLUMNS.SUGGESTED_QUANTITY
+                && isSuggestedQuantityDisplayed && !isApprovedQuantityDisplayed;
+        }
+        // #147: ends here
         /**
          * @ngdoc property
          * @propertyOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
