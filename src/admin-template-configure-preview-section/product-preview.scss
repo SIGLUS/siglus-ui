@@ -7,15 +7,19 @@
         &.user-input {
             text-align: center;
         }
-        &.user-input::before {
-            content: '';
-            position: absolute;
-            top: 12px;
-            right: 8px;
-            left: 8px;
-            bottom: 12px;
-            border: 1px solid #c8c8c8;
-            border-radius: 5px;
+        &.user-input span {
+            position: relative;
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                margin: -4px -8px;
+                border: 1px solid #c8c8c8;
+                border-radius: 5px;
+            }
         }
     }
 }

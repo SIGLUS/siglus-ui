@@ -8,8 +8,8 @@
             </thead>
             <tr ng-repeat="lineItem in vm.items">
                 <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
-                    ng-class="{'col-source': !vm.isProductInfo(column), 'user-input': vm.isUserInput(column)}">
-                    {{vm.getColumnValue(column, lineItem)}}
+                    ng-class="{'col-source': !lineItem[column.name], 'user-input': vm.isUserInput(column)}">
+                    <span>{{vm.getColumnValue(column, lineItem)}}</span>
                 </td>
             </tr>
             </tbody>
