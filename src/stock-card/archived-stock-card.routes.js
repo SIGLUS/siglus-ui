@@ -26,7 +26,7 @@
         var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
 
         $stateProvider.state('openlmis.stockmanagement.archivedProductSummaries.singleCard', {
-            url: '/:stockCardId?orderable?stockCardPage&stockCardSize&isViewProductCard',
+            url: '/:stockCardId?orderable?stockCardPage&stockCardSize&{isViewProductCard:bool}',
             showInNavigation: false,
             views: {
                 '@openlmis': {
@@ -42,10 +42,9 @@
             resolve: {
                 stockCard: function($stateParams, stockCardService, paginationService, StockCard, localStorageService) {
                     var stockCardResource;
-                    var isViewProductCard = String($stateParams.isViewProductCard) === 'true';
                     var viewProductStockCard = angular.fromJson(localStorageService.get(VIEW_PRODUCT_STOCK_CARD));
 
-                    if (isViewProductCard) {
+                    if ($stateParams.isViewProductCard) {
                         stockCardResource = stockCardService.getProductStockCard($stateParams.orderable);
                     } else {
                         stockCardResource = stockCardService.getStockCard($stateParams.stockCardId);
@@ -61,12 +60,11 @@
                             }, {
                                 paginationId: 'stockCard'
                             });
-                            if (isViewProductCard) {
-                                // use soh, orderable from Stock on Hand page which store in local storage
+                            if ($stateParams.isViewProductCard) {
+                                // use soh from Stock on Hand page which store in local storage
                                 stockCard.stockOnHand = viewProductStockCard.stockOnHandOfOneProduct;
                                 delete stockCard.lot;
                             }
-                            stockCard.isViewProductCard = isViewProductCard;
                             return stockCard;
                         });
                 }
