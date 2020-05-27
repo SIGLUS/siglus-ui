@@ -46,7 +46,7 @@
         vm.addFacilityType = addFacilityType;
         vm.removeFacilityType = removeFacilityType;
         // #163: add associate program
-        vm.populateFacilityTypesAndAssociatePrograms = populateFacilityTypesAndAssociatePrograms;
+        vm.populateProgramRelatedVariable = populateProgramRelatedVariable;
         vm.addAssociateProgram = addAssociateProgram;
         vm.removeAssociateProgram = removeAssociateProgram;
         // #163: ends here
@@ -214,33 +214,40 @@
         /**
          * @ngdoc property
          * @methodOf admin-template-add.controller:TemplateAddController
-         * @name populateFacilityTypesAndAssociatePrograms
+         * @name populateProgramRelatedVariable
          *
          * @description
-         * Populates Facility Type list and Associate Program list after selecting a Program.
+         * Populates program related variable.
          */
-        function populateFacilityTypesAndAssociatePrograms() {
+        function populateProgramRelatedVariable() {
             if (vm.template.program) {
-                vm.selectedFacilityType = undefined;
-                vm.template.facilityTypes = [];
-
-                vm.facilityTypes = facilityTypes
-                    .filter(function(facilityType) {
-                        var isAssigned = false;
-                        programTemplates[vm.template.program.id].forEach(function(template) {
-                            template.facilityTypes.forEach(function(assignedFacilityType) {
-                                isAssigned = isAssigned || assignedFacilityType.id === facilityType.id;
-                            });
-                        });
-                        return !isAssigned;
-                    });
-
-                vm.selectedAssociateProgram = undefined;
-                vm.template.associatePrograms = [];
-                vm.associatePrograms = programs.filter(function(program) {
-                    return program !== vm.template.program;
-                });
+                populateFacilityTypes();
+                populateAssociatePrograms();
             }
+        }
+
+        function populateFacilityTypes() {
+            vm.selectedFacilityType = undefined;
+            vm.template.facilityTypes = [];
+
+            vm.facilityTypes = facilityTypes
+                .filter(function(facilityType) {
+                    var isAssigned = false;
+                    programTemplates[vm.template.program.id].forEach(function(template) {
+                        template.facilityTypes.forEach(function(assignedFacilityType) {
+                            isAssigned = isAssigned || assignedFacilityType.id === facilityType.id;
+                        });
+                    });
+                    return !isAssigned;
+                });
+        }
+
+        function populateAssociatePrograms() {
+            vm.selectedAssociateProgram = undefined;
+            vm.template.associatePrograms = [];
+            vm.associatePrograms = programs.filter(function(program) {
+                return program !== vm.template.program;
+            });
         }
 
         /**
@@ -256,7 +263,6 @@
         function addAssociateProgram() {
             vm.template.associatePrograms.push(vm.selectedAssociateProgram);
             vm.associatePrograms.splice(vm.associatePrograms.indexOf(vm.selectedAssociateProgram), 1);
-            return $q.resolve();
         }
 
         /**
@@ -270,10 +276,8 @@
          * @param {Object} associateProgram Associate Program to be removed from list
          */
         function removeAssociateProgram(associateProgram) {
-            if (vm.template.associatePrograms.indexOf(associateProgram) > -1) {
-                vm.associatePrograms.push(associateProgram);
-                vm.template.associatePrograms.splice(vm.template.associatePrograms.indexOf(associateProgram), 1);
-            }
+            vm.associatePrograms.push(associateProgram);
+            vm.template.associatePrograms.splice(vm.template.associatePrograms.indexOf(associateProgram), 1);
         }
         // #163: ends here
 
