@@ -29,21 +29,16 @@
 
         vm.$onInit = onInit;
         vm.getColumnValue = getColumnValue;
-        vm.isProductInfo = isProductInfo;
         vm.isUserInput = isUserInput;
 
         function onInit() {
             vm.items = [{
-                fullProductName: 'Name 1',
-                productCode: 'Product 1'
+                'orderable.fullProductName': 'Name 1',
+                'orderable.productCode': 'Product 1'
             }, {
-                fullProductName: 'Name 2',
-                productCode: 'Product 2'
+                'orderable.fullProductName': 'Name 2',
+                'orderable.productCode': 'Product 2'
             }];
-        }
-
-        function isProductInfo(column) {
-            return column.name.indexOf('orderable.') !== -1;
         }
 
         function isUserInput(column) {
@@ -51,12 +46,8 @@
         }
 
         function getColumnValue(column, lineItem) {
-            var value;
-            if (column.name === 'orderable.productCode') {
-                value = lineItem.productCode;
-            } else if (column.name === 'orderable.fullProductName') {
-                value = lineItem.fullProductName;
-            } else {
+            var value = lineItem[column.name];
+            if (!value) {
                 value = column.source
                     .split('_')
                     .join(' ')
