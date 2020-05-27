@@ -39,18 +39,18 @@
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
                      productNameFilter, stockEventFactory, stockEventService) {
         // SIGLUS-REFACTOR: starts here
-        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/physicalInventories'), {}, {
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/physicalInventories'), {}, {
             get: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             },
             update: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             },
             delete: {
                 method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusintegration/physicalInventories/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             }
         });
         // SIGLUS-REFACTOR: ends here
