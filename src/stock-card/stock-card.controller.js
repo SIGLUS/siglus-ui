@@ -71,7 +71,9 @@
                     loadingModalService.open();
                     stockCardService.archiveProduct(stockCard.orderable.id).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
-                        $state.go('openlmis.stockmanagement.archivedProductSummaries', $state.params);
+                        $state.go('openlmis.stockmanagement.archivedProductSummaries', Object.assign($state.params, {
+                            program: stockCard.program.id
+                        }));
                     }, function() {
                         loadingModalService.close();
                         notificationService.error('stockCard.archiveProduct.failure');
