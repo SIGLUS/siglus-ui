@@ -121,22 +121,25 @@ describe('TemplateAddController', function() {
 
         it('should add associate program', function() {
             vm.selectedAssociateProgram = program;
+            vm.associatePrograms = [program, programTwo];
+
             vm.addAssociateProgram();
 
             expect(vm.template.associatePrograms).toEqual([vm.selectedAssociateProgram]);
+            expect(vm.associatePrograms).toEqual([programTwo]);
         });
     });
 
     describe('removeAssociateProgram', function() {
 
-        beforeEach(function() {
-            vm.template.associatePrograms = [program];
-        });
-
         it('should remove associate program', function() {
+            vm.template.associatePrograms = [program];
+            vm.associatePrograms = [programTwo];
+
             vm.removeAssociateProgram(program);
 
             expect(vm.template.associatePrograms).toEqual([]);
+            expect(vm.associatePrograms).toEqual([programTwo, program]);
         });
     });
     // #163: ends here

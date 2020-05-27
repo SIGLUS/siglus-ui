@@ -12,7 +12,7 @@
                     <input type="text" id="name" ng-model="vm.template.name" required/>
                     <label for="program">{{'adminTemplateAdd.program' | message}}</label>
                     <!-- #163: add associate program -->
-                    <select id="program" ng-model="vm.template.program" ng-change="vm.populateFacilityTypesAndAssociatePrograms()"
+                    <select id="program" ng-model="vm.template.program" ng-change="vm.populateProgramRelatedVariable()"
                             ng-options="program.name for program in vm.programs" required>
                     </select>
                     <!-- #163: ends here -->
