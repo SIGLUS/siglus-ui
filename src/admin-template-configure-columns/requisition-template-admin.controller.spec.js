@@ -96,35 +96,27 @@ describe('RequisitionTemplateAdminController', function() {
     });
 
     // #173: product sections for template configuration
-    describe('goToTemplatePreview', function() {
+    describe('cancel', function() {
 
-        it('should reload state when reload param is true', function() {
+        it('should change state', function() {
             spyOn(state, 'go');
-            vm.goToTemplatePreview(true);
+            vm.cancel();
 
             expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
-                {}, {
-                    reload: true
+                {
+                    columnsMap: vm.template.columnsMap
                 });
         });
 
-        it('should change state when reload param is not given', function() {
+        it('should change state with previous columnsMap when columnsMap changed', function() {
             spyOn(state, 'go');
-            vm.goToTemplatePreview();
+            var previousColumnsMap = angular.copy(vm.template.columnsMap);
+            vm.template.columnsMap.stockOnHand.displayOrder = 9999;
+            vm.cancel();
 
             expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
-                {}, {
-                    reload: undefined
-                });
-        });
-
-        it('should change state with reload false when reload param false', function() {
-            spyOn(state, 'go');
-            vm.goToTemplatePreview(false);
-
-            expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
-                {}, {
-                    reload: false
+                {
+                    columnsMap: previousColumnsMap
                 });
         });
     });
@@ -220,7 +212,7 @@ describe('RequisitionTemplateAdminController', function() {
 
             rootScope.$apply();
 
-            expect(stateGoSpy).toHaveBeenCalled();
+            expect(stateGoSpy).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns');
         });
         // #173: ends here
     });
