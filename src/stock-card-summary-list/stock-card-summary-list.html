@@ -48,7 +48,9 @@
         </tr>
         </thead>
         <tbody>
+        <!-- SIGLUS-REFACTOR: starts here -->
         <tr class="is-secondary" ng-if="vm.stockCardSummaries.length > 0" ng-repeat-start="summary in vm.stockCardSummaries">
+            <!-- SIGLUS-REFACTOR: ends here -->
             <td>{{summary.orderable.productCode}}</td>
             <td>{{summary.orderable.fullProductName}}</td>
             <td></td>
