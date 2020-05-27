@@ -36,7 +36,7 @@
 
         function getSourceAssignments(programId, facilityId) {
             // SIGLUS-REFACTOR: starts here
-            var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/validSources'));
+            var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/validSources'));
             // SIGLUS-REFACTOR: ends here
 
             return resource.query({
@@ -47,7 +47,7 @@
 
         function getDestinationAssignments(programId, facilityId) {
             // SIGLUS-REFACTOR: starts here
-            var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/validDestinations'));
+            var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/validDestinations'));
             // SIGLUS-REFACTOR: ends here
 
             return resource.query({

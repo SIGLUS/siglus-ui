@@ -29,7 +29,7 @@
 
         return OrderableResource;
         function OrderableResource() {
-            this.super('/api/siglusintegration/orderables', 'orderables', {
+            this.super('/api/siglusapi/orderables', 'orderables', {
                 versioned: true,
                 offlineMessage: 'orderable.notCachedOfflineError'
             });
