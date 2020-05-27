@@ -151,7 +151,7 @@
             vm.items = items;
             vm.requisition = requisition;
             vm.columns = columns;
-            vm.userCanEdit = canAuthorize || canSubmit;
+            vm.userCanEdit = canAuthorize || canSubmit || canApproveAndReject;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
             vm.showAddNonFullSupplyProductsButton = showAddNonFullSupplyProductsButton();
             vm.showUnskipFullSupplyProductsButton = showUnskipFullSupplyProductsButton();
