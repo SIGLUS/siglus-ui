@@ -61,6 +61,7 @@
          * Redirects user to template list view page.
          */
         function onInit() {
+            _.extend(template.columnsMap, $state.params.columnsMap);
             vm.template = template;
             vm.columns = getDisplayedColumns(template);
         }

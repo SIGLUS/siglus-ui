@@ -58,7 +58,7 @@
         vm.isPackToShip = isPackToShip;
         vm.refreshAvailableTags = refreshAvailableTags;
         // #173: product sections for template configuration
-        vm.goToTemplatePreview = goToTemplatePreview;
+        vm.cancel = cancel;
         // #173: ends here
 
         /**
@@ -105,6 +105,8 @@
          */
         vm.availableTags = undefined;
 
+        vm.previousColumnsMap = undefined;
+
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
@@ -119,6 +121,7 @@
             vm.program = program;
             vm.availableTags = {};
             refreshAvailableTags();
+            vm.previousColumnsMap = angular.copy(template.columnsMap);
         }
 
         /**
@@ -139,14 +142,14 @@
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
-         * @name goToTemplatePreview
+         * @name cancel
          *
          * @description
-         * Redirects user to template preview page.
+         * Redirects user to template preview page with unchanged columnsMap.
          */
-        function goToTemplatePreview(reload) {
-            $state.go('openlmis.administration.requisitionTemplates.configure.columns', {}, {
-                reload: reload
+        function cancel() {
+            $state.go('openlmis.administration.requisitionTemplates.configure.columns', {
+                columnsMap: vm.previousColumnsMap
             });
         }
         // #173: ends here
@@ -178,7 +181,7 @@
                 //             loadingModalService.close();
                 //         });
                 //     });
-                goToTemplatePreview();
+                $state.go('openlmis.administration.requisitionTemplates.configure.columns');
                 // #173: ends here
             } else {
                 notificationService.error('adminProgramTemplate.template.invalid');
