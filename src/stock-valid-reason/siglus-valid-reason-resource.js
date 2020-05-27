@@ -37,7 +37,7 @@
         return SiglusValidReasonResource;
 
         function SiglusValidReasonResource() {
-            this.super('/api/siglusintegration/validReasons', {
+            this.super('/api/siglusapi/validReasons', {
                 paginated: false
             });
         }
