@@ -1,4 +1,8 @@
-.page .requisition-template-admin {
+.page{
+    //show move to correct file later
+    flex-grow: 1 !important;
+}
+ .requisition-template-admin {
     .requisition-template-module-container {
         font-size: 20px;
         margin-bottom: 1em;

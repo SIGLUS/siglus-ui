@@ -52,7 +52,6 @@
          */
         vm.template = undefined;
         vm.columns = undefined;
-        vm.requisition = undefined;
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-preview.controller:RequisitionTemplatePreviewController

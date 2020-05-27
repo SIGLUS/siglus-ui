@@ -1,6 +1,7 @@
-.product-preview {
+.product-preview.openlmis-table-container .openlmis-flex-table {
     td {
         min-width: 100px;
+        padding: 16px 8px;
         &.col-source {
             color: #979797;
         }
