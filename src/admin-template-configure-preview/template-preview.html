@@ -7,7 +7,7 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableProduct"/>{{'adminProgramTemplate.enableProduct' | message}}
-        <a class="" ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.product">Setting</a>
+        <a class="" ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.product">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <product-preview columns="vm.columns" ng-show="vm.template.extension.enableProduct"/>
     <div class="requisition-template-module-container">

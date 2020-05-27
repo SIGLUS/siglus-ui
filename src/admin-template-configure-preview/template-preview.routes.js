@@ -30,12 +30,7 @@
             templateUrl: 'admin-template-configure-preview/template-preview.html',
             controller: 'RequisitionTemplatePreviewController',
             controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            resolve: {
-                tags: function(StockReasonTagResource) {
-                    return new StockReasonTagResource().query();
-                }
-            }
+            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
         });
     }
 })();

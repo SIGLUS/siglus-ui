@@ -57,6 +57,9 @@
         vm.isAverageConsumption = isAverageConsumption;
         vm.isPackToShip = isPackToShip;
         vm.refreshAvailableTags = refreshAvailableTags;
+        // #173: product sections for template configuration
+        vm.goToTemplatePreview = goToTemplatePreview;
+        // #173: ends here
 
         /**
          * @ngdoc property
@@ -132,6 +135,22 @@
             });
         }
 
+        // #173: product sections for template configuration
+        /**
+         * @ngdoc method
+         * @methodOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
+         * @name goToTemplatePreview
+         *
+         * @description
+         * Redirects user to template preview page.
+         */
+        function goToTemplatePreview(reload) {
+            $state.go('openlmis.administration.requisitionTemplates.configure.columns', {}, {
+                reload: reload
+            });
+        }
+        // #173: ends here
+
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
@@ -144,20 +163,23 @@
          */
         function saveTemplate() {
             if (vm.template.isValid()) {
-                confirmService.confirm(
-                    'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
-                    undefined, 'adminProgramTemplate.templateSave.title'
-                )
-                    .then(function() {
-                        loadingModalService.open();
-                        requisitionTemplateService.save(vm.template).then(function() {
-                            notificationService.success('adminProgramTemplate.templateSave.success');
-                            goToTemplateList();
-                        }, function() {
-                            notificationService.error('adminProgramTemplate.templateSave.failure');
-                            loadingModalService.close();
-                        });
-                    });
+                // #173: product sections for template configuration
+                // confirmService.confirm(
+                //     'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
+                //     undefined, 'adminProgramTemplate.templateSave.title'
+                // )
+                //     .then(function() {
+                //         loadingModalService.open();
+                //         requisitionTemplateService.save(vm.template).then(function() {
+                //             notificationService.success('adminProgramTemplate.templateSave.success');
+                //             goToTemplateList();
+                //         }, function() {
+                //             notificationService.error('adminProgramTemplate.templateSave.failure');
+                //             loadingModalService.close();
+                //         });
+                //     });
+                goToTemplatePreview();
+                // #173: ends here
             } else {
                 notificationService.error('adminProgramTemplate.template.invalid');
             }

@@ -85,6 +85,8 @@
     </div>
 </div>
 <div class="openlmis-toolbar">
-    <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.save' | message}}"/>
-    <input type="button" ng-click="vm.goToTemplateList()" value="{{'adminProgramTemplate.cancel' | message}}">
+    <!-- #173: product sections for template configuration -->
+    <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.preview' | message}}"/>
+    <input type="button" ng-click="vm.goToTemplatePreview(true)" value="{{'adminProgramTemplate.cancel' | message}}">
+    <!-- #173: ends here -->
 </div>
