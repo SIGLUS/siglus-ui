@@ -63,7 +63,7 @@
                         type="button"
                         ng-click="vm.viewProductStockCard({
                                 stockOnHandOfOneProduct: summary.stockOnHand,
-                                orderable: summary.orderable
+                                orderable: summary.orderable.id
                             })"
                         class="primary">
                     {{'stockCardSummaryList.view'| message}}
