@@ -108,11 +108,11 @@
             vm.stockCard = stockCard;
             vm.stockCard.lineItems = items;
             // SIGLUS-REFACTOR: starts here
-            vm.binCardName = stockCard.isViewProductCard
+            vm.binCardName = $state.params.isViewProductCard
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
             vm.isSOHCorrect = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
-            vm.canArchive = stockCard.isViewProductCard && stockCard.stockOnHand === 0
+            vm.canArchive = $state.params.isViewProductCard && stockCard.stockOnHand === 0
                 && vm.isSOHCorrect && !stockCard.orderable.inKit;
             vm.isArchived = $state.params.isArchived;
             // SIGLUS-REFACTOR: ends here
@@ -151,7 +151,7 @@
 
         // SIGLUS-REFACTOR: starts here
         $scope.$on('$viewContentLoaded', function() {
-            if (stockCard.isViewProductCard && !vm.isSOHCorrect) {
+            if ($state.params.isViewProductCard && !vm.isSOHCorrect) {
                 alertService.error('stockCard.viewProductStockCard.failure');
             }
         });

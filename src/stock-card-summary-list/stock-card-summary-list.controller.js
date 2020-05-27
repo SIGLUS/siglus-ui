@@ -143,18 +143,17 @@
         }
 
         function viewProductStockCard(viewProductCardObject) {
-            var stateParams = angular.copy($stateParams);
-
             // store the view product stock card object in local storage
             localStorageService.add(VIEW_PRODUCT_STOCK_CARD, angular.toJson(viewProductCardObject));
-            stateParams.orderable = viewProductCardObject.orderable && viewProductCardObject.orderable.id;
-            stateParams.isViewProductCard = true;
-            stateParams.page = 0;
             $state.go(
                 vm.isArchivedProducts
                     ? 'openlmis.stockmanagement.archivedProductSummaries.singleCard'
                     : 'openlmis.stockmanagement.stockCardSummaries.singleCard',
-                stateParams
+                {
+                    orderable: viewProductCardObject.orderable,
+                    isViewProductCard: true,
+                    page: 0
+                }
             );
         }
         // SIGLUS-REFACTOR: ends here
