@@ -67,7 +67,7 @@
                     },
                     columns: function(requisition) {
                         // SIGLUS-REFACTOR: starts here
-                        return requisition.template.getColumns();
+                        return requisition.template.getDisplayedColumns(requisition);
                         // SIGLUS-REFACTOR: ends here
                     },
                     fullSupply: function() {

@@ -195,6 +195,7 @@ describe('ViewTabController', function() {
                 this.canAuthorize = false;
                 // SIGLUS-REFACTOR: starts here
                 this.hasAuthorizeRight = false;
+                this.canApproveAndReject = false;
                 // SIGLUS-REFACTOR: ends here
 
                 this.initController();
@@ -253,6 +254,7 @@ describe('ViewTabController', function() {
             it('should be hidden if user can\'t submit and authorize', function() {
                 this.canSubmit = false;
                 this.canAuthorize = false;
+                this.canApproveAndReject = false;
 
                 this.initController();
 
@@ -304,6 +306,7 @@ describe('ViewTabController', function() {
             it('should be hidden if user can\'t submit and authorize', function() {
                 this.canSubmit = false;
                 this.canAuthorize = false;
+                this.canApproveAndReject = false;
 
                 this.initController();
 
@@ -375,6 +378,7 @@ describe('ViewTabController', function() {
             });
 
             it('should be false if canAuthorize and canSubmit are false', function() {
+                this.canApproveAndReject = false;
                 this.initController();
 
                 expect(this.vm.userCanEdit).toBe(false);
@@ -402,6 +406,7 @@ describe('ViewTabController', function() {
             it('should be hidden if requisition status is INITIATED but user does not have right to submit',
                 function() {
                     this.requisition.template.hasSkipColumn.andReturn(true);
+                    this.canApproveAndReject = false;
 
                     this.initController();
 
@@ -428,6 +433,7 @@ describe('ViewTabController', function() {
 
             it('should be hidden if the requisition status is REJECTED and user can not submit', function() {
                 this.requisition.template.hasSkipColumn.andReturn(true);
+                this.canApproveAndReject = false;
 
                 this.initController();
 
@@ -456,6 +462,7 @@ describe('ViewTabController', function() {
 
             it('should be hidden if user does not authorize right and requisition is submitted', function() {
                 this.canAuthorize = false;
+                this.canApproveAndReject = false;
                 this.requisition.template.hasSkipColumn.andReturn(true);
 
                 this.initController();
