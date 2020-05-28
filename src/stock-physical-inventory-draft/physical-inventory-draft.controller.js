@@ -697,8 +697,7 @@
         // SIGLUS-REFACTOR: starts here
         function quantityChanged(lineItem) {
             vm.validateQuantity(lineItem);
-            if (!_.isEqual(lineItem.$errors.quantityInvalid,
-                messageService.get('stockPhysicalInventoryDraft.required'))) {
+            if (!lineItem.$errors.quantityInvalid) {
                 vm.addStockAdjustments(lineItem);
                 vm.checkUnaccountedStockAdjustments(lineItem);
             }
