@@ -108,7 +108,7 @@ describe('stockCardService', function() {
         beforeEach(function() {
             this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archiveProduct/'
                 + this.orderable.id))
-                .respond(200, this.orderable);
+                .respond(200, null);
         });
 
         it('should return promise', function() {
@@ -118,7 +118,7 @@ describe('stockCardService', function() {
             expect(result.then).not.toBeUndefined();
         });
 
-        it('should resolve to orderable', function() {
+        it('should resolve to null', function() {
             var result;
 
             this.stockCardService.archiveProduct(this.orderable.id).then(function(data) {
@@ -127,10 +127,40 @@ describe('stockCardService', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            expect(angular.toJson(result)).toEqual(angular.toJson(this.orderable));
+            expect(angular.toJson(result)).toEqual(angular.toJson({}));
         });
     });
     // #103: ends here
+
+    // #105: activate archived product
+    describe('activateProduct', function() {
+
+        beforeEach(function() {
+            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/activateProduct/'
+                + this.orderable.id))
+                .respond(200, null);
+        });
+
+        it('should return promise', function() {
+            var result = this.stockCardService.activateProduct(this.orderable.id);
+            this.$httpBackend.flush();
+
+            expect(result.then).not.toBeUndefined();
+        });
+
+        it('should resolve to null', function() {
+            var result;
+
+            this.stockCardService.activateProduct(this.orderable.id).then(function(data) {
+                result = data;
+            });
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson({}));
+        });
+    });
+    // #105: ends here
 
     afterEach(function() {
         this.$httpBackend.verifyNoOutstandingRequest();
