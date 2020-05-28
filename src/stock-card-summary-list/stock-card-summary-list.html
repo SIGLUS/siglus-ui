@@ -89,5 +89,9 @@
         </tr>
         </tbody>
     </table>
-    <openlmis-pagination list="vm.stockCardSummaryList" paged-list="vm.pagedSummaries" pagination-id="'stockCardList'"></openlmis-pagination>
+    <!-- #219: use different paginationId when is archived-->
+    <openlmis-pagination list="vm.stockCardSummaryList" paged-list="vm.pagedSummaries"
+                         pagination-id="vm.isArchivedProducts ? 'archivedStockCardList' : 'stockCardList' ">
+    </openlmis-pagination>
+    <!-- #219: ends here -->
 </section>
