@@ -107,23 +107,29 @@
 
             return $q.all([hasApproveRequisitionRight(requisition),
                 facilityFactory.getUserHomeFacility()]).then(function(response) {
-                var canApprove = response[0];
-                var homeFacility = response[1];
-                if (canApprove) {
-                    // same facility
-                    // TODO: should use flag 'isFinalApproval' in requisition?
-                    var isInternalApproval = homeFacility.id === requisition.facility.id;
-                    if (isInternalApproval) {
-                        columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
-                        columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = false;
+
+                if (columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY] &&
+                    columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY]) {
+
+                    var canApprove = response[0];
+                    var homeFacility = response[1];
+                    if (canApprove) {
+                        // same facility
+                        // TODO: should use flag 'isFinalApproval' in requisition?
+                        var isInternalApproval = homeFacility.id === requisition.facility.id;
+                        if (isInternalApproval) {
+                            columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
+                            columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = false;
+                        } else {
+                            columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = true;
+                            columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = true;
+                        }
                     } else {
-                        columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = true;
-                        columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = true;
+                        // approved quantity handled by requisition-column.js displayColumn()
+                        columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
                     }
-                } else {
-                    // approved quantity handled by requisition-column.js displayColumn()
-                    columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
                 }
+
                 return getColumns();
             });
         }
