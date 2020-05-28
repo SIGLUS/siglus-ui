@@ -141,7 +141,9 @@
          * @return {Promise}              the promise resolving to the list of reasons
          */
         function getReasons(program, facilityType, reasonType) {
+            // #200: replace ValidReasonResource with SiglusValidReasonResource to support All Products
             return new SiglusValidReasonResource().query({
+            // #200: ends here
                 program: program,
                 facilityType: facilityType,
                 reasonType: reasonType

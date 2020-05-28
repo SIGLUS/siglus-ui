@@ -48,7 +48,6 @@
         vm.binCardName = '';
         vm.isSOHCorrect = false;
         vm.canArchive = false;
-        vm.isArchived = false;
         vm.canActivate = false;
         // SIGLUS-REFACTOR: ends here
 
@@ -131,10 +130,9 @@
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
             vm.isSOHCorrect = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
-            vm.canArchive = $state.params.isViewProductCard && stockCard.stockOnHand === 0
+            vm.canArchive = !$state.params.isArchived && $state.params.isViewProductCard && stockCard.stockOnHand === 0
                 && vm.isSOHCorrect && !stockCard.orderable.inKit;
-            vm.isArchived = $state.params.isArchived;
-            vm.canActivate = $state.params.isViewProductCard;
+            vm.canActivate = $state.params.isArchived && $state.params.isViewProductCard;
             // SIGLUS-REFACTOR: ends here
         }
 
