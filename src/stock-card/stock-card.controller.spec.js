@@ -214,8 +214,7 @@ describe('StockCardController', function() {
         });
 
         it('should rediect with proper state params after success', function() {
-            spyOn(stockCardService, 'archiveProduct');
-            stockCardService.archiveProduct.andReturn($q.resolve());
+            spyOn(stockCardService, 'archiveProduct').andReturn($q.resolve());
 
             vm.archive();
             $rootScope.$apply();
@@ -228,8 +227,7 @@ describe('StockCardController', function() {
         });
 
         it('should not rediect after error', function() {
-            spyOn(stockCardService, 'archiveProduct');
-            stockCardService.archiveProduct.andReturn($q.reject());
+            spyOn(stockCardService, 'archiveProduct').andReturn($q.reject());
 
             vm.archive();
             $rootScope.$apply();
