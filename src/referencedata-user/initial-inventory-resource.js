@@ -38,7 +38,7 @@
         return InitialInventoryResource;
 
         function InitialInventoryResource() {
-            this.super('/api/siglusintegration/initialInventory');
+            this.super('/api/siglusapi/initialInventory');
         }
     }
 })();
