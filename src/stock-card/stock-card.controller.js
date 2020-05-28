@@ -49,6 +49,7 @@
         vm.isSOHCorrect = false;
         vm.canArchive = false;
         vm.isArchived = false;
+        vm.canActivate = false;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -81,6 +82,24 @@
                 });
         };
         // #103: ends here
+
+        // #105: activate product
+        vm.activate = function() {
+            confirmService.confirm('stockCard.activateProduct', 'stockCard.activate', 'stockCard.cancel')
+                .then(function() {
+                    loadingModalService.open();
+                    stockCardService.activateProduct(stockCard.orderable.id).then(function() {
+                        notificationService.success('stockCard.activateProduct.success');
+                        $state.go('openlmis.stockmanagement.stockCardSummaries', Object.assign($state.params, {
+                            program: stockCard.program.id
+                        }));
+                    }, function() {
+                        loadingModalService.close();
+                        notificationService.error('stockCard.activateProduct.failure');
+                    });
+                });
+        };
+        // #105: ends here
 
         function onInit() {
             $state.current.label = stockCard.orderable.fullProductName;
@@ -115,6 +134,7 @@
             vm.canArchive = $state.params.isViewProductCard && stockCard.stockOnHand === 0
                 && vm.isSOHCorrect && !stockCard.orderable.inKit;
             vm.isArchived = $state.params.isArchived;
+            vm.canActivate = $state.params.isViewProductCard;
             // SIGLUS-REFACTOR: ends here
         }
 

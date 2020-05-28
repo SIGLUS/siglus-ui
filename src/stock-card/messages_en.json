@@ -8,5 +8,9 @@
   "stockCard.cancel": "Cancel",
   "stockCard.archiveProduct": "Are you sure you want to archive this product?",
   "stockCard.archiveProduct.success": "Product has been successfully archived!\n Related draft has been updated",
-  "stockCard.archiveProduct.failure": "Failure to archive the product"
+  "stockCard.archiveProduct.failure": "Failure to archive the product",
+  "stockCard.activate": "Activate",
+  "stockCard.activateProduct": "Are you sure you want to activate the product?\nThis product will be added back to SOH after the activate action",
+  "stockCard.activateProduct.success": "Product has been successfully added back to SOH!",
+  "stockCard.activateProduct.failure": "Failure to activate the product"
 }
