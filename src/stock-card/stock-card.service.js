@@ -45,12 +45,17 @@
                 archiveProduct: {
                     url: stockmanagementUrlFactory('/api/siglusintegration/archiveProduct/:orderableId'),
                     method: 'POST'
+                },
+                activateProduct: {
+                    url: stockmanagementUrlFactory('/api/siglusintegration/activateProduct/:orderableId'),
+                    method: 'POST'
                 }
             }
         );
 
         this.getProductStockCard = getProductStockCard;
         this.archiveProduct = archiveProduct;
+        this.activateProduct = activateProduct;
         // SIGLUS-REFACTOR: ends here
         this.getStockCard = getStockCard;
         this.print = print;
@@ -119,6 +124,23 @@
          */
         function archiveProduct(orderableId) {
             return resource.archiveProduct({
+                orderableId: orderableId
+            }, {}).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card.stockCardService
+         * @name activateProduct
+         *
+         * @description
+         * Activate product by id.
+         *
+         * @param {String} orderableId orderable id
+         * @return {Promise} orderable promise.
+         */
+        function activateProduct(orderableId) {
+            return resource.activateProduct({
                 orderableId: orderableId
             }, {}).$promise;
         }

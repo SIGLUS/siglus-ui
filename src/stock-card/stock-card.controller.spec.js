@@ -206,11 +206,10 @@ describe('StockCardController', function() {
 
         beforeEach(function() {
             vm.$onInit();
-            spyOn(confirmService, 'confirmDestroy');
+            spyOn(confirmService, 'confirmDestroy').andReturn($q.resolve());
             spyOn(notificationService, 'success');
             spyOn(notificationService, 'error');
             spyOn($state, 'go');
-            confirmService.confirmDestroy.andReturn($q.resolve());
         });
 
         it('should rediect with proper state params after success', function() {
@@ -239,4 +238,42 @@ describe('StockCardController', function() {
         });
     });
     // #103: ends here
+
+    // #105: activate archived product
+    describe('activate', function() {
+
+        beforeEach(function() {
+            vm.$onInit();
+            spyOn(confirmService, 'confirm').andReturn($q.resolve());
+            spyOn(notificationService, 'success');
+            spyOn(notificationService, 'error');
+            spyOn($state, 'go');
+        });
+
+        it('should rediect with proper state params after success', function() {
+            spyOn(stockCardService, 'activateProduct').andReturn($q.resolve());
+
+            vm.activate();
+            $rootScope.$apply();
+
+            expect(notificationService.error).not.toHaveBeenCalled();
+            expect(notificationService.success).toHaveBeenCalledWith('stockCard.activateProduct.success');
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                program: vm.stockCard.program.id,
+                page: 0
+            });
+        });
+
+        it('should not rediect after error', function() {
+            spyOn(stockCardService, 'activateProduct').andReturn($q.reject());
+
+            vm.activate();
+            $rootScope.$apply();
+
+            expect($state.go).not.toHaveBeenCalled();
+            expect(notificationService.error).toHaveBeenCalledWith('stockCard.activateProduct.failure');
+            expect(notificationService.success).not.toHaveBeenCalled();
+        });
+    });
+    // #105: ends here
 });
