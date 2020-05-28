@@ -72,6 +72,10 @@
                     },
                     fullSupply: function() {
                         return true;
+                    },
+                    homeFacility: function(facilityFactory) {
+                        console.log(facilityFactory);
+                        return facilityFactory.getUserHomeFacility();
                     }
                 }
             });

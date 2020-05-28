@@ -34,7 +34,7 @@
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES'
+        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -42,7 +42,8 @@
                                messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
-                               requisitionService, loadingModalService, COLUMN_SOURCES) {
+                               requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility) {
+
         var vm = this;
 
         vm.$onInit = onInit;
@@ -55,6 +56,8 @@
         vm.getDescriptionForColumn = getDescriptionForColumn;
         vm.skippedFullSupplyProductCountMessage = skippedFullSupplyProductCountMessage;
         vm.cacheRequisition = cacheRequisition;
+
+        var isInternalApproval = homeFacility.id === requisition.facility.id;
 
         /**
          * @ngdoc property
@@ -151,7 +154,7 @@
             vm.items = items;
             vm.requisition = requisition;
             vm.columns = columns;
-            vm.userCanEdit = canAuthorize || canSubmit || canApproveAndReject;
+            vm.userCanEdit = canAuthorize || canSubmit || (canApproveAndReject && isInternalApproval);
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
             vm.showAddNonFullSupplyProductsButton = showAddNonFullSupplyProductsButton();
             vm.showUnskipFullSupplyProductsButton = showUnskipFullSupplyProductsButton();

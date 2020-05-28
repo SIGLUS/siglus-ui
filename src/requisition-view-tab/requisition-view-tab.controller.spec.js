@@ -63,6 +63,7 @@ describe('ViewTabController', function() {
 
         // SIGLUS-REFACTOR: starts here
         this.requisition.extraData = {};
+        this.homeFacility = {};
         // SIGLUS-REFACTOR: ends here
 
         this.initController = initController;
@@ -852,7 +853,8 @@ describe('ViewTabController', function() {
             canApproveAndReject: this.canApproveAndReject,
             // SIGLUS-REFACTOR: starts here
             requisitionService: this.requisitionService,
-            loadingModalService: this.loadingModalService
+            loadingModalService: this.loadingModalService,
+            homeFacility: this.homeFacility
             // SIGLUS-REFACTOR: ends here
         });
         this.vm.$onInit();
