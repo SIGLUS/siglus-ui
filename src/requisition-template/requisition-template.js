@@ -115,14 +115,11 @@
                     var homeFacility = response[1];
                     if (canApprove) {
                         // same facility
-                        // TODO: should use flag 'isFinalApproval' in requisition?
+                        // TODO: suggested_quantity should not be affected if not isInternalApproval
                         var isInternalApproval = homeFacility.id === requisition.facility.id;
                         if (isInternalApproval) {
                             columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
                             columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = false;
-                        } else {
-                            columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = true;
-                            columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = true;
                         }
                     } else {
                         // approved quantity handled by requisition-column.js displayColumn()
