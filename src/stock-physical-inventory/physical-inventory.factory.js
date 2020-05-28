@@ -262,7 +262,8 @@
                     vvmStatus: null,
                     stockAdjustments: [],
                     stockCardId: stockCardId,
-                    programId: virtualProgramId
+                    programId: virtualProgramId,
+                    archive: summary.archive
                 });
                 summary.stockAdjustments = [];
                 summary.stockCardId = stockCardId;
@@ -271,7 +272,7 @@
             draftToReturn.summaries = summaries;
             if (_.isEmpty(draftLineItems)) {
                 draftToReturn.lineItems = _.filter(stockCardLineItems, function(item) {
-                    return item.stockCardId;
+                    return item.stockCardId && !item.archive;
                 });
             } else {
                 angular.forEach(draftLineItems, function(item) {
@@ -293,7 +294,8 @@
                         stockAdjustments: item.stockAdjustments || [],
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
-                        programId: getVirtualProgramId(summary.orderable)
+                        programId: getVirtualProgramId(summary.orderable),
+                        archive: summary.archive
                     });
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
@@ -355,10 +357,7 @@
 
             return repository.query({
                 programId: programId,
-                facilityId: facilityId,
-                // #103: archive product
-                excludeArchived: true
-                // #103: ends here
+                facilityId: facilityId
             }).then(function(summaries) {
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
