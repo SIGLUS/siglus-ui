@@ -222,7 +222,8 @@ describe('StockCardController', function() {
             expect(notificationService.error).not.toHaveBeenCalled();
             expect(notificationService.success).toHaveBeenCalledWith('stockCard.archiveProduct.success');
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.archivedProductSummaries', {
-                program: vm.stockCard.program.id
+                program: vm.stockCard.program.id,
+                page: 0
             });
         });
 

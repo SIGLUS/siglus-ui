@@ -88,9 +88,11 @@
         </tbody>
     </table>
 
+    <!-- #219: use different paginationId when is archived-->
     <openlmis-pagination
             list="vm.stockCard.lineItems"
             paged-list="vm.displayedLineItems"
-            pagination-id="'stockCard'">
+            pagination-id="vm.isArchived ? 'archivedStockCard' : 'stockCard'">
     </openlmis-pagination>
+    <!-- #219: ends here -->
 </section>

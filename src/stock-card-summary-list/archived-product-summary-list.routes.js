@@ -25,7 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.archivedProductSummaries', {
-            url: '/archivedProduct?facility&program&supervised&stockCardListPage&stockCardListSize',
+            url: '/archivedProduct?facility&program&supervised&archivedStockCardListPage&archivedStockCardListSize',
             label: 'stockCardSummaryList.archivedProduct',
             priority: -1,
             showInNavigation: true,
@@ -76,7 +76,7 @@
                         }
                         return [];
                     }, {
-                        paginationId: 'stockCardList'
+                        paginationId: 'archivedStockCardList'
                     });
                 }
             }

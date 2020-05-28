@@ -49,6 +49,7 @@
         vm.isSOHCorrect = false;
         vm.canArchive = false;
         vm.canActivate = false;
+        vm.isArchived = false;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -72,7 +73,8 @@
                     stockCardService.archiveProduct(stockCard.orderable.id).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
                         $state.go('openlmis.stockmanagement.archivedProductSummaries', Object.assign($state.params, {
-                            program: stockCard.program.id
+                            program: stockCard.program.id,
+                            page: 0
                         }));
                     }, function() {
                         loadingModalService.close();
@@ -90,7 +92,8 @@
                     stockCardService.activateProduct(stockCard.orderable.id).then(function() {
                         notificationService.success('stockCard.activateProduct.success');
                         $state.go('openlmis.stockmanagement.stockCardSummaries', Object.assign($state.params, {
-                            program: stockCard.program.id
+                            program: stockCard.program.id,
+                            page: 0
                         }));
                     }, function() {
                         loadingModalService.close();
@@ -133,6 +136,7 @@
             vm.canArchive = !$state.params.isArchived && $state.params.isViewProductCard && stockCard.stockOnHand === 0
                 && vm.isSOHCorrect && !stockCard.orderable.inKit;
             vm.canActivate = $state.params.isArchived && $state.params.isViewProductCard;
+            vm.isArchived = $state.params.isArchived;
             // SIGLUS-REFACTOR: ends here
         }
 

@@ -26,7 +26,7 @@
         var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
 
         $stateProvider.state('openlmis.stockmanagement.archivedProductSummaries.singleCard', {
-            url: '/:stockCardId?orderable?stockCardPage&stockCardSize&{isViewProductCard:bool}',
+            url: '/:stockCardId?orderable?archivedStockCardPage&archivedStockCardSize&{isViewProductCard:bool}',
             showInNavigation: false,
             views: {
                 '@openlmis': {
@@ -58,7 +58,7 @@
                             paginationService.registerList(null, $stateParams, function() {
                                 return stockCard.lineItems;
                             }, {
-                                paginationId: 'stockCard'
+                                paginationId: 'archivedStockCard'
                             });
                             if ($stateParams.isViewProductCard) {
                                 // use soh from Stock on Hand page which store in local storage
