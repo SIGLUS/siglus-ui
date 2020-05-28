@@ -25,6 +25,7 @@
      * for retrieving templates from the OpenLMIS server.
      */
     angular.module('admin-template-configure-preview-section', [
+        'requisition-constants'
     ]);
 
 })();
