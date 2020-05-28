@@ -35,7 +35,7 @@
         this.submitUnpack = submitUnpack;
 
         function getKitProducts(orderableId) {
-            var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/orderableInKit'));
+            var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/orderableInKit'));
             return resource.query({
                 kitProductId: orderableId
             }).$promise;

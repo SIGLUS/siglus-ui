@@ -34,10 +34,10 @@
 
     function service($resource, stockmanagementUrlFactory) {
 
-        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/unpackKits'), {}, {
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/unpackKits'), {}, {
             getUnpackKit: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusintegration/unpackKit')
+                url: stockmanagementUrlFactory('/api/siglusapi/unpackKit')
             }
         });
 
