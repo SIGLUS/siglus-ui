@@ -24,8 +24,6 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         // SIGLUS-REFACTOR: starts here
-        var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
-
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries.singleCard', {
             url: '/:stockCardId?orderable?stockCardPage&stockCardSize&{isViewProductCard:bool}',
             showInNavigation: false,
@@ -38,9 +36,8 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCard: function($stateParams, stockCardService, paginationService, StockCard, localStorageService) {
+                stockCard: function($stateParams, stockCardService, paginationService, StockCard) {
                     var stockCardResource;
-                    var viewProductStockCard = angular.fromJson(localStorageService.get(VIEW_PRODUCT_STOCK_CARD));
 
                     if ($stateParams.isViewProductCard) {
                         stockCardResource = stockCardService.getProductStockCard($stateParams.orderable);
@@ -59,8 +56,6 @@
                                 paginationId: 'stockCard'
                             });
                             if ($stateParams.isViewProductCard) {
-                                // use soh from Stock on Hand page which store in local storage
-                                stockCard.stockOnHand = viewProductStockCard.stockOnHandOfOneProduct;
                                 delete stockCard.lot;
                             }
                             return stockCard;

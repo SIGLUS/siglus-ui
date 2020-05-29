@@ -33,13 +33,13 @@
     function service($resource, $window, stockmanagementUrlFactory, accessTokenFactory, dateUtils) {
         // SIGLUS-REFACTOR: starts here
         var resource = $resource(
-            stockmanagementUrlFactory('/api/siglusintegration/stockCards/:stockCardId'), {}, {
+            stockmanagementUrlFactory('/api/siglusapi/stockCards/:stockCardId'), {}, {
                 get: {
                     method: 'GET',
                     transformResponse: transformResponse
                 },
                 getProductStockCard: {
-                    url: stockmanagementUrlFactory('/api/siglusintegration/stockCards/orderable'),
+                    url: stockmanagementUrlFactory('/api/siglusapi/stockCards/orderable'),
                     method: 'GET'
                 },
                 archiveProduct: {
