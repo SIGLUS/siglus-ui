@@ -44,7 +44,7 @@ describe('stockCardService', function() {
 
         beforeEach(function() {
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/siglusintegration/stockCards/'
+            this.$httpBackend.when('GET', this.stockmanagementUrlFactory('/api/siglusapi/stockCards/'
                 // SIGLUS-REFACTOR: ends here
                 + this.stockCard.id))
                 .respond(200, this.stockCard);
@@ -76,7 +76,7 @@ describe('stockCardService', function() {
 
         beforeEach(function() {
             this.$httpBackend.when(
-                'GET', this.stockmanagementUrlFactory('/api/siglusintegration/stockCards/orderable?id='
+                'GET', this.stockmanagementUrlFactory('/api/siglusapi/stockCards/orderable?id='
                 + this.orderable.id)
             )
                 .respond(200, this.stockCard);

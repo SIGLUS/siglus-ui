@@ -61,10 +61,7 @@
             <td>
                 <button ng-if="summary.orderable"
                         type="button"
-                        ng-click="vm.viewProductStockCard({
-                                stockOnHandOfOneProduct: summary.stockOnHand,
-                                orderable: summary.orderable.id
-                            })"
+                        ng-click="vm.viewProductStockCard(summary.orderable.id)"
                         class="primary">
                     {{'stockCardSummaryList.view'| message}}
                 </button>

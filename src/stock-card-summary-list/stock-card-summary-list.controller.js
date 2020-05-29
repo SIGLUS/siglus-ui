@@ -28,15 +28,15 @@
         .module('stock-card-summary-list')
         .controller('StockCardSummaryListController', controller);
 
-    // SIGLUS-REFACTOR: add 'user', 'facility', 'programs', 'localStorageService'
+    // SIGLUS-REFACTOR: add 'user', 'facility', 'programs'
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'user', 'facility', 'programs', 'localStorageService'
+        'user', 'facility', 'programs'
     ];
     // SIGLUS-REFACTOR: ends here
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        user, facility, programs, localStorageService) {
+                        user, facility, programs) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -45,7 +45,6 @@
         vm.print = print;
 
         // SIGLUS-REFACTOR: starts here
-        var VIEW_PRODUCT_STOCK_CARD = 'viewProductStockCard';
         vm.viewProductStockCard = viewProductStockCard;
 
         vm.programs = [];
@@ -142,15 +141,13 @@
             new StockCardSummaryRepositoryImpl().print(vm.program.id, vm.facility.id);
         }
 
-        function viewProductStockCard(viewProductCardObject) {
-            // store the view product stock card object in local storage
-            localStorageService.add(VIEW_PRODUCT_STOCK_CARD, angular.toJson(viewProductCardObject));
+        function viewProductStockCard(orderableId) {
             $state.go(
                 vm.isArchivedProducts
                     ? 'openlmis.stockmanagement.archivedProductSummaries.singleCard'
                     : 'openlmis.stockmanagement.stockCardSummaries.singleCard',
                 {
-                    orderable: viewProductCardObject.orderable,
+                    orderable: orderableId,
                     isViewProductCard: true,
                     page: 0
                 }
