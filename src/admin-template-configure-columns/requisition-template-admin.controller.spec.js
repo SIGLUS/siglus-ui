@@ -25,6 +25,10 @@ describe('RequisitionTemplateAdminController', function() {
     var q, $controller, state, notificationService, COLUMN_SOURCES, rootScope, MAX_COLUMN_DESCRIPTION_LENGTH,
         confirmService, requisitionTemplateService, TemplateColumnDataBuilder, TemplateDataBuilder;
 
+    // #173: product sections for template configuration
+    var scope, originalTemplate;
+    // #173: ends here
+
     beforeEach(function() {
         module('admin-template-configure-columns');
 
@@ -41,6 +45,9 @@ describe('RequisitionTemplateAdminController', function() {
             TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');
             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
             MAX_COLUMN_DESCRIPTION_LENGTH = $injector.get('MAX_COLUMN_DESCRIPTION_LENGTH');
+            // #173: product sections for template configuration
+            scope = rootScope.$new();
+            // #173: ends here
         });
 
         template = new TemplateDataBuilder()
@@ -49,6 +56,9 @@ describe('RequisitionTemplateAdminController', function() {
             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
             .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn());
 
+        // #173: product sections for template configuration
+        originalTemplate = angular.copy(template);
+        // #173: ends here
         tags = [
             'tag-1',
             'tag-2',
@@ -58,7 +68,11 @@ describe('RequisitionTemplateAdminController', function() {
         vm = $controller('RequisitionTemplateAdminController', {
             program: program,
             template: template,
-            tags: tags
+            tags: tags,
+            // #173: product sections for template configuration
+            $scope: scope,
+            originalTemplate: originalTemplate
+            // #173: ends here
         });
         vm.$onInit();
     });
@@ -104,19 +118,26 @@ describe('RequisitionTemplateAdminController', function() {
 
             expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
                 {
-                    columnsMap: vm.template.columnsMap
+                    productSection: {
+                        populateStockOnHandFromStockCards: vm.template.populateStockOnHandFromStockCards,
+                        columnsMap: vm.template.columnsMap
+                    }
                 });
         });
 
         it('should change state with previous columnsMap when columnsMap changed', function() {
             spyOn(state, 'go');
-            var previousColumnsMap = angular.copy(vm.template.columnsMap);
+            var previousTemplate = angular.copy(vm.template);
             vm.template.columnsMap.stockOnHand.displayOrder = 9999;
+            vm.template.populateStockOnHandFromStockCards = true;
             vm.cancel();
 
             expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
                 {
-                    columnsMap: previousColumnsMap
+                    productSection: {
+                        populateStockOnHandFromStockCards: previousTemplate.populateStockOnHandFromStockCards,
+                        columnsMap: previousTemplate.columnsMap
+                    }
                 });
         });
     });

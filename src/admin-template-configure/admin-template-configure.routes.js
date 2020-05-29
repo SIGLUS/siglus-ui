@@ -18,21 +18,37 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview')
+        .module('admin-template-configure')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columns', {
-            label: 'adminProgramTemplate.templateColumns',
-            url: '/columns',
-            templateUrl: 'admin-template-configure-preview/template-preview.html',
-            controller: 'RequisitionTemplatePreviewController',
-            controllerAs: 'vm',
+
+        $stateProvider.state('openlmis.administration.requisitionTemplates.configure', {
+            abstract: 'true',
+            label: 'adminTemplateConfigure.label',
+            url: '/:id',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            params: {
-                productSection: undefined
+            views: {
+                '@openlmis': {
+                    controller: 'AdminTemplateConfigureController',
+                    templateUrl: 'admin-template-configure/admin-template-configure.html',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                template: function(requisitionTemplateService, $stateParams) {
+                    return requisitionTemplateService.get($stateParams.id);
+                },
+                program: function(programService, template) {
+                    return programService.get(template.program.id);
+                },
+                // #173: product sections for template configuration
+                originalTemplate: function(template) {
+                    return angular.copy(template);
+                }
+                // #173: ends here
             }
         });
     }
