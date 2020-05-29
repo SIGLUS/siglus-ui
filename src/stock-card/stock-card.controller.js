@@ -133,10 +133,10 @@
                 ? stockCard.orderable.fullProductName
                 : stockCard.program.name;
             vm.isSOHCorrect = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
-            vm.canArchive = !$state.params.isArchived && $state.params.isViewProductCard && stockCard.stockOnHand === 0
+            vm.isArchived = stockCard.orderable.archived;
+            vm.canArchive = !vm.isArchived && $state.params.isViewProductCard && stockCard.stockOnHand === 0
                 && vm.isSOHCorrect && !stockCard.orderable.inKit;
-            vm.canActivate = $state.params.isArchived && $state.params.isViewProductCard;
-            vm.isArchived = $state.params.isArchived;
+            vm.canActivate = vm.isArchived && $state.params.isViewProductCard;
             // SIGLUS-REFACTOR: ends here
         }
 

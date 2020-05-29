@@ -33,9 +33,6 @@
                     controllerAs: 'vm'
                 }
             },
-            params: {
-                isArchived: true
-            },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
                 stockCard: function($stateParams, stockCardService, paginationService, StockCard) {
