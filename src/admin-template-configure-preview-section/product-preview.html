@@ -3,7 +3,7 @@
         <table>
             <thead>
             <tr>
-                <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'">{{column.label}}</th>
+                <th ng-repeat="column in vm.columns | orderBy : 'displayOrder'">{{column.label}}</th>
             </tr>
             </thead>
             <tr ng-repeat="lineItem in vm.items">
@@ -12,7 +12,6 @@
                     <span>{{vm.getColumnValue(column, lineItem)}}</span>
                 </td>
             </tr>
-            </tbody>
         </table>
     </div>
 </div>

@@ -59,6 +59,7 @@
         vm.isPackToShip = isPackToShip;
         vm.refreshAvailableTags = refreshAvailableTags;
         // #173: product sections for template configuration
+        vm.previewTemplate = previewTemplate;
         vm.cancel = cancel;
         // #173: ends here
 
@@ -184,27 +185,34 @@
          */
         function saveTemplate() {
             if (vm.template.isValid()) {
-                // #173: product sections for template configuration
-                // confirmService.confirm(
-                //     'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
-                //     undefined, 'adminProgramTemplate.templateSave.title'
-                // )
-                //     .then(function() {
-                //         loadingModalService.open();
-                //         requisitionTemplateService.save(vm.template).then(function() {
-                //             notificationService.success('adminProgramTemplate.templateSave.success');
-                //             goToTemplateList();
-                //         }, function() {
-                //             notificationService.error('adminProgramTemplate.templateSave.failure');
-                //             loadingModalService.close();
-                //         });
-                //     });
-                $state.go('openlmis.administration.requisitionTemplates.configure.columns');
-                // #173: ends here
+                confirmService.confirm(
+                    'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
+                    undefined, 'adminProgramTemplate.templateSave.title'
+                )
+                    .then(function() {
+                        loadingModalService.open();
+                        requisitionTemplateService.save(vm.template).then(function() {
+                            notificationService.success('adminProgramTemplate.templateSave.success');
+                            goToTemplateList();
+                        }, function() {
+                            notificationService.error('adminProgramTemplate.templateSave.failure');
+                            loadingModalService.close();
+                        });
+                    });
             } else {
                 notificationService.error('adminProgramTemplate.template.invalid');
             }
         }
+
+        // #173: product sections for template configuration
+        function previewTemplate() {
+            if (vm.template.isValid()) {
+                $state.go('openlmis.administration.requisitionTemplates.configure.columns');
+            } else {
+                notificationService.error('adminProgramTemplate.template.invalid');
+            }
+        }
+        // #173: ends here
 
         /**
          * @ngdoc method

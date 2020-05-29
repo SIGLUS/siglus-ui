@@ -152,6 +152,39 @@ describe('RequisitionTemplateAdminController', function() {
                 });
         });
     });
+
+    describe('preview template', function() {
+        var stateGoSpy = jasmine.createSpy(),
+            errorNotificationServiceSpy = jasmine.createSpy();
+
+        beforeEach(function() {
+            spyOn(notificationService, 'error').andCallFake(errorNotificationServiceSpy);
+
+            spyOn(state, 'go').andCallFake(stateGoSpy);
+
+            template.isValid = jasmine.createSpy().andReturn(true);
+        });
+
+        it('should display error message when template is invalid', function() {
+            template.isValid.andReturn(false);
+
+            vm.previewTemplate();
+
+            rootScope.$apply();
+
+            expect(stateGoSpy).not.toHaveBeenCalled();
+            expect(errorNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.template.invalid');
+        });
+
+        it('should change state when template is valid', function() {
+            vm.previewTemplate();
+
+            rootScope.$apply();
+
+            expect(stateGoSpy).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns');
+        });
+
+    });
     // #173: ends here
 
     describe('save template', function() {
@@ -189,64 +222,54 @@ describe('RequisitionTemplateAdminController', function() {
             expect(confirmService.confirm).not.toHaveBeenCalled();
         });
 
-        // #173: product sections for template configuration
-        // it('should not save template if confirm failed', function() {
-        //     confirmService.confirm.andReturn(q.reject());
-        //
-        //     vm.saveTemplate();
-        //
-        //     rootScope.$apply();
-        //
-        //     expect(confirmService.confirm).toHaveBeenCalledWith(
-        //         'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
-        //         undefined, 'adminProgramTemplate.templateSave.title'
-        //     );
-        //
-        //     expect(stateGoSpy).not.toHaveBeenCalled();
-        //     expect(loadingModalService.open).not.toHaveBeenCalled();
-        //     expect(successNotificationServiceSpy).not.toHaveBeenCalled();
-        // });
-        //
-        // it('should save template and then display success notification and change state', function() {
-        //     vm.saveTemplate();
-        //
-        //     rootScope.$apply();
-        //
-        //     expect(confirmService.confirm).toHaveBeenCalledWith(
-        //         'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
-        //         undefined, 'adminProgramTemplate.templateSave.title'
-        //     );
-        //
-        //     expect(loadingModalService.open).toHaveBeenCalled();
-        //     expect(requisitionTemplateService.save).toHaveBeenCalledWith(template);
-        //     expect(stateGoSpy).toHaveBeenCalled();
-        //     expect(successNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.templateSave.success');
-        // });
-        //
-        // it('should close loading modal if template save was unsuccessful', function() {
-        //     requisitionTemplateService.save.andReturn(q.reject());
-        //
-        //     vm.saveTemplate();
-        //     rootScope.$apply();
-        //
-        //     expect(confirmService.confirm).toHaveBeenCalledWith(
-        //         'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
-        //         undefined, 'adminProgramTemplate.templateSave.title'
-        //     );
-        //
-        //     expect(loadingModalService.close).toHaveBeenCalled();
-        //     expect(requisitionTemplateService.save).toHaveBeenCalledWith(template);
-        //     expect(errorNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.templateSave.failure');
-        // });
+        it('should not save template if confirm failed', function() {
+            confirmService.confirm.andReturn(q.reject());
 
-        it('should change state when template is valid', function() {
             vm.saveTemplate();
 
             rootScope.$apply();
 
-            expect(stateGoSpy).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns');
+            expect(confirmService.confirm).toHaveBeenCalledWith(
+                'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
+                undefined, 'adminProgramTemplate.templateSave.title'
+            );
+
+            expect(stateGoSpy).not.toHaveBeenCalled();
+            expect(loadingModalService.open).not.toHaveBeenCalled();
+            expect(successNotificationServiceSpy).not.toHaveBeenCalled();
         });
-        // #173: ends here
+
+        it('should save template and then display success notification and change state', function() {
+            vm.saveTemplate();
+
+            rootScope.$apply();
+
+            expect(confirmService.confirm).toHaveBeenCalledWith(
+                'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
+                undefined, 'adminProgramTemplate.templateSave.title'
+            );
+
+            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(requisitionTemplateService.save).toHaveBeenCalledWith(template);
+            expect(stateGoSpy).toHaveBeenCalled();
+            expect(successNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.templateSave.success');
+        });
+
+        it('should close loading modal if template save was unsuccessful', function() {
+            requisitionTemplateService.save.andReturn(q.reject());
+
+            vm.saveTemplate();
+            rootScope.$apply();
+
+            expect(confirmService.confirm).toHaveBeenCalledWith(
+                'adminProgramTemplate.templateSave.description', 'adminProgramTemplate.save',
+                undefined, 'adminProgramTemplate.templateSave.title'
+            );
+
+            expect(loadingModalService.close).toHaveBeenCalled();
+            expect(requisitionTemplateService.save).toHaveBeenCalledWith(template);
+            expect(errorNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.templateSave.failure');
+        });
     });
 
     it('should call column drop method and display error notification when drop failed', function() {
