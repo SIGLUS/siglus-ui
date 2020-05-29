@@ -17,23 +17,26 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-preview')
-        .config(routes);
+    /**
+     * @module admin-template-configure-columns
+     *
+     * @description
+     * Provides base admin-template-configure-columns state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('admin-template-configure-columns', [
+        'admin-template',
+        'dndLists',
+        'openlmis-admin',
+        'referencedata-program',
+        'referencedata-facility-type',
+        'referencedata',
+        'requisition',
+        'stock-reason',
+        'ui.router',
+        // #173: product sections for template configuration
+        'refresh-confirm'
+        // #173: ends here
+    ]);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
-
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columns', {
-            label: 'adminProgramTemplate.templateColumns',
-            url: '/columns',
-            templateUrl: 'admin-template-configure-preview/template-preview.html',
-            controller: 'RequisitionTemplatePreviewController',
-            controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            params: {
-                productSection: undefined
-            }
-        });
-    }
 })();

@@ -33,14 +33,15 @@
         'MAX_COLUMN_DESCRIPTION_LENGTH', 'COLUMN_SOURCES', 'TEMPLATE_COLUMNS', 'loadingModalService', 'confirmService',
         'requisitionTemplateService',
         // SIGLUS-REFACTOR: starts here
-        '$window'
+        '$window', 'refreshConfirmService', '$scope', 'originalTemplate'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function RequisitionTemplateAdminController($state, template, program, tags, notificationService, messageService,
                                                 templateValidator, MAX_COLUMN_DESCRIPTION_LENGTH, COLUMN_SOURCES,
                                                 TEMPLATE_COLUMNS, loadingModalService, confirmService,
-                                                requisitionTemplateService, $window) {
+                                                requisitionTemplateService, $window, refreshConfirmService, $scope,
+                                                originalTemplate) {
         // SIGLUS-REFACTOR: starts here
         $window.scrollTo(0, 0);
         // SIGLUS-REFACTOR: ends here
@@ -121,8 +122,22 @@
             vm.program = program;
             vm.availableTags = {};
             refreshAvailableTags();
-            vm.previousColumnsMap = angular.copy(template.columnsMap);
+            // #173: product sections for template configuration
+            vm.previousTemplate = angular.copy(template);
+            refreshConfirm();
+            // #173: ends here
         }
+
+        // #173: product sections for template configuration
+        function refreshConfirm() {
+            $scope.$watch(function() {
+                return vm.template;
+            }, function(newValue) {
+                $scope.needToConfirm = !angular.equals(originalTemplate, newValue);
+            }, true);
+            refreshConfirmService.register($scope);
+        }
+        // #173: ends here
 
         /**
          * @ngdoc method
@@ -149,7 +164,10 @@
          */
         function cancel() {
             $state.go('openlmis.administration.requisitionTemplates.configure.columns', {
-                columnsMap: vm.previousColumnsMap
+                productSection: {
+                    columnsMap: vm.previousTemplate.columnsMap,
+                    populateStockOnHandFromStockCards: vm.previousTemplate.populateStockOnHandFromStockCards
+                }
             });
         }
         // #173: ends here

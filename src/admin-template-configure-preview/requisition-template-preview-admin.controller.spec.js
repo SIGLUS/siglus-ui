@@ -65,19 +65,23 @@ describe('RequisitionTemplatePreviewController', function() {
         });
 
         it('should extend columnsMap when params have columnsMap', function() {
-            state.params.columnsMap = {
-                averageConsumption: {
-                    displayOrder: 99999
+            state.params.productSection = {
+                columnsMap: {
+                    averageConsumption: {
+                        displayOrder: 99999
+                    },
+                    total: {
+                        isDisplayed: true
+                    }
                 },
-                total: {
-                    isDisplayed: true
-                }
+                populateStockOnHandFromStockCards: true
             };
             initController();
 
             expect(vm.template).toEqual(template);
             expect(vm.template.columnsMap.averageConsumption.displayOrder).toBe(99999);
             expect(vm.template.columnsMap.total.isDisplayed).toBe(true);
+            expect(vm.template.populateStockOnHandFromStockCards).toBe(true);
         });
 
         it('should set columns', function() {
@@ -89,9 +93,11 @@ describe('RequisitionTemplatePreviewController', function() {
         });
 
         it('should set columns when params have columnsMap', function() {
-            state.params.columnsMap = {
-                averageConsumption: {
-                    isDisplayed: false
+            state.params.productSection = {
+                columnsMap: {
+                    averageConsumption: {
+                        isDisplayed: false
+                    }
                 }
             };
             initController();

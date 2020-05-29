@@ -14,26 +14,8 @@
  */
 
 (function() {
-
     'use strict';
 
-    angular
-        .module('admin-template-configure-preview')
-        .config(routes);
-
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
-
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columns', {
-            label: 'adminProgramTemplate.templateColumns',
-            url: '/columns',
-            templateUrl: 'admin-template-configure-preview/template-preview.html',
-            controller: 'RequisitionTemplatePreviewController',
-            controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            params: {
-                productSection: undefined
-            }
-        });
-    }
+    angular.module('refresh-confirm', [
+    ]);
 })();
