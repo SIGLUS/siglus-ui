@@ -1,0 +1,6 @@
+.openlmis-table-pane {
+    .ps > .ps-scrollbar-x-rail,
+    .ps > .ps-scrollbar-y-rail {
+        z-index: 20;
+    }
+}

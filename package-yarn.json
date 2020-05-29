@@ -9,8 +9,6 @@
     "@bower_components/perfect-scrollbar": {
       "main": [
         "src/perfect-scrollbar.css",
-        "src/perfect-scrollbar.js",
-        "src/perfect-scrollbar.css",
         "src/perfect-scrollbar.js"
       ]
     }
