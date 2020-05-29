@@ -137,6 +137,9 @@
                 $scope.needToConfirm = !angular.equals(originalTemplate, newValue);
             }, true);
             refreshConfirmService.register($scope);
+            $scope.$on('$destroy', function() {
+                refreshConfirmService.deregister();
+            });
         }
         // #173: ends here
 

@@ -31,11 +31,11 @@
     AdminTemplateConfigureController.$inject = [
         'template', 'program',
         // #173: product sections for template configuration
-        'configureStateRouterService'
+        'configureStateRouterService', '$scope'
         // #173: ends here
     ];
 
-    function AdminTemplateConfigureController(template, program, configureStateRouterService) {
+    function AdminTemplateConfigureController(template, program, configureStateRouterService, $scope) {
 
         var vm = this;
 
@@ -87,7 +87,10 @@
             vm.program = program;
             vm.originalTemplateName = template.name;
             // #173: product sections for template configuration
-            configureStateRouterService.initialize(template);
+            var unsubscribe = configureStateRouterService.initialize(template);
+            $scope.$on('$destroy', function() {
+                unsubscribe();
+            });
             // #173: ends here
         }
     }

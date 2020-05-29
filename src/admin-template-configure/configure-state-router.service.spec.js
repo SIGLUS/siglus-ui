@@ -35,18 +35,20 @@ describe('configureStateRouterService', function() {
         };
     });
 
-    it('should prevent state change if template is invalid', function() {
-        this.configureStateRouterService.initialize({
-            isValid: function() {
-                return false;
-            }
-        });
-        this.$rootScope.$broadcast('$stateChangeStart',
-            this.createState('openlmis.administration.requisitionTemplates.configure.columns'));
+    it('should prevent state change if template is invalid when route from product configure to configure tab',
+        function() {
+            this.configureStateRouterService.initialize({
+                isValid: function() {
+                    return false;
+                }
+            });
+            this.$rootScope.$broadcast('$stateChangeStart',
+                this.createState('openlmis.administration.requisitionTemplates.configure.columns'), {},
+                this.createState('openlmis.administration.requisitionTemplates.configure.product'));
 
-        expect(this.loadingModalService.close).toHaveBeenCalled();
-        expect(this.notificationService.error).toHaveBeenCalledWith('adminProgramTemplate.template.invalid');
-    });
+            expect(this.loadingModalService.close).toHaveBeenCalled();
+            expect(this.notificationService.error).toHaveBeenCalledWith('adminProgramTemplate.template.invalid');
+        });
 
     it('should not get notification if template is invalid and tostate is home', function() {
         this.configureStateRouterService.initialize({
@@ -54,20 +56,37 @@ describe('configureStateRouterService', function() {
                 return false;
             }
         });
-        this.$rootScope.$broadcast('$stateChangeStart', this.createState('openlmis.home'));
+        this.$rootScope.$broadcast('$stateChangeStart', this.createState('openlmis.home'), {},
+            this.createState('openlmis.administration.requisitionTemplates.configure.product'));
 
         expect(this.loadingModalService.close).not.toHaveBeenCalled();
         expect(this.notificationService.error).not.toHaveBeenCalled();
     });
 
-    it('should not get notification if template is valid', function() {
+    it('should not get notification if template is valid when route from product configure to configure tab',
+        function() {
+            this.configureStateRouterService.initialize({
+                isValid: function() {
+                    return true;
+                }
+            });
+            this.$rootScope.$broadcast('$stateChangeStart',
+                this.createState('openlmis.administration.requisitionTemplates.configure.settings'), {},
+                this.createState('openlmis.administration.requisitionTemplates.configure.product'));
+
+            expect(this.loadingModalService.close).not.toHaveBeenCalled();
+            expect(this.notificationService.error).not.toHaveBeenCalled();
+        });
+
+    it('should not get notification if user if from configure tab page even if template is invalid', function() {
         this.configureStateRouterService.initialize({
             isValid: function() {
-                return true;
+                return false;
             }
         });
         this.$rootScope.$broadcast('$stateChangeStart',
-            this.createState('openlmis.administration.requisitionTemplates.configure.settings'));
+            this.createState('openlmis.administration.requisitionTemplates.configure.settings'), {},
+            this.createState('openlmis.administration.requisitionTemplates.configure.columns'));
 
         expect(this.loadingModalService.close).not.toHaveBeenCalled();
         expect(this.notificationService.error).not.toHaveBeenCalled();

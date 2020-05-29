@@ -61,6 +61,7 @@ describe('RequisitionTemplateAdminController', function() {
         originalTemplate = angular.copy(template);
         spyOn(scope, '$watch');
         spyOn(refreshConfirmService, 'register');
+        spyOn(refreshConfirmService, 'deregister');
         // #173: ends here
         tags = [
             'tag-1',
@@ -98,6 +99,7 @@ describe('RequisitionTemplateAdminController', function() {
             expect(vm.availableTags).toEqual({});
         });
 
+        // #173: product sections for template configuration
         it('should watch template', function() {
             expect(scope.$watch).toHaveBeenCalled();
         });
@@ -105,6 +107,14 @@ describe('RequisitionTemplateAdminController', function() {
         it('should register refresh confrim', function() {
             expect(refreshConfirmService.register).toHaveBeenCalledWith(scope);
         });
+
+        it('should deregister when $destroy event emit', function() {
+            scope.$emit('$destroy');
+            scope.$apply();
+
+            expect(refreshConfirmService.deregister).toHaveBeenCalled();
+        });
+        // #173: ends here
     });
 
     describe('goToTemplateList', function() {
