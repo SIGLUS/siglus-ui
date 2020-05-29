@@ -263,7 +263,7 @@
                     stockAdjustments: [],
                     stockCardId: stockCardId,
                     programId: virtualProgramId,
-                    archive: summary.archive
+                    archived: summary.archived
                 });
                 summary.stockAdjustments = [];
                 summary.stockCardId = stockCardId;
@@ -272,7 +272,7 @@
             draftToReturn.summaries = summaries;
             if (_.isEmpty(draftLineItems)) {
                 draftToReturn.lineItems = _.filter(stockCardLineItems, function(item) {
-                    return item.stockCardId && !item.archive;
+                    return item.stockCardId && !item.archived;
                 });
             } else {
                 angular.forEach(draftLineItems, function(item) {
@@ -295,7 +295,7 @@
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
                         programId: getVirtualProgramId(summary.orderable),
-                        archive: summary.archive
+                        archived: summary.archived
                     });
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
