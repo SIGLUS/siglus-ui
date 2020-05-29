@@ -32,4 +32,10 @@ describe('refreshConfirmService', function() {
         expect(window.onbeforeunload).toBeDefined();
     });
 
+    it('should deregister handler on window', function() {
+        refreshConfirmService.deregister();
+
+        expect(window.onbeforeunload).toBe(null);
+    });
+
 });

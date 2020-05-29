@@ -49,5 +49,18 @@
                 }
             }
         };
+
+        /**
+         * @ngdoc method
+         * @methodOf refresh-confirm.refreshConfirmService
+         * @name deregister
+         *
+         * @description
+         * Deregister handler on window's beforeunload event.
+         *
+         */
+        this.deregister = function() {
+            window.onbeforeunload = null;
+        };
     }
 })();
