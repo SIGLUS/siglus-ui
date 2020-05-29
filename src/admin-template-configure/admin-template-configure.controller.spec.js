@@ -16,7 +16,7 @@
 describe('AdminTemplateConfigureController', function() {
 
     // #173: product sections for template configuration
-    var configureStateRouterService;
+    var configureStateRouterService, rootScope, scope, unsubscribe = jasmine.createSpy();
     // #173: ends here
     beforeEach(function() {
         module('admin-template-configure');
@@ -29,11 +29,13 @@ describe('AdminTemplateConfigureController', function() {
             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
             // #173: product sections for template configuration
             configureStateRouterService = $injector.get('configureStateRouterService');
+            rootScope = $injector.get('$rootScope');
+            scope = rootScope.$new();
             // #173: ends here
         });
 
         // #173: product sections for template configuration
-        spyOn(configureStateRouterService, 'initialize');
+        spyOn(configureStateRouterService, 'initialize').andReturn(unsubscribe);
         // #173: ends here
 
         this.template = new TemplateDataBuilder().build();
@@ -41,7 +43,10 @@ describe('AdminTemplateConfigureController', function() {
 
         this.vm = this.$controller('AdminTemplateConfigureController', {
             template: this.template,
-            program: this.program
+            program: this.program,
+            // #173: product sections for template configuration
+            $scope: scope
+            // #173: ends here
         });
 
         this.vm.$onInit();
@@ -64,6 +69,13 @@ describe('AdminTemplateConfigureController', function() {
         // #173: product sections for template configuration
         it('should call initialize', function() {
             expect(configureStateRouterService.initialize).toHaveBeenCalledWith(this.vm.template);
+        });
+
+        it('should call unsubscribe when $destroy event emit', function() {
+            scope.$emit('$destroy');
+            scope.$apply();
+
+            expect(unsubscribe).toHaveBeenCalled();
         });
         // #173: ends here
 
