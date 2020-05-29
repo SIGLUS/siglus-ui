@@ -231,6 +231,19 @@
                 // });
                 $stateParams.isAddProduct = true;
                 reload($state.current.name);
+
+                // #105: activate archived product
+                var hadArchivedItem = addedItems.find(function(item) {
+                    return item.archived;
+                });
+                if (hadArchivedItem) {
+                    alertService.info({
+                        title: 'stockInitialInventory.archivedProduct.title',
+                        message: 'stockInitialInventory.archivedProduct.message',
+                        buttonLabel: 'stockInitialInventory.archivedProduct.close'
+                    });
+                }
+                // #105: ends here
             });
         };
         // SIGLUS-REFACTOR: ends here

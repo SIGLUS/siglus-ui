@@ -17,11 +17,13 @@
                     <div class="form-group max-width-form-group">
                     <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
+                        <!-- #105: activate archived product-->
                         <select id="productSelect" ng-model="vm.selectedOrderableGroup"
-                                ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
+                                ng-options="(orderableGroup | archivedProductName) for orderableGroup in vm.orderableGroups"
                                 ng-change="vm.orderableSelectionChanged()"
                                 required>
                         </select>
+                        <!-- #105: ends here -->
                     </div>
                     <!-- SIGLUS-REFACTOR: Add max-width-form-group and limit width for add product model-->
                     <div class="form-group max-width-form-group" ng-if="vm.selectedOrderableHasLots">

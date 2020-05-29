@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc filter
-     * @name admin-role-form.filter:camelCase
+     * @name stock-add-products-modal.filter:archivedProductName
      *
      * @description
      * Add archived tag for archived product name.
      *
-     * @param   {Object} string the string to be formatted
-     * @return  {String}        the formated string
+     * @param   {Object} orderableGroup
+     * @return  {String}
      */
     angular
         .module('stock-add-products-modal')
@@ -33,18 +33,15 @@
 
     function archivedProductNameFilter() {
         return function(orderableGroup) {
-            var getOrderableGroupStatus = function(orderableGroup) {
-                return orderableGroup.find(function(item) {
-                    return item.archive;
-                });
-            };
-            var archived = getOrderableGroupStatus(orderableGroup);
+            var archived = orderableGroup.find(function(item) {
+                return item.archived;
+            });
             var name = '';
 
             if (!orderableGroup) {
                 return undefined;
             } else if (archived) {
-                name = '[archived] ' + orderableGroup[0].orderable.fullProductName;
+                name = '[archived]' + orderableGroup[0].orderable.fullProductName;
             } else {
                 name = orderableGroup[0].orderable.fullProductName;
             }
