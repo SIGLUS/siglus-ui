@@ -106,8 +106,8 @@ describe('stockCardService', function() {
     describe('archiveProduct', function() {
 
         beforeEach(function() {
-            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archiveProduct/'
-                + this.orderable.id))
+            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archivedproducts/'
+                + this.orderable.id + '/archive'))
                 .respond(200, null);
         });
 
@@ -118,7 +118,7 @@ describe('stockCardService', function() {
             expect(result.then).not.toBeUndefined();
         });
 
-        it('should resolve to null', function() {
+        it('should resolve to empty object', function() {
             var result;
 
             this.stockCardService.archiveProduct(this.orderable.id).then(function(data) {
@@ -136,8 +136,8 @@ describe('stockCardService', function() {
     describe('activateProduct', function() {
 
         beforeEach(function() {
-            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/activateProduct/'
-                + this.orderable.id))
+            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archivedproducts/'
+                + this.orderable.id + '/activate'))
                 .respond(200, null);
         });
 
@@ -148,7 +148,7 @@ describe('stockCardService', function() {
             expect(result.then).not.toBeUndefined();
         });
 
-        it('should resolve to null', function() {
+        it('should resolve to empty object', function() {
             var result;
 
             this.stockCardService.activateProduct(this.orderable.id).then(function(data) {
