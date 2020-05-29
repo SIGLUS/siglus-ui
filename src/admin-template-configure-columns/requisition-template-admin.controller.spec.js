@@ -26,7 +26,7 @@ describe('RequisitionTemplateAdminController', function() {
         confirmService, requisitionTemplateService, TemplateColumnDataBuilder, TemplateDataBuilder;
 
     // #173: product sections for template configuration
-    var scope, originalTemplate;
+    var scope, originalTemplate, refreshConfirmService;
     // #173: ends here
 
     beforeEach(function() {
@@ -47,6 +47,7 @@ describe('RequisitionTemplateAdminController', function() {
             MAX_COLUMN_DESCRIPTION_LENGTH = $injector.get('MAX_COLUMN_DESCRIPTION_LENGTH');
             // #173: product sections for template configuration
             scope = rootScope.$new();
+            refreshConfirmService = $injector.get('refreshConfirmService');
             // #173: ends here
         });
 
@@ -58,6 +59,8 @@ describe('RequisitionTemplateAdminController', function() {
 
         // #173: product sections for template configuration
         originalTemplate = angular.copy(template);
+        spyOn(scope, '$watch');
+        spyOn(refreshConfirmService, 'register');
         // #173: ends here
         tags = [
             'tag-1',
@@ -93,6 +96,14 @@ describe('RequisitionTemplateAdminController', function() {
 
         it('should set availableTags', function() {
             expect(vm.availableTags).toEqual({});
+        });
+
+        it('should watch template', function() {
+            expect(scope.$watch).toHaveBeenCalled();
+        });
+
+        it('should register refresh confrim', function() {
+            expect(refreshConfirmService.register).toHaveBeenCalledWith(scope);
         });
     });
 
