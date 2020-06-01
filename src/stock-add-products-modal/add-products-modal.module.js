@@ -16,23 +16,12 @@
 (function() {
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
+    angular.module('stock-add-products-modal', [
+        'openlmis-modal',
         'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'stock-reasons-modal',
-        // SIGLUS-REFACTOR: starts here
-        // 'stock-unpack-kit',
-        'referencedata-lot',
-        'stock-input-select',
-        'stock-event',
+        'stockmanagement',
+        // #105: activate archived product
         'stock-archived-product'
-        // SIGLUS-REFACTOR: ends here
+        // #105: ends here
     ]);
 })();

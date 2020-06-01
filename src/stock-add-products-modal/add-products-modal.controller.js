@@ -179,24 +179,6 @@
         //this function will initiate product select options
         function onInit() {
             vm.orderableGroups = orderableGroupService.groupByOrderableId(items);
-            // #105: activate archived product
-            vm.orderableGroups.sort(function(orderableGroupA, orderableGroupB) {
-                var getArchivedStatus = function(orderableGroup) {
-                    return orderableGroup.find(function(item) {
-                        return item.archived;
-                    });
-                };
-                var isOrderableGroupAArchived = getArchivedStatus(orderableGroupA);
-                var isOrderableGroupBArchived = getArchivedStatus(orderableGroupB);
-
-                if (!isOrderableGroupAArchived && isOrderableGroupBArchived) {
-                    return -1;
-                } else if (isOrderableGroupAArchived && !isOrderableGroupBArchived) {
-                    return 1;
-                }
-                return 0;
-            });
-            // #105: ends here
         }
 
         onInit();

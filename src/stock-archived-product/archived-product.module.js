@@ -16,23 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('stock-adjustment-creation', [
-        'openlmis-date',
-        'stock-adjustment',
-        'stock-confirm-discard',
-        'stock-orderable-group',
-        'stock-product-name',
-        'stock-constants',
-        'stock-valid-reason',
-        'referencedata-program',
-        'referencedata-facility',
-        'stock-reasons-modal',
-        // SIGLUS-REFACTOR: starts here
-        // 'stock-unpack-kit',
-        'referencedata-lot',
-        'stock-input-select',
-        'stock-event',
-        'stock-archived-product'
-        // SIGLUS-REFACTOR: ends here
+    angular.module('stock-archived-product', [
+        'openlmis-modal'
     ]);
 })();

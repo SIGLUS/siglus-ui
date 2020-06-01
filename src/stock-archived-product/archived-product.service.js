@@ -18,35 +18,36 @@
     'use strict';
 
     /**
-     * @ngdoc filter
-     * @name stock-add-products-modal.filter:archivedProductName
+     * @ngdoc service
+     * @name stock-archived-product.archivedProductService
      *
      * @description
-     * Add archived tag for archived product name.
-     *
-     * @param   {Object} orderableGroup
-     * @return  {String}
+     * Some method of archived product.
      */
     angular
-        .module('stock-add-products-modal')
-        .filter('archivedProductName', archivedProductNameFilter);
+        .module('stock-archived-product')
+        .service('archivedProductService', service);
 
-    function archivedProductNameFilter() {
-        return function(orderableGroup) {
-            var archived = orderableGroup.find(function(item) {
+    service.$inject = ['alertService'];
+
+    function service(alertService) {
+        return {
+            info: info,
+            isArchived: isArchived
+        };
+
+        function info() {
+            alertService.info({
+                title: 'archivedProduct.title',
+                message: 'archivedProduct.message',
+                buttonLabel: 'archivedProduct.close'
+            });
+        }
+
+        function isArchived(orderableGroup) {
+            return orderableGroup.find(function(item) {
                 return item.archived;
             });
-            var name = '';
-
-            if (!orderableGroup) {
-                return undefined;
-            } else if (archived) {
-                name = '[archived]' + orderableGroup[0].orderable.fullProductName;
-            } else {
-                name = orderableGroup[0].orderable.fullProductName;
-            }
-            return name;
-        };
+        }
     }
-
 })();
