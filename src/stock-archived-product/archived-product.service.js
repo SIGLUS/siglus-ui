@@ -45,7 +45,7 @@
         }
 
         function isArchived(orderableGroup) {
-            return orderableGroup.find(function(item) {
+            return !!orderableGroup.find(function(item) {
                 return item.archived;
             });
         }

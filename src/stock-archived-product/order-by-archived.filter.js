@@ -28,7 +28,7 @@
      * @return  {Object} orderableGroups
      */
     angular
-        .module('stock-add-products-modal')
+        .module('stock-archived-product')
         .filter('orderByArchived', orderByArchivedFilter);
 
     function orderByArchivedFilter() {

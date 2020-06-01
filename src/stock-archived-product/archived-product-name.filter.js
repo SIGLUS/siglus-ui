@@ -28,19 +28,21 @@
      * @return  {String}
      */
     angular
-        .module('stock-add-products-modal')
+        .module('stock-archived-product')
         .filter('archivedProductName', archivedProductNameFilter);
 
     function archivedProductNameFilter() {
         return function(orderableGroup) {
+            if (!orderableGroup) {
+                return undefined;
+            }
+
             var archived = orderableGroup.find(function(item) {
                 return item.archived;
             });
             var name = '';
 
-            if (!orderableGroup) {
-                return undefined;
-            } else if (archived) {
+            if (archived) {
                 name = '[archived]' + orderableGroup[0].orderable.fullProductName;
             } else {
                 name = orderableGroup[0].orderable.fullProductName;
