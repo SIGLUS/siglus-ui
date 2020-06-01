@@ -35,7 +35,7 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
-        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft'
+        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft', 'archivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +44,8 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
-                        signatureModalService, orderableLotMapping, stockAdjustmentService, draft) {
+                        signatureModalService, orderableLotMapping, stockAdjustmentService, draft,
+                        archivedProductService) {
         var vm = this,
             previousAdded = {};
 
@@ -172,6 +173,11 @@
             previousAdded = vm.addedLineItems[0];
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
+            // #105: activate archived product
+            if (archivedProductService.isArchived([item])) {
+                archivedProductService.info();
+            }
+            // #105: ends here
         };
 
         $scope.$on('lotCodeChange', function(event, data) {

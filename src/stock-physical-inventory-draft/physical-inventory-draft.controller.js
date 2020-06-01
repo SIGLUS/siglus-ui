@@ -36,7 +36,7 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         // SIGLUS-REFACTOR: starts here
-        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService'
+        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService', 'archivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,8 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
-                        REASON_TYPES, MAX_STRING_VALUE, currentUserService, navigationStateService) {
+                        REASON_TYPES, MAX_STRING_VALUE, currentUserService, navigationStateService,
+                        archivedProductService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -233,15 +234,8 @@
                 reload($state.current.name);
 
                 // #105: activate archived product
-                var hadArchivedItem = addedItems.find(function(item) {
-                    return item.archived;
-                });
-                if (hadArchivedItem) {
-                    alertService.info({
-                        title: 'stockInitialInventory.archivedProduct.title',
-                        message: 'stockInitialInventory.archivedProduct.message',
-                        buttonLabel: 'stockInitialInventory.archivedProduct.close'
-                    });
+                if (archivedProductService.isArchived(addedItems)) {
+                    archivedProductService.info();
                 }
                 // #105: ends here
             });

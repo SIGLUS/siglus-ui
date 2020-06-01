@@ -33,14 +33,15 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft'
+        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft', 'archivedProductService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, signatureModalService, orderableLotMapping, stockAdjustmentService, draft) {
+                        ADJUSTMENT_TYPE, signatureModalService, orderableLotMapping, stockAdjustmentService, draft,
+                        archivedProductService) {
         var vm = this,
             previousAdded = {};
 
@@ -129,6 +130,11 @@
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
+            // #105: activate archived product
+            if (archivedProductService.isArchived([item])) {
+                archivedProductService.info();
+            }
+            // #105: ends here
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
