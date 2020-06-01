@@ -32,13 +32,13 @@
         '$q', '$resource', 'requisitionUrlFactory', 'Requisition', 'dateUtils', 'localStorageFactory', 'offlineService',
         '$filter', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService'
+        'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService', 'archivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($q, $resource, requisitionUrlFactory, Requisition, dateUtils, localStorageFactory, offlineService,
                      $filter, requisitionCacheService,
-                     OrderableResource, FacilityTypeApprovedProductResource, periodService) {
+                     OrderableResource, FacilityTypeApprovedProductResource, periodService, archivedProductService) {
 
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
@@ -539,10 +539,14 @@
                     return $q.all([
                         getByVersionIdentities(filterOutOrderablesFromLineItems(requisition),
                             new OrderableResource()),
-                        getByVersionIdentities(identities, new FacilityTypeApprovedProductResource())
+                        getByVersionIdentities(identities, new FacilityTypeApprovedProductResource()),
+                        archivedProductService.getArchivedOrderables(requisition.facility.id)
                     ])
                         .then(function(result) {
                             // SIGLUS-REFACTOR: starts here
+                            result[0].forEach(function(orderable) {
+                                orderable.archived = !!result[2].includes(orderable.id);
+                            });
                             requisition.availableFullSupplyProducts =  result[0];
                             // SIGLUS-REFACTOR: ends here
                             requisition.availableNonFullSupplyProducts =
