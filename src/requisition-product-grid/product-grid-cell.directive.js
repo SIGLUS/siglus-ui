@@ -88,9 +88,6 @@
                 var templateUrl = '';
                 if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-skip.html';
-                } else if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
-                    !requisition.template.populateStockOnHandFromStockCards) {
-                    templateUrl = 'requisition-product-grid/product-grid-cell-total-losses-and-adjustments.html';
                 } else if (column.$type === COLUMN_TYPES.NUMERIC && !scope.isReadOnly) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-input-numeric.html';
                 } else if (!scope.isReadOnly) {
@@ -100,6 +97,12 @@
                 } else {
                     templateUrl = 'requisition-product-grid/product-grid-cell-text.html';
                 }
+                // #199: product sections for column changes
+                // else if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
+                //     !requisition.template.populateStockOnHandFromStockCards) {
+                //     templateUrl = 'requisition-product-grid/product-grid-cell-total-losses-and-adjustments.html';
+                // }
+                // #199: ends here
                 $templateRequest(templateUrl).then(replaceCell);
             }
 
