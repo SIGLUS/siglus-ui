@@ -46,7 +46,9 @@
                 // SIGLUS-REFACTOR: ends here
                 requestedQuantityExplanation: validateRequestedQuantityExplanation,
                 totalStockoutDays: validateTotalStockoutDays,
-                calculatedOrderQuantity: validateCalculatedOrderQuantity,
+                // #199: product sections for column changes
+                // calculatedOrderQuantity: validateCalculatedOrderQuantity,
+                // #199: ends here
                 additionalQuantityRequired: validateAdditionalQuantityRequired
             },
             validator = {
@@ -234,12 +236,18 @@
         }
 
         function validateUserInput(column) {
-            if (!column.isDisplayed
+            // #199: product sections for column changes
+            if (!isTotalStockoutDays(column) && !column.isDisplayed
                 && column.source === COLUMN_SOURCES.USER_INPUT
                 && column.columnDefinition.sources.length > 1) {
+            // #199: ends here
                 return messageService.get('adminProgramTemplate.shouldBeDisplayed') +
                     messageService.get('adminProgramTemplate.isUserInput');
             }
+        }
+
+        function isTotalStockoutDays(column) {
+            return column.name === TEMPLATE_COLUMNS.TOTAL_STOCKOUT_DAYS;
         }
 
         function validateTotalStockoutDays(column, template) {
@@ -260,20 +268,22 @@
             }
         }
 
-        function validateCalculatedOrderQuantity(column, template) {
-            var requestedQuantityColumn = template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY];
-            // SIGLUS-REFACTOR: starts here
-            // var requestedQuantityExplanationColumn =
-            //     template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION];
-
-            if (!column.isDisplayed && !requestedQuantityColumn.isDisplayed) {
-                return messageService.get('adminProgramTemplate.shouldDisplayRequestedQuantity', {
-                    calculatedOrderQuantity: column.label,
-                    requestedQuantity: requestedQuantityColumn.label
-                });
-            }
-            // SIGLUS-REFACTOR: ends here
-        }
+        // #199: product sections for column changes
+        // function validateCalculatedOrderQuantity(column, template) {
+        //     var requestedQuantityColumn = template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY];
+        //     var requestedQuantityExplanationColumn =
+        //         template.columnsMap[TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION];
+        //
+        //     if (!column.isDisplayed && (!requestedQuantityColumn.isDisplayed ||
+        //         !requestedQuantityExplanationColumn.isDisplayed)) {
+        //         return messageService.get('adminProgramTemplate.shouldDisplayRequestedQuantity', {
+        //             calculatedOrderQuantity: column.label,
+        //             requestedQuantity: requestedQuantityColumn.label,
+        //             requestedQuantityExplanation: requestedQuantityExplanationColumn.label
+        //         });
+        //     }
+        // }
+        // #199: ends here
 
         function validateSelectedStockCard(column, template) {
             if (!template.populateStockOnHandFromStockCards && column.source === COLUMN_SOURCES.STOCK_CARDS) {

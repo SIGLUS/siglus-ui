@@ -436,6 +436,15 @@ describe('templateValidator', function() {
                 expect(result).toBeUndefined();
             });
 
+            // #199: product sections for column changes
+            it('should return undefined if column is not displayed when has USER_INPUT source', function() {
+                column.source = COLUMN_SOURCES.USER_INPUT;
+                var result = templateValidator.getColumnError(column, template);
+
+                expect(result).toBeUndefined();
+            });
+            // #199: ends here
+
         });
 
         describe('for additional quantity required', function() {
@@ -550,16 +559,27 @@ describe('templateValidator', function() {
                 column.name = TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY;
             });
 
-            it('should return error if both requested quantity and calculated order quantity are hidden', function() {
-                column.isDisplayed = false;
-                template.columnsMap.requestedQuantityExplanation.isDisplayed = true;
+            // #199: product sections for column changes
+            it('should not return error if both requested quantity and calculated order quantity are hidden',
+                function() {
+                    column.isDisplayed = false;
+                    template.columnsMap.requestedQuantityExplanation.isDisplayed = true;
 
-                var result = templateValidator.getColumnError(column, template);
+                    var result = templateValidator.getColumnError(column, template);
 
-                expect(result).toBe('adminProgramTemplate.shouldDisplayRequestedQuantity');
-            });
+                    expect(result).toBeUndefined();
+                });
 
-            // SIGLUS-REFACTOR: delete requestedQuantity relevant
+            // it('should return error if both requested quantity and calculated order quantity are hidden',
+            // function() {
+            //     column.isDisplayed = false;
+            //     template.columnsMap.requestedQuantityExplanation.isDisplayed = true;
+            //
+            //     var result = templateValidator.getColumnError(column, template);
+            //
+            //     expect(result).toBe('adminProgramTemplate.shouldDisplayRequestedQuantity');
+            // });
+
             // it('should return error if both requested quantity explanation and calculated order quantity are hidden',
             //     function() {
             //         column.isDisplayed = false;
@@ -569,7 +589,7 @@ describe('templateValidator', function() {
             //
             //         expect(result).toBe('adminProgramTemplate.shouldDisplayRequestedQuantity');
             //     });
-            // SIGLUS-REFACTOR: ends here
+            // #199: ends here
 
         });
 
