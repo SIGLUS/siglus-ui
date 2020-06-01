@@ -34,7 +34,8 @@
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility'
+        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility',
+        'archivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -42,7 +43,8 @@
                                messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
-                               requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility) {
+                               requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility,
+                               archivedProductService) {
 
         var vm = this;
 
@@ -319,10 +321,7 @@
             })
             // SIGLUS-REFACTOR: starts here
                 .then(function(selectedProducts) {
-                    if (vm.requisition.emergency) {
-                        return prepareLineItemsForEmergency(selectedProducts);
-                    }
-                    return prepareLineItemsForRegular(selectedProducts);
+                    return prepareLineItems(selectedProducts);
                 })
                 .then(function() {
                     refreshLineItems();
@@ -331,20 +330,7 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function prepareLineItemsForRegular(selectedProducts) {
-            selectedProducts.forEach(function(product) {
-                var lineItem = angular.copy(product);
-                vm.columns.forEach(function(column) {
-                    if (column.source !== COLUMN_SOURCES.USER_INPUT) {
-                        lineItem[column.name] = 0;
-                    }
-                });
-                lineItem.orderable = product;
-                vm.requisition.addProductLineItem(lineItem);
-            });
-        }
-
-        function prepareLineItemsForEmergency(selectedProducts) {
+        function prepareLineItems(selectedProducts) {
             var ids = selectedProducts.map(function(product) {
                 return product.id;
             });
@@ -357,6 +343,11 @@
                         });
                         vm.requisition.addProductLineItem(lineItem);
                     });
+                })
+                .then(function() {
+                    if (archivedProductService.isArchived(selectedProducts)) {
+                        archivedProductService.info();
+                    }
                 })
                 .finally(function() {
                     loadingModalService.close();

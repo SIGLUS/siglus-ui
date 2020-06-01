@@ -28,12 +28,22 @@
         .module('stock-archived-product')
         .service('archivedProductService', service);
 
-    service.$inject = ['alertService'];
+    service.$inject = ['alertService', '$resource', 'openlmisUrlFactory'];
 
-    function service(alertService) {
+    function service(alertService, $resource, openlmisUrlFactory) {
+        var resource = $resource(
+            openlmisUrlFactory('/api/siglusapi/archivedproducts'), {}, {
+                get: {
+                    method: 'GET',
+                    isArray: true
+                }
+            }
+        );
+
         return {
             info: info,
-            isArchived: isArchived
+            isArchived: isArchived,
+            getArchivedOrderables: getArchivedOrderables
         };
 
         function info() {
@@ -48,6 +58,12 @@
             return !!orderableGroup.find(function(item) {
                 return item.archived;
             });
+        }
+
+        function getArchivedOrderables(facilityId) {
+            return resource.get({
+                facilityId: facilityId
+            }).$promise;
         }
     }
 })();

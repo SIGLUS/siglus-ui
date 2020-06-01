@@ -77,6 +77,9 @@ describe('requisitionService', function() {
             this.OrderableResource = $injector.get('OrderableResource');
             this.FacilityTypeApprovedProductResource = $injector.get('FacilityTypeApprovedProductResource');
             this.periodService = $injector.get('periodService');
+            // #105: activate archived product
+            this.archivedProductService = $injector.get('archivedProductService');
+            // #105: ends here
         });
 
         this.formatDatesInRequisition = formatDatesInRequisition;
@@ -239,6 +242,9 @@ describe('requisitionService', function() {
         spyOn(this.FacilityTypeApprovedProductResource.prototype, 'getByVersionIdentities')
             .andReturn(this.$q.when(this.approvedProducts));
         spyOn(this.periodService, 'get').andReturn(this.requisition.processingPeriod);
+        // #105: activate archived product
+        spyOn(this.archivedProductService, 'getArchivedOrderables').andReturn([]);
+        // #105: ends here
 
         this.OrderableResource.prototype.getByVersionIdentities.andCallFake(function(identities) {
             if (JSON.stringify(identities) === JSON.stringify(context.availableProductsIdentities)) {
