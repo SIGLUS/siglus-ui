@@ -57,7 +57,11 @@
          * Initialization method of the SelectProductsModalController.
          */
         function onInit() {
-            vm.orderables = orderables;
+            // #105: activate archived product
+            vm.orderables = orderables.sort(function(a, b) {
+                return a.archived - b.archived;
+            });
+            // #105: ends here
             vm.selections = selectProductsModalService.getSelections();
             vm.external = external;
             vm.code = $stateParams.productCode;
