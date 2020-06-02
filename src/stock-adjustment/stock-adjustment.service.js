@@ -34,14 +34,14 @@
 
     function service($resource, stockmanagementUrlFactory) {
 
-        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/drafts'), {}, {
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/drafts'), {}, {
             update: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusintegration/drafts/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             },
             delete: {
                 method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusintegration/drafts/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             }
         });
 
