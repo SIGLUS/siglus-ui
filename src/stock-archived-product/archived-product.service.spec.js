@@ -23,6 +23,9 @@ describe('archivedProductService', function() {
         inject(function($injector) {
             this.archivedProductService = $injector.get('archivedProductService');
             this.alertService = $injector.get('alertService');
+            this.openlmisUrlFactory = $injector.get('openlmisUrlFactory');
+            this.$httpBackend = $injector.get('$httpBackend');
+            this.$rootScope = $injector.get('$rootScope');
             OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
         });
 
@@ -49,6 +52,34 @@ describe('archivedProductService', function() {
             this.orderableGroup[0].archived = true;
 
             expect(this.archivedProductService.isArchived(this.orderableGroup)).toEqual(true);
+        });
+    });
+
+    describe('getArchivedOrderables', function() {
+
+        beforeEach(function() {
+            this.facilityId = 'facilityId';
+            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/archivedproducts?facilityId='+this.facilityId))
+                .respond(['id'], null);
+        });
+
+        it('should return promise', function() {
+            var result = this.archivedProductService.getArchivedOrderables(this.facilityId);
+            this.$httpBackend.flush();
+
+            expect(result.then).not.toBeUndefined();
+        });
+
+        it('should resolve to array object', function() {
+            var result;
+
+            this.archivedProductService.getArchivedOrderables(this.facilityId).then(function(data) {
+                result = data;
+            });
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson(['id']));
         });
     });
 });
