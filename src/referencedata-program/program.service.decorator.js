@@ -35,7 +35,7 @@
 
     decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource'];
     function decorator($delegate, openlmisUrlFactory, $resource) {
-        var resource = $resource(openlmisUrlFactory('/api/siglusintegration/programs'), {}, {
+        var resource = $resource(openlmisUrlFactory('/api/siglusapi/programs'), {}, {
             getAll: {
                 method: 'GET',
                 isArray: true
@@ -48,7 +48,7 @@
                 isArray: true
             },
             getById: {
-                url: openlmisUrlFactory('/api/siglusintegration/programs/:id'),
+                url: openlmisUrlFactory('/api/siglusapi/programs/:id'),
                 method: 'GET'
             }
         });

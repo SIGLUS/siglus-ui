@@ -60,7 +60,7 @@ describe('programService', function() {
     it('should get program by id and save it to storage', function() {
         // SIGLUS-REFACTOR: starts here
         this.$httpBackend
-            .expectGET(this.openlmisUrlFactory('/api/siglusintegration/programs/' + this.program1.id))
+            .expectGET(this.openlmisUrlFactory('/api/siglusapi/programs/' + this.program1.id))
             .respond(200, this.program1);
         // SIGLUS-REFACTOR: ends here
         var result;
