@@ -55,7 +55,7 @@
                 headers: {
                     'Idempotency-Key': getIdempotencyKey
                 },
-                url: requisitionUrlFactory('/api/siglusintegration/requisitions/initiate'),
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/initiate'),
                 method: 'POST'
             },
             // SIGLUS-REFACTOR: ends here

@@ -474,7 +474,7 @@ describe('requisitionService', function() {
         this.$httpBackend
             .whenPOST(this.requisitionUrlFactory(
                 // SIGLUS-REFACTOR: starts here
-                '/api/siglusintegration/requisitions/initiate'
+                '/api/siglusapi/requisitions/initiate'
                 // SIGLUS-REFACTOR: ends here
                 + '?emergency=' + this.emergency
                 + '&facility=' + this.facility.id
