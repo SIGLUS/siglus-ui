@@ -64,13 +64,13 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="orderable in (vm.external ? vm.orderables : vm.orderablesPage)  | orderBy : 'archived'">
+                            <tr ng-repeat="orderable in vm.external ? vm.orderables : vm.orderablesPage">
                                 <!-- SIGLUS-REFACTOR: starts here -->
                                 <td><input type="checkbox" ng-model="vm.selections[orderable.id]" ng-true-value="{{orderable}}"
                                            ng-change="vm.onSelection()" ng-disabled="vm.overLimit && !vm.selections[orderable.id]"/></td>
-                                <!-- SIGLUS-REFACTOR: ends here -->
                                 <td>{{orderable.productCode}}</td>
                                 <td>{{orderable.archived ? '[archived]'+orderable.fullProductName: orderable.fullProductName}}</td>
+                                <!-- SIGLUS-REFACTOR: ends here -->
                                 <td>{{orderable.dispensable.displayUnit}}</td>
                             </tr>
                             </tbody>
