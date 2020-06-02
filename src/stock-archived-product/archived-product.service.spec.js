@@ -59,7 +59,8 @@ describe('archivedProductService', function() {
 
         beforeEach(function() {
             this.facilityId = 'facilityId';
-            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/archivedproducts?facilityId='+this.facilityId))
+            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/archivedproducts?facilityId='
+                + this.facilityId))
                 .respond(['id'], null);
         });
 
