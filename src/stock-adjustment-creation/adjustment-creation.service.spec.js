@@ -187,7 +187,7 @@ describe('stockAdjustmentCreationService', function() {
 
             var postData = undefined;
             // SIGLUS-REFACTOR: starts here
-            httpBackend.when('POST', stockmanagementUrlFactory('/api/siglusintegration/stockEvents'))
+            httpBackend.when('POST', stockmanagementUrlFactory('/api/siglusapi/stockEvents'))
             // SIGLUS-REFACTOR: ends here
                 .respond(function(method, url, data) {
                     postData = data;
