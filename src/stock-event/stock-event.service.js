@@ -21,7 +21,7 @@
     service.$inject = ['$resource', 'stockmanagementUrlFactory', 'moment'];
 
     function service($resource, stockmanagementUrlFactory, moment) {
-        var resource = $resource(stockmanagementUrlFactory('/api/siglusintegration/stockEvents'), {}, {
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/stockEvents'), {}, {
             save: {
                 method: 'POST',
                 transformRequest: formatPayload
