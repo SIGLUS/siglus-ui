@@ -34,20 +34,9 @@
     function orderByArchivedFilter() {
         return function(orderableGroups) {
             var getArchivedStatus = function(orderableGroup) {
-                var archived = orderableGroup.find(function(item) {
+                return orderableGroup.find(function(item) {
                     return item.archived;
                 });
-
-                if (archived) {
-                    var nonArchived = orderableGroup.find(function(item) {
-                        return !item.archived;
-                    });
-
-                    if (nonArchived) {
-                        nonArchived.archived = true;
-                    }
-                }
-                return archived;
             };
             if (!orderableGroups) {
                 return undefined;

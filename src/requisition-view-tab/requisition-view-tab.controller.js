@@ -150,6 +150,9 @@
          * Holds the list of columns visible on this screen.
          */
         vm.columns = undefined;
+        // #105: activate archived product
+        vm.addedOrderables = undefined;
+        // #105: ends here
 
         function onInit() {
             vm.lineItems = lineItems;
@@ -321,10 +324,22 @@
             })
             // SIGLUS-REFACTOR: starts here
                 .then(function(selectedProducts) {
+                    vm.addedOrderables = selectedProducts;
                     return prepareLineItems(selectedProducts);
                 })
                 .then(function() {
-                    refreshLineItems();
+                    return refreshLineItems();
+                })
+                .then(function() {
+                    var orderableIds = vm.lineItems.map(function(lineItem) {
+                        return lineItem.orderable.id;
+                    });
+                    var filteredAddedOrderables = vm.addedOrderables.filter(function(orderable) {
+                        return orderableIds.includes(orderable.id);
+                    });
+                    if (archivedProductService.isArchived(filteredAddedOrderables)) {
+                        archivedProductService.info();
+                    }
                 });
             // SIGLUS-REFACTOR: ends here
         }
@@ -345,11 +360,6 @@
                         lineItem.approvedProduct = result.approvedProduct;
                         vm.requisition.addProductLineItem(lineItem);
                     });
-                })
-                .then(function() {
-                    if (archivedProductService.isArchived(selectedProducts)) {
-                        archivedProductService.info();
-                    }
                 })
                 .finally(function() {
                     loadingModalService.close();
@@ -399,7 +409,7 @@
 
             var lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
 
-            paginationService
+            return paginationService
                 .registerList(
                     requisitionValidator.isLineItemValid, $stateParams, function() {
                         return lineItems;
