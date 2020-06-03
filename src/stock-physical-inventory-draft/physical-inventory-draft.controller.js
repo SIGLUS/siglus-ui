@@ -640,7 +640,10 @@
             var addedLotsId = getAddedLots();
             var notAddedLotItemGroup = _.chain(draft.summaries)
                 .filter(function(summary) {
-                    return !summary.stockCardId && summary.lot && !_.contains(addedLotsId, summary.lot.id);
+                    // #105: activate archived product
+                    return (!summary.stockCardId || summary.archived)
+                        && summary.lot && !_.contains(addedLotsId, summary.lot.id);
+                    // #105: ends here
                 })
                 .groupBy(function(item) {
                     return item.orderable.id;
