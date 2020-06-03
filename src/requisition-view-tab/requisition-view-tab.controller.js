@@ -336,11 +336,13 @@
             });
             loadingModalService.open();
             return requisitionService.getOrderableLineItem(vm.requisition.id, ids)
-                .then(function(lineItems) {
-                    lineItems.forEach(function(lineItem) {
+                .then(function(results) {
+                    results.forEach(function(result) {
+                        var lineItem = result.lineItem;
                         lineItem.orderable = _.find(selectedProducts, function(product) {
                             return lineItem.orderable.id === product.id;
                         });
+                        lineItem.approvedProduct = result.approvedProduct;
                         vm.requisition.addProductLineItem(lineItem);
                     });
                 })
