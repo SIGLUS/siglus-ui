@@ -269,7 +269,7 @@ describe('requisitionService', function() {
         beforeEach(function() {
             getStatusMessagesUrl = '/api/requisitions/' + this.requisition.id + '/statusMessages';
             // SIGLUS-REFACTOR: starts here
-            getRequisitionUrl = '/api/siglusintegration/requisitions/' + this.requisition.id;
+            getRequisitionUrl = '/api/siglusapi/requisitions/' + this.requisition.id;
             // SIGLUS-REFACTOR: ends here
         });
 

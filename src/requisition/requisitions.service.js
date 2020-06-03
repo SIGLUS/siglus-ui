@@ -44,7 +44,7 @@
             offlineStatusMessages = localStorageFactory('statusMessages');
 
         // SIGLUS-REFACTOR: starts here
-        var resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitions/:id'), {}, {
+        var resource = $resource(requisitionUrlFactory('/api/siglusapi/requisitions/:id'), {}, {
         // SIGLUS-REFACTOR: ends here
             get: {
                 method: 'GET',

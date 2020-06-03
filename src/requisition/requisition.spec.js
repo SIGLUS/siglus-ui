@@ -450,7 +450,7 @@ describe('Requisition', function() {
 
             this.$httpBackend
             // SIGLUS-REFACTOR: starts here
-                .whenDELETE(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                .whenDELETE(this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id))
                 // SIGLUS-REFACTOR: ends here
                 .respond(200, this.requisition);
 
@@ -467,7 +467,7 @@ describe('Requisition', function() {
         it('should not approve requisition if request fails', function() {
             this.$httpBackend
             // SIGLUS-REFACTOR: starts here
-                .whenDELETE(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                .whenDELETE(this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id))
                 // SIGLUS-REFACTOR: ends here
                 .respond(500);
 
