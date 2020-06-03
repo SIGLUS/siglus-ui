@@ -43,11 +43,11 @@
                     method: 'GET'
                 },
                 archiveProduct: {
-                    url: stockmanagementUrlFactory('/api/siglusintegration/archivedproducts/:orderableId/archive'),
+                    url: stockmanagementUrlFactory('/api/siglusapi/archivedproducts/:orderableId/archive'),
                     method: 'POST'
                 },
                 activateProduct: {
-                    url: stockmanagementUrlFactory('/api/siglusintegration/archivedproducts/:orderableId/activate'),
+                    url: stockmanagementUrlFactory('/api/siglusapi/archivedproducts/:orderableId/activate'),
                     method: 'POST'
                 }
             }
