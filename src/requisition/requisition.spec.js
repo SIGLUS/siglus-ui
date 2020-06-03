@@ -113,7 +113,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/submit')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
@@ -145,7 +145,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/submit')
             )
                 .respond(200, updatedRequisition);
             // SIGLUS-REFACTOR: ends here
@@ -172,7 +172,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/submit')
             )
                 .respond(200, updatedRequisition);
             // SIGLUS-REFACTOR: ends here
@@ -194,7 +194,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/submit')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/submit')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
@@ -226,7 +226,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/authorize')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
@@ -252,7 +252,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/authorize')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
@@ -275,7 +275,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/authorize')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
@@ -303,7 +303,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/authorize')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: starts here
@@ -330,7 +330,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend.whenPOST(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id + '/authorize')
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/authorize')
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
