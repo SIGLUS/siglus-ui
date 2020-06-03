@@ -106,7 +106,7 @@ describe('stockCardService', function() {
     describe('archiveProduct', function() {
 
         beforeEach(function() {
-            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archivedproducts/'
+            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusapi/archivedproducts/'
                 + this.orderable.id + '/archive'))
                 .respond(200, null);
         });
@@ -136,7 +136,7 @@ describe('stockCardService', function() {
     describe('activateProduct', function() {
 
         beforeEach(function() {
-            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusintegration/archivedproducts/'
+            this.$httpBackend.when('POST', this.stockmanagementUrlFactory('/api/siglusapi/archivedproducts/'
                 + this.orderable.id + '/activate'))
                 .respond(200, null);
         });
