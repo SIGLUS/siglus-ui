@@ -94,7 +94,7 @@
             },
             // SIGLUS-REFACTOR: starts here
             getOrderableLineItem: {
-                url: requisitionUrlFactory('/api/siglusintegration/requisitions/createLineItem'),
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/createLineItem'),
                 method: 'POST',
                 isArray: true
             }
