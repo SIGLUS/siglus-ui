@@ -598,7 +598,7 @@ describe('requisitionService', function() {
         this.$httpBackend
             .whenGET(
                 // SIGLUS-REFACTOR: starts here
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/search'
                 // SIGLUS-REFACTOR: ends here
                     + '?initiatedDateFrom=' + this.startDate1.toISOString()
                     + '&initiatedDateTo=' + this.endDate1.toISOString()
@@ -639,7 +639,7 @@ describe('requisitionService', function() {
 
         // SIGLUS-REFACTOR: starts here
         this.$httpBackend.whenGET(
-            this.requisitionUrlFactory('/api/siglusintegration/requisitions/search?facility=' + this.facility.id)
+            this.requisitionUrlFactory('/api/siglusapi/requisitions/search?facility=' + this.facility.id)
         )
         // SIGLUS-REFACTOR: ends here
 
@@ -702,7 +702,7 @@ describe('requisitionService', function() {
             this.$httpBackend.when(
                 // SIGLUS-REFACTOR: starts here
                 'GET', this.requisitionUrlFactory(
-                    '/api/siglusintegration/requisitions/search?facility=' + this.facility.id
+                    '/api/siglusapi/requisitions/search?facility=' + this.facility.id
                 )
                 // SIGLUS-REFACTOR: ends here
             )
@@ -732,7 +732,7 @@ describe('requisitionService', function() {
             this.$httpBackend.when(
                 // SIGLUS-REFACTOR: starts here
                 'GET', this.requisitionUrlFactory(
-                    '/api/siglusintegration/requisitions/search?facility=' + this.facility.id
+                    '/api/siglusapi/requisitions/search?facility=' + this.facility.id
                 )
                 // SIGLUS-REFACTOR: ends here
             )
@@ -764,7 +764,7 @@ describe('requisitionService', function() {
             this.requisition.modifiedDate = [2016, 4, 30, 16, 21, 33];
 
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusapi/requisitions/search'))
             // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
@@ -797,7 +797,7 @@ describe('requisitionService', function() {
             this.requisitionCacheService.getBatchRequisition.andReturn(this.requisition);
 
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusapi/requisitions/search'))
             // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
@@ -819,7 +819,7 @@ describe('requisitionService', function() {
             this.requisitionCacheService.getRequisition.andReturn(this.requisition);
 
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusapi/requisitions/search'))
             // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
@@ -841,7 +841,7 @@ describe('requisitionService', function() {
             var data = {};
 
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusapi/requisitions/search'))
             // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
@@ -865,7 +865,7 @@ describe('requisitionService', function() {
             var data = {};
 
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusapi/requisitions/search'))
             // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [
@@ -887,7 +887,7 @@ describe('requisitionService', function() {
             var data = {};
 
             // SIGLUS-REFACTOR: starts here
-            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusintegration/requisitions/search'))
+            this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/siglusapi/requisitions/search'))
             // SIGLUS-REFACTOR: ends here
                 .respond(200, {
                     content: [

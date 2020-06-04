@@ -108,7 +108,7 @@ describe('StockCardSummaryRepositoryImpl', function() {
         var summariesPage, params, url;
 
         beforeEach(function() {
-            url = '/api/siglusintegration/stockCardSummaries?page=0&param=param&size=10';
+            url = '/api/siglusapi/stockCardSummaries?page=0&param=param&size=10';
             // SIGLUS-REFACTOR: ends here
             params = {
                 page: 0,

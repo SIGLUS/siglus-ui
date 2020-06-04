@@ -30,7 +30,7 @@
         return StockCardSummaryResource;
 
         function StockCardSummaryResource() {
-            this.super('/api/siglusintegration/stockCardSummaries');
+            this.super('/api/siglusapi/stockCardSummaries');
         }
     }
 })();
