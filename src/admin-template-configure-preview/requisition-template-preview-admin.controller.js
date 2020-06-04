@@ -61,7 +61,6 @@
          * Redirects user to template list view page.
          */
         function onInit() {
-            angular.merge(template, $state.params.productSection);
             vm.template = template;
             vm.columns = getDisplayedColumns(template);
         }
