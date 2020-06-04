@@ -76,7 +76,7 @@ describe('ProductGridCell', function() {
         this.directiveElem = this.getCompiledElement();
 
         expect(this.directiveElem.html()).toContain('input');
-        expect(this.directiveElem.html()).toContain('positive-integer');
+        expect(this.directiveElem.html()).toContain('integer');
     });
 
     // it('should produce losesAndAdjustment cell', function() {
