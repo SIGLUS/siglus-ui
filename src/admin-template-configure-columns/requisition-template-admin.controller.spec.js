@@ -137,29 +137,17 @@ describe('RequisitionTemplateAdminController', function() {
             spyOn(state, 'go');
             vm.cancel();
 
-            expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
-                {
-                    productSection: {
-                        populateStockOnHandFromStockCards: vm.template.populateStockOnHandFromStockCards,
-                        columnsMap: vm.template.columnsMap
-                    }
-                });
+            expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns');
         });
 
-        it('should change state with previous columnsMap when columnsMap changed', function() {
+        it('should change template to previous template when template changed', function() {
             spyOn(state, 'go');
             var previousTemplate = angular.copy(vm.template);
             vm.template.columnsMap.stockOnHand.displayOrder = 9999;
             vm.template.populateStockOnHandFromStockCards = true;
             vm.cancel();
 
-            expect(state.go).toHaveBeenCalledWith('openlmis.administration.requisitionTemplates.configure.columns',
-                {
-                    productSection: {
-                        populateStockOnHandFromStockCards: previousTemplate.populateStockOnHandFromStockCards,
-                        columnsMap: previousTemplate.columnsMap
-                    }
-                });
+            expect(vm.template).toEqual(previousTemplate);
         });
     });
 

@@ -64,45 +64,12 @@ describe('RequisitionTemplatePreviewController', function() {
             expect(vm.template).toEqual(template);
         });
 
-        it('should extend columnsMap when params have columnsMap', function() {
-            state.params.productSection = {
-                columnsMap: {
-                    averageConsumption: {
-                        displayOrder: 99999
-                    },
-                    total: {
-                        isDisplayed: true
-                    }
-                },
-                populateStockOnHandFromStockCards: true
-            };
-            initController();
-
-            expect(vm.template).toEqual(template);
-            expect(vm.template.columnsMap.averageConsumption.displayOrder).toBe(99999);
-            expect(vm.template.columnsMap.total.isDisplayed).toBe(true);
-            expect(vm.template.populateStockOnHandFromStockCards).toBe(true);
-        });
-
         it('should set columns', function() {
             initController();
 
             var sortColumns = _.sortBy(vm.columns, 'name');
 
             expect(sortColumns).toEqual([vm.template.columnsMap.averageConsumption, vm.template.columnsMap.remarks]);
-        });
-
-        it('should set columns when params have columnsMap', function() {
-            state.params.productSection = {
-                columnsMap: {
-                    averageConsumption: {
-                        isDisplayed: false
-                    }
-                }
-            };
-            initController();
-
-            expect(vm.columns).toEqual([vm.template.columnsMap.remarks]);
         });
     });
 

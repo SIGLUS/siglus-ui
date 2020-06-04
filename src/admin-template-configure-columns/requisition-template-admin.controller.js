@@ -125,8 +125,16 @@
             refreshAvailableTags();
             // #173: product sections for template configuration
             vm.previousTemplate = angular.copy(template);
+            enableCurrentSection();
             refreshConfirm();
             // #173: ends here
+        }
+
+        function enableCurrentSection() {
+            if (!vm.template.extension) {
+                vm.template.extension = {};
+            }
+            vm.template.extension.enableProduct = true;
         }
 
         // #173: product sections for template configuration
@@ -167,12 +175,15 @@
          * Redirects user to template preview page with unchanged columnsMap.
          */
         function cancel() {
-            $state.go('openlmis.administration.requisitionTemplates.configure.columns', {
-                productSection: {
-                    columnsMap: vm.previousTemplate.columnsMap,
-                    populateStockOnHandFromStockCards: vm.previousTemplate.populateStockOnHandFromStockCards
-                }
+            angular.merge(vm.template, {
+                columnsMap: vm.previousTemplate.columnsMap,
+                populateStockOnHandFromStockCards: vm.previousTemplate.populateStockOnHandFromStockCards
             });
+            goToTemplatePreview();
+        }
+
+        function goToTemplatePreview() {
+            $state.go('openlmis.administration.requisitionTemplates.configure.columns');
         }
         // #173: ends here
 
@@ -210,7 +221,7 @@
         // #173: product sections for template configuration
         function previewTemplate() {
             if (vm.template.isValid()) {
-                $state.go('openlmis.administration.requisitionTemplates.configure.columns');
+                goToTemplatePreview();
             } else {
                 notificationService.error('adminProgramTemplate.template.invalid');
             }
