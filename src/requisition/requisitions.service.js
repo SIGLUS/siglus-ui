@@ -545,7 +545,7 @@
                         .then(function(result) {
                             // SIGLUS-REFACTOR: starts here
                             result[0].forEach(function(orderable) {
-                                orderable.archived = !!result[2].includes(orderable.id);
+                                orderable.archived = result[2].includes(orderable.id);
                             });
                             requisition.availableFullSupplyProducts =  result[0];
                             // SIGLUS-REFACTOR: ends here
