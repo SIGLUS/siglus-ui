@@ -60,7 +60,7 @@
             },
             // SIGLUS-REFACTOR: ends here
             search: {
-                url: requisitionUrlFactory('/api/siglusintegration/requisitions/search'),
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/search'),
                 method: 'GET',
                 transformResponse: transformRequisitionSearchResponse
             },
