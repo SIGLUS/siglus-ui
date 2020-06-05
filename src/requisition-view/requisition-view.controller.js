@@ -560,30 +560,41 @@
          * save, an error notification modal will be displayed.
          * Otherwise, a success notification modal will be shown.
          */
+        // #231: there is no signature modal when approve
         function approveRnr() {
-            confirmService.confirm(
-                'requisitionView.approve.confirm',
-                'requisitionView.approve.label'
-            ).then(function() {
-                if (requisitionValidator.validateRequisition(requisition)) {
-                    var loadingPromise = loadingModalService.open();
-                    vm.requisition.$save().then(function() {
-                        vm.requisition.$approve().then(function() {
-                            watcher.disableWatcher();
-                            loadingPromise.then(function() {
-                                notificationService.success('requisitionView.approve.success');
-                            });
-                            stateTrackerService.goToPreviousState('openlmis.requisitions.approvalList');
-                        }, loadingModalService.close);
-                    }, function(response) {
-                        handleSaveError(response.status);
-                    });
-                } else {
-                    $scope.$broadcast('openlmis-form-submit');
-                    failWithMessage('requisitionView.rnrHasErrors')();
-                }
-            });
+            if (requisitionValidator.validateRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.approve.confirmWithSignature').then(function(signature) {
+                    vm.requisition.extraData.signaure.approve = signature;
+                    if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                        failWithMessage('requisitionView.allLineItemsSkipped')();
+                    } else if (vm.program.enableDatePhysicalStockCountCompleted) {
+                        var modal = new RequisitionStockCountDateModal(vm.requisition);
+                        modal.then(saveThenApprove);
+                    } else {
+                        saveThenApprove();
+                    }
+                });
+            } else {
+                $scope.$broadcast('openlmis-form-submit');
+                failWithMessage('requisitionView.rnrHasErrors')();
+            }
+
+            function saveThenApprove() {
+                var loadingPromise = loadingModalService.open();
+                vm.requisition.$save().then(function() {
+                    vm.requisition.$approve().then(function() {
+                        watcher.disableWatcher();
+                        loadingPromise.then(function() {
+                            notificationService.success('requisitionView.approve.success');
+                        });
+                        stateTrackerService.goToPreviousState('openlmis.requisitions.approvalList');
+                    }, loadingModalService.close);
+                }, function(response) {
+                    handleSaveError(response.status);
+                });
+            }
         }
+        // #231: ends here
 
         /**
          * @ngdoc method
