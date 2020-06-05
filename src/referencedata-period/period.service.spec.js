@@ -74,7 +74,7 @@ describe('periodService', function() {
         it('should get processing period by id and save it to storage', function() {
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .expectGET(this.referencedataUrlFactory('/api/siglusintegration/processingPeriods/' + this.period.id))
+                .expectGET(this.referencedataUrlFactory('/api/siglusapi/processingPeriods/' + this.period.id))
                 .respond(200, this.period);
             // SIGLUS-REFACTOR: ends here
             var result;
@@ -100,7 +100,7 @@ describe('periodService', function() {
             periodCopy.endDate = this.dateUtils.toStringDate(periodCopy.endDate);
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .expectPOST(this.referencedataUrlFactory('/api/siglusintegration/processingPeriods'), periodCopy)
+                .expectPOST(this.referencedataUrlFactory('/api/siglusapi/processingPeriods'), periodCopy)
                 .respond(200, this.period);
             // SIGLUS-REFACTOR: ends here
             var result;
@@ -124,7 +124,7 @@ describe('periodService', function() {
             };
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .expectGET(this.referencedataUrlFactory('/api/siglusintegration/processingPeriods?page=' + params.page))
+                .expectGET(this.referencedataUrlFactory('/api/siglusapi/processingPeriods?page=' + params.page))
                 .respond(200, this.periodsPage);
             // SIGLUS-REFACTOR: ends here
             var result;

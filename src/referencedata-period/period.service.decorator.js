@@ -38,7 +38,7 @@
 
     function decorator($delegate, $resource, referencedataUrlFactory, dateUtils) {
         // SIGLUS-REFACTOR: starts here
-        var resource = $resource(referencedataUrlFactory('/api/siglusintegration/processingPeriods/:id'));
+        var resource = $resource(referencedataUrlFactory('/api/siglusapi/processingPeriods/:id'));
         // SIGLUS-REFACTOR: ends here
         $delegate.create = create;
         $delegate.query = query;

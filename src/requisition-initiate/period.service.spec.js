@@ -70,7 +70,7 @@ describe('periodService', function() {
         it('should return promise', function() {
             // SIGLUS-REFACTOR: starts here
             $httpBackend.when('GET', requisitionUrlFactoryMock(
-                '/api/siglusintegration/requisitions/periodsForInitiate?emergency=' +
+                '/api/siglusapi/requisitions/periodsForInitiate?emergency=' +
                 emergency + '&facilityId=' + facilityId + '&programId=' + programId
             ))
                 .respond(200, [periodOne, periodTwo]);
@@ -85,7 +85,7 @@ describe('periodService', function() {
         it('should return proper response', function() {
             // SIGLUS-REFACTOR: starts here
             $httpBackend.when('GET', requisitionUrlFactoryMock(
-                '/api/siglusintegration/requisitions/periodsForInitiate?emergency=' +
+                '/api/siglusapi/requisitions/periodsForInitiate?emergency=' +
                 emergency + '&facilityId=' + facilityId + '&programId=' + programId
             ))
                 .respond(200, [periodOne, periodTwo]);
@@ -109,7 +109,7 @@ describe('periodService', function() {
         it('should call date utils', function() {
             // SIGLUS-REFACTOR: starts here
             $httpBackend.when('GET', requisitionUrlFactoryMock(
-                '/api/siglusintegration/requisitions/periodsForInitiate?emergency=' +
+                '/api/siglusapi/requisitions/periodsForInitiate?emergency=' +
                 emergency + '&facilityId=' + facilityId + '&programId=' + programId
             ))
                 .respond(200, [periodOne, periodTwo]);
@@ -127,7 +127,7 @@ describe('periodService', function() {
         it('should show an alert if facility is not supported', function() {
             // SIGLUS-REFACTOR: starts here
             $httpBackend.when('GET', requisitionUrlFactoryMock(
-                '/api/siglusintegration/requisitions/periodsForInitiate?emergency=' +
+                '/api/siglusapi/requisitions/periodsForInitiate?emergency=' +
                 emergency + '&facilityId=' + facilityId + '&programId=' + programId
             ))
                 .respond(400, {
