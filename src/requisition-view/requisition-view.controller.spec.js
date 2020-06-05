@@ -572,6 +572,15 @@ describe('RequisitionViewController', function() {
     describe('approveRnr', function() {
 
         beforeEach(function() {
+            // #231: there is no signature modal when approve
+            this.signatureModalService.confirm.andReturn(this.$q.resolve(true));
+            this.RequisitionStockCountDateModalMock.andReturn(this.$q.resolve());
+            this.requisition.extraData = {
+                signaure: {
+                    approve: undefined
+                }
+            };
+            // #231: ends here
             this.confirmService.confirm.andReturn(this.$q.resolve(true));
             this.requisition.$save.andReturn(this.$q.resolve(true));
             this.requisition.$approve.andReturn(this.$q.resolve(true));

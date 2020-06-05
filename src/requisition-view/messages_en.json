@@ -7,6 +7,7 @@
   "requisitionView.usageReport.skip.failure": "Failed to skip usage report!",
   "requisitionView.usageReport.skip.success": "Usage report has been skipped!",
   "requisitionView.submit.confirmWithSignature": "Enter your initials and then submit the requisition",
+  "requisitionView.approve.confirmWithSignature": "Enter your initials and then approve the requisition",
   "requisitionView.usageReport.submit.confirmWithSignature": "Enter your initials and then submit the usage report",
   "requisitionView.usageReport.submit.success": "Usage report has been submitted!",
   "requisitionView.usageReport.sync.failure": "Failed to synchronize usage report!",
