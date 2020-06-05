@@ -40,7 +40,7 @@
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             // SIGLUS-REFACTOR: starts here
-            resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitions/:id'), {}, {
+            resource = $resource(requisitionUrlFactory('/api/siglusapi/requisitions/:id'), {}, {
             // SIGLUS-REFACTOR: ends here
                 authorize: {
                     headers: {
