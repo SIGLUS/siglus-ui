@@ -72,7 +72,7 @@
                         'Idempotency-Key': getIdempotencyKey
                     },
                     // SIGLUS-REFACTOR: starts here
-                    url: requisitionUrlFactory('/api/siglusintegration/requisitions/:id/approve'),
+                    url: requisitionUrlFactory('/api/siglusapi/requisitions/:id/approve'),
                     // SIGLUS-REFACTOR: ends here
                     method: 'POST'
                 },

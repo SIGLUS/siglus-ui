@@ -37,7 +37,7 @@
         return ProcessingPeriodResource;
         // SIGLUS-REFACTOR: starts here
         function ProcessingPeriodResource() {
-            this.super('/api/siglusintegration/processingPeriods', {
+            this.super('/api/siglusapi/processingPeriods', {
                 paginated: false
             });
         }

@@ -34,7 +34,7 @@
 
     function decorator($delegate, $resource, $q, alertService, requisitionUrlFactory, dateUtils) {
         // SIGLUS-REFACTOR: starts here
-        var resource = $resource(requisitionUrlFactory('/api/siglusintegration/requisitions/periodsForInitiate'),
+        var resource = $resource(requisitionUrlFactory('/api/siglusapi/requisitions/periodsForInitiate'),
                 {}, {
                     periodsForInitiate: {
                         method: 'GET',
