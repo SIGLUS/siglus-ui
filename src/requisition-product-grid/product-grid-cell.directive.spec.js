@@ -79,6 +79,15 @@ describe('ProductGridCell', function() {
         expect(this.directiveElem.html()).toContain('integer');
     });
 
+    it('should produce losesAndAdjustment cell with text when isReadOnly', function() {
+        this.scope.userCanEdit = false;
+        this.scope.column.name = 'totalLossesAndAdjustments';
+
+        var cell = angular.element(this.getCompiledElement().children()[0]);
+
+        expect(cell.text()).toEqual('readOnlyFieldValue');
+    });
+
     // it('should produce losesAndAdjustment cell', function() {
     //     this.scope.requisition.$isApproved.andReturn(false);
     //     this.scope.requisition.$isReleased.andReturn(false);
