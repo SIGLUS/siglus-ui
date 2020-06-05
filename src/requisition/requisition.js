@@ -804,6 +804,9 @@
                     id: lineItem.orderable.id,
                     versionNumber: lineItem.orderable.meta.versionNumber
                 };
+                if (!lineItem.approvedProduct.versionNumber) {
+                    lineItem.approvedProduct.versionNumber = lineItem.approvedProduct.meta.versionNumber;
+                }
             });
 
             requestBody.processingPeriod.startDate = dateUtils.toStringDate(

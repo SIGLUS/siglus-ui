@@ -482,6 +482,17 @@ describe('Requisition', function() {
     });
 
     describe('save', function() {
+        // # N/A: add version number for approvedProduct
+        beforeEach(function() {
+            this.requisition.requisitionLineItems.forEach(function(lineItem) {
+                lineItem.approvedProduct = {
+                    meta: {
+                        versionNumber: 1
+                    }
+                };
+            });
+        });
+        // # N/A: ends here
 
         it('should save requisition', function() {
             var data;
@@ -540,6 +551,11 @@ describe('Requisition', function() {
             expected.requisitionLineItems[0].stockOnHand = null;
             expected.requisitionLineItems[1].stockOnHand = null;
             expected.requisitionLineItems[2].stockOnHand = null;
+            // # N/A: add version number for approvedProduct
+            expected.requisitionLineItems[0].approvedProduct.versionNumber = 1;
+            expected.requisitionLineItems[1].approvedProduct.versionNumber = 1;
+            expected.requisitionLineItems[2].approvedProduct.versionNumber = 1;
+            // # N/A: ends here
 
             delete this.requisition.requisitionLineItems[0].$program;
             delete this.requisition.requisitionLineItems[1].$program;
