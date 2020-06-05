@@ -88,9 +88,9 @@
                 var templateUrl = '';
                 if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-skip.html';
-                } else if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
-                    !requisition.template.populateStockOnHandFromStockCards) {
                     // #199: product sections for column changes
+                } else if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
+                    !requisition.template.populateStockOnHandFromStockCards && !scope.isReadOnly) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-input-integer.html';
                     // #199: ends here
                 } else if (column.$type === COLUMN_TYPES.NUMERIC && !scope.isReadOnly) {
