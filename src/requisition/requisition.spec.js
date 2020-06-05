@@ -499,7 +499,7 @@ describe('Requisition', function() {
 
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id))
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
 
@@ -518,7 +518,7 @@ describe('Requisition', function() {
         it('should remove offline when 403', function() {
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id))
                 .respond(403, this.requisition);
             // SIGLUS-REFACTOR: ends here
 
@@ -533,7 +533,7 @@ describe('Requisition', function() {
         it('should remove offline when 409', function() {
             // SIGLUS-REFACTOR: starts here
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id))
                 .respond(403, this.requisition);
             // SIGLUS-REFACTOR: ends here
 
@@ -599,7 +599,7 @@ describe('Requisition', function() {
             var $httpBackend = this.$httpBackend;
             // SIGLUS-REFACTOR: starts here
             $httpBackend.expectPUT(
-                this.requisitionUrlFactory('/api/siglusintegration/requisitions/' + this.requisition.id), expected
+                this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id), expected
             )
                 .respond(200, this.requisition);
             // SIGLUS-REFACTOR: ends here
