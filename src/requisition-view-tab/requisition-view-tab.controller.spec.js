@@ -518,13 +518,17 @@ describe('ViewTabController', function() {
             ]));
             // SIGLUS-REFACTOR: different data structure
             spyOn(this.requisitionService, 'getOrderableLineItem').andReturn(this.$q.resolve(
-                [
-                    {
+                [{
+                    lineItem: {
                         orderable: this.availableFullSupplyProducts[0]
-                    }, {
+                    },
+                    approvedProduct: this.availableFullSupplyProducts[0]
+                }, {
+                    lineItem: {
                         orderable: this.availableFullSupplyProducts[2]
-                    }
-                ]
+                    },
+                    approvedProduct: this.availableFullSupplyProducts[2]
+                }]
             ));
             spyOn(this.requisition, 'addProductLineItem');
             // SIGLUS-REFACTOR: ends here
@@ -562,23 +566,24 @@ describe('ViewTabController', function() {
             expect(this.requisition.addProductLineItem).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
         });
-        // SIGLUS-REFACTOR: starts here
-        // it('should unskip full supply products', function() {
-        //     this.initController();
-        //     this.vm.addFullSupplyProducts();
-        //     this.$rootScope.$apply();
-        //
-        //     // SIGLUS-REFACTOR: starts here
-        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
-        //         orderable: this.availableFullSupplyProducts[0]
-        //     });
-        //
-        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
-        //         orderable: this.availableFullSupplyProducts[2]
-        //     });
-        //     // SIGLUS-REFACTOR: ends here
-        // });
-        // SIGLUS-REFACTOR: ends here
+
+        it('should unskip full supply products', function() {
+            this.initController();
+            this.vm.addFullSupplyProducts();
+            this.$rootScope.$apply();
+
+            // SIGLUS-REFACTOR: starts here
+            expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
+                orderable: this.availableFullSupplyProducts[0],
+                approvedProduct: this.availableFullSupplyProducts[0]
+            });
+
+            expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
+                orderable: this.availableFullSupplyProducts[2],
+                approvedProduct: this.availableFullSupplyProducts[2]
+            });
+            // SIGLUS-REFACTOR: ends here
+        });
 
         it('should show products in alphabetical order', function() {
             this.initController();
@@ -607,9 +612,15 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: different data structure
             spyOn(this.requisitionService, 'getOrderableLineItem').andReturn(this.$q.resolve([
                 {
-                    orderable: this.availableFullSupplyProducts[0]
+                    lineItem: {
+                        orderable: this.availableNonFullSupplyProducts[0]
+                    },
+                    approvedProduct: this.availableNonFullSupplyProducts[0]
                 }, {
-                    orderable: this.availableFullSupplyProducts[2]
+                    lineItem: {
+                        orderable: this.availableNonFullSupplyProducts[2]
+                    },
+                    approvedProduct: this.availableNonFullSupplyProducts[2]
                 }
             ]));
             spyOn(this.requisition, 'addProductLineItem');
@@ -649,21 +660,23 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: ends here
         });
 
-        // it('should add non-full supply products', function() {
-        //     this.initController();
-        //     this.vm.addNonFullSupplyProducts();
-        //     this.$rootScope.$apply();
-        //
-        //     // SIGLUS-REFACTOR: starts here
-        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
-        //         orderable: this.availableNonFullSupplyProducts[0]
-        //     });
-        //
-        //     expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
-        //         orderable: this.availableNonFullSupplyProducts[2]
-        //     });
-        //     // SIGLUS-REFACTOR: ends here
-        // });
+        it('should add non-full supply products', function() {
+            this.initController();
+            this.vm.addNonFullSupplyProducts();
+            this.$rootScope.$apply();
+
+            // SIGLUS-REFACTOR: starts here
+            expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
+                orderable: this.availableNonFullSupplyProducts[0],
+                approvedProduct: this.availableNonFullSupplyProducts[0]
+            });
+
+            expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
+                orderable: this.availableNonFullSupplyProducts[2],
+                approvedProduct: this.availableNonFullSupplyProducts[2]
+            });
+            // SIGLUS-REFACTOR: ends here
+        });
 
         it('should show products in alphabetical order', function() {
             this.initController();
