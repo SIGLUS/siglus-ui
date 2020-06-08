@@ -32,22 +32,15 @@
         .filter('archivedProductName', archivedProductNameFilter);
 
     function archivedProductNameFilter() {
-        return function(orderableGroup) {
-            if (!orderableGroup) {
+        return function(orderable) {
+            if (!orderable) {
                 return undefined;
             }
 
-            var archived = orderableGroup.find(function(item) {
-                return item.archived;
-            });
-            var name = '';
-
-            if (archived) {
-                name = '[archived]' + orderableGroup[0].orderable.fullProductName;
-            } else {
-                name = orderableGroup[0].orderable.fullProductName;
+            if (orderable.archived) {
+                return '[archived]' + orderable.fullProductName;
             }
-            return name;
+            return orderable.fullProductName;
         };
     }
 

@@ -14,7 +14,7 @@
  */
 
 describe('archived product name filter', function() {
-    var OrderableGroupDataBuilder;
+    var OrderableDataBuilder;
 
     beforeEach(function() {
         module('stock-archived-product');
@@ -22,11 +22,11 @@ describe('archived product name filter', function() {
 
         inject(function($injector) {
             this.$filter = $injector.get('$filter');
-            OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
         });
 
         this.archivedProductNameFilter = this.$filter('archivedProductName');
-        this.orderableGroup = new OrderableGroupDataBuilder().build();
+        this.orderable = new OrderableDataBuilder().build();
     });
 
     it('should return undefined for undefined', function() {
@@ -34,14 +34,14 @@ describe('archived product name filter', function() {
     });
 
     it('should return name with tag when the orderable group is archived', function() {
-        this.orderableGroup[0].archived = true;
+        this.orderable.archived = true;
 
-        expect(this.archivedProductNameFilter(this.orderableGroup)).toEqual('[archived]Product 1');
+        expect(this.archivedProductNameFilter(this.orderable)).toEqual('[archived]Product 1');
     });
 
     it('should return fullProductName when the orderable group is not archived', function() {
-        this.orderableGroup[0].archived = false;
+        this.orderable.archived = false;
 
-        expect(this.archivedProductNameFilter(this.orderableGroup)).toEqual('Product 1');
+        expect(this.archivedProductNameFilter(this.orderable)).toEqual('Product 1');
     });
 });

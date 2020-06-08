@@ -32,26 +32,25 @@ describe('archivedProductService', function() {
         this.orderableGroup = new OrderableGroupDataBuilder().build();
     });
 
-    describe('info', function() {
-
-        it('should call the info method of alertService', function() {
+    describe('alterInfo', function() {
+        beforeEach(function() {
             spyOn(this.alertService, 'info');
+        });
 
-            this.archivedProductService.info();
+        it('should not call the info method of alertService when the orderable group is not archived', function() {
+            this.orderableGroup[0].orderable.archived = false;
+
+            this.archivedProductService.alterInfo(this.orderableGroup);
+
+            expect(this.alertService.info).not.toHaveBeenCalled();
+        });
+
+        it('should call the info method of alertService when the orderable group is archived', function() {
+            this.orderableGroup[0].orderable.archived = true;
+
+            this.archivedProductService.alterInfo(this.orderableGroup);
 
             expect(this.alertService.info).toHaveBeenCalled();
-        });
-    });
-
-    describe('isArchived', function() {
-        it('should return false when the orderable group is not archived', function() {
-            expect(this.archivedProductService.isArchived(this.orderableGroup)).toEqual(false);
-        });
-
-        it('should return true when the orderable group is archived', function() {
-            this.orderableGroup[0].archived = true;
-
-            expect(this.archivedProductService.isArchived(this.orderableGroup)).toEqual(true);
         });
     });
 

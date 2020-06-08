@@ -234,9 +234,7 @@
                 reload($state.current.name);
 
                 // #105: activate archived product
-                if (archivedProductService.isArchived(addedItems)) {
-                    archivedProductService.info();
-                }
+                archivedProductService.alterInfo(addedItems);
                 // #105: ends here
             });
         };
@@ -641,7 +639,7 @@
             var notAddedLotItemGroup = _.chain(draft.summaries)
                 .filter(function(summary) {
                     // #105: activate archived product
-                    return (!summary.stockCardId || summary.archived)
+                    return (!summary.stockCardId || summary.orderable.archived)
                         && summary.lot && !_.contains(addedLotsId, summary.lot.id);
                     // #105: ends here
                 })

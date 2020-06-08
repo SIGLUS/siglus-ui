@@ -174,9 +174,7 @@
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
             // #105: activate archived product
-            if (archivedProductService.isArchived([item])) {
-                archivedProductService.info();
-            }
+            archivedProductService.alterInfo([item]);
             // #105: ends here
         };
 
