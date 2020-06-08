@@ -33,24 +33,11 @@
 
     function orderByArchivedFilter() {
         return function(orderableGroups) {
-            var getArchivedStatus = function(orderableGroup) {
-                return orderableGroup.find(function(item) {
-                    return item.archived;
-                });
-            };
             if (!orderableGroups) {
                 return undefined;
             }
             return orderableGroups.sort(function(orderableGroupA, orderableGroupB) {
-                var isOrderableGroupAArchived = getArchivedStatus(orderableGroupA);
-                var isOrderableGroupBArchived = getArchivedStatus(orderableGroupB);
-
-                if (!isOrderableGroupAArchived && isOrderableGroupBArchived) {
-                    return -1;
-                } else if (isOrderableGroupAArchived && !isOrderableGroupBArchived) {
-                    return 1;
-                }
-                return 0;
+                return orderableGroupA[0].orderable.archived - orderableGroupB[0].orderable.archived;
             });
         };
     }

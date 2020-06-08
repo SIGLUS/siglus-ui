@@ -41,23 +41,18 @@
         );
 
         return {
-            info: info,
-            isArchived: isArchived,
+            alterInfo: alterInfo,
             getArchivedOrderables: getArchivedOrderables
         };
 
-        function info() {
-            alertService.info({
-                title: 'archivedProduct.title',
-                message: 'archivedProduct.message',
-                buttonLabel: 'archivedProduct.close'
-            });
-        }
-
-        function isArchived(orderableGroup) {
-            return !!orderableGroup.find(function(item) {
-                return item.archived;
-            });
+        function alterInfo(lineItemGroup) {
+            if (lineItemGroup[0].orderable.archived) {
+                alertService.info({
+                    title: 'archivedProduct.title',
+                    message: 'archivedProduct.message',
+                    buttonLabel: 'archivedProduct.close'
+                });
+            }
         }
 
         function getArchivedOrderables(facilityId) {

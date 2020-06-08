@@ -120,15 +120,13 @@
                 getStockProducts(programId, facilityId),
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
-                // #105: activate archived product
-                var summaries = prepareSummaries(responses[0]),
+                var summaries = responses[0],
                     draft = responses[1],
                     draftToReturn = {
                         programId: programId,
                         facilityId: facilityId,
                         lineItems: []
                     };
-                // #105: ends here
 
                 // no saved draft
                 if (draft.length === 0) {
@@ -144,24 +142,6 @@
                 return draftToReturn;
             });
         }
-
-        // #105: activate archived product
-        // not lot defined item without archived field
-        // assign its archived field according to other lot item
-        function prepareSummaries(summaries) {
-            var archivedOrderableIds = [];
-
-            angular.forEach(summaries, function(summary) {
-                if (summary.archived && !archivedOrderableIds.includes(summary.orderable.id)) {
-                    archivedOrderableIds.push(summary.orderable.id);
-                }
-                if (_.isUndefined(summary.archived)) {
-                    summary.archived = archivedOrderableIds.includes(summary.orderable.id);
-                }
-            });
-            return summaries;
-        }
-        // #105: ends here
 
         /**
          * @ngdoc method
@@ -282,8 +262,7 @@
                     vvmStatus: null,
                     stockAdjustments: [],
                     stockCardId: stockCardId,
-                    programId: virtualProgramId,
-                    archived: summary.archived
+                    programId: virtualProgramId
                 });
                 summary.stockAdjustments = [];
                 summary.stockCardId = stockCardId;
@@ -292,7 +271,7 @@
             draftToReturn.summaries = summaries;
             if (_.isEmpty(draftLineItems)) {
                 draftToReturn.lineItems = _.filter(stockCardLineItems, function(item) {
-                    return item.stockCardId && !item.archived;
+                    return item.stockCardId && !item.orderable.archived;
                 });
             } else {
                 angular.forEach(draftLineItems, function(item) {
@@ -314,8 +293,7 @@
                         stockAdjustments: item.stockAdjustments || [],
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
-                        programId: getVirtualProgramId(summary.orderable),
-                        archived: summary.archived
+                        programId: getVirtualProgramId(summary.orderable)
                     });
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {

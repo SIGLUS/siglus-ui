@@ -32,13 +32,13 @@ describe('order by archived filter', function() {
             new OrderableGroupDataBuilder().build(),
             new OrderableGroupDataBuilder().build()
         ];
-        this.orderableGroups[0][0].archived = true;
+        this.orderableGroups[0][0].orderable.archived = true;
         this.orderableGroups[0][0].orderable.id = 'id-1';
-        this.orderableGroups[1][0].archived = false;
+        this.orderableGroups[1][0].orderable.archived = false;
         this.orderableGroups[1][0].orderable.id = 'id-2';
-        this.orderableGroups[2][0].archived = false;
+        this.orderableGroups[2][0].orderable.archived = false;
         this.orderableGroups[2][0].orderable.id = 'id-3';
-        this.orderableGroups[3][0].archived = true;
+        this.orderableGroups[3][0].orderable.archived = true;
         this.orderableGroups[3][0].orderable.id = 'id-4';
     });
 

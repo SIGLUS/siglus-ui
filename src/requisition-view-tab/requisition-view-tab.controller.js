@@ -337,9 +337,7 @@
                     var filteredAddedOrderables = vm.addedOrderables.filter(function(orderable) {
                         return orderableIds.includes(orderable.id);
                     });
-                    if (archivedProductService.isArchived(filteredAddedOrderables)) {
-                        archivedProductService.info();
-                    }
+                    archivedProductService.alterInfo(filteredAddedOrderables);
                 });
             // SIGLUS-REFACTOR: ends here
         }
@@ -409,7 +407,7 @@
 
             var lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
 
-            return paginationService
+            paginationService
                 .registerList(
                     requisitionValidator.isLineItemValid, $stateParams, function() {
                         return lineItems;
