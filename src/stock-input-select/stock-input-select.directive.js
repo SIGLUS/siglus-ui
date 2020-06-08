@@ -28,9 +28,9 @@
                     enableInput: '<'
                 },
                 controller: ['$scope', 'orderableGroupService', 'autoGenerateService',
-                    'orderableLotMapping', '$timeout', 'messageService',
+                    'orderableLotMapping', '$timeout', 'messageService', 'dateUtils',
                     function($scope, orderableGroupService, autoGenerateService,
-                        orderableLotMapping, $timeout, messageService) {
+                        orderableLotMapping, $timeout, messageService, dateUtils) {
                         $scope.$watch('lineItem.lot', function(newLot, oldLot) {
                             if ((!_.isEqual(newLot, oldLot))) {
                                 $scope.$emit('lotCodeChange', {
@@ -41,6 +41,9 @@
 
                         $scope.$watch('lineItem.lot.expirationDate', function(newDate, oldDate) {
                             var lineItem = $scope.lineItem;
+
+                            newDate = angular.isDate(newDate) ? dateUtils.toStringDate(newDate) : newDate;
+                            oldDate = angular.isDate(oldDate) ? dateUtils.toStringDate(oldDate) : oldDate;
                             if (newDate && newDate !== oldDate
                                 && (lineItem.lot.isAuto || lineItem.isTryAuto)) {
                                 // id means from option
