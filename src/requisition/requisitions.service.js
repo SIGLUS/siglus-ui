@@ -70,7 +70,9 @@
                 transformResponse: transformRequisitionSearchResponse
             },
             forApproval: {
-                url: requisitionUrlFactory('/api/requisitions/requisitionsForApproval'),
+                // SIGLUS-REFACTOR: starts here
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/requisitionsForApproval'),
+                // SIGLUS-REFACTOR: ends here
                 method: 'GET',
                 transformResponse: transformRequisitionListResponse
             },
