@@ -39,7 +39,122 @@
             },
             resolve: {
                 template: function(requisitionTemplateService, $stateParams) {
-                    return requisitionTemplateService.get($stateParams.id);
+                    return requisitionTemplateService.get($stateParams.id).then(function(response) {
+                        response.kitUsage = [{
+                            id: '**',
+                            displayorder: 0,
+                            name: 'collection',
+                            label: 'collection',
+                            columns: [{
+                                name: 'kitReceived',
+                                label: 'No. of Kit Received',
+                                indicator: 'KD',
+                                displayOrder: 0,
+                                isDisplayed: true,
+                                source: 'STOCK_CARDS',
+                                option: null,
+                                definition: 'record the quantity of how many KIT received',
+                                tag: null,
+                                columnDefinition: {
+                                    canChangeOrder: false,
+                                    columnType: 'NUMERIC',
+                                    id: 'bde01507-3837-47b7-ae08-cec92c0c3cd2',
+                                    name: 'kitReceived',
+                                    sources: ['STOCK_CARDS', 'USER_INPUT'],
+                                    options: [],
+                                    label: 'No. of Kit Received',
+                                    indicator: 'KD',
+                                    mandatory: false,
+                                    isDisplayRequired: true,
+                                    canBeChangedByUser: false,
+                                    supportsTag: true,
+                                    definition: 'Unique identifier for each commodity/product.'
+                                }
+                            }, {
+                                name: 'kitOpened',
+                                label: 'No. of Kit open',
+                                indicator: 'KD',
+                                displayOrder: 1,
+                                isDisplayed: true,
+                                source: 'STOCK_CARDS',
+                                option: null,
+                                definition: 'record the quantity of how many KIT received',
+                                tag: null,
+                                columnDefinition: {
+                                    canChangeOrder: false,
+                                    columnType: 'NUMERIC',
+                                    id: 'bde01507-3837-47b7-ae08-cec92c0c3cd2',
+                                    name: 'kitReceived',
+                                    sources: ['STOCK_CARDS', 'USER_INPUT'],
+                                    options: [],
+                                    label: 'No. of Kit Received',
+                                    indicator: 'KD',
+                                    mandatory: false,
+                                    isDisplayRequired: true,
+                                    canBeChangedByUser: false,
+                                    supportsTag: true,
+                                    definition: 'Unique identifier for each commodity/product.'
+                                }
+                            }]
+                        }, {
+                            id: '**',
+                            displayorder: 1,
+                            name: 'service',
+                            label: 'service',
+                            columns: [{
+                                name: 'HF',
+                                label: 'HF',
+                                indicator: 'SV',
+                                displayOrder: 0,
+                                isDisplayed: true,
+                                source: null,
+                                option: null,
+                                definition: 'depend on frontend',
+                                tag: null,
+                                columnDefinition: {
+                                    canChangeOrder: false,
+                                    columnType: 'NUMERIC',
+                                    id: 'bde01507-3837-47b7-ae08-cec92c0c3cd3',
+                                    name: 'HF',
+                                    sources: [],
+                                    options: [],
+                                    label: 'HF',
+                                    indicator: 'SV',
+                                    mandatory: false,
+                                    isDisplayRequired: true,
+                                    canBeChangedByUser: false,
+                                    supportsTag: false,
+                                    definition: null
+                                }
+                            }, {
+                                name: '',
+                                label: 'service',
+                                indicator: 'N',
+                                displayOrder: 1,
+                                isDisplayed: true,
+                                source: 'USER_INPUT',
+                                option: null,
+                                definition: 'depend on frontend',
+                                tag: null,
+                                columnDefinition: {
+                                    canChangeOrder: false,
+                                    columnType: 'TEXT',
+                                    id: null,
+                                    name: 'HF',
+                                    sources: ['USER_INPUT'],
+                                    options: [],
+                                    label: 'service',
+                                    indicator: 'N',
+                                    mandatory: false,
+                                    isDisplayRequired: false,
+                                    canBeChangedByUser: false,
+                                    supportsTag: false,
+                                    definition: null
+                                }
+                            }]
+                        }];
+                        return response;
+                    });
                 },
                 program: function(programService, template) {
                     return programService.get(template.program.id);

@@ -1,0 +1,20 @@
+<div class="kit-usage-preview openlmis-table-container">
+    <div class="openlmis-flex-table">
+        <table>
+            <tbody>
+            <tr ng-repeat="collection in vm.collection.columns | orderBy : 'displayOrder'">
+                <td >{{collection.label}}</td>
+                <td ng-repeat-start="service in vm.service.columns | orderBy : 'displayOrder'"
+                    ng-if="service.isDisplayed"
+                >{{service.label}}</td>
+                <td class="col-source"
+                    ng-class="{'user-input': vm.isUserInput(service, collection)}"
+                    ng-repeat-end
+                >
+                    <span>{{vm.getColumnValue(service, collection)}}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

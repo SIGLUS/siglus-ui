@@ -19,35 +19,13 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .controller('ProductPreviewController', controller);
-
-    controller.$inject = ['columnUtils'];
-
-    function controller(columnUtils) {
-
-        var vm = this;
-
-        vm.$onInit = onInit;
-        vm.getColumnValue = getColumnValue;
-        vm.isUserInput = columnUtils.isUserInput;
-
-        function onInit() {
-            vm.items = [{
-                'orderable.fullProductName': 'Name 1',
-                'orderable.productCode': 'Product 1'
-            }, {
-                'orderable.fullProductName': 'Name 2',
-                'orderable.productCode': 'Product 2'
-            }];
-        }
-
-        function getColumnValue(column, lineItem) {
-            var value = lineItem[column.name];
-            if (!value) {
-                value = columnUtils.formatSource(column);
-            }
-            return value;
-        }
-    }
+        .component('kitUsagePreview', {
+            bindings: {
+                sections: '<'
+            },
+            controller: 'KitUsagePreviewController',
+            controllerAs: 'vm',
+            templateUrl: 'admin-template-configure-preview-section/kit-usage-preview.html'
+        });
 
 })();
