@@ -67,7 +67,7 @@
                             lineItem.isFromSelect = true;
 
                             var selectedOrderableGroup = orderableLotMapping
-                                .findSelectedOrderableGroupsByOrderableId(lineItem.orderableId);
+                                .findSelectedOrderableGroupsByOrderableId(lineItem.orderable.id);
                             var selectedItem = orderableGroupService
                                 .findByLotInOrderableGroup(selectedOrderableGroup, lineItem.lot);
 
@@ -124,7 +124,7 @@
                                 } else {
                                     // if found option
                                     var selectedOrderableGroup = orderableLotMapping
-                                        .findSelectedOrderableGroupsByOrderableId(lineItem.orderableId);
+                                        .findSelectedOrderableGroupsByOrderableId(lineItem.orderable.id);
                                     var selectedItem = orderableGroupService
                                         .findByLotInOrderableGroup(selectedOrderableGroup, option);
 

@@ -85,7 +85,9 @@
             </td>
             <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
             <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
-            <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.stockOnHand}}</td>
+            <td  ng-if="!vm.isInitialInventory" class="text-align-right">
+                {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
+            </td>
             <td class="digit-cell" >
                 <input
                         class="form-control"
