@@ -53,7 +53,7 @@
                 if (inputValue === undefined) {
                     return '';
                 }
-                var transformedInput = inputValue.replace(/[^-0-9]/g, '');
+                var transformedInput = inputValue.replace(/[^-0-9]/g, '').replace(/(.)-/g, '$1');
                 if (transformedInput !== inputValue) {
                     modelCtrl.$setViewValue(transformedInput);
                     modelCtrl.$render();

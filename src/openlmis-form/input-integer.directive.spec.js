@@ -70,4 +70,11 @@ describe('integer', function() {
 
         expect(this.$scope.example).toEqual(123);
     });
+
+    it('should input integer remove - not in the start', function() {
+        this.$scope.form_test.input_test.$setViewValue('-+1-23');
+        this.$scope.$digest();
+
+        expect(this.$scope.example).toEqual(-123);
+    });
 });
