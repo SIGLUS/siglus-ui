@@ -80,7 +80,7 @@
                     headers: {
                         'Idempotency-Key': getIdempotencyKey
                     },
-                    url: requisitionUrlFactory('/api/requisitions/:id/reject'),
+                    url: requisitionUrlFactory('/api/siglusapi/requisitions/:id/reject'),
                     method: 'PUT'
                 },
                 skip: {
