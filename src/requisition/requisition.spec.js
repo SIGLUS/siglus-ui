@@ -408,7 +408,7 @@ describe('Requisition', function() {
             var data;
 
             this.$httpBackend
-                .whenPUT(this.requisitionUrlFactory('/api/requisitions/' + this.requisition.id + '/reject'))
+                .whenPUT(this.requisitionUrlFactory('/api/siglusapi/requisitions/' + this.requisition.id + '/reject'))
                 .respond(200, this.requisition);
 
             this.requisition.$reject().then(function(response) {
