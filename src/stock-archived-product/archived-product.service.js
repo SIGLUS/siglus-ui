@@ -45,8 +45,12 @@
             getArchivedOrderables: getArchivedOrderables
         };
 
-        function alterInfo(lineItemGroup) {
-            if (lineItemGroup[0].orderable.archived) {
+        function alterInfo(lineItems) {
+            var isArchived = lineItems.find(function(lineItem) {
+                return lineItem.orderable.archived;
+            });
+
+            if (isArchived) {
                 alertService.info({
                     title: 'archivedProduct.title',
                     message: 'archivedProduct.message',
