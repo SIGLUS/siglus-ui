@@ -175,10 +175,7 @@
          * Redirects user to template preview page with unchanged columnsMap.
          */
         function cancel() {
-            angular.merge(vm.template, {
-                columnsMap: vm.previousTemplate.columnsMap,
-                populateStockOnHandFromStockCards: vm.previousTemplate.populateStockOnHandFromStockCards
-            });
+            angular.merge(vm.template, vm.previousTemplate);
             goToTemplatePreview();
         }
 
