@@ -334,10 +334,14 @@
                     var orderableIds = vm.lineItems.map(function(lineItem) {
                         return lineItem.orderable.id;
                     });
-                    var filteredAddedOrderables = vm.addedOrderables.filter(function(orderable) {
+                    var filteredAddedLineItems = vm.addedOrderables.filter(function(orderable) {
                         return orderableIds.includes(orderable.id);
+                    }).map(function(orderable) {
+                        return {
+                            orderable: orderable
+                        };
                     });
-                    archivedProductService.alterInfo(filteredAddedOrderables);
+                    archivedProductService.alterInfo(filteredAddedLineItems);
                 });
             // SIGLUS-REFACTOR: ends here
         }
@@ -407,7 +411,7 @@
 
             var lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
 
-            paginationService
+            return paginationService
                 .registerList(
                     requisitionValidator.isLineItemValid, $stateParams, function() {
                         return lineItems;
