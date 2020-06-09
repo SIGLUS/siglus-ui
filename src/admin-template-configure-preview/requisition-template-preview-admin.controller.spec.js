@@ -64,10 +64,10 @@ describe('RequisitionTemplatePreviewController', function() {
             expect(vm.template).toEqual(template);
         });
 
-        it('should set columns', function() {
+        it('should set product columns', function() {
             initController();
 
-            var sortColumns = _.sortBy(vm.columns, 'name');
+            var sortColumns = _.sortBy(vm.productColumns, 'name');
 
             expect(sortColumns).toEqual([vm.template.columnsMap.averageConsumption, vm.template.columnsMap.remarks]);
         });

@@ -19,7 +19,7 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .controller('ProductPreviewController', controller);
+        .controller('KitUsagePreviewController', controller);
 
     controller.$inject = ['columnUtils'];
 
@@ -27,26 +27,32 @@
 
         var vm = this;
 
+        vm.collection = undefined;
+        vm.service = undefined;
+
         vm.$onInit = onInit;
         vm.getColumnValue = getColumnValue;
-        vm.isUserInput = columnUtils.isUserInput;
+        vm.isUserInput = isUserInput;
 
         function onInit() {
-            vm.items = [{
-                'orderable.fullProductName': 'Name 1',
-                'orderable.productCode': 'Product 1'
-            }, {
-                'orderable.fullProductName': 'Name 2',
-                'orderable.productCode': 'Product 2'
-            }];
+            vm.collection = _.find(vm.sections, function(section) {
+                return section.name === 'collection';
+            });
+            vm.service = _.find(vm.sections, function(section) {
+                return section.name === 'service';
+            });
         }
 
-        function getColumnValue(column, lineItem) {
-            var value = lineItem[column.name];
-            if (!value) {
-                value = columnUtils.formatSource(column);
-            }
-            return value;
+        function geColumn(service, collection) {
+            return service.name === 'HF' ? collection : service;
+        }
+
+        function isUserInput(service, collection) {
+            return columnUtils.isUserInput(geColumn(service, collection));
+        }
+
+        function getColumnValue(service, collection) {
+            return columnUtils.formatSource(geColumn(service, collection));
         }
     }
 

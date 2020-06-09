@@ -51,7 +51,8 @@
          * Holds template.
          */
         vm.template = undefined;
-        vm.columns = undefined;
+        vm.productColumns = undefined;
+        vm.kitUsageSections = undefined;
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-preview.controller:RequisitionTemplatePreviewController
@@ -62,10 +63,11 @@
          */
         function onInit() {
             vm.template = template;
-            vm.columns = getDisplayedColumns(template);
+            vm.productColumns = getProductColumns(template);
+            vm.kitUsageSections = template.kitUsage;
         }
 
-        function getDisplayedColumns(template) {
+        function getProductColumns(template) {
             var columns = [],
                 columnsMap = template.columnsMap;
             for (var columnName in columnsMap) {
