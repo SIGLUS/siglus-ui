@@ -32,12 +32,12 @@
         .filter('orderByArchived', orderByArchivedFilter);
 
     function orderByArchivedFilter() {
-        return function(orderableGroups) {
-            if (!orderableGroups) {
+        return function(lineItemsGroup) {
+            if (!lineItemsGroup) {
                 return undefined;
             }
-            return orderableGroups.sort(function(orderableGroupA, orderableGroupB) {
-                return orderableGroupA[0].orderable.archived - orderableGroupB[0].orderable.archived;
+            return lineItemsGroup.sort(function(lineItemsA, lineItemsB) {
+                return lineItemsA[0].orderable.archived - lineItemsB[0].orderable.archived;
             });
         };
     }

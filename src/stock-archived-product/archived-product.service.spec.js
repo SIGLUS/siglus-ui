@@ -39,6 +39,7 @@ describe('archivedProductService', function() {
 
         it('should not call the info method of alertService when the orderable group is not archived', function() {
             this.orderableGroup[0].orderable.archived = false;
+            this.orderableGroup[1].orderable.archived = false;
 
             this.archivedProductService.alterInfo(this.orderableGroup);
 
@@ -46,7 +47,8 @@ describe('archivedProductService', function() {
         });
 
         it('should call the info method of alertService when the orderable group is archived', function() {
-            this.orderableGroup[0].orderable.archived = true;
+            this.orderableGroup[0].orderable.archived = false;
+            this.orderableGroup[1].orderable.archived = true;
 
             this.archivedProductService.alterInfo(this.orderableGroup);
 
