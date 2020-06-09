@@ -44,7 +44,7 @@
                             id: '**',
                             displayorder: 0,
                             name: 'collection',
-                            label: 'collection',
+                            label: 'KIT data collection',
                             columns: [{
                                 name: 'kitReceived',
                                 label: 'No. of Kit Received',
@@ -81,10 +81,10 @@
                                 definition: 'record the quantity of how many KIT received',
                                 tag: null,
                                 columnDefinition: {
-                                    canChangeOrder: false,
+                                    canChangeOrder: true,
                                     columnType: 'NUMERIC',
                                     id: 'bde01507-3837-47b7-ae08-cec92c0c3cd2',
-                                    name: 'kitReceived',
+                                    name: 'kitOpened',
                                     sources: ['STOCK_CARDS', 'USER_INPUT'],
                                     options: [],
                                     label: 'No. of Kit Received',
@@ -100,7 +100,7 @@
                             id: '**',
                             displayorder: 1,
                             name: 'service',
-                            label: 'service',
+                            label: 'Services',
                             columns: [{
                                 name: 'HF',
                                 label: 'HF',
@@ -137,7 +137,7 @@
                                 definition: 'depend on frontend',
                                 tag: null,
                                 columnDefinition: {
-                                    canChangeOrder: false,
+                                    canChangeOrder: true,
                                     columnType: 'TEXT',
                                     id: null,
                                     name: 'HF',

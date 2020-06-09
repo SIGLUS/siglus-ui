@@ -4,6 +4,7 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableKitUsage"/>{{'adminProgramTemplate.enableKitUsage' | message}}
+        <a class="" ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <kit-usage-preview sections="vm.kitUsageSections" ng-show="vm.template.extension.enableKitUsage"/>
     <div class="requisition-template-module-container">
