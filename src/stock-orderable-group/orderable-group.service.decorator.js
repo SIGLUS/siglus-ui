@@ -91,7 +91,7 @@
                 .find(function(groupItem) {
                     // SIGLUS-REFACTOR: strats here
                     var selectedNoLot = !groupItem.lot && (!selectedLot || angular.equals(selectedLot, noLotDefined));
-                    var lotMatch = groupItem.lot && _.isEqual(groupItem.lot, selectedLot);
+                    var lotMatch = groupItem.lot && angular.equals(groupItem.lot, selectedLot);
                     // SIGLUS-REFACTOR: ends here
                     return selectedNoLot || lotMatch;
                 })

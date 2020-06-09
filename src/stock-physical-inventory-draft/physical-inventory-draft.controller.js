@@ -36,7 +36,8 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         // SIGLUS-REFACTOR: starts here
-        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService', 'archivedProductService'
+        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService', 'archivedProductService',
+        'orderableLotMapping'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -47,7 +48,7 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, MAX_STRING_VALUE, currentUserService, navigationStateService,
-                        archivedProductService) {
+                        archivedProductService, orderableLotMapping) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -63,6 +64,7 @@
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
+        orderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
         // SIGLUS-REFACTOR: ends here
 
         /**
