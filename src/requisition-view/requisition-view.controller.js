@@ -564,7 +564,9 @@
         function approveRnr() {
             if (requisitionValidator.validateRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.approve.confirmWithSignature').then(function(signature) {
-                    vm.requisition.extraData.signaure.approve = signature;
+                    var approveSignatures = vm.requisition.extraData.signaure.approve || [];
+                    approveSignatures.push(signature);
+                    vm.requisition.extraData.signaure.approve = approveSignatures;
                     if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
                         failWithMessage('requisitionView.allLineItemsSkipped')();
                     } else if (vm.program.enableDatePhysicalStockCountCompleted) {
