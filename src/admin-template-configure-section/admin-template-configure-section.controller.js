@@ -29,38 +29,65 @@
         .controller('TemplateConfigureSectionController', TemplateConfigureSectionController);
 
     TemplateConfigureSectionController.$inject = [
-        'messageService', 'templateValidator', 'COLUMN_SOURCES', 'MAX_COLUMN_DESCRIPTION_LENGTH'
+        'messageService', 'templateValidator', 'COLUMN_SOURCES', 'MAX_COLUMN_DESCRIPTION_LENGTH', 'columnUtils'
     ];
 
     function TemplateConfigureSectionController(messageService, templateValidator, COLUMN_SOURCES,
-                                                MAX_COLUMN_DESCRIPTION_LENGTH) {
+                                                MAX_COLUMN_DESCRIPTION_LENGTH, columnUtils) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.dropCallback = dropCallback;
         vm.canChangeSource = canChangeSource;
         vm.sourceDisplayName = sourceDisplayName;
-        vm.getColumnError = templateValidator.getColumnError;
+        vm.canAssignTag = canAssignTag;
+        vm.getSiglusColumnError = templateValidator.getSiglusColumnError;
+        vm.refreshAvailableTags = refreshAvailableTags;
 
         vm.maxColumnDescriptionLength = undefined;
 
-        vm.availableTags = undefined;
+        vm.availableTags = {};
 
         function onInit() {
             vm.maxColumnDescriptionLength = MAX_COLUMN_DESCRIPTION_LENGTH;
-            vm.availableTags = {};
+            refreshAvailableTags();
         }
 
         function dropCallback() {
             return false;
         }
 
-        function canChangeSource() {
-            return false;
+        function canChangeSource(column) {
+            return column.columnDefinition.sources.length > 1;
         }
 
         function sourceDisplayName(name) {
             return messageService.get(COLUMN_SOURCES.getLabel(name));
+        }
+
+        function canAssignTag(column) {
+            return columnUtils.isStockCards(column) && column.columnDefinition.supportsTag;
+        }
+
+        function refreshAvailableTags() {
+            var filteredTags = filterUnusedTags();
+
+            _.forEach(vm.section.columns, function(column) {
+                if (column.columnDefinition.supportsTag) {
+                    vm.availableTags[column.name] = angular.copy(filteredTags);
+                    if (column.tag) {
+                        vm.availableTags[column.name].push(column.tag);
+                    }
+                }
+            });
+        }
+
+        function filterUnusedTags() {
+            return vm.tags.filter(function(tag) {
+                return _.reduce(vm.section.columns, function(isNotSelected, column) {
+                    return isNotSelected && column.tag !== tag;
+                }, true);
+            });
         }
     }
 })();

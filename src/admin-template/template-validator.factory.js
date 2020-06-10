@@ -32,12 +32,12 @@
         'UTF8_REGEX', 'MAX_COLUMN_DESCRIPTION_LENGTH', 'TEMPLATE_COLUMNS', 'COLUMN_SOURCES',
         'messageService',
         // SIGLUS-REFACTOR: starts here
-        'notificationService'
+        'notificationService', 'columnUtils'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function factory(UTF8_REGEX, MAX_COLUMN_DESCRIPTION_LENGTH, TEMPLATE_COLUMNS,
-                     COLUMN_SOURCES, messageService, notificationService) {
+                     COLUMN_SOURCES, messageService, notificationService, columnUtils) {
 
         var columnValidations = {
                 averageConsumption: validateAverageConsumption,
@@ -53,7 +53,8 @@
             },
             validator = {
                 getColumnError: getColumnError,
-                isTemplateValid: isTemplateValid
+                isTemplateValid: isTemplateValid,
+                getSiglusColumnError: getSiglusColumnError
             };
 
         return validator;
@@ -123,6 +124,17 @@
             return error;
         }
 
+        function getSiglusColumnError(column) {
+            var error = validateLabel(column.label) ||
+                validateDefinition(column.definition) ||
+                validateSiglusSource(column) ||
+                validateOption(column) ||
+                validateUserInput(column) ||
+                validateSiglusTag(column);
+
+            return error;
+        }
+
         // #147: starts here
         function validateSuggestedQuantity(column, template) {
             if (column.name === TEMPLATE_COLUMNS.SUGGESTED_QUANTITY) {
@@ -138,6 +150,13 @@
         function validateTag(column, template) {
             if (isEmpty(column.tag) &&
                 template.populateStockOnHandFromStockCards &&
+                column.columnDefinition.supportsTag) {
+                return messageService.get('adminProgramTemplate.columnTagEmpty');
+            }
+        }
+
+        function validateSiglusTag(column) {
+            if (isEmpty(column.tag) && columnUtils.isStockCards(column) &&
                 column.columnDefinition.supportsTag) {
                 return messageService.get('adminProgramTemplate.columnTagEmpty');
             }
@@ -163,6 +182,12 @@
 
         function validateSource(column) {
             if (isEmpty(column.source)) {
+                return messageService.get('adminProgramTemplate.emptyColumnSource');
+            }
+        }
+
+        function validateSiglusSource(column) {
+            if (column.columnDefinition.sources.length && isEmpty(column.source)) {
                 return messageService.get('adminProgramTemplate.emptyColumnSource');
             }
         }

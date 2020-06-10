@@ -41,12 +41,14 @@
                         </div>
                     </td>
                     <td>
-                        <div ng-if="vm.template.canAssignTag(column.name)">
-                            <label for="tag">{{'adminProgramTemplate.tag' | message}}</label>
-                            <select id="tag" ng-model="column.tag" ng-options="tag for tag in vm.availableTags[column.name] | orderBy:'toString()'"
-                                    ng-required="vm.template.populateStockOnHandFromStockCards"></select>
+                        <div ng-if="vm.canAssignTag(column)">
+                            <label ng-attr-for="{{column.name}}">{{'adminProgramTemplate.tag' | message}}</label>
+                            <select ng-attr-id="{{column.name}}" ng-model="column.tag"
+                                    ng-options="tag for tag in vm.availableTags[column.name] | orderBy:'toString()'"
+                                    ng-change="vm.refreshAvailableTags()"
+                            ></select>
                         </div>
-                        <div class="error">{{vm.getColumnError(column, vm.template)}}</div>
+                        <div class="error">{{vm.getSiglusColumnError(column)}}</div>
                     </td>
                     <td></td>
                 </dnd-nodrag>

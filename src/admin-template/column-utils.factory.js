@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc service
-     * @name admin-template-configure-preview-section.columnUtils
+     * @name admin-template.columnUtils
      *
      * @description
      * Responsible for retrieving dates.
      */
     angular
-        .module('admin-template-configure-preview-section')
+        .module('admin-template')
         .factory('columnUtils', columnUtils);
 
     columnUtils.$inject = ['COLUMN_SOURCES'];
@@ -33,12 +33,13 @@
     function columnUtils(COLUMN_SOURCES) {
         return {
             isUserInput: isUserInput,
+            isStockCards: isStockCards,
             formatSource: formatSource
         };
 
         /**
          * @ngdoc method
-         * @methodOf admin-template-configure-preview-section.columnUtils
+         * @methodOf admin-template.columnUtils
          * @name isUserInput
          *
          * @description
@@ -53,7 +54,22 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template-configure-preview-section.columnUtils
+         * @methodOf admin-template.columnUtils
+         * @name isUserInput
+         *
+         * @description
+         * If column source is user input.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column source is user input
+         */
+        function isStockCards(column) {
+            return column.source === COLUMN_SOURCES.STOCK_CARDS;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
          * @name formatSource
          *
          * @description
