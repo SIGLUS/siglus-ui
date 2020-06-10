@@ -24,7 +24,7 @@
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.kitUsage', {
+        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage', {
             label: 'adminProgramTemplate.templateColumns.kitUsage',
             url: '/kitUsage',
             templateUrl: 'admin-template-configure-kit-usage/kit-usage-template.html',
