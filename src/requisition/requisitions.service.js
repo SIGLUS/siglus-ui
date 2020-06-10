@@ -81,14 +81,16 @@
                 method: 'GET',
                 transformResponse: transformResponseForConvert
             },
+            // #245: change the url
             batchRelease: {
                 headers: {
                     'Idempotency-Key': getIdempotencyKey
                 },
-                url: requisitionUrlFactory('/api/requisitions/batchReleases'),
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/batchReleases'),
                 method: 'POST',
                 transformRequest: transformRequest
             },
+            // #245: ends here
             getStatusMessages: {
                 url: requisitionUrlFactory('/api/requisitions/:id/statusMessages'),
                 method: 'GET',
