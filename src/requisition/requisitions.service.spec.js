@@ -543,7 +543,9 @@ describe('requisitionService', function() {
     it('should release a batch of requisitions with order', function() {
         var callback = jasmine.createSpy();
 
-        this.$httpBackend.whenPOST(this.requisitionUrlFactory('/api/requisitions/batchReleases'))
+        // #245: change the url
+        this.$httpBackend.whenPOST(this.requisitionUrlFactory('/api/siglusapi/requisitions/batchReleases'))
+        // #245: ends here
 
             .respond(function() {
                 return [200, angular.toJson({})];
@@ -564,7 +566,9 @@ describe('requisitionService', function() {
     it('should release a batch of requisitions without order', function() {
         var callback = jasmine.createSpy();
 
-        this.$httpBackend.whenPOST(this.requisitionUrlFactory('/api/requisitions/batchReleases'))
+        // #245: change the url
+        this.$httpBackend.whenPOST(this.requisitionUrlFactory('/api/siglusapi/requisitions/batchReleases'))
+        // #245: ends here
 
             .respond(function() {
                 return [200, angular.toJson({})];
