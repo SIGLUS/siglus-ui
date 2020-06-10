@@ -573,7 +573,7 @@ describe('RequisitionViewController', function() {
 
         beforeEach(function() {
             // #231: there is no signature modal when approve
-            this.signatureModalService.confirm.andReturn(this.$q.resolve(true));
+            this.signatureModalService.confirm.andReturn(this.$q.resolve('approver'));
             this.RequisitionStockCountDateModalMock.andReturn(this.$q.resolve());
             this.requisition.extraData = {
                 signaure: {
@@ -615,6 +615,16 @@ describe('RequisitionViewController', function() {
 
             expect(this.RequisitionWatcher.prototype.disableWatcher).toHaveBeenCalled();
         });
+
+        // #231: there is no signature modal when approve
+        it('should save two signatures when do multiple approve', function() {
+            this.vm.approveRnr();
+            this.vm.approveRnr();
+            this.$rootScope.$apply();
+
+            expect(this.requisition.extraData.signaure.approve).toEqual(['approver', 'approver']);
+        });
+        // #231: ends here
     });
 
     describe('rejectRnr', function() {
