@@ -16,7 +16,7 @@
 describe('configureStateRouterService', function() {
 
     beforeEach(function() {
-        module('admin-template-configure');
+        module('admin-template-configure-column-setting');
 
         inject(function($injector) {
             this.$rootScope = $injector.get('$rootScope');
@@ -35,7 +35,7 @@ describe('configureStateRouterService', function() {
         };
     });
 
-    it('should prevent state change if template is invalid when route from product configure to configure tab',
+    it('should prevent state change if template is invalid when user route to columns tab page',
         function() {
             this.configureStateRouterService.initialize({
                 isValid: function() {
@@ -43,8 +43,7 @@ describe('configureStateRouterService', function() {
                 }
             });
             this.$rootScope.$broadcast('$stateChangeStart',
-                this.createState('openlmis.administration.requisitionTemplates.configure.columns'), {},
-                this.createState('openlmis.administration.requisitionTemplates.configure.product'));
+                this.createState('openlmis.administration.requisitionTemplates.configure.columns'));
 
             expect(this.loadingModalService.close).toHaveBeenCalled();
             expect(this.notificationService.error).toHaveBeenCalledWith('adminProgramTemplate.template.invalid');
@@ -56,8 +55,7 @@ describe('configureStateRouterService', function() {
                 return false;
             }
         });
-        this.$rootScope.$broadcast('$stateChangeStart', this.createState('openlmis.home'), {},
-            this.createState('openlmis.administration.requisitionTemplates.configure.product'));
+        this.$rootScope.$broadcast('$stateChangeStart', this.createState('openlmis.home'));
 
         expect(this.loadingModalService.close).not.toHaveBeenCalled();
         expect(this.notificationService.error).not.toHaveBeenCalled();
@@ -71,24 +69,9 @@ describe('configureStateRouterService', function() {
                 }
             });
             this.$rootScope.$broadcast('$stateChangeStart',
-                this.createState('openlmis.administration.requisitionTemplates.configure.settings'), {},
-                this.createState('openlmis.administration.requisitionTemplates.configure.product'));
+                this.createState('openlmis.administration.requisitionTemplates.configure.settings'));
 
             expect(this.loadingModalService.close).not.toHaveBeenCalled();
             expect(this.notificationService.error).not.toHaveBeenCalled();
         });
-
-    it('should not get notification if user if from configure tab page even if template is invalid', function() {
-        this.configureStateRouterService.initialize({
-            isValid: function() {
-                return false;
-            }
-        });
-        this.$rootScope.$broadcast('$stateChangeStart',
-            this.createState('openlmis.administration.requisitionTemplates.configure.settings'), {},
-            this.createState('openlmis.administration.requisitionTemplates.configure.columns'));
-
-        expect(this.loadingModalService.close).not.toHaveBeenCalled();
-        expect(this.notificationService.error).not.toHaveBeenCalled();
-    });
 });

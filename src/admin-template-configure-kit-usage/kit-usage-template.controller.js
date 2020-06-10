@@ -28,34 +28,21 @@
         .module('admin-template-configure-kit-usage')
         .controller('KitUsageTemplateController', KitUsageTemplateController);
 
-    KitUsageTemplateController.$inject = [
-        '$state', 'template', 'program', 'tags', 'notificationService', 'messageService', 'templateValidator',
-        'COLUMN_SOURCES', 'refreshConfirmService', '$scope', 'originalTemplate'
-    ];
+    KitUsageTemplateController.$inject = ['$state', 'template', 'tags'];
 
-    function KitUsageTemplateController($state, template, program, tags, notificationService, messageService,
-                                        templateValidator, COLUMN_SOURCES, refreshConfirmService, $scope,
-                                        originalTemplate) {
+    function KitUsageTemplateController($state, template, tags) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.previewTemplate = previewTemplate;
-        vm.cancel = cancel;
 
         vm.template = undefined;
 
-        vm.program = undefined;
-
         vm.tags = undefined;
-
-        vm.previousColumnsMap = undefined;
 
         function onInit() {
             vm.template = template;
             vm.tags = tags;
-            vm.previousTemplate = angular.copy(template);
             enableCurrentSection();
-            refreshConfirm();
             vm.collection = _.find(template.kitUsage, function(section) {
                 return section.name === 'collection';
             });
@@ -69,35 +56,6 @@
                 vm.template.extension = {};
             }
             vm.template.extension.enableKitUsage = true;
-        }
-
-        function refreshConfirm() {
-            $scope.$watch(function() {
-                return vm.template;
-            }, function(newValue) {
-                $scope.needToConfirm = !angular.equals(originalTemplate, newValue);
-            }, true);
-            refreshConfirmService.register($scope);
-            $scope.$on('$destroy', function() {
-                refreshConfirmService.deregister();
-            });
-        }
-
-        function cancel() {
-            angular.merge(vm.template, vm.previousTemplate);
-            goToTemplatePreview();
-        }
-
-        function goToTemplatePreview() {
-            $state.go('openlmis.administration.requisitionTemplates.configure.columns');
-        }
-
-        function previewTemplate() {
-            if (vm.template.isValid()) {
-                goToTemplatePreview();
-            } else {
-                notificationService.error('adminProgramTemplate.template.invalid');
-            }
         }
     }
 })();

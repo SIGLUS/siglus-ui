@@ -18,16 +18,17 @@
     'use strict';
 
     /**
-     * @module admin-template-configure-kit-usage
+     * @module admin-template-configure-column-setting
      *
      * @description
-     * Provides base admin-template-configure-kit-usage state and service/factory/controller
+     * Provides base admin-template-configure-column-setting state and service/factory/controller
      * for retrieving templates from the OpenLMIS server.
      */
-    angular.module('admin-template-configure-kit-usage', [
+    angular.module('admin-template-configure-column-setting', [
         'ui.router',
         'openlmis-rights',
-        'admin-template-configure-section'
+        'openlmis-modal',
+        'refresh-confirm'
     ]);
 
 })();

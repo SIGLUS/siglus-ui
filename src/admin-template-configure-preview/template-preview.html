@@ -4,12 +4,12 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableKitUsage"/>{{'adminProgramTemplate.enableKitUsage' | message}}
-        <a class="" ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>
+        <a class="" ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <kit-usage-preview sections="vm.kitUsageSections" ng-show="vm.template.extension.enableKitUsage"/>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableProduct"/>{{'adminProgramTemplate.enableProduct' | message}}
-        <a class="" ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.product">{{'adminProgramTemplate.setting' | message}}</a>
+        <a class="" ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.product">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <product-preview columns="vm.productColumns" ng-show="vm.template.extension.enableProduct"/>
     <div class="requisition-template-module-container">

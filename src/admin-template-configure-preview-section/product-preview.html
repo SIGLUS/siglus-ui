@@ -1,17 +1,17 @@
 <div class="product-preview openlmis-table-container">
-    <div class="openlmis-flex-table">
-        <table>
-            <thead>
-            <tr>
-                <th ng-repeat="column in vm.columns | orderBy : 'displayOrder'">{{column.label}}</th>
-            </tr>
-            </thead>
-            <tr ng-repeat="lineItem in vm.items">
-                <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
-                    ng-class="{'col-source': !lineItem[column.name], 'user-input': vm.isUserInput(column)}">
-                    <span>{{vm.getColumnValue(column, lineItem)}}</span>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <table class="openlmis-table">
+        <thead>
+        <tr>
+            <th ng-repeat="column in vm.columns | orderBy : 'displayOrder'">{{column.label}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="lineItem in vm.items">
+            <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
+                ng-class="{'col-source': !lineItem[column.name], 'user-input': vm.isUserInput(column)}">
+                <span>{{vm.getColumnValue(column, lineItem)}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

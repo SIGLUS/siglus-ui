@@ -33,15 +33,14 @@
         'MAX_COLUMN_DESCRIPTION_LENGTH', 'COLUMN_SOURCES', 'TEMPLATE_COLUMNS', 'loadingModalService', 'confirmService',
         'requisitionTemplateService',
         // SIGLUS-REFACTOR: starts here
-        '$window', 'refreshConfirmService', '$scope', 'originalTemplate'
+        '$window'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function RequisitionTemplateAdminController($state, template, program, tags, notificationService, messageService,
                                                 templateValidator, MAX_COLUMN_DESCRIPTION_LENGTH, COLUMN_SOURCES,
                                                 TEMPLATE_COLUMNS, loadingModalService, confirmService,
-                                                requisitionTemplateService, $window, refreshConfirmService, $scope,
-                                                originalTemplate) {
+                                                requisitionTemplateService, $window) {
         // SIGLUS-REFACTOR: starts here
         $window.scrollTo(0, 0);
         // SIGLUS-REFACTOR: ends here
@@ -58,10 +57,6 @@
         vm.isAverageConsumption = isAverageConsumption;
         vm.isPackToShip = isPackToShip;
         vm.refreshAvailableTags = refreshAvailableTags;
-        // #173: product sections for template configuration
-        vm.previewTemplate = previewTemplate;
-        vm.cancel = cancel;
-        // #173: ends here
 
         /**
          * @ngdoc property
@@ -107,8 +102,6 @@
          */
         vm.availableTags = undefined;
 
-        vm.previousColumnsMap = undefined;
-
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
@@ -124,9 +117,7 @@
             vm.availableTags = {};
             refreshAvailableTags();
             // #173: product sections for template configuration
-            vm.previousTemplate = angular.copy(template);
             enableCurrentSection();
-            refreshConfirm();
             // #173: ends here
         }
 
@@ -136,20 +127,6 @@
             }
             vm.template.extension.enableProduct = true;
         }
-
-        // #173: product sections for template configuration
-        function refreshConfirm() {
-            $scope.$watch(function() {
-                return vm.template;
-            }, function(newValue) {
-                $scope.needToConfirm = !angular.equals(originalTemplate, newValue);
-            }, true);
-            refreshConfirmService.register($scope);
-            $scope.$on('$destroy', function() {
-                refreshConfirmService.deregister();
-            });
-        }
-        // #173: ends here
 
         /**
          * @ngdoc method
@@ -164,25 +141,6 @@
                 reload: true
             });
         }
-
-        // #173: product sections for template configuration
-        /**
-         * @ngdoc method
-         * @methodOf admin-template-configure-columns.controller:RequisitionTemplateAdminController
-         * @name cancel
-         *
-         * @description
-         * Redirects user to template preview page with unchanged columnsMap.
-         */
-        function cancel() {
-            angular.merge(vm.template, vm.previousTemplate);
-            goToTemplatePreview();
-        }
-
-        function goToTemplatePreview() {
-            $state.go('openlmis.administration.requisitionTemplates.configure.columns');
-        }
-        // #173: ends here
 
         /**
          * @ngdoc method
@@ -214,16 +172,6 @@
                 notificationService.error('adminProgramTemplate.template.invalid');
             }
         }
-
-        // #173: product sections for template configuration
-        function previewTemplate() {
-            if (vm.template.isValid()) {
-                goToTemplatePreview();
-            } else {
-                notificationService.error('adminProgramTemplate.template.invalid');
-            }
-        }
-        // #173: ends here
 
         /**
          * @ngdoc method

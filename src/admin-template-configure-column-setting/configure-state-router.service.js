@@ -18,12 +18,12 @@
 
     /**
      * @ngdoc service
-     * @name admin-template-configure.configureStateRouterService
+     * @name admin-template-configure-column-setting.configureStateRouterService
      *
      * @description
      * Check if state being transitioned is valid.
      */
-    angular.module('admin-template-configure')
+    angular.module('admin-template-configure-column-setting')
         .service('configureStateRouterService', service);
 
     service.$inject = [
@@ -33,18 +33,13 @@
     function service($rootScope, loadingModalService, notificationService) {
         this.initialize = initialize;
         function initialize(template) {
-            return $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
-                if (!fromConfigureTab(fromState) && toConfigureRelatedPage(toState) && !template.isValid()) {
+            return $rootScope.$on('$stateChangeStart', function(event, toState) {
+                if (toConfigureRelatedPage(toState) && !template.isValid()) {
                     event.preventDefault();
                     loadingModalService.close();
                     notificationService.error('adminProgramTemplate.template.invalid');
                 }
             });
-
-            function fromConfigureTab(fromState) {
-                return ['openlmis.administration.requisitionTemplates.configure.columns',
-                    'openlmis.administration.requisitionTemplates.configure.settings'].indexOf(fromState.name) > -1;
-            }
 
             function toConfigureRelatedPage(toState) {
                 return toState.name.indexOf('openlmis.administration.requisitionTemplates.configure') > -1;

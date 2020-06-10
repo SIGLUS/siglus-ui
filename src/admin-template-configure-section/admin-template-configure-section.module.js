@@ -25,7 +25,10 @@
      * for retrieving templates from the OpenLMIS server.
      */
     angular.module('admin-template-configure-section', [
-        'requisition-constants'
+        'requisition-constants',
+        'admin-template',
+        'dndLists',
+        'openlmis-i18n'
     ]);
 
 })();

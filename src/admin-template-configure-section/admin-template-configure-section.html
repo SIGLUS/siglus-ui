@@ -1,65 +1,67 @@
-<div class="requisition-template-admin openlmis-table-container template-configure-section">
-    <table class="openlmis-table">
-        <thead>
-        <tr>
-            <th></th>
-            <th>{{'adminProgramTemplate.display' | message}}</th>
-            <th></th>
-            <th>{{'adminProgramTemplate.label' | message}}</th>
-            <th>{{'adminProgramTemplate.definition' | message}}</th>
-            <th>{{'adminProgramTemplate.source' | message}}</th>
-            <th>{{'adminProgramTemplate.additionalOptions' | message}}</th>
-            <th>{{'adminProgramTemplate.action' | message}}</th>
-        </tr>
-        </thead>
-        <tbody dnd-list="vm.section.columns" dnd-drop="vm.dropCallback(event, index, item)">
-        <tr ng-repeat="column in vm.section.columns | orderObjectBy:'displayOrder'" dnd-draggable="column" dnd-disable-if="!column.columnDefinition.canChangeOrder" dnd-effect-allowed="move">
-            <dnd-nodrag>
-                <td ng-class="{'dnd-handle': column.columnDefinition.canChangeOrder}">
-                    <i ng-if="!column.columnDefinition.canChangeOrder" class="lock"/>
-                    <div ng-if="column.columnDefinition.canChangeOrder" dnd-handle class="handle">:::</div>
-                </td>
-                <td>
-                    <input type="checkbox" ng-model="column.isDisplayed" ng-disabled="column.columnDefinition.isDisplayRequired">
-                </td>
-                <td>
-                    <div class="circle">
-                        <div class="inner-circle">{{column.indicator}}</div>
-                    </div>
-                </td>
-                <td>
-                    <input disable-drag type="text" ng-model="column.label" class="form-control"></input>
-                </td>
-                <td>
-                    <input characters-left ng-maxlength="{{vm.maxColumnDescriptionLength}}" disable-drag ng-model="column.definition" class="form-control" type="text"></input>
-                </td>
-                <td>
-                    <div ng-if="!vm.canChangeSource(column)">{{vm.sourceDisplayName(column.source)}}</div>
-                    <div ng-if="vm.canChangeSource(column)">
-                        <select ng-model="column.source" ng-options="source as vm.sourceDisplayName(source) for source in column.columnDefinition.sources"></select>
-                    </div>
-                </td>
-                <td>
-                    <div ng-if="vm.template.canAssignTag(column.name)">
-                        <label for="tag">{{'adminProgramTemplate.tag' | message}}</label>
-                        <select id="tag" ng-model="column.tag" ng-options="tag for tag in vm.availableTags[column.name] | orderBy:'toString()'"
-                                ng-required="vm.template.populateStockOnHandFromStockCards"></select>
-                    </div>
-                    <div class="error">{{vm.getColumnError(column, vm.template)}}</div>
-                </td>
+<div class="requisition-template-admin">
+    <div class="openlmis-table-container template-configure-section">
+        <table class="openlmis-table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>{{'adminProgramTemplate.display' | message}}</th>
+                <th></th>
+                <th>{{'adminProgramTemplate.label' | message}}</th>
+                <th>{{'adminProgramTemplate.definition' | message}}</th>
+                <th>{{'adminProgramTemplate.source' | message}}</th>
+                <th>{{'adminProgramTemplate.additionalOptions' | message}}</th>
+                <th>{{'adminProgramTemplate.action' | message}}</th>
+            </tr>
+            </thead>
+            <tbody dnd-list="vm.section.columns" dnd-drop="vm.dropCallback(event, index, item)">
+            <tr ng-repeat="column in vm.section.columns | orderObjectBy:'displayOrder'" dnd-draggable="column" dnd-disable-if="!column.columnDefinition.canChangeOrder" dnd-effect-allowed="move">
+                <dnd-nodrag>
+                    <td ng-class="{'dnd-handle': column.columnDefinition.canChangeOrder}">
+                        <i ng-if="!column.columnDefinition.canChangeOrder" class="lock"/>
+                        <div ng-if="column.columnDefinition.canChangeOrder" dnd-handle class="handle">:::</div>
+                    </td>
+                    <td>
+                        <input type="checkbox" ng-model="column.isDisplayed" ng-disabled="column.columnDefinition.isDisplayRequired">
+                    </td>
+                    <td>
+                        <div class="circle">
+                            <div class="inner-circle">{{column.indicator}}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <input disable-drag type="text" ng-model="column.label" class="form-control"></input>
+                    </td>
+                    <td>
+                        <input characters-left ng-maxlength="{{vm.maxColumnDescriptionLength}}" disable-drag ng-model="column.definition" class="form-control" type="text"></input>
+                    </td>
+                    <td>
+                        <div ng-if="!vm.canChangeSource(column)">{{vm.sourceDisplayName(column.source)}}</div>
+                        <div ng-if="vm.canChangeSource(column)">
+                            <select ng-model="column.source" ng-options="source as vm.sourceDisplayName(source) for source in column.columnDefinition.sources"></select>
+                        </div>
+                    </td>
+                    <td>
+                        <div ng-if="vm.template.canAssignTag(column.name)">
+                            <label for="tag">{{'adminProgramTemplate.tag' | message}}</label>
+                            <select id="tag" ng-model="column.tag" ng-options="tag for tag in vm.availableTags[column.name] | orderBy:'toString()'"
+                                    ng-required="vm.template.populateStockOnHandFromStockCards"></select>
+                        </div>
+                        <div class="error">{{vm.getColumnError(column, vm.template)}}</div>
+                    </td>
+                    <td></td>
+                </dnd-nodrag>
+            </tr>
+            <tr class="dndPlaceholder">
                 <td></td>
-            </dnd-nodrag>
-        </tr>
-        <tr class="dndPlaceholder">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
