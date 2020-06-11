@@ -184,6 +184,8 @@
                                 'requisitionInitiate.confirm.button')
                                 .then(function() {
                                     goToPhysicalInventory();
+                                }, function() {
+                                    loadingModalService.close();
                                 });
                         }
                     })
