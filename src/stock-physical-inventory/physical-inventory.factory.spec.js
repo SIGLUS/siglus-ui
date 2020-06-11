@@ -173,7 +173,10 @@ describe('physicalInventoryFactory', function() {
 
             expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                // #225: cant view detail page when not have stock view right
+                rightName: 'STOCK_INVENTORIES_EDIT'
+                // #225: ends here
             });
         });
 
@@ -305,7 +308,10 @@ describe('physicalInventoryFactory', function() {
 
                 expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
                     programId: draft.programId,
-                    facilityId: draft.facilityId
+                    facilityId: draft.facilityId,
+                    // #225: cant view detail page when not have stock view right
+                    rightName: 'STOCK_INVENTORIES_EDIT'
+                    // #225: ends here
                 });
             });
 

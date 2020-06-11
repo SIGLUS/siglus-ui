@@ -68,7 +68,7 @@
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (!$stateParams.orderableGroups) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true
+                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
                         );
                     }
                     return $stateParams.orderableGroups;

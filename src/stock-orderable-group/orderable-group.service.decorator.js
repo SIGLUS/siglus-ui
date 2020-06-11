@@ -35,7 +35,8 @@
 
     decorator.$inject = ['$delegate', 'messageService', 'StockCardSummaryRepositoryImpl',
         'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
-    function decorator($delegate, messageService) {
+    function decorator($delegate, messageService, StockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl,
+                       StockCardSummaryRepository) {
         var orderableGroupService = $delegate;
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
@@ -48,6 +49,8 @@
         orderableGroupService.findOneInOrderableGroupWithoutLot = findOneInOrderableGroupWithoutLot;
         orderableGroupService.getOrderableLots = getOrderableLots;
         orderableGroupService.uniqLots = uniqLots;
+        orderableGroupService.findAvailableProductsAndCreateOrderableGroups =
+            findAvailableProductsAndCreateOrderableGroups;
 
         return orderableGroupService;
 
@@ -167,6 +170,38 @@
                 uniq[lot.id] = lot;
             });
             return _.values(uniq);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name findAvailableProductsAndCreateOrderableGroups
+         *
+         * @description
+         * Finds available Stock Products by facility and program, then groups product items
+         * by orderable id.
+         */
+        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts,
+                                                               rightName) {
+            var repository;
+            if (includeApprovedProducts) {
+                repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+            } else {
+                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
+            }
+
+            return repository.query({
+                programId: programId,
+                facilityId: facilityId,
+                rightName: rightName
+            }).then(function(summaries) {
+                return $delegate.groupByOrderableId(summaries.content.reduce(function(items, summary) {
+                    summary.canFulfillForMe.forEach(function(fulfill) {
+                        items.push(fulfill);
+                    });
+                    return items;
+                }, []));
+            });
         }
     }
 })();

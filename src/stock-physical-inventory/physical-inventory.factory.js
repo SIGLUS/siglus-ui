@@ -32,13 +32,14 @@
         '$q', 'physicalInventoryService', 'SEARCH_OPTIONS', '$filter', 'StockCardSummaryRepository',
         'FullStockCardSummaryRepositoryImpl',
         // SIGLUS-REFACTOR: starts here
-        'loadingModalService', '$state', 'alertService', 'currentUserService', 'navigationStateService'
+        'loadingModalService', '$state', 'alertService', 'currentUserService', 'navigationStateService',
+        'STOCKMANAGEMENT_RIGHTS'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
                      FullStockCardSummaryRepositoryImpl, loadingModalService, $state, alertService,
-                     currentUserService, navigationStateService) {
+                     currentUserService, navigationStateService, STOCKMANAGEMENT_RIGHTS) {
 
         return {
             getDrafts: getDrafts,
@@ -353,10 +354,13 @@
         function getStockProducts(programId, facilityId) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
 
+            // #225: cant view detail page when not have stock view right
             return repository.query({
                 programId: programId,
-                facilityId: facilityId
+                facilityId: facilityId,
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
             }).then(function(summaries) {
+            // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

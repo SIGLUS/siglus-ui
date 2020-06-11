@@ -68,8 +68,11 @@
                     return authorizationService.getUser();
                 },
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
+                    // #225: cant view detail page when not have stock view right
                     return existingStockOrderableGroupsFactory
-                        .getGroupsWithoutStock($stateParams, program, facility);
+                        .getGroupsWithoutStock($stateParams, program, facility,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                    // #225: ends here
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
