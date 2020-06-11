@@ -69,9 +69,11 @@
                 },
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
                     if (!$stateParams.orderableGroups) {
+                        // #225: cant view detail page when not have stock view right
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true
+                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
                         );
+                        // #225: ends here
                     }
                     return $stateParams.orderableGroups;
                 },
