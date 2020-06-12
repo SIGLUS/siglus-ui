@@ -52,7 +52,8 @@ describe('openlmis.stockmanagement.archivedProductSummaries', function() {
             facilityId: 'facility-id',
             programId: 'program-id',
             nonEmptyOnly: true,
-            archivedOnly: true
+            archivedOnly: true,
+            rightName: 'STOCK_CARDS_VIEW'
         });
     });
 

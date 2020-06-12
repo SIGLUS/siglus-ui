@@ -54,8 +54,11 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             programId: 'program-id',
             nonEmptyOnly: true,
             // #103: archive product
-            excludeArchived: true
-            // #103: ends here
+            excludeArchived: true,
+            // #103: ends here,
+            // #225: cant view detail page when not have stock view right
+            rightName: 'STOCK_CARDS_VIEW'
+            // #225: ends here
         });
     });
 
