@@ -56,7 +56,7 @@
                     });
                 },
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams) {
+                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -65,6 +65,7 @@
                             paramsCopy.programId = stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
                             paramsCopy.archivedOnly = true;
+                            paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;

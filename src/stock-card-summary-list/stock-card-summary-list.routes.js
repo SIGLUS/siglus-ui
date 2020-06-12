@@ -55,7 +55,7 @@
                 },
                 // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams) {
+                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -66,6 +66,9 @@
                             // #103: archive product
                             paramsCopy.excludeArchived = true;
                             // #103: ends here
+                            // #225: cant view detail page when not have stock view right
+                            paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
+                            // #225: ends here
 
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
