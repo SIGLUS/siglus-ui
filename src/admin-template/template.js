@@ -67,6 +67,7 @@
             this.extension = template.extension;
             // #163: add associate program
             this.associatePrograms = template.associatePrograms;
+            this.kitUsage = template.kitUsage;
             // #163: ends here
 
             for (var columnName in template.columnsMap) {

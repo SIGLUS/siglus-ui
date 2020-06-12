@@ -29,20 +29,24 @@
         .controller('TemplateConfigureSectionController', TemplateConfigureSectionController);
 
     TemplateConfigureSectionController.$inject = [
-        'messageService', 'templateValidator', 'COLUMN_SOURCES', 'MAX_COLUMN_DESCRIPTION_LENGTH', 'columnUtils'
+        'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES', 'MAX_COLUMN_DESCRIPTION_LENGTH',
+        'MAX_COLUMNS_LENGTH'
     ];
 
-    function TemplateConfigureSectionController(messageService, templateValidator, COLUMN_SOURCES,
-                                                MAX_COLUMN_DESCRIPTION_LENGTH, columnUtils) {
+    function TemplateConfigureSectionController(messageService, templateValidator, columnUtils, COLUMN_SOURCES,
+                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_COLUMNS_LENGTH) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.dropCallback = dropCallback;
+        vm.movedCallback = movedCallback;
         vm.canChangeSource = canChangeSource;
         vm.sourceDisplayName = sourceDisplayName;
         vm.canAssignTag = canAssignTag;
         vm.getSiglusColumnError = templateValidator.getSiglusColumnError;
         vm.refreshAvailableTags = refreshAvailableTags;
+        vm.addColumn = addColumn;
+        vm.removeColumn = removeColumn;
+        vm.overMaxColumnsLength = overMaxColumnsLength;
 
         vm.maxColumnDescriptionLength = undefined;
 
@@ -53,8 +57,11 @@
             refreshAvailableTags();
         }
 
-        function dropCallback() {
-            return false;
+        function movedCallback(index) {
+            vm.section.columns.splice(index, 1);
+            angular.forEach(vm.section.columns, function(column, idx) {
+                column.displayOrder = idx;
+            });
         }
 
         function canChangeSource(column) {
@@ -88,6 +95,20 @@
                     return isNotSelected && column.tag !== tag;
                 }, true);
             });
+        }
+
+        function addColumn() {
+            if (!overMaxColumnsLength()) {
+                vm.onAddColumn();
+            }
+        }
+
+        function removeColumn(index) {
+            vm.section.columns.splice(index, 1);
+        }
+
+        function overMaxColumnsLength() {
+            return vm.section.columns.length >= MAX_COLUMNS_LENGTH;
         }
     }
 })();

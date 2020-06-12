@@ -18,17 +18,13 @@
     'use strict';
 
     /**
-     * @module admin-template-configure-kit-usage
-     *
-     * @description
-     * Provides base admin-template-configure-kit-usage state and service/factory/controller
-     * for retrieving templates from the OpenLMIS server.
-     */
-    angular.module('admin-template-configure-kit-usage', [
-        'ui.router',
-        'openlmis-rights',
-        'requisition-constants',
-        'admin-template-configure-section'
-    ]);
-
+    * @ngdoc object
+    * @name admin-template-configure-section.MAX_COLUMNS_LENGTH
+    *
+    * @description
+    * This is constant for max column items length.
+    */
+    angular
+        .module('admin-template-configure-section')
+        .constant('MAX_COLUMNS_LENGTH', 10);
 })();

@@ -1,14 +1,18 @@
-<div class="kit-usage-template">
-    <h3 class="header-line">{{vm.collection.label}}</h3>
+<div class="kit-usage-template" ng-if="vm.template.kitUsage.length">
+    <div class="sub-heading">
+        <h3>{{vm.collection.label}}</h3>
+    </div>
     <template-configure-section
             section="vm.collection"
-            template="vm.template"
             tags="vm.tags"
+            on-add-column="vm.addCollectionColumn"
     />
-    <h3 class="header-line">{{vm.service.label}}</h3>
+    <div class="sub-heading">
+        <h3>{{vm.service.label}}</h3>
+    </div>
     <template-configure-section
             section="vm.service"
-            template="vm.template"
             tags="vm.tags"
+            on-add-column="vm.addServiceColumn"
     />
 </div>

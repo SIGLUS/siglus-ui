@@ -72,7 +72,7 @@
         }
 
         function cancel() {
-            angular.merge(vm.template, vm.previousTemplate);
+            angular.extend(vm.template, vm.previousTemplate);
             goToTemplatePreview();
         }
 

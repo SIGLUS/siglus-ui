@@ -1,0 +1,14 @@
+.template-configure-section td {
+    .add-action {
+        float: right;
+        cursor: pointer;
+    }
+    .remove-action {
+        float: left;
+        cursor: pointer;
+    }
+    i.add-disabled {
+        cursor: not-allowed;
+        color: grey;
+    }
+}

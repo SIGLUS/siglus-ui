@@ -21,9 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('ProductPreviewController', controller);
 
-    controller.$inject = ['columnUtils'];
+    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService'];
 
-    function controller(columnUtils) {
+    function controller(columnUtils, COLUMN_SOURCES, messageService) {
 
         var vm = this;
 
@@ -44,7 +44,7 @@
         function getColumnValue(column, lineItem) {
             var value = lineItem[column.name];
             if (!value) {
-                value = columnUtils.formatSource(column);
+                value = messageService.get(COLUMN_SOURCES.getLabel(column.source));
             }
             return value;
         }
