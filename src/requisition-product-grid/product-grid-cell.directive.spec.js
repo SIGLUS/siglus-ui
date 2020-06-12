@@ -189,7 +189,9 @@ describe('ProductGridCell', function() {
         this.scope.$apply();
 
         expect(this.requisitionValidator.validateLineItem).toHaveBeenCalledWith(
-            this.scope.lineItem, this.nonFullSupplyColumns, this.scope.requisition
+            // #243: fix all required input of the row highlight when input a value
+            this.scope.lineItem, [this.scope.column], this.scope.requisition
+            // #243: ends here
         );
 
         expect(this.scope.lineItem.updateDependentFields).toHaveBeenCalledWith(
