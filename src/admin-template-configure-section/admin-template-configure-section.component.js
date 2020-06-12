@@ -23,7 +23,7 @@
             bindings: {
                 section: '<',
                 tags: '<',
-                template: '<'
+                onAddColumn: '<'
             },
             controller: 'TemplateConfigureSectionController',
             controllerAs: 'vm',

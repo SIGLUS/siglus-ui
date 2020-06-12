@@ -91,7 +91,7 @@ describe('ProductPreviewController', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(vm.getColumnValue(column, vm.items[0])).toBe('reference data');
+            expect(vm.getColumnValue(column, vm.items[0])).toBe('requisitionConstants.referenceData');
         });
     });
 });

@@ -1,13 +1,14 @@
 <div class="kit-usage-preview openlmis-table-container">
     <table class="openlmis-table">
         <tbody>
-        <tr ng-repeat="collection in vm.collection.columns | orderBy : 'displayOrder'">
+        <tr ng-repeat="collection in vm.collection.columns | orderBy : 'displayOrder'" ng-if="collection.isDisplayed">
             <td >{{collection.label}}</td>
             <td ng-repeat-start="service in vm.service.columns | orderBy : 'displayOrder'"
                 ng-if="service.isDisplayed"
             >{{service.label}}</td>
             <td class="col-source"
                 ng-class="{'user-input': vm.isUserInput(service, collection)}"
+                ng-if="service.isDisplayed"
                 ng-repeat-end
             >
                 <span>{{vm.getColumnValue(service, collection)}}</span>

@@ -13,8 +13,13 @@
                 <th>{{'adminProgramTemplate.action' | message}}</th>
             </tr>
             </thead>
-            <tbody dnd-list="vm.section.columns" dnd-drop="vm.dropCallback(event, index, item)">
-            <tr ng-repeat="column in vm.section.columns | orderObjectBy:'displayOrder'" dnd-draggable="column" dnd-disable-if="!column.columnDefinition.canChangeOrder" dnd-effect-allowed="move">
+            <tbody dnd-list="vm.section.columns">
+            <tr ng-repeat="column in vm.section.columns | orderObjectBy:'displayOrder'"
+                dnd-draggable="column"
+                dnd-disable-if="!column.columnDefinition.canChangeOrder"
+                dnd-effect-allowed="move"
+                dnd-moved="vm.movedCallback($index)"
+            >
                 <dnd-nodrag>
                     <td ng-class="{'dnd-handle': column.columnDefinition.canChangeOrder}">
                         <i ng-if="!column.columnDefinition.canChangeOrder" class="lock"/>
@@ -29,10 +34,15 @@
                         </div>
                     </td>
                     <td>
-                        <input disable-drag type="text" ng-model="column.label" class="form-control"></input>
+                        <input disable-drag type="text" ng-model="column.label" class="form-control" placeholder="{{'adminTemplate.name.placeholder' | message}}"></input>
                     </td>
                     <td>
-                        <input characters-left ng-maxlength="{{vm.maxColumnDescriptionLength}}" disable-drag ng-model="column.definition" class="form-control" type="text"></input>
+                        <input disable-drag
+                               characters-left
+                               ng-maxlength="{{vm.maxColumnDescriptionLength}}"
+                               ng-model="column.definition"
+                               placeholder="{{'adminTemplate.definition.placeholder' | message}}"
+                               class="form-control" type="text"></input>
                     </td>
                     <td>
                         <div ng-if="!vm.canChangeSource(column)">{{vm.sourceDisplayName(column.source)}}</div>
@@ -42,15 +52,18 @@
                     </td>
                     <td>
                         <div ng-if="vm.canAssignTag(column)">
-                            <label ng-attr-for="{{column.name}}">{{'adminProgramTemplate.tag' | message}}</label>
-                            <select ng-attr-id="{{column.name}}" ng-model="column.tag"
+                            <label ng-attr-for="{{$index}}">{{'adminProgramTemplate.tag' | message}}</label>
+                            <select ng-attr-id="{{$index}}" ng-model="column.tag"
                                     ng-options="tag for tag in vm.availableTags[column.name] | orderBy:'toString()'"
                                     ng-change="vm.refreshAvailableTags()"
                             ></select>
                         </div>
                         <div class="error">{{vm.getSiglusColumnError(column)}}</div>
                     </td>
-                    <td></td>
+                    <td>
+                        <i ng-if="!column.columnDefinition.id" ng-click="vm.removeColumn($index)" class="fa fa-minus-circle remove-action text-danger" aria-hidden="true"></i>
+                        <i ng-if="$last" ng-click="vm.addColumn()" ng-class="{'add-disabled': vm.overMaxColumnsLength()}" class="fa fa-plus-circle add-action" aria-hidden="true"></i>
+                    </td>
                 </dnd-nodrag>
             </tr>
             <tr class="dndPlaceholder">

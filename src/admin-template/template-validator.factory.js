@@ -83,6 +83,11 @@
             if (!isOptionsValid(template)) {
                 notificationService.error('adminProgramTemplate.template.invalidOptions');
             }
+            angular.forEach(template.kitUsage, function(section) {
+                angular.forEach(section.columns, function(column) {
+                    isValid = isValid && !validator.getSiglusColumnError(column);
+                });
+            });
             // SIGLUS-REFACTOR: ends here
 
             return isValid;
@@ -187,13 +192,13 @@
         }
 
         function validateSiglusSource(column) {
-            if (column.columnDefinition.sources.length && isEmpty(column.source)) {
+            if (!_.isEmpty(column.columnDefinition.sources) && isEmpty(column.source)) {
                 return messageService.get('adminProgramTemplate.emptyColumnSource');
             }
         }
 
         function validateOption(column) {
-            if (column.isDisplayed && column.columnDefinition.options.length && !column.option) {
+            if (column.isDisplayed && !_.isEmpty(column.columnDefinition.options) && !column.option) {
                 return messageService.get('adminProgramTemplate.emptyColumnOption');
             }
         }

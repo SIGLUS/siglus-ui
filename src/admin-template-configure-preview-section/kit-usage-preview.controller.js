@@ -21,9 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('KitUsagePreviewController', controller);
 
-    controller.$inject = ['columnUtils'];
+    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService'];
 
-    function controller(columnUtils) {
+    function controller(columnUtils, COLUMN_SOURCES, messageService) {
 
         var vm = this;
 
@@ -43,16 +43,17 @@
             });
         }
 
-        function geColumn(service, collection) {
+        function getColumn(service, collection) {
             return service.name === 'HF' ? collection : service;
         }
 
         function isUserInput(service, collection) {
-            return columnUtils.isUserInput(geColumn(service, collection));
+            return columnUtils.isUserInput(getColumn(service, collection));
         }
 
         function getColumnValue(service, collection) {
-            return columnUtils.formatSource(geColumn(service, collection));
+            var column = getColumn(service, collection);
+            return messageService.get(COLUMN_SOURCES.getLabel(column.source));
         }
     }
 

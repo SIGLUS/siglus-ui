@@ -33,8 +33,7 @@
     function columnUtils(COLUMN_SOURCES) {
         return {
             isUserInput: isUserInput,
-            isStockCards: isStockCards,
-            formatSource: formatSource
+            isStockCards: isStockCards
         };
 
         /**
@@ -65,24 +64,6 @@
          */
         function isStockCards(column) {
             return column.source === COLUMN_SOURCES.STOCK_CARDS;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf admin-template.columnUtils
-         * @name formatSource
-         *
-         * @description
-         * Format column source.
-         *
-         * @param {Object} column
-         * @return {String} Formatted source
-         */
-        function formatSource(column) {
-            return column.source
-                .split('_')
-                .join(' ')
-                .toLocaleLowerCase();
         }
     }
 

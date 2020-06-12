@@ -28,12 +28,14 @@
         .module('admin-template-configure-kit-usage')
         .controller('KitUsageTemplateController', KitUsageTemplateController);
 
-    KitUsageTemplateController.$inject = ['$state', 'template', 'tags'];
+    KitUsageTemplateController.$inject = ['$state', 'COLUMN_SOURCES', 'templateConfigureService', 'template', 'tags'];
 
-    function KitUsageTemplateController($state, template, tags) {
+    function KitUsageTemplateController($state, COLUMN_SOURCES, templateConfigureService, template, tags) {
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.addCollectionColumn = addCollectionColumn;
+        vm.addServiceColumn = addServiceColumn;
 
         vm.template = undefined;
 
@@ -56,6 +58,28 @@
                 vm.template.extension = {};
             }
             vm.template.extension.enableKitUsage = true;
+        }
+
+        function addCollectionColumn() {
+            vm.collection.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+                indicator: 'KD',
+                displayOrder: vm.collection.columns.length,
+                columnDefinition: {
+                    sources: [COLUMN_SOURCES.STOCK_CARDS, COLUMN_SOURCES.USER_INPUT]
+                }
+            }));
+        }
+
+        function addServiceColumn() {
+            vm.service.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+                indicator: 'N',
+                displayOrder: vm.service.columns.length,
+                source: COLUMN_SOURCES.USER_INPUT,
+                columnDefinition: {
+                    sources: [COLUMN_SOURCES.USER_INPUT],
+                    supportsTag: false
+                }
+            }));
         }
     }
 })();
