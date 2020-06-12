@@ -30,15 +30,16 @@
 
     TemplateConfigureSectionController.$inject = [
         'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES', 'MAX_COLUMN_DESCRIPTION_LENGTH',
-        'MAX_COLUMNS_LENGTH'
+        'MAX_ADD_COLUMNS_LENGTH'
     ];
 
     function TemplateConfigureSectionController(messageService, templateValidator, columnUtils, COLUMN_SOURCES,
-                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_COLUMNS_LENGTH) {
+                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.movedCallback = movedCallback;
+        // vm.dropCallback = dropCallback;
         vm.canChangeSource = canChangeSource;
         vm.sourceDisplayName = sourceDisplayName;
         vm.canAssignTag = canAssignTag;
@@ -52,17 +53,27 @@
 
         vm.availableTags = {};
 
+        vm.columnMap = {};
+
         function onInit() {
             vm.maxColumnDescriptionLength = MAX_COLUMN_DESCRIPTION_LENGTH;
+            vm.columnMap = _.groupBy(vm.section.columns, function(column) {
+                return column.name;
+            });
             refreshAvailableTags();
         }
 
         function movedCallback(index) {
             vm.section.columns.splice(index, 1);
-            angular.forEach(vm.section.columns, function(column, idx) {
-                column.displayOrder = idx;
-            });
+            updateDisplayOrder();
         }
+
+        // function dropCallback(event, dropSpotIndex, droppedItem) {
+        //     vm.section.columns.splice(index, 1);
+        //     angular.forEach(vm.section.columns, function(column, idx) {
+        //         column.displayOrder = idx;
+        //     });
+        // }
 
         function canChangeSource(column) {
             return column.columnDefinition.sources.length > 1;
@@ -79,7 +90,7 @@
         function refreshAvailableTags() {
             var filteredTags = filterUnusedTags();
 
-            _.forEach(vm.section.columns, function(column) {
+            angular.forEach(vm.section.columns, function(column) {
                 if (column.columnDefinition.supportsTag) {
                     vm.availableTags[column.name] = angular.copy(filteredTags);
                     if (column.tag) {
@@ -100,15 +111,53 @@
         function addColumn() {
             if (!overMaxColumnsLength()) {
                 vm.onAddColumn();
+                var addedColumn = _.last(vm.section.columns);
+                setDefaultName(addedColumn);
+                updateLabel(addedColumn);
+            }
+        }
+
+        function setDefaultName(column) {
+            var defaultName = 'newColumn';
+            var i = 0;
+            while (vm.columnMap[defaultName + i] && i < MAX_ADD_COLUMNS_LENGTH) {
+                i++;
+            }
+            column.name = defaultName + i;
+            vm.columnMap[column.name] = column;
+        }
+
+        function updateLabel(column) {
+            if (column.columnDefinition.supportsTag) {
+                vm.availableTags[column.name] = angular.copy(filterUnusedTags());
+                if (column.tag) {
+                    vm.availableTags[column.name].push(column.tag);
+                }
             }
         }
 
         function removeColumn(index) {
-            vm.section.columns.splice(index, 1);
+            var removedColumn = vm.section.columns.splice(index, 1)[0];
+            if (removedColumn) {
+                vm.columnMap[removedColumn.name] = undefined;
+                updateDisplayOrder();
+            }
+            if (removedColumn && removedColumn.columnDefinition.supportsTag && removedColumn.tag) {
+                refreshAvailableTags();
+            }
+        }
+
+        function updateDisplayOrder() {
+            angular.forEach(vm.section.columns, function(column, idx) {
+                column.displayOrder = idx;
+            });
         }
 
         function overMaxColumnsLength() {
-            return vm.section.columns.length >= MAX_COLUMNS_LENGTH;
+            var addedColumns = _.filter(vm.section.columns, function(column) {
+                return !column.columnDefinition.id;
+            });
+            return addedColumns.length >= MAX_ADD_COLUMNS_LENGTH;
         }
     }
 })();
