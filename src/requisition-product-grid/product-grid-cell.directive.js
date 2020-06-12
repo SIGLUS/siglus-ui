@@ -126,7 +126,9 @@
             function validate() {
                 return requisitionValidator.validateLineItem(
                     scope.lineItem,
-                    requisition.template.getColumns(!scope.lineItem.$program.fullSupply),
+                    // #243: fix all required input of the row highlight when input a value
+                    [scope.column],
+                    // #243: ends here
                     requisition
                 );
             }
