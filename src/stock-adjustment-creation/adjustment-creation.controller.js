@@ -512,6 +512,9 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.save = function() {
+            if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
+                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
+            }
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             if ($stateParams.keyword) {
