@@ -370,7 +370,9 @@
         // SIGLUS-REFACTOR: ends here
 
         function selectProducts(availableProducts) {
-            refreshLineItems();
+            // #271: add product response slowly
+            // refreshLineItems();
+            // #271: ends here
 
             var decoratedAvailableProducts = new OpenlmisArrayDecorator(availableProducts.products);
             decoratedAvailableProducts.sortBy('fullProductName');
