@@ -350,8 +350,11 @@
                     loadingModalService.open();
                     confirmSubmit(signature);
                 });
-            } else if ($stateParams.keyword) {
-                cancelFilter();
+            } else {
+                if ($stateParams.keyword) {
+                    cancelFilter();
+                }
+                alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
 

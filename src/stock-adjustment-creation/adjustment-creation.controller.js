@@ -466,8 +466,8 @@
                 cancelFilter();
                 // vm.keyword = null;
                 // reorderItems();
-                // alertService.error('stockAdjustmentCreation.submitInvalid');
                 // SIGLUS-REFACTOR: ends here
+                alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
 
