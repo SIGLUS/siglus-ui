@@ -13,16 +13,21 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
-    'use strict';
+describe('templateConfigureService', function() {
 
-    angular.module('admin-template-configure-column-setting')
-        .service('templateConfigureService', service);
+    beforeEach(function() {
+        module('admin-template-configure-column-setting');
 
-    function service() {
-        this.getDefaultColumn = getDefaultColumn;
-        function getDefaultColumn() {
-            return {
+        inject(function($injector) {
+            this.templateConfigureService = $injector.get('templateConfigureService');
+        });
+    });
+
+    it('should get default column',
+        function() {
+            var column = this.templateConfigureService.getDefaultColumn();
+
+            expect(column).toEqual({
                 id: null,
                 name: null,
                 label: null,
@@ -47,8 +52,6 @@
                     supportsTag: true,
                     definition: null
                 }
-            };
-        }
-    }
-
-})();
+            });
+        });
+});

@@ -54,7 +54,9 @@
             validator = {
                 getColumnError: getColumnError,
                 isTemplateValid: isTemplateValid,
+                // #248: kit usage section configure
                 getSiglusColumnError: getSiglusColumnError
+                // #248: ends here
             };
 
         return validator;
@@ -83,12 +85,14 @@
             if (!isOptionsValid(template)) {
                 notificationService.error('adminProgramTemplate.template.invalidOptions');
             }
+            // SIGLUS-REFACTOR: ends here
+            // #248: kit usage section configure
             angular.forEach(template.kitUsage, function(section) {
                 angular.forEach(section.columns, function(column) {
                     isValid = isValid && !validator.getSiglusColumnError(column);
                 });
             });
-            // SIGLUS-REFACTOR: ends here
+            // #248: ends here
 
             return isValid;
         }
@@ -129,6 +133,7 @@
             return error;
         }
 
+        // #248: kit usage section configure
         function getSiglusColumnError(column) {
             var error = validateLabel(column.label) ||
                 validateDefinition(column.definition) ||
@@ -139,6 +144,7 @@
 
             return error;
         }
+        // #248: ends here
 
         // #147: starts here
         function validateSuggestedQuantity(column, template) {
@@ -160,12 +166,14 @@
             }
         }
 
+        // #248: kit usage section configure
         function validateSiglusTag(column) {
             if (isEmpty(column.tag) && columnUtils.isStockCards(column) &&
                 column.columnDefinition.supportsTag) {
                 return messageService.get('adminProgramTemplate.columnTagEmpty');
             }
         }
+        // #248: ends here
 
         function validateLabel(label) {
             if (isEmpty(label)) {
@@ -191,14 +199,18 @@
             }
         }
 
+        // #248: kit usage section configure
         function validateSiglusSource(column) {
             if (!_.isEmpty(column.columnDefinition.sources) && isEmpty(column.source)) {
                 return messageService.get('adminProgramTemplate.emptyColumnSource');
             }
         }
+        // #248: ends here
 
         function validateOption(column) {
+            // #248: kit usage section configure
             if (column.isDisplayed && !_.isEmpty(column.columnDefinition.options) && !column.option) {
+            // #248: ends here
                 return messageService.get('adminProgramTemplate.emptyColumnOption');
             }
         }
