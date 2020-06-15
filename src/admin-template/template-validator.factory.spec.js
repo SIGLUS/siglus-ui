@@ -51,6 +51,14 @@ describe('templateValidator', function() {
             spyOn(templateValidator, 'getColumnError').andCallFake(function(column) {
                 return !column.valid;
             });
+            // #248: kit usage section configure
+            template.kitUsage = [{
+                columns: angular.copy(columns)
+            }];
+            spyOn(templateValidator, 'getSiglusColumnError').andCallFake(function(column) {
+                return !column.valid;
+            });
+            // #248: ends here
         });
 
         it('should return true if all columns are valid', function() {
@@ -75,7 +83,84 @@ describe('templateValidator', function() {
             expect(templateValidator.getColumnError).toHaveBeenCalledWith(columns[2], template);
         });
 
+        // #248: kit usage section configure
+        it('should return false if at least one column in kit usage is invalid', function() {
+            template.kitUsage[0].columns[0].valid = false;
+
+            var result = templateValidator.isTemplateValid(template);
+
+            expect(result).toBe(false);
+        });
+
+        it('should validate all kit usage columns', function() {
+            templateValidator.isTemplateValid(template);
+
+            expect(templateValidator.getSiglusColumnError).toHaveBeenCalledWith(columns[0]);
+            expect(templateValidator.getSiglusColumnError).toHaveBeenCalledWith(columns[1]);
+            expect(templateValidator.getSiglusColumnError).toHaveBeenCalledWith(columns[2]);
+        });
+        // #248: ends here
+
     });
+
+    // #248: kit usage section configure
+    describe('getSiglusColumnError', function() {
+        var COLUMN_SOURCES, column;
+
+        beforeEach(function() {
+            inject(function($injector) {
+                COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
+            });
+
+            column = {
+                label: 'someLabel',
+                definition: 'Some not too short definition of the column...',
+                isDisplayed: true,
+                columnDefinition: {
+                    options: [
+                        'optionOne'
+                    ]
+                },
+                option: 'optionOne'
+            };
+        });
+
+        it('should return undefined if column is valid', function() {
+            var result = templateValidator.getSiglusColumnError(column);
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should return error if column source is not selected and have source definition', function() {
+            column.columnDefinition.sources = [COLUMN_SOURCES.USER_INPUT];
+
+            var result = templateValidator.getSiglusColumnError(column);
+
+            expect(result).toBe('adminProgramTemplate.emptyColumnSource');
+        });
+
+        it('should return error if tag is required and not set', function() {
+            column.source = COLUMN_SOURCES.STOCK_CARDS;
+            column.columnDefinition.supportsTag = true;
+
+            expect(templateValidator.getSiglusColumnError(column)).toBe('adminProgramTemplate.columnTagEmpty');
+        });
+
+        it('should return undefined if column does not supports tag', function() {
+            column.columnDefinition.supportsTag = false;
+
+            expect(templateValidator.getSiglusColumnError(column)).toBeUndefined();
+        });
+
+        it('should return undefined if tag is valid', function() {
+            column.tag = 'some-tag';
+            column.souce = COLUMN_SOURCES.STOCK_CARDS;
+            column.columnDefinition.supportsTag = true;
+
+            expect(templateValidator.getSiglusColumnError(column)).toBeUndefined();
+        });
+    });
+    // #248: ends here
 
     describe('getColumnError', function() {
 

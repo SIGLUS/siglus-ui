@@ -46,6 +46,7 @@ describe('RequisitionTemplatePreviewController', function() {
             .withColumn(new TemplateColumnDataBuilder().buildRemarksColumn())
             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
             .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn());
+        template.kitUsage = [];
 
         initController = function() {
             vm = $controller('RequisitionTemplatePreviewController', {
@@ -70,6 +71,12 @@ describe('RequisitionTemplatePreviewController', function() {
             var sortColumns = _.sortBy(vm.productColumns, 'name');
 
             expect(sortColumns).toEqual([vm.template.columnsMap.averageConsumption, vm.template.columnsMap.remarks]);
+        });
+
+        it('should set kitUsageSections', function() {
+            initController();
+
+            expect(vm.kitUsageSections).toEqual([]);
         });
     });
 
