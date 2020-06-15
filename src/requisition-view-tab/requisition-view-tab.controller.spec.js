@@ -520,12 +520,14 @@ describe('ViewTabController', function() {
             spyOn(this.requisitionService, 'getOrderableLineItem').andReturn(this.$q.resolve(
                 [{
                     lineItem: {
-                        orderable: this.availableFullSupplyProducts[0]
+                        orderable: this.availableFullSupplyProducts[0],
+                        requestedQuantity: 0
                     },
                     approvedProduct: this.availableFullSupplyProducts[0]
                 }, {
                     lineItem: {
-                        orderable: this.availableFullSupplyProducts[2]
+                        orderable: this.availableFullSupplyProducts[2],
+                        requestedQuantity: 0
                     },
                     approvedProduct: this.availableFullSupplyProducts[2]
                 }]
@@ -575,13 +577,15 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: starts here
             expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
                 orderable: this.availableFullSupplyProducts[0],
-                approvedProduct: this.availableFullSupplyProducts[0]
-            });
+                approvedProduct: this.availableFullSupplyProducts[0],
+                requestedQuantity: 0
+            }, 0);
 
             expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
                 orderable: this.availableFullSupplyProducts[2],
-                approvedProduct: this.availableFullSupplyProducts[2]
-            });
+                approvedProduct: this.availableFullSupplyProducts[2],
+                requestedQuantity: 0
+            }, 0);
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -613,12 +617,14 @@ describe('ViewTabController', function() {
             spyOn(this.requisitionService, 'getOrderableLineItem').andReturn(this.$q.resolve([
                 {
                     lineItem: {
-                        orderable: this.availableNonFullSupplyProducts[0]
+                        orderable: this.availableNonFullSupplyProducts[0],
+                        requestedQuantity: 0
                     },
                     approvedProduct: this.availableNonFullSupplyProducts[0]
                 }, {
                     lineItem: {
-                        orderable: this.availableNonFullSupplyProducts[2]
+                        orderable: this.availableNonFullSupplyProducts[2],
+                        requestedQuantity: 0
                     },
                     approvedProduct: this.availableNonFullSupplyProducts[2]
                 }
@@ -668,13 +674,15 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: starts here
             expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
                 orderable: this.availableNonFullSupplyProducts[0],
-                approvedProduct: this.availableNonFullSupplyProducts[0]
-            });
+                approvedProduct: this.availableNonFullSupplyProducts[0],
+                requestedQuantity: 0
+            }, 0);
 
             expect(this.requisition.addProductLineItem).toHaveBeenCalledWith({
                 orderable: this.availableNonFullSupplyProducts[2],
-                approvedProduct: this.availableNonFullSupplyProducts[2]
-            });
+                approvedProduct: this.availableNonFullSupplyProducts[2],
+                requestedQuantity: 0
+            }, 0);
             // SIGLUS-REFACTOR: ends here
         });
 
