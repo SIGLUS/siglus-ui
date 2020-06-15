@@ -360,7 +360,7 @@
                             return lineItem.orderable.id === product.id;
                         });
                         lineItem.approvedProduct = result.approvedProduct;
-                        vm.requisition.addProductLineItem(lineItem);
+                        vm.requisition.addProductLineItem(lineItem, lineItem.requestedQuantity);
                     });
                 })
                 .finally(function() {
