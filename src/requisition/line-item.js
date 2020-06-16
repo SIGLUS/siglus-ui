@@ -63,9 +63,11 @@
             // SIGLUS-REFACTOR: ends here
 
             var newLineItem = this;
-            requisition.template.getColumns(!this.$program.fullSupply).forEach(function(column) {
+            // #227: user can add both full supply & non-fully supply product
+            requisition.template.getColumns().forEach(function(column) {
                 newLineItem.updateFieldValue(column, requisition);
             });
+            // #227: ends here
         }
 
         function getFieldValue(name) {

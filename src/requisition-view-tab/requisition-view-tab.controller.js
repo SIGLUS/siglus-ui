@@ -150,9 +150,6 @@
          * Holds the list of columns visible on this screen.
          */
         vm.columns = undefined;
-        // #105: activate archived product
-        vm.addedOrderables = undefined;
-        // #105: ends here
 
         function onInit() {
             vm.lineItems = lineItems;
@@ -319,29 +316,26 @@
         }
 
         function addProducts(availableProducts) {
+            var addedOrderableIds;
+
             selectProducts({
                 products: availableProducts
             })
             // SIGLUS-REFACTOR: starts here
                 .then(function(selectedProducts) {
-                    vm.addedOrderables = selectedProducts;
+                    addedOrderableIds = selectedProducts.map(function(orderable) {
+                        return orderable.id;
+                    });
                     return prepareLineItems(selectedProducts);
                 })
                 .then(function() {
                     return refreshLineItems();
                 })
                 .then(function() {
-                    var orderableIds = vm.lineItems.map(function(lineItem) {
-                        return lineItem.orderable.id;
+                    var addedLineItems = vm.lineItems.filter(function(lineItem) {
+                        return addedOrderableIds.includes(lineItem.orderable.id);
                     });
-                    var filteredAddedLineItems = vm.addedOrderables.filter(function(orderable) {
-                        return orderableIds.includes(orderable.id);
-                    }).map(function(orderable) {
-                        return {
-                            orderable: orderable
-                        };
-                    });
-                    archivedProductService.alterInfo(filteredAddedLineItems);
+                    archivedProductService.alterInfo(addedLineItems);
                 });
             // SIGLUS-REFACTOR: ends here
         }
@@ -397,21 +391,15 @@
         }
 
         function refreshLineItems() {
-            var filterObject = (fullSupply &&
-                vm.requisition.template.hasSkipColumn() &&
-                vm.requisition.template.hideSkippedLineItems()) ?
-                {
-                    skipped: '!true',
-                    $program: {
-                        fullSupply: fullSupply
-                    }
-                } : {
-                    $program: {
-                        fullSupply: fullSupply
-                    }
-                };
-
-            var lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
+            // #227: user can add both full supply & non-fully supply product
+            var filterObject = (vm.requisition.template.hasSkipColumn() &&
+                vm.requisition.template.hideSkippedLineItems()) ? {
+                    skipped: '!true'
+                } : {};
+            var lineItems = _.isEmpty(filterObject)
+                ? vm.requisition.requisitionLineItems
+                : $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
+            // #227: ends here
 
             return paginationService
                 .registerList(
