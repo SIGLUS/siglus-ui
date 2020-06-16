@@ -27,7 +27,8 @@
     angular.module('admin-template-configure-preview-section', [
         'requisition-constants',
         'admin-template',
-        'openlmis-i18n'
+        'openlmis-i18n',
+        'admin-template-configure-column-setting'
     ]);
 
 })();

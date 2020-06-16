@@ -20,6 +20,7 @@ describe('templateConfigureService', function() {
 
         inject(function($injector) {
             this.templateConfigureService = $injector.get('templateConfigureService');
+            this.COLUMN_TYPES = $injector.get('COLUMN_TYPES');
         });
     });
 
@@ -40,7 +41,7 @@ describe('templateConfigureService', function() {
                 tag: null,
                 columnDefinition: {
                     canChangeOrder: true,
-                    columnType: 'NUMERIC',
+                    columnType: this.COLUMN_TYPES.NUMERIC,
                     name: null,
                     sources: [],
                     options: [],
@@ -52,6 +53,32 @@ describe('templateConfigureService', function() {
                     supportsTag: true,
                     definition: null
                 }
+            });
+        });
+
+    it('should get collection section',
+        function() {
+            var collection = this.templateConfigureService.getCollection([{
+                name: 'collection'
+            }, {
+                name: 'service'
+            }]);
+
+            expect(collection).toEqual({
+                name: 'collection'
+            });
+        });
+
+    it('should get service section',
+        function() {
+            var service = this.templateConfigureService.getService([{
+                name: 'collection'
+            }, {
+                name: 'service'
+            }]);
+
+            expect(service).toEqual({
+                name: 'service'
             });
         });
 });

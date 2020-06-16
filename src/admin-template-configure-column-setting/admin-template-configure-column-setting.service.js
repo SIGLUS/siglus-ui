@@ -19,8 +19,12 @@
     angular.module('admin-template-configure-column-setting')
         .service('templateConfigureService', service);
 
-    function service() {
+    service.$inject = ['COLUMN_TYPES'];
+
+    function service(COLUMN_TYPES) {
         this.getDefaultColumn = getDefaultColumn;
+        this.getCollection = getCollection;
+        this.getService = getService;
         function getDefaultColumn() {
             return {
                 id: null,
@@ -35,7 +39,7 @@
                 tag: null,
                 columnDefinition: {
                     canChangeOrder: true,
-                    columnType: 'NUMERIC',
+                    columnType: COLUMN_TYPES.NUMERIC,
                     name: null,
                     sources: [],
                     options: [],
@@ -48,6 +52,18 @@
                     definition: null
                 }
             };
+        }
+
+        function getCollection(sections) {
+            return _.find(sections, function(section) {
+                return section.name === 'collection';
+            });
+        }
+
+        function getService(sections) {
+            return _.find(sections, function(section) {
+                return section.name === 'service';
+            });
         }
     }
 
