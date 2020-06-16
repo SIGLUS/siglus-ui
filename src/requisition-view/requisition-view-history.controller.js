@@ -148,6 +148,7 @@
 
             vm.requisition = requisition;
             hideAuthorizedQuantity(vm.requisition);
+            hideApprovedQuantity(vm.requisition);
             vm.columns = columns;
             vm.userCanEdit = canAuthorize || canSubmit;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
@@ -164,6 +165,15 @@
                 requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].$display) {
                 angular.forEach(requisition.requisitionLineItems, function(lineItem) {
                     lineItem.authorizedQuantity = undefined;
+                });
+            }
+        }
+
+        function hideApprovedQuantity(requisition) {
+            if (vm.requisition.$isAuthorized() &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.approvedQuantity = undefined;
                 });
             }
         }
