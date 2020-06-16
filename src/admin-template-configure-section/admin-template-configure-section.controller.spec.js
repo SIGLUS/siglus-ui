@@ -306,11 +306,15 @@ describe('TemplateConfigureSectionController', function() {
 
     describe('dropCallback', function() {
 
-        it('should return false if dropSpotIndex is before locked column', function() {
+        it('should return false if dropStopIndex is before locked column', function() {
             expect(vm.dropCallback({}, 0, vm.section.columns[1])).toBe(false);
         });
 
-        it('should return droppedItem if dropSpotIndex is after locked column', function() {
+        it('should return false if droppedItem is locked', function() {
+            expect(vm.dropCallback({}, 1, vm.section.columns[0])).toBe(false);
+        });
+
+        it('should return droppedItem if dropStopIndex is after locked column', function() {
             var column = {
                 name: 'new1',
                 columnDefinition: {

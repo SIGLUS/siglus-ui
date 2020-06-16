@@ -69,11 +69,11 @@
             vm.section.columns.splice(index, 1);
         }
 
-        function dropCallback(event, dropSpotIndex, droppedItem) {
+        function dropCallback(event, dropStopIndex, droppedItem) {
             var lockColumns = _.filter(vm.section.columns, function(column) {
                 return !column.columnDefinition.canChangeOrder;
             });
-            if (dropSpotIndex < lockColumns.length) {
+            if (dropStopIndex < lockColumns.length || !droppedItem.columnDefinition.canChangeOrder) {
                 return false;
             }
             return droppedItem;
