@@ -8,6 +8,7 @@
         "/openlmis-auth-ui",
         "/openlmis-referencedata-ui",
         "/openlmis-requisition-ui",
-        "/openlmis-stockmanagement-ui"
+        "/openlmis-stockmanagement-ui",
+        "/openlmis-fulfillment-ui"
     ]
 }
