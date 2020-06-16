@@ -139,7 +139,6 @@
                 validateSiglusDefinition(column.definition) ||
                 validateSiglusSource(column) ||
                 validateOption(column) ||
-                validateUserInput(column) ||
                 validateSiglusTag(column);
 
             return error;
