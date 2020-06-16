@@ -13,9 +13,10 @@
                 <th>{{'adminProgramTemplate.action' | message}}</th>
             </tr>
             </thead>
-            <tbody dnd-list="vm.section.columns" dnd-drop="vm.dropCallback(event, index, item)">
+            <tbody dnd-list="vm.section.columns" dnd-drop="vm.dropCallback(event, index, item)" dnd-allowed-types="[vm.section.name]">
             <tr ng-repeat="column in vm.section.columns"
                 dnd-draggable="column"
+                dnd-type="vm.section.name"
                 dnd-disable-if="!column.columnDefinition.canChangeOrder"
                 dnd-effect-allowed="move"
                 dnd-moved="vm.movedCallback($index)"
