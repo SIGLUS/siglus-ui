@@ -16,6 +16,7 @@ services:
       - stockmanagement-ui
       - ui-components
       - ui-layout
+      - fulfillment-ui
     depends_on:
       - auth-ui
       - referencedata-ui
@@ -23,6 +24,7 @@ services:
       - stockmanagement-ui
       - ui-components
       - ui-layout
+      - fulfillment-ui
   auth-ui:
     image: openlmis/auth-ui:6.2.3
     volumes:
@@ -47,6 +49,10 @@ services:
     image: openlmis/ui-layout:5.1.6
     volumes:
       - '/openlmis-ui-layout'
+  fulfillment-ui:
+    image: openlmis/fulfillment-ui:6.0.6
+    volumes:
+      - '/openlmis-fulfillment-ui'
   image:
     build: .
     image: siglusdevops/siglus-ui
