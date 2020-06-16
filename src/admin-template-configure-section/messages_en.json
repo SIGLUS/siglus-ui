@@ -1,5 +1,5 @@
 {
     "adminProgramTemplate.action": "Action",
-    "adminTemplate.name.placeholder": "Please input the name for this column",
+    "adminTemplate.name.placeholder": "Please input the name for this field",
     "adminTemplate.definition.placeholder": "An introduction to notify user when user hover on the label"
 }
