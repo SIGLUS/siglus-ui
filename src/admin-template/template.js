@@ -67,8 +67,12 @@
             this.extension = template.extension;
             // #163: add associate program
             this.associatePrograms = template.associatePrograms;
-            this.kitUsage = template.kitUsage;
             // #163: ends here
+            // #248: kit usage section configure
+            this.kitUsage = _.forEach(template.kitUsage, function(section) {
+                section.columns = _.sortBy(section.columns, 'displayOrder');
+            });
+            // #248: ends here
 
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);

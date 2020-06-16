@@ -52,13 +52,15 @@ describe('TemplateConfigureSectionController', function() {
                 source: COLUMN_SOURCES.STOCK_CARDS,
                 columnDefinition: {
                     sources: [COLUMN_SOURCES.USER_INPUT, COLUMN_SOURCES.STOCK_CARDS],
-                    supportsTag: true
+                    supportsTag: true,
+                    canChangeOrder: false
                 }
             }, {
                 name: 'new',
                 columnDefinition: {
                     sources: [],
-                    supportsTag: false
+                    supportsTag: false,
+                    canChangeOrder: true
                 }
             }]
         };
@@ -79,14 +81,16 @@ describe('TemplateConfigureSectionController', function() {
                     source: COLUMN_SOURCES.STOCK_CARDS,
                     columnDefinition: {
                         sources: [COLUMN_SOURCES.USER_INPUT, COLUMN_SOURCES.STOCK_CARDS],
-                        supportsTag: true
+                        supportsTag: true,
+                        canChangeOrder: false
                     }
                 },
                 new: {
                     name: 'new',
                     columnDefinition: {
                         sources: [],
-                        supportsTag: false
+                        supportsTag: false,
+                        canChangeOrder: true
                     }
                 }
             });
@@ -253,11 +257,12 @@ describe('TemplateConfigureSectionController', function() {
         });
 
         it('should update display order for all columns', function() {
-
-            vm.removeColumn(0);
+            vm.section.columns.push(vm.section.columns[1]);
+            vm.removeColumn(1);
             $rootScope.$apply();
 
             expect(vm.section.columns[0].displayOrder).toBe(0);
+            expect(vm.section.columns[1].displayOrder).toBe(1);
         });
 
         it('should update tag for all columns if removed column has tag', function() {
@@ -287,6 +292,36 @@ describe('TemplateConfigureSectionController', function() {
             }
 
             expect(vm.overMaxColumnsLength()).toBe(true);
+        });
+    });
+
+    describe('movedCallback', function() {
+
+        it('should remove inserted column when drag', function() {
+            vm.movedCallback(1);
+
+            expect(vm.section.columns.length).toBe(1);
+        });
+    });
+
+    describe('dropCallback', function() {
+
+        it('should return false if dropSpotIndex is before locked column', function() {
+            expect(vm.dropCallback({}, 0, vm.section.columns[1])).toBe(false);
+        });
+
+        it('should return droppedItem if dropSpotIndex is after locked column', function() {
+            var column = {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            };
+            vm.section.columns.push(column);
+
+            expect(vm.dropCallback({}, 1, vm.section.columns[2])).toBe(column);
         });
     });
 });
