@@ -65,6 +65,51 @@ describe('Template', function() {
                 expect(this.template.columnsMap[columnName] instanceof this.TemplateColumn).toBe(true);
             }
         });
+
+        // #248: kit usage section configure
+        it('should sort section column by displayOrder', function() {
+            this.templateJson.kitUsage = [{
+                name: 'collection',
+                columns: [{
+                    name: 'kitOpened',
+                    source: null,
+                    displayOrder: 1,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: true
+                    }
+                }, {
+                    name: 'new',
+                    displayOrder: 0,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }]
+            }];
+            this.template = new this.Template(this.templateJson);
+
+            expect(this.template.kitUsage).toEqual([{
+                name: 'collection',
+                columns: [{
+                    name: 'new',
+                    displayOrder: 0,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }, {
+                    name: 'kitOpened',
+                    source: null,
+                    displayOrder: 1,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: true
+                    }
+                }]
+            }]);
+        });
+        // #248: ends here
     });
 
     describe('move', function() {

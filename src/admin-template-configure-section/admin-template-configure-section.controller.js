@@ -39,7 +39,7 @@
 
         vm.$onInit = onInit;
         vm.movedCallback = movedCallback;
-        // vm.dropCallback = dropCallback;
+        vm.dropCallback = dropCallback;
         vm.canChangeSource = canChangeSource;
         vm.sourceDisplayName = sourceDisplayName;
         vm.canAssignTag = canAssignTag;
@@ -62,19 +62,22 @@
                 return columnMap;
             }, {});
             refreshAvailableTags();
+            updateDisplayOrder();
         }
 
         function movedCallback(index) {
             vm.section.columns.splice(index, 1);
-            updateDisplayOrder();
         }
 
-        // function dropCallback(event, dropSpotIndex, droppedItem) {
-        //     vm.section.columns.splice(index, 1);
-        //     angular.forEach(vm.section.columns, function(column, idx) {
-        //         column.displayOrder = idx;
-        //     });
-        // }
+        function dropCallback(event, dropSpotIndex, droppedItem) {
+            var lockColumns = _.filter(vm.section.columns, function(column) {
+                return !column.columnDefinition.canChangeOrder;
+            });
+            if (dropSpotIndex < lockColumns.length) {
+                return false;
+            }
+            return droppedItem;
+        }
 
         function canChangeSource(column) {
             return column.columnDefinition.sources.length > 1;
@@ -115,7 +118,6 @@
                 var addedColumn = _.last(vm.section.columns);
                 setDefaultName(addedColumn);
                 updateLabel(addedColumn);
-                updateDisplayOrder();
             }
         }
 
@@ -142,7 +144,6 @@
             var removedColumn = vm.section.columns.splice(index, 1)[0];
             if (removedColumn) {
                 vm.columnMap[removedColumn.name] = undefined;
-                updateDisplayOrder();
             }
             if (removedColumn && removedColumn.columnDefinition.supportsTag && removedColumn.tag) {
                 refreshAvailableTags();
@@ -150,8 +151,12 @@
         }
 
         function updateDisplayOrder() {
-            angular.forEach(vm.section.columns, function(column, idx) {
-                column.displayOrder = idx;
+            $scope.$watchCollection(function() {
+                return vm.section.columns;
+            }, function() {
+                angular.forEach(vm.section.columns, function(column, idx) {
+                    column.displayOrder = idx;
+                });
             });
         }
 

@@ -159,6 +159,21 @@ describe('templateValidator', function() {
 
             expect(templateValidator.getSiglusColumnError(column)).toBeUndefined();
         });
+
+        it('should return error if definition is empty', function() {
+            column.definition = '';
+
+            expect(templateValidator.getSiglusColumnError(column)).toBe('adminProgramTemplate.columnDefinitionEmpty');
+        });
+
+        it('should return error if definition length exceed MAX_COLUMN_DESCRIPTION_LENGTH', function() {
+            column.definition = 'Some not too short definition of the column...' +
+                'Some not too short definition of the column...Some not too short definition of the column...' +
+                'Some not too short definition of the column...Some not too short definition of the column...';
+
+            expect(templateValidator.getSiglusColumnError(column))
+                .toBe('adminProgramTemplate.columnDescriptionTooLong');
+        });
     });
     // #248: ends here
 

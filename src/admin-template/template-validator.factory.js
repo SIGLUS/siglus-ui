@@ -136,7 +136,7 @@
         // #248: kit usage section configure
         function getSiglusColumnError(column) {
             var error = validateLabel(column.label) ||
-                validateDefinition(column.definition) ||
+                validateSiglusDefinition(column.definition) ||
                 validateSiglusSource(column) ||
                 validateOption(column) ||
                 validateUserInput(column) ||
@@ -189,6 +189,15 @@
 
         function validateDefinition(definition) {
             if ((definition && definition.length > MAX_COLUMN_DESCRIPTION_LENGTH) || definition === undefined) {
+                return messageService.get('adminProgramTemplate.columnDescriptionTooLong');
+            }
+        }
+
+        function validateSiglusDefinition(definition) {
+            if (isEmpty(definition)) {
+                return messageService.get('adminProgramTemplate.columnDefinitionEmpty');
+            }
+            if ((definition && definition.length > MAX_COLUMN_DESCRIPTION_LENGTH)) {
                 return messageService.get('adminProgramTemplate.columnDescriptionTooLong');
             }
         }
