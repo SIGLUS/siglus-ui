@@ -78,13 +78,17 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
             ]);
 
         this.requisition = requisitionDataBuilder.build();
+        // #227: user can add both full supply & non-fully supply product
         this.lineItems = [
             this.requisition.requisitionLineItems[0],
+            this.requisition.requisitionLineItems[1],
             this.requisition.requisitionLineItems[2],
+            this.requisition.requisitionLineItems[3],
             this.requisition.requisitionLineItems[4],
             this.requisition.requisitionLineItems[5],
             this.requisition.requisitionLineItems[6]
         ];
+        // #227: ends here
 
         this.columns = [
             new this.RequisitionColumnDataBuilder().buildProductCodeColumn()

@@ -66,19 +66,14 @@
                     return canSubmit || canAuthorize || canApproveAndReject;
                 },
                 lineItems: function($filter, requisition) {
-                    var filterObject = requisition.template.hideSkippedLineItems() ?
-                        {
-                            skipped: '!true',
-                            $program: {
-                                fullSupply: true
-                            }
-                        } : {
-                            $program: {
-                                fullSupply: true
-                            }
-                        };
-                    var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
-
+                    // #227: user can add both full supply & non-fully supply product
+                    var filterObject = requisition.template.hideSkippedLineItems() ? {
+                        skipped: '!true'
+                    } : {};
+                    var fullSupplyLineItems = _.isEmpty(filterObject)
+                        ? requisition.requisitionLineItems
+                        : $filter('filter')(requisition.requisitionLineItems, filterObject);
+                    // #227: ends here
                     return $filter('orderBy')(fullSupplyLineItems, [
                         '$program.orderableCategoryDisplayOrder',
                         '$program.orderableCategoryDisplayName',
