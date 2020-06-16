@@ -29,11 +29,11 @@
         .controller('TemplateConfigureSectionController', TemplateConfigureSectionController);
 
     TemplateConfigureSectionController.$inject = [
-        'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES', 'MAX_COLUMN_DESCRIPTION_LENGTH',
-        'MAX_ADD_COLUMNS_LENGTH'
+        '$scope', 'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES',
+        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_COLUMNS_LENGTH'
     ];
 
-    function TemplateConfigureSectionController(messageService, templateValidator, columnUtils, COLUMN_SOURCES,
+    function TemplateConfigureSectionController($scope, messageService, templateValidator, columnUtils, COLUMN_SOURCES,
                                                 MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH) {
         var vm = this;
 
@@ -57,9 +57,10 @@
 
         function onInit() {
             vm.maxColumnDescriptionLength = MAX_COLUMN_DESCRIPTION_LENGTH;
-            vm.columnMap = _.groupBy(vm.section.columns, function(column) {
-                return column.name;
-            });
+            vm.columnMap = _.reduce(vm.section.columns, function(columnMap, column) {
+                columnMap[column.name] = column;
+                return columnMap;
+            }, {});
             refreshAvailableTags();
         }
 
@@ -79,8 +80,8 @@
             return column.columnDefinition.sources.length > 1;
         }
 
-        function sourceDisplayName(name) {
-            return messageService.get(COLUMN_SOURCES.getLabel(name));
+        function sourceDisplayName(source) {
+            return messageService.get(COLUMN_SOURCES.getLabel(source));
         }
 
         function canAssignTag(column) {
@@ -114,6 +115,7 @@
                 var addedColumn = _.last(vm.section.columns);
                 setDefaultName(addedColumn);
                 updateLabel(addedColumn);
+                updateDisplayOrder();
             }
         }
 
