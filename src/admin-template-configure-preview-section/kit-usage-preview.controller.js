@@ -21,9 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('KitUsagePreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService'];
+    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService) {
+    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService) {
 
         var vm = this;
 
@@ -35,12 +35,8 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            vm.collection = _.find(vm.sections, function(section) {
-                return section.name === 'collection';
-            });
-            vm.service = _.find(vm.sections, function(section) {
-                return section.name === 'service';
-            });
+            vm.collection = templateConfigureService.getCollection(vm.sections);
+            vm.service = templateConfigureService.getService(vm.sections);
         }
 
         function getColumn(service, collection) {

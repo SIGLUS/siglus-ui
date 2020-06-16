@@ -28,7 +28,8 @@
         'ui.router',
         'openlmis-rights',
         'openlmis-modal',
-        'refresh-confirm'
+        'refresh-confirm',
+        'requisition-constants'
     ]);
 
 })();

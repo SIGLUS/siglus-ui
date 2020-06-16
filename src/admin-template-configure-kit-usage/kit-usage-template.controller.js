@@ -45,12 +45,8 @@
             vm.template = template;
             vm.tags = tags;
             enableCurrentSection();
-            vm.collection = _.find(template.kitUsage, function(section) {
-                return section.name === 'collection';
-            });
-            vm.service = _.find(template.kitUsage, function(section) {
-                return section.name === 'service';
-            });
+            vm.collection = templateConfigureService.getCollection(template.kitUsage);
+            vm.service = templateConfigureService.getService(template.kitUsage);
         }
 
         function enableCurrentSection() {
