@@ -50,6 +50,7 @@
                         <div ng-if="vm.canChangeSource(column)">
                             <select ng-model="column.source"
                                     ng-options="source as vm.sourceDisplayName(source) for source in column.columnDefinition.sources"
+                                    ng-change="vm.sourceChanged(column)"
                             ></select>
                         </div>
                     </td>
