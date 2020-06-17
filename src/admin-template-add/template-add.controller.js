@@ -287,7 +287,6 @@
 
             vm.availableColumns.forEach(function(column) {
                 var nonDisplayedColumns = [
-                    TEMPLATE_COLUMNS.SKIPPED,
                     TEMPLATE_COLUMNS.REQUESTED_QUANTITY_EXPLANATION,
                     TEMPLATE_COLUMNS.IDEAL_STOCK_AMOUNT,
                     TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY_ISA,

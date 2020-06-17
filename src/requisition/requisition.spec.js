@@ -964,7 +964,8 @@ describe('Requisition', function() {
         });
     });
 
-    describe('skipAllFullSupplyLineItems', function() {
+    // #286 high level approver can skip some products in requisition
+    describe('skipAllLineItems', function() {
 
         beforeEach(function() {
             var builder = new this.RequisitionDataBuilder(),
@@ -993,31 +994,31 @@ describe('Requisition', function() {
             });
         });
 
-        it('should skip all full supply line items', function() {
-            this.requisition.skipAllFullSupplyLineItems();
+        it('should skip all line items', function() {
+            this.requisition.skipAllLineItems();
 
             expect(this.requisition.requisitionLineItems[0].skipped).toBe(true);
             expect(this.requisition.requisitionLineItems[1].skipped).toBe(true);
         });
 
-        it('should not touch non full supply line items', function() {
-            this.requisition.skipAllFullSupplyLineItems();
-
-            expect(this.requisition.requisitionLineItems[2].skipped).toBe(true);
-            expect(this.requisition.requisitionLineItems[3].skipped).toBe(false);
-        });
+        // it('should not touch non full supply line items', function() {
+        //     this.requisition.skipAllFullSupplyLineItems();
+        //
+        //     expect(this.requisition.requisitionLineItems[2].skipped).toBe(true);
+        //     expect(this.requisition.requisitionLineItems[3].skipped).toBe(false);
+        // });
 
         it('should respect line items ability to skip', function() {
             spyOn(this.requisition.requisitionLineItems[1], 'canBeSkipped').andReturn(false);
 
-            this.requisition.skipAllFullSupplyLineItems();
+            this.requisition.skipAllLineItems();
 
             expect(this.requisition.requisitionLineItems[1].skipped).toBe(false);
         });
 
     });
 
-    describe('unskipAllFullSupplyLineItems', function() {
+    describe('unskipAllLineItems', function() {
 
         beforeEach(function() {
             var builder = new this.RequisitionDataBuilder(),
@@ -1042,21 +1043,22 @@ describe('Requisition', function() {
                 .build();
         });
 
-        it('should skip all full supply line items', function() {
-            this.requisition.unskipAllFullSupplyLineItems();
+        it('should skip all line items', function() {
+            this.requisition.unskipAllLineItems();
 
             expect(this.requisition.requisitionLineItems[0].skipped).toBe(false);
             expect(this.requisition.requisitionLineItems[1].skipped).toBe(false);
         });
 
-        it('should not touch non full supply line items', function() {
-            this.requisition.unskipAllFullSupplyLineItems();
-
-            expect(this.requisition.requisitionLineItems[2].skipped).toBe(true);
-            expect(this.requisition.requisitionLineItems[3].skipped).toBe(false);
-        });
+        // it('should not touch non full supply line items', function() {
+        //     this.requisition.unskipAllFullSupplyLineItems();
+        //
+        //     expect(this.requisition.requisitionLineItems[2].skipped).toBe(true);
+        //     expect(this.requisition.requisitionLineItems[3].skipped).toBe(false);
+        // });
 
     });
+    // #286 ends here
 
     describe('addLineItem', function() {
 

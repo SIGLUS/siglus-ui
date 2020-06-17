@@ -266,24 +266,26 @@ describe('ProductGridCell', function() {
             this.scope.column = skipColumn;
         });
 
-        it('should be always disabled if user can not edit', function() {
-            this.scope.userCanEdit = false;
-            this.scope.lineItem.canBeSkipped.andReturn(true);
-
-            element = this.getCompiledElement();
-
-            expect(getSkipInput().attr('disabled')).toBe('disabled');
-
-            this.scope.lineItem.canBeSkipped.andReturn(false);
-            this.scope.$digest();
-
-            expect(getSkipInput().attr('disabled')).toBe('disabled');
-
-            this.scope.lineItem.canBeSkipped.andReturn(true);
-            this.scope.$digest();
-
-            expect(getSkipInput().attr('disabled')).toBe('disabled');
-        });
+        // #286 high level approver can skip some products in requisition
+        // it('should be always disabled if user can not edit', function() {
+        //     this.scope.userCanEdit = false;
+        //     this.scope.lineItem.canBeSkipped.andReturn(true);
+        //
+        //     element = this.getCompiledElement();
+        //
+        //     expect(getSkipInput().attr('disabled')).toBe('disabled');
+        //
+        //     this.scope.lineItem.canBeSkipped.andReturn(false);
+        //     this.scope.$digest();
+        //
+        //     expect(getSkipInput().attr('disabled')).toBe('disabled');
+        //
+        //     this.scope.lineItem.canBeSkipped.andReturn(true);
+        //     this.scope.$digest();
+        //
+        //     expect(getSkipInput().attr('disabled')).toBe('disabled');
+        // });
+        // #286 ends here
 
         it('should change disabled state if lineItem changes its skipability and user has right to edit', function() {
             this.scope.userCanEdit = true;

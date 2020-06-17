@@ -413,12 +413,17 @@
                 });
         }
 
+        // #286 high level approver can skip some products in requisition
         function showSkipControls() {
-            return vm.userCanEdit &&
-                fullSupply &&
-                !requisition.emergency &&
-                requisition.template.hasSkipColumn();
+            var result = false;
+            columns.forEach(function(column) {
+                if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
+                    result = column.$display;
+                }
+            });
+            return requisition.template.hasSkipColumn() && result;
         }
+        // #286 ends here
 
         function showAddFullSupplyProductsButton() {
             return vm.userCanEdit && fullSupply && requisition.emergency;

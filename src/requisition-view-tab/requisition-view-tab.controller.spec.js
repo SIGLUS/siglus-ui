@@ -395,81 +395,80 @@ describe('ViewTabController', function() {
                 expect(this.vm.showSkipControls).toBe(false);
             });
 
-            it('should be shown if the requisition status is INITIATED', function() {
+            it('should be shown if the template has skip column and the column is display', function() {
                 this.requisition.template.hasSkipColumn.andReturn(true);
-                this.canSubmit = true;
 
                 this.initController();
 
                 expect(this.vm.showSkipControls).toBe(true);
             });
 
-            it('should be hidden if requisition status is INITIATED but user does not have right to submit',
+            it('should be hidden if the template has skip column and the column is not display',
                 function() {
                     this.requisition.template.hasSkipColumn.andReturn(true);
-                    this.canApproveAndReject = false;
+                    this.columns[0].$display = false;
 
                     this.initController();
 
                     expect(this.vm.showSkipControls).toBe(false);
                 });
 
-            it('should be shown if the requisition status is SUBMITTED and user has authorize right', function() {
-                this.canAuthorize = true;
-                this.requisition.template.hasSkipColumn.andReturn(true);
+            // it('should be shown if the requisition status is SUBMITTED and user has authorize right', function() {
+            //     this.canAuthorize = true;
+            //     this.requisition.template.hasSkipColumn.andReturn(true);
+            //
+            //     this.initController();
+            //
+            //     expect(this.vm.showSkipControls).toBe(true);
+            // });
 
-                this.initController();
-
-                expect(this.vm.showSkipControls).toBe(true);
-            });
-
-            it('should be shown if the requisition status is REJECTED', function() {
-                this.requisition.template.hasSkipColumn.andReturn(true);
-                this.canSubmit = true;
-
-                this.initController();
-
-                expect(this.vm.showSkipControls).toBe(true);
-            });
-
-            it('should be hidden if the requisition status is REJECTED and user can not submit', function() {
-                this.requisition.template.hasSkipColumn.andReturn(true);
-                this.canApproveAndReject = false;
-
-                this.initController();
-
-                expect(this.vm.showSkipControls).toBe(false);
-            });
-
-            it('should be shown if the requisition template has a skip column', function() {
-                this.requisition.template.hasSkipColumn.andReturn(true);
-                this.canSubmit = true;
-                this.columns[0].name = 'skipped';
-
-                this.initController();
-
-                expect(this.vm.showSkipControls).toBe(true);
-            });
-
-            it('should be hidden if the requisition template does not have a skip column', function() {
-                this.requisition.template.hasSkipColumn.andReturn(false);
-                this.columns[0].name = 'foo';
-                this.canSubmit = true;
-
-                this.initController();
-
-                expect(this.vm.showSkipControls).toBe(false);
-            });
-
-            it('should be hidden if user does not authorize right and requisition is submitted', function() {
-                this.canAuthorize = false;
-                this.canApproveAndReject = false;
-                this.requisition.template.hasSkipColumn.andReturn(true);
-
-                this.initController();
-
-                expect(this.vm.showSkipControls).toBe(false);
-            });
+            // it('should be shown if the requisition status is REJECTED', function() {
+            //     this.requisition.template.hasSkipColumn.andReturn(true);
+            //     this.canSubmit = true;
+            //
+            //     this.initController();
+            //
+            //     expect(this.vm.showSkipControls).toBe(true);
+            // });
+            //
+            // it('should be hidden if the requisition status is REJECTED and user can not submit', function() {
+            //     this.requisition.template.hasSkipColumn.andReturn(true);
+            //     this.canApproveAndReject = false;
+            //
+            //     this.initController();
+            //
+            //     expect(this.vm.showSkipControls).toBe(false);
+            // });
+            //
+            // it('should be shown if the requisition template has a skip column', function() {
+            //     this.requisition.template.hasSkipColumn.andReturn(true);
+            //     this.canSubmit = true;
+            //     this.columns[0].name = 'skipped';
+            //
+            //     this.initController();
+            //
+            //     expect(this.vm.showSkipControls).toBe(true);
+            // });
+            //
+            // it('should be hidden if the requisition template does not have a skip column', function() {
+            //     this.requisition.template.hasSkipColumn.andReturn(false);
+            //     this.columns[0].name = 'foo';
+            //     this.canSubmit = true;
+            //
+            //     this.initController();
+            //
+            //     expect(this.vm.showSkipControls).toBe(false);
+            // });
+            //
+            // it('should be hidden if user does not authorize right and requisition is submitted', function() {
+            //     this.canAuthorize = false;
+            //     this.canApproveAndReject = false;
+            //     this.requisition.template.hasSkipColumn.andReturn(true);
+            //
+            //     this.initController();
+            //
+            //     expect(this.vm.showSkipControls).toBe(false);
+            // });
 
         });
 
@@ -862,7 +861,9 @@ describe('ViewTabController', function() {
         this.vm = this.$controller('ViewTabController', {
             lineItems: [],
             items: [],
-            columns: [],
+            // #286 high level approver can skip some products in requisition
+            columns: this.columns,
+            // #286 ends here
             requisition: this.requisition,
             canSubmit: this.canSubmit,
             // SIGLUS-REFACTOR: starts here

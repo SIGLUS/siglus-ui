@@ -118,8 +118,10 @@
         Requisition.prototype.$isSkipped = isSkipped;
         Requisition.prototype.$isAfterAuthorize = isAfterAuthorize;
         Requisition.prototype.$getProducts = getProducts;
-        Requisition.prototype.skipAllFullSupplyLineItems = skipAllFullSupplyLineItems;
-        Requisition.prototype.unskipAllFullSupplyLineItems = unskipAllFullSupplyLineItems;
+        // #286 high level approver can skip some products in requisition
+        Requisition.prototype.skipAllLineItems = skipAllLineItems;
+        Requisition.prototype.unskipAllLineItems = unskipAllLineItems;
+        // #286 ends here
         Requisition.prototype.getAvailableNonFullSupplyProducts = getAvailableNonFullSupplyProducts;
         Requisition.prototype.getAvailableFullSupplyProducts = getAvailableFullSupplyProducts;
         Requisition.prototype.getSkippedFullSupplyProducts = getSkippedFullSupplyProducts;
@@ -648,20 +650,18 @@
             });
         }
 
+        // #286 high level approver can skip some products in requisition
         /**
          * @ngdoc method
          * @methodOf requisition.Requisition
-         * @name skipAllFullSupplyLineItems
+         * @name skipAllLineItems
          *
          * @description
-         * Skips all full supply line items.
+         * Skips all line items.
          */
-        function skipAllFullSupplyLineItems() {
-            var requisition = this,
-                fullSupplyLineItems = getFullSupplyLineItems(this.requisitionLineItems);
-
-            fullSupplyLineItems.forEach(function(lineItem) {
-                if (lineItem.canBeSkipped(requisition)) {
+        function skipAllLineItems() {
+            this.requisitionLineItems.forEach(function(lineItem) {
+                if (lineItem.canBeSkipped()) {
                     lineItem.skipped = true;
                 }
             });
@@ -670,16 +670,17 @@
         /**
          * @ngdoc method
          * @methodOf requisition.Requisition
-         * @name skipAllFullSupplyLineItems
+         * @name skipAllLineItems
          *
          * @description
-         * Unskips all full supply line items.
+         * Unskips all line items.
          */
-        function unskipAllFullSupplyLineItems() {
-            getFullSupplyLineItems(this.requisitionLineItems).forEach(function(lineItem) {
+        function unskipAllLineItems() {
+            this.requisitionLineItems.forEach(function(lineItem) {
                 lineItem.skipped = false;
             });
         }
+        // #286 ends here
 
         /**
          * @ngdoc method
@@ -703,11 +704,13 @@
                 });
         }
 
-        function getFullSupplyLineItems(lineItems) {
-            return lineItems.filter(function(lineItem) {
-                return lineItem.$program.fullSupply;
-            });
-        }
+        // #286 high level approver can skip some products in requisition
+        // function getFullSupplyLineItems(lineItems) {
+        //     return lineItems.filter(function(lineItem) {
+        //         return lineItem.$program.fullSupply;
+        //     });
+        // }
+        // #286 ends here
 
         function getOrderableProgramById(programs, programId) {
             return programs.filter(function(program) {

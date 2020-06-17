@@ -10,6 +10,11 @@
                 <span ng-if="vm.showAddFullSupplyProductControls">
                     {{ vm.skippedFullSupplyProductCountMessage() }}
                 </span>
+                <h4 ng-show="vm.showSkipControls">{{'requisitionViewTab.skip' | message}}</h4>
+                <ul ng-show="vm.showSkipControls">
+                    <li><a ng-click="vm.requisition.skipAllLineItems()">{{'requisitionViewTab.all' | message}}</a></li>
+                    <li><a ng-click="vm.requisition.unskipAllLineItems()">{{'requisitionViewTab.none' | message}}</a></li>
+                </ul>
             </div>
             <div class="openlmis-flex-table">
                 <table class="left-sub-table" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
