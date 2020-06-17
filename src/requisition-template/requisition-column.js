@@ -215,7 +215,8 @@
 
         function displayQuantityAuthorized(column, requisition) {
             return column.isDisplayed && (requisition.isHistory ||
-                hasAuthorizeRight(requisition) || hasApproveRight(requisition)
+                hasAuthorizeRight(requisition) ||
+                (requisition.$isAfterAuthorize() && hasApproveRight(requisition))
             );
         }
 
