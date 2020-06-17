@@ -45,6 +45,7 @@
         vm.canAssignTag = canAssignTag;
         vm.getSiglusColumnError = templateValidator.getSiglusColumnError;
         vm.refreshAvailableTags = refreshAvailableTags;
+        vm.sourceChanged = sourceChanged;
         vm.addColumn = addColumn;
         vm.removeColumn = removeColumn;
         vm.overMaxColumnsLength = overMaxColumnsLength;
@@ -165,6 +166,13 @@
                 return !column.columnDefinition.id;
             });
             return addedColumns.length >= MAX_ADD_COLUMNS_LENGTH;
+        }
+
+        function sourceChanged(column) {
+            if (!columnUtils.isStockCards(column) && column.columnDefinition.supportsTag && column.tag) {
+                column.tag = null;
+                refreshAvailableTags();
+            }
         }
     }
 })();

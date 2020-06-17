@@ -328,4 +328,35 @@ describe('TemplateConfigureSectionController', function() {
             expect(vm.dropCallback({}, 1, vm.section.columns[2])).toBe(column);
         });
     });
+
+    describe('sourceChanged', function() {
+
+        it('should remove tag if column source change to stock card', function() {
+            vm.section.columns[0].tag = 'tag-1';
+            vm.section.columns[0].source = COLUMN_SOURCES.USER_INPUT;
+            vm.sourceChanged(vm.section.columns[0]);
+
+            expect(vm.section.columns[0].tag).toBe(null);
+        });
+
+        it('should refresh tag if column has tag', function() {
+            var column = {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: true
+                }
+            };
+            vm.section.columns.push(column);
+            vm.section.columns[0].tag = 'tag-1';
+            vm.refreshAvailableTags();
+
+            expect(vm.availableTags.new1).toEqual(['tag-2', 'tag-3']);
+
+            vm.section.columns[0].source = COLUMN_SOURCES.USER_INPUT;
+            vm.sourceChanged(vm.section.columns[0]);
+
+            expect(vm.availableTags.new1).toEqual(['tag-1', 'tag-2', 'tag-3']);
+        });
+    });
 });
