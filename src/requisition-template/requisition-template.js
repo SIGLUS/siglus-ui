@@ -120,10 +120,12 @@
                         if (isInternalApproval) {
                             columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
                             columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = false;
+                            columnsMap[TEMPLATE_COLUMNS.SKIPPED].$display = false;
                         }
                     } else {
                         // approved quantity handled by requisition-column.js displayColumn()
                         columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
+                        columnsMap[TEMPLATE_COLUMNS.SKIPPED].$display = false;
                     }
                 }
 

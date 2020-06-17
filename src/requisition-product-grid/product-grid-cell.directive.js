@@ -152,7 +152,9 @@
             }
 
             function canSkip() {
-                return scope.userCanEdit && lineItem.canBeSkipped(scope.requisition);
+                // #286 high level approver can skip some products in requisition
+                return !scope.isHistory && lineItem.canBeSkipped();
+                // #286 ends here
             }
 
         }

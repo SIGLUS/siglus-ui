@@ -238,64 +238,64 @@ describe('LineItem', function() {
         });
     });
 
+    // #286 high level approver can skip some products in requisition
     describe('canBeSkipped', function() {
 
         it('should return true if line item can be skipped', function() {
-            lineItem.requestedQuantity = 0;
-            lineItem.requestedQuantityExplanation = '';
+            lineItem.approvedQuantity = '';
 
-            var result = lineItem.canBeSkipped(this.requisition);
+            var result = lineItem.canBeSkipped();
 
             expect(result).toBe(true);
         });
 
         it('should return false if line item cannot be skipped', function() {
-            lineItem.requestedQuantity = 100;
-            lineItem.requestedQuantityExplanation = 'we need more';
+            lineItem.approvedQuantity = 100;
 
-            var result = lineItem.canBeSkipped(this.requisition);
-
-            expect(result).toBe(false);
-        });
-
-        it('should return false if requisition status is authorized', function() {
-            lineItem.requestedQuantity = 0;
-            lineItem.requestedQuantityExplanation = '';
-            this.requisition.$isAuthorized.andReturn(true);
-
-            var result = lineItem.canBeSkipped(this.requisition);
+            var result = lineItem.canBeSkipped();
 
             expect(result).toBe(false);
         });
 
-        it('should return false if requisition status is in approval', function() {
-            lineItem.requestedQuantity = 0;
-            lineItem.requestedQuantityExplanation = '';
-            this.requisition.$isInApproval.andReturn(true);
-
-            var result = lineItem.canBeSkipped(this.requisition);
-
-            expect(result).toBe(false);
-        });
-
-        it('should return false if requisition status is approved', function() {
-            lineItem.requestedQuantity = 0;
-            lineItem.requestedQuantityExplanation = '';
-            this.requisition.$isApproved.andReturn(true);
-
-            var result = lineItem.canBeSkipped(this.requisition);
-
-            expect(result).toBe(false);
-        });
-
-        it('should return false if requisition status is released', function() {
-            lineItem.requestedQuantity = 0;
-            lineItem.requestedQuantityExplanation = '';
-            this.requisition.$isReleased.andReturn(true);
-
-            var result = lineItem.canBeSkipped(this.requisition);
-
-            expect(result).toBe(false);
-        });
+        // it('should return false if requisition status is authorized', function() {
+        //     lineItem.requestedQuantity = 0;
+        //     lineItem.requestedQuantityExplanation = '';
+        //     this.requisition.$isAuthorized.andReturn(true);
+        //
+        //     var result = lineItem.canBeSkipped(this.requisition);
+        //
+        //     expect(result).toBe(false);
+        // });
+        //
+        // it('should return false if requisition status is in approval', function() {
+        //     lineItem.requestedQuantity = 0;
+        //     lineItem.requestedQuantityExplanation = '';
+        //     this.requisition.$isInApproval.andReturn(true);
+        //
+        //     var result = lineItem.canBeSkipped(this.requisition);
+        //
+        //     expect(result).toBe(false);
+        // });
+        //
+        // it('should return false if requisition status is approved', function() {
+        //     lineItem.requestedQuantity = 0;
+        //     lineItem.requestedQuantityExplanation = '';
+        //     this.requisition.$isApproved.andReturn(true);
+        //
+        //     var result = lineItem.canBeSkipped(this.requisition);
+        //
+        //     expect(result).toBe(false);
+        // });
+        //
+        // it('should return false if requisition status is released', function() {
+        //     lineItem.requestedQuantity = 0;
+        //     lineItem.requestedQuantityExplanation = '';
+        //     this.requisition.$isReleased.andReturn(true);
+        //
+        //     var result = lineItem.canBeSkipped(this.requisition);
+        //
+        //     expect(result).toBe(false);
+        // });
     });
+    // #286 ends here
 });

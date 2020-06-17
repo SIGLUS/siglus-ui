@@ -181,23 +181,11 @@
          * @param {Object} requisition Requisition to which line item belongs
          * @return {Boolean} true if line item can be skipped
          */
-        function canBeSkipped(requisition) {
-            var result = true,
-                lineItem = this,
-                columns = requisition.template.getColumns(!this.$program.fullSupply);
-
-            if (requisition.$isApproved() || requisition.$isAuthorized() || requisition.$isInApproval()
-                || requisition.$isReleased()) {
-                return false;
-            }
-
-            columns.forEach(function(column) {
-                if (isInputDisplayedAndNotEmpty(column, lineItem)) {
-                    result = false;
-                }
-            });
-            return result;
+        // #286 high level approver can skip some products in requisition
+        function canBeSkipped() {
+            return isEmpty(this.approvedQuantity);
         }
+        // #286 ends here
 
         /**
          * @ngdoc method
@@ -213,12 +201,14 @@
             return !this.$program.fullSupply;
         }
 
-        function isInputDisplayedAndNotEmpty(column, lineItem) {
-            return column.$display
-                && column.source === COLUMN_SOURCES.USER_INPUT
-                && column.$type !== COLUMN_TYPES.BOOLEAN
-                && !isEmpty(lineItem[column.name]);
-        }
+        // #286 high level approver can skip some products in requisition
+        // function isInputDisplayedAndNotEmpty(column, lineItem) {
+        //     return column.$display
+        //         && column.source === COLUMN_SOURCES.USER_INPUT
+        //         && column.$type !== COLUMN_TYPES.BOOLEAN
+        //         && !isEmpty(lineItem[column.name]);
+        // }
+        // #286 ends here
 
         function isEmpty(value) {
             return !value || !value.toString().trim();
