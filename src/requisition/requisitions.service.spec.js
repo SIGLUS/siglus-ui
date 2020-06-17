@@ -316,7 +316,8 @@ describe('requisitionService', function() {
             expect(this.statusMessagesStorage.put).toHaveBeenCalled();
         });
 
-        it('should fetch FTAPs only for full supply orderables', function() {
+        // #227: user can add both full supply & non-fully supply product
+        it('should fetch FTAPs for both full supply & non-fully supply orderables', function() {
             this.$httpBackend
                 .expectGET(this.requisitionUrlFactory(getRequisitionUrl))
                 .respond(200, this.requisition, headers);
@@ -336,9 +337,14 @@ describe('requisitionService', function() {
                 }, {
                     id: this.lineItems[1].approvedProduct.id,
                     versionNumber: this.lineItems[1].approvedProduct.versionNumber
+                },
+                {
+                    id: this.lineItems[2].approvedProduct.id,
+                    versionNumber: this.lineItems[2].approvedProduct.versionNumber
                 }
             ]);
         });
+        // #227: ends here
 
         it('should get requisition by id from offline resources', function() {
             this.offlineService.isOffline.andReturn(true);
