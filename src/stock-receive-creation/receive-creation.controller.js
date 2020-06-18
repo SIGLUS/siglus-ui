@@ -468,11 +468,6 @@
         function confirmSubmit(signature) {
             loadingModalService.open();
 
-            // #284: lost date when saving draft
-            if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
-                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
-            }
-            // #284: ends here
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             addedLineItems.forEach(function(lineItem) {
