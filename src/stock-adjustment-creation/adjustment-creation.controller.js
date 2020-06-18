@@ -664,6 +664,9 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
+            // #284: reload after after changing page
+            vm.search(true);
+            // #284: ends here
         }
 
         function initViewModel() {

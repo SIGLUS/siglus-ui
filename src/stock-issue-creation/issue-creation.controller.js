@@ -472,6 +472,7 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
+            vm.search(true);
         }
 
         function initViewModel() {
