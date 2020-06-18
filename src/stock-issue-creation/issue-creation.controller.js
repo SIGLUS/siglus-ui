@@ -353,11 +353,6 @@
         };
 
         vm.save = function() {
-            // #284: lost date when saving draft
-            if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
-                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
-            }
-            // #284: ends here
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             if ($stateParams.keyword) {
