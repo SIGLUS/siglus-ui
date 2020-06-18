@@ -513,7 +513,7 @@
         // SIGLUS-REFACTOR: starts here
         vm.save = function() {
             if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
-                vm.addedLineItems = mergeByHashKey(vm.addedLineItems, vm.displayItems);
+                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
             }
             var addedLineItems = angular.copy(vm.addedLineItems);
 
@@ -533,14 +533,6 @@
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value) || value === '';
-        }
-
-        function mergeByHashKey(target, source) {
-            return _.map(target, function(targetItem) {
-                return _.extend(targetItem, _.findWhere(source, {
-                    $$hashKey: targetItem.$$hashKey
-                }));
-            });
         }
 
         function validateAllAddedItems() {
@@ -593,7 +585,7 @@
             loadingModalService.open();
 
             if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
-                vm.addedLineItems = mergeByHashKey(vm.addedLineItems, vm.displayItems);
+                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
             }
             var addedLineItems = angular.copy(vm.addedLineItems);
 

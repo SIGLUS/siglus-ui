@@ -353,9 +353,11 @@
         };
 
         vm.save = function() {
+            // #284: lost date when saving draft
             if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
-                vm.addedLineItems = mergeByHashKey(vm.addedLineItems, vm.displayItems);
+                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
             }
+            // #284: ends here
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             if ($stateParams.keyword) {
@@ -374,14 +376,6 @@
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value);
-        }
-
-        function mergeByHashKey(target, source) {
-            return _.map(target, function(targetItem) {
-                return _.extend(targetItem, _.findWhere(source, {
-                    $$hashKey: targetItem.$$hashKey
-                }));
-            });
         }
 
         function validateAllAddedItems() {
@@ -427,9 +421,11 @@
         function confirmSubmit(signature) {
             loadingModalService.open();
 
+            // #284: lost date when saving draft
             if (!angular.equals(vm.addedLineItems, vm.displayItems)) {
-                vm.addedLineItems = mergeByHashKey(vm.addedLineItems, vm.displayItems);
+                vm.addedLineItems = angular.merge(vm.addedLineItems, vm.displayItems);
             }
+            // #284: ends here
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             addedLineItems.forEach(function(lineItem) {
