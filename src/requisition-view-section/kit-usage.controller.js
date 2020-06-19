@@ -39,7 +39,8 @@
                 var collectionName = lineItem.collection;
                 lineItem[collectionName] = collectionColumnsMap[collectionName];
                 angular.forEach(Object.keys(lineItem.services), function(serviceName) {
-                    _.extend(lineItem.services[serviceName], serviceColumnsMap[serviceName]);
+                    lineItem.services[serviceName] = angular.merge({},
+                        serviceColumnsMap[serviceName], lineItem.services[serviceName]);
                 });
             });
         }
