@@ -26,7 +26,7 @@
     // #264: warehouse clerk can add product to orders
     function config($stateProvider, FULFILLMENT_RIGHTS, selectProductsModalStateProvider) {
         selectProductsModalStateProvider.stateWithAddOrderablesChildState('openlmis.orders.shipmentView', {
-    // #264: ends here
+            // #264: ends here
             controller: 'ShipmentViewController',
             controllerAs: 'vm',
             label: 'shipmentView.viewShipment',

@@ -169,7 +169,7 @@
             selectProducts({
                 products: availableProducts
             })
-                .then(function(selectedProducts) {
+                .then(function() {
                     // console.log(selectedProducts);
                 });
         }
