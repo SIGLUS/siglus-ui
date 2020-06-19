@@ -43,7 +43,7 @@
 
         vm.template = undefined;
 
-        vm.previousColumnsMap = undefined;
+        vm.previousTemplate = undefined;
 
         function onInit() {
             vm.template = template;

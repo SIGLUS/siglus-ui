@@ -39,6 +39,18 @@
                 'orderable.fullProductName': 'Name 2',
                 'orderable.productCode': 'Product 2'
             }];
+            vm.columns = getColumns();
+        }
+
+        function getColumns() {
+            var columns = [];
+            for (var columnName in vm.columnsMap) {
+                if (vm.columnsMap.hasOwnProperty(columnName) &&
+                    vm.columnsMap[columnName].isDisplayed) {
+                    columns.push(vm.columnsMap[columnName]);
+                }
+            }
+            return columns;
         }
 
         function getColumnValue(column, lineItem) {

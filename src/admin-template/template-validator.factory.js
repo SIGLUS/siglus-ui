@@ -99,10 +99,10 @@
 
         // SIGLUS-REFACTOR: starts here
         function isOptionsValid(template) {
-            return !!template.extension && (template.extension.enableConsultationNumber ||
+            return template.extension.enableConsultationNumber ||
                 template.extension.enableKitUsage || template.extension.enableProduct
                 || template.extension.enablePatientLineItem || template.extension.enableRegimen
-                || template.extension.enableRapidTestConsumption || template.extension.enableUsageInformation);
+                || template.extension.enableRapidTestConsumption || template.extension.enableUsageInformation;
         }
         // SIGLUS-REFACTOR: ends here
 
