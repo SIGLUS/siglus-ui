@@ -35,7 +35,8 @@ describe('KitUsageTemplateController', function() {
             .withColumn(new TemplateColumnDataBuilder().buildTotalColumn())
             .withColumn(new TemplateColumnDataBuilder().buildRemarksColumn())
             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
-            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn());
+            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn())
+            .build();
         collection = {
             name: 'collection',
             columns: []

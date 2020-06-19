@@ -50,9 +50,6 @@
         }
 
         function enableCurrentSection() {
-            if (!vm.template.extension) {
-                vm.template.extension = {};
-            }
             vm.template.extension.enableKitUsage = true;
         }
 

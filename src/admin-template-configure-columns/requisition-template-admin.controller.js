@@ -121,12 +121,11 @@
             // #173: ends here
         }
 
+        // #173: product sections for template configuration
         function enableCurrentSection() {
-            if (!vm.template.extension) {
-                vm.template.extension = {};
-            }
             vm.template.extension.enableProduct = true;
         }
+        // #173: ends here
 
         /**
          * @ngdoc method

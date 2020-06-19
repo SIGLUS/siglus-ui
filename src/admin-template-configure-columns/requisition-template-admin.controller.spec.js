@@ -13,25 +13,26 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('RequisitionTemplatePreviewController', function() {
+describe('RequisitionTemplateAdminController', function() {
 
     //tested
     var vm;
 
     //mocks
-    var template, initController;
+    var template, program, tags, loadingModalService;
 
     //injects
-    var q, $controller, state, notificationService, rootScope, loadingModalService,
+    var q, $controller, state, notificationService, COLUMN_SOURCES, rootScope, MAX_COLUMN_DESCRIPTION_LENGTH,
         confirmService, requisitionTemplateService, TemplateColumnDataBuilder, TemplateDataBuilder;
 
     beforeEach(function() {
-        module('admin-template-configure-preview');
+        module('admin-template-configure-columns');
 
         inject(function($injector) {
             q = $injector.get('$q');
             state = $injector.get('$state');
             notificationService = $injector.get('notificationService');
+            COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             loadingModalService = $injector.get('loadingModalService');
             rootScope = $injector.get('$rootScope');
             $controller = $injector.get('$controller');
@@ -39,38 +40,60 @@ describe('RequisitionTemplatePreviewController', function() {
             requisitionTemplateService = $injector.get('requisitionTemplateService');
             TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');
             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
+            MAX_COLUMN_DESCRIPTION_LENGTH = $injector.get('MAX_COLUMN_DESCRIPTION_LENGTH');
         });
 
         template = new TemplateDataBuilder()
             .withColumn(new TemplateColumnDataBuilder().buildTotalColumn())
             .withColumn(new TemplateColumnDataBuilder().buildRemarksColumn())
             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
-            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn());
-        template.kitUsage = [];
+            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn())
+            // #248: kit usage section configure
+            .build();
+        // #248: ends here
 
-        initController = function() {
-            vm = $controller('RequisitionTemplatePreviewController', {
-                template: template,
-                $state: state
-            });
-            vm.$onInit();
-        };
+        tags = [
+            'tag-1',
+            'tag-2',
+            'tag-3'
+        ];
+
+        vm = $controller('RequisitionTemplateAdminController', {
+            program: program,
+            template: template,
+            tags: tags
+        });
+        vm.$onInit();
     });
 
     describe('onInit', function() {
 
         it('should set template', function() {
-            initController();
-
             expect(vm.template).toEqual(template);
         });
+
+        it('should set program', function() {
+            expect(vm.program).toEqual(program);
+        });
+
+        it('should set maxColumnDescriptionLength', function() {
+            expect(vm.maxColumnDescriptionLength).toEqual(MAX_COLUMN_DESCRIPTION_LENGTH);
+        });
+
+        it('should set availableTags', function() {
+            expect(vm.availableTags).toEqual({});
+        });
+
+        // #248: kit usage section configure
+        it('should set enableProduct', function() {
+            expect(vm.template.extension.enableProduct).toBe(true);
+        });
+        // #248: ends here
     });
 
     describe('goToTemplateList', function() {
 
         it('should reload state', function() {
-            initController();
-
             spyOn(state, 'go');
             vm.goToTemplateList();
 
@@ -101,8 +124,6 @@ describe('RequisitionTemplatePreviewController', function() {
             spyOn(requisitionTemplateService, 'save').andReturn(q.resolve());
 
             template.isValid = jasmine.createSpy().andReturn(true);
-
-            initController();
         });
 
         it('should display error message when template is invalid', function() {
@@ -165,6 +186,64 @@ describe('RequisitionTemplatePreviewController', function() {
             expect(loadingModalService.close).toHaveBeenCalled();
             expect(requisitionTemplateService.save).toHaveBeenCalledWith(template);
             expect(errorNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.templateSave.failure');
+        });
+    });
+
+    it('should call column drop method and display error notification when drop failed', function() {
+        var notificationServiceSpy = jasmine.createSpy();
+
+        template.moveColumn = jasmine.createSpy().andReturn(false);
+
+        spyOn(notificationService, 'error').andCallFake(notificationServiceSpy);
+
+        vm.dropCallback(null, 1, template.columnsMap.total);
+
+        expect(notificationServiceSpy).toHaveBeenCalled();
+    });
+
+    it('can change source works correctly', function() {
+        var beginningBalanceColumn = new TemplateColumnDataBuilder().buildBeginningBalanceColumn(),
+            requestedQuantityColumn = new TemplateColumnDataBuilder().buildRequestedQuantityColumn(),
+            stockOnHandColumn = new TemplateColumnDataBuilder().buildStockOnHandColumn();
+
+        requestedQuantityColumn.columnDefinition.sources = [COLUMN_SOURCES.USER_INPUT];
+
+        spyOn(beginningBalanceColumn, 'isStockBasedColumn').andReturn(true);
+        spyOn(requestedQuantityColumn, 'isStockBasedColumn').andReturn(false);
+        spyOn(stockOnHandColumn, 'isStockBasedColumn').andReturn(true);
+
+        expect(vm.canChangeSource(beginningBalanceColumn)).toBe(true);
+        expect(vm.canChangeSource(requestedQuantityColumn)).toBe(false);
+
+        template.populateStockOnHandFromStockCards = true;
+
+        expect(vm.canChangeSource(stockOnHandColumn)).toBe(false);
+        expect(vm.canChangeSource(beginningBalanceColumn)).toBe(false);
+    });
+
+    describe('refreshAvailableTags', function() {
+
+        beforeEach(function() {
+            vm.template.columnsMap.maximumStockQuantity = new TemplateColumnDataBuilder()
+                .withTag('tag-1')
+                .buildMaximumStockQuantityColumn();
+            vm.template.columnsMap.calculatedOrderQuantity = new TemplateColumnDataBuilder()
+                .withTag('tag-2')
+                .buildCalculatedOrderQuantityColumn();
+
+            vm.refreshAvailableTags();
+        });
+
+        it('should set list of available tags to columns that supports tags', function() {
+            expect(vm.availableTags.maximumStockQuantity).toEqual(['tag-3', 'tag-1']);
+            expect(vm.availableTags.calculatedOrderQuantity).toEqual(['tag-3', 'tag-2']);
+        });
+
+        it('should not set list of available tags to columns that not supports tags', function() {
+            expect(vm.availableTags.total).toBe(undefined);
+            expect(vm.availableTags.remarks).toBe(undefined);
+            expect(vm.availableTags.stockOnHand).toBe(undefined);
+            expect(vm.availableTags.averageConsumption).toBe(undefined);
         });
     });
 });

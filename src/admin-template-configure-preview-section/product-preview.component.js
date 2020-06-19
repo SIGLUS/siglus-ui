@@ -21,7 +21,7 @@
         .module('admin-template-configure-preview-section')
         .component('productPreview', {
             bindings: {
-                columns: '<'
+                columnsMap: '<'
             },
             controller: 'ProductPreviewController',
             controllerAs: 'vm',

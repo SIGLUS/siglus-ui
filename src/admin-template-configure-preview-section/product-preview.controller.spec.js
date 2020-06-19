@@ -41,6 +41,24 @@ describe('ProductPreviewController', function() {
                 'orderable.productCode': 'Product 2'
             }]);
         });
+
+        it('should set product columns', function() {
+            vm.columnsMap = {
+                averageConsumption: {
+                    name: 'averageConsumption',
+                    isDisplayed: true
+                },
+                remarks: {
+                    name: 'remarks',
+                    isDisplayed: false
+                }
+            };
+            vm.$onInit();
+
+            var sortColumns = _.sortBy(vm.columns, 'name');
+
+            expect(sortColumns).toEqual([vm.columnsMap.averageConsumption]);
+        });
     });
 
     describe('isUserInput', function() {

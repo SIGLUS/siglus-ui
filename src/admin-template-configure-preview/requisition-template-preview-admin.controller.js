@@ -51,8 +51,6 @@
          * Holds template.
          */
         vm.template = undefined;
-        vm.productColumns = undefined;
-        vm.kitUsageSections = undefined;
         /**
          * @ngdoc method
          * @methodOf admin-template-configure-preview.controller:RequisitionTemplatePreviewController
@@ -63,20 +61,6 @@
          */
         function onInit() {
             vm.template = template;
-            vm.productColumns = getProductColumns(template);
-            vm.kitUsageSections = template.kitUsage;
-        }
-
-        function getProductColumns(template) {
-            var columns = [],
-                columnsMap = template.columnsMap;
-            for (var columnName in columnsMap) {
-                if (columnsMap.hasOwnProperty(columnName) &&
-                    columnsMap[columnName].isDisplayed) {
-                    columns.push(columnsMap[columnName]);
-                }
-            }
-            return columns;
         }
 
         /**

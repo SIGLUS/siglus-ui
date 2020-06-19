@@ -64,11 +64,11 @@
             this.columnsMap = {};
             this.facilityTypes = template.facilityTypes;
             this.name = template.name;
-            this.extension = template.extension;
             // #163: add associate program
             this.associatePrograms = template.associatePrograms;
             // #163: ends here
             // #248: kit usage section configure
+            this.extension = template.extension || {};
             this.kitUsage = _.forEach(template.kitUsage, function(section) {
                 section.columns = _.sortBy(section.columns, 'displayOrder');
             });
