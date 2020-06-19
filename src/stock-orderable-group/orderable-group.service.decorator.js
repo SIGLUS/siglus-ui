@@ -44,7 +44,7 @@
 
         orderableGroupService.determineLotMessage = determineLotMessage;
         orderableGroupService.findByLotInOrderableGroup = findByLotInOrderableGroup;
-
+        orderableGroupService.lotsOf = lotsOf;
         orderableGroupService.lotsOfWithNull = lotsOfWithNull;
         orderableGroupService.findOneInOrderableGroupWithoutLot = findOneInOrderableGroupWithoutLot;
         orderableGroupService.getOrderableLots = getOrderableLots;
@@ -53,6 +53,35 @@
             findAvailableProductsAndCreateOrderableGroups;
 
         return orderableGroupService;
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-orderable-group.orderableGroupService
+         * @name lotsOf
+         *
+         * @description
+         * Extract lots from orderable group. Adds no lot defined as an option when some group
+         * has no lot
+         *
+         * @param {Object} orderableGroup   orderable group
+         * @return {Array}                  array with lots
+         */
+        function lotsOf(orderableGroup) {
+            var lots = _.chain(orderableGroup).pluck('lot')
+                .compact()
+                .value();
+
+            var someHasLot = lots.length > 0;
+            var someHasNoLot = _.any(orderableGroup, function(item) {
+                return !item.lot;
+            });
+
+            if (someHasLot && someHasNoLot) {
+                //add no lot defined as an option
+                lots.unshift(noLotDefined);
+            }
+            return lots;
+        }
 
         /**
          * @ngdoc method
