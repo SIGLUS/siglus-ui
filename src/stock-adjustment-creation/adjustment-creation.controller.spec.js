@@ -411,8 +411,11 @@ describe('StockAdjustmentCreationController', function() {
 
             // SIGLUS-REFACTOR: starts here
             expect(signatureModalService.confirm).toHaveBeenCalled();
+            expect(state.go).not.toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
+            });
             // SIGLUS-REFACTOR: ends here
-            expect(state.go).not.toHaveBeenCalled();
             expect(alertService.error).toHaveBeenCalledWith('error occurred');
             expect(notificationService.success).not.toHaveBeenCalled();
         });
