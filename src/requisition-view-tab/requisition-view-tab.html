@@ -1,97 +1,80 @@
-<div class="view-tab openlmis-table-container">
-    <!-- SIGLUS-REFACTOR: starts here -->
-    <div class="row">
-        <div class="main">
-            <div class="toolbar">
-                <header>
-                    <h3>{{'requisitionViewTab.products' | message}}</h3>
-                    <button class="add" ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10" ng-click="vm.addFullSupplyProducts()" >{{'requisitionViewTab.addProduct' | message}}</button>
-                </header>
-                <span ng-if="vm.showAddFullSupplyProductControls">
-                    {{ vm.skippedFullSupplyProductCountMessage() }}
-                </span>
-            </div>
-            <div class="openlmis-flex-table">
-                <table class="left-sub-table" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
-                    <tbody>
-                    <tr class="center-item">
-                        <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-text">{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
-                        <td ng-if="vm.userCanEdit">
-                            <input positive-integer ng-model="vm.requisition.extraData.consultationNumber" maxlength="8" required />
-                        </td>
-                        <td ng-if="!vm.userCanEdit" class="text-align-right">
-                            {{vm.requisition.extraData.consultationNumber}}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <table class="right-sub-table" ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency">
-                    <tbody>
-                    <tr>
-                        <td class="table-column-first">{{'requisitionViewTab.receivedKitNo' | message}}</td>
-                        <td class="table-column-second">HF</td>
-                        <td class="ng-binding ng-scope table-column-third">{{vm.requisition.extraData.receivedKitByHF}}</td>
-                        <td class="table-column-second">CHW</td>
-                        <td class="ng-binding ng-scope table-column-third">{{vm.requisition.extraData.receivedKitByCHW}}</td>
-                    </tr>
-                    <tr>
-                        <td>{{'requisitionViewTab.openedKitNo' | message}}</td>
-                        <td>HF</td>
-                        <td class="ng-binding ng-scope text-align-right">{{vm.requisition.extraData.openedKitByHF}}</td>
-                        <td>CHW</td>
-                        <td class="ng-binding ng-scope text-align-right">{{vm.requisition.extraData.openedKitByCHW}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="toolbar">
-                <h4 ng-show="vm.showSkipControls">{{'requisitionViewTab.skip' | message}}</h4>
-                <ul ng-show="vm.showSkipControls">
-                    <li><a ng-click="vm.requisition.skipAllLineItems()">{{'requisitionViewTab.all' | message}}</a></li>
-                    <li><a ng-click="vm.requisition.unskipAllLineItems()">{{'requisitionViewTab.none' | message}}</a></li>
-                </ul>
-            </div>
-            <div class="openlmis-flex-table" ng-if="vm.requisition.template.extension.enableProduct">
-    <!-- SIGLUS-REFACTOR: ends here -->
-                <table>
-                    <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
-                    <thead>
-                    <tr>
-                        <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
-                            ng-class="{'col-sticky': !column.$canChangeOrder}" popover="{{vm.getDescriptionForColumn(column)}}"
-                            popover-trigger-area="element">{{column.label}}</th>
-                        <th class="col-sticky sticky-right" ng-if="vm.showDeleteColumn()"></th>
-                    </tr>
-                    </thead>
-                    <tbody ng-repeat="(category, lineItems) in vm.items | groupBy:'$program.orderableCategoryDisplayName'" tbody-title="{{category}}">
-                    <tr ng-repeat="lineItem in lineItems | orderBy : '$program.displayOrder'" ng-class="{'skipped-line-item' : lineItem.skipped}">
-                        <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
-                            product-grid-cell
-                            requisition="vm.requisition"
-                            column="column"
-                            line-item="lineItem"
-                            user-can-edit="vm.userCanEdit"
-                            can-approve="vm.canApproveAndReject">
-                        </td>
-                        <td ng-if="vm.showDeleteColumn()">
-                            <button class="hide-line-item"
-                                    ng-click="vm.deleteLineItem(lineItem)"
-                                    ng-if="lineItem.$deletable">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <openlmis-pagination
-                        list="vm.lineItems"
-                        paged-list="vm.items"
-                        pagination-id="vm.paginationId"
-                        on-page-change="vm.cacheRequisition"/>
-            </div>
-        </div>
+<!-- SIGLUS-REFACTOR: starts here -->
+<div class="view-tab">
+    <header class="sub-heading">
+        <h3>{{'requisitionViewTab.products' | message}}</h3>
+        <button class="add"
+                ng-if="vm.requisition.template.extension.enableProduct"
+                ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
+                ng-click="vm.addFullSupplyProducts()"
+        >
+            {{'requisitionViewTab.addProduct' | message}}
+        </button>
+    </header>
+    <div class="openlmis-table-container fix-height" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
+        <table class="openlmis-table">
+            <tbody>
+            <tr class="text-center">
+                <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
+            </tr>
+            <tr>
+                <td>{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
+                <td ng-if="vm.userCanEdit">
+                    <input positive-integer ng-model="vm.requisition.extraData.consultationNumber" maxlength="8" required />
+                </td>
+                <td ng-if="!vm.userCanEdit">
+                    {{vm.requisition.extraData.consultationNumber}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <kit-usage sections="vm.requisition.template.kitusage"
+               line-items="vm.requisition.kitUsageLineItems"
+               can-edit="vm.userCanEdit"
+               ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
+    <div class="toolbar skipbar" ng-if="vm.showSkipControls">
+        <h4>{{'requisitionViewTab.skip' | message}}</h4>
+        <ul>
+            <li><a ng-click="vm.requisition.skipAllLineItems()">{{'requisitionViewTab.all' | message}}</a></li>
+            <li><a ng-click="vm.requisition.unskipAllLineItems()">{{'requisitionViewTab.none' | message}}</a></li>
+        </ul>
+    </div>
+    <div class="openlmis-table-container requisition-product" ng-if="vm.requisition.template.extension.enableProduct">
+<!-- SIGLUS-REFACTOR: ends here -->
+        <table>
+            <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
+            <thead>
+            <tr>
+                <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
+                    ng-class="{'col-sticky': !column.$canChangeOrder}" popover="{{vm.getDescriptionForColumn(column)}}"
+                    popover-trigger-area="element">{{column.label}}</th>
+                <th class="col-sticky sticky-right" ng-if="vm.showDeleteColumn()"></th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="(category, lineItems) in vm.items | groupBy:'$program.orderableCategoryDisplayName'" tbody-title="{{category}}">
+            <tr ng-repeat="lineItem in lineItems | orderBy : '$program.displayOrder'" ng-class="{'skipped-line-item' : lineItem.skipped}">
+                <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
+                    product-grid-cell
+                    requisition="vm.requisition"
+                    column="column"
+                    line-item="lineItem"
+                    user-can-edit="vm.userCanEdit"
+                    can-approve="vm.canApproveAndReject">
+                </td>
+                <td ng-if="vm.showDeleteColumn()">
+                    <button class="hide-line-item"
+                            ng-click="vm.deleteLineItem(lineItem)"
+                            ng-if="lineItem.$deletable">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination
+                list="vm.lineItems"
+                paged-list="vm.items"
+                pagination-id="vm.paginationId"
+                on-page-change="vm.cacheRequisition"/>
     </div>
 </div>

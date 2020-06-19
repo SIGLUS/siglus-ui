@@ -1,93 +1,13 @@
 .view-tab {
-    .main {
-        width: 100%;
-    }
-
-    header {
-        width: 100%;
-        border-bottom-width: 0px;
-        margin: 0px;
-        display: flex;
-    }
-
-    h3 {
-        margin-left: 0em;
-        margin-right: 1em;
-        position: relative;
-        z-index: 2;
-        padding: 0em 1em;
-        text-shadow: 0px 0px 4px #fff, 5px 0px 0 #fff, -5px 0px 0 #fff, -3px 0px 0 #fff, 3px 0px 0 #fff;
-        flex: 1;
-        box-sizing: border-box;
-    }
-
-    h3::after {
-        border-bottom: #bebebe 1px solid;
-        content: " ";
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 0px;
-        z-index: -1;
-        width: 100%;
-    }
-
-    .openlmis-flex-table {
-        .left-sub-table {
-            width: 35%;
-            float: left;
-            margin-right: 10em;
-
-            tr {
-                height: 55px;
-            }
-
-            td {
-                height: 51px;
-            }
-        }
-
-        .right-sub-table {
-            width: 40%;
-
-            tr {
-                height: 55px;
-            }
-
-            .table-column-first {
-                width: 180px;
-            }
-
-            .table-column-second {
-                width: 80px;
-            }
-
-            .table-column-third {
-                min-width: 40px;
-                text-align: right;
-            }
-        }
-
-        .center-item {
-            text-align: center;
-        }
-
-        .cell-text {
-            width: 50%;
-        }
-
-        input[type="text"] {
-            text-align: right;
-        }
-    }
-
-    .hide-line-item {
-        @extend button.danger;
-        @include icon-only('remove');
-    }
-
+    margin-bottom: 3em;
     .requisition-product-grid-cell.has-popover {
         padding-right: $table-cell-padding !important;
+    }
+    .skipbar {
+        margin-top: 1.5em;
+    }
+    .skipbar + .openlmis-table-container.requisition-product>.row>.main>.toolbar {
+        padding-top: 0;
     }
 }
 
@@ -96,5 +16,5 @@
 }
 
 .text-center {
-    text-align:center;
+    text-align: center;
 }

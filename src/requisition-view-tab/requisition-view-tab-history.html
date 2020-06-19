@@ -5,87 +5,64 @@
 <ng-include src="'requisition-view/header.html'"></ng-include>
 <status-messages requisition="vm.requisition"></status-messages>
 
-<div class="view-tab openlmis-table-container">
-    <div class="row">
-        <div class="main">
-            <div class="toolbar">
-                <header>
-                    <h3>{{'requisitionViewTab.products' | message}}</h3>
-                </header>
-                <span ng-if="vm.showAddFullSupplyProductControls">
-                    {{ vm.skippedFullSupplyProductCountMessage() }}
-                </span>
-            </div>
-            <div class="openlmis-flex-table">
-                <table class="left-sub-table" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
-                    <tbody>
-                    <tr class="center-item" style="height: 55px">
-                        <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
-                    </tr>
-                    <tr style="height: 55px">
-                        <td class="cell-text">{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
-                        <td class="text-center">
-                            {{vm.requisition.extraData.consultationNumber}}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <table class="right-sub-table" ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency">
-                    <tbody>
-                    <tr style="height: 55px">
-                        <td style="width: 180px">{{'requisitionViewTab.receivedKitNo' | message}}</td>
-                        <td style="width: 80px">HF</td>
-                        <td style="min-width: 40px" class="text-center">{{vm.requisition.extraData.receivedKitByHF}}</td>
-                        <td style="width: 80px">CHW</td>
-                        <td style="min-width: 40px" class="text-center">{{vm.requisition.extraData.receivedKitByCHW}}</td>
-                    </tr>
-                    <tr style="height: 55px">
-                        <td>{{'requisitionViewTab.openedKitNo' | message}}</td>
-                        <td>HF</td>
-                        <td class="text-center">{{vm.requisition.extraData.openedKitByHF}}</td>
-                        <td>CHW</td>
-                        <td class="text-center">{{vm.requisition.extraData.openedKitByCHW}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="openlmis-flex-table" ng-if="vm.requisition.template.extension.enableProduct">
-                <table>
-                    <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
-                    <thead>
-                    <tr>
-                        <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
-                            ng-class="{'col-sticky': !column.$canChangeOrder}" popover="{{vm.getDescriptionForColumn(column)}}"
-                            popover-trigger-area="element">{{column.label}}</th>
-                        <th class="col-sticky sticky-right" ng-if="vm.showDeleteColumn()"></th>
-                    </tr>
-                    </thead>
-                    <tbody ng-repeat="(category, lineItems) in vm.items | groupBy:'$program.orderableCategoryDisplayName'" tbody-title="{{category}}">
-                    <tr ng-repeat="lineItem in lineItems | orderBy : '$program.displayOrder'" ng-class="{'skipped-line-item' : lineItem.skipped}">
-                        <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
-                            product-grid-cell
-                            requisition="vm.requisition"
-                            column="column"
-                            line-item="lineItem"
-                            user-can-edit="vm.userCanEdit"
-                            can-approve="vm.canApproveAndReject"
-                            is-history="true"
-                        >
-                        </td>
-                        <td ng-if="vm.showDeleteColumn()">
-                            <button class="hide-line-item"
-                                    ng-click="vm.deleteLineItem(lineItem)"
-                                    ng-if="lineItem.$deletable">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <openlmis-pagination
-                        list="vm.lineItems"
-                        paged-list="vm.items"/>
-            </div>
-        </div>
+<div class="view-tab">
+    <header class="sub-heading">
+        <h3>{{'requisitionViewTab.products' | message}}</h3>
+    </header>
+    <div class="openlmis-table-container requisition-consultation-number fix-height" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
+        <table class="openlmis-table">
+            <tbody>
+            <tr class="text-center">
+                <td colspan="2">{{'requisitionViewTab.normalRequisition' | message}}</td>
+            </tr>
+            <tr>
+                <td>{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
+                <td class="text-align-right">
+                    {{vm.requisition.extraData.consultationNumber}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <kit-usage sections="vm.requisition.template.kitusage"
+               line-items="vm.requisition.kitUsageLineItems"
+               can-edit="false"
+               ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
+    <div class="openlmis-table-container" ng-if="vm.requisition.template.extension.enableProduct">
+        <table>
+            <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
+            <thead>
+            <tr>
+                <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
+                    ng-class="{'col-sticky': !column.$canChangeOrder}" popover="{{vm.getDescriptionForColumn(column)}}"
+                    popover-trigger-area="element">{{column.label}}</th>
+                <th class="col-sticky sticky-right" ng-if="vm.showDeleteColumn()"></th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="(category, lineItems) in vm.items | groupBy:'$program.orderableCategoryDisplayName'" tbody-title="{{category}}">
+            <tr ng-repeat="lineItem in lineItems | orderBy : '$program.displayOrder'" ng-class="{'skipped-line-item' : lineItem.skipped}">
+                <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
+                    product-grid-cell
+                    requisition="vm.requisition"
+                    column="column"
+                    line-item="lineItem"
+                    user-can-edit="vm.userCanEdit"
+                    can-approve="vm.canApproveAndReject"
+                    is-history="true"
+                >
+                </td>
+                <td ng-if="vm.showDeleteColumn()">
+                    <button class="hide-line-item"
+                            ng-click="vm.deleteLineItem(lineItem)"
+                            ng-if="lineItem.$deletable">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination
+                list="vm.lineItems"
+                paged-list="vm.items"/>
     </div>
 </div>

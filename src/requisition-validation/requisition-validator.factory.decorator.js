@@ -36,6 +36,7 @@
     decorator.$inject = ['$delegate', '$filter', 'requisitionUtils', 'messageService'];
 
     function decorator($delegate, $filter, requisitionUtils, messageService) {
+        var originalAreAllLineItemsSkipped = $delegate.areAllLineItemsSkipped;
         $delegate.validateRequisition = validateRequisition;
         $delegate.validateUsageReport = validateUsageReport;
         $delegate.validateTotalOfRegiment = validateTotalOfRegiment;
@@ -43,8 +44,16 @@
         $delegate.isEmptyTable = isEmptyTable;
         $delegate.validateRapidTestReport = validateRapidTestReport;
         $delegate.validateARVPatientTotal = validateARVPatientTotal;
+        $delegate.areAllLineItemsSkipped = areAllLineItemsSkipped;
 
         return $delegate;
+
+        function areAllLineItemsSkipped(requisition) {
+            if (requisition.template.extension.enableProduct) {
+                return originalAreAllLineItemsSkipped(requisition.requisitionLineItems);
+            }
+            return false;
+        }
 
         /**
          * @ngdoc method
@@ -80,18 +89,25 @@
             });
 
             valid = validateExtraData(requisition) && valid;
+            valid = validateKitUsage(requisition) && valid;
 
             return valid;
         }
 
-        function validateExtraData(requisition) {
+        function validateKitUsage(requisition) {
             var flag = true;
             if (requisition.template.extension.enableKitUsage && !requisition.emergency) {
-                flag = isNotEmpty(requisition.extraData.openedKitByCHW)
-                    && isNotEmpty(requisition.extraData.openedKitByHF)
-                    && isNotEmpty(requisition.extraData.receivedKitByCHW)
-                    && isNotEmpty(requisition.extraData.receivedKitByHF);
+                flag = !_.some(requisition.kitUsageLineItems, function(lineItem) {
+                    return _.some(Object.keys(lineItem.services), function(serviceName) {
+                        return !isNotEmpty(lineItem.services[serviceName].value);
+                    });
+                });
             }
+            return flag;
+        }
+
+        function validateExtraData(requisition) {
+            var flag = true;
             if (requisition.template.extension.enableConsultationNumber && !requisition.emergency) {
                 flag = flag && isNotEmpty(requisition.extraData.consultationNumber);
             }

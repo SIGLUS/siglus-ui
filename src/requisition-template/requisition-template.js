@@ -64,6 +64,7 @@
                 columnsMap[column.name] = new RequisitionColumn(column, requisition);
             });
             this.columnsMap = columnsMap;
+            this.extension = template.extension || {};
         }
 
         /**
