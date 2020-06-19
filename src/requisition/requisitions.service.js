@@ -524,7 +524,8 @@
 
         function addKitUsageMockData(requisition) {
             if (_.isEmpty(requisition.usageTemplate)) {
-                requisition.usageTemplate = [{
+                requisition.usageTemplate = {};
+                requisition.usageTemplate.kitUsage = [{
                     id: 'c86638f7-3b15-42b7-9f4c-8a4ebf9076a9',
                     name: 'collection',
                     label: 'KIT data collection',
