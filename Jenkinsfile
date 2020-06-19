@@ -29,7 +29,7 @@ pipeline {
         stage('Check Test Coverage') {
             steps {
                 sh '''
-                    coverage_threshold=83
+                    coverage_threshold=82
                     coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -1`;
                     coverage_int=`awk -v var="$coverage" 'BEGIN {print int(var)}'`
                     echo "test coverage: $coverage%";
