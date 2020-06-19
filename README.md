@@ -53,6 +53,9 @@ $ grunt karma:unit
 // NOTE: You must change a file at least once before your code is rebuilt
 $ grunt watch --openlmisServerUrl=<openlmis server url> --serve
 
+// Check test coverage
+$ sh check-test-coverage.sh
+
 ```
 
 ### Built Artifacts
