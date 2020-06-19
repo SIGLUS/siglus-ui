@@ -522,7 +522,157 @@
             return extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages);
         }
 
+        function addKitUsageMockData(requisition) {
+            if (_.isEmpty(requisition.template.kitusage)) {
+                requisition.template.kitusage = [ {
+                    id: 'c86638f7-3b15-42b7-9f4c-8a4ebf9076a9',
+                    name: 'collection',
+                    label: 'KIT data collection',
+                    displayOrder: 0,
+                    columns: [ {
+                        name: 'kitReceived',
+                        label: 'No. of Kit Received',
+                        indicator: 'KD',
+                        displayOrder: 0,
+                        isDisplayed: true,
+                        option: null,
+                        definition: 'record the quantity of how many KIT received',
+                        tag: null,
+                        columnDefinition: {
+                            id: '23c0ecc1-f58e-41e4-99f2-241a3f8360d6',
+                            name: 'kitReceived',
+                            sources: [ 'USER_INPUT', 'STOCK_CARDS' ],
+                            label: 'No. of Kit Received',
+                            indicator: 'KD',
+                            mandatory: false,
+                            isDisplayRequired: true,
+                            canBeChangedByUser: false,
+                            supportsTag: true,
+                            definition: 'record the quantity of how many KIT received',
+                            canChangeOrder: false,
+                            columnType: 'NUMERIC',
+                            displayOrder: 0,
+                            options: [ ]
+                        },
+                        source: 'STOCK_CARDS',
+                        id: '43e9c10e-705e-4241-8611-4bbbdf23be72'
+                    }, {
+                        name: 'kitOpened',
+                        label: 'No. of Kit Opened',
+                        indicator: 'KD',
+                        displayOrder: 1,
+                        isDisplayed: true,
+                        option: null,
+                        definition: 'record the quantity of how many KIT opened',
+                        tag: null,
+                        columnDefinition: {
+                            id: '86ca8cea-94c2-4d50-8dc8-ec5f6ff60ec4',
+                            name: 'kitOpened',
+                            sources: [ 'USER_INPUT', 'STOCK_CARDS' ],
+                            label: 'No. of Kit Opened',
+                            indicator: 'KD',
+                            mandatory: false,
+                            isDisplayRequired: false,
+                            canBeChangedByUser: false,
+                            supportsTag: true,
+                            definition: 'record the quantity of how many KIT opened',
+                            canChangeOrder: true,
+                            columnType: 'NUMERIC',
+                            displayOrder: 1,
+                            options: [ ]
+                        },
+                        source: 'USER_INPUT',
+                        id: '5dec23e7-2116-445e-97da-c547dfa14f8f'
+                    } ]
+                }, {
+                    id: '432cf917-8844-4e94-bf95-bcea6db07d06',
+                    name: 'service',
+                    label: 'Services',
+                    displayOrder: 1,
+                    columns: [ {
+                        name: 'HF',
+                        label: 'HF',
+                        indicator: 'SV',
+                        displayOrder: 0,
+                        isDisplayed: true,
+                        option: null,
+                        definition: 'record the quantity of KIT data in my facility',
+                        tag: null,
+                        columnDefinition: {
+                            id: 'cbee99e4-f100-4f9e-ab4f-783d61ac80a6',
+                            name: 'HF',
+                            sources: [ ],
+                            label: 'HF',
+                            indicator: 'SV',
+                            mandatory: false,
+                            isDisplayRequired: true,
+                            canBeChangedByUser: false,
+                            supportsTag: false,
+                            definition: 'record the quantity of KIT data in my facility',
+                            canChangeOrder: false,
+                            columnType: 'NUMERIC',
+                            displayOrder: 0,
+                            options: [ ]
+                        },
+                        source: '',
+                        id: '23693c3a-660d-4c69-887a-44f5b909008e'
+                    }, {
+                        name: 'CHW',
+                        label: 'CHW',
+                        indicator: 'SV',
+                        displayOrder: 1,
+                        isDisplayed: true,
+                        option: null,
+                        definition: 'record the quantity of KIT data in CHW',
+                        tag: null,
+                        columnDefinition: {
+                            id: '95227492-c394-4f7e-8fa0-dd5b5cef3e8e',
+                            name: 'CHW',
+                            sources: [ 'USER_INPUT' ],
+                            label: 'CHW',
+                            indicator: 'SV',
+                            mandatory: false,
+                            isDisplayRequired: false,
+                            canBeChangedByUser: false,
+                            supportsTag: false,
+                            definition: 'record the quantity of KIT data in CHW',
+                            canChangeOrder: true,
+                            columnType: 'NUMERIC',
+                            displayOrder: 1,
+                            options: [ ]
+                        },
+                        source: 'USER_INPUT',
+                        id: '45d88f49-a472-40af-a588-d2055027938e'
+                    } ]
+                } ];
+            }
+            if (_.isEmpty(requisition.kitUsageLineItems)) {
+                requisition.kitUsageLineItems = [{
+                    collection: 'kitReceived',
+                    services: {
+                        HF: {
+                            value: 50
+                        },
+                        CHW: {
+                            value: 30
+                        }
+                    }
+                }, {
+                    collection: 'kitOpened',
+                    services: {
+                        HF: {
+                            value: 50
+                        },
+                        CHW: {
+                            value: 30
+                        }
+                    }
+                }];
+            }
+        }
+
         function extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages) {
+            addKitUsageMockData(requisition);
             var identities = getResourcesFromLineItems(requisition, true);
             return $q.all([getByVersionIdentities(identities, new OrderableResource()),
                 periodService.get(requisition.processingPeriod.id)])

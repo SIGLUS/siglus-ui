@@ -385,7 +385,7 @@
                         vm.requisition.extraData.signaure = {};
                     }
                     vm.requisition.extraData.signaure.submit = signature;
-                    if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                    if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
                         failWithMessage('requisitionView.allLineItemsSkipped')();
                     } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                         var modal = new RequisitionStockCountDateModal(vm.requisition);
@@ -434,7 +434,7 @@
                 signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
                     .then(function(signature) {
                         vm.requisition.extraData.signaure.authorize = signature;
-                        if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                        if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
                             failWithMessage('requisitionView.allLineItemsSkipped')();
                         } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                             var modal = new RequisitionStockCountDateModal(vm.requisition);
@@ -488,7 +488,7 @@
                             };
                         }
                         vm.requisition.extraData.signaure.authorize = signature;
-                        if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                        if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
                             failWithMessage('requisitionView.allLineItemsSkipped')();
                         } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
                             var modal = new RequisitionStockCountDateModal(vm.requisition);
@@ -567,7 +567,7 @@
                     var approveSignatures = vm.requisition.extraData.signaure.approve || [];
                     approveSignatures.push(signature);
                     vm.requisition.extraData.signaure.approve = approveSignatures;
-                    if (requisitionValidator.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                    if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
                         failWithMessage('requisitionView.allLineItemsSkipped')();
                     } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                         var modal = new RequisitionStockCountDateModal(vm.requisition);

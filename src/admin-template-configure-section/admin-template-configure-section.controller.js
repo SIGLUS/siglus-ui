@@ -30,11 +30,12 @@
 
     TemplateConfigureSectionController.$inject = [
         '$scope', 'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES',
-        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_COLUMNS_LENGTH'
+        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_COLUMNS_LENGTH', 'templateConfigureService'
     ];
 
     function TemplateConfigureSectionController($scope, messageService, templateValidator, columnUtils, COLUMN_SOURCES,
-                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH) {
+                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH,
+                                                templateConfigureService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -58,10 +59,7 @@
 
         function onInit() {
             vm.maxColumnDescriptionLength = MAX_COLUMN_DESCRIPTION_LENGTH;
-            vm.columnMap = _.reduce(vm.section.columns, function(columnMap, column) {
-                columnMap[column.name] = column;
-                return columnMap;
-            }, {});
+            vm.columnMap = templateConfigureService.getSectionColumnsMap(vm.section);
             refreshAvailableTags();
             updateDisplayOrder();
         }

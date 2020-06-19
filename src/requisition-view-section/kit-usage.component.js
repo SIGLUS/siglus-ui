@@ -17,19 +17,17 @@
 
     'use strict';
 
-    /**
-     * @module admin-template-configure-section
-     *
-     * @description
-     * Provides base admin-template-configure-section state and service/factory/controller
-     * for retrieving templates from the OpenLMIS server.
-     */
-    angular.module('admin-template-configure-section', [
-        'requisition-constants',
-        'admin-template',
-        'dndLists',
-        'openlmis-i18n',
-        'admin-template-configure-column-setting'
-    ]);
+    angular
+        .module('requisition-view-section')
+        .component('kitUsage', {
+            bindings: {
+                sections: '<',
+                lineItems: '<',
+                canEdit: '<'
+            },
+            controller: 'KitUsageController',
+            controllerAs: 'vm',
+            templateUrl: 'requisition-view-section/kit-usage.html'
+        });
 
 })();

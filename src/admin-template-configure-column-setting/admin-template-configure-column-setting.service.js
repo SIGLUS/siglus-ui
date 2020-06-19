@@ -25,6 +25,7 @@
         this.getDefaultColumn = getDefaultColumn;
         this.getCollection = getCollection;
         this.getService = getService;
+        this.getSectionColumnsMap = getSectionColumnsMap;
         function getDefaultColumn() {
             return {
                 id: null,
@@ -64,6 +65,13 @@
             return _.find(sections, function(section) {
                 return section.name === 'service';
             });
+        }
+
+        function getSectionColumnsMap(section) {
+            return _.reduce(section.columns, function(columnMap, column) {
+                columnMap[column.name] = column;
+                return columnMap;
+            }, {});
         }
     }
 
