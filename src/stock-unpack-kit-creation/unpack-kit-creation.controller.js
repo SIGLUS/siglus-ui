@@ -181,6 +181,7 @@
 
         function getNewProduct(product) {
             return _.extend({}, angular.copy(product), {
+                $errors: {},
                 quantity: undefined,
                 quantityInvalid: false,
                 lot: null,
