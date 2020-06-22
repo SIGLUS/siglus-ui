@@ -563,19 +563,22 @@
         // #231: there is no signature modal when approve
         function approveRnr() {
             if (requisitionValidator.validateRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.approve.confirmWithSignature').then(function(signature) {
-                    var approveSignatures = vm.requisition.extraData.signaure.approve || [];
-                    approveSignatures.push(signature);
-                    vm.requisition.extraData.signaure.approve = approveSignatures;
-                    if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                        failWithMessage('requisitionView.allLineItemsSkipped')();
-                    } else if (vm.program.enableDatePhysicalStockCountCompleted) {
-                        var modal = new RequisitionStockCountDateModal(vm.requisition);
-                        modal.then(saveThenApprove);
-                    } else {
-                        saveThenApprove();
-                    }
-                });
+                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
+                    failWithMessage('requisitionView.allLineItemsSkipped')();
+                } else {
+                    signatureModalService.confirm('requisitionView.approve.confirmWithSignature')
+                        .then(function(signature) {
+                            var approveSignatures = vm.requisition.extraData.signaure.approve || [];
+                            approveSignatures.push(signature);
+                            vm.requisition.extraData.signaure.approve = approveSignatures;
+                            if (vm.program.enableDatePhysicalStockCountCompleted) {
+                                var modal = new RequisitionStockCountDateModal(vm.requisition);
+                                modal.then(saveThenApprove);
+                            } else {
+                                saveThenApprove();
+                            }
+                        });
+                }
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 failWithMessage('requisitionView.rnrHasErrors')();
