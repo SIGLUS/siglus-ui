@@ -124,6 +124,9 @@ describe('ViewTabController', function() {
         spyOn(this.messageService, 'get').andCallFake(function(param) {
             return param;
         });
+        // #286 high level approver can skip some products in requisition
+        spyOn(this.requisition.template, 'getColumn').andCallThrough();
+        // #286 ends here
     });
 
     describe('$onInit', function() {
@@ -395,8 +398,11 @@ describe('ViewTabController', function() {
                 expect(this.vm.showSkipControls).toBe(false);
             });
 
+            // #286 high level approver can skip some products in requisition
             it('should be shown if the template has skip column and the column is display', function() {
+                this.columns[0].$display = true;
                 this.requisition.template.hasSkipColumn.andReturn(true);
+                this.requisition.template.getColumn.andReturn(this.columns[0]);
 
                 this.initController();
 
@@ -405,8 +411,9 @@ describe('ViewTabController', function() {
 
             it('should be hidden if the template has skip column and the column is not display',
                 function() {
-                    this.requisition.template.hasSkipColumn.andReturn(true);
                     this.columns[0].$display = false;
+                    this.requisition.template.hasSkipColumn.andReturn(true);
+                    this.requisition.template.getColumn.andReturn(this.columns[0]);
 
                     this.initController();
 
@@ -469,6 +476,7 @@ describe('ViewTabController', function() {
             //
             //     expect(this.vm.showSkipControls).toBe(false);
             // });
+            // #286 ends here
 
         });
 

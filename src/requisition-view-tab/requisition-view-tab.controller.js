@@ -415,13 +415,8 @@
 
         // #286 high level approver can skip some products in requisition
         function showSkipControls() {
-            var result = false;
-            columns.forEach(function(column) {
-                if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
-                    result = column.$display;
-                }
-            });
-            return requisition.template.hasSkipColumn() && result;
+            return requisition.template.hasSkipColumn()
+                && requisition.template.getColumn(TEMPLATE_COLUMNS.SKIPPED).$display;
         }
         // #286 ends here
 
