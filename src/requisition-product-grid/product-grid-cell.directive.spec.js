@@ -285,10 +285,48 @@ describe('ProductGridCell', function() {
         //
         //     expect(getSkipInput().attr('disabled')).toBe('disabled');
         // });
-        // #286 ends here
 
-        it('should change disabled state if lineItem changes its skipability and user has right to edit', function() {
-            this.scope.userCanEdit = true;
+        // it('should change disabled state if lineItem changes its skipability and user has right to edit',
+        // function() {
+        //     this.scope.userCanEdit = true;
+        //     this.scope.lineItem.canBeSkipped.andReturn(true);
+        //
+        //     element = this.getCompiledElement();
+        //
+        //     expect(getSkipInput().attr('disabled')).toBe(undefined);
+        //
+        //     this.scope.lineItem.canBeSkipped.andReturn(false);
+        //     this.scope.$digest();
+        //
+        //     expect(getSkipInput().attr('disabled')).toBe('disabled');
+        //
+        //     this.scope.lineItem.canBeSkipped.andReturn(true);
+        //     this.scope.$digest();
+        //
+        //     expect(getSkipInput().attr('disabled')).toBe(undefined);
+        // });
+
+        it('should be always disabled if requisition is a history', function() {
+            this.scope.isHistory = true;
+            this.scope.lineItem.canBeSkipped.andReturn(true);
+
+            element = this.getCompiledElement();
+
+            expect(getSkipInput().attr('disabled')).toBe('disabled');
+
+            this.scope.lineItem.canBeSkipped.andReturn(false);
+            this.scope.$digest();
+
+            expect(getSkipInput().attr('disabled')).toBe('disabled');
+
+            this.scope.lineItem.canBeSkipped.andReturn(true);
+            this.scope.$digest();
+
+            expect(getSkipInput().attr('disabled')).toBe('disabled');
+        });
+
+        it('should change disabled state if lineItem the skip state and requisition is not a history', function() {
+            this.scope.isHistory = false;
             this.scope.lineItem.canBeSkipped.andReturn(true);
 
             element = this.getCompiledElement();
@@ -309,12 +347,16 @@ describe('ProductGridCell', function() {
         function getSkipInput() {
             return element.find('input.skip');
         }
+        // #286 ends here
 
     });
 
     function getCompiledElement() {
+        // #286 high level approver can skip some products in requisition
         var rootElement = angular.element('<div><div product-grid-cell requisition="requisition" column="column"' +
-            ' line-item="lineItem" user-can-edit="userCanEdit" can-approve="canApprove"></div></div>');
+            ' line-item="lineItem" user-can-edit="userCanEdit" can-approve="canApprove" is-history="isHistory">' +
+            '</div></div>');
+        // #286 ends here
         var compiledElement = this.$compile(rootElement)(this.scope);
         angular.element('body').append(compiledElement);
         this.scope.$digest();
