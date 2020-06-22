@@ -243,14 +243,23 @@ describe('LineItem', function() {
 
         it('should return true if line item can be skipped', function() {
             lineItem.approvedQuantity = '';
+            lineItem.remarks = '';
 
             var result = lineItem.canBeSkipped();
 
             expect(result).toBe(true);
         });
 
-        it('should return false if line item cannot be skipped', function() {
+        it('should return false if approvedQuantity is not empty', function() {
             lineItem.approvedQuantity = 100;
+
+            var result = lineItem.canBeSkipped();
+
+            expect(result).toBe(false);
+        });
+
+        it('should return false if remarks is not empty', function() {
+            lineItem.remarks = 'test';
 
             var result = lineItem.canBeSkipped();
 
