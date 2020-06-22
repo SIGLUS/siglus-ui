@@ -33,14 +33,16 @@
         'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT', 'tableLineItems',
         'VVM_STATUS',
         // #264: warehouse clerk can add product to orders
-        'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q'
+        'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
+        'stockCardSummaries', 'ShipmentViewLineItemFactory'
         // #264: ends here
     ];
 
     function ShipmentViewController(shipment, loadingModalService, $state, $window,
                                     fulfillmentUrlFactory, messageService, accessTokenFactory,
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
-                                    selectProductsModalService, OpenlmisArrayDecorator, alertService, $q) {
+                                    selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
+                                    stockCardSummaries, ShipmentViewLineItemFactory) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -169,8 +171,22 @@
             selectProducts({
                 products: availableProducts
             })
-                .then(function() {
-                    // console.log(selectedProducts);
+                .then(function(selectedProducts) {
+                    // todo: create line item
+                    // var addedShipmentLineItems = [];
+                    var addedOrderLineItems = selectedProducts.map(function(orderable) {
+                        return {
+                            orderable: orderable
+                        };
+                    });
+                    var addedOrderLineItemsShipment = Object.assign({}, shipment, {
+                        order: {
+                            orderLineItems: addedOrderLineItems
+                        }
+                    });
+                    var addedTableLineItems = new ShipmentViewLineItemFactory()
+                        .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
+                    vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
                 });
         }
 
