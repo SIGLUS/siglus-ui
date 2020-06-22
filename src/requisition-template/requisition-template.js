@@ -64,7 +64,9 @@
                 columnsMap[column.name] = new RequisitionColumn(column, requisition);
             });
             this.columnsMap = columnsMap;
+            // #251: Facility user can create requisition with KIT section
             this.extension = template.extension || {};
+            // #251: ends here
         }
 
         /**

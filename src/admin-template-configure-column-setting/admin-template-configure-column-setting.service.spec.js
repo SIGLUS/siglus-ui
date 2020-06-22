@@ -81,4 +81,38 @@ describe('templateConfigureService', function() {
                 name: 'service'
             });
         });
+
+    it('should get column map',
+        function() {
+            var columnsMap = this.templateConfigureService.getSectionColumnsMap({
+                name: 'collection',
+                columns: [ {
+                    name: 'kitReceived',
+                    label: 'No. of Kit Received',
+                    indicator: 'KD',
+                    displayOrder: 0,
+                    isDisplayed: true,
+                    option: null,
+                    definition: 'record the quantity of how many KIT received',
+                    tag: 'received',
+                    source: 'STOCK_CARDS',
+                    id: 'f02aab7b-6b83-4447-a293-0486b958cf9c'
+                }]
+            });
+
+            expect(columnsMap).toEqual({
+                kitReceived: {
+                    name: 'kitReceived',
+                    label: 'No. of Kit Received',
+                    indicator: 'KD',
+                    displayOrder: 0,
+                    isDisplayed: true,
+                    option: null,
+                    definition: 'record the quantity of how many KIT received',
+                    tag: 'received',
+                    source: 'STOCK_CARDS',
+                    id: 'f02aab7b-6b83-4447-a293-0486b958cf9c'
+                }
+            });
+        });
 });
