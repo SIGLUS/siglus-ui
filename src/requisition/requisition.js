@@ -582,11 +582,9 @@
         }
 
         // SIGLUS-REFACTOR: add new method addProductLineItem
-        function addProductLineItem(lineItem, requestedQuantity, requestedQuantityExplanation) {
+        function addProductLineItem(lineItem) {
             var orderableProgram = this.program;
             var newLineItem = new LineItem(_.extend(lineItem, {
-                requestedQuantity: requestedQuantity,
-                requestedQuantityExplanation: requestedQuantityExplanation,
                 pricePerPack: orderableProgram.pricePerPack,
                 $deletable: true
             }), this);
