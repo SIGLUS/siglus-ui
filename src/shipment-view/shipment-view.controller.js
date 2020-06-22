@@ -34,7 +34,7 @@
         'VVM_STATUS',
         // #264: warehouse clerk can add product to orders
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
-        'stockCardSummaries', 'ShipmentViewLineItemFactory'
+        'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem'
         // #264: ends here
     ];
 
@@ -42,7 +42,8 @@
                                     fulfillmentUrlFactory, messageService, accessTokenFactory,
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-                                    stockCardSummaries, ShipmentViewLineItemFactory) {
+                                    stockCardSummaries, ShipmentViewLineItemFactory, orderService,
+                                    ShipmentLineItem) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -172,21 +173,29 @@
                 products: availableProducts
             })
                 .then(function(selectedProducts) {
-                    // todo: create line item
-                    // var addedShipmentLineItems = [];
-                    var addedOrderLineItems = selectedProducts.map(function(orderable) {
-                        return {
-                            orderable: orderable
-                        };
+                    loadingModalService.open();
+                    var orderableIds = selectedProducts.map(function(orderable) {
+                        return orderable.id;
+                    });
+                    return orderService.getOrderableLineItem(vm.order.id, orderableIds);
+                })
+                .then(function(result) {
+                    var addedShipmentLineItems = prepareShipmentLineItems(result);
+                    var addedOrderLineItems = result.map(function(item) {
+                        return item.orderLineItem;
                     });
                     var addedOrderLineItemsShipment = Object.assign({}, shipment, {
+                        lineItems: addedShipmentLineItems,
                         order: {
                             orderLineItems: addedOrderLineItems
                         }
                     });
                     var addedTableLineItems = new ShipmentViewLineItemFactory()
                         .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
+                    shipment.lineItems = shipment.lineItems.concat(addedShipmentLineItems);
+                    vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
                     vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
+                    loadingModalService.close();
                 });
         }
 
@@ -212,10 +221,42 @@
             vm.order.orderLineItems.forEach(function(lineItem) {
                 existedOrderableMap[lineItem.orderable.id] = lineItem.orderable;
             });
-
             return vm.order.availableProducts.filter(function(orderable) {
                 return !(orderable.id in existedOrderableMap);
             });
+        }
+
+        function prepareShipmentLineItems(createLineItemResponse) {
+            var addedShipmentLineItems = [];
+            var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+            createLineItemResponse.forEach(function(item) {
+                item.lots.forEach(function(lot) {
+                    addedShipmentLineItems.push(new ShipmentLineItem({
+                        lot: lot,
+                        orderable: item.orderLineItem.orderable,
+                        quantityShipped: 0,
+                        canFulfillForMe: canFulfillForMeMap[item.orderLineItem.orderable.id][lot.id]
+                    }));
+                });
+            });
+            return addedShipmentLineItems;
+        }
+
+        function mapCanFulfillForMe(summaries) {
+            var canFulfillForMeMap = {};
+            summaries.forEach(function(summary) {
+                summary.canFulfillForMe.forEach(function(canFulfillForMe) {
+                    var orderableId = canFulfillForMe.orderable.id,
+                        lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined;
+
+                    if (!canFulfillForMeMap[orderableId]) {
+                        canFulfillForMeMap[orderableId] = {};
+                    }
+
+                    canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
+                });
+            });
+            return canFulfillForMeMap;
         }
         // #264: ends here
     }
