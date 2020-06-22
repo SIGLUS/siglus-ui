@@ -18,7 +18,7 @@ describe('ShipmentViewController', function() {
     var vm, $q, $controller, ShipmentDataBuilder, shipment, tableLineItems, OrderDataBuilder, fulfillmentUrlFactory,
         QUANTITY_UNIT, order, messageService, $window, $rootScope,
         // #264: warehouse clerk can add product to orders
-        selectProductsModalService, alertService, OrderableDataBuilder, availableProducts;
+        selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory;
         // #264: ends here
 
     beforeEach(function() {
@@ -40,6 +40,7 @@ describe('ShipmentViewController', function() {
             selectProductsModalService = $injector.get('selectProductsModalService');
             alertService = $injector.get('alertService');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            ShipmentViewLineItemFactory = $injector.get('ShipmentViewLineItemFactory');
             // #264: ends here
         });
 
@@ -47,13 +48,14 @@ describe('ShipmentViewController', function() {
         order = new OrderDataBuilder().build();
         tableLineItems = [{}, {}];
 
+        // #264: warehouse clerk can add product to orders
         vm = $controller('ShipmentViewController', {
             shipment: shipment,
             tableLineItems: tableLineItems,
-            updatedOrder: order
+            updatedOrder: order,
+            stockCardSummaries: []
         });
 
-        // #264: warehouse clerk can add product to orders
         availableProducts = [
             new OrderableDataBuilder()
                 .withFullProductName('C Product')
@@ -184,6 +186,7 @@ describe('ShipmentViewController', function() {
 
             spyOn(alertService, 'error');
             spyOn(selectProductsModalService, 'show');
+            spyOn(new ShipmentViewLineItemFactory(), 'createFrom').andReturn([]);
         });
 
         it('should show alert if there are no available products', function() {

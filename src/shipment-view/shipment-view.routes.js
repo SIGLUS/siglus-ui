@@ -42,29 +42,41 @@
                 order: function(orderRepository, $stateParams) {
                     return orderRepository.get($stateParams.id);
                 },
-                stockCardSummaries: function(StockCardSummaryRepositoryImpl, order) {
-                    var orderableIds = order.orderLineItems.map(function(lineItem) {
-                        return lineItem.orderable.id;
+                // #264: warehouse clerk can add product to orders
+                programs: function(programService) {
+                    return programService.getAllProductsProgram();
+                },
+                stockCardSummaries: function(StockCardSummaryRepositoryImpl, order, programs,
+                    STOCKMANAGEMENT_RIGHTS) {
+                    var orderableIds = order.availableProducts.map(function(orderable) {
+                        return orderable.id;
                     });
 
                     return new StockCardSummaryRepositoryImpl().queryWithStockCards({
-                        programId: order.program.id,
+                        programId: programs[0].id,
                         facilityId: order.supplyingFacility.id,
-                        orderableId: orderableIds
+                        orderableId: orderableIds,
+                        rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
                     })
                         .then(function(page) {
                             return page.content;
                         });
                 },
+                // #264: ends here
                 shipment: function(shipmentViewService, order) {
                     return shipmentViewService.getShipmentForOrder(order);
                 },
                 tableLineItems: function(ShipmentViewLineItemFactory, shipment, stockCardSummaries) {
                     return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
                 },
-                updatedOrder: function(shipment) {
-                    return shipment.order;
+                // #264: warehouse clerk can add product to orders
+                updatedOrder: function(shipment, order) {
+                    var shipmentOrder = shipment.order;
+
+                    shipmentOrder.availableProducts = order.availableProducts;
+                    return shipmentOrder;
                 }
+                // #264: ends here
             }
         });
     }
