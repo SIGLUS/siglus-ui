@@ -183,7 +183,7 @@
          */
         // #286 high level approver can skip some products in requisition
         function canBeSkipped() {
-            return isEmpty(this.approvedQuantity);
+            return isEmpty(this.approvedQuantity) && isEmpty(this.remarks);
         }
         // #286 ends here
 
