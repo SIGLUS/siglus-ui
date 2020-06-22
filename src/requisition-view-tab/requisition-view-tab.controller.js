@@ -354,7 +354,7 @@
                             return lineItem.orderable.id === product.id;
                         });
                         lineItem.approvedProduct = result.approvedProduct;
-                        vm.requisition.addProductLineItem(lineItem, lineItem.requestedQuantity);
+                        vm.requisition.addProductLineItem(lineItem);
                     });
                 })
                 .finally(function() {
