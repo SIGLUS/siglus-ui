@@ -17,6 +17,9 @@
 
     'use strict';
 
-    angular.module('requisition-view-section', []);
+    angular.module('requisition-view-section', [
+        'admin-template',
+        'admin-template-configure-column-setting'
+    ]);
 
 })();

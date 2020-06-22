@@ -15,9 +15,9 @@
 
 describe('requisitionValidator', function() {
 
-    // SIGLUS-REFACTOR: add requisitionUtils
+    // SIGLUS-REFACTOR: add requisitionUtils, kitUsageLineItems
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
-        lineItems, column, columns, requisition, requisitionUtils;
+        lineItems, column, columns, requisition, requisitionUtils, kitUsageLineItems;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -76,9 +76,28 @@ describe('requisitionValidator', function() {
             }
         }];
 
+        // #251: Facility user can create requisition with KIT section
+        kitUsageLineItems = [ {
+            collection: 'kitReceived',
+            services: {
+                CHW: {
+                    id: '5fa9e34e-ea7c-4e24-a08a-cbeacc66d664',
+                    value: 10
+                },
+                HF: {
+                    id: '000f8d2f-1149-46a8-9fbc-8c7a7669ee1e',
+                    value: 0
+                }
+            }
+        } ];
+        // #251: ends here
+
         requisition = {
             template: template,
             requisitionLineItems: lineItems,
+            // #251: Facility user can create requisition with KIT section
+            kitUsageLineItems: kitUsageLineItems,
+            // #251: ends here
             // SIGLUS-REFACTOR: starts here
             extraData: {
                 consultationNumber: 1,
@@ -90,6 +109,23 @@ describe('requisitionValidator', function() {
             // SIGLUS-REFACTOR: ends here
         };
     });
+
+    // #251: Facility user can create requisition with KIT section
+    describe('areAllLineItemsSkipped', function() {
+
+        it('should return false if product is not enabled', function() {
+            requisition.template.extension.enableProduct = false;
+
+            expect(validator.areAllLineItemsSkipped(requisition)).toBe(false);
+        });
+
+        it('should return false if product is enabled and lineItems are not skipped', function() {
+            requisition.template.extension.enableProduct = true;
+
+            expect(validator.areAllLineItemsSkipped(requisition)).toBe(false);
+        });
+    });
+    // #251: ends here
 
     describe('validateRequisition', function() {
 
@@ -152,6 +188,40 @@ describe('requisitionValidator', function() {
 
             expect(validator.validateRequisition(requisition)).toBe(true);
         });
+
+        // #251: Facility user can create requisition with KIT section
+        it('should return true if kitUsageLineItems are valid', function() {
+            requisition.template.extension.enableKitUsage = true;
+
+            expect(validator.validateRequisition(requisition)).toBe(true);
+        });
+
+        it('should return false if CHW value is empty', function() {
+            requisition.template.extension.enableKitUsage = true;
+            requisition.kitUsageLineItems[0].services.CHW.value = '';
+
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if kitReceived is invalid', function() {
+            requisition.template.extension.enableKitUsage = true;
+            requisition.kitUsageLineItems.push({
+                collection: 'kitOpened',
+                services: {
+                    CHW: {
+                        id: '5fa9e34e-ea7c-4e24-a08a-cbeacc66d664',
+                        value: ''
+                    },
+                    HF: {
+                        id: '000f8d2f-1149-46a8-9fbc-8c7a7669ee1e',
+                        value: 0
+                    }
+                }
+            });
+
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+        // #251: ends here
     });
 
     describe('validateLineItem', function() {
