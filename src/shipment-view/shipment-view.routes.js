@@ -70,10 +70,15 @@
                     return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
                 },
                 // #264: warehouse clerk can add product to orders
-                updatedOrder: function(shipment, order) {
+                updatedOrder: function(shipment, order, stockCardSummaries) {
                     var shipmentOrder = shipment.order;
 
-                    shipmentOrder.availableProducts = order.availableProducts;
+                    shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
+                        var stockCard = stockCardSummaries.find(function(stockCard) {
+                            return stockCard.orderable.id === orderable.id;
+                        });
+                        return stockCard.orderable;
+                    });
                     return shipmentOrder;
                 }
                 // #264: ends here
