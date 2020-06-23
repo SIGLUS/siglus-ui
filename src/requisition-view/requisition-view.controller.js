@@ -564,7 +564,7 @@
         function approveRnr() {
             if (requisitionValidator.validateRequisition(requisition)) {
                 if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                    failWithMessage('requisitionView.allLineItemsSkipped')();
+                    failWithMessage('requisitionView.approveAllLineItemsSkipped')();
                 } else {
                     signatureModalService.confirm('requisitionView.approve.confirmWithSignature')
                         .then(function(signature) {
