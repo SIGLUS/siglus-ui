@@ -263,9 +263,10 @@
         function extendResponse(availableProducts) {
             return function(response) {
                 response.forEach(function(item) {
-                    item.orderLineItem.orderable = availableProducts.find(function(orderable) {
+                    var addedOrderable = availableProducts.find(function(orderable) {
                         return orderable.id === item.orderLineItem.orderable.id;
                     });
+                    angular.extend(item.orderLineItem.orderable, addedOrderable);
                 });
                 return response;
             };
