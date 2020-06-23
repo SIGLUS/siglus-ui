@@ -179,6 +179,7 @@
                     });
                     return orderService.getOrderableLineItem(vm.order.id, orderableIds);
                 })
+                .then(extendResponse(availableProducts))
                 .then(function(result) {
                     var addedShipmentLineItems = prepareShipmentLineItems(result);
                     var addedOrderLineItems = result.map(function(item) {
@@ -257,6 +258,17 @@
                 });
             });
             return canFulfillForMeMap;
+        }
+
+        function extendResponse(availableProducts) {
+            return function(response) {
+                response.forEach(function(item) {
+                    item.orderLineItem.orderable = availableProducts.find(function(orderable) {
+                        return orderable.id === item.orderLineItem.orderable.id;
+                    });
+                });
+                return response;
+            };
         }
         // #264: ends here
     }
