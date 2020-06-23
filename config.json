@@ -2,7 +2,7 @@
     "app": {
         "src": "./src"
     },
-    "analyticsTrackingId": "G-0B97KVXDSS",
+    "analyticsTrackingId": null,
     "orderedBuildDirectories": [
         "/openlmis-ui-components",
         "/openlmis-ui-layout",
