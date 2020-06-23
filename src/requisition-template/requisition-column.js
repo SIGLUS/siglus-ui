@@ -208,7 +208,7 @@
                 return displayQuantityApproved(column, requisition);
             }
             if (TEMPLATE_COLUMNS.REMARKS === column.name) {
-                return column.isDisplayed && requisition.$isAfterAuthorize();
+                return displayRemarks(column, requisition);
             }
             return column.isDisplayed;
         }
@@ -218,6 +218,10 @@
                 hasAuthorizeRight(requisition) ||
                 (requisition.$isAfterAuthorize() && hasApproveRight(requisition))
             );
+        }
+
+        function displayRemarks(column, requisition) {
+            return column.isDisplayed && (requisition.$isAfterAuthorize() || requisition.$isReleasedWithoutOrder());
         }
 
         function hasAuthorizeRight(requisition) {

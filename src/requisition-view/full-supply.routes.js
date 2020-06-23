@@ -35,12 +35,10 @@
                 resolve: {
                     lineItems: function($filter, requisition) {
                         // #227: user can add both full supply & non-fully supply product
-                        var filterObject = requisition.template.hideSkippedLineItems() ? {
-                            skipped: '!true'
-                        } : {};
-                        var fullSupplyLineItems = _.isEmpty(filterObject)
-                            ? requisition.requisitionLineItems
-                            : $filter('filter')(requisition.requisitionLineItems, filterObject);
+                        var fullSupplyLineItems = requisition.template.hideSkippedLineItems()
+                            ? $filter('filter')(requisition.requisitionLineItems, {
+                                skipped: '!true'
+                            }) : requisition.requisitionLineItems;
                         // #227: ends here
 
                         return $filter('orderBy')(fullSupplyLineItems, [
@@ -70,7 +68,6 @@
                         return true;
                     },
                     homeFacility: function(facilityFactory) {
-                        console.log(facilityFactory);
                         return facilityFactory.getUserHomeFacility();
                     }
                 }

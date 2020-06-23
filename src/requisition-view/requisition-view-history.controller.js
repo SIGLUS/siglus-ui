@@ -294,21 +294,13 @@
         }
 
         function refreshLineItems() {
-            var filterObject = (fullSupply &&
-                vm.requisition.template.hasSkipColumn() &&
-                vm.requisition.template.hideSkippedLineItems()) ?
-                {
-                    skipped: '!true',
-                    $program: {
-                        fullSupply: fullSupply
-                    }
-                } : {
-                    $program: {
-                        fullSupply: fullSupply
-                    }
-                };
-
-            var lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
+            // #227: user can add both full supply & non-fully supply product
+            var lineItems = (vm.requisition.template.hasSkipColumn() &&
+                vm.requisition.template.hideSkippedLineItems())
+                ? $filter('filter')(vm.requisition.requisitionLineItems, {
+                    skipped: '!true'
+                }) : vm.requisition.requisitionLineItems;
+            // #227: ends here
 
             paginationService
                 .registerList(
