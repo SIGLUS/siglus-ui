@@ -21,11 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('KitUsagePreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService',
-        'SERVICE_TYPES'];
+    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService,
-                        SERVICE_TYPES) {
+    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService) {
 
         var vm = this;
 
@@ -42,7 +40,7 @@
         }
 
         function getColumn(service, collection) {
-            return service.name === SERVICE_TYPES.HF ? collection : service;
+            return service.name === 'HF' ? collection : service;
         }
 
         function isUserInput(service, collection) {

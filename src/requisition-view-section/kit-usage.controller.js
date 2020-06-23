@@ -21,9 +21,9 @@
         .module('requisition-view-section')
         .controller('KitUsageController', controller);
 
-    controller.$inject = ['columnUtils', 'templateConfigureService', 'SERVICE_TYPES'];
+    controller.$inject = ['columnUtils', 'templateConfigureService'];
 
-    function controller(columnUtils, templateConfigureService, SERVICE_TYPES) {
+    function controller(columnUtils, templateConfigureService) {
 
         var vm = this;
 
@@ -35,18 +35,18 @@
             var collectionColumnsMap = templateConfigureService.getSectionColumnsMap(collection);
             var service = templateConfigureService.getService(vm.sections);
             var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(service);
-            vm.lineItems = _.map(vm.lineItems, function(lineItem) {
-                var enhancedLineItem = angular.merge({}, collectionColumnsMap[lineItem.collection], lineItem);
-                _.forEach(Object.keys(enhancedLineItem.services), function(serviceName) {
-                    enhancedLineItem.services[serviceName] = angular.merge({},
-                        serviceColumnsMap[serviceName], enhancedLineItem.services[serviceName]);
+            angular.forEach(vm.lineItems, function(lineItem) {
+                var collectionName = lineItem.collection;
+                lineItem[collectionName] = collectionColumnsMap[collectionName];
+                angular.forEach(Object.keys(lineItem.services), function(serviceName) {
+                    lineItem.services[serviceName] = angular.merge({},
+                        serviceColumnsMap[serviceName], lineItem.services[serviceName]);
                 });
-                return enhancedLineItem;
             });
         }
 
         function getColumn(service, collection) {
-            return service.name === SERVICE_TYPES.HF ? collection : service;
+            return service.name === 'HF' ? collection : service;
         }
 
         function isUserInput(service, collection) {
