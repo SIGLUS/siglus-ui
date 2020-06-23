@@ -34,8 +34,11 @@
         'VVM_STATUS',
         // #264: warehouse clerk can add product to orders
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
-        'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem'
+        'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
+        // #287: Warehouse clerk can skip some products in order
+        'ShipmentViewLineItemGroup'
+        // #287: ends here
     ];
 
     function ShipmentViewController(shipment, loadingModalService, $state, $window,
@@ -43,7 +46,7 @@
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-                                    ShipmentLineItem) {
+                                    ShipmentLineItem, ShipmentViewLineItemGroup) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -305,6 +308,9 @@
         function changeSkipStatus(tableLineItem) {
             tableLineItem.lineItems.forEach(function(lineItem) {
                 lineItem.skipped = tableLineItem.skipped;
+                if (lineItem instanceof ShipmentViewLineItemGroup) {
+                    changeSkipStatus(lineItem);
+                }
             });
             vm.shipment.order.orderLineItems.forEach(function(orderLineItem) {
                 if (orderLineItem.orderable.productCode === tableLineItem.productCode) {
@@ -316,7 +322,9 @@
         function canSkip(tableLineItem) {
             var result = true;
             tableLineItem.lineItems.forEach(function(lineItem) {
-                if (!isEmpty(lineItem.shipmentLineItem.quantityShipped)) {
+                if (lineItem instanceof ShipmentViewLineItemGroup) {
+                    result = canSkip(lineItem);
+                } else if (!isEmpty(lineItem.shipmentLineItem.quantityShipped)) {
                     result = false;
                 }
             });
