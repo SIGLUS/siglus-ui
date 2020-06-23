@@ -2,14 +2,14 @@
     <table class="openlmis-table">
         <tbody>
         <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
-            <td >{{lineItem.label}}</td>
+            <td >{{lineItem[lineItem.collection].label}}</td>
             <td ng-repeat-start="serviceColumn in lineItem.services | orderObjectBy : 'displayOrder'">
                 {{serviceColumn.label}}
             </td>
-            <td ng-if="!vm.isUserInput(serviceColumn, lineItem)">
+            <td ng-if="!vm.isUserInput(serviceColumn, lineItem[lineItem.collection])">
                 {{serviceColumn.value}}
             </td>
-            <td ng-if="vm.isUserInput(serviceColumn, lineItem)" ng-repeat-end>
+            <td ng-if="vm.isUserInput(serviceColumn, lineItem[lineItem.collection])" ng-repeat-end>
                 <input positive-integer
                        ng-model="serviceColumn.value"
                        ng-required="!serviceColumn.value"

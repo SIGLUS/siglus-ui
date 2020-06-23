@@ -59,7 +59,6 @@ describe('KitUsageController', function() {
             }]
         } ];
         kitUsageLineItems = [ {
-            id: 'test',
             collection: 'kitReceived',
             services: {
                 HF: {
@@ -83,16 +82,18 @@ describe('KitUsageController', function() {
 
             expect(vm.lineItems).toEqual([ {
                 collection: 'kitReceived',
-                name: 'kitReceived',
-                label: 'No. of Kit Received',
-                indicator: 'KD',
-                displayOrder: 0,
-                isDisplayed: true,
-                option: null,
-                definition: 'record the quantity of how many KIT received',
-                tag: 'received',
-                source: 'STOCK_CARDS',
-                id: 'test',
+                kitReceived: {
+                    name: 'kitReceived',
+                    label: 'No. of Kit Received',
+                    indicator: 'KD',
+                    displayOrder: 0,
+                    isDisplayed: true,
+                    option: null,
+                    definition: 'record the quantity of how many KIT received',
+                    tag: 'received',
+                    source: 'STOCK_CARDS',
+                    id: 'e90aa569-aed2-457d-b085-58d142c99f45'
+                },
                 services: {
                     HF: {
                         id: '000f8d2f-1149-46a8-9fbc-8c7a7669ee1e',
@@ -123,7 +124,7 @@ describe('KitUsageController', function() {
         it('should return false if service is HF and source is stock card', function() {
             vm.canEdit = true;
 
-            expect(vm.isUserInput(vm.lineItems[0].services.HF, vm.lineItems[0])).toBe(false);
+            expect(vm.isUserInput(vm.lineItems[0].services.HF, vm.lineItems[0].kitReceived)).toBe(false);
         });
 
         it('should return true if service is CHW and source user input', function() {
