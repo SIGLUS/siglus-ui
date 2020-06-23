@@ -18,7 +18,8 @@ describe('ShipmentViewController', function() {
     var vm, $q, $controller, ShipmentDataBuilder, shipment, tableLineItems, OrderDataBuilder, fulfillmentUrlFactory,
         QUANTITY_UNIT, order, messageService, $window, $rootScope,
         // #264: warehouse clerk can add product to orders
-        selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory;
+        selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory,
+        shipmentViewLineItemFactory, orderService;
         // #264: ends here
 
     beforeEach(function() {
@@ -41,6 +42,8 @@ describe('ShipmentViewController', function() {
             alertService = $injector.get('alertService');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             ShipmentViewLineItemFactory = $injector.get('ShipmentViewLineItemFactory');
+            shipmentViewLineItemFactory = new ShipmentViewLineItemFactory();
+            orderService = $injector.get('orderService');
             // #264: ends here
         });
 
@@ -186,13 +189,15 @@ describe('ShipmentViewController', function() {
 
             spyOn(alertService, 'error');
             spyOn(selectProductsModalService, 'show');
-            spyOn(new ShipmentViewLineItemFactory(), 'createFrom').andReturn([]);
+            spyOn(orderService, 'getOrderableLineItem');
+            spyOn(shipmentViewLineItemFactory, 'createFrom');
         });
 
         it('should show alert if there are no available products', function() {
             vm.order.orderLineItems = [];
             vm.order.availableProducts = [];
             vm.addProducts();
+            $rootScope.$apply();
 
             expect(selectProductsModalService.show).not.toHaveBeenCalled();
             expect(alertService.error).toHaveBeenCalledWith(
@@ -207,6 +212,7 @@ describe('ShipmentViewController', function() {
             vm.order.orderLineItems = [];
             vm.order.availableProducts = availableProducts;
             vm.addProducts();
+            $rootScope.$apply();
 
             var actualProducts = selectProductsModalService.show.calls[0].args[0];
 
@@ -214,6 +220,34 @@ describe('ShipmentViewController', function() {
             expect(actualProducts.products[0]).toEqual(availableProducts[1]);
             expect(actualProducts.products[1]).toEqual(availableProducts[2]);
             expect(actualProducts.products[2]).toEqual(availableProducts[0]);
+        });
+
+        it('should do nothing if modal was dismissed', function() {
+            selectProductsModalService.show.andReturn($q.reject());
+            shipmentViewLineItemFactory.createFrom.andReturn([]);
+
+            vm.order.orderLineItems = [];
+            vm.order.availableProducts = [];
+            vm.addProducts();
+            $rootScope.$apply();
+
+            expect(shipmentViewLineItemFactory.createFrom).not.toHaveBeenCalled();
+        });
+
+        it('should create new line item', function() {
+            selectProductsModalService.show.andReturn($q.resolve([
+                availableProducts[0]
+            ]));
+
+            vm.order.orderLineItems = [];
+            vm.order.availableProducts = availableProducts;
+            vm.addProducts();
+            $rootScope.$apply();
+
+            expect(orderService.getOrderableLineItem).toHaveBeenCalledWith(
+                vm.order.id,
+                [availableProducts[0].id]
+            );
         });
     });
     // #264: ends here
