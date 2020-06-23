@@ -158,7 +158,7 @@ describe('orderService', function() {
 
         it('should call /api/siglusapi/orders/createLineItem endpoint', function() {
             $httpBackend.expectPOST(
-                fulfillmentUrlFactory('/api/siglusapi/orders/createLineItem?orderId='+ order.id)
+                fulfillmentUrlFactory('/api/siglusapi/orders/createLineItem?orderId=' + order.id)
             );
 
             orderService.getOrderableLineItem(order.id, []);
