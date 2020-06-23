@@ -625,6 +625,17 @@ describe('RequisitionViewController', function() {
             expect(this.requisition.extraData.signaure.approve).toEqual(['approver', 'approver']);
         });
         // #231: ends here
+
+        // #309: change error message
+        it('should show notification if all line items are skipped', function() {
+            this.requisitionValidator.areAllLineItemsSkipped.andReturn(true);
+
+            this.vm.approveRnr();
+            this.$rootScope.$apply();
+
+            expect(this.alertService.error).toHaveBeenCalledWith('requisitionView.approveAllLineItemsSkipped');
+        });
+        // #309: ends here
     });
 
     describe('rejectRnr', function() {
