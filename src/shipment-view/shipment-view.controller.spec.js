@@ -19,14 +19,20 @@ describe('ShipmentViewController', function() {
         QUANTITY_UNIT, order, messageService, $window, $rootScope,
         // #264: warehouse clerk can add product to orders
         selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory,
-        shipmentViewLineItemFactory, orderService;
+        shipmentViewLineItemFactory, orderService,
         // #264: ends here
+        // #287: Warehouse clerk can skip some products in order
+        ShipmentLineItem, ShipmentLineItemDataBuilder;
+        // #287: ends here
 
     beforeEach(function() {
         module('shipment-view');
         // #264: warehouse clerk can add product to orders
         module('openlmis-array-decorator');
         // #264: ends here
+        // #287: Warehouse clerk can skip some products in order
+        module('shipment');
+        // #287: ends here
         inject(function($injector) {
             $q = $injector.get('$q');
             $controller = $injector.get('$controller');
@@ -45,6 +51,10 @@ describe('ShipmentViewController', function() {
             shipmentViewLineItemFactory = new ShipmentViewLineItemFactory();
             orderService = $injector.get('orderService');
             // #264: ends here
+            // #287: Warehouse clerk can skip some products in order
+            ShipmentLineItem = $injector.get('ShipmentLineItem');
+            ShipmentLineItemDataBuilder = $injector.get('ShipmentLineItemDataBuilder');
+            // #287: ends here
         });
 
         shipment = new ShipmentDataBuilder().build();
@@ -252,4 +262,46 @@ describe('ShipmentViewController', function() {
     });
     // #264: ends here
 
+    // #287: Warehouse clerk can skip some products in order
+    describe('skipLineItems', function() {
+
+        beforeEach(function() {
+            vm.$onInit();
+
+            var json = new ShipmentLineItemDataBuilder().buildJson();
+            var shipmentLineItem = new ShipmentLineItem(json);
+
+            vm.tableLineItems[0] = {
+                productCode: 'C1',
+                lineItems: [{
+                    shipmentLineItem: shipmentLineItem,
+                    skipped: false
+                }],
+                isMainGroup: true,
+                skipped: false
+            };
+            vm.tableLineItems[1] = {
+                productCode: 'C2',
+                lineItems: [{
+                    shipmentLineItem: ShipmentLineItem,
+                    skipped: false
+                }],
+                isMainGroup: true,
+                skipped: false
+            };
+        });
+
+        it('should the lineItems skip status should be changed when change the shipmentViewLineItems ', function() {
+            vm.skipAllLineItems();
+
+            expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(true);
+            expect(vm.shipment.order.orderLineItems[1].skipped).toEqual(true);
+
+            vm.unskipAllLineItems();
+
+            expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(false);
+            expect(vm.shipment.order.orderLineItems[1].skipped).toEqual(false);
+        });
+    });
+    // #287: ends here
 });

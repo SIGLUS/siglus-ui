@@ -29,15 +29,16 @@
         .module('shipment')
         .factory('ShipmentRepositoryImpl', ShipmentRepositoryImpl);
 
-    // #287: add SiglusShipmentDraftResource
+    // #287: add SiglusShipmentResource, SiglusShipmentDraftResource, SiglusOrderResource
     ShipmentRepositoryImpl.$inject = [
         'ShipmentResource', 'ShipmentDraftResource', 'OrderResource', 'StockCardSummaryRepositoryImpl',
-        'SiglusShipmentDraftResource'
+        'SiglusShipmentResource', 'SiglusShipmentDraftResource', 'SiglusOrderResource'
     ];
     // #287: ends here
 
     function ShipmentRepositoryImpl(ShipmentResource, ShipmentDraftResource, OrderResource,
-                                    StockCardSummaryRepositoryImpl, SiglusShipmentDraftResource) {
+                                    StockCardSummaryRepositoryImpl, SiglusShipmentResource, SiglusShipmentDraftResource,
+                                    SiglusOrderResource) {
 
         ShipmentRepositoryImpl.prototype.create = create;
         ShipmentRepositoryImpl.prototype.createDraft = createDraft;
@@ -64,7 +65,9 @@
             this.stockCardSummaryRepositoryImpl = new StockCardSummaryRepositoryImpl();
             this.orderResource = new OrderResource();
             // #287: Warehouse clerk can skip some products in order
+            this.siglusShipmentResource = new SiglusShipmentResource();
             this.siglusShipmentDraftResource = new SiglusShipmentDraftResource();
+            this.siglusOrderResource = new SiglusOrderResource();
             // #287: ends here
         }
 
@@ -84,10 +87,12 @@
             var orderResource = this.orderResource,
                 stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
 
-            return this.shipmentResource.create(json)
+            // #287: Warehouse clerk can skip some products in order
+            return this.siglusShipmentResource.create(json)
                 .then(function(shipmentJson) {
                     return extendResponse(shipmentJson, orderResource, stockCardSummaryRepositoryImpl);
                 });
+            // #287: ends here
         }
 
         /**
@@ -170,23 +175,26 @@
          * @return {Promise}         the promise resolving to combined JSON which can be used for
          *                           creating instance of the Shipment class
          */
+        // #287: Warehouse clerk can skip some products in order
         function getDraftByOrderId(orderId) {
-            var orderResource = this.orderResource,
+            var siglusOrderResource = this.siglusOrderResource,
                 stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
 
-            // #287: Warehouse clerk can skip some products in order
-            return this.siglusShipmentDraftResource.query({
+            return this.shipmentDraftResource.query({
                 orderId: orderId
             })
                 .then(function(page) {
-                    return extendResponse(page.content[0], orderResource, stockCardSummaryRepositoryImpl);
+                    return extendResponse(page.content[0], siglusOrderResource, stockCardSummaryRepositoryImpl);
                 });
-            // #287: ends here
         }
+        // #287: ends here
 
         function extendResponse(shipmentJson, orderResource, stockCardSummaryRepositoryImpl) {
             return orderResource.get(shipmentJson.order.id)
                 .then(function(orderJson) {
+                    // #287: Warehouse clerk can skip some products in order
+                    orderJson = orderJson.order || orderJson;
+                    // #287: ends here
                     var orderableIds = orderJson.orderLineItems.map(function(lineItem) {
                         return lineItem.orderable.id;
                     });

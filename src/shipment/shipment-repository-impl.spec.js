@@ -15,11 +15,12 @@
 
 describe('ShipmentRepositoryImpl', function() {
 
-    // #287: add siglusShipmentDraftResourceMock
+    // #287: add siglusShipmentDraftResourceMock, siglusOrderResourceMock, siglusShipmentResourceMock
     var ShipmentRepositoryImpl, shipmentRepositoryImpl, ShipmentDataBuilder, OrderResponseDataBuilder,
         shipment, shipmentResourceMock, orderResourceMock, $q, $rootScope, order,
         stockCardSummaryRepositoryImplMock, StockCardSummaryDataBuilder, ShipmentLineItemDataBuilder,
-        CanFulfillForMeEntryDataBuilder, stockCardSummaries, shipmentDraftResourceMock, siglusShipmentDraftResourceMock;
+        CanFulfillForMeEntryDataBuilder, stockCardSummaries, shipmentDraftResourceMock, siglusShipmentDraftResourceMock,
+        siglusOrderResourceMock, siglusShipmentResourceMock;
     // #287: ends here
 
     beforeEach(function() {
@@ -34,7 +35,7 @@ describe('ShipmentRepositoryImpl', function() {
             });
 
             shipmentDraftResourceMock = jasmine.createSpyObj('shipmentDraftResource', [
-                'create'
+                'create', 'update', 'query'
             ]);
             $provide.factory('ShipmentDraftResource', function() {
                 return function() {
@@ -43,12 +44,30 @@ describe('ShipmentRepositoryImpl', function() {
             });
 
             // #287: Warehouse clerk can skip some products in order
-            siglusShipmentDraftResourceMock = jasmine.createSpyObj('SiglusShipmentDraftResource', [
-                'update', 'query'
+            siglusShipmentDraftResourceMock = jasmine.createSpyObj('siglusShipmentDraftResource', [
+                'update'
             ]);
             $provide.factory('SiglusShipmentDraftResource', function() {
                 return function() {
                     return siglusShipmentDraftResourceMock;
+                };
+            });
+
+            siglusOrderResourceMock = jasmine.createSpyObj('siglusOrderResource', [
+                'get'
+            ]);
+            $provide.factory('SiglusOrderResource', function() {
+                return function() {
+                    return siglusOrderResourceMock;
+                };
+            });
+
+            siglusShipmentResourceMock = jasmine.createSpyObj('siglusShipmentResource', [
+                'create', 'get', 'query'
+            ]);
+            $provide.factory('SiglusShipmentResource', function() {
+                return function() {
+                    return siglusShipmentResourceMock;
                 };
             });
             // #287: ends here
@@ -120,8 +139,9 @@ describe('ShipmentRepositoryImpl', function() {
 
     describe('create', function() {
 
+        // #287: Warehouse clerk can skip some products in order
         it('should reject if save was unsuccessful', function() {
-            shipmentResourceMock.create.andReturn($q.reject());
+            siglusShipmentResourceMock.create.andReturn($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.create(shipment)
@@ -131,13 +151,13 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(shipmentResourceMock.create).toHaveBeenCalledWith(shipment);
+            expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).not.toHaveBeenCalled();
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
         it('should reject if could not fetch order', function() {
-            shipmentResourceMock.create.andReturn($q.resolve(shipment));
+            siglusShipmentResourceMock.create.andReturn($q.resolve(shipment));
             orderResourceMock.get.andReturn($q.reject());
 
             var rejected;
@@ -148,13 +168,13 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(shipmentResourceMock.create).toHaveBeenCalledWith(shipment);
+            expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
         it('should reject if could not fetch stock card summaries', function() {
-            shipmentResourceMock.create.andReturn($q.resolve(shipment));
+            siglusShipmentResourceMock.create.andReturn($q.resolve(shipment));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
 
@@ -166,7 +186,7 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(shipmentResourceMock.create).toHaveBeenCalledWith(shipment);
+            expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
                 programId: order.program.id,
@@ -179,7 +199,7 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should return combined responses', function() {
-            shipmentResourceMock.create.andReturn($q.resolve(angular.copy(shipment)));
+            siglusShipmentResourceMock.create.andReturn($q.resolve(angular.copy(shipment)));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
@@ -199,7 +219,7 @@ describe('ShipmentRepositoryImpl', function() {
             expect(result.lineItems[1].canFulfillForMe)
                 .toEqual(stockCardSummaries[1].canFulfillForMe[1]);
 
-            expect(shipmentResourceMock.create).toHaveBeenCalledWith(shipment);
+            expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
                 programId: order.program.id,
@@ -211,6 +231,7 @@ describe('ShipmentRepositoryImpl', function() {
             });
 
         });
+        // #287: ends here
 
     });
 
@@ -462,7 +483,7 @@ describe('ShipmentRepositoryImpl', function() {
 
         // #287: Warehouse clerk can skip some products in order
         it('should reject if save was unsuccessful', function() {
-            siglusShipmentDraftResourceMock.query.andReturn($q.reject());
+            shipmentDraftResourceMock.query.andReturn($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -472,19 +493,19 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(siglusShipmentDraftResourceMock.query).toHaveBeenCalledWith({
+            expect(shipmentDraftResourceMock.query).toHaveBeenCalledWith({
                 orderId: shipment.order.id
             });
 
-            expect(orderResourceMock.get).not.toHaveBeenCalled();
+            expect(siglusOrderResourceMock.get).not.toHaveBeenCalled();
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
         it('should reject if could not fetch order', function() {
-            siglusShipmentDraftResourceMock.query.andReturn($q.resolve({
+            shipmentDraftResourceMock.query.andReturn($q.resolve({
                 content: [shipment]
             }));
-            orderResourceMock.get.andReturn($q.reject());
+            siglusOrderResourceMock.get.andReturn($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -494,19 +515,19 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(siglusShipmentDraftResourceMock.query).toHaveBeenCalledWith({
+            expect(shipmentDraftResourceMock.query).toHaveBeenCalledWith({
                 orderId: shipment.order.id
             });
 
-            expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
+            expect(siglusOrderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
         it('should reject if could not fetch stock card summaries', function() {
-            siglusShipmentDraftResourceMock.query.andReturn($q.resolve({
+            shipmentDraftResourceMock.query.andReturn($q.resolve({
                 content: [shipment]
             }));
-            orderResourceMock.get.andReturn($q.resolve(order));
+            siglusOrderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
 
             var rejected;
@@ -517,11 +538,11 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(siglusShipmentDraftResourceMock.query).toHaveBeenCalledWith({
+            expect(shipmentDraftResourceMock.query).toHaveBeenCalledWith({
                 orderId: shipment.order.id
             });
 
-            expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
+            expect(siglusOrderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
                 programId: order.program.id,
                 facilityId: order.supplyingFacility.id,
@@ -533,10 +554,10 @@ describe('ShipmentRepositoryImpl', function() {
         });
 
         it('should return combined responses', function() {
-            siglusShipmentDraftResourceMock.query.andReturn($q.resolve(angular.copy({
+            shipmentDraftResourceMock.query.andReturn($q.resolve(angular.copy({
                 content: [shipment]
             })));
-            orderResourceMock.get.andReturn($q.resolve(order));
+            siglusOrderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
@@ -555,11 +576,11 @@ describe('ShipmentRepositoryImpl', function() {
             expect(result.lineItems[1].canFulfillForMe)
                 .toEqual(stockCardSummaries[1].canFulfillForMe[1]);
 
-            expect(siglusShipmentDraftResourceMock.query).toHaveBeenCalledWith({
+            expect(shipmentDraftResourceMock.query).toHaveBeenCalledWith({
                 orderId: shipment.order.id
             });
 
-            expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
+            expect(siglusOrderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
                 programId: order.program.id,
                 facilityId: order.supplyingFacility.id,

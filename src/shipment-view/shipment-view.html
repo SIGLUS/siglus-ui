@@ -35,7 +35,7 @@
     </button>
 </div>
 <!-- #264: ends here -->
-<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm(vm.tableLineItems)">
+<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()">
     <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
     <!-- #287: Warehouse clerk can skip some products in order-->
     <h4>{{'shipmentView.skip' | message}}</h4>
@@ -79,7 +79,7 @@
                 <td ng-if="tableLineItem.shipmentLineItem">
                     <!-- #287: Warehouse clerk can skip some products in order-->
                     <input ng-show="vm.shipment.isEditable()" positive-integer ng-model="tableLineItem.shipmentLineItem.quantityShipped"
-                        openlmis-invalid="{{tableLineItem.shipmentLineItem.isInvalid().quantityShipped | message}}" ng-disabled="tableLineItem.shipmentLineItem.skipped"/>
+                        openlmis-invalid="{{tableLineItem.shipmentLineItem.isInvalid().quantityShipped | message}}" ng-disabled="tableLineItem.skipped"/>
                     <!-- #287: ends here-->
                     <div ng-show="!vm.shipment.isEditable()">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
                 </td>
