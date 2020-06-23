@@ -161,7 +161,7 @@ describe('LineItem', function() {
         expect(angular.isFunction(lineItem.getFieldValue)).toBe(true);
         expect(angular.isFunction(lineItem.updateFieldValue)).toBe(true);
         // #227: user can add both full supply & non-fully supply product
-        expect(this.requisition.template.getColumns).toHaveBeenCalledWith();
+        expect(this.requisition.template.getColumns.calls[0].args[0]).toEqual(undefined);
         // #227: ends here
     });
 
