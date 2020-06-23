@@ -35,11 +35,21 @@
     </button>
 </div>
 <!-- #264: ends here -->
-<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()">
+<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm(vm.tableLineItems)">
     <quantity-unit-toggle class="is-primary" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <!-- #287: Warehouse clerk can skip some products in order-->
+    <h4>{{'shipmentView.skip' | message}}</h4>
+    <ul>
+        <li><a ng-click="vm.skipAllLineItems()">{{'shipmentView.all' | message}}</a></li>
+        <li><a ng-click="vm.unskipAllLineItems()">{{'shipmentView.none' | message}}</a></li>
+    </ul>
+    <!-- #287: ends here-->
     <table>
         <thead>
             <tr>
+                <!-- #287: Warehouse clerk can skip some products in order-->
+                <th>{{'shipmentView.skip' | message}}</th>
+                <!-- #287: ends here-->
                 <th>{{'shipmentView.productCode' | message}}</th>
                 <th>{{'shipmentView.product' | message}}</th>
                 <th>{{'shipmentView.lotCode' | message}}</th>
@@ -53,6 +63,11 @@
         </thead>
         <tbody>
             <tr ng-repeat="tableLineItem in vm.tableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="9">
+                <!-- #287: Warehouse clerk can skip some products in order-->
+                <td>
+                    <input type="checkbox" ng-if="tableLineItem.isMainGroup" ng-model="tableLineItem.skipped" ng-change="vm.changeSkipStatus(tableLineItem)" ng-disabled="!vm.canSkip(tableLineItem)" />
+                </td>
+                <!-- #287: ends here-->
                 <td>{{tableLineItem.productCode}}</td>
                 <td>{{tableLineItem.productName}}</td>
                 <td ng-if="!tableLineItem.isLot"></td>
@@ -62,8 +77,10 @@
                 <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>
                 <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getFillQuantity()}}</td>
                 <td ng-if="tableLineItem.shipmentLineItem">
+                    <!-- #287: Warehouse clerk can skip some products in order-->
                     <input ng-show="vm.shipment.isEditable()" positive-integer ng-model="tableLineItem.shipmentLineItem.quantityShipped"
-                        openlmis-invalid="{{tableLineItem.shipmentLineItem.isInvalid().quantityShipped | message}}"/>
+                        openlmis-invalid="{{tableLineItem.shipmentLineItem.isInvalid().quantityShipped | message}}" ng-disabled="tableLineItem.shipmentLineItem.skipped"/>
+                    <!-- #287: ends here-->
                     <div ng-show="!vm.shipment.isEditable()">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
                 </td>
                 <td>{{tableLineItem.getAvailableSoh(vm.showInDoses())}}</td>

@@ -3,5 +3,10 @@
   "shipmentView.addProduct": "Add Product",
   "shipmentView.noProductsToAdd.label": "Warning",
   "shipmentView.noProductsToAdd.message": "There are no more products to add. All available products have already been added into this order.",
-  "shipmentView.selectTooMany": "You can just add no more than 10 products per emergency order"
+  "shipmentView.selectTooMany": "You can just add no more than 10 products per emergency order",
+  "shipmentView.skip": "Skip",
+  "shipmentView.all": "All",
+  "shipmentView.none": "None",
+  "shipmentView.allLineItemsSkipped": "Cannot fulfill order with all line items skipped."
+
 }

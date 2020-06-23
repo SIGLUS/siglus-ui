@@ -54,6 +54,12 @@
         // #264: warehouse clerk can add product to orders
         vm.addProducts = addProducts;
         // #264: ends here
+        // #287: Warehouse clerk can skip some products in order
+        vm.changeSkipStatus = changeSkipStatus;
+        vm.skipAllLineItems = skipAllLineItems;
+        vm.unskipAllLineItems = unskipAllLineItems;
+        vm.canSkip = canSkip;
+        // #287: ends here
 
         /**
          * @ngdoc property
@@ -276,5 +282,50 @@
             };
         }
         // #264: ends here
+
+        // #287: Warehouse clerk can skip some products in order
+        function skipAllLineItems() {
+            vm.tableLineItems.forEach(function(tableLineItem) {
+                if (tableLineItem.isMainGroup && !tableLineItem.skipped && canSkip(tableLineItem)) {
+                    tableLineItem.skipped = true;
+                    changeSkipStatus(tableLineItem);
+                }
+            });
+        }
+
+        function unskipAllLineItems() {
+            vm.tableLineItems.forEach(function(tableLineItem) {
+                if (tableLineItem.isMainGroup && tableLineItem.skipped && canSkip(tableLineItem)) {
+                    tableLineItem.skipped = false;
+                    changeSkipStatus(tableLineItem);
+                }
+            });
+        }
+
+        function changeSkipStatus(tableLineItem) {
+            tableLineItem.lineItems.forEach(function(lineItem) {
+                lineItem.skipped = tableLineItem.skipped;
+            });
+            vm.shipment.order.orderLineItems.forEach(function(orderLineItem) {
+                if (orderLineItem.orderable.productCode === tableLineItem.productCode) {
+                    orderLineItem.skipped = tableLineItem.skipped;
+                }
+            });
+        }
+
+        function canSkip(tableLineItem) {
+            var result = true;
+            tableLineItem.lineItems.forEach(function(lineItem) {
+                if (!isEmpty(lineItem.shipmentLineItem.quantityShipped)) {
+                    result = false;
+                }
+            });
+            return result;
+        }
+
+        function isEmpty(value) {
+            return !value || !value.toString().trim();
+        }
+        // #287: ends here
     }
 })();
