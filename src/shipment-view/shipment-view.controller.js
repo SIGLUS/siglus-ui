@@ -213,7 +213,11 @@
             }
 
             return selectProductsModalService.show({
-                products: decoratedAvailableProducts
+                products: decoratedAvailableProducts,
+                limit: vm.order.emergency ? {
+                    max: 10 - vm.order.orderLineItems.length,
+                    errorMsg: 'shipmentView.selectTooMany'
+                } : undefined
             });
         }
 
