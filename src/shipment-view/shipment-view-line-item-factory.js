@@ -82,7 +82,8 @@
                         });
                     }
 
-                    var tradeItemLineItems = summary ? buildTradeItems(summary, shipmentLineItemMap) : [];
+                    var tradeItemLineItems = summary ?
+                        buildTradeItems(summary, shipmentLineItemMap, orderLineItem.skipped) : [];
                     return new ShipmentViewLineItemGroup({
                         productCode: orderLineItem.orderable.productCode,
                         productName: orderLineItem.orderable.fullProductName,
@@ -113,20 +114,23 @@
             });
         }
 
-        function buildTradeItems(summary, shipmentLineItemMap) {
+        function buildTradeItems(summary, shipmentLineItemMap, skipped) {
             var uniqueOrderables = getUniqueOrderables(summary.canFulfillForMe),
                 canFulfillForMeMap = groupByOrderables(summary.canFulfillForMe),
                 tradeItemLineItems = [];
 
             uniqueOrderables.forEach(function(orderable) {
-                var lotLineItems = buildLotLineItems(shipmentLineItemMap, canFulfillForMeMap, orderable);
+                var lotLineItems = buildLotLineItems(shipmentLineItemMap, canFulfillForMeMap, orderable, skipped);
 
                 if (lotLineItems.length > 1) {
                     tradeItemLineItems.push(new ShipmentViewLineItemGroup({
                         productCode: orderable.productCode,
                         productName: orderable.fullProductName,
                         lineItems: lotLineItems,
-                        netContent: orderable.netContent
+                        netContent: orderable.netContent,
+                        // #287: Warehouse clerk can skip some products in order
+                        skipped: skipped
+                        // #287: ends here
                     }));
                 } else if (lotLineItems.length) {
                     tradeItemLineItems.push(new ShipmentViewLineItem({
@@ -135,7 +139,10 @@
                         lot: lotLineItems[0].lot,
                         vvmStatus: lotLineItems[0].vvmStatus,
                         shipmentLineItem: lotLineItems[0].shipmentLineItem,
-                        netContent: orderable.netContent
+                        netContent: orderable.netContent,
+                        // #287: Warehouse clerk can skip some products in order
+                        skipped: skipped
+                        // #287: ends here
                     }));
                 }
             });
@@ -143,7 +150,7 @@
             return tradeItemLineItems;
         }
 
-        function buildLotLineItems(shipmentLineItemMap, canFulfillForMeMap, orderable) {
+        function buildLotLineItems(shipmentLineItemMap, canFulfillForMeMap, orderable, skipped) {
             var lotLineItems = [];
 
             canFulfillForMeMap[orderable.id].forEach(function(canFulfillForMe) {
@@ -159,7 +166,10 @@
                         lot: canFulfillForMe.lot,
                         vvmStatus: getVvmStatus(canFulfillForMe),
                         shipmentLineItem: shipmentLineItem,
-                        netContent: orderable.netContent
+                        netContent: orderable.netContent,
+                        // #287: Warehouse clerk can skip some products in order
+                        skipped: skipped
+                        // #287: ends here
                     }));
                 }
             });
