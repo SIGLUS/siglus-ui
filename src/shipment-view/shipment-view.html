@@ -29,7 +29,10 @@
 <!-- #264: warehouse clerk can add product to orders-->
 <div class="sub-heading">
     <h3 class="title">{{'shipmentView.products' | message}}</h3>
-    <button class="add" ng-click="vm.addProducts()">{{'shipmentView.addProduct' | message}}</button>
+    <button class="add" ng-click="vm.addProducts()"
+            ng-disabled="vm.order.emergency && vm.order.orderLineItems.length >= 10">
+        {{'shipmentView.addProduct' | message}}
+    </button>
 </div>
 <!-- #264: ends here -->
 <form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()">
