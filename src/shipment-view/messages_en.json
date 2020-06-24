@@ -2,5 +2,6 @@
   "shipmentView.products": "Product(s)",
   "shipmentView.addProduct": "Add Product",
   "shipmentView.noProductsToAdd.label": "Warning",
-  "shipmentView.noProductsToAdd.message": "There are no more products to add. All available products have already been added into this order."
+  "shipmentView.noProductsToAdd.message": "There are no more products to add. All available products have already been added into this order.",
+  "shipmentView.selectTooMany": "You can just add no more than 10 products per emergency order"
 }
