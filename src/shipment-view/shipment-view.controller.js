@@ -310,6 +310,8 @@
                 lineItem.skipped = tableLineItem.skipped;
                 if (lineItem instanceof ShipmentViewLineItemGroup) {
                     changeSkipStatus(lineItem);
+                } else {
+                    lineItem.shipmentLineItem.skipped = tableLineItem.skipped;
                 }
             });
             vm.shipment.order.orderLineItems.forEach(function(orderLineItem) {
