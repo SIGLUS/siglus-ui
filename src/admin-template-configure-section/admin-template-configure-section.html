@@ -19,7 +19,6 @@
                 dnd-type="vm.section.name"
                 dnd-disable-if="!column.columnDefinition.canChangeOrder"
                 dnd-effect-allowed="move"
-                dnd-moved="vm.movedCallback($index)"
             >
                 <dnd-nodrag>
                     <td ng-class="{'dnd-handle': column.columnDefinition.canChangeOrder}">

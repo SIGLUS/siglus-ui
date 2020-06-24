@@ -30,16 +30,15 @@
 
     TemplateConfigureSectionController.$inject = [
         '$scope', 'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES',
-        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_COLUMNS_LENGTH', 'templateConfigureService'
+        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_COLUMNS_LENGTH', 'templateConfigureService', 'notificationService'
     ];
 
     function TemplateConfigureSectionController($scope, messageService, templateValidator, columnUtils, COLUMN_SOURCES,
                                                 MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH,
-                                                templateConfigureService) {
+                                                templateConfigureService, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.movedCallback = movedCallback;
         vm.dropCallback = dropCallback;
         vm.canChangeSource = canChangeSource;
         vm.sourceDisplayName = sourceDisplayName;
@@ -64,18 +63,25 @@
             updateDisplayOrder();
         }
 
-        function movedCallback(index) {
-            vm.section.columns.splice(index, 1);
+        function dropCallback(event, dropStopIndex, droppedItem) {
+            var droppedItemIndex = _.findIndex(vm.section.columns, function(column) {
+                return angular.equals(column, droppedItem);
+            });
+            if (!canDrag(dropStopIndex, droppedItem)) {
+                notificationService.error('adminProgramTemplate.canNotDropColumn');
+            } else if (dropStopIndex !== droppedItemIndex) {
+                vm.section.columns.splice(droppedItemIndex, 1);
+                var insertIndex = dropStopIndex > droppedItemIndex ? dropStopIndex - 1 : dropStopIndex;
+                vm.section.columns.splice(insertIndex, 0, droppedItem);
+            }
+            return false;
         }
 
-        function dropCallback(event, dropStopIndex, droppedItem) {
+        function canDrag(dropStopIndex, droppedItem) {
             var lockColumns = _.filter(vm.section.columns, function(column) {
                 return !column.columnDefinition.canChangeOrder;
             });
-            if (dropStopIndex < lockColumns.length || !droppedItem.columnDefinition.canChangeOrder) {
-                return false;
-            }
-            return droppedItem;
+            return dropStopIndex >= lockColumns.length && droppedItem.columnDefinition.canChangeOrder;
         }
 
         function canChangeSource(column) {

@@ -22,7 +22,8 @@ describe('TemplateConfigureSectionController', function() {
     var tags;
 
     //injects
-    var $rootScope, $scope, $controller, COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH;
+    var $rootScope, $scope, $controller, COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH,
+        notificationService;
 
     beforeEach(function() {
         module('admin-template-configure-section');
@@ -34,6 +35,7 @@ describe('TemplateConfigureSectionController', function() {
             $controller = $injector.get('$controller');
             MAX_COLUMN_DESCRIPTION_LENGTH = $injector.get('MAX_COLUMN_DESCRIPTION_LENGTH');
             MAX_ADD_COLUMNS_LENGTH = $injector.get('MAX_ADD_COLUMNS_LENGTH');
+            notificationService = $injector.get('notificationService');
         });
 
         tags = [
@@ -65,6 +67,9 @@ describe('TemplateConfigureSectionController', function() {
             }]
         };
         vm.tags = tags;
+
+        spyOn(notificationService, 'error');
+
         vm.$onInit();
     });
 
@@ -295,26 +300,21 @@ describe('TemplateConfigureSectionController', function() {
         });
     });
 
-    describe('movedCallback', function() {
-
-        it('should remove inserted column when drag', function() {
-            vm.movedCallback(1);
-
-            expect(vm.section.columns.length).toBe(1);
-        });
-    });
-
     describe('dropCallback', function() {
 
-        it('should return false if dropStopIndex is before locked column', function() {
-            expect(vm.dropCallback({}, 0, vm.section.columns[1])).toBe(false);
+        it('notificationService should be called if dropStopIndex is before locked column', function() {
+            vm.dropCallback({}, 0, vm.section.columns[1]);
+
+            expect(notificationService.error).toHaveBeenCalledWith('adminProgramTemplate.canNotDropColumn');
         });
 
-        it('should return false if droppedItem is locked', function() {
-            expect(vm.dropCallback({}, 1, vm.section.columns[0])).toBe(false);
+        it('notificationService should be called if droppedItem is locked', function() {
+            vm.dropCallback({}, 1, vm.section.columns[0]);
+
+            expect(notificationService.error).toHaveBeenCalledWith('adminProgramTemplate.canNotDropColumn');
         });
 
-        it('should return droppedItem if dropStopIndex is after locked column', function() {
+        it('should insert moved item if drop up', function() {
             var column = {
                 name: 'new1',
                 columnDefinition: {
@@ -324,8 +324,105 @@ describe('TemplateConfigureSectionController', function() {
                 }
             };
             vm.section.columns.push(column);
+            vm.dropCallback({}, 1, vm.section.columns[2]);
 
-            expect(vm.dropCallback({}, 1, vm.section.columns[2])).toBe(column);
+            expect(vm.section.columns).toEqual([{
+                name: 'kitOpened',
+                source: COLUMN_SOURCES.STOCK_CARDS,
+                columnDefinition: {
+                    sources: [COLUMN_SOURCES.USER_INPUT, COLUMN_SOURCES.STOCK_CARDS],
+                    supportsTag: true,
+                    canChangeOrder: false
+                }
+            }, {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            }, {
+                name: 'new',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            }]);
+        });
+
+        it('should insert moved item if drop down', function() {
+            var column = {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            };
+            vm.section.columns.push(column);
+            vm.dropCallback({}, 3, vm.section.columns[1]);
+
+            expect(vm.section.columns).toEqual([{
+                name: 'kitOpened',
+                source: COLUMN_SOURCES.STOCK_CARDS,
+                columnDefinition: {
+                    sources: [COLUMN_SOURCES.USER_INPUT, COLUMN_SOURCES.STOCK_CARDS],
+                    supportsTag: true,
+                    canChangeOrder: false
+                }
+            }, {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            }, {
+                name: 'new',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            }]);
+        });
+
+        it('noting should happened if dropped item index equal stop index', function() {
+            var column = {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            };
+            vm.section.columns.push(column);
+            vm.dropCallback({}, 1, vm.section.columns[1]);
+
+            expect(vm.section.columns).toEqual([{
+                name: 'kitOpened',
+                source: COLUMN_SOURCES.STOCK_CARDS,
+                columnDefinition: {
+                    sources: [COLUMN_SOURCES.USER_INPUT, COLUMN_SOURCES.STOCK_CARDS],
+                    supportsTag: true,
+                    canChangeOrder: false
+                }
+            }, {
+                name: 'new',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            }, {
+                name: 'new1',
+                columnDefinition: {
+                    sources: [],
+                    supportsTag: false,
+                    canChangeOrder: true
+                }
+            }]);
         });
     });
 
