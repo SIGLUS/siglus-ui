@@ -112,7 +112,7 @@
                     return $stateParams.addedLineItems;
                 },
                 displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
-                    if (_.isUndefined($stateParams.displayItems && addedLineItems.length > 0)) {
+                    if (_.isUndefined($stateParams.displayItems) && addedLineItems.length > 0) {
                         $stateParams.addedLineItems = addedLineItems;
                         $stateParams.displayItems = addedLineItems;
                     }

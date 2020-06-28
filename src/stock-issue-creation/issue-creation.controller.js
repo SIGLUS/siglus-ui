@@ -89,7 +89,7 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
             $state.go($state.current.name, $stateParams, {
-                reload: reload,
+                reload: reload || $state.current.name,
                 notify: false
             });
         };
