@@ -58,6 +58,9 @@
         vm.getDescriptionForColumn = getDescriptionForColumn;
         vm.skippedFullSupplyProductCountMessage = skippedFullSupplyProductCountMessage;
         vm.cacheRequisition = cacheRequisition;
+        // #352: can add skipped products
+        vm.siglusAddProducts = siglusAddProducts;
+        // #352: ends here
 
         var isInternalApproval = homeFacility.id === requisition.facility.id;
 
@@ -300,6 +303,17 @@
                 });
         }
 
+        // #352: can add skipped products
+        function siglusAddProducts() {
+            var products = vm.requisition.getAvailableFullSupplyProducts();
+
+            if (vm.showSkipControls) {
+                products = products.concat(vm.requisition.getSkippedProducts());
+            }
+            addProducts(products);
+        }
+        // #352: ends here
+
         /**
          * @ngdoc method
          * @methodOf requisition-view-tab.controller:ViewTabController
@@ -326,7 +340,16 @@
                     addedOrderableIds = selectedProducts.map(function(orderable) {
                         return orderable.id;
                     });
-                    return prepareLineItems(selectedProducts);
+                    var skippedProducts = selectedProducts.filter(function(orderable) {
+                        return orderable.skipped;
+                    });
+                    var availableProducts = selectedProducts.filter(function(orderable) {
+                        return !orderable.skipped;
+                    });
+                    return $q.all([
+                        vm.requisition.unskipFullSupplyProducts(skippedProducts),
+                        prepareLineItems(availableProducts)
+                    ]);
                 })
                 .then(function() {
                     return refreshLineItems();

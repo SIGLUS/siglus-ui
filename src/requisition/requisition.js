@@ -125,6 +125,9 @@
         Requisition.prototype.getAvailableNonFullSupplyProducts = getAvailableNonFullSupplyProducts;
         Requisition.prototype.getAvailableFullSupplyProducts = getAvailableFullSupplyProducts;
         Requisition.prototype.getSkippedFullSupplyProducts = getSkippedFullSupplyProducts;
+        // #352: can add skipped products
+        Requisition.prototype.getSkippedProducts = getSkippedProducts;
+        // #352: ends here
         Requisition.prototype.addLineItem = addLineItem;
         Requisition.prototype.addLineItems = addLineItems;
         Requisition.prototype.deleteLineItem = deleteLineItem;
@@ -552,6 +555,20 @@
                     return lineItem.orderable;
                 });
         }
+
+        // #352: can add skipped products
+        function getSkippedProducts() {
+            return this.requisitionLineItems
+                .filter(function(requisitionLineItem) {
+                    return requisitionLineItem.skipped;
+                })
+                .map(function(lineItem) {
+                    var orderable = lineItem.orderable;
+                    orderable.skipped = true;
+                    return orderable;
+                });
+        }
+        // #352: ends here
 
         /**
          * @ngdoc method
