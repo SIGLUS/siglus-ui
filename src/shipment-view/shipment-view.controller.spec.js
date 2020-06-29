@@ -19,7 +19,8 @@ describe('ShipmentViewController', function() {
         QUANTITY_UNIT, order, messageService, $window, $rootScope,
         // #264: warehouse clerk can add product to orders
         selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory,
-        shipmentViewLineItemFactory, orderService,
+        shipmentViewLineItemFactory, StockCardSummaryDataBuilder, stockCardSummaries,
+        CanFulfillForMeEntryDataBuilder,
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
         ShipmentLineItem, ShipmentLineItemDataBuilder;
@@ -49,7 +50,8 @@ describe('ShipmentViewController', function() {
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             ShipmentViewLineItemFactory = $injector.get('ShipmentViewLineItemFactory');
             shipmentViewLineItemFactory = new ShipmentViewLineItemFactory();
-            orderService = $injector.get('orderService');
+            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             // #264: ends here
             // #287: Warehouse clerk can skip some products in order
             ShipmentLineItem = $injector.get('ShipmentLineItem');
@@ -62,13 +64,6 @@ describe('ShipmentViewController', function() {
         tableLineItems = [{}, {}];
 
         // #264: warehouse clerk can add product to orders
-        vm = $controller('ShipmentViewController', {
-            shipment: shipment,
-            tableLineItems: tableLineItems,
-            updatedOrder: order,
-            stockCardSummaries: []
-        });
-
         availableProducts = [
             new OrderableDataBuilder()
                 .withFullProductName('C Product')
@@ -80,6 +75,21 @@ describe('ShipmentViewController', function() {
                 .withFullProductName('B product')
                 .build()
         ];
+        stockCardSummaries = [
+            new StockCardSummaryDataBuilder()
+                .withCanFulfillForMeEntry(
+                    new CanFulfillForMeEntryDataBuilder()
+                        .withOrderable(availableProducts[0])
+                        .buildJson()
+                )
+                .buildJson()
+        ];
+        vm = $controller('ShipmentViewController', {
+            shipment: shipment,
+            tableLineItems: tableLineItems,
+            updatedOrder: order,
+            stockCardSummaries: stockCardSummaries
+        });
         // #264: ends here
     });
 
@@ -199,7 +209,6 @@ describe('ShipmentViewController', function() {
 
             spyOn(alertService, 'error');
             spyOn(selectProductsModalService, 'show');
-            spyOn(orderService, 'getOrderableLineItem');
             spyOn(shipmentViewLineItemFactory, 'createFrom');
         });
 
@@ -249,15 +258,21 @@ describe('ShipmentViewController', function() {
                 availableProducts[0]
             ]));
 
-            vm.order.orderLineItems = [];
+            vm.stockCardSummaries = [
+                new StockCardSummaryDataBuilder()
+                    .withCanFulfillForMeEntry(
+                        new CanFulfillForMeEntryDataBuilder()
+                            .withOrderable(availableProducts[0])
+                            .withLot(shipment.lineItems[0].lot)
+                            .buildJson()
+                    )
+                    .buildJson()
+            ];
             vm.order.availableProducts = availableProducts;
             vm.addProducts();
             $rootScope.$apply();
 
-            expect(orderService.getOrderableLineItem).toHaveBeenCalledWith(
-                vm.order.id,
-                [availableProducts[0].id]
-            );
+            expect(vm.tableLineItems.length).toEqual(3);
         });
     });
     // #264: ends here

@@ -47,20 +47,12 @@
             retry: {
                 method: 'GET',
                 url: fulfillmentUrlFactory('/api/orders/:id/retry')
-            },
-            // #264: warehouse clerk can add product to orders
-            getOrderableLineItem: {
-                url: fulfillmentUrlFactory('/api/siglusapi/orders/createLineItem'),
-                method: 'POST',
-                isArray: true
             }
-            // #264: ends here
         });
 
         this.search = search;
         this.get = get;
         this.retryTransfer = retryTransfer;
-        this.getOrderableLineItem = getOrderableLineItem;
 
         /**
          * @ngdoc method
@@ -125,12 +117,6 @@
                 return siglusOrder.order;
             }
             return data;
-        }
-
-        function getOrderableLineItem(orderId, orderableIds) {
-            return resource.getOrderableLineItem({
-                orderId: orderId
-            }, orderableIds).$promise;
         }
         // #264: ends here
 
