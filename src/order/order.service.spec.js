@@ -139,47 +139,6 @@ describe('orderService', function() {
         });
     });
 
-    // #264: warehouse clerk can add product to orders
-    describe('getOrderableLineItem', function() {
-
-        var order, createLineItemResult;
-
-        beforeEach(function() {
-            order = new OrderResponseDataBuilder().build();
-            createLineItemResult = [{
-                orderLineItem: {},
-                lots: {}
-            }];
-
-            $httpBackend.whenPOST(
-                fulfillmentUrlFactory('/api/siglusapi/orders/createLineItem?orderId=' + order.id)
-            ).respond(200, createLineItemResult);
-        });
-
-        it('should call /api/siglusapi/orders/createLineItem endpoint', function() {
-            $httpBackend.expectPOST(
-                fulfillmentUrlFactory('/api/siglusapi/orders/createLineItem?orderId=' + order.id)
-            );
-
-            orderService.getOrderableLineItem(order.id, []);
-
-            $httpBackend.flush();
-        });
-
-        it('should return response', function() {
-            var result;
-            orderService.getOrderableLineItem(order.id, [])
-                .then(function(response) {
-                    result = response;
-                });
-            $httpBackend.flush();
-            $rootScope.$apply();
-
-            expect(angular.toJson(result)).toEqual(angular.toJson(createLineItemResult));
-        });
-    });
-    // #264: ends here
-
     afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
