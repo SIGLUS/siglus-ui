@@ -5,7 +5,7 @@
         <button class="add"
                 ng-if="vm.requisition.template.extension.enableProduct"
                 ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
-                ng-click="vm.addFullSupplyProducts()"
+                ng-click="vm.siglusAddProducts()"
         >
             {{'requisitionViewTab.addProduct' | message}}
         </button>
