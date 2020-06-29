@@ -364,9 +364,7 @@
         // SIGLUS-REFACTOR: ends here
 
         function selectProducts(availableProducts) {
-            // #271: add product response slowly
-            // refreshLineItems();
-            // #271: ends here
+            refreshLineItems();
 
             var decoratedAvailableProducts = new OpenlmisArrayDecorator(availableProducts.products);
             decoratedAvailableProducts.sortBy('fullProductName');
@@ -392,23 +390,27 @@
 
         function refreshLineItems() {
             // #227: user can add both full supply & non-fully supply product
-            var lineItems = (vm.requisition.template.hasSkipColumn() &&
+            vm.lineItems = (vm.requisition.template.hasSkipColumn() &&
                 vm.requisition.template.hideSkippedLineItems())
                 ? $filter('filter')(vm.requisition.requisitionLineItems, {
                     skipped: '!true'
                 }) : vm.requisition.requisitionLineItems;
             // #227: ends here
 
-            return paginationService
-                .registerList(
-                    requisitionValidator.isLineItemValid, $stateParams, function() {
-                        return lineItems;
-                    }
-                )
-                .then(function(items) {
-                    vm.lineItems = lineItems;
-                    vm.items = items;
-                });
+            // #271: fix add product performance. The follow code was added to fix OLMIS-6234, but with uniq
+            // pagination id, line item's validator will not be covered by add product pagination,
+            // so no this bug anymore.
+            // return paginationService
+            //     .registerList(
+            //         requisitionValidator.isLineItemValid, $stateParams, function() {
+            //             return lineItems;
+            //         }
+            //     )
+            //     .then(function(items) {
+            //         vm.lineItems = lineItems;
+            //         vm.items = items;
+            //     });
+            // #271: end here
         }
 
         // #286 high level approver can skip some products in requisition
