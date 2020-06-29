@@ -174,7 +174,9 @@
             angular.copy(column, this);
 
             this.$type = column.columnDefinition.columnType;
-            this.$display = displayColumn(column, requisition);
+            // #346: show all column in history when it configs display by admin
+            this.$display = enhanceDisplayColumn(column, requisition);
+            // #346: ends here
             this.$required = (nonMandatoryFields.indexOf(this.name) === -1 &&
                 this.source === COLUMN_SOURCES.USER_INPUT);
             this.$fullSupplyOnly = nonFullSupplyColumns.indexOf(this.name) === -1;
@@ -194,34 +196,32 @@
          * @param  {Object}            requisition requisition object from server
          * @return {RequisitionColumn}             column with additional info
          */
-        // SIGLUS-REFACTOR: starts here
         function displayColumn(column, requisition) {
             if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
                 typeof column.option !== 'undefined') {
                 return (column.option.optionName === 'showPackToShipInApprovalPage' &&
                     requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
             }
+            return column.isDisplayed && (
+                [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
+                requisition.$isAfterAuthorize());
+        }
+
+        // #346: show all column in history when it configs display by admin
+        function enhanceDisplayColumn(column, requisition) {
+            if (requisition.isHistory) {
+                return column.isDisplayed;
+            }
             if (TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY === column.name) {
                 return displayQuantityAuthorized(column, requisition);
             }
-            if (TEMPLATE_COLUMNS.APPROVED_QUANTITY === column.name) {
-                return displayQuantityApproved(column, requisition);
-            }
-            if (TEMPLATE_COLUMNS.REMARKS === column.name) {
-                return displayRemarks(column, requisition);
-            }
-            return column.isDisplayed;
+            return displayColumn(column, requisition);
         }
 
         function displayQuantityAuthorized(column, requisition) {
-            return column.isDisplayed && (requisition.isHistory ||
-                hasAuthorizeRight(requisition) ||
+            return column.isDisplayed && (hasAuthorizeRight(requisition) ||
                 (requisition.$isAfterAuthorize() && hasApproveRight(requisition))
             );
-        }
-
-        function displayRemarks(column, requisition) {
-            return column.isDisplayed && (requisition.$isAfterAuthorize() || requisition.$isReleasedWithoutOrder());
         }
 
         function hasAuthorizeRight(requisition) {
@@ -243,11 +243,7 @@
                 }
             );
         }
-
-        function displayQuantityApproved(column, requisition) {
-            return column.isDisplayed && (requisition.isHistory || requisition.$isAfterAuthorize());
-        }
-        // SIGLUS-REFACTOR: ends here
+        // #346: ends here
 
         function columnDependencies(column) {
             return dependencies[column.name];
