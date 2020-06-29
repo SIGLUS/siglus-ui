@@ -865,6 +865,35 @@ describe('ViewTabController', function() {
         });
     });
 
+    // #352: can add skipped products
+    describe('siglusAddProducts', function() {
+
+        beforeEach(function() {
+            var self = this;
+            this.requisition.getSkippedProducts = function() {
+                return angular.copy([self.skippedFullSupplyProducts[0]]);
+            };
+            this.requisition.getAvailableFullSupplyProducts.andReturn(
+                angular.copy([this.availableFullSupplyProducts[0]])
+            );
+            this.selectProductsModalService.show.andReturn(this.$q.resolve([]));
+        });
+
+        it('should show the skipped products and available products', function() {
+            this.initController();
+            this.vm.showSkipControls = true;
+            this.vm.siglusAddProducts();
+
+            var actualProducts = this.selectProductsModalService.show.calls[0].args[0];
+
+            expect(actualProducts.products.length).toEqual(2);
+            expect(actualProducts.products[0]).toEqual(this.availableFullSupplyProducts[0]);
+            expect(actualProducts.products[1]).toEqual(this.skippedFullSupplyProducts[0]);
+        });
+
+    });
+    // #352: ends here
+
     function initController() {
         this.vm = this.$controller('ViewTabController', {
             lineItems: [],
