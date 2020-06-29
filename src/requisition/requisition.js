@@ -131,7 +131,6 @@
         Requisition.prototype.unskipFullSupplyProducts = unskipFullSupplyProducts;
         // SIGLUS-REFACTOR: starts here
         Requisition.prototype.addProductLineItem = addProductLineItem;
-        Requisition.prototype.$isReleasedWithoutOrder = isReleasedWithoutOrder;
         // SIGLUS-REFACTOR: ends here
 
         return Requisition;
@@ -591,10 +590,6 @@
             }), this);
             this.requisitionLineItems.push(newLineItem);
             return newLineItem;
-        }
-
-        function isReleasedWithoutOrder() {
-            return this.status === REQUISITION_STATUS.RELEASED_WITHOUT_ORDER;
         }
         // SIGLUS-REFACTOR: ends here
 
