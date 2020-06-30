@@ -876,6 +876,7 @@ describe('ViewTabController', function() {
             this.requisition.getAvailableFullSupplyProducts.andReturn(
                 angular.copy([this.availableFullSupplyProducts[0]])
             );
+            this.requisition.template.hideSkippedLineItems.andReturn(true);
             this.selectProductsModalService.show.andReturn(this.$q.resolve([]));
         });
 
