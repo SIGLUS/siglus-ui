@@ -20,7 +20,7 @@ describe('ShipmentRepositoryImpl', function() {
         shipment, shipmentResourceMock, orderResourceMock, $q, $rootScope, order,
         stockCardSummaryRepositoryImplMock, StockCardSummaryDataBuilder, ShipmentLineItemDataBuilder,
         CanFulfillForMeEntryDataBuilder, stockCardSummaries, shipmentDraftResourceMock, siglusShipmentDraftResourceMock,
-        siglusOrderResourceMock, siglusShipmentResourceMock, rightName, programId, programServiceMock;
+        siglusShipmentResourceMock, rightName, programId, programServiceMock;
     // #287: ends here
 
     beforeEach(function() {
@@ -53,9 +53,6 @@ describe('ShipmentRepositoryImpl', function() {
                 };
             });
 
-            siglusOrderResourceMock = jasmine.createSpyObj('siglusOrderResource', [
-                'get'
-            ]);
             $provide.factory('SiglusOrderResource', function() {
                 return function() {
                     return orderResourceMock;
