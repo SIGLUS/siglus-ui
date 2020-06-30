@@ -307,7 +307,7 @@
         function siglusAddProducts() {
             var products = vm.requisition.getAvailableFullSupplyProducts();
 
-            if (vm.showSkipControls) {
+            if (vm.showSkipControls && vm.requisition.template.hideSkippedLineItems()) {
                 products = products.concat(vm.requisition.getSkippedProducts());
             }
             addProducts(products);
@@ -399,12 +399,19 @@
                 );
                 return $q.reject();
             }
+            // #352: can add skipped products
+            if (vm.requisition.emergency) {
+                var displayLineItemCount = vm.requisition.requisitionLineItems.filter(function(lineItem) {
+                    return !lineItem.skipped;
+                }).length;
+            }
+            // #352: ends here
 
             // SIGLUS-REFACTOR: starts here
             return selectProductsModalService.show({
                 products: decoratedAvailableProducts,
                 limit: vm.requisition.emergency ? {
-                    max: 10 - vm.requisition.requisitionLineItems.length,
+                    max: 10 - displayLineItemCount,
                     errorMsg: 'requisitionViewTab.selectTooMany'
                 } : undefined
             });
