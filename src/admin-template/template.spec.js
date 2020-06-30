@@ -110,6 +110,51 @@ describe('Template', function() {
             }]);
         });
         // #248: ends here
+
+        // #247: usage information section configure
+        it('should sort section column of usageInformation by displayOrder', function() {
+            this.templateJson.usageInformation = [{
+                name: 'information',
+                columns: [{
+                    name: 'default information',
+                    source: null,
+                    displayOrder: 1,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: true
+                    }
+                }, {
+                    name: 'new information',
+                    displayOrder: 0,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }]
+            }];
+            this.template = new this.Template(this.templateJson);
+
+            expect(this.template.usageInformation).toEqual([{
+                name: 'information',
+                columns: [{
+                    name: 'new information',
+                    displayOrder: 0,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }, {
+                    name: 'default information',
+                    source: null,
+                    displayOrder: 1,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: true
+                    }
+                }]
+            }]);
+        });
+        // #247: ends here
     });
 
     describe('move', function() {

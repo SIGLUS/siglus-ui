@@ -1,0 +1,4 @@
+{
+  "adminProgramTemplate.enableQuickFill.label": "Enable “quick fill” function",
+  "adminProgramTemplate.enableQuickFill.description": "Empty fields will be populated with number 0 after user click “quick fill” instead of being entered one by one manually."
+}

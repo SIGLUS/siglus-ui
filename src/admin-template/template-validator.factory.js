@@ -93,6 +93,13 @@
                 });
             });
             // #248: ends here
+            // #247: usage information section configure
+            angular.forEach(template.usageInformation, function(section) {
+                angular.forEach(section.columns, function(column) {
+                    isValid = isValid && !validator.getSiglusColumnError(column);
+                });
+            });
+            // #247: ends here
 
             return isValid;
         }

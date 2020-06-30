@@ -26,6 +26,7 @@
         this.getCollection = getCollection;
         this.getService = getService;
         this.getSectionColumnsMap = getSectionColumnsMap;
+        this.getInformation = getInformation;
         function getDefaultColumn() {
             return {
                 id: null,
@@ -72,6 +73,12 @@
                 columnMap[column.name] = column;
                 return columnMap;
             }, {});
+        }
+
+        function getInformation(sections) {
+            return _.find(sections, function(section) {
+                return section.name === 'information';
+            });
         }
     }
 
