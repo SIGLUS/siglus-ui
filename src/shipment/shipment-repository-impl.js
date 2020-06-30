@@ -30,15 +30,17 @@
         .factory('ShipmentRepositoryImpl', ShipmentRepositoryImpl);
 
     // #287: add SiglusShipmentResource, SiglusShipmentDraftResource, SiglusOrderResource
+    // programService, STOCKMANAGEMENT_RIGHTS
     ShipmentRepositoryImpl.$inject = [
         'ShipmentResource', 'ShipmentDraftResource', 'OrderResource', 'StockCardSummaryRepositoryImpl',
-        'SiglusShipmentResource', 'SiglusShipmentDraftResource', 'SiglusOrderResource'
+        'SiglusShipmentResource', 'SiglusShipmentDraftResource', 'SiglusOrderResource', 'programService',
+        'STOCKMANAGEMENT_RIGHTS'
     ];
     // #287: ends here
 
     function ShipmentRepositoryImpl(ShipmentResource, ShipmentDraftResource, OrderResource,
                                     StockCardSummaryRepositoryImpl, SiglusShipmentResource, SiglusShipmentDraftResource,
-                                    SiglusOrderResource) {
+                                    SiglusOrderResource, programService, STOCKMANAGEMENT_RIGHTS) {
 
         ShipmentRepositoryImpl.prototype.create = create;
         ShipmentRepositoryImpl.prototype.createDraft = createDraft;
@@ -63,11 +65,12 @@
             this.shipmentResource = new ShipmentResource();
             this.shipmentDraftResource = new ShipmentDraftResource();
             this.stockCardSummaryRepositoryImpl = new StockCardSummaryRepositoryImpl();
-            this.orderResource = new OrderResource();
+            // #332: save shipment draft
+            this.orderResource = new SiglusOrderResource();
+            // #332: ends here
             // #287: Warehouse clerk can skip some products in order
             this.siglusShipmentResource = new SiglusShipmentResource();
             this.siglusShipmentDraftResource = new SiglusShipmentDraftResource();
-            this.siglusOrderResource = new SiglusOrderResource();
             // #287: ends here
         }
 
@@ -175,41 +178,44 @@
          * @return {Promise}         the promise resolving to combined JSON which can be used for
          *                           creating instance of the Shipment class
          */
-        // #287: Warehouse clerk can skip some products in order
         function getDraftByOrderId(orderId) {
-            var siglusOrderResource = this.siglusOrderResource,
+            var orderResource = this.orderResource,
                 stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
 
             return this.shipmentDraftResource.query({
                 orderId: orderId
             })
                 .then(function(page) {
-                    return extendResponse(page.content[0], siglusOrderResource, stockCardSummaryRepositoryImpl);
+                    return extendResponse(page.content[0], orderResource, stockCardSummaryRepositoryImpl);
                 });
         }
-        // #287: ends here
 
         function extendResponse(shipmentJson, orderResource, stockCardSummaryRepositoryImpl) {
             return orderResource.get(shipmentJson.order.id)
                 .then(function(orderJson) {
-                    // #287: Warehouse clerk can skip some products in order
-                    orderJson = orderJson.order || orderJson;
-                    // #287: ends here
-                    var orderableIds = orderJson.orderLineItems.map(function(lineItem) {
-                        return lineItem.orderable.id;
+                    // #332: save shipment draft
+                    var orderableIds = orderJson.availableProducts.map(function(orderable) {
+                        return orderable.id;
                     });
 
-                    return stockCardSummaryRepositoryImpl.query({
-                        programId: orderJson.program.id,
-                        facilityId: orderJson.supplyingFacility.id,
-                        orderableId: orderableIds
-                    })
+                    return programService.getAllProductsProgram()
+                        .then(function(programs) {
+                            return stockCardSummaryRepositoryImpl.query({
+                                programId: programs[0].id,
+                                facilityId: orderJson.order.supplyingFacility.id,
+                                orderableId: orderableIds,
+                                rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
+                            });
+                        })
+                    // #332: ends here
                         .then(function(page) {
                             return page.content;
                         })
                         .then(mapCanFulfillForMe)
                         .then(function(canFulfillForMeMap) {
-                            return combineResponses(shipmentJson, orderJson, canFulfillForMeMap);
+                            // #332: save shipment draft
+                            return combineResponses(shipmentJson, orderJson.order, canFulfillForMeMap);
+                            // #332: ends here
                         });
                 });
         }

@@ -20,7 +20,7 @@ describe('ShipmentRepositoryImpl', function() {
         shipment, shipmentResourceMock, orderResourceMock, $q, $rootScope, order,
         stockCardSummaryRepositoryImplMock, StockCardSummaryDataBuilder, ShipmentLineItemDataBuilder,
         CanFulfillForMeEntryDataBuilder, stockCardSummaries, shipmentDraftResourceMock, siglusShipmentDraftResourceMock,
-        siglusOrderResourceMock, siglusShipmentResourceMock;
+        siglusOrderResourceMock, siglusShipmentResourceMock, rightName, programId, programServiceMock;
     // #287: ends here
 
     beforeEach(function() {
@@ -58,7 +58,7 @@ describe('ShipmentRepositoryImpl', function() {
             ]);
             $provide.factory('SiglusOrderResource', function() {
                 return function() {
-                    return siglusOrderResourceMock;
+                    return orderResourceMock;
                 };
             });
 
@@ -71,6 +71,17 @@ describe('ShipmentRepositoryImpl', function() {
                 };
             });
             // #287: ends here
+
+            // #332: save shipment draft
+            programServiceMock = jasmine.createSpyObj('programService', [
+                'getAllProductsProgram'
+            ]);
+            $provide.factory('programService', function() {
+                return programServiceMock;
+            });
+            rightName = 'STOCK_CARDS_VIEW';
+            programId = 'id';
+            // #332: ends here
 
             orderResourceMock = jasmine.createSpyObj('orderResource', [
                 'get'
@@ -134,7 +145,16 @@ describe('ShipmentRepositoryImpl', function() {
                 .buildJson()
         ];
 
-        order = new OrderResponseDataBuilder().build();
+        order = {
+            order: new OrderResponseDataBuilder().build(),
+            availableProducts: [
+                {
+                    id: 'orderable-id-7'
+                }, {
+                    id: 'orderable-id-8'
+                }
+            ]
+        };
     });
 
     describe('create', function() {
@@ -177,6 +197,9 @@ describe('ShipmentRepositoryImpl', function() {
             siglusShipmentResourceMock.create.andReturn($q.resolve(shipment));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var rejected;
             shipmentRepositoryImpl.create(shipment)
@@ -185,16 +208,19 @@ describe('ShipmentRepositoryImpl', function() {
                 });
             $rootScope.$apply();
 
+            order = order.order;
+
             expect(rejected).toBe(true);
             expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
         });
 
@@ -204,6 +230,9 @@ describe('ShipmentRepositoryImpl', function() {
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var result;
             shipmentRepositoryImpl.create(shipment)
@@ -211,6 +240,8 @@ describe('ShipmentRepositoryImpl', function() {
                     result = response;
                 });
             $rootScope.$apply();
+
+            order = order.order;
 
             expect(result.order).toEqual(order);
             expect(result.lineItems[0].canFulfillForMe)
@@ -222,12 +253,13 @@ describe('ShipmentRepositoryImpl', function() {
             expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
 
         });
@@ -270,10 +302,14 @@ describe('ShipmentRepositoryImpl', function() {
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
+        // #332: save shipment draft
         it('should reject if could not fetch stock card summaries', function() {
             shipmentDraftResourceMock.create.andReturn($q.resolve(shipment));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var rejected;
             shipmentRepositoryImpl.createDraft(shipment)
@@ -282,16 +318,19 @@ describe('ShipmentRepositoryImpl', function() {
                 });
             $rootScope.$apply();
 
+            order = order.order;
+
             expect(rejected).toBe(true);
             expect(shipmentDraftResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
         });
 
@@ -301,6 +340,9 @@ describe('ShipmentRepositoryImpl', function() {
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var result;
             shipmentRepositoryImpl.createDraft(shipment)
@@ -308,6 +350,8 @@ describe('ShipmentRepositoryImpl', function() {
                     result = response;
                 });
             $rootScope.$apply();
+
+            order = order.order;
 
             expect(result.order).toEqual(order);
             expect(result.lineItems[0].canFulfillForMe)
@@ -319,15 +363,17 @@ describe('ShipmentRepositoryImpl', function() {
             expect(shipmentDraftResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
 
         });
+        // #332: ends here
 
     });
 
@@ -408,12 +454,16 @@ describe('ShipmentRepositoryImpl', function() {
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
+        // #332: save shipment draft
         it('should reject if could not fetch stock card summaries', function() {
             shipmentResourceMock.query.andReturn($q.resolve({
                 content: [shipment]
             }));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var rejected;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -422,6 +472,8 @@ describe('ShipmentRepositoryImpl', function() {
                 });
             $rootScope.$apply();
 
+            order = order.order;
+
             expect(rejected).toBe(true);
             expect(shipmentResourceMock.query).toHaveBeenCalledWith({
                 orderId: shipment.order.id
@@ -429,12 +481,13 @@ describe('ShipmentRepositoryImpl', function() {
 
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
         });
 
@@ -446,6 +499,9 @@ describe('ShipmentRepositoryImpl', function() {
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var result;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -453,6 +509,8 @@ describe('ShipmentRepositoryImpl', function() {
                     result = response;
                 });
             $rootScope.$apply();
+
+            order = order.order;
 
             expect(result.order).toEqual(order);
             expect(result.lineItems[0].canFulfillForMe)
@@ -467,15 +525,17 @@ describe('ShipmentRepositoryImpl', function() {
 
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
 
         });
+        // #332: ends here
 
     });
 
@@ -497,7 +557,7 @@ describe('ShipmentRepositoryImpl', function() {
                 orderId: shipment.order.id
             });
 
-            expect(siglusOrderResourceMock.get).not.toHaveBeenCalled();
+            expect(orderResourceMock.get).not.toHaveBeenCalled();
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
@@ -505,7 +565,7 @@ describe('ShipmentRepositoryImpl', function() {
             shipmentDraftResourceMock.query.andReturn($q.resolve({
                 content: [shipment]
             }));
-            siglusOrderResourceMock.get.andReturn($q.reject());
+            orderResourceMock.get.andReturn($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -519,7 +579,7 @@ describe('ShipmentRepositoryImpl', function() {
                 orderId: shipment.order.id
             });
 
-            expect(siglusOrderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
+            expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
         });
 
@@ -527,8 +587,11 @@ describe('ShipmentRepositoryImpl', function() {
             shipmentDraftResourceMock.query.andReturn($q.resolve({
                 content: [shipment]
             }));
-            siglusOrderResourceMock.get.andReturn($q.resolve(order));
+            orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var rejected;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -537,19 +600,22 @@ describe('ShipmentRepositoryImpl', function() {
                 });
             $rootScope.$apply();
 
+            order = order.order;
+
             expect(rejected).toBe(true);
             expect(shipmentDraftResourceMock.query).toHaveBeenCalledWith({
                 orderId: shipment.order.id
             });
 
-            expect(siglusOrderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
+            expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
         });
 
@@ -557,10 +623,13 @@ describe('ShipmentRepositoryImpl', function() {
             shipmentDraftResourceMock.query.andReturn($q.resolve(angular.copy({
                 content: [shipment]
             })));
-            siglusOrderResourceMock.get.andReturn($q.resolve(order));
+            orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
+            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
+                id: programId
+            }]));
 
             var result;
             shipmentRepositoryImpl.getDraftByOrderId(shipment.order.id)
@@ -568,6 +637,8 @@ describe('ShipmentRepositoryImpl', function() {
                     result = response;
                 });
             $rootScope.$apply();
+
+            order = order.order;
 
             expect(result.order).toEqual(order);
             expect(result.lineItems[0].canFulfillForMe)
@@ -580,14 +651,15 @@ describe('ShipmentRepositoryImpl', function() {
                 orderId: shipment.order.id
             });
 
-            expect(siglusOrderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
+            expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: order.program.id,
+                programId: programId,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ]
+                ],
+                rightName: rightName
             });
 
         });
