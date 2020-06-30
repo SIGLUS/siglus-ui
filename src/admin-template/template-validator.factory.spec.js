@@ -59,6 +59,12 @@ describe('templateValidator', function() {
                 return !column.valid;
             });
             // #248: ends here
+
+            // #247: usage information section configure
+            template.usageInformation = [{
+                columns: angular.copy(columns)
+            }];
+            // #247: ends here
         });
 
         it('should return true if all columns are valid', function() {

@@ -17,7 +17,9 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableUsageInformation"/>{{'adminProgramTemplate.enableUsageInformation' | message}}
+        <a class="" ng-show="vm.template.extension.enableUsageInformation" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.usageInformation">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
+    <usage-information-preview sections="vm.template.usageInformation" ng-show="vm.template.extension.enableUsageInformation"/>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enablePatientLineItem"/>{{'adminProgramTemplate.enablePatientLineItem' | message}}
     </div>

@@ -1,5 +1,6 @@
 .product-preview.openlmis-table-container .openlmis-table,
-.kit-usage-preview.openlmis-table-container .openlmis-table{
+.kit-usage-preview.openlmis-table-container .openlmis-table,
+.usage-information-preview.openlmis-table-container .openlmis-table{
     td {
         min-width: 100px;
         padding: 16px 8px;
@@ -22,6 +23,25 @@
                 border: 1px solid #c8c8c8;
                 border-radius: 5px;
             }
+        }
+    }
+}
+
+.usage-information-preview.openlmis-table-container .openlmis-table{
+    .product {
+        td:first-child {
+            border-left-width: 1px;
+        }
+    }
+    .info-label {
+        font-weight: bold;
+    }
+    tr:first-child  > td{
+        background-color: #f0f0f0;
+    }
+    td {
+        &.total {
+            background-color: #f0f0f0;
         }
     }
 }

@@ -73,6 +73,11 @@
                 section.columns = _.sortBy(section.columns, 'displayOrder');
             });
             // #248: ends here
+            // #247: usage information section configure
+            this.usageInformation = _.forEach(template.usageInformation, function(section) {
+                section.columns = _.sortBy(section.columns, 'displayOrder');
+            });
+            // #247: ends here
 
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);

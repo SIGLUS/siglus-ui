@@ -1,0 +1,25 @@
+<div class="usage-information-preview openlmis-table-container">
+    <table class="openlmis-table">
+        <tbody>
+        <tr>
+            <td colspan={{vm.monthOrYearColspan}}>{{'adminTemplateConfigurePreview.usageInformation.MonthOrYear' | message}}</td>
+        </tr>
+        <tr>
+            <td rowspan="2" width="70px"></td>
+            <td class="info-label" colspan="2" ng-repeat="informationColumn in vm.information.columns | orderBy : 'displayOrder'" ng-if="informationColumn.isDisplayed">{{informationColumn.label}}</td>
+        </tr>
+        <tr class="product">
+            <td ng-repeat="product in vm.products track by $index">{{product}}</td>
+        </tr>
+        <tr ng-repeat="serviceColumn in vm.service.columns | orderBy : 'displayOrder'" ng-if="serviceColumn.isDisplayed">
+            <td ng-class="{'total': serviceColumn.name === 'total'}">{{serviceColumn.label}}</td>
+            <td class="col-source"
+                ng-repeat="product in vm.products track by $index"
+                ng-class="{'user-input': vm.isUserInput(serviceColumn)}"
+            >
+                <span>{{vm.getColumnValue(serviceColumn)}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
