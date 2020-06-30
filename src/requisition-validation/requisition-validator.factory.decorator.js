@@ -109,7 +109,7 @@
         function validateExtraData(requisition) {
             var flag = true;
             if (requisition.template.extension.enableConsultationNumber && !requisition.emergency) {
-                flag = flag && isNotEmpty(requisition.extraData.consultationNumber);
+                flag = isNotEmpty(requisition.extraData.consultationNumber);
             }
             return flag;
         }
