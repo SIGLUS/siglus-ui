@@ -182,17 +182,14 @@
                 products: availableProducts
             })
                 .then(function(selectedProducts) {
-                    var addedShipmentLineItems = prepareShipmentLineItems(selectedProducts);
                     var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
                     var addedOrderLineItemsShipment = Object.assign({}, shipment, {
-                        lineItems: addedShipmentLineItems,
                         order: {
                             orderLineItems: addedOrderLineItems
                         }
                     });
                     var addedTableLineItems = new ShipmentViewLineItemFactory()
                         .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
-                    shipment.lineItems = shipment.lineItems.concat(addedShipmentLineItems);
                     vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
                     vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
                 });
@@ -227,41 +224,6 @@
             return vm.order.availableProducts.filter(function(orderable) {
                 return !(orderable.id in existedOrderableMap);
             });
-        }
-
-        function prepareShipmentLineItems(selectedProducts) {
-            var addedShipmentLineItems = [];
-            var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
-            selectedProducts.forEach(function(orderable) {
-                var canFulfillForMeByOrderable = canFulfillForMeMap[orderable.id];
-                orderable.versionNumber = orderable.meta.versionNumber;
-                Object.values(canFulfillForMeByOrderable).forEach(function(canFulfillForMe) {
-                    addedShipmentLineItems.push(new ShipmentLineItem({
-                        lot: canFulfillForMe.lot,
-                        orderable: orderable,
-                        quantityShipped: 0,
-                        canFulfillForMe: canFulfillForMe
-                    }));
-                });
-            });
-            return addedShipmentLineItems;
-        }
-
-        function mapCanFulfillForMe(summaries) {
-            var canFulfillForMeMap = {};
-            summaries.forEach(function(summary) {
-                summary.canFulfillForMe.forEach(function(canFulfillForMe) {
-                    var orderableId = canFulfillForMe.orderable.id,
-                        lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined;
-
-                    if (!canFulfillForMeMap[orderableId]) {
-                        canFulfillForMeMap[orderableId] = {};
-                    }
-
-                    canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
-                });
-            });
-            return canFulfillForMeMap;
         }
 
         function prepareOrderLineItems(selectedProducts) {
