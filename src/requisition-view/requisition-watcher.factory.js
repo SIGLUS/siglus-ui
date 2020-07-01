@@ -63,6 +63,7 @@
             addWatcher(scope, requisition, 'patientLineItems', this, storage);
             addWatcher(scope, requisition, 'alLineItems', this, storage);
             addWatcher(scope, requisition, 'serviceLineItems', this, storage);
+            addWatcher(scope, requisition, 'kitUsageLineItems', this, storage);
             // SIGLUS-REFACTOR: ends here
         }
 
