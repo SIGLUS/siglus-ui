@@ -1,0 +1,23 @@
+<div class="test-consumption-template" ng-if="vm.template.testConsumption.length">
+    <div class="sub-heading">
+        <h3>{{vm.testProject.label}}</h3>
+    </div>
+    <template-configure-section
+            section="vm.testProject"
+            on-add-column="vm.addTestProjectColumn"
+    />
+    <div class="sub-heading">
+        <h3>{{vm.testOutcome.label}}</h3>
+    </div>
+    <template-configure-section
+            section="vm.testOutcome"
+            on-add-column="vm.addTestOutcomeColumn"
+    />
+    <div class="sub-heading">
+        <h3>{{vm.service.label}}</h3>
+    </div>
+    <template-configure-section
+            section="vm.service"
+            on-add-column="vm.addServiceColumn"
+    />
+</div>

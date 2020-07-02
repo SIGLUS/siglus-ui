@@ -25,7 +25,9 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableRapidTestConsumption"/>{{'adminProgramTemplate.enableRapidTestConsumption' | message}}
+        <a class="" ng-show="vm.template.extension.enableRapidTestConsumption" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
+    <test-consumption-preview sections="vm.template.testConsumption" ng-show="vm.template.extension.enableRapidTestConsumption"/>
 </div>
 <div class="openlmis-toolbar">
     <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.confirm' | message}}"/>

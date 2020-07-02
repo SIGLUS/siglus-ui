@@ -100,6 +100,13 @@
                 });
             });
             // #247: ends here
+            // #341: test consumption  section configure
+            angular.forEach(template.testConsumption, function(section) {
+                angular.forEach(section.columns, function(column) {
+                    isValid = isValid && !validator.getSiglusColumnError(column);
+                });
+            });
+            // #341: ends here
 
             return isValid;
         }

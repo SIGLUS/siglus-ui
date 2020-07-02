@@ -17,17 +17,18 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-section')
-        .component('templateConfigureSection', {
-            bindings: {
-                section: '<',
-                tags: '<?',
-                onAddColumn: '<'
-            },
-            controller: 'TemplateConfigureSectionController',
-            controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-section/admin-template-configure-section.html'
-        });
+    /**
+     * @module admin-template-configure-kit-usage
+     *
+     * @description
+     * Provides base admin-template-configure-kit-usage state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-admin-template-configure-test-consumption', [
+        'ui.router',
+        'openlmis-rights',
+        'requisition-constants',
+        'admin-template-configure-section'
+    ]);
 
 })();
