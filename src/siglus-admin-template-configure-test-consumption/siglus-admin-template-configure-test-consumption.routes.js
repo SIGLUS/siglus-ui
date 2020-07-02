@@ -18,16 +18,21 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-section')
-        .component('templateConfigureSection', {
-            bindings: {
-                section: '<',
-                tags: '<?',
-                onAddColumn: '<'
-            },
-            controller: 'TemplateConfigureSectionController',
-            controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-section/admin-template-configure-section.html'
-        });
+        .module('siglus-admin-template-configure-test-consumption')
+        .config(routes);
 
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+
+    function routes($stateProvider, REQUISITION_RIGHTS) {
+        $stateProvider
+            .state('openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption', {
+                label: 'adminProgramTemplate.templateColumns.testConsumption',
+                url: '/testConsumption',
+                templateUrl: 'siglus-admin-template-configure-test-consumption' +
+                    '/siglus-test-consumption-template.html',
+                controller: 'testConsumptionController',
+                controllerAs: 'vm',
+                accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
+            });
+    }
 })();

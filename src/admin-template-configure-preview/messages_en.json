@@ -4,7 +4,7 @@
   "adminProgramTemplate.enableProduct": "Product section",
   "adminProgramTemplate.enablePatientLineItem": "Patient line item section",
   "adminProgramTemplate.enableRegimen": "Regimen section",
-  "adminProgramTemplate.enableRapidTestConsumption": "Rapid test consumption section",
+  "adminProgramTemplate.enableRapidTestConsumption": "Test consumption section",
   "adminProgramTemplate.enableUsageInformation": "Usage information for each product",
   "adminProgramTemplate.confirm": "Confirm",
   "adminProgramTemplate.setting": "Setting",

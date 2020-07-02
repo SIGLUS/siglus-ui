@@ -97,6 +97,9 @@
         }
 
         function refreshAvailableTags() {
+            if (_.isUndefined(vm.tags)) {
+                return ;
+            }
             var filteredTags = filterUnusedTags();
 
             angular.forEach(vm.section.columns, function(column) {
