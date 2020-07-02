@@ -33,9 +33,10 @@
         $provide.decorator('requisitionValidator', decorator);
     }
 
-    decorator.$inject = ['$delegate', '$filter', 'requisitionUtils', 'messageService'];
+    decorator.$inject = ['$delegate', '$filter', 'requisitionUtils', 'messageService', 'COLUMN_TYPES',
+        'MAX_INTEGER_VALUE'];
 
-    function decorator($delegate, $filter, requisitionUtils, messageService) {
+    function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE) {
         var originalAreAllLineItemsSkipped = $delegate.areAllLineItemsSkipped;
         $delegate.validateRequisition = validateRequisition;
         $delegate.validateUsageReport = validateUsageReport;
@@ -45,6 +46,7 @@
         $delegate.validateRapidTestReport = validateRapidTestReport;
         $delegate.validateARVPatientTotal = validateARVPatientTotal;
         $delegate.areAllLineItemsSkipped = areAllLineItemsSkipped;
+        $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
 
         return $delegate;
 
@@ -95,15 +97,32 @@
         }
 
         function validateKitUsage(requisition) {
-            var flag = true;
+            var valid = true;
             if (requisition.template.extension.enableKitUsage && !requisition.emergency) {
-                flag = !_.some(requisition.kitUsageLineItems, function(lineItem) {
-                    return _.some(Object.keys(lineItem.services), function(serviceName) {
-                        return !isNotEmpty(lineItem.services[serviceName].value);
+                angular.forEach(requisition.kitUsageLineItems, function(lineItem) {
+                    angular.forEach(Object.keys(lineItem.services), function(serviceName) {
+                        valid = validateSiglusLineItemField(lineItem.services[serviceName]) && valid;
                     });
                 });
             }
-            return flag;
+            return valid;
+        }
+
+        function validateSiglusLineItemField(lineItemField) {
+            var error;
+
+            error = nonEmpty(lineItemField.value);
+
+            if (validateSiglusNumeric(lineItemField)) {
+                error = error || messageService.get('requisitionValidation.numberTooLarge');
+            }
+            return !(lineItemField.$error = error);
+        }
+
+        function validateSiglusNumeric(lineItem) {
+            // return lineItem.columnDefinition.columnType === COLUMN_TYPES.NUMERIC &&
+            // lineItem.value > MAX_INTEGER_VALUE;
+            return lineItem.value > MAX_INTEGER_VALUE;
         }
 
         function validateExtraData(requisition) {

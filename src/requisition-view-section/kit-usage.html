@@ -9,12 +9,10 @@
             <td ng-if="!vm.isUserInput(serviceColumn, lineItem)">
                 {{serviceColumn.value}}
             </td>
-            <td ng-if="vm.isUserInput(serviceColumn, lineItem)" ng-repeat-end>
-                <input positive-integer
-                       ng-model="serviceColumn.value"
-                       ng-required="!serviceColumn.value"
-                       maxlength="8"/>
-            </td>
+            <td ng-if="vm.isUserInput(serviceColumn, lineItem)"
+                requisition-grid-cell
+                line-item-field="serviceColumn"
+                ng-repeat-end></td>
         </tr>
         </tbody>
     </table>

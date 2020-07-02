@@ -224,6 +224,31 @@ describe('requisitionValidator', function() {
         // #251: ends here
     });
 
+    describe('validateSiglusLineItemField', function() {
+        it('should return true if field is valid', function() {
+            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
+
+            expect(result).toBe(true);
+        });
+
+        it('should return false if field is no set', function() {
+            kitUsageLineItems[0].services.CHW.value = undefined;
+
+            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
+
+            expect(result).toBe(false);
+        });
+
+        it('should return false if field has value greater than max int value', function() {
+            kitUsageLineItems[0].services.CHW.value = MAX_INTEGER_VALUE + 1;
+
+            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
+
+            expect(kitUsageLineItems[0].services.CHW.$error).toBe('requisitionValidation.numberTooLarge');
+            expect(result).toBe(false);
+        });
+    });
+
     describe('validateLineItem', function() {
 
         beforeEach(function() {
