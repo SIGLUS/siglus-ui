@@ -44,6 +44,9 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
+            when {
+                branch 'master'
+            }
             steps {
                 withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONARQUBE_TOKEN')]) {
                     sh '''
@@ -80,10 +83,10 @@ pipeline {
         }
         stage('Notify to build reference-ui release') {
             when {
-                branch 'release-*'
+                branch 'release-1.0'
             }
             steps {
-                build job: '../siglus-reference-ui/release-*', wait: false
+                build job: '../siglus-reference-ui/release-1.0', wait: false
             }
         }
     }
