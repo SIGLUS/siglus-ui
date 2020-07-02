@@ -64,7 +64,7 @@ pipeline {
                     sh '''
                         set +x
                         docker login -u $USER -p $PASS
-                        IMAGE_TAG=$(git rev-parse HEAD)
+                        IMAGE_TAG=${BRANCH_NAME}-$(git rev-parse HEAD)
                         docker tag siglusdevops/siglus-ui:latest siglusdevops/siglus-ui:${IMAGE_TAG}
                         docker push siglusdevops/siglus-ui:${IMAGE_TAG}
                         docker push siglusdevops/siglus-ui:latest
