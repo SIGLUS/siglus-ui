@@ -79,7 +79,7 @@
             });
             // #247: ends here
             // #341: test consumption section configure
-            this.testConsumption = _.forEach(template.rapidTestConsumption, function(section) {
+            this.testConsumption = _.forEach(template.testConsumption, function(section) {
                 section.columns = _.sortBy(section.columns, 'displayOrder');
             });
             // #341: ends here

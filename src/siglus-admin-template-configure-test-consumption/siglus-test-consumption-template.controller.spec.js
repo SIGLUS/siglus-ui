@@ -12,104 +12,110 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-//
-// describe('KitUsageTemplateController', function() {
-//
-//     var vm, template, tags, collection, service, column;
-//
-//     var TemplateColumnDataBuilder, TemplateDataBuilder, $controller, COLUMN_SOURCES, templateConfigureService;
-//
-//     beforeEach(function() {
-//         module('admin-template-configure-kit-usage');
-//         module('admin-template-configure-column-setting');
-//
-//         inject(function($injector) {
-//             TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');
-//             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
-//             $controller = $injector.get('$controller');
-//             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
-//             templateConfigureService = $injector.get('templateConfigureService');
-//         });
-//
-//         template = new TemplateDataBuilder()
-//             .withColumn(new TemplateColumnDataBuilder().buildTotalColumn())
-//             .withColumn(new TemplateColumnDataBuilder().buildRemarksColumn())
-//             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
-//             .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn())
-//             .build();
-//         collection = {
-//             name: 'collection',
-//             columns: []
-//         };
-//         service = {
-//             name: 'service',
-//             columns: []
-//         };
-//         template.kitUsage = [collection, service];
-//         tags = [
-//             'tag-1',
-//             'tag-2',
-//             'tag-3'
-//         ];
-//         column = {
-//             name: 'kitReceived',
-//             source: null,
-//             columnDefinition: {
-//                 sources: [],
-//                 supportsTag: true
-//             }
-//         };
-//         spyOn(templateConfigureService, 'getDefaultColumn').andReturn(column);
-//
-//         vm = $controller('KitUsageTemplateController', {
-//             template: template,
-//             tags: tags
-//         });
-//         vm.$onInit();
-//     });
-//
-//     describe('onInit', function() {
-//
-//         it('should set template', function() {
-//             expect(vm.template).toEqual(template);
-//         });
-//
-//         it('should set tags', function() {
-//             expect(vm.tags).toEqual(tags);
-//         });
-//
-//         it('should enable kitUsage', function() {
-//             expect(vm.template.extension.enableKitUsage).toEqual(true);
-//         });
-//
-//         it('should set collection', function() {
-//             expect(vm.collection).toBe(collection);
-//         });
-//
-//         it('should set service', function() {
-//             expect(vm.service).toBe(service);
-//         });
-//     });
-//
-//     describe('addCollectionColumn', function() {
-//
-//         it('should return true if column source is user input', function() {
-//             vm.addCollectionColumn();
-//             column.columnDefinition.sources = [COLUMN_SOURCES.STOCK_CARDS, COLUMN_SOURCES.USER_INPUT];
-//
-//             expect(vm.collection.columns).toEqual([column]);
-//         });
-//     });
-//
-//     describe('addServiceColumn', function() {
-//
-//         it('should return productCode if column name is orderable.productCode', function() {
-//             vm.addServiceColumn();
-//             column.source = COLUMN_SOURCES.USER_INPUT;
-//             column.columnDefinition.sources = [COLUMN_SOURCES.USER_INPUT];
-//             column.columnDefinition.supportsTag = false;
-//
-//             expect(vm.service.columns).toEqual([column]);
-//         });
-//     });
-// });
+
+describe('TestConsumptionController', function() {
+
+    var vm, template, testProject, testOutcome, service, column;
+
+    var TemplateColumnDataBuilder, TemplateDataBuilder, $controller, COLUMN_SOURCES, templateConfigureService;
+
+    beforeEach(function() {
+        module('siglus-admin-template-configure-test-consumption');
+        module('admin-template-configure-column-setting');
+
+        inject(function($injector) {
+            TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');
+            TemplateDataBuilder = $injector.get('TemplateDataBuilder');
+            $controller = $injector.get('$controller');
+            COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
+            templateConfigureService = $injector.get('templateConfigureService');
+        });
+
+        template = new TemplateDataBuilder()
+            .withColumn(new TemplateColumnDataBuilder().buildTotalColumn())
+            .withColumn(new TemplateColumnDataBuilder().buildRemarksColumn())
+            .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
+            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn())
+            .build();
+        testProject = {
+            name: 'project',
+            columns: []
+        };
+        testOutcome = {
+            name: 'outcome',
+            columns: []
+        };
+        service = {
+            name: 'service',
+            columns: []
+        };
+        template.testConsumption = [testProject, testOutcome, service];
+        column = {
+            name: 'HIV Determine',
+            source: null,
+            columnDefinition: {
+                sources: [],
+                supportsTag: false
+            }
+        };
+        spyOn(templateConfigureService, 'getDefaultColumn').andReturn(column);
+
+        vm = $controller('testConsumptionController', {
+            template: template
+        });
+        vm.$onInit();
+    });
+
+    describe('onInit', function() {
+
+        it('should set template', function() {
+            expect(vm.template).toEqual(template);
+        });
+
+        it('should enable test consumption', function() {
+            expect(vm.template.extension.enableRapidTestConsumption).toEqual(true);
+        });
+
+        it('should set test project', function() {
+            expect(vm.testProject).toBe(testProject);
+        });
+
+        it('should set test outcome', function() {
+            expect(vm.testOutcome).toBe(testOutcome);
+        });
+
+        it('should set service', function() {
+            expect(vm.service).toBe(service);
+        });
+    });
+
+    describe('addTestProjectColumn', function() {
+
+        it('should add a new column and its column source is user input', function() {
+            vm.addTestProjectColumn();
+
+            expect(vm.testProject.columns.length).toEqual(1);
+            expect(vm.testProject.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
+        });
+    });
+
+    describe('addTestOutcomeColumn', function() {
+
+        it('should add a new column and its column source is user input', function() {
+            vm.addTestOutcomeColumn();
+
+            expect(vm.testOutcome.columns.length).toEqual(1);
+            expect(vm.testOutcome.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
+        });
+    });
+
+    describe('addServiceColumn', function() {
+
+        it('should add a new column and its column source is user input', function() {
+            vm.addServiceColumn();
+
+            expect(vm.service.columns.length).toEqual(1);
+            expect(vm.service.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
+        });
+    });
+});
