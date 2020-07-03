@@ -30,12 +30,7 @@
             templateUrl: 'admin-template-configure-usage-information/usage-information-template.html',
             controller: 'UsageInformationTemplateController',
             controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            resolve: {
-                tags: function(StockReasonTagResource) {
-                    return new StockReasonTagResource().query();
-                }
-            }
+            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
         });
     }
 })();

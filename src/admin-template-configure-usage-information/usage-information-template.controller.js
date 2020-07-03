@@ -28,11 +28,10 @@
         .module('admin-template-configure-usage-information')
         .controller('UsageInformationTemplateController', UsageInformationTemplateController);
 
-    UsageInformationTemplateController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template', 'tags',
+    UsageInformationTemplateController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template',
         'SECTION_TYPES'];
 
-    function UsageInformationTemplateController(COLUMN_SOURCES, templateConfigureService, template, tags,
-                                                SECTION_TYPES) {
+    function UsageInformationTemplateController(COLUMN_SOURCES, templateConfigureService, template, SECTION_TYPES) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -41,11 +40,8 @@
 
         vm.template = undefined;
 
-        vm.tags = undefined;
-
         function onInit() {
             vm.template = template;
-            vm.tags = tags;
             enableCurrentSection();
             vm.information = templateConfigureService.getSectionByName(template.usageInformation,
                 SECTION_TYPES.INFORMATION);

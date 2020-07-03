@@ -15,7 +15,7 @@
 
 describe('UsageInformationTemplateController', function() {
 
-    var vm, template, tags, information, service, column;
+    var vm, template, information, service, column;
 
     var TemplateColumnDataBuilder, TemplateDataBuilder, $controller, COLUMN_SOURCES, templateConfigureService;
 
@@ -46,11 +46,6 @@ describe('UsageInformationTemplateController', function() {
             columns: []
         };
         template.usageInformation = [information, service];
-        tags = [
-            'tag-1',
-            'tag-2',
-            'tag-3'
-        ];
         column = {
             name: 'usage',
             source: 'USER_INPUT',
@@ -62,8 +57,7 @@ describe('UsageInformationTemplateController', function() {
         spyOn(templateConfigureService, 'getDefaultColumn').andReturn(column);
 
         vm = $controller('UsageInformationTemplateController', {
-            template: template,
-            tags: tags
+            template: template
         });
         vm.$onInit();
     });
@@ -72,10 +66,6 @@ describe('UsageInformationTemplateController', function() {
 
         it('should set template', function() {
             expect(vm.template).toEqual(template);
-        });
-
-        it('should set tags', function() {
-            expect(vm.tags).toEqual(tags);
         });
 
         it('should enable usageInformation', function() {
