@@ -21,9 +21,10 @@
         .module('admin-template-configure-preview-section')
         .controller('TestConsumptionPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService'];
+    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService',
+        'SECTION_TYPES'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService) {
+    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
@@ -36,13 +37,12 @@
         vm.$onInit = onInit;
         vm.getColumnValue = getColumnValue;
         vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = isTotal;
+        vm.isTotal = templateConfigureService.isTotalService;
 
         function onInit() {
-            // TODO: extract constant
-            vm.testProject = templateConfigureService.getSectionByName(vm.sections, 'project');
-            vm.testOutcome = templateConfigureService.getSectionByName(vm.sections, 'outcome');
-            vm.service = templateConfigureService.getSectionByName(vm.sections, 'services');
+            vm.testProject = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
+            vm.testOutcome = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
+            vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             vm.testOutcomeDisplayedCount = vm.testOutcome.columns.filter(function(column) {
                 return column.isDisplayed;
             }).length;
@@ -66,10 +66,6 @@
                 }
             });
             return columns;
-        }
-
-        function isTotal(serviceColumn) {
-            return serviceColumn.name === 'total';
         }
     }
 

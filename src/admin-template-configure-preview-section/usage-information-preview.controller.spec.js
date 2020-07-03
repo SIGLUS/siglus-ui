@@ -33,7 +33,7 @@ describe('UsageInformationPreviewController', function() {
             columns: []
         };
         service = {
-            name: 'service',
+            name: 'services',
             source: COLUMN_SOURCES.USER_INPUT,
             columns: []
         };

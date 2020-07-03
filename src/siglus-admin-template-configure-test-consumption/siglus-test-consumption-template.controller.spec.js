@@ -22,6 +22,7 @@ describe('TestConsumptionController', function() {
     beforeEach(function() {
         module('siglus-admin-template-configure-test-consumption');
         module('admin-template-configure-column-setting');
+        module('admin-template-configure-preview-section');
 
         inject(function($injector) {
             TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');

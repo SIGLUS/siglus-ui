@@ -30,7 +30,7 @@
 
     function type() {
         return {
-            SERVICE: 'service',
+            SERVICE: 'services',
             COLLECTION: 'collection',
             INFORMATION: 'information',
             PROJECT: 'project',

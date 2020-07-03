@@ -124,10 +124,4 @@ describe('TestConsumptionPreviewController', function() {
             expect(messageService.get).toHaveBeenCalledWith('requisitionConstants.userInput');
         });
     });
-
-    describe('isTotal', function() {
-        it('should return true when the service name is total', function() {
-            expect(vm.isTotal(vm.service.columns[0])).toBe(true);
-        });
-    });
 });
