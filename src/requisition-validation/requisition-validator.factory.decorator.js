@@ -92,6 +92,7 @@
 
             valid = validateExtraData(requisition) && valid;
             valid = validateKitUsage(requisition) && valid;
+            valid = validateUsageInformation(requisition) && valid;
 
             return valid;
         }
@@ -123,6 +124,22 @@
             // return lineItem.columnDefinition.columnType === COLUMN_TYPES.NUMERIC &&
             // lineItem.value > MAX_INTEGER_VALUE;
             return lineItem.value > MAX_INTEGER_VALUE;
+        }
+
+        function validateUsageInformation(requisition) {
+            var valid = true;
+            if (requisition.template.extension.enableUsageInformation && !requisition.emergency) {
+                angular.forEach(requisition.usageInformationLineItems, function(lineItem) {
+                    angular.forEach(Object.keys(lineItem.informations), function(information) {
+                        angular.forEach(Object.keys(lineItem.informations[information].orderables),
+                            function(orderableId) {
+                                valid = validateSiglusLineItemField(lineItem.informations[information]
+                                    .orderables[orderableId]) && valid;
+                            });
+                    });
+                });
+            }
+            return valid;
         }
 
         function validateExtraData(requisition) {

@@ -1,0 +1,35 @@
+<div class="usage-information-preview openlmis-table-container">
+    <table class="openlmis-table">
+        <tbody>
+        <tr>
+            <td colspan={{vm.monthOrYearColspan}}>{{'requisitionViewSection.usageInformation.MonthOrYear' | message}}{{": "}}{{vm.processingPeriodEndDate | openlmisDate | limitTo:-7}}</td>
+        </tr>
+        <tr>
+            <td rowspan="2"></td>
+            <td class="info-label"
+                ng-repeat="information in vm.firstService.informations | orderObjectBy : 'displayOrder'"
+                colspan={{vm.informationColspan}}
+                popover="{{information.definition}}"
+                popover-trigger-area="element">{{information.label}}</td>
+        </tr>
+        <tr class="product">
+            <td ng-repeat-start="information in vm.firstService.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+            <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'">{{orderable.fullProductName}}</td>
+        </tr>
+        <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
+            <td ng-class="{'total': vm.isTotalService(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
+            <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+            <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'">
+                <div ng-if=" vm.canEdit && !vm.isUserInput(lineItem)">{{vm.getTotal(information.name, orderable.id)}}</div>
+                <input positive-integer
+                       ng-if="vm.canEdit && vm.isUserInput(lineItem)"
+                       ng-model="orderable.value"
+                       ng-change="vm.update(orderable)"
+                       openlmis-invalid="{{orderable.$error}}"/>
+                <div ng-if="!vm.canEdit">{{orderable.value}}</div>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
