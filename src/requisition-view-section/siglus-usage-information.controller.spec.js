@@ -42,7 +42,7 @@ describe('SiglusUsageInformationController', function() {
             }]
         }, {
             id: '135792',
-            name: 'service',
+            name: 'services',
             label: 'Services',
             displayOrder: 1,
             columns: [ {
