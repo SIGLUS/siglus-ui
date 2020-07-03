@@ -34,17 +34,13 @@
 
         vm.$onInit = onInit;
         vm.getColumnValue = getColumnValue;
-        vm.isUserInput = isUserInput;
+        vm.isUserInput = columnUtils.isUserInput;
 
         function onInit() {
             vm.information = templateConfigureService.getInformation(vm.sections);
             vm.service = templateConfigureService.getService(vm.sections);
             vm.products = getProducts(vm.information);
             vm.monthOrYearColspan = vm.products.length + 1;
-        }
-
-        function isUserInput(service) {
-            return columnUtils.isUserInput(service);
         }
 
         function getColumnValue(serviceColumn) {
