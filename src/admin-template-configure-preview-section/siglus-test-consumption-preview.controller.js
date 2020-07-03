@@ -21,11 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('TestConsumptionPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService',
-        'SERVICE_TYPES'];
+    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService,
-                        SERVICE_TYPES) {
+    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService) {
 
         var vm = this;
 
