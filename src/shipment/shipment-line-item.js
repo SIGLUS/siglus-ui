@@ -51,7 +51,7 @@
             this.lot = json.lot;
             this.quantityShipped = json.quantityShipped;
             this.stockOnHand = calculateAvailableStockOnHandInPacks(json.canFulfillForMe);
-            this.skipped = json.skipped;
+            this.skipped = undefined;
         }
 
         /**
