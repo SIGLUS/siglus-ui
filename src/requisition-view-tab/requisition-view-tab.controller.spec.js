@@ -125,7 +125,7 @@ describe('ViewTabController', function() {
             return param;
         });
         // #286 high level approver can skip some products in requisition
-        spyOn(this.requisition.template, 'getColumn').andCallThrough();
+        spyOn(this.requisition.template, 'getColumn');
         // #286 ends here
     });
 
