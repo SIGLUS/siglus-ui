@@ -22,10 +22,10 @@
         .controller('KitUsagePreviewController', controller);
 
     controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService',
-        'SERVICE_TYPES'];
+        'SERVICE_TYPES', 'SECTION_TYPES'];
 
     function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService,
-                        SERVICE_TYPES) {
+                        SERVICE_TYPES, SECTION_TYPES) {
 
         var vm = this;
 
@@ -37,8 +37,8 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            vm.collection = templateConfigureService.getCollection(vm.sections);
-            vm.service = templateConfigureService.getService(vm.sections);
+            vm.collection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
+            vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
         }
 
         function getColumn(service, collection) {

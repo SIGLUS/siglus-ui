@@ -17,10 +17,13 @@ describe('templateConfigureService', function() {
 
     beforeEach(function() {
         module('admin-template-configure-column-setting');
+        module('admin-template-configure-preview-section');
 
         inject(function($injector) {
             this.templateConfigureService = $injector.get('templateConfigureService');
             this.COLUMN_TYPES = $injector.get('COLUMN_TYPES');
+            this.SERVICE_TYPES = $injector.get('SERVICE_TYPES');
+            this.SECTION_TYPES = $injector.get('SECTION_TYPES');
         });
     });
 
@@ -56,29 +59,16 @@ describe('templateConfigureService', function() {
             });
         });
 
-    it('should get collection section',
+    it('should get section by name',
         function() {
-            var collection = this.templateConfigureService.getCollection([{
+            var collection = this.templateConfigureService.getSectionByName([{
                 name: 'collection'
             }, {
                 name: 'service'
-            }]);
+            }], this.SECTION_TYPES.COLLECTION);
 
             expect(collection).toEqual({
                 name: 'collection'
-            });
-        });
-
-    it('should get service section',
-        function() {
-            var service = this.templateConfigureService.getService([{
-                name: 'collection'
-            }, {
-                name: 'service'
-            }]);
-
-            expect(service).toEqual({
-                name: 'service'
             });
         });
 
@@ -115,4 +105,12 @@ describe('templateConfigureService', function() {
                 }
             });
         });
+
+    it('should get true when call isTotalService given a total service', function() {
+        var service = {
+            name: this.SERVICE_TYPES.TOTAL
+        };
+
+        expect(this.templateConfigureService.isTotalService(service)).toEqual(true);
+    });
 });

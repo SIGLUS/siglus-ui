@@ -28,9 +28,10 @@
         .module('admin-template-configure-kit-usage')
         .controller('KitUsageTemplateController', KitUsageTemplateController);
 
-    KitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template', 'tags'];
+    KitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template', 'tags',
+        'SECTION_TYPES'];
 
-    function KitUsageTemplateController(COLUMN_SOURCES, templateConfigureService, template, tags) {
+    function KitUsageTemplateController(COLUMN_SOURCES, templateConfigureService, template, tags, SECTION_TYPES) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -45,8 +46,8 @@
             vm.template = template;
             vm.tags = tags;
             enableCurrentSection();
-            vm.collection = templateConfigureService.getCollection(template.kitUsage);
-            vm.service = templateConfigureService.getService(template.kitUsage);
+            vm.collection = templateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.COLLECTION);
+            vm.service = templateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.SERVICE);
         }
 
         function enableCurrentSection() {
