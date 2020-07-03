@@ -1,6 +1,7 @@
 .product-preview.openlmis-table-container .openlmis-table,
 .kit-usage-preview.openlmis-table-container .openlmis-table,
-.usage-information-preview.openlmis-table-container .openlmis-table {
+.usage-information-preview.openlmis-table-container .openlmis-table,
+.test-consumption-preview.openlmis-table-container .openlmis-table {
     td {
         min-width: 100px;
         padding: 16px 8px;
@@ -24,6 +25,22 @@
                 border-radius: 5px;
             }
         }
+    }
+
+    .row-span-border {
+        border-left-width: 1px;
+    }
+
+    .bold-label {
+        font-weight: bold;
+    }
+
+    .grey-background {
+        background-color: #f0f0f0;
+    }
+
+    .center {
+        text-align: center;
     }
 }
 

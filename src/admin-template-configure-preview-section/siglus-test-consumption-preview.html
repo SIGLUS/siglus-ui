@@ -1,0 +1,34 @@
+<div class="test-consumption-preview openlmis-table-container">
+    <table class="openlmis-table">
+        <tbody>
+        <tr>
+            <td colspan="{{vm.testOutcomeDisplayColumns.length + 1}}"
+                class="grey-background"
+            >{{'adminTemplateConfigurePreview.testConsumption.programName' | message}}</td>
+        </tr>
+        <tr>
+            <td rowspan="2"></td>
+            <td ng-repeat="testProjectColumn in vm.testProject.columns | orderBy : 'displayOrder'"
+                ng-if="testProjectColumn.isDisplayed"
+                colspan="{{vm.testOutcomeDisplayedCount}}"
+                class="bold-label center"
+            >{{testProjectColumn.label}}</td>
+        </tr>
+        <tr>
+            <td ng-repeat="testOutcomeDisplayColumn in vm.testOutcomeDisplayColumns track by $index"
+                ng-if="testOutcomeDisplayColumn.isDisplayed"
+                ng-class="{'row-span-border': $first}"
+            >{{testOutcomeDisplayColumn.label}}</td>
+        </tr>
+        <tr ng-repeat="serviceColumn in vm.service.columns | orderBy : 'displayOrder'" ng-if="serviceColumn.isDisplayed">
+            <td ng-class="{'grey-background': vm.isTotal(serviceColumn)}">{{serviceColumn.label}}</td>
+            <td class="col-source"
+                ng-repeat="testOutcomeDisplayColumn in vm.testOutcomeDisplayColumns track by $index"
+                ng-class="{'user-input': vm.isUserInput(serviceColumn)}"
+            >
+                <span>{{vm.getColumnValue(serviceColumn)}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
