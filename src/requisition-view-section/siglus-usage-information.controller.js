@@ -28,7 +28,7 @@
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isTotalService = isTotalService;
+        vm.isTotalService = templateConfigureService.isTotalService;
         vm.getTotal = getTotal;
         vm.isUserInput = columnUtils.isUserInput;
         vm.update = requisitionValidator.validateSiglusLineItemField;
@@ -45,19 +45,15 @@
             });
         }
 
-        function isTotalService(service) {
-            return service.name === 'total';
-        }
-
         function getTotal(informationName, orderableId) {
             var total = 0;
             angular.forEach(vm.lineItems, function(lineItem) {
-                if (!isTotalService(lineItem)) {
+                if (!vm.isTotalService(lineItem)) {
                     total = total + lineItem.informations[informationName].orderables[orderableId].value;
                 }
             });
             angular.forEach(vm.lineItems, function(lineItem) {
-                if (isTotalService(lineItem)) {
+                if (vm.isTotalService(lineItem)) {
                     lineItem.informations[informationName].orderables[orderableId].value = total;
                 }
             });

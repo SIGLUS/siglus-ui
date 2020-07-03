@@ -12,7 +12,7 @@
             <td ng-repeat="product in vm.products track by $index">{{product}}</td>
         </tr>
         <tr ng-repeat="serviceColumn in vm.service.columns | orderBy : 'displayOrder'" ng-if="serviceColumn.isDisplayed">
-            <td ng-class="{'total': serviceColumn.name === 'total'}">{{serviceColumn.label}}</td>
+            <td ng-class="{'total': vm.isTotalService(serviceColumn)}">{{serviceColumn.label}}</td>
             <td class="col-source"
                 ng-repeat="product in vm.products track by $index"
                 ng-class="{'user-input': vm.isUserInput(serviceColumn)}"

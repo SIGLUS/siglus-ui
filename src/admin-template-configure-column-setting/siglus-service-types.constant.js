@@ -30,7 +30,8 @@
 
     function type() {
         return {
-            HF: 'HF'
+            HF: 'HF',
+            TOTAL: 'total'
         };
     }
 })();
