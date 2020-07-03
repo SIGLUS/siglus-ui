@@ -44,7 +44,7 @@
             vm.template = template;
             vm.testProject = templateConfigureService.getSectionByName(template.testConsumption, 'project');
             vm.testOutcome = templateConfigureService.getSectionByName(template.testConsumption, 'outcome');
-            vm.service = templateConfigureService.getSectionByName(template.testConsumption, 'service');
+            vm.service = templateConfigureService.getSectionByName(template.testConsumption, 'services');
             enableCurrentSection();
         }
 
