@@ -15,76 +15,119 @@
 
 describe('TestConsumptionPreviewController', function() {
 
-    // var vm, collection, service;
-    // var $controller, COLUMN_SOURCES, messageService, columnUtils;
-    //
-    // beforeEach(function() {
-    //     module('admin-template-configure-preview-section');
-    //
-    //     inject(function($injector) {
-    //         $controller = $injector.get('$controller');
-    //         COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
-    //         messageService = $injector.get('messageService');
-    //         columnUtils = $injector.get('columnUtils');
-    //     });
-    //     collection = {
-    //         name: 'collection',
-    //         source: COLUMN_SOURCES.USER_INPUT,
-    //         columns: []
-    //     };
-    //     service = {
-    //         name: 'service',
-    //         columns: []
-    //     };
-    //
-    //     spyOn(columnUtils, 'isUserInput');
-    //     spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
-    //     spyOn(messageService, 'get').andReturn('User input');
-    //
-    //     vm = $controller('KitUsagePreviewController');
-    // });
-    //
-    // describe('onInit', function() {
-    //
-    //     it('should set collection', function() {
-    //         vm.sections = [collection, service];
-    //         vm.$onInit();
-    //
-    //         expect(vm.collection).toEqual(collection);
-    //     });
-    //
-    //     it('should set service', function() {
-    //         vm.sections = [collection, service];
-    //         vm.$onInit();
-    //
-    //         expect(vm.service).toEqual(service);
-    //     });
-    // });
-    //
-    // describe('isUserInput', function() {
-    //
-    //     it('should isUserInput of columnUtils be called with collection if service name if HF', function() {
-    //         service.name = 'HF';
-    //         vm.isUserInput(service, collection);
-    //
-    //         expect(columnUtils.isUserInput).toHaveBeenCalledWith(collection);
-    //     });
-    //
-    //     it('should isUserInput of columnUtils be called with service', function() {
-    //         vm.isUserInput(service, collection);
-    //
-    //         expect(columnUtils.isUserInput).toHaveBeenCalledWith(service);
-    //     });
-    // });
-    //
-    // describe('getColumnValue', function() {
-    //
-    //     it('getLabel should be called with user input if service name if HF', function() {
-    //         service.name = 'HF';
-    //         vm.getColumnValue(service, collection);
-    //
-    //         expect(COLUMN_SOURCES.getLabel).toHaveBeenCalledWith(COLUMN_SOURCES.USER_INPUT);
-    //         expect(messageService.get).toHaveBeenCalledWith('requisitionConstants.userInput');
-    //     });
-    // });
+    var vm, testProject, testOutcome, service;
+    var $controller, COLUMN_SOURCES, messageService, columnUtils;
+
+    beforeEach(function() {
+        module('admin-template-configure-preview-section');
+
+        inject(function($injector) {
+            $controller = $injector.get('$controller');
+            COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
+            messageService = $injector.get('messageService');
+            columnUtils = $injector.get('columnUtils');
+        });
+        testProject = {
+            name: 'project',
+            columns: [
+                {
+                    name: 'test project 1',
+                    isDisplayed: false,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }, {
+                    name: 'test project 2',
+                    isDisplayed: true,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }
+            ]
+        };
+        testOutcome = {
+            name: 'outcome',
+            columns: [
+                {
+                    name: 'test outcome 1',
+                    isDisplayed: true,
+                    displayOrder: 3,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }, {
+                    name: 'test outcome 2',
+                    isDisplayed: false,
+                    displayOrder: 2,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }, {
+                    name: 'test outcome 3',
+                    isDisplayed: true,
+                    displayOrder: 1,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }
+            ]
+        };
+        service = {
+            name: 'services',
+            columns: [
+                {
+                    name: 'total',
+                    source: COLUMN_SOURCES.USER_INPUT
+                }
+            ]
+        };
+
+        spyOn(columnUtils, 'isUserInput');
+        spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
+        spyOn(messageService, 'get').andReturn('User input');
+
+        vm = $controller('TestConsumptionPreviewController');
+        vm.sections = [testProject, testOutcome, service];
+        vm.$onInit();
+    });
+
+    describe('onInit', function() {
+
+        it('should set test project', function() {
+            expect(vm.testProject).toEqual(testProject);
+        });
+
+        it('should set test outcome', function() {
+            expect(vm.testOutcome).toEqual(testOutcome);
+        });
+
+        it('should set service', function() {
+            expect(vm.service).toEqual(service);
+        });
+
+        it('should set testOutcomeDisplayedCount', function() {
+            expect(vm.testOutcomeDisplayedCount).toEqual(2);
+        });
+
+        it('should set testOutcomeDisplayColumns', function() {
+            expect(vm.testOutcomeDisplayColumns).toEqual([
+                {
+                    name: 'test outcome 3',
+                    isDisplayed: true,
+                    displayOrder: 1,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }, {
+                    name: 'test outcome 1',
+                    isDisplayed: true,
+                    displayOrder: 3,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }
+            ]);
+        });
+    });
+
+    describe('getColumnValue', function() {
+        it('should called getLabel with user input when called getColumnValue', function() {
+            vm.getColumnValue(vm.testProject.columns[0]);
+
+            expect(COLUMN_SOURCES.getLabel).toHaveBeenCalledWith(COLUMN_SOURCES.USER_INPUT);
+            expect(messageService.get).toHaveBeenCalledWith('requisitionConstants.userInput');
+        });
+    });
+
+    describe('isTotal', function() {
+        it('should return true when the service name is total', function() {
+            expect(vm.isTotal(vm.service.columns[0])).toBe(true);
+        });
+    });
 });
