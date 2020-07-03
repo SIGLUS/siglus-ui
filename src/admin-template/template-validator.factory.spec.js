@@ -65,6 +65,11 @@ describe('templateValidator', function() {
                 columns: angular.copy(columns)
             }];
             // #247: ends here
+            // #341: test consumption section configure
+            template.testConsumption = [{
+                columns: angular.copy(columns)
+            }];
+            // #341: ends here
         });
 
         it('should return true if all columns are valid', function() {

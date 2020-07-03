@@ -155,6 +155,51 @@ describe('Template', function() {
             }]);
         });
         // #247: ends here
+
+        // #341: test consumption section configure
+        it('should sort section column of Test Consumption by displayOrder', function() {
+            this.templateJson.testConsumption = [{
+                name: 'outcome',
+                columns: [{
+                    name: 'default outcome',
+                    source: null,
+                    displayOrder: 1,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }, {
+                    name: 'new outcome',
+                    displayOrder: 0,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }]
+            }];
+            this.template = new this.Template(this.templateJson);
+
+            expect(this.template.testConsumption).toEqual([{
+                name: 'outcome',
+                columns: [{
+                    name: 'new outcome',
+                    displayOrder: 0,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }, {
+                    name: 'default outcome',
+                    source: null,
+                    displayOrder: 1,
+                    columnDefinition: {
+                        sources: [],
+                        supportsTag: false
+                    }
+                }]
+            }]);
+        });
+        // #341: ends here
     });
 
     describe('move', function() {
