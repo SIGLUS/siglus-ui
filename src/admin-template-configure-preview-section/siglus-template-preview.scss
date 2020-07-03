@@ -1,7 +1,4 @@
-.product-preview.openlmis-table-container .openlmis-table,
-.kit-usage-preview.openlmis-table-container .openlmis-table,
-.usage-information-preview.openlmis-table-container .openlmis-table,
-.test-consumption-preview.openlmis-table-container .openlmis-table {
+[class$="-preview"] {
     td {
         min-width: 100px;
         padding: 16px 8px;
@@ -41,24 +38,5 @@
 
     .center {
         text-align: center;
-    }
-}
-
-.usage-information-preview.openlmis-table-container .openlmis-table {
-    .product {
-        td:first-child {
-            border-left-width: 1px;
-        }
-    }
-    .info-label {
-        font-weight: bold;
-    }
-    tr:first-child  > td {
-        background-color: #f0f0f0;
-    }
-    td {
-        &.total {
-            background-color: #f0f0f0;
-        }
     }
 }
