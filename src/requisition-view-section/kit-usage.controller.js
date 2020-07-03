@@ -21,9 +21,9 @@
         .module('requisition-view-section')
         .controller('KitUsageController', controller);
 
-    controller.$inject = ['columnUtils', 'templateConfigureService', 'SERVICE_TYPES'];
+    controller.$inject = ['columnUtils', 'templateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
 
-    function controller(columnUtils, templateConfigureService, SERVICE_TYPES) {
+    function controller(columnUtils, templateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
 
         var vm = this;
 
@@ -31,9 +31,9 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            var collection = templateConfigureService.getCollection(vm.sections);
+            var collection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
             var collectionColumnsMap = templateConfigureService.getSectionColumnsMap(collection);
-            var service = templateConfigureService.getService(vm.sections);
+            var service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(service);
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, collectionColumnsMap[lineItem.collection]);

@@ -23,10 +23,7 @@
 
     function service(COLUMN_TYPES, SERVICE_TYPES) {
         this.getDefaultColumn = getDefaultColumn;
-        this.getCollection = getCollection;
-        this.getService = getService;
         this.getSectionColumnsMap = getSectionColumnsMap;
-        this.getInformation = getInformation;
         this.getSectionByName = getSectionByName;
         this.isTotalService = isTotalService;
         function getDefaultColumn() {
@@ -58,29 +55,11 @@
             };
         }
 
-        function getCollection(sections) {
-            return _.find(sections, function(section) {
-                return section.name === 'collection';
-            });
-        }
-
-        function getService(sections) {
-            return _.find(sections, function(section) {
-                return section.name === 'service';
-            });
-        }
-
         function getSectionColumnsMap(section) {
             return _.reduce(section.columns, function(columnMap, column) {
                 columnMap[column.name] = column;
                 return columnMap;
             }, {});
-        }
-
-        function getInformation(sections) {
-            return _.find(sections, function(section) {
-                return section.name === 'information';
-            });
         }
 
         function getSectionByName(sections, name) {

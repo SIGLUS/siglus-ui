@@ -28,7 +28,8 @@
         'ui.router',
         'openlmis-rights',
         'requisition-constants',
-        'admin-template-configure-section'
+        'admin-template-configure-section',
+        'admin-template-configure-preview-section'
     ]);
 
 })();

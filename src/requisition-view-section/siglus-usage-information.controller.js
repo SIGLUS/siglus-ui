@@ -21,9 +21,9 @@
         .module('requisition-view-section')
         .controller('SiglusUsageInformationController', controller);
 
-    controller.$inject = ['columnUtils', 'templateConfigureService', 'requisitionValidator'];
+    controller.$inject = ['columnUtils', 'templateConfigureService', 'requisitionValidator', 'SECTION_TYPES'];
 
-    function controller(columnUtils, templateConfigureService, requisitionValidator) {
+    function controller(columnUtils, templateConfigureService, requisitionValidator, SECTION_TYPES) {
 
         var vm = this;
 
@@ -61,9 +61,9 @@
         }
 
         function extendLineItems() {
-            var information = templateConfigureService.getInformation(vm.sections);
+            var information = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.INFORMATION);
             var informationColumnsMap = templateConfigureService.getSectionColumnsMap(information);
-            var service = templateConfigureService.getService(vm.sections);
+            var service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(service);
             var availableProductsMap = getAvailableProductsMap(vm.availableProducts);
             angular.forEach(vm.lineItems, function(lineItem) {

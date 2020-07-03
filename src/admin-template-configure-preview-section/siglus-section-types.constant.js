@@ -17,10 +17,24 @@
 
     'use strict';
 
-    angular.module('requisition-view-section', [
-        'admin-template',
-        'admin-template-configure-column-setting',
-        'admin-template-configure-preview-section'
-    ]);
+    /**
+     * @ngdoc object
+     * @name admin-template-configure-column-setting.MAX_ADD_COLUMNS_LENGTH
+     *
+     * @description
+     * This is constant for max column items length.
+     */
+    angular
+        .module('admin-template-configure-preview-section')
+        .constant('SECTION_TYPES', type());
 
+    function type() {
+        return {
+            SERVICE: 'service',
+            COLLECTION: 'collection',
+            INFORMATION: 'information',
+            PROJECT: 'project',
+            OUTCOME: 'outcome'
+        };
+    }
 })();
