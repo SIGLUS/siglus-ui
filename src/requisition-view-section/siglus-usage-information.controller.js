@@ -65,7 +65,7 @@
             var informationColumnsMap = templateConfigureService.getSectionColumnsMap(information);
             var service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(service);
-            var availableProductsMap = getAvailableProductsMap(vm.availableProducts);
+            var productsMap = getProductsMap();
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
                 angular.forEach(Object.keys(lineItem.informations), function(information) {
@@ -73,7 +73,7 @@
                         informationColumnsMap[information], lineItem.informations[information]);
                     angular.forEach(Object.keys(lineItem.informations[information].orderables), function(orderableId) {
                         lineItem.informations[information].orderables[orderableId] = angular.merge({},
-                            availableProductsMap[orderableId],
+                            productsMap[orderableId],
                             lineItem.informations[information].orderables[orderableId],
                             {
                                 $error: undefined
@@ -83,8 +83,12 @@
             });
         }
 
-        function getAvailableProductsMap(availableProducts) {
-            return _.reduce(availableProducts, function(productMap, product) {
+        function getProductsMap() {
+            var products = angular.copy(vm.availableProducts);
+            angular.forEach(vm.addedProducts, function(addedProduct) {
+                products = products.concat(addedProduct.orderable);
+            });
+            return _.reduce(products, function(productMap, product) {
                 productMap[product.id] = product;
                 return productMap;
             }, {});
