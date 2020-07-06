@@ -33,7 +33,7 @@ describe('KitUsagePreviewController', function() {
             columns: []
         };
         service = {
-            name: 'services',
+            name: 'service',
             columns: []
         };
 

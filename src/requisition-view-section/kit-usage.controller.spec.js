@@ -42,7 +42,7 @@ describe('KitUsageController', function() {
             }]
         }, {
             id: 'ff882d28-e7a5-4283-9016-7e592b1c89c5',
-            name: 'services',
+            name: 'service',
             label: 'Services',
             displayOrder: 1,
             columns: [ {
