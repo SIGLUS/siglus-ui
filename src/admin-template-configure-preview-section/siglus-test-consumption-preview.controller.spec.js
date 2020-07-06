@@ -63,7 +63,7 @@ describe('TestConsumptionPreviewController', function() {
             ]
         };
         service = {
-            name: 'services',
+            name: 'service',
             columns: [
                 {
                     name: 'total',

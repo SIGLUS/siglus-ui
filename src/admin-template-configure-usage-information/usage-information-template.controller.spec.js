@@ -42,7 +42,7 @@ describe('UsageInformationTemplateController', function() {
             columns: []
         };
         service = {
-            name: 'services',
+            name: 'service',
             columns: []
         };
         template.usageInformation = [information, service];

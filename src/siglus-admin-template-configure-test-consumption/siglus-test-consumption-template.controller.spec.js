@@ -47,7 +47,7 @@ describe('TestConsumptionController', function() {
             columns: []
         };
         service = {
-            name: 'services',
+            name: 'service',
             columns: []
         };
         template.testConsumption = [testProject, testOutcome, service];

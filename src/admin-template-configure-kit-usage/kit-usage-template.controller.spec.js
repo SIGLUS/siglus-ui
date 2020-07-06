@@ -42,7 +42,7 @@ describe('KitUsageTemplateController', function() {
             columns: []
         };
         service = {
-            name: 'services',
+            name: 'service',
             columns: []
         };
         template.kitUsage = [collection, service];
