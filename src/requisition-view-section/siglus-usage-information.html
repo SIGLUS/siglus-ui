@@ -2,11 +2,11 @@
     <table class="openlmis-table">
         <tbody>
         <tr>
-            <td colspan={{vm.monthOrYearColspan}}>{{'requisitionViewSection.usageInformation.MonthOrYear' | message}}{{": "}}{{vm.processingPeriodEndDate | openlmisDate | limitTo:-7}}</td>
+            <td colspan={{vm.monthOrYearColspan}} class="grey-background">{{'requisitionViewSection.usageInformation.MonthOrYear' | message}}{{": "}}{{vm.processingPeriodEndDate | openlmisDate | limitTo:-7}}</td>
         </tr>
         <tr>
             <td rowspan="2"></td>
-            <td class="info-label"
+            <td class="bold-label"
                 ng-repeat="information in vm.firstService.informations | orderObjectBy : 'displayOrder'"
                 colspan={{vm.informationColspan}}
                 popover="{{information.definition}}"
@@ -14,10 +14,10 @@
         </tr>
         <tr class="product">
             <td ng-repeat-start="information in vm.firstService.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
-            <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'">{{orderable.fullProductName}}</td>
+            <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'" ng-class="{'row-span-border': $first}">{{orderable.fullProductName}}</td>
         </tr>
         <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
-            <td ng-class="{'total': vm.isTotalService(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
+            <td ng-class="{'grey-background': vm.isTotalService(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
             <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
             <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'">
                 <div ng-if=" vm.canEdit && !vm.isUserInput(lineItem)">{{vm.getTotal(information.name, orderable.id)}}</div>
