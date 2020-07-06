@@ -25,6 +25,7 @@
                 lineItems: '<',
                 processingPeriodEndDate: '<',
                 availableProducts: '<',
+                addedProducts: '<',
                 canEdit: '<'
             },
             controller: 'SiglusUsageInformationController',
