@@ -1,0 +1,49 @@
+.siglus-notification {
+    line-height: 20px;
+    height: 20px;
+    position: relative;
+    a i {
+        font-size: 20px;
+        color: #22a5f7;
+    }
+    .dropdown-menu {
+        left: auto !important;
+        right: -2.6em !important;
+        padding: 0;
+        width: 270px;
+        margin: 8px;
+        &::before {
+            content: "";
+            position: absolute;
+            top: -0.4em;
+            right: 2.3em;
+            width: 0em;
+            height: 0em;
+            border-left: 0.4em solid transparent;
+            border-right: 0.4em solid transparent;
+            border-bottom: 0.45em solid #fff;
+        }
+        .notification-title {
+            text-align: center;
+            height: 24px;
+            background-color: #d8d8d8;
+        }
+        .notification-empty {
+            padding: 8px;
+        }
+        li {
+            padding: 0 8px;
+            i {
+                margin-right: 4px;
+                color: #0070d2;
+                background-color: #d9d9d9;
+                border-radius: 50%;
+            }
+            a {
+                padding: 0;
+                color: $link-color;
+                text-align: right;
+            }
+        }
+    }
+}

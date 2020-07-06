@@ -1,0 +1,7 @@
+{
+  "notification.viewed": "This notification has been viewed, please refresh.",
+  "notification.processed": "This notification has been processed, please refresh.",
+  "notification.title": "Notification Center",
+  "notification.empty": "No notification found.",
+  "notification.view": "View"
+}
