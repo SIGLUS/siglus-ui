@@ -55,6 +55,8 @@
             angular.forEach(vm.lineItems, function(lineItem) {
                 if (vm.isTotalService(lineItem)) {
                     lineItem.informations[informationName].orderables[orderableId].value = total;
+                    requisitionValidator.validateSiglusLineItemField(lineItem.
+                        informations[informationName].orderables[orderableId]);
                 }
             });
             return total;
