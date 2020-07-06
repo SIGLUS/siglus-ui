@@ -2,8 +2,10 @@
     <table class="openlmis-table">
         <tbody>
         <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
-            <td >{{lineItem.label}}</td>
-            <td ng-repeat-start="serviceColumn in lineItem.services | orderObjectBy : 'displayOrder'">
+            <td popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
+            <td ng-repeat-start="serviceColumn in lineItem.services | orderObjectBy : 'displayOrder'"
+                popover="{{serviceColumn.definition}}"
+                popover-trigger-area="element">
                 {{serviceColumn.label}}
             </td>
             <td ng-if="!vm.isUserInput(serviceColumn, lineItem)">
