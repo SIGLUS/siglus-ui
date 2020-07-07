@@ -67,28 +67,38 @@ describe('ShipmentFactory', function() {
         rightName = 'STOCK_CARDS_VIEW';
         // #332: ends here
 
+        // #374: confirm shipment effect soh
         stockCardSummaries = [
             new StockCardSummaryDataBuilder()
                 .withCanFulfillForMe([
                     new CanFulfillForMeEntryDataBuilder()
-                        .withOrderable(new OrderableDataBuilder().build())
+                        .withOrderable(new OrderableDataBuilder()
+                            .withId(order.orderLineItems[0].orderable.id)
+                            .build())
                         .buildJson(),
                     new CanFulfillForMeEntryDataBuilder()
-                        .withOrderable(new OrderableDataBuilder().build())
+                        .withOrderable(new OrderableDataBuilder()
+                            .withId(order.orderLineItems[0].orderable.id)
+                            .build())
                         .buildJson()
                 ])
                 .build(),
             new StockCardSummaryDataBuilder()
                 .withCanFulfillForMe([
                     new CanFulfillForMeEntryDataBuilder()
-                        .withOrderable(new OrderableDataBuilder().build())
+                        .withOrderable(new OrderableDataBuilder()
+                            .withId(order.orderLineItems[0].orderable.id)
+                            .build())
                         .buildJson(),
                     new CanFulfillForMeEntryDataBuilder()
-                        .withOrderable(new OrderableDataBuilder().build())
+                        .withOrderable(new OrderableDataBuilder()
+                            .withId(order.orderLineItems[0].orderable.id)
+                            .build())
                         .buildJson()
                 ])
                 .build()
         ];
+        // #374: ends here
     });
 
     describe('buildFromOrder', function() {

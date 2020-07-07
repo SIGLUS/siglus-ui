@@ -193,11 +193,13 @@
         function extendResponse(shipmentJson, orderResource, stockCardSummaryRepositoryImpl) {
             return orderResource.get(shipmentJson.order.id)
                 .then(function(orderJson) {
-                    // #332: save shipment draft
-                    var orderableIds = orderJson.availableProducts.map(function(orderable) {
-                        return orderable.id;
+                    // #374: confirm shipment effect soh
+                    var orderableIds = orderJson.order.orderLineItems.map(function(lineItem) {
+                        return lineItem.orderable.id;
                     });
+                    // #374: ends here
 
+                    // #332: save shipment draft
                     return programService.getAllProductsProgram()
                         .then(function(programs) {
                             return stockCardSummaryRepositoryImpl.query({

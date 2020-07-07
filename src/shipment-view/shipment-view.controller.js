@@ -182,14 +182,24 @@
                 products: availableProducts
             })
                 .then(function(selectedProducts) {
+                    var addedShipmentLineItems = prepareShipmentLineItems(selectedProducts);
                     var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
                     var addedOrderLineItemsShipment = Object.assign({}, shipment, {
+                        lineItems: addedShipmentLineItems,
                         order: {
                             orderLineItems: addedOrderLineItems
                         }
                     });
                     var addedTableLineItems = new ShipmentViewLineItemFactory()
                         .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
+                    addedShipmentLineItems.forEach(function(shipmentLineItem) {
+                        if (!shipment.lineItems.find(function(existedShipmentLineItem) {
+                            return existedShipmentLineItem.orderable.id === shipmentLineItem.orderable.id
+                                && existedShipmentLineItem.lot.id === shipmentLineItem.lot.id;
+                        })) {
+                            shipment.lineItems.push(shipmentLineItem);
+                        }
+                    });
                     vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
                     vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
                 });
@@ -235,6 +245,41 @@
             });
         }
         // #264: ends here
+
+        // #374: confirm shipment effect soh
+        function prepareShipmentLineItems(selectedProducts) {
+            var addedShipmentLineItems = [];
+            var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+            selectedProducts.forEach(function(orderable) {
+                var canFulfillForMeByOrderable = canFulfillForMeMap[orderable.id];
+                orderable.versionNumber = orderable.meta.versionNumber;
+                Object.values(canFulfillForMeByOrderable).forEach(function(canFulfillForMe) {
+                    addedShipmentLineItems.push(new ShipmentLineItem({
+                        lot: canFulfillForMe.lot,
+                        orderable: orderable,
+                        quantityShipped: 0,
+                        canFulfillForMe: canFulfillForMe
+                    }));
+                });
+            });
+            return addedShipmentLineItems;
+        }
+
+        function mapCanFulfillForMe(summaries) {
+            var canFulfillForMeMap = {};
+            summaries.forEach(function(summary) {
+                summary.canFulfillForMe.forEach(function(canFulfillForMe) {
+                    var orderableId = canFulfillForMe.orderable.id,
+                        lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined;
+                    if (!canFulfillForMeMap[orderableId]) {
+                        canFulfillForMeMap[orderableId] = {};
+                    }
+                    canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
+                });
+            });
+            return canFulfillForMeMap;
+        }
+        // #374: ends here
 
         // #287: Warehouse clerk can skip some products in order
         function skipAllLineItems() {
