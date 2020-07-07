@@ -86,27 +86,20 @@
                 notificationService.error('adminProgramTemplate.template.invalidOptions');
             }
             // SIGLUS-REFACTOR: ends here
-            // #248: kit usage section configure
-            angular.forEach(template.kitUsage, function(section) {
-                angular.forEach(section.columns, function(column) {
-                    isValid = isValid && !validator.getSiglusColumnError(column);
+            // #248, #247, #341: kit usage section, usage information section, test consumption section configure
+            var siglusTemplateExtension = [
+                'kitUsage',
+                'usageInformation',
+                'testConsumption'
+            ];
+            angular.forEach(siglusTemplateExtension, function(extension) {
+                angular.forEach(template[extension], function(section) {
+                    angular.forEach(section.columns, function(column) {
+                        isValid = isValid && !validator.getSiglusColumnError(column);
+                    });
                 });
             });
-            // #248: ends here
-            // #247: usage information section configure
-            angular.forEach(template.usageInformation, function(section) {
-                angular.forEach(section.columns, function(column) {
-                    isValid = isValid && !validator.getSiglusColumnError(column);
-                });
-            });
-            // #247: ends here
-            // #341: test consumption  section configure
-            angular.forEach(template.testConsumption, function(section) {
-                angular.forEach(section.columns, function(column) {
-                    isValid = isValid && !validator.getSiglusColumnError(column);
-                });
-            });
-            // #341: ends here
+            // #248, #247, #341: ends here
 
             return isValid;
         }

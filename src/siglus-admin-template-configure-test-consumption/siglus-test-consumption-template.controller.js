@@ -35,9 +35,6 @@
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.addTestProjectColumn = addTestProjectColumn;
-        vm.addTestOutcomeColumn = addTestOutcomeColumn;
-        vm.addServiceColumn = addServiceColumn;
 
         vm.template = undefined;
 
@@ -46,6 +43,9 @@
             vm.testProject = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.PROJECT);
             vm.testOutcome = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.OUTCOME);
             vm.service = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.SERVICE);
+            vm.addTestProjectColumn = addColumn(vm.testProject.columns);
+            vm.addTestOutcomeColumn = addColumn(vm.testOutcome.columns);
+            vm.addServiceColumn = addColumn(vm.service.columns);
             enableCurrentSection();
         }
 
@@ -53,34 +53,16 @@
             vm.template.extension.enableRapidTestConsumption = true;
         }
 
-        function addTestProjectColumn() {
-            vm.testProject.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
-                source: COLUMN_SOURCES.USER_INPUT,
-                columnDefinition: {
-                    sources: [COLUMN_SOURCES.USER_INPUT],
-                    supportsTag: false
-                }
-            }));
-        }
-
-        function addTestOutcomeColumn() {
-            vm.testOutcome.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
-                source: COLUMN_SOURCES.USER_INPUT,
-                columnDefinition: {
-                    sources: [COLUMN_SOURCES.USER_INPUT],
-                    supportsTag: false
-                }
-            }));
-        }
-
-        function addServiceColumn() {
-            vm.service.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
-                source: COLUMN_SOURCES.USER_INPUT,
-                columnDefinition: {
-                    sources: [COLUMN_SOURCES.USER_INPUT],
-                    supportsTag: false
-                }
-            }));
+        function addColumn(columns) {
+            return function() {
+                columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+                    source: COLUMN_SOURCES.USER_INPUT,
+                    columnDefinition: {
+                        sources: [COLUMN_SOURCES.USER_INPUT],
+                        supportsTag: false
+                    }
+                }));
+            };
         }
     }
 })();

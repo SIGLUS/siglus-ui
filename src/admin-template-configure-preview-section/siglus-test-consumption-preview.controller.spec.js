@@ -102,14 +102,14 @@ describe('TestConsumptionPreviewController', function() {
         it('should set testOutcomeDisplayColumns', function() {
             expect(vm.testOutcomeDisplayColumns).toEqual([
                 {
-                    name: 'test outcome 3',
-                    isDisplayed: true,
-                    displayOrder: 1,
-                    source: COLUMN_SOURCES.USER_INPUT
-                }, {
                     name: 'test outcome 1',
                     isDisplayed: true,
                     displayOrder: 3,
+                    source: COLUMN_SOURCES.USER_INPUT
+                }, {
+                    name: 'test outcome 3',
+                    isDisplayed: true,
+                    displayOrder: 1,
                     source: COLUMN_SOURCES.USER_INPUT
                 }
             ]);
