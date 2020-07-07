@@ -69,20 +69,20 @@
             // #163: ends here
             // #248: kit usage section configure
             this.extension = template.extension || {};
-            this.kitUsage = _.forEach(template.kitUsage, function(section) {
-                section.columns = _.sortBy(section.columns, 'displayOrder');
-            });
             // #248: ends here
-            // #247: usage information section configure
-            this.usageInformation = _.forEach(template.usageInformation, function(section) {
-                section.columns = _.sortBy(section.columns, 'displayOrder');
+            // #248, #247, #341: kit usage section, usage information section, test consumption section configure
+            var self = this;
+            var siglusTemplateExtension = [
+                'kitUsage',
+                'usageInformation',
+                'testConsumption'
+            ];
+            angular.forEach(siglusTemplateExtension, function(extension) {
+                self[extension] = _.forEach(template[extension], function(section) {
+                    section.columns = _.sortBy(section.columns, 'displayOrder');
+                });
             });
-            // #247: ends here
-            // #341: test consumption section configure
-            this.testConsumption = _.forEach(template.testConsumption, function(section) {
-                section.columns = _.sortBy(section.columns, 'displayOrder');
-            });
-            // #341: ends here
+            // #248, #247, #341: ends here
 
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);

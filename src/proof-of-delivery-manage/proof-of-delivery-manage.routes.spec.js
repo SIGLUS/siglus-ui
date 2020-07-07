@@ -78,7 +78,7 @@ describe('openlmis.orders.podManage state', function() {
             programId: programs[0].id,
             requestingFacilityId: requestingFacilities[0].id,
             supplyingFacilityId: supplyingFacilities[0].id,
-            sort : 'status,createdDate'
+            sort: 'status,createdDate'
         });
         // #370: ends here
     });

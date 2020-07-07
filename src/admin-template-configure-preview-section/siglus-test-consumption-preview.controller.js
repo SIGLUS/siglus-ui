@@ -57,8 +57,6 @@
             var columns = [];
             var displayedColumns = vm.testOutcome.columns.filter(function(column) {
                 return column.isDisplayed;
-            }).sort(function(a, b) {
-                return a.displayOrder - b.displayOrder;
             });
             vm.testProject.columns.forEach(function(testProjectColumn) {
                 if (testProjectColumn.isDisplayed) {
