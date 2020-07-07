@@ -11,7 +11,7 @@
             <td ng-repeat="testProjectColumn in vm.testProject.columns | orderBy : 'displayOrder'"
                 ng-if="testProjectColumn.isDisplayed"
                 colspan="{{vm.testOutcomeDisplayedCount}}"
-                class="bold-label center"
+                class="bold-label"
             >{{testProjectColumn.label}}</td>
         </tr>
         <tr>
