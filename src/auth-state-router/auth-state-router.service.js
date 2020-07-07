@@ -80,7 +80,7 @@
 
         function alertError(toState) {
             if (toState.name.indexOf('openlmis.stockmanagement.initialInventory') === 0 ||
-                toState.name.indexOf('openlmis.stockmanagement.physicalInventory.draft') === 0) {
+                toState.name.indexOf('openlmis.stockmanagement.physicalInventory') === 0) {
                 alertService.error('openlmisAuth.authorization.error', 'openlmisAuth.authorization.message');
             } else {
                 alertService.error('openlmisAuth.authorization.error');
