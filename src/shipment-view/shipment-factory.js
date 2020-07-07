@@ -53,11 +53,11 @@
          * @return {Promise}       the promise resolving to a shipment
          */
         function buildFromOrder(order) {
-            // #332: save shipment draft
-            var orderableIds = order.availableProducts.map(function(orderable) {
-                return orderable.id;
+            var orderableIds = order.orderLineItems.map(function(lineItem) {
+                return lineItem.orderable.id;
             });
 
+            // #332: save shipment draft
             return programService.getAllProductsProgram()
                 .then(function(programs) {
                     return new StockCardSummaryRepositoryImpl().query({
@@ -83,7 +83,11 @@
                                     };
                                 })
                             );
-                        }, []);
+                        // #374: confirm shipment effect soh
+                        }, []).filter(function(shipmentLineItem) {
+                            return orderableIds.includes(shipmentLineItem.orderable.id);
+                        });
+                        // #374: ends here
 
                     return {
                         order: order,
