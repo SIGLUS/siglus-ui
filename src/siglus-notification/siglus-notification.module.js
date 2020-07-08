@@ -16,5 +16,11 @@
 (function() {
     'use strict';
 
-    angular.module('siglus-notification', []);
+    angular.module('siglus-notification', [
+        'openlmis-modal',
+        'requisition-constants',
+        'order',
+        'openlmis-i18n',
+        'openlmis-urls'
+    ]);
 })();
