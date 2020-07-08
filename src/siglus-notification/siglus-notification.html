@@ -5,10 +5,10 @@
     <ul class="dropdown-menu" role="menu">
         <li class="notification-title">{{'notification.title' | message}}</li>
         <li class="notification-empty" ng-if="!vm.notifications.length">{{'notification.empty' | message}}</li>
-        <li ng-repeat="notification in vm.notifications" ng-if="vm.notifications.length">
+        <li ng-repeat="notification in vm.notifications">
             <div>
                 <i class="fa fa-bullhorn" aria-hidden="true"></i>
-                <span>[Emergency]Receive requisition from [Facility].</span>
+                <span>{{vm.getNotificationMsg(notification)}}</span>
             </div>
             <a class="dropdown-link">{{'notification.view' | message}}</a>
         </li>

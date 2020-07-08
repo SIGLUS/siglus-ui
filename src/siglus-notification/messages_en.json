@@ -1,7 +1,11 @@
 {
-  "notification.viewed": "This notification has been viewed, please refresh.",
-  "notification.processed": "This notification has been processed, please refresh.",
+  "notification.viewed": "This notification has been viewed, please try again.",
+  "notification.processed": "This notification has been processed, please try again.",
   "notification.title": "Notification Center",
   "notification.empty": "No notification found.",
-  "notification.view": "View"
+  "notification.view": "View",
+  "notification.emergency": "[Emergency]",
+  "notification.message.requisition": "Receive requisition from ${facility}.",
+  "notification.message.order": "Receive order from ${facility}.",
+  "notification.message.POD": "Receive POD from ${facility}."
 }

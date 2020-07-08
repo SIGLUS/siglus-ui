@@ -21,13 +21,13 @@
         .module('siglus-notification')
         .service('siglusNotificationService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$resource', 'openlmisUrlFactory'];
 
-    function service($resource, stockmanagementUrlFactory) {
-        var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/notifications'), {}, {
+    function service($resource, openlmisUrlFactory) {
+        var resource = $resource(openlmisUrlFactory('/api/siglusapi/notifications'), {}, {
             view: {
                 method: 'PATCH',
-                url: stockmanagementUrlFactory('/api/siglusapi/notifications/:id')
+                url: openlmisUrlFactory('/api/siglusapi/notifications/:id')
             }
         });
 
