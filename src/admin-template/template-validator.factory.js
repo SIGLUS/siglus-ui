@@ -200,11 +200,11 @@
         }
 
         function validateSiglusDefinition(definition) {
+            if ((definition && definition.length > MAX_COLUMN_DESCRIPTION_LENGTH) || definition === undefined) {
+                return messageService.get('adminProgramTemplate.columnDescriptionTooLong');
+            }
             if (isEmpty(definition)) {
                 return messageService.get('adminProgramTemplate.columnDefinitionEmpty');
-            }
-            if ((definition && definition.length > MAX_COLUMN_DESCRIPTION_LENGTH)) {
-                return messageService.get('adminProgramTemplate.columnDescriptionTooLong');
             }
         }
 
