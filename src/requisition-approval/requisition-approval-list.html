@@ -1,0 +1,80 @@
+<h2>{{'requisitionApproval.approveRequisitions' | message}}</h2>
+<h4 ng-if="vm.isBatchApproveScreenActive">{{ 'requisitionApproval.instruction' | message }}</h4>
+<div class="openlmis-table-container">
+    <h4 ng-if="vm.isBatchApproveScreenActive">{{ 'requisitionApproval.select' | message }}</h4>
+    <ul ng-if="vm.isBatchApproveScreenActive">
+        <li><a ng-click="vm.toggleSelectAll(true)">{{'requisitionApproval.all' | message}}</a></li>
+        <li><a ng-click="vm.toggleSelectAll(false)">{{'requisitionApproval.none' | message}}</a></li>
+    </ul>
+    <openlmis-sort options="vm.options"/>
+    <form class="openlmis-table-filters" ng-submit="vm.search()">
+        <!-- #368: The approver can filter the requisitions by facility -->
+        <label for="facility">{{'requisitionApproval.facility' | message}}</label>
+        <select id="facility"
+                ng-model="vm.facility"
+                ng-options="facility.name for facility in vm.facilities"></select>
+        <!-- #368: ends here -->
+        <label for=program>{{'requisitionApproval.program' | message}}</label>
+        <select id="program" placeholder="{{'requisitionApproval.selectProgram' | message}}"
+                ng-model="vm.selectedProgram"
+                ng-options="program as program.name for program in vm.programs">
+        </select>
+        <input class="btn btn-primary" type="submit" value="{{'requisitionApproval.search' | message}}"/>
+    </form>
+    <table>
+        <caption ng-if="!vm.requisitions.length">
+            {{'requisitionApproval.noRnrPendingForApproval' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th class="col-sticky" ng-if="vm.isBatchApproveScreenActive">
+                {{ 'requisitionApproval.approve' | message }}
+            </th>
+            <th>{{'requisitionApproval.program' | message}}</th>
+            <th>{{'requisitionApproval.facility' | message}}</th>
+            <th>{{'requisitionApproval.period' | message}}</th>
+            <th>{{'requisitionApproval.startDate' | message}}</th>
+            <th>{{'requisitionApproval.endDate' | message}}</th>
+            <th>{{'requisitionApproval.dateSubmitted' | message}}</th>
+            <th>{{'requisitionApproval.dateAuthorized' | message}}</th>
+            <th>{{'requisitionApproval.emergency' | message}}</th>
+            <th>{{'requisitionApproval.offline' | message}}</th>
+            <th class="col-sticky sticky-right">{{'requisitionApproval.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="requisition in vm.requisitions">
+            <td ng-if="vm.isBatchApproveScreenActive">
+                <input type="checkbox" ng-model="requisition.$selected">
+            </td>
+            <td>{{requisition.program.name}}</td>
+            <td>{{requisition.facility.code}} - {{requisition.facility.name}}</td>
+            <td>{{requisition.processingPeriod.name}}</td>
+            <td>{{requisition.processingPeriod.startDate | openlmisDate}}</td>
+            <td>{{requisition.processingPeriod.endDate | openlmisDate}}</td>
+
+            <td ng-if="!requisition.extraData.originalRequisition">{{requisition.statusChanges.SUBMITTED.changeDate | openlmisDate}}</td>
+            <td ng-if="requisition.extraData.originalRequisition">{{ 'requisitionApproval.notApplicable' | message }}</td>
+
+            <td ng-if="!requisition.extraData.originalRequisition">{{requisition.statusChanges.AUTHORIZED.changeDate | openlmisDate}}</td>
+            <td ng-if="requisition.extraData.originalRequisition">{{ 'requisitionApproval.notApplicable' | message }}</td>
+
+            <td class="col-emergency">
+                <span ng-if="requisition.emergency" class="icon-ok"></span>
+            </td>
+            <td class="col-emergency">
+                <i ng-class="{'icon-ok': requisition.$availableOffline}"></i>
+            </td>
+            <td>
+                <button ng-if="vm.isFullRequisitionAvailable(requisition.id)" class="primary" ng-click="vm.openRnr(requisition.id)">
+                    {{'requisitionApproval.viewRequisition' | message}}
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination/>
+</div>
+<div class="openlmis-toolbar" ng-if="vm.requisitions.length && vm.isBatchApproveScreenActive">
+    <button class="primary" ng-click="vm.viewSelectedRequisitions()">{{'requisitionApproval.viewSelectedRequisitions' | message}}</button>
+</div>
