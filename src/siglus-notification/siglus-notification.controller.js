@@ -121,10 +121,10 @@
                 })
                 .catch(function(error) {
                     if (error.status === 409) {
-                        alertService.error('notification.viewed');
+                        alertService.error('notification.processed');
                     }
                     if (error.status === 410) {
-                        alertService.error('notification.processed');
+                        alertService.error('notification.viewed');
                     }
                 });
         }

@@ -41,7 +41,7 @@
         function viewNotification(id) {
             return resource.view({
                 id: id
-            })
+            }, {})
                 .$promise;
         }
     }

@@ -186,7 +186,7 @@ describe('SiglusNotificationController', function() {
             });
             $rootScope.$apply();
 
-            expect(alertService.error).toHaveBeenCalledWith('notification.viewed');
+            expect(alertService.error).toHaveBeenCalledWith('notification.processed');
         });
 
         it('should alert processed message if API reject 410', function() {
@@ -202,7 +202,7 @@ describe('SiglusNotificationController', function() {
             });
             $rootScope.$apply();
 
-            expect(alertService.error).toHaveBeenCalledWith('notification.processed');
+            expect(alertService.error).toHaveBeenCalledWith('notification.viewed');
         });
     });
 });
