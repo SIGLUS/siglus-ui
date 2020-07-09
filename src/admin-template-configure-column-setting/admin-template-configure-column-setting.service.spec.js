@@ -22,7 +22,6 @@ describe('templateConfigureService', function() {
         inject(function($injector) {
             this.templateConfigureService = $injector.get('templateConfigureService');
             this.COLUMN_TYPES = $injector.get('COLUMN_TYPES');
-            this.SERVICE_TYPES = $injector.get('SERVICE_TYPES');
             this.SECTION_TYPES = $injector.get('SECTION_TYPES');
         });
     });
@@ -105,12 +104,4 @@ describe('templateConfigureService', function() {
                 }
             });
         });
-
-    it('should get true when call isTotalService given a total service', function() {
-        var service = {
-            name: this.SERVICE_TYPES.TOTAL
-        };
-
-        expect(this.templateConfigureService.isTotalService(service)).toEqual(true);
-    });
 });

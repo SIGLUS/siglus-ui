@@ -60,4 +60,22 @@ describe('columnUtils', function() {
             expect(columnUtils.isStockCards(column)).toBe(false);
         });
     });
+
+    describe('isTotal', function() {
+        it('should return true if column name is total', function() {
+            var column = {
+                name: 'total'
+            };
+
+            expect(columnUtils.isTotal(column)).toBe(true);
+        });
+
+        it('should return false if column name is HF', function() {
+            var column = {
+                name: 'HF'
+            };
+
+            expect(columnUtils.isTotal(column)).toBe(false);
+        });
+    });
 });

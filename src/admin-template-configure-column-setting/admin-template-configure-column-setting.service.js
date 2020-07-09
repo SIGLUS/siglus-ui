@@ -19,13 +19,12 @@
     angular.module('admin-template-configure-column-setting')
         .service('templateConfigureService', service);
 
-    service.$inject = ['COLUMN_TYPES', 'SERVICE_TYPES'];
+    service.$inject = ['COLUMN_TYPES'];
 
-    function service(COLUMN_TYPES, SERVICE_TYPES) {
+    function service(COLUMN_TYPES) {
         this.getDefaultColumn = getDefaultColumn;
         this.getSectionColumnsMap = getSectionColumnsMap;
         this.getSectionByName = getSectionByName;
-        this.isTotalService = isTotalService;
         function getDefaultColumn() {
             return {
                 id: null,
@@ -66,10 +65,6 @@
             return _.find(sections, function(section) {
                 return section.name === name;
             });
-        }
-
-        function isTotalService(service) {
-            return service.name === SERVICE_TYPES.TOTAL;
         }
     }
 

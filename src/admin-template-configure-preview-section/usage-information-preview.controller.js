@@ -36,7 +36,7 @@
         vm.$onInit = onInit;
         vm.getColumnValue = getColumnValue;
         vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotalService = templateConfigureService.isTotalService;
+        vm.isTotal = columnUtils.isTotal;
 
         function onInit() {
             vm.information = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.INFORMATION);

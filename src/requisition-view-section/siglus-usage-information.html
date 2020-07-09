@@ -17,7 +17,7 @@
             <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'" ng-class="{'row-span-border': $first}">{{orderable.fullProductName}}</td>
         </tr>
         <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
-            <td ng-class="{'grey-background': vm.isTotalService(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
+            <td ng-class="{'grey-background': vm.isTotal(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
             <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
             <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'"
                 ng-if="vm.canEdit && vm.isUserInput(lineItem)"
