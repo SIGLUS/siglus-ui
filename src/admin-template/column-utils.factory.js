@@ -28,12 +28,13 @@
         .module('admin-template')
         .factory('columnUtils', columnUtils);
 
-    columnUtils.$inject = ['COLUMN_SOURCES'];
+    columnUtils.$inject = ['COLUMN_SOURCES', 'SERVICE_TYPES'];
 
-    function columnUtils(COLUMN_SOURCES) {
+    function columnUtils(COLUMN_SOURCES, SERVICE_TYPES) {
         return {
             isUserInput: isUserInput,
-            isStockCards: isStockCards
+            isStockCards: isStockCards,
+            isTotal: isTotal
         };
 
         /**
@@ -57,13 +58,28 @@
          * @name isUserInput
          *
          * @description
-         * If column source is user input.
+         * If column source is stock card.
          *
          * @param {Object} column
-         * @return {Boolean} true if column source is user input
+         * @return {Boolean} true if column source is stock card
          */
         function isStockCards(column) {
             return column.source === COLUMN_SOURCES.STOCK_CARDS;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
+         * @name isTotal
+         *
+         * @description
+         * If column name is total.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column name is total
+         */
+        function isTotal(column) {
+            return column.name === SERVICE_TYPES.TOTAL;
         }
     }
 

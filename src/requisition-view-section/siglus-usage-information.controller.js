@@ -28,7 +28,7 @@
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isTotalService = templateConfigureService.isTotalService;
+        vm.isTotal = columnUtils.isTotal;
         vm.getTotal = getTotal;
         vm.isUserInput = columnUtils.isUserInput;
         vm.update = requisitionValidator.validateSiglusLineItemField;
@@ -38,7 +38,7 @@
 
         function onInit() {
             extendLineItems();
-            vm.firstService = vm.lineItems.values().next().value;
+            vm.firstService = _.first(vm.lineItems);
             angular.forEach(Object.keys(vm.firstService.informations), function(information) {
                 vm.informationColspan = Object.keys(vm.firstService.informations[information].orderables).length;
                 vm.monthOrYearColspan = vm.monthOrYearColspan + vm.informationColspan;
@@ -48,12 +48,12 @@
         function getTotal(informationName, orderableId) {
             var total = 0;
             angular.forEach(vm.lineItems, function(lineItem) {
-                if (!vm.isTotalService(lineItem)) {
+                if (!vm.isTotal(lineItem)) {
                     total = total + lineItem.informations[informationName].orderables[orderableId].value;
                 }
             });
             angular.forEach(vm.lineItems, function(lineItem) {
-                if (vm.isTotalService(lineItem)) {
+                if (vm.isTotal(lineItem)) {
                     lineItem.informations[informationName].orderables[orderableId].value = total;
                     requisitionValidator.validateSiglusLineItemField(lineItem.
                         informations[informationName].orderables[orderableId]);
