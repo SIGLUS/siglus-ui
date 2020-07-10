@@ -28,47 +28,29 @@
                         messageService, siglusNotificationService) {
         var vm = this;
 
-        // vm.notifications = [{
-        //     id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-        //     emergency: false,
-        //     sourceFacilityName: 'DPM NAMPULA',
-        //     referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-        //     status: 'AUTHORIZED'
-        // }, {
-        //     id: 'b0b08344-01a2-469c-9fc0-bdbca6b6dc50',
-        //     emergency: true,
-        //     sourceFacilityName: 'CS Benga',
-        //     referenceId: 'b1b2fa6f-6634-4bce-a35d-c136e2f8ab51',
-        //     status: 'APPROVED'
-        // }, {
-        //     id: 'b0b08344-01a2-469c-9fc0-bdbca6b6dc51',
-        //     emergency: false,
-        //     sourceFacilityName: 'DDM Cidade de Quelimane ',
-        //     referenceId: '4d8b1571-d7a2-43c1-9017-6d7ccf1f913e',
-        //     status: 'ORDERED'
-        // }, {
-        //     id: 'b0b08344-01a2-469c-9fc0-bdbca6b6dc52',
-        //     emergency: true,
-        //     sourceFacilityName: 'CS Molumbo',
-        //     referenceId: 'b8218a82-e419-480f-b610-aa662db6e010',
-        //     status: 'SHIPPED'
-        // }];
+        vm.showDropdown = false;
         vm.notifications = [];
 
         vm.getNotifications = getNotifications;
+        vm.hideDropdown = hideDropdown;
         vm.getNotificationMsg = getNotificationMsg;
-        vm.navigate = navigate;
         vm.viewNotification = viewNotification;
+        vm.hideDropdown = hideDropdown;
 
         function getNotifications() {
             loadingModalService.open();
             siglusNotificationService.getNotifications()
                 .then(function(notifications) {
                     vm.notifications = notifications;
+                    vm.showDropdown = true;
                 })
                 .finally(function() {
                     loadingModalService.close();
                 });
+        }
+
+        function hideDropdown() {
+            vm.showDropdown = false;
         }
 
         function getNotificationMsg(notification) {

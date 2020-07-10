@@ -3,7 +3,7 @@
     <div class="openlmis-header-actions">
         <div class="openlmis-header-info">
             <!-- #330: users can get notifications of the work that they need to do -->
-            <siglus-notification class="header-notification" ng-if="!isOffline"/>
+            <siglus-notification ng-if="!isOffline"/>
             <!-- #330: ends here -->
             <a ui-sref="openlmis.home" ng-if="!isOffline">
                 <openlmis-system-notifications-indicator></openlmis-system-notifications-indicator>
