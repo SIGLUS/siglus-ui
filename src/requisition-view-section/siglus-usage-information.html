@@ -28,6 +28,8 @@
             <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
             <td ng-repeat-end ng-repeat="orderable in information.orderables | orderObjectBy : 'fullProductName'"
                 ng-if="vm.canEdit && !vm.isUserInput(lineItem)"
+                openlmis-invalid="{{orderable.$error}}"
+                ng-class="{'is-invalid': orderable.$error, 'has-popover': orderable.$error}"
             >
                 {{vm.getTotal(information.name, orderable.id)}}
             </td>
