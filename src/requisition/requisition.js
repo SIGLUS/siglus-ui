@@ -168,7 +168,27 @@
             if (!this.idempotencyKey) {
                 generateIdempotencyKey(this);
             }
+            // #387: the lost of validation highlight
+            clearErrors(this);
+            // #387: ends here
         }
+
+        // #387: the lost of validation highlight
+        function clearErrors(requisition) {
+            angular.forEach(requisition.kitUsageLineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.services), function(serviceName) {
+                    lineItem.services[serviceName].$error = undefined;
+                });
+            });
+            angular.forEach(requisition.usageInformationLineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.informations), function(information) {
+                    angular.forEach(Object.keys(lineItem.informations[information].orderables), function(orderableId) {
+                        lineItem.informations[information].orderables[orderableId].$error = undefined;
+                    });
+                });
+            });
+        }
+        // #387: ends here
 
         /**
          * @ngdoc method
