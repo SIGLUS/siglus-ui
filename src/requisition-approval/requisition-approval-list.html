@@ -11,7 +11,7 @@
         <!-- #368: The approver can filter the requisitions by facility -->
         <label for="facility">{{'requisitionApproval.facility' | message}}</label>
         <select id="facility"
-                ng-model="vm.facility"
+                ng-model="vm.selectedFacility"
                 ng-options="facility.name for facility in vm.facilities"></select>
         <!-- #368: ends here -->
         <label for=program>{{'requisitionApproval.program' | message}}</label>

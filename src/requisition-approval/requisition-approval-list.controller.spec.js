@@ -19,7 +19,9 @@ describe('RequisitionApprovalListController', function() {
     var vm, $state, alertService, $controller, requisitionsStorage, batchRequisitionsStorage;
 
     //variables
-    var requisitions, programs;
+    // #368: add facilities
+    var requisitions, programs, facilities;
+    // #368: ends here
 
     beforeEach(function() {
         module('requisition-approval');
@@ -86,6 +88,19 @@ describe('RequisitionApprovalListController', function() {
 
             }
         ];
+
+        // #368: The approver can filter the requisitions by facility
+        facilities = [{
+            id: '1',
+            name: 'first facility',
+            code: 'first code'
+        },
+        {
+            id: '2',
+            name: 'second facility',
+            code: 'second code'
+        }];
+        // #368: ends here
     });
 
     describe('$onInit', function() {
@@ -111,6 +126,20 @@ describe('RequisitionApprovalListController', function() {
 
             expect(vm.selectedProgram).toBe(programs[0]);
         });
+
+        // #368: The approver can filter the requisitions by facility
+        it('should expose facilities', function() {
+            vm.$onInit();
+
+            expect(vm.facilities).toBe(facilities);
+        });
+
+        it('should expose selected facility', function() {
+            vm.$onInit();
+
+            expect(vm.selectedFacility).toBe(facilities[0]);
+        });
+        // #368: ends here
 
         it('should expose offline flag', function() {
             vm.$onInit();
@@ -140,12 +169,15 @@ describe('RequisitionApprovalListController', function() {
             spyOn($state, 'go');
         });
 
-        it('should set program', function() {
+        // #368: The approver can filter the requisitions by facility
+        it('should set program and facility', function() {
+            vm.selectedFacility = facilities[0];
             vm.selectedProgram = programs[0];
 
             vm.search();
 
             expect($state.go).toHaveBeenCalledWith('openlmis.requisitions.approvalList', {
+                facility: vm.selectedFacility.id,
                 program: vm.selectedProgram.id,
                 offline: false
             }, {
@@ -154,18 +186,21 @@ describe('RequisitionApprovalListController', function() {
         });
 
         it('should set offline flag correctly', function() {
+            vm.selectedFacility = facilities[0];
             vm.selectedProgram = programs[0];
             vm.offline = true;
 
             vm.search();
 
             expect($state.go).toHaveBeenCalledWith('openlmis.requisitions.approvalList', {
+                facility: vm.selectedFacility.id,
                 program: vm.selectedProgram.id,
                 offline: true
             }, {
                 reload: true
             });
         });
+        // #368: ends here
 
         it('should reload state', function() {
             vm.search();
@@ -239,7 +274,8 @@ describe('RequisitionApprovalListController', function() {
             selectedProgram: programs[0],
             isBatchApproveScreenActive: true,
             // #368: The approver can filter the requisitions by facility
-            facilities: []
+            facilities: facilities,
+            selectedFacility: facilities[0]
             // #368: ends here
         });
         vm.$onInit();
