@@ -66,6 +66,13 @@ describe('SiglusNotificationController', function() {
             }]);
         });
 
+        it('should set showDropdown to true when get resolve response', function() {
+            vm.getNotifications();
+            $rootScope.$apply();
+
+            expect(vm.showDropdown).toBe(true);
+        });
+
         it('should close loading modal if API reject error', function() {
             siglusNotificationService.getNotifications.andReturn($q.reject());
             vm.getNotifications();
@@ -74,6 +81,16 @@ describe('SiglusNotificationController', function() {
             expect(loadingModalService.open).toHaveBeenCalled();
             expect(loadingModalService.close).toHaveBeenCalled();
             expect(vm.notifications).toEqual([]);
+        });
+    });
+
+    describe('hideDropdown', function() {
+
+        it('should set showDropdown to false', function() {
+            vm.showDropdown = true;
+            vm.hideDropdown();
+
+            expect(vm.showDropdown).toBe(false);
         });
     });
 

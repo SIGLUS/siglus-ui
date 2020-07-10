@@ -1,5 +1,12 @@
 <div class="siglus-notification">
-    <a bs-dropdown aria-haspopup="true" aria-expanded="false" ng-click="vm.getNotifications()">
+    <a bs-dropdown
+       aria-haspopup="true"
+       aria-expanded="false"
+       data-trigger="manual"
+       bs-show="vm.showDropdown"
+       bs-on-hide="vm.hideDropdown"
+       ng-click="vm.getNotifications()"
+    >
         <i class="fa fa-bell" aria-hidden="true"></i>
     </a>
     <ul class="dropdown-menu" role="menu">
