@@ -76,10 +76,7 @@
                     angular.forEach(Object.keys(lineItem.informations[information].orderables), function(orderableId) {
                         lineItem.informations[information].orderables[orderableId] = angular.merge({},
                             productsMap[orderableId],
-                            lineItem.informations[information].orderables[orderableId],
-                            {
-                                $error: undefined
-                            });
+                            lineItem.informations[information].orderables[orderableId]);
                     });
                 });
             });
