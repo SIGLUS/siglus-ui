@@ -29,15 +29,15 @@
         .module('requisition-approval')
         .controller('RequisitionApprovalListController', controller);
 
-    // #368: add facilities
+    // #368: add facilities, selectedFacility
     controller.$inject = [
         '$state', 'requisitions', '$stateParams', 'programs', 'selectedProgram', 'alertService', 'offlineService',
-        'localStorageFactory', 'isBatchApproveScreenActive', 'facilities'
+        'localStorageFactory', 'isBatchApproveScreenActive', 'facilities', 'selectedFacility'
     ];
     // #368: ends here
 
     function controller($state, requisitions, $stateParams, programs, selectedProgram, alertService, offlineService,
-                        localStorageFactory, isBatchApproveScreenActive, facilities) {
+                        localStorageFactory, isBatchApproveScreenActive, facilities, selectedFacility) {
 
         var vm = this,
             offlineRequisitions = localStorageFactory('requisitions');
@@ -71,6 +71,17 @@
          * List of facilities to which user supervised.
          */
         vm.facilities = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf requisition-approval.controller:RequisitionApprovalListController
+         * @name selectedFacility
+         * @type {Object}
+         *
+         * @description
+         * The facility selected by the user.
+         */
+        vm.selectedFacility = undefined;
         // #368: ends here
 
         /**
@@ -135,6 +146,7 @@
             vm.requisitions = requisitions;
             // #368: The approver can filter the requisitions by facility
             vm.facilities = facilities;
+            vm.selectedFacility = selectedFacility;
             // #368: ends here
             vm.programs = programs;
             vm.selectedProgram = selectedProgram;
@@ -153,6 +165,7 @@
         function search() {
             var stateParams = angular.copy($stateParams);
 
+            stateParams.facility = vm.selectedFacility ? vm.selectedFacility.id : null;
             stateParams.program = vm.selectedProgram ? vm.selectedProgram.id : null;
             stateParams.offline = vm.offline;
 

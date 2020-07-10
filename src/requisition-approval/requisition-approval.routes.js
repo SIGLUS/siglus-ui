@@ -29,7 +29,9 @@
             showInNavigation: true,
             isOffline: true,
             label: 'requisitionApproval.approve',
-            url: '/approvalList?page&size&program&offline&sort',
+            // #368: The approver can filter the requisitions by facility
+            url: '/approvalList?page&size&program&facility&offline&sort',
+            // #368: ends here
             params: {
                 sort: ['emergency,desc', 'authorizedDate,desc']
             },
@@ -42,7 +44,9 @@
             resolve: {
                 requisitions: function(paginationService, requisitionService, $stateParams, REQUISITION_STATUS) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
-                        if (stateParams.program) {
+                        // #368: The approver can filter the requisitions by facility
+                        if (stateParams.program || stateParams.facility) {
+                            // #368: ends here
                             if (stateParams.offline === 'true') {
                                 stateParams.requisitionStatus = [
                                     REQUISITION_STATUS.AUTHORIZED,
@@ -71,8 +75,15 @@
                     return featureFlagService.get(BATCH_APPROVE_SCREEN_FEATURE_FLAG);
                 },
                 // #368: The approver can filter the requisitions by facility
-                facilities: function() {
-                    return [];
+                facilities: function(requisitionApprovalService) {
+                    return requisitionApprovalService.getFacilities();
+                },
+                selectedFacility: function($stateParams, $filter, facilities) {
+                    if ($stateParams.facility) {
+                        return $filter('filter')(facilities, {
+                            id: $stateParams.facility
+                        })[0];
+                    }
                 }
                 // #368: ends here
             }
