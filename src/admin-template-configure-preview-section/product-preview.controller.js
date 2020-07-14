@@ -21,14 +21,14 @@
         .module('admin-template-configure-preview-section')
         .controller('ProductPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService'];
+    controller.$inject = ['columnUtils'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService) {
+    function controller(columnUtils) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.getColumnValue = getColumnValue;
+        vm.columnDisplayName = columnDisplayName;
         vm.isUserInput = columnUtils.isUserInput;
 
         function onInit() {
@@ -53,10 +53,10 @@
             return columns;
         }
 
-        function getColumnValue(column, lineItem) {
+        function columnDisplayName(column, lineItem) {
             var value = lineItem[column.name];
             if (!value) {
-                value = messageService.get(COLUMN_SOURCES.getLabel(column.source));
+                value = columnUtils.columnDisplayName(column);
             }
             return value;
         }

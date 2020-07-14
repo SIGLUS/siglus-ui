@@ -11,7 +11,7 @@
                 ng-if="serviceColumn.isDisplayed"
                 ng-repeat-end
             >
-                <span>{{vm.getColumnValue(serviceColumn, collectionColumn)}}</span>
+                <span>{{vm.columnDisplayName(serviceColumn, collectionColumn)}}</span>
             </td>
         </tr>
         </tbody>

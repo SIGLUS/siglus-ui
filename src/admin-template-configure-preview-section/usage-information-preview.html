@@ -3,7 +3,7 @@
         <tbody>
         <tr>
             <td colspan={{vm.monthOrYearColspan}}
-                class="grey-background"
+                class="grey"
             >{{'adminTemplateConfigurePreview.usageInformation.MonthOrYear' | message}}</td>
         </tr>
         <tr>
@@ -16,12 +16,12 @@
             >{{product}}</td>
         </tr>
         <tr ng-repeat="serviceColumn in vm.service.columns | orderBy : 'displayOrder'" ng-if="serviceColumn.isDisplayed">
-            <td ng-class="{'grey-background': vm.isTotal(serviceColumn)}">{{serviceColumn.label}}</td>
+            <td ng-class="{'grey': vm.isTotal(serviceColumn)}">{{serviceColumn.label}}</td>
             <td class="col-source"
                 ng-repeat="product in vm.products track by $index"
                 ng-class="{'user-input': vm.isUserInput(serviceColumn)}"
             >
-                <span>{{vm.getColumnValue(serviceColumn)}}</span>
+                <span>{{vm.columnDisplayName(serviceColumn)}}</span>
             </td>
         </tr>
         </tbody>
