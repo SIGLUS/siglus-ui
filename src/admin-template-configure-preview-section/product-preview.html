@@ -9,7 +9,7 @@
         <tr ng-repeat="lineItem in vm.items">
             <td ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
                 ng-class="{'col-source': !lineItem[column.name], 'user-input': vm.isUserInput(column)}">
-                <span>{{vm.getColumnValue(column, lineItem)}}</span>
+                <span>{{vm.columnDisplayName(column, lineItem)}}</span>
             </td>
         </tr>
         </tbody>

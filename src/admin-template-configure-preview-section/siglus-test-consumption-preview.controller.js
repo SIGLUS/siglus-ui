@@ -21,10 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('TestConsumptionPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService',
-        'SECTION_TYPES'];
+    controller.$inject = ['columnUtils', 'templateConfigureService', 'SECTION_TYPES'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService, SECTION_TYPES) {
+    function controller(columnUtils, templateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
@@ -35,7 +34,7 @@
         vm.testOutcomeDisplayColumns = undefined;
 
         vm.$onInit = onInit;
-        vm.getColumnValue = getColumnValue;
+        vm.columnDisplayName = columnUtils.columnDisplayName;
         vm.isUserInput = columnUtils.isUserInput;
         vm.isTotal = columnUtils.isTotal;
 
@@ -47,10 +46,6 @@
                 return column.isDisplayed;
             }).length;
             vm.testOutcomeDisplayColumns = getTestOutcomeDisplayColumns();
-        }
-
-        function getColumnValue(serviceColumn) {
-            return messageService.get(COLUMN_SOURCES.getLabel(serviceColumn.source));
         }
 
         function getTestOutcomeDisplayColumns() {

@@ -71,10 +71,10 @@ describe('UsageInformationPreviewController', function() {
         });
     });
 
-    describe('getColumnValue', function() {
+    describe('columnDisplayName', function() {
 
-        it('should called getLabel with user input when called getColumnValue', function() {
-            vm.getColumnValue(service);
+        it('should called getLabel with user input when called columnDisplayName', function() {
+            vm.columnDisplayName(service);
 
             expect(COLUMN_SOURCES.getLabel).toHaveBeenCalledWith(COLUMN_SOURCES.USER_INPUT);
             expect(messageService.get).toHaveBeenCalledWith('requisitionConstants.userInput');

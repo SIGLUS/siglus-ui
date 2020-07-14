@@ -80,7 +80,7 @@ describe('ProductPreviewController', function() {
         });
     });
 
-    describe('getColumnValue', function() {
+    describe('columnDisplayName', function() {
         beforeEach(function() {
             vm.$onInit();
         });
@@ -91,7 +91,7 @@ describe('ProductPreviewController', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(vm.getColumnValue(column, vm.items[0])).toBe('Product 1');
+            expect(vm.columnDisplayName(column, vm.items[0])).toBe('Product 1');
         });
 
         it('should return fullProductName if column name is orderable.fullProductName', function() {
@@ -100,7 +100,7 @@ describe('ProductPreviewController', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(vm.getColumnValue(column, vm.items[1])).toBe('Name 2');
+            expect(vm.columnDisplayName(column, vm.items[1])).toBe('Name 2');
         });
 
         it('should return formatted source if column name requestedQuantity', function() {
@@ -109,7 +109,7 @@ describe('ProductPreviewController', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(vm.getColumnValue(column, vm.items[0])).toBe('requisitionConstants.referenceData');
+            expect(vm.columnDisplayName(column, vm.items[0])).toBe('requisitionConstants.referenceData');
         });
     });
 });

@@ -2,7 +2,7 @@
   "adminProgramTemplate.consultationNumber": "Consultation number section",
   "adminProgramTemplate.kitUsage": "KIT usage data section",
   "adminProgramTemplate.product": "Product section",
-  "adminProgramTemplate.patientLineItem": "Patient line item section",
+  "adminProgramTemplate.patientLineItem": "Patient data section",
   "adminProgramTemplate.regimen": "Regimen section",
   "adminProgramTemplate.rapidTestConsumption": "Test consumption section",
   "adminProgramTemplate.usageInformation": "Usage information for each product section",

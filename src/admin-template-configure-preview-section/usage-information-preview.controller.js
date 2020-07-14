@@ -21,10 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('UsageInformationPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService', 'templateConfigureService',
-        'SECTION_TYPES'];
+    controller.$inject = ['columnUtils', 'templateConfigureService', 'SECTION_TYPES'];
 
-    function controller(columnUtils, COLUMN_SOURCES, messageService, templateConfigureService, SECTION_TYPES) {
+    function controller(columnUtils, templateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
@@ -34,7 +33,7 @@
         vm.monthOrYearColspan = undefined;
 
         vm.$onInit = onInit;
-        vm.getColumnValue = getColumnValue;
+        vm.columnDisplayName = columnUtils.columnDisplayName;
         vm.isUserInput = columnUtils.isUserInput;
         vm.isTotal = columnUtils.isTotal;
 
@@ -43,10 +42,6 @@
             vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             vm.products = getProducts(vm.information);
             vm.monthOrYearColspan = vm.products.length + 1;
-        }
-
-        function getColumnValue(serviceColumn) {
-            return messageService.get(COLUMN_SOURCES.getLabel(serviceColumn.source));
         }
 
         function getProducts(information) {

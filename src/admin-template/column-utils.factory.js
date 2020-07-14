@@ -28,13 +28,14 @@
         .module('admin-template')
         .factory('columnUtils', columnUtils);
 
-    columnUtils.$inject = ['COLUMN_SOURCES', 'SERVICE_TYPES'];
+    columnUtils.$inject = ['COLUMN_SOURCES', 'SERVICE_TYPES', 'messageService'];
 
-    function columnUtils(COLUMN_SOURCES, SERVICE_TYPES) {
+    function columnUtils(COLUMN_SOURCES, SERVICE_TYPES, messageService) {
         return {
             isUserInput: isUserInput,
             isStockCards: isStockCards,
-            isTotal: isTotal
+            isTotal: isTotal,
+            columnDisplayName: columnDisplayName
         };
 
         /**
@@ -80,6 +81,21 @@
          */
         function isTotal(column) {
             return column.name === SERVICE_TYPES.TOTAL;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
+         * @name columnDisplayName
+         *
+         * @description
+         * Get column display name.
+         *
+         * @param {Object} column
+         * @return {String} column display name
+         */
+        function columnDisplayName(column) {
+            return messageService.get(COLUMN_SOURCES.getLabel(column.source));
         }
     }
 

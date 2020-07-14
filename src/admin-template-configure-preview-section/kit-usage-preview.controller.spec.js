@@ -77,11 +77,11 @@ describe('KitUsagePreviewController', function() {
         });
     });
 
-    describe('getColumnValue', function() {
+    describe('columnDisplayName', function() {
 
         it('getLabel should be called with user input if service name if HF', function() {
             service.name = 'HF';
-            vm.getColumnValue(service, collection);
+            vm.columnDisplayName(service, collection);
 
             expect(COLUMN_SOURCES.getLabel).toHaveBeenCalledWith(COLUMN_SOURCES.USER_INPUT);
             expect(messageService.get).toHaveBeenCalledWith('requisitionConstants.userInput');

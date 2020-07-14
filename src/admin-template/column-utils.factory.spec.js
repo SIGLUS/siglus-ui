@@ -78,4 +78,14 @@ describe('columnUtils', function() {
             expect(columnUtils.isTotal(column)).toBe(false);
         });
     });
+
+    describe('columnDisplayName', function() {
+        it('should return formatted source name', function() {
+            var column = {
+                source: COLUMN_SOURCES.REFERENCE_DATA
+            };
+
+            expect(columnUtils.columnDisplayName(column)).toBe('requisitionConstants.referenceData');
+        });
+    });
 });

@@ -4,12 +4,12 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableKitUsage"/>{{'adminProgramTemplate.kitUsage' | message}}
-        <a class="" ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>
+        <a ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <kit-usage-preview sections="vm.template.kitUsage" ng-show="vm.template.extension.enableKitUsage"/>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableProduct"/>{{'adminProgramTemplate.product' | message}}
-        <a class="" ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.product">{{'adminProgramTemplate.setting' | message}}</a>
+        <a ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.product">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <product-preview columns-map="vm.template.columnsMap" ng-show="vm.template.extension.enableProduct"/>
     <div class="requisition-template-module-container">
@@ -17,15 +17,17 @@
     </div>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableUsageInformation"/>{{'adminProgramTemplate.usageInformation' | message}}
-        <a class="" ng-show="vm.template.extension.enableUsageInformation" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.usageInformation">{{'adminProgramTemplate.setting' | message}}</a>
+        <a ng-show="vm.template.extension.enableUsageInformation" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.usageInformation">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <usage-information-preview sections="vm.template.usageInformation" ng-show="vm.template.extension.enableUsageInformation"/>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enablePatientLineItem"/>{{'adminProgramTemplate.patientLineItem' | message}}
+        <a ng-show="vm.template.extension.enablePatientLineItem">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
+    <siglus-patient-preview sections="[]" ng-show="vm.template.extension.enablePatientLineItem"></siglus-patient-preview>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableRapidTestConsumption"/>{{'adminProgramTemplate.rapidTestConsumption' | message}}
-        <a class="" ng-show="vm.template.extension.enableRapidTestConsumption" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption">{{'adminProgramTemplate.setting' | message}}</a>
+        <a ng-show="vm.template.extension.enableRapidTestConsumption" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <test-consumption-preview sections="vm.template.testConsumption" ng-show="vm.template.extension.enableRapidTestConsumption"/>
 </div>
