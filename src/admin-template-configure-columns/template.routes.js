@@ -26,7 +26,7 @@
     function routes($stateProvider, REQUISITION_RIGHTS) {
         // #173: product sections for template configuration
         $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.product', {
-            label: 'adminProgramTemplate.templateColumns.product',
+            label: 'adminProgramTemplate.product',
             url: '/product',
             // #173: ends here
             templateUrl: 'admin-template-configure-columns/template.html',

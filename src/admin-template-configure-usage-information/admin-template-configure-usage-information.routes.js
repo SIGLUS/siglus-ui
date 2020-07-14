@@ -25,7 +25,7 @@
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
         $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.usageInformation', {
-            label: 'adminProgramTemplate.templateColumns.usageInformation',
+            label: 'adminProgramTemplate.usageInformation',
             url: '/usageInformation',
             templateUrl: 'admin-template-configure-usage-information/usage-information-template.html',
             controller: 'UsageInformationTemplateController',
