@@ -35,7 +35,8 @@
             isUserInput: isUserInput,
             isStockCards: isStockCards,
             isTotal: isTotal,
-            columnDisplayName: columnDisplayName
+            columnDisplayName: columnDisplayName,
+            isAPES: isAPES
         };
 
         /**
@@ -96,6 +97,21 @@
          */
         function columnDisplayName(column) {
             return messageService.get(COLUMN_SOURCES.getLabel(column.source));
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
+         * @name isAPES
+         *
+         * @description
+         * If column name is APES.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column name is APES
+         */
+        function isAPES(column) {
+            return column.name === SERVICE_TYPES.APES;
         }
     }
 

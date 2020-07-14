@@ -31,7 +31,8 @@
     function type() {
         return {
             HF: 'HF',
-            TOTAL: 'total'
+            TOTAL: 'total',
+            APES: 'APES'
         };
     }
 })();

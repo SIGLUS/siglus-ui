@@ -88,4 +88,22 @@ describe('columnUtils', function() {
             expect(columnUtils.columnDisplayName(column)).toBe('requisitionConstants.referenceData');
         });
     });
+
+    describe('isAPES', function() {
+        it('should return true if column name is APES', function() {
+            var column = {
+                name: 'APES'
+            };
+
+            expect(columnUtils.isAPES(column)).toBe(true);
+        });
+
+        it('should return false if column name is HF', function() {
+            var column = {
+                name: 'HF'
+            };
+
+            expect(columnUtils.isAPES(column)).toBe(false);
+        });
+    });
 });
