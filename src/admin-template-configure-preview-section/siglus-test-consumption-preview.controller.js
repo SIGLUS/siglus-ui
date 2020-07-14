@@ -37,6 +37,7 @@
         vm.columnDisplayName = columnUtils.columnDisplayName;
         vm.isUserInput = columnUtils.isUserInput;
         vm.isTotal = columnUtils.isTotal;
+        vm.isAPES = columnUtils.isAPES;
 
         function onInit() {
             vm.testProject = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
