@@ -61,6 +61,9 @@
         // #352: can add skipped products
         vm.siglusAddProducts = siglusAddProducts;
         // #352: ends here
+        // #385: alert when cursor leaves the input
+        vm.validateConsultationNumber = validateConsultationNumber;
+        // #385: ends here
 
         var isInternalApproval = homeFacility.id === requisition.facility.id;
 
@@ -171,6 +174,18 @@
             populateDefaultValue();
             // SIGLUS-REFACTOR: ends here
         }
+
+        // #385: alert when cursor leaves the input
+        function validateConsultationNumber() {
+            var lineItemField = {
+                value: vm.requisition.extraData.consultationNumber
+            };
+            vm.consultationNumberMessage = '';
+            if (!requisitionValidator.validateSiglusLineItemField(lineItemField)) {
+                vm.consultationNumberMessage = lineItemField.$error;
+            }
+        }
+        // #385: ends here
 
         // SIGLUS-REFACTOR: starts here
         function populateDefaultValue() {
