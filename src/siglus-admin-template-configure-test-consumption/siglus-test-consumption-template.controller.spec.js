@@ -90,33 +90,13 @@ describe('TestConsumptionController', function() {
         });
     });
 
-    describe('addTestProjectColumn', function() {
+    describe('addColumn', function() {
 
         it('should add a new column and its column source is user input', function() {
-            vm.addTestProjectColumn();
+            vm.addColumn(vm.testProject);
 
             expect(vm.testProject.columns.length).toEqual(1);
             expect(vm.testProject.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
-        });
-    });
-
-    describe('addTestOutcomeColumn', function() {
-
-        it('should add a new column and its column source is user input', function() {
-            vm.addTestOutcomeColumn();
-
-            expect(vm.testOutcome.columns.length).toEqual(1);
-            expect(vm.testOutcome.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
-        });
-    });
-
-    describe('addServiceColumn', function() {
-
-        it('should add a new column and its column source is user input', function() {
-            vm.addServiceColumn();
-
-            expect(vm.service.columns.length).toEqual(1);
-            expect(vm.service.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
         });
     });
 });

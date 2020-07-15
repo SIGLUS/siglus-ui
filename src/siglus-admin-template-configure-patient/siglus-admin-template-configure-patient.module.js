@@ -17,19 +17,19 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-preview-section')
-        .controller('siglusPatientPreviewController', controller);
-
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService'];
-
-    function controller(columnUtils) {
-
-        var vm = this;
-
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = columnUtils.isTotal;
-        vm.columnDisplayName = columnUtils.columnDisplayName;
-    }
+    /**
+     * @module siglus-admin-template-configure-patient
+     *
+     * @description
+     * Provides base siglus-admin-template-configure-patient state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-admin-template-configure-patient', [
+        'ui.router',
+        'openlmis-rights',
+        'requisition-constants',
+        'admin-template-configure-section',
+        'admin-template-configure-preview-section'
+    ]);
 
 })();

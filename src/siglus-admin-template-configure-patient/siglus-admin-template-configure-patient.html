@@ -1,0 +1,10 @@
+<div class="kit-usage-template" ng-if="vm.template.kitUsage.length">
+    <div class="sub-heading">
+        <h3>{{'patinet-title' | message}}</h3>
+    </div>
+    <template-configure-section
+            ng-repeat="section in vm.template.patient"
+            section="section"
+            on-add-column="vm.addColumn"
+    />
+</div>

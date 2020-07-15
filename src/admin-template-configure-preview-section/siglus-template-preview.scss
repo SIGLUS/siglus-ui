@@ -1,40 +1,45 @@
-[class*="-preview"].openlmis-table-container .openlmis-table {
-    td {
-        min-width: 100px;
-        padding: 16px 8px;
-        &.col-source {
-            color: #979797;
-        }
-        &.user-input {
-            text-align: center;
-        }
-        &.user-input span {
-            position: relative;
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: 0;
-                left: 0;
-                bottom: 0;
-                margin: -4px -8px;
-                border: 1px solid #c8c8c8;
-                border-radius: 5px;
+[class*="-preview"].openlmis-table-container {
+    .openlmis-table {
+        td {
+            min-width: 100px;
+            padding: 16px 8px;
+            &.col-source {
+                color: #979797;
+            }
+            &.user-input {
+                text-align: center;
+            }
+            &.user-input span {
+                position: relative;
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    left: 0;
+                    bottom: 0;
+                    margin: -4px -8px;
+                    border: 1px solid #c8c8c8;
+                    border-radius: 5px;
+                }
             }
         }
+
+        .row-span-border {
+            border-left-width: 1px;
+        }
+
+        .bold-label {
+            font-weight: bold;
+        }
+
+        .grey-background {
+            background-color: #f0f0f0;
+        }
     }
 
-    .row-span-border {
-        border-left-width: 1px;
-    }
-
-    .bold-label {
-        font-weight: bold;
-    }
-
-    .grey {
-        background-color: #f0f0f0;
-        color: #222222
+    .openlmis-table + .openlmis-table {
+        margin-top: -2px;
     }
 }
 
