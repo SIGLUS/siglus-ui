@@ -115,6 +115,27 @@
                     return alertService.error('shipmentView.allLineItemsSkipped');
                 }
                 // #287: ends here
+                if (isPartialFulfilled(shipment)) {
+                    return confirmService.confirm(
+                        'shipmentView.confirmPartialFulfilled.question',
+                        'shipmentView.confirmPartialFulfilled.createSuborder',
+                        'shipmentView.confirmPartialFulfilled.cancel',
+                        'shipmentView.confirmPartialFulfilled.title'
+                    )
+                        .then(function() {
+                            loadingModalService.open();
+
+                            return originalConfirm.apply(shipment)
+                                .then(function() {
+                                    notificationService.success('shipmentView.shipmentHasBeenConfirmed');
+                                    stateTrackerService.goToPreviousState('openlmis.orders.view');
+                                })
+                                .catch(function() {
+                                    notificationService.error('shipmentView.failedToConfirmShipment');
+                                    loadingModalService.close();
+                                });
+                        });
+                }
                 return confirmService.confirm(
                     'shipmentView.confirmShipment.question',
                     'shipmentView.confirmShipment'
@@ -147,6 +168,24 @@
             return allSkipped;
         }
         // #287: ends here
+
+        function isPartialFulfilled(shipment) {
+            var partialLineItemQuantity = 0;
+            shipment.order.orderLineItems.forEach(function(orderLineItem) {
+                if (!orderLineItem.added && !orderLineItem.skipped) {
+                    var totalQuantityShipped = 0;
+                    shipment.lineItems.forEach(function(lineItem) {
+                        if (lineItem.orderable.id === orderLineItem.orderable.id) {
+                            totalQuantityShipped = totalQuantityShipped + lineItem.quantityShipped;
+                        }
+                    });
+                    if (totalQuantityShipped + orderLineItem.partialFulfilledQuantity < orderLineItem.orderedQuantity) {
+                        partialLineItemQuantity = partialLineItemQuantity + 1;
+                    }
+                }
+            });
+            return partialLineItemQuantity;
+        }
 
         function decorateDelete(originalDelete) {
             return function() {

@@ -92,8 +92,11 @@
                         isMainGroup: true,
                         netContent: orderLineItem.orderable.netContent,
                         // #287: Warehouse clerk can skip some products in order
-                        skipped: orderLineItem.skipped
+                        skipped: orderLineItem.skipped,
                         // #287: ends here
+                        // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                        partialFulfilledQuantity: orderLineItem.partialFulfilledQuantity
+                        // #400: ends here
                     });
                 });
 
