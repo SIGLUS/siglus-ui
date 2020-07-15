@@ -65,6 +65,9 @@ describe('ViewTabController', function() {
         this.requisition.extraData = {};
         this.homeFacility = {};
         // SIGLUS-REFACTOR: ends here
+        // #375: create requisition with test consumption section
+        this.program = {};
+        // #375: ends here
 
         this.initController = initController;
 
@@ -159,6 +162,14 @@ describe('ViewTabController', function() {
 
             expect(this.vm.paginationId).toEqual('fullSupplyList');
         });
+
+        // #375: create requisition with test consumption section
+        it('should bind program property to vm', function() {
+            this.initController();
+
+            expect(this.vm.program).toEqual(this.program);
+        });
+        // #375: ends here
 
         describe('Add (Full Supply) Products button', function() {
 
@@ -914,8 +925,11 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: starts here
             requisitionService: this.requisitionService,
             loadingModalService: this.loadingModalService,
-            homeFacility: this.homeFacility
+            homeFacility: this.homeFacility,
             // SIGLUS-REFACTOR: ends here
+            // #375: create requisition with test consumption section
+            program: this.program
+            // #375: ends here
         });
         this.vm.$onInit();
     }

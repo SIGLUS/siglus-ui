@@ -18,15 +18,17 @@
     'use strict';
 
     angular
-        .module('requisition-report-table')
-        .component('rapidTestProductReport', {
-            bindings: {
-                requisition: '=',
-                readOnly: '@'
-            },
-            controller: 'RapidTestProductController',
-            controllerAs: 'vm',
-            templateUrl: 'requisition-report-table/rapid-test-product.html'
-        });
+        .module('requisition-view-section')
+        .controller('SiglusTestConsumptionController', controller);
 
+    controller.$inject = [];
+
+    function controller() {
+        var vm = this;
+
+        vm.$onInit = onInit;
+
+        function onInit() {
+        }
+    }
 })();

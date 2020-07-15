@@ -18,15 +18,16 @@
     'use strict';
 
     angular
-        .module('requisition-report-table')
-        .component('rapidTestReport', {
+        .module('requisition-view-section')
+        .component('siglusTestConsumption', {
             bindings: {
-                requisition: '=',
-                readOnly: '@'
+                program: '='
+                // requisition: '=',
+                // readOnly: '@'
             },
-            controller: 'RapidTestReportController',
+            controller: 'SiglusTestConsumptionController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-report-table/rapid-test-report.html'
+            templateUrl: 'requisition-view-section/siglus-test-consumption.html'
         });
 
 })();

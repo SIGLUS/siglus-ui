@@ -35,7 +35,7 @@
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility',
-        'archivedProductService'
+        'archivedProductService', 'program'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +44,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility,
-                               archivedProductService) {
+                               archivedProductService, program) {
 
         var vm = this;
 
@@ -170,6 +170,9 @@
             vm.noProductsMessage = getNoProductsMessage();
             vm.canApproveAndReject = canApproveAndReject;
             vm.paginationId = fullSupply ? 'fullSupplyList' : 'nonFullSupplyList';
+            // #375: create requisition with test consumption section
+            vm.program = program;
+            // #375: ends here
             // SIGLUS-REFACTOR: starts here
             populateDefaultValue();
             // SIGLUS-REFACTOR: ends here
