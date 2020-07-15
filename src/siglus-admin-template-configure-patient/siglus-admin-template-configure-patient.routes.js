@@ -18,18 +18,19 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
-        .controller('siglusPatientPreviewController', controller);
+        .module('siglus-admin-template-configure-patient')
+        .config(routes);
 
-    controller.$inject = ['columnUtils', 'COLUMN_SOURCES', 'messageService'];
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
 
-    function controller(columnUtils) {
-
-        var vm = this;
-
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = columnUtils.isTotal;
-        vm.columnDisplayName = columnUtils.columnDisplayName;
+    function routes($stateProvider, REQUISITION_RIGHTS) {
+        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.patient', {
+            label: 'adminProgramTemplate.patientLineItem',
+            url: '/patient',
+            templateUrl: 'siglus-admin-template-configure-patient/siglus-admin-template-configure-patient.html',
+            controller: 'SiglusPatientTemplateController',
+            controllerAs: 'vm',
+            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
+        });
     }
-
 })();

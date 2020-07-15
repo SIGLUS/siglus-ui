@@ -2,12 +2,12 @@
     <table ng-repeat="section in vm.sections" class="openlmis-table">
         <thead>
         <tr>
-            <th colspan="{{section.columns.length + 1}}">{{section.label}}</th>
+            <th colspan="2">{{section.label}}</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="column in section.columns | orderBy : 'displayOrder'">
-            <td ng-class="{'grey': vm.isTotal(column)}">{{column.label}}</td>
+        <tr ng-repeat="column in section.columns | orderBy : 'displayOrder'" ng-if="column.isDisplayed">
+            <td ng-class="{'grey-background': vm.isTotal(column)}">{{column.label}}</td>
             <td class="col-source"
                 ng-class="{'user-input': vm.isUserInput(column)}"
             >

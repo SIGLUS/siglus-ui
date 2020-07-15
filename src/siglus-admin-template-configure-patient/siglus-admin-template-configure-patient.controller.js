@@ -17,38 +17,27 @@
 
     'use strict';
 
-    /**
-     * @ngdoc controller
-     * @name admin-template-configure-kit-usage.controller:KitUsageTemplateController
-     *
-     * @description
-     * Controller for template view page.
-     */
     angular
-        .module('siglus-admin-template-configure-test-consumption')
-        .controller('testConsumptionController', testConsumptionController);
+        .module('siglus-admin-template-configure-patient')
+        .controller('SiglusPatientTemplateController', controller);
 
-    testConsumptionController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template',
-        'SECTION_TYPES'];
+    controller.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template'];
 
-    function testConsumptionController(COLUMN_SOURCES, templateConfigureService, template, SECTION_TYPES) {
+    function controller(COLUMN_SOURCES, templateConfigureService, template) {
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.addColumn = addColumn;
 
         vm.template = undefined;
 
         function onInit() {
             vm.template = template;
-            vm.testProject = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.PROJECT);
-            vm.testOutcome = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.OUTCOME);
-            vm.service = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.SERVICE);
-            vm.addColumn = addColumn;
             enableCurrentSection();
         }
 
         function enableCurrentSection() {
-            vm.template.extension.enableRapidTestConsumption = true;
+            vm.template.extension.enablePatient = true;
         }
 
         function addColumn(section) {

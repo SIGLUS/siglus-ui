@@ -21,10 +21,10 @@
     </div>
     <usage-information-preview sections="vm.template.usageInformation" ng-show="vm.template.extension.enableUsageInformation"/>
     <div class="requisition-template-module-container">
-        <input type="checkbox" ng-model="vm.template.extension.enablePatientLineItem"/>{{'adminProgramTemplate.patientLineItem' | message}}
-        <a ng-show="vm.template.extension.enablePatientLineItem">{{'adminProgramTemplate.setting' | message}}</a>
+        <input type="checkbox" ng-model="vm.template.extension.enablePatient"/>{{'adminProgramTemplate.patientLineItem' | message}}
+        <a ng-show="vm.template.extension.enablePatient" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.patient">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
-    <siglus-patient-preview sections="[]" ng-show="vm.template.extension.enablePatientLineItem"></siglus-patient-preview>
+    <siglus-patient-preview sections="vm.template.patient" ng-show="vm.template.extension.enablePatient"></siglus-patient-preview>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableRapidTestConsumption"/>{{'adminProgramTemplate.rapidTestConsumption' | message}}
         <a ng-show="vm.template.extension.enableRapidTestConsumption" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption">{{'adminProgramTemplate.setting' | message}}</a>

@@ -122,7 +122,7 @@
 
         function addColumn() {
             if (!overMaxColumnsLength()) {
-                vm.onAddColumn();
+                vm.onAddColumn(vm.section);
                 var addedColumn = _.last(vm.section.columns);
                 setDefaultName(addedColumn);
                 updateLabel(addedColumn);
