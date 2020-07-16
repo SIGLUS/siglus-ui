@@ -3,5 +3,8 @@
     "adminTemplate.name.placeholder": "Please input the name for this field",
     "adminTemplate.definition.placeholder": "An introduction to notify user when user hover on the label",
     "adminTemplate.removeGroup": "Remove Group",
-    "adminTemplate.group.placeholder": "Please input the name of this group"
+    "adminTemplate.group.placeholder": "Please input the name of this group",
+    "adminProgramTemplate.columnDefinitionEmpty": "Column definition cannot be empty!",
+    "adminProgramTemplate.nameTooLong": "Group name is too long!",
+    "adminProgramTemplate.nameEmpty": "Group name cannot be empty!"
 }

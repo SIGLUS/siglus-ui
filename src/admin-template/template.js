@@ -28,9 +28,10 @@
         .module('admin-template')
         .factory('Template', Template);
 
-    Template.$inject = ['$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn'];
+    Template.$inject = ['$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn',
+        'TEMPLATE_SECTIONS'];
 
-    function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn) {
+    function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn, TEMPLATE_SECTIONS) {
         Template.prototype.moveColumn = moveColumn;
         Template.prototype.findCircularCalculatedDependencies = findCircularCalculatedDependencies;
         Template.prototype.changePopulateStockOnHandFromStockCards = changePopulateStockOnHandFromStockCards;
@@ -72,19 +73,14 @@
             // #248: ends here
             // #248, #247, #341: kit usage section, usage information section, test consumption section configure
             var self = this;
-            var siglusTemplateExtension = [
-                'kitUsage',
-                'usageInformation',
-                'testConsumption'
-            ];
-            angular.forEach(siglusTemplateExtension, function(extension) {
+            angular.forEach(TEMPLATE_SECTIONS, function(extension) {
                 self[extension] = _.forEach(template[extension], function(section) {
                     section.columns = _.sortBy(section.columns, 'displayOrder');
                 });
             });
             // #248, #247, #341: ends here
             // #398: configure the patient data section in template
-            this.patient = _.sortBy(this.patient, 'displayOrder');
+            this.patient = _.sortBy(template.patient, 'displayOrder');
             // #398: ends here
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);

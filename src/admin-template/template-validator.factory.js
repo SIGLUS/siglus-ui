@@ -32,12 +32,12 @@
         'UTF8_REGEX', 'MAX_COLUMN_DESCRIPTION_LENGTH', 'TEMPLATE_COLUMNS', 'COLUMN_SOURCES',
         'messageService',
         // SIGLUS-REFACTOR: starts here
-        'notificationService', 'columnUtils'
+        'notificationService', 'columnUtils', 'TEMPLATE_SECTIONS'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function factory(UTF8_REGEX, MAX_COLUMN_DESCRIPTION_LENGTH, TEMPLATE_COLUMNS,
-                     COLUMN_SOURCES, messageService, notificationService, columnUtils) {
+                     COLUMN_SOURCES, messageService, notificationService, columnUtils, TEMPLATE_SECTIONS) {
 
         var columnValidations = {
                 averageConsumption: validateAverageConsumption,
@@ -55,8 +55,11 @@
                 getColumnError: getColumnError,
                 isTemplateValid: isTemplateValid,
                 // #248: kit usage section configure
-                getSiglusColumnError: getSiglusColumnError
+                getSiglusColumnError: getSiglusColumnError,
                 // #248: ends here
+                // #398: configure the patient data section in template
+                getSiglusSectionError: getSiglusSectionError
+                // #398: ends here
             };
 
         return validator;
@@ -86,13 +89,13 @@
                 notificationService.error('adminProgramTemplate.template.invalidOptions');
             }
             // SIGLUS-REFACTOR: ends here
+            // #398: configure the patient data section in template
+            angular.forEach(template.patient, function(section) {
+                isValid = isValid && !validator.getSiglusSectionError(section);
+            });
+            // #398: ends here
             // #248, #247, #341: kit usage section, usage information section, test consumption section configure
-            var siglusTemplateExtension = [
-                'kitUsage',
-                'usageInformation',
-                'testConsumption'
-            ];
-            angular.forEach(siglusTemplateExtension, function(extension) {
+            angular.forEach(TEMPLATE_SECTIONS, function(extension) {
                 angular.forEach(template[extension], function(section) {
                     angular.forEach(section.columns, function(column) {
                         isValid = isValid && !validator.getSiglusColumnError(column);
@@ -151,6 +154,18 @@
             return error;
         }
         // #248: ends here
+
+        // #398: configure the patient data section in template
+        function getSiglusSectionError(section) {
+            if ((section.label && section.label.length > MAX_COLUMN_DESCRIPTION_LENGTH) ||
+                section.label === undefined) {
+                return messageService.get('adminProgramTemplate.nameTooLong');
+            }
+            if (isEmpty(section.label)) {
+                return messageService.get('adminProgramTemplate.nameEmpty');
+            }
+        }
+        // #398: ends here
 
         // #147: starts here
         function validateSuggestedQuantity(column, template) {
