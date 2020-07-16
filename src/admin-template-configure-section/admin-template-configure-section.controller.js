@@ -44,6 +44,7 @@
         vm.sourceDisplayName = sourceDisplayName;
         vm.canAssignTag = canAssignTag;
         vm.getSiglusColumnError = templateValidator.getSiglusColumnError;
+        vm.getSiglusSectionError = templateValidator.getSiglusSectionError;
         vm.refreshAvailableTags = refreshAvailableTags;
         vm.sourceChanged = sourceChanged;
         vm.addColumn = addColumn;

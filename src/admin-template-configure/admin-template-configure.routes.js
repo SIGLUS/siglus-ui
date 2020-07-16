@@ -39,72 +39,7 @@
             },
             resolve: {
                 template: function(requisitionTemplateService, $stateParams) {
-                    return requisitionTemplateService.get($stateParams.id)
-                        .then(function(response) {
-                            response.patient = [{
-                                id: 'f5b72978-120e-4968-be5e-355fa49b3017',
-                                name: 'patientType',
-                                label: 'Type of Patient',
-                                displayOrder: 0,
-                                isDefault: true,
-                                columns: [ {
-                                    name: 'new',
-                                    label: 'New',
-                                    indicator: 'PD',
-                                    displayOrder: 0,
-                                    isDisplayed: true,
-                                    option: null,
-                                    definition: 'record the number of new patients',
-                                    tag: null,
-                                    columnDefinition: {
-                                        id: '23c0ecc1-f58e-41e4-99f2-241a3f8360d6',
-                                        name: 'new',
-                                        sources: [ 'USER_INPUT'],
-                                        label: 'New',
-                                        indicator: 'PD',
-                                        mandatory: false,
-                                        isDisplayRequired: true,
-                                        canBeChangedByUser: false,
-                                        supportsTag: false,
-                                        definition: 'record the number of new patients',
-                                        canChangeOrder: false,
-                                        columnType: 'NUMERIC',
-                                        displayOrder: 0,
-                                        options: [ ]
-                                    },
-                                    source: 'USER_INPUT',
-                                    id: '6e771f88-ad8a-4c23-be62-c2f2c3a92b57'
-                                }, {
-                                    name: 'total',
-                                    label: 'Total',
-                                    indicator: 'PD',
-                                    displayOrder: 1,
-                                    isDisplayed: true,
-                                    option: null,
-                                    definition: 'record the total number of this group',
-                                    tag: null,
-                                    columnDefinition: {
-                                        id: '86ca8cea-94c2-4d50-8dc8-ec5f6ff60ec4',
-                                        name: 'total',
-                                        sources: [ 'USER_INPUT', 'CALCULATED' ],
-                                        label: 'Total',
-                                        indicator: 'PD',
-                                        mandatory: false,
-                                        isDisplayRequired: false,
-                                        canBeChangedByUser: false,
-                                        supportsTag: false,
-                                        definition: 'record the total number of this group',
-                                        canChangeOrder: true,
-                                        columnType: 'NUMERIC',
-                                        displayOrder: 1,
-                                        options: [ ]
-                                    },
-                                    source: 'CALCULATED',
-                                    id: 'e6e5e3f1-8980-4f38-9a5a-a72f159d5b4b'
-                                } ]
-                            }];
-                            return response;
-                        });
+                    return requisitionTemplateService.get($stateParams.id);
                 },
                 program: function(programService, template) {
                     return programService.get(template.program.id);

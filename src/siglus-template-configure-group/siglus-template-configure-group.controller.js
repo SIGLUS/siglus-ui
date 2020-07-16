@@ -59,9 +59,10 @@
             angular.forEach(defaultSection.columns, function(column) {
                 if (column.columnDefinition.id) {
                     vm.defaultColums.push(angular.merge({}, column, {
+                        id: undefined,
                         name: column.columnDefinition.name,
                         definition: column.columnDefinition.definition,
-                        source: columnUtils.isTotal(column) ? COLUMN_SOURCES.CALCULATED : column.source
+                        source: columnUtils.isTotal(column) ? COLUMN_SOURCES.USER_INPUT : column.source
                     }));
                 }
             });
