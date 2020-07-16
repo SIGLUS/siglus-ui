@@ -21,14 +21,59 @@
         .module('requisition-view-section')
         .controller('SiglusTestConsumptionController', controller);
 
-    controller.$inject = [];
+    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService'];
 
-    function controller() {
+    function controller(columnUtils, SECTION_TYPES, templateConfigureService) {
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.isTotal = columnUtils.isTotal;
+        vm.isAPES = columnUtils.isAPES;
+        vm.isUserInput = columnUtils.isUserInput;
+        vm.testProject = undefined;
+        vm.testOutcome = undefined;
+        vm.service = undefined;
+        vm.programColspan = undefined;
 
         function onInit() {
+            vm.testProject = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
+            vm.testOutcome = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
+            vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.testProjectColspan = getTestProjectColspan();
+            vm.programColspan = getProgramColspan();
+            extendLineItems();
+        }
+
+        function extendLineItems() {
+            var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(vm.service);
+            var testProjectColumnsMap = templateConfigureService.getSectionColumnsMap(vm.testProject);
+            var testOutcomeColumnsMap = templateConfigureService.getSectionColumnsMap(vm.testOutcome);
+            angular.forEach(vm.lineItems, function(lineItem) {
+                _.extend(lineItem, serviceColumnsMap[lineItem.service]);
+                angular.forEach(Object.keys(lineItem.projects), function(project) {
+                    lineItem.projects[project] = angular.merge({},
+                        testProjectColumnsMap[project], lineItem.projects[project]);
+                    angular.forEach(Object.keys(lineItem.projects[project].outcomes), function(outcome) {
+                        lineItem.projects[project].outcomes[outcome] = angular.merge({},
+                            testOutcomeColumnsMap[outcome],
+                            lineItem.projects[project].outcomes[outcome]);
+                    });
+                });
+            });
+        }
+
+        function getTestProjectColspan() {
+            var displayedTestOutcomeColumns = vm.testOutcome.columns.filter(function(column) {
+                return column.isDisplayed;
+            });
+            return displayedTestOutcomeColumns.length;
+        }
+
+        function getProgramColspan() {
+            var displayedTestProjectColumns = vm.testProject.columns.filter(function(column) {
+                return column.isDisplayed;
+            });
+            return displayedTestProjectColumns.length * getTestProjectColspan() + 1;
         }
     }
 })();

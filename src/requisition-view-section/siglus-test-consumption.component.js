@@ -21,9 +21,10 @@
         .module('requisition-view-section')
         .component('siglusTestConsumption', {
             bindings: {
-                program: '='
-                // requisition: '=',
-                // readOnly: '@'
+                program: '<',
+                sections: '<',
+                lineItems: '<',
+                canEdit: '<'
             },
             controller: 'SiglusTestConsumptionController',
             controllerAs: 'vm',

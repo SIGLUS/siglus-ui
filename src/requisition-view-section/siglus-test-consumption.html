@@ -2,11 +2,61 @@
     <table class="openlmis-table">
         <tbody>
             <tr>
-<!--                <td colspan="{{vm.testOutcomeDisplayColumns.length + 1}}"-->
                 <td
+                    colspan="{{vm.programColspan}}"
                     class="grey-background"
                 >
                     {{'requisitionViewSection.testConsumption.program' | message: { 'program': vm.program.name} }}
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="2"></td>
+                <td ng-repeat="testProjectColumn in vm.testProject.columns | orderBy : 'displayOrder'"
+                    ng-if="testProjectColumn.isDisplayed"
+                    colspan="{{vm.testProjectColspan}}"
+                    class="bold-label"
+                    popover="{{testProjectColumn.definition}}"
+                    popover-trigger-area="element"
+                >{{testProjectColumn.label}}</td>
+            </tr>
+            <tr>
+                <td ng-repeat-start="testProjectColumn in vm.testProject.columns | orderBy : 'displayOrder'" ng-if="false"></td>
+                <td ng-repeat-end ng-repeat="testOutcomeColumn in vm.testOutcome.columns | orderBy : 'displayOrder'"
+                    ng-class="{'row-span-border': $first}"
+                    ng-if="testOutcomeColumn.isDisplayed"
+                    popover="{{testOutcomeColumn.definition}}"
+                    popover-trigger-area="element"
+                >
+                    {{testOutcomeColumn.label}}
+                </td>
+            </tr>
+            <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
+                <td ng-class="{'grey-background': vm.isTotal(lineItem) || vm.isAPES(lineItem)}"
+                    popover="{{lineItem.definition}}"
+                    popover-trigger-area="element"
+                >
+                    {{lineItem.label}}
+                </td>
+                <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    ng-if="vm.canEdit && vm.isUserInput(lineItem)"
+                    requisition-grid-cell
+                    line-item-field="outcome"
+                >
+                </td>
+                <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    ng-if="vm.canEdit && !vm.isUserInput(lineItem)"
+                    openlmis-invalid="{{outcome.$error}}"
+                    ng-class="{'is-invalid': outcome.$error, 'has-popover': outcome.$error}"
+                >
+                    {{vm.getTotal(project.name, outcome.id)}}
+                </td>
+                <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    ng-if="!vm.canEdit"
+                >
+                    {{outcome.value}}
                 </td>
             </tr>
         </tbody>
