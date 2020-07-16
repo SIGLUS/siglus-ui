@@ -165,7 +165,9 @@
         function search() {
             var stateParams = angular.copy($stateParams);
 
+            // #368: The approver can filter the requisitions by facility
             stateParams.facility = vm.selectedFacility ? vm.selectedFacility.id : null;
+            // #368: ends here
             stateParams.program = vm.selectedProgram ? vm.selectedProgram.id : null;
             stateParams.offline = vm.offline;
 
