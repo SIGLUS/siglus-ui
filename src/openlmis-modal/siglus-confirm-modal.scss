@@ -1,0 +1,9 @@
+.modal-body.is-info {
+  display: flex;
+  @include icon('info-circle');
+  &:before {
+    margin-right: 0.5em;
+    font-size: 2em;
+    color: $brand-primary;
+  }
+}
