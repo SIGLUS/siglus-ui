@@ -31,12 +31,16 @@
     // #287: add alertService
     shipmentViewService.inject = [
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
-        'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService'
+        'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
+        // #400: add siglusConfirmModalService, messageService
+        'siglusConfirmModalService', 'messageService'
+        // #400: ends here
     ];
     // #287: ends here
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
-                                 $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService) {
+                                 $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
+                                 siglusConfirmModalService, messageService) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -115,16 +119,32 @@
                     return alertService.error('shipmentView.allLineItemsSkipped');
                 }
                 // #287: ends here
-                if (isPartialFulfilled(shipment)) {
-                    return confirmService.confirm(
-                        'shipmentView.confirmPartialFulfilled.question',
+                // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                var totalPartialLineItems = isPartialFulfilled(shipment);
+                if (totalPartialLineItems) {
+                    return siglusConfirmModalService.confirm(
+                        messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                            totalPartialLineItems: totalPartialLineItems +
+                                (totalPartialLineItems === 1 ? ' product is' : ' products are')
+                        }),
                         'shipmentView.confirmPartialFulfilled.createSuborder',
-                        'shipmentView.confirmPartialFulfilled.cancel',
+                        'shipmentView.confirmShipment',
+                        undefined,
                         'shipmentView.confirmPartialFulfilled.title'
                     )
-                        .then(function() {
+                        .then(function(isSubOrder) {
                             loadingModalService.open();
-
+                            if (isSubOrder) {
+                                return shipment.createSuborder()
+                                    .then(function() {
+                                        notificationService.success('shipmentView.suborderHasBeenConfirmed');
+                                        stateTrackerService.goToPreviousState('openlmis.orders.view');
+                                    })
+                                    .catch(function() {
+                                        notificationService.error('shipmentView.failedToCreateSuborder');
+                                        loadingModalService.close();
+                                    });
+                            }
                             return originalConfirm.apply(shipment)
                                 .then(function() {
                                     notificationService.success('shipmentView.shipmentHasBeenConfirmed');
@@ -136,6 +156,7 @@
                                 });
                         });
                 }
+                // #400: ends here
                 return confirmService.confirm(
                     'shipmentView.confirmShipment.question',
                     'shipmentView.confirmShipment'
@@ -169,9 +190,13 @@
         }
         // #287: ends here
 
+        // #400: Facility user partially fulfill an order and create sub-order for an requisition
         function isPartialFulfilled(shipment) {
-            var partialLineItemQuantity = 0;
+            var totalPartialLineItems = 0;
             shipment.order.orderLineItems.forEach(function(orderLineItem) {
+                // delete after backend done
+                orderLineItem.partialFulfilledQuantity = 0;
+                // delete ends here
                 if (!orderLineItem.added && !orderLineItem.skipped) {
                     var totalQuantityShipped = 0;
                     shipment.lineItems.forEach(function(lineItem) {
@@ -180,12 +205,13 @@
                         }
                     });
                     if (totalQuantityShipped + orderLineItem.partialFulfilledQuantity < orderLineItem.orderedQuantity) {
-                        partialLineItemQuantity = partialLineItemQuantity + 1;
+                        totalPartialLineItems = totalPartialLineItems + 1;
                     }
                 }
             });
-            return partialLineItemQuantity;
+            return totalPartialLineItems;
         }
+        // #400: ends here
 
         function decorateDelete(originalDelete) {
             return function() {
