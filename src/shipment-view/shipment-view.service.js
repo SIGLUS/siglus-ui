@@ -194,9 +194,6 @@
         function isPartialFulfilled(shipment) {
             var totalPartialLineItems = 0;
             shipment.order.orderLineItems.forEach(function(orderLineItem) {
-                // delete after backend done
-                orderLineItem.partialFulfilledQuantity = 0;
-                // delete ends here
                 if (!orderLineItem.added && !orderLineItem.skipped) {
                     var totalQuantityShipped = 0;
                     shipment.lineItems.forEach(function(lineItem) {
