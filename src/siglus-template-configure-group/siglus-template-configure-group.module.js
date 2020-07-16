@@ -17,19 +17,15 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-section')
-        .component('templateConfigureSection', {
-            bindings: {
-                section: '<',
-                tags: '<?',
-                onAddColumn: '<',
-                editHeader: '<?',
-                onRemoveGroup: '<?'
-            },
-            controller: 'TemplateConfigureSectionController',
-            controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-section/admin-template-configure-section.html'
-        });
+    /**
+     * @module siglus-template-configure-group
+     *
+     * @description
+     * Provides base siglus-template-configure-group state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-template-configure-group', [
+        'admin-template-configure-section'
+    ]);
 
 })();

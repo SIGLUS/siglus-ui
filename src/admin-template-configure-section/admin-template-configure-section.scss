@@ -1,17 +1,28 @@
-.template-configure-section td {
-    i {
-        font-size: 1.2em;
+.template-configure-section {
+    td {
+        i {
+            font-size: 1.2em;
+        }
+        .add-action {
+            float: right;
+            cursor: pointer;
+        }
+        .remove-action {
+            float: left;
+            cursor: pointer;
+        }
+        i.add-disabled {
+            cursor: not-allowed;
+            color: grey;
+        }
     }
-    .add-action {
+    .edit-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: normal;
+    }
+    button.remove-group {
         float: right;
-        cursor: pointer;
-    }
-    .remove-action {
-        float: left;
-        cursor: pointer;
-    }
-    i.add-disabled {
-        cursor: not-allowed;
-        color: grey;
     }
 }

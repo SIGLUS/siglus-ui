@@ -83,7 +83,9 @@
                 });
             });
             // #248, #247, #341: ends here
-
+            // #398: configure the patient data section in template
+            this.patient = _.sortBy(this.patient, 'displayOrder');
+            // #398: ends here
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);
             }

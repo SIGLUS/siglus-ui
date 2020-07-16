@@ -2,6 +2,14 @@
     <div class="openlmis-table-container template-configure-section">
         <table class="openlmis-table">
             <thead>
+            <tr ng-if="vm.editHeader">
+                <th colspan="8">
+                    <div class="edit-header">
+                        <input type="text" ng-model="vm.section.label" placeholder="{{'adminTemplate.group.placeholder' | message}}" />
+                        <button ng-if="vm.onRemoveGroup" class="danger remove-group" ng-click="vm.onRemoveGroup(vm.section)">{{'adminTemplate.removeGroup' | message}}</button>
+                    </div>
+                </th>
+            </tr>
             <tr>
                 <th></th>
                 <th>{{'adminProgramTemplate.display' | message}}</th>

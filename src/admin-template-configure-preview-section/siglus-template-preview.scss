@@ -1,4 +1,4 @@
-[class*="-preview"].openlmis-table-container {
+[class*="-preview"] {
     .openlmis-table {
         td {
             min-width: 100px;
@@ -41,6 +41,10 @@
     .openlmis-table + .openlmis-table {
         margin-top: -2px;
     }
+}
+
+.patient-preview {
+    margin-bottom: 2em;
 }
 
 [class*="-preview"].openlmis-table-container .row .main .toolbar {

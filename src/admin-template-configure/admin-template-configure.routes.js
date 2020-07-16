@@ -43,11 +43,12 @@
                         .then(function(response) {
                             response.patient = [{
                                 id: 'f5b72978-120e-4968-be5e-355fa49b3017',
-                                name: 'collection',
+                                name: 'patientType',
                                 label: 'Type of Patient',
                                 displayOrder: 0,
+                                isDefault: true,
                                 columns: [ {
-                                    name: 'kitReceived',
+                                    name: 'new',
                                     label: 'New',
                                     indicator: 'PD',
                                     displayOrder: 0,
@@ -57,7 +58,7 @@
                                     tag: null,
                                     columnDefinition: {
                                         id: '23c0ecc1-f58e-41e4-99f2-241a3f8360d6',
-                                        name: 'kitReceived',
+                                        name: 'new',
                                         sources: [ 'USER_INPUT'],
                                         label: 'New',
                                         indicator: 'PD',
@@ -84,7 +85,7 @@
                                     tag: null,
                                     columnDefinition: {
                                         id: '86ca8cea-94c2-4d50-8dc8-ec5f6ff60ec4',
-                                        name: 'kitOpened',
+                                        name: 'total',
                                         sources: [ 'USER_INPUT', 'CALCULATED' ],
                                         label: 'Total',
                                         indicator: 'PD',

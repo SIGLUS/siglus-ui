@@ -2,9 +2,8 @@
     <div class="sub-heading">
         <h3>{{'patinet-title' | message}}</h3>
     </div>
-    <template-configure-section
-            ng-repeat="section in vm.template.patient"
-            section="section"
+    <siglus-template-configure-group
+            sections="vm.template.patient"
             on-add-column="vm.addColumn"
     />
 </div>

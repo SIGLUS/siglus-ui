@@ -28,7 +28,7 @@
         'ui.router',
         'openlmis-rights',
         'requisition-constants',
-        'admin-template-configure-section',
+        'siglus-template-configure-group',
         'admin-template-configure-preview-section'
     ]);
 

@@ -1,0 +1,10 @@
+<div class="template-configure-group">
+    <template-configure-section
+            ng-repeat="section in vm.sections"
+            section="section"
+            edit-header="true"
+            on-add-column="vm.onAddColumn"
+            on-remove-group="!section.isDefault && vm.removeGroup"
+    />
+    <button class="add add-group" ng-click="vm.addGroup()">{{'adminProgramTemplate.addGroup' | message}}</button>
+</div>

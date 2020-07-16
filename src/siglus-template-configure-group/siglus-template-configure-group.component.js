@@ -18,18 +18,15 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-section')
-        .component('templateConfigureSection', {
+        .module('siglus-template-configure-group')
+        .component('siglusTemplateConfigureGroup', {
             bindings: {
-                section: '<',
-                tags: '<?',
-                onAddColumn: '<',
-                editHeader: '<?',
-                onRemoveGroup: '<?'
+                sections: '<',
+                onAddColumn: '<'
             },
-            controller: 'TemplateConfigureSectionController',
+            controller: 'siglusTemplateConfigureGroupController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-section/admin-template-configure-section.html'
+            templateUrl: 'siglus-template-configure-group/siglus-template-configure-group.html'
         });
 
 })();
