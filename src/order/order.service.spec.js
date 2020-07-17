@@ -112,15 +112,19 @@ describe('orderService', function() {
                 new BasicOrderResponseDataBuilder().build()
             ]);
 
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
             $httpBackend.whenGET(
-                fulfillmentUrlFactory('/api/orders?supplyingFacility=' + someId)
+                fulfillmentUrlFactory('/api/siglusapi/orders?supplyingFacility=' + someId)
             ).respond(200, page);
+            // #400: ends here
         });
 
-        it('should call /api/orders endpoint', function() {
+        // #400: Facility user partially fulfill an order and create sub-order for an requisition
+        it('should call /api/siglusapi/orders endpoint', function() {
             $httpBackend.expectGET(
-                fulfillmentUrlFactory('/api/orders?supplyingFacility=' + someId)
+                fulfillmentUrlFactory('/api/siglusapi/orders?supplyingFacility=' + someId)
             );
+            // #400: ends here
 
             orderService.search(searchParams);
             $httpBackend.flush();

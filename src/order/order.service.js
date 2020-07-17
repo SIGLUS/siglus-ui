@@ -35,7 +35,9 @@
         var resource = $resource(fulfillmentUrlFactory('/api/orders'), {}, {
             search: {
                 method: 'GET',
-                url: fulfillmentUrlFactory('/api/orders')
+                // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                url: fulfillmentUrlFactory('/api/siglusapi/orders')
+                // #400: ends here
             },
             get: {
                 method: 'GET',

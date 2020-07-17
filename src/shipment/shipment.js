@@ -28,9 +28,18 @@
         .module('shipment')
         .factory('Shipment', Shipment);
 
-    Shipment.$inject = ['ShipmentLineItem', 'ORDER_STATUS', '$q'];
+    // #400: add $resource, fulfillmentUrlFactory
+    Shipment.$inject = ['ShipmentLineItem', 'ORDER_STATUS', '$q', '$resource', 'fulfillmentUrlFactory'];
+    // #400: ends here
 
-    function Shipment(ShipmentLineItem, ORDER_STATUS, $q) {
+    function Shipment(ShipmentLineItem, ORDER_STATUS, $q, $resource, fulfillmentUrlFactory) {
+        // #400: Facility user partially fulfill an order and create sub-order for an requisition
+        var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/shipments'), {}, {
+            create: {
+                method: 'POST'
+            }
+        });
+        // #400: ends here
 
         Shipment.prototype.canBeConfirmed = canBeConfirmed;
         Shipment.prototype.isEditable = isEditable;
@@ -118,9 +127,11 @@
                 return $q.reject();
             }
 
-            return this.repository.create({
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+            return resource.create({
                 isSubOrder: true
-            }, this);
+            }, this).$promise;
+            // #400: ends here
         }
         // #400: ends here
 
@@ -184,7 +195,10 @@
          */
         function isEditable() {
             return ORDER_STATUS.ORDERED === this.order.status ||
-                ORDER_STATUS.FULFILLING === this.order.status;
+                ORDER_STATUS.FULFILLING === this.order.status ||
+                // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                ORDER_STATUS.PARTIALLY_FULFILLED === this.order.status;
+            // #400: ends here
         }
 
         /**

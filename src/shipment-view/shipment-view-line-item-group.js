@@ -37,9 +37,6 @@
         ShipmentViewLineItemGroup.prototype.getAvailableSoh = getAvailableSoh;
         ShipmentViewLineItemGroup.prototype.getFillQuantity = getFillQuantity;
         ShipmentViewLineItemGroup.prototype.getOrderQuantity = getOrderQuantity;
-        // #400: Facility user partially fulfill an order and create sub-order for an requisition
-        ShipmentViewLineItemGroup.prototype.getPartialFulfilledQuantity = getPartialFulfilledQuantity;
-        // #400: ends here
 
         return ShipmentViewLineItemGroup;
 
@@ -121,23 +118,6 @@
             }
             return this.recalculateQuantity(this.orderQuantity, inDoses);
         }
-
-        // #400: Facility user partially fulfill an order and create sub-order for an requisition
-        /**
-         * @ngdoc method
-         * @methodOf shipment-view.ShipmentViewLineItemGroup
-         * @name getPartialFulfilledQuantity
-         *
-         * @description
-         * Returns an partial fulfilled quantity for the commodity type related with the line item.
-         *
-         * @return {number}          the partial fulfilled quantity for the commodity type related with the
-         *                           line item
-         */
-        function getPartialFulfilledQuantity() {
-            return this.partialFulfilledQuantity;
-        }
-        // #400: ends here
     }
 
 })();
