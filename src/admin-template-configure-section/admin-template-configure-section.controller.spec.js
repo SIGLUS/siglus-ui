@@ -23,7 +23,7 @@ describe('TemplateConfigureSectionController', function() {
 
     //injects
     var $rootScope, $scope, $controller, COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH,
-        notificationService;
+        notificationService, templateValidator;
 
     beforeEach(function() {
         module('admin-template-configure-section');
@@ -36,6 +36,7 @@ describe('TemplateConfigureSectionController', function() {
             MAX_COLUMN_DESCRIPTION_LENGTH = $injector.get('MAX_COLUMN_DESCRIPTION_LENGTH');
             MAX_ADD_COLUMNS_LENGTH = $injector.get('MAX_ADD_COLUMNS_LENGTH');
             notificationService = $injector.get('notificationService');
+            templateValidator = $injector.get('templateValidator');
         });
 
         tags = [
@@ -69,6 +70,7 @@ describe('TemplateConfigureSectionController', function() {
         vm.tags = tags;
 
         spyOn(notificationService, 'error');
+        spyOn(templateValidator, 'getSiglusSectionError');
 
         vm.$onInit();
     });
@@ -454,6 +456,15 @@ describe('TemplateConfigureSectionController', function() {
             vm.sourceChanged(vm.section.columns[0]);
 
             expect(vm.availableTags.new1).toEqual(['tag-1', 'tag-2', 'tag-3']);
+        });
+    });
+
+    describe('updateSectionError', function() {
+
+        it('getSiglusSectionError should be called', function() {
+            vm.updateSectionError();
+
+            expect(templateValidator.getSiglusSectionError).toHaveBeenCalledWith(vm.section);
         });
     });
 });

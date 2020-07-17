@@ -59,6 +59,11 @@ describe('templateValidator', function() {
                 return !column.valid;
             });
             // #248: ends here
+            // #398: configure the patient data section in template
+            spyOn(templateValidator, 'getSiglusSectionError').andCallFake(function(section) {
+                return !section.valid;
+            });
+            // #398: ends here
 
             // #247: usage information section configure
             template.usageInformation = [{
@@ -70,6 +75,12 @@ describe('templateValidator', function() {
                 columns: angular.copy(columns)
             }];
             // #341: ends here
+            // #398: configure the patient data section in template
+            template.patient = [{
+                valid: true,
+                columns: angular.copy(columns)
+            }];
+            // #398:
         });
 
         it('should return true if all columns are valid', function() {
@@ -111,6 +122,16 @@ describe('templateValidator', function() {
             expect(templateValidator.getSiglusColumnError).toHaveBeenCalledWith(columns[2]);
         });
         // #248: ends here
+
+        // #398: configure the patient data section in template
+        it('should return false if patient section invalid', function() {
+            template.patient[0].valid = false;
+
+            var result = templateValidator.isTemplateValid(template);
+
+            expect(result).toBe(false);
+        });
+        // #398: ends here
 
     });
 
@@ -187,6 +208,39 @@ describe('templateValidator', function() {
         });
     });
     // #248: ends here
+
+    // #398: configure the patient data section in template
+    describe('getSiglusSectionError', function() {
+        var section;
+
+        beforeEach(function() {
+            section = {
+                label: 'someLabel'
+            };
+        });
+
+        it('should return undefined if column is valid', function() {
+            var result = templateValidator.getSiglusSectionError(section);
+
+            expect(result).toBeUndefined();
+        });
+
+        it('should return error if label is empty', function() {
+            section.label = '';
+
+            expect(templateValidator.getSiglusSectionError(section)).toBe('adminProgramTemplate.nameEmpty');
+        });
+
+        it('should return error if label length exceed MAX_COLUMN_DESCRIPTION_LENGTH', function() {
+            section.label = 'Some not too short definition of the column...' +
+                'Some not too short definition of the column...Some not too short definition of the column...' +
+                'Some not too short definition of the column...Some not too short definition of the column...';
+
+            expect(templateValidator.getSiglusSectionError(section))
+                .toBe('adminProgramTemplate.nameTooLong');
+        });
+    });
+    // #398: ends here
 
     describe('getColumnError', function() {
 

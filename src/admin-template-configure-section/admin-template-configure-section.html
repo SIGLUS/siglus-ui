@@ -1,18 +1,21 @@
 <div class="requisition-template-admin" ng-if="vm.section">
     <div class="openlmis-table-container template-configure-section">
-        <table class="openlmis-table">
+        <table class="openlmis-table" suppress-tr-openlmis-invalid>
             <thead>
             <tr ng-if="vm.editHeader">
-                <td colspan="8">
+                <th colspan="8">
                     <div class="edit-header">
-                        <input type="text" class="form-control"
-                               ng-model="vm.section.label"
-                               placeholder="{{'adminTemplate.group.placeholder' | message}}"
-                               openlmis-invalid="{{vm.getSiglusSectionError(vm.section)}}"
-                        />
+                        <div class="input-control" popover openlmis-invalid="{{vm.sectionError | message}}" input-control>
+                            <input type="text" class="form-control"
+                                   ng-model="vm.section.label"
+                                   placeholder="{{'adminTemplate.group.placeholder' | message}}"
+                                   ng-change="vm.updateSectionError()"
+                                   ng-blur="vm.updateSectionError()"
+                            />
+                        </div>
                         <button ng-if="vm.onRemoveGroup" class="danger remove-group" ng-required="!vm.section.label" ng-click="vm.onRemoveGroup(vm.section)">{{'adminTemplate.removeGroup' | message}}</button>
                     </div>
-                </td>
+                </th>
             </tr>
             <tr>
                 <th></th>

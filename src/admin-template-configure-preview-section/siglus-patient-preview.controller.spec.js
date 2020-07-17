@@ -13,23 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-(function() {
+describe('siglusPatientPreviewController', function() {
 
-    'use strict';
+    var vm, $controller;
 
-    angular
-        .module('admin-template-configure-preview-section')
-        .controller('siglusPatientPreviewController', controller);
+    beforeEach(function() {
+        module('admin-template-configure-preview-section');
 
-    controller.$inject = ['columnUtils'];
+        inject(function($injector) {
+            $controller = $injector.get('$controller');
+        });
 
-    function controller(columnUtils) {
+        vm = $controller('siglusPatientPreviewController');
+    });
 
-        var vm = this;
+    it('should set isUserInput', function() {
+        expect(vm.isUserInput).not.toBeUndefined();
+    });
 
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = columnUtils.isTotal;
-        vm.columnDisplayName = columnUtils.columnDisplayName;
-    }
+    it('should set isTotal', function() {
+        expect(vm.isTotal).not.toBeUndefined();
+    });
 
-})();
+    it('should set columnDisplayName', function() {
+        expect(vm.columnDisplayName).not.toBeUndefined();
+    });
+});

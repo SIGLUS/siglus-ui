@@ -44,12 +44,13 @@
         vm.sourceDisplayName = sourceDisplayName;
         vm.canAssignTag = canAssignTag;
         vm.getSiglusColumnError = templateValidator.getSiglusColumnError;
-        vm.getSiglusSectionError = templateValidator.getSiglusSectionError;
+        vm.updateSectionError = updateSectionError;
         vm.refreshAvailableTags = refreshAvailableTags;
         vm.sourceChanged = sourceChanged;
         vm.addColumn = addColumn;
         vm.removeColumn = removeColumn;
         vm.overMaxColumnsLength = overMaxColumnsLength;
+        vm.sectionError = '';
 
         vm.maxColumnDescriptionLength = undefined;
 
@@ -181,6 +182,10 @@
                 column.tag = null;
                 refreshAvailableTags();
             }
+        }
+
+        function updateSectionError() {
+            vm.sectionError = templateValidator.getSiglusSectionError(vm.section);
         }
     }
 })();
