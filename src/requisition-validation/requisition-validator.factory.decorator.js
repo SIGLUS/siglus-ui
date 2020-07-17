@@ -34,9 +34,10 @@
     }
 
     decorator.$inject = ['$delegate', '$filter', 'requisitionUtils', 'messageService', 'COLUMN_TYPES',
-        'MAX_INTEGER_VALUE'];
+        'MAX_INTEGER_VALUE', 'columnUtils'];
 
-    function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE) {
+    function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
+                       columnUtils) {
         var originalAreAllLineItemsSkipped = $delegate.areAllLineItemsSkipped;
         $delegate.validateRequisition = validateRequisition;
         $delegate.validateUsageReport = validateUsageReport;
@@ -93,6 +94,7 @@
             valid = validateExtraData(requisition) && valid;
             valid = validateKitUsage(requisition) && valid;
             valid = validateUsageInformation(requisition) && valid;
+            valid = validateTestConsumption(requisition) && valid;
 
             return valid;
         }
@@ -140,6 +142,50 @@
                 });
             }
             return valid;
+        }
+
+        function validateTestConsumption(requisition) {
+            var isValid = true;
+            if (requisition.template.extension.enableRapidTestConsumption && !requisition.emergency) {
+                isValid = validateTestConsumptionLineItems(requisition.testConsumptionLineItems);
+            }
+            return isValid;
+        }
+
+        function validateTestConsumptionLineItems(lineItems) {
+            // todo: apes column
+            var isValid = true;
+            angular.forEach(lineItems, function(lineItem) {
+                angular.forEach(_.values(lineItem.projects), function(testProject) {
+                    var fields = _.values(testProject.outcomes);
+                    if (_.find(fields, function(field) {
+                        return isNotEmpty(field.value);
+                    })) {
+                        angular.forEach(fields, function(field) {
+                            isValid = validateSiglusLineItemField(field) && isValid;
+                        });
+                        isValid = validateTestOutcomeField(fields) && isValid;
+                    }
+                });
+            });
+
+            // isValid = validateAPE(items) && isValid;
+            return isValid;
+        }
+
+        function validateTestOutcomeField(testOutcomeFields) {
+            var isValid = true;
+            var consumoField = testOutcomeFields.find(columnUtils.isConsumo);
+            var positiveField = testOutcomeFields.find(columnUtils.isPositive);
+            if (isNotEmpty(consumoField.value)
+                && isNotEmpty(positiveField.value)
+                && positiveField.value > consumoField.value) {
+                var error = messageService.get('requisitionValidation.positiveLargerThanConsumo');
+                consumoField.$error = error;
+                positiveField.$error = error;
+                isValid = false;
+            }
+            return isValid;
         }
 
         function validateExtraData(requisition) {

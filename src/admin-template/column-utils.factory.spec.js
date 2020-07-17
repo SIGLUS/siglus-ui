@@ -106,4 +106,40 @@ describe('columnUtils', function() {
             expect(columnUtils.isAPES(column)).toBe(false);
         });
     });
+
+    describe('isPositive', function() {
+        it('should return true if column name is positive', function() {
+            var column = {
+                name: 'positive'
+            };
+
+            expect(columnUtils.isPositive(column)).toBe(true);
+        });
+
+        it('should return false if column name is HF', function() {
+            var column = {
+                name: 'HF'
+            };
+
+            expect(columnUtils.isPositive(column)).toBe(false);
+        });
+    });
+
+    describe('isConsumo', function() {
+        it('should return true if column name is consumo', function() {
+            var column = {
+                name: 'consumo'
+            };
+
+            expect(columnUtils.isConsumo(column)).toBe(true);
+        });
+
+        it('should return false if column name is HF', function() {
+            var column = {
+                name: 'HF'
+            };
+
+            expect(columnUtils.isConsumo(column)).toBe(false);
+        });
+    });
 });
