@@ -21,15 +21,16 @@
         .module('requisition-view-section')
         .controller('SiglusTestConsumptionController', controller);
 
-    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService'];
+    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService', 'requisitionValidator'];
 
-    function controller(columnUtils, SECTION_TYPES, templateConfigureService) {
+    function controller(columnUtils, SECTION_TYPES, templateConfigureService, requisitionValidator) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.isTotal = columnUtils.isTotal;
         vm.isAPES = columnUtils.isAPES;
         vm.isUserInput = columnUtils.isUserInput;
+        vm.getTotal = getTotal;
         vm.testProject = undefined;
         vm.testOutcome = undefined;
         vm.service = undefined;
@@ -42,6 +43,20 @@
             vm.testProjectColspan = getTestProjectColspan();
             vm.programColspan = getProgramColspan();
             extendLineItems();
+        }
+
+        function getTotal(project, outcome) {
+            var totalLineItem = _.first(vm.lineItems.filter(vm.isTotal));
+            var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
+            totalField.value = vm.lineItems.reduce(function(total, lineItem) {
+                var value = lineItem.projects[project.name].outcomes[outcome.name].value;
+                if (!vm.isTotal(lineItem) && !vm.isAPES(lineItem) && _.isNumber(value)) {
+                    return total + value;
+                }
+                return total;
+            }, 0);
+            requisitionValidator.validateSiglusLineItemField(totalField);
+            return totalField.value;
         }
 
         function extendLineItems() {

@@ -50,7 +50,7 @@
                     openlmis-invalid="{{outcome.$error}}"
                     ng-class="{'is-invalid': outcome.$error, 'has-popover': outcome.$error}"
                 >
-                    {{vm.getTotal(project.name, outcome.id)}}
+                    {{vm.getTotal(project, outcome)}}
                 </td>
                 <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
                 <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
