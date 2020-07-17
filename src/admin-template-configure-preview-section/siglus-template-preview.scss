@@ -25,7 +25,7 @@
             }
         }
 
-        .row-span-border {
+        tbody tr td.row-span-border {
             border-left-width: 1px;
         }
 
@@ -45,6 +45,12 @@
 
 .patient-preview {
     margin-bottom: 2em;
+    .openlmis-table td {
+        width: 100px;
+        &:first-child {
+            width: 200px;
+        }
+    }
 }
 
 [class*="-preview"].openlmis-table-container .row .main .toolbar {

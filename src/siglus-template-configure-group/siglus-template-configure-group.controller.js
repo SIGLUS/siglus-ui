@@ -28,20 +28,18 @@
         .module('siglus-template-configure-group')
         .controller('siglusTemplateConfigureGroupController', controller);
 
-    controller.$inject = ['$scope', 'columnUtils', 'MAX_COLUMN_DESCRIPTION_LENGTH', 'COLUMN_SOURCES'];
+    controller.$inject = ['$scope', 'columnUtils', 'COLUMN_SOURCES'];
 
-    function controller($scope, columnUtils, MAX_COLUMN_DESCRIPTION_LENGTH, COLUMN_SOURCES) {
+    function controller($scope, columnUtils, COLUMN_SOURCES) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.maxColumnDescriptionLength = undefined;
         vm.defaultColums = [];
         vm.sectionMap = {};
         vm.addGroup = addGroup;
         vm.removeGroup = removeGroup;
 
         function onInit() {
-            vm.maxColumnDescriptionLength = MAX_COLUMN_DESCRIPTION_LENGTH;
             getDefaultColumns();
             updateSectionMap();
             $scope.$watchCollection(function() {
@@ -60,7 +58,7 @@
                 if (column.columnDefinition.id) {
                     vm.defaultColums.push(angular.merge({}, column, {
                         id: undefined,
-                        name: column.columnDefinition.name,
+                        label: column.columnDefinition.label,
                         definition: column.columnDefinition.definition,
                         source: columnUtils.isTotal(column) ? COLUMN_SOURCES.USER_INPUT : column.source
                     }));
