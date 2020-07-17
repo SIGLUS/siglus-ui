@@ -18,23 +18,18 @@
     'use strict';
 
     /**
-    * @ngdoc object
-    * @name admin-template-configure-column-setting.SERVICE_TYPES
-    *
-    * @description
-    * This is constant for service types.
-    */
-    angular
-        .module('admin-template-configure-column-setting')
-        .constant('SERVICE_TYPES', type());
+     * @module requisition-validation
+     *
+     * @description
+     * Provides validation logic for requisition view screen.
+     */
+    angular.module('requisition-validation', [
+        'openlmis-i18n',
+        'requisition-calculations',
+        'requisition-template',
+        // #375: create requisition with test consumption section
+        'admin-template'
+        // #375: ends here
+    ]);
 
-    function type() {
-        return {
-            HF: 'HF',
-            TOTAL: 'total',
-            APES: 'APES',
-            CONSUMO: 'consumo',
-            POSITIVE: 'positive'
-        };
-    }
 })();

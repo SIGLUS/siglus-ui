@@ -36,7 +36,9 @@
             isStockCards: isStockCards,
             isTotal: isTotal,
             columnDisplayName: columnDisplayName,
-            isAPES: isAPES
+            isAPES: isAPES,
+            isPositive: isPositive,
+            isConsumo: isConsumo
         };
 
         /**
@@ -112,6 +114,36 @@
          */
         function isAPES(column) {
             return column.name === SERVICE_TYPES.APES;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
+         * @name isPositive
+         *
+         * @description
+         * If column name is positive.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column name is positive
+         */
+        function isPositive(column) {
+            return column.name === SERVICE_TYPES.POSITIVE;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
+         * @name isConsumo
+         *
+         * @description
+         * If column name is consumo.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column name is consumo
+         */
+        function isConsumo(column) {
+            return column.name === SERVICE_TYPES.CONSUMO;
         }
     }
 
