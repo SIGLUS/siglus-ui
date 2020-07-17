@@ -83,7 +83,7 @@
                 <td>{{tableLineItem.lot.expirationDate | openlmisDate}}</td>
                 <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>
                 <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
-                <td>{{tableLineItem.getPartialFulfilledQuantity()}}</td>
+                <td>{{tableLineItem.partialFulfilledQuantity}}</td>
                 <!-- #400: ends here-->
                 <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getFillQuantity()}}</td>
                 <td ng-if="tableLineItem.shipmentLineItem">

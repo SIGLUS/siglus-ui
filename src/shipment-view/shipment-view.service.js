@@ -75,7 +75,9 @@
         }
 
         function getShipmentBasedOnOrderStatus(order) {
-            if (order.isOrdered()) {
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+            if (order.isOrdered() || order.isPartiallyFulfilled()) {
+                // #400: ends here
                 return new ShipmentFactory()
                     .buildFromOrder(order)
                     .then(function(shipment) {
