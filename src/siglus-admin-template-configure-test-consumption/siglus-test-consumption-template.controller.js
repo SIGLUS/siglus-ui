@@ -28,10 +28,9 @@
         .module('siglus-admin-template-configure-test-consumption')
         .controller('testConsumptionController', testConsumptionController);
 
-    testConsumptionController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template',
-        'SECTION_TYPES'];
+    testConsumptionController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template'];
 
-    function testConsumptionController(COLUMN_SOURCES, templateConfigureService, template, SECTION_TYPES) {
+    function testConsumptionController(COLUMN_SOURCES, templateConfigureService, template) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -40,9 +39,6 @@
 
         function onInit() {
             vm.template = template;
-            vm.testProject = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.PROJECT);
-            vm.testOutcome = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.OUTCOME);
-            vm.service = templateConfigureService.getSectionByName(template.testConsumption, SECTION_TYPES.SERVICE);
             vm.addColumn = addColumn;
             enableCurrentSection();
         }

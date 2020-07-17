@@ -63,6 +63,7 @@
             vm.columnMap = templateConfigureService.getSectionColumnsMap(vm.section);
             refreshAvailableTags();
             updateDisplayOrder();
+            updateSectionError();
         }
 
         function dropCallback(event, dropStopIndex, droppedItem) {
