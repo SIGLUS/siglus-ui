@@ -4,8 +4,8 @@
         <tr ng-if="vm.editHeader">
             <th colspan="8">
                 <div class="edit-header">
-                    <div class="input-control" popover openlmis-invalid="{{vm.sectionError | message}}" input-control>
-                        <input type="text" class="form-control"
+                    <div class="input-control" popover openlmis-invalid="{{vm.sectionError}}" input-control>
+                        <input type="text"
                                ng-model="vm.section.label"
                                placeholder="{{'adminTemplate.group.placeholder' | message}}"
                                ng-change="vm.updateSectionError()"

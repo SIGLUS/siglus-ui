@@ -76,27 +76,15 @@ describe('TestConsumptionController', function() {
         it('should enable test consumption', function() {
             expect(vm.template.extension.enableRapidTestConsumption).toEqual(true);
         });
-
-        it('should set test project', function() {
-            expect(vm.testProject).toBe(testProject);
-        });
-
-        it('should set test outcome', function() {
-            expect(vm.testOutcome).toBe(testOutcome);
-        });
-
-        it('should set service', function() {
-            expect(vm.service).toBe(service);
-        });
     });
 
     describe('addColumn', function() {
 
         it('should add a new column and its column source is user input', function() {
-            vm.addColumn(vm.testProject);
+            vm.addColumn(vm.template.testConsumption[0]);
 
-            expect(vm.testProject.columns.length).toEqual(1);
-            expect(vm.testProject.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
+            expect(vm.template.testConsumption[0].columns.length).toEqual(1);
+            expect(vm.template.testConsumption[0].columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
         });
     });
 });

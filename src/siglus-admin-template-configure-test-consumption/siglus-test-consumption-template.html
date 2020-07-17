@@ -1,23 +1,11 @@
 <div class="test-consumption-template" ng-if="vm.template.testConsumption.length">
-    <div class="sub-heading">
-        <h3>{{vm.testProject.label}}</h3>
+    <div ng-repeat="section in vm.template.testConsumption">
+        <div class="sub-heading">
+            <h3>{{section.label}}</h3>
+        </div>
+        <template-configure-section
+                section="section"
+                on-add-column="vm.addColumn"
+        />
     </div>
-    <template-configure-section
-            section="vm.testProject"
-            on-add-column="vm.addColumn"
-    />
-    <div class="sub-heading">
-        <h3>{{vm.testOutcome.label}}</h3>
-    </div>
-    <template-configure-section
-            section="vm.testOutcome"
-            on-add-column="vm.addColumn"
-    />
-    <div class="sub-heading">
-        <h3>{{vm.service.label}}</h3>
-    </div>
-    <template-configure-section
-            section="vm.service"
-            on-add-column="vm.addColumn"
-    />
 </div>
