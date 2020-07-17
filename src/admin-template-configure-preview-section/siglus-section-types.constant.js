@@ -19,10 +19,10 @@
 
     /**
      * @ngdoc object
-     * @name admin-template-configure-column-setting.MAX_ADD_COLUMNS_LENGTH
+     * @name admin-template-configure-column-setting.SECTION_TYPES
      *
      * @description
-     * This is constant for max column items length.
+     * This is constant for section types.
      */
     angular
         .module('admin-template-configure-preview-section')

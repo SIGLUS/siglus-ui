@@ -28,9 +28,9 @@
         .module('siglus-template-configure-group')
         .controller('siglusTemplateConfigureGroupController', controller);
 
-    controller.$inject = ['$scope', 'columnUtils', 'COLUMN_SOURCES'];
+    controller.$inject = ['$scope', 'columnUtils', 'COLUMN_SOURCES', 'MAX_ADD_LENGTH'];
 
-    function controller($scope, columnUtils, COLUMN_SOURCES) {
+    function controller($scope, columnUtils, COLUMN_SOURCES, MAX_ADD_LENGTH) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -38,6 +38,7 @@
         vm.sectionMap = {};
         vm.addGroup = addGroup;
         vm.removeGroup = removeGroup;
+        vm.overMaxAddLength = overMaxAddLength;
 
         function onInit() {
             getDefaultColumns();
@@ -77,16 +78,25 @@
         }
 
         function addGroup() {
-            var defaultName = 'newSection';
-            var i = 0;
-            while (vm.sectionMap[defaultName + i]) {
-                i++;
+            if (!overMaxAddLength()) {
+                var defaultName = 'newSection';
+                var i = 0;
+                while (vm.sectionMap[defaultName + i] && i < MAX_ADD_LENGTH) {
+                    i++;
+                }
+                vm.sections.push({
+                    name: defaultName + i,
+                    label: '',
+                    columns: angular.copy(vm.defaultColums)
+                });
             }
-            vm.sections.push({
-                name: defaultName + i,
-                label: '',
-                columns: angular.copy(vm.defaultColums)
+        }
+
+        function overMaxAddLength() {
+            var addedSections = _.filter(vm.sections, function(section) {
+                return !section.isDefault;
             });
+            return addedSections.length >= MAX_ADD_LENGTH;
         }
 
         function removeGroup(section) {
