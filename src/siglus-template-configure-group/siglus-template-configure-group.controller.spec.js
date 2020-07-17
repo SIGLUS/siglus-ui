@@ -19,7 +19,7 @@ describe('siglusTemplateConfigureGroupController', function() {
     var vm, section, columns;
 
     //injects
-    var $rootScope, $scope, $controller;
+    var $rootScope, $scope, $controller, MAX_ADD_LENGTH;
 
     beforeEach(function() {
         module('siglus-template-configure-group');
@@ -28,6 +28,7 @@ describe('siglusTemplateConfigureGroupController', function() {
             $rootScope = $injector.get('$rootScope');
             $scope = $rootScope.$new();
             $controller = $injector.get('$controller');
+            MAX_ADD_LENGTH = $injector.get('MAX_ADD_LENGTH');
         });
 
         vm = $controller('siglusTemplateConfigureGroupController', {
@@ -154,6 +155,18 @@ describe('siglusTemplateConfigureGroupController', function() {
 
             expect(vm.sectionMap.newSection0).not.toBeUndefined();
         });
+
+        it('should not add section is added section exceed MAX_ADD_LENGTH', function() {
+            for (var i = 0; i < MAX_ADD_LENGTH; i++) {
+                vm.sections.push(angular.merge({}, section, {
+                    isDefault: false
+                }));
+            }
+
+            vm.addGroup();
+
+            expect(vm.sections.length).toBe(MAX_ADD_LENGTH + 1);
+        });
     });
 
     describe('removeGroup', function() {
@@ -173,6 +186,23 @@ describe('siglusTemplateConfigureGroupController', function() {
 
             expect(vm.sections[0].displayOrder).toBe(0);
             expect(vm.sections[1].displayOrder).toBe(1);
+        });
+    });
+
+    describe('overMaxAddLength', function() {
+
+        it('should false if not over max length', function() {
+            expect(vm.overMaxAddLength()).toBe(false);
+        });
+
+        it('should return true if added section exceed MAX_ADD_LENGTH', function() {
+            for (var i = 0; i < MAX_ADD_LENGTH; i++) {
+                vm.sections.push(angular.merge({}, section, {
+                    isDefault: false
+                }));
+            }
+
+            expect(vm.overMaxAddLength()).toBe(true);
         });
     });
 });

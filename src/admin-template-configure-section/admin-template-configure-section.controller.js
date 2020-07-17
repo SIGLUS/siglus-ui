@@ -30,11 +30,11 @@
 
     TemplateConfigureSectionController.$inject = [
         '$scope', 'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES',
-        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_COLUMNS_LENGTH', 'templateConfigureService', 'notificationService'
+        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'templateConfigureService', 'notificationService'
     ];
 
     function TemplateConfigureSectionController($scope, messageService, templateValidator, columnUtils, COLUMN_SOURCES,
-                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_COLUMNS_LENGTH,
+                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
                                                 templateConfigureService, notificationService) {
         var vm = this;
 
@@ -134,7 +134,7 @@
         function setDefaultName(column) {
             var defaultName = 'newColumn';
             var i = 0;
-            while (vm.columnMap[defaultName + i] && i < MAX_ADD_COLUMNS_LENGTH) {
+            while (vm.columnMap[defaultName + i] && i < MAX_ADD_LENGTH) {
                 i++;
             }
             column.name = defaultName + i;
@@ -174,7 +174,7 @@
             var addedColumns = _.filter(vm.section.columns, function(column) {
                 return !column.columnDefinition.id;
             });
-            return addedColumns.length >= MAX_ADD_COLUMNS_LENGTH;
+            return addedColumns.length >= MAX_ADD_LENGTH;
         }
 
         function sourceChanged(column) {

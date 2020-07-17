@@ -6,5 +6,5 @@
             on-add-column="vm.onAddColumn"
             on-remove-group="!section.isDefault && vm.removeGroup"
     />
-    <button class="add add-group" ng-click="vm.addGroup()">{{'adminProgramTemplate.addGroup' | message}}</button>
+    <button class="add add-group" ng-click="vm.addGroup()" ng-disabled="vm.overMaxAddLength()">{{'adminProgramTemplate.addGroup' | message}}</button>
 </div>
