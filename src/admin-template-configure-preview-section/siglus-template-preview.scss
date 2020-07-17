@@ -45,10 +45,13 @@
 
 .patient-preview {
     margin-bottom: 2em;
-    .openlmis-table td {
-        width: 100px;
-        &:first-child {
-            width: 200px;
+    .openlmis-table {
+        width: 302px;
+        td {
+            width: 100px;
+            &:first-child {
+                width: 200px;
+            }
         }
     }
 }
