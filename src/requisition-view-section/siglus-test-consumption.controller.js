@@ -51,11 +51,16 @@
             totalField.value = vm.lineItems.reduce(function(total, lineItem) {
                 var value = lineItem.projects[project.name].outcomes[outcome.name].value;
                 if (!vm.isTotal(lineItem) && !vm.isAPES(lineItem) && _.isNumber(value)) {
+                    if (_.isNull(total)) {
+                        total = 0;
+                    }
                     return total + value;
                 }
                 return total;
-            }, 0);
-            requisitionValidator.validateSiglusLineItemField(totalField);
+            }, null);
+            if (!_.isEmpty(totalField.value)) {
+                requisitionValidator.validateSiglusLineItemField(totalField);
+            }
             return totalField.value;
         }
 

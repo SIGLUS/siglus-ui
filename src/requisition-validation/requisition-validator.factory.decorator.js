@@ -153,7 +153,6 @@
         }
 
         function validateTestConsumptionLineItems(lineItems) {
-            // todo: apes column
             var isValid = true;
             angular.forEach(lineItems, function(lineItem) {
                 angular.forEach(_.values(lineItem.projects), function(testProject) {
@@ -163,13 +162,13 @@
                     })) {
                         angular.forEach(fields, function(field) {
                             isValid = validateSiglusLineItemField(field) && isValid;
+                            isValid = validateAPES(lineItems, testProject, field) && isValid;
                         });
                         isValid = validateTestOutcomeField(fields) && isValid;
                     }
                 });
             });
 
-            // isValid = validateAPE(items) && isValid;
             return isValid;
         }
 
@@ -184,6 +183,18 @@
                 consumoField.$error = error;
                 positiveField.$error = error;
                 isValid = false;
+            }
+            return isValid;
+        }
+
+        function validateAPES(lineItems, project, outcome) {
+            var isValid = true;
+            var totalLineItem = lineItems.find(columnUtils.isTotal);
+            var apesLineItem = lineItems.find(columnUtils.isAPES);
+            var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
+            var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
+            if (isNotEmpty(totalField.value) && !isNotEmpty(apesField.value)) {
+                isValid = validateSiglusLineItemField(apesField) && isValid;
             }
             return isValid;
         }
