@@ -72,4 +72,13 @@
                        added-products="vm.requisition.requisitionLineItems"
                        can-edit="false"
                        ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"/>
+    <!-- #375: create requisition with test consumption section -->
+    <siglus-test-consumption
+            program="vm.program"
+            sections="vm.requisition.usageTemplate.rapidTestConsumption"
+            line-items="vm.requisition.testConsumptionLineItems"
+            can-edit="false"
+            ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
+    />
+    <!-- #: ends here -->
 </div>
