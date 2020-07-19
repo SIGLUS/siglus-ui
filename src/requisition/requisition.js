@@ -187,6 +187,13 @@
                     });
                 });
             });
+            angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.projects), function(project) {
+                    angular.forEach(Object.keys(lineItem.projects[project].outcomes), function(outcome) {
+                        lineItem.projects[project].outcomes[outcome].$error = undefined;
+                    });
+                });
+            });
         }
         // #387: ends here
 

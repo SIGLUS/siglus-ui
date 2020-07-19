@@ -20,7 +20,7 @@
                 >{{testProjectColumn.label}}</td>
             </tr>
             <tr>
-                <td ng-repeat-start="testProjectColumn in vm.testProject.columns | orderBy : 'displayOrder'" ng-if="false"></td>
+                <td ng-repeat-start="testProjectColumn in vm.testProject.columns | filter : {isDisplayed: true} | orderBy : 'displayOrder'" ng-if="false"></td>
                 <td ng-repeat-end ng-repeat="testOutcomeColumn in vm.testOutcome.columns | orderBy : 'displayOrder'"
                     ng-class="{'row-span-border': $first}"
                     ng-if="testOutcomeColumn.isDisplayed"
