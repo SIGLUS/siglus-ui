@@ -38,11 +38,16 @@
                     {{lineItem.label}}
                 </td>
                 <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
-                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
-                    openlmis-invalid="{{outcome.$error}}" ng-class="{'is-invalid': outcome.$error, 'has-popover': outcome.$error}">
-                    <div ng-if="vm.canEdit && vm.isUserInput(lineItem)" siglus-requisition-grid-cell line-item-field="outcome" test-consumption-line-items="vm.lineItems"></div>
+                <td ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    openlmis-invalid="{{outcome.$error}}" ng-class="{'is-invalid': outcome.$error, 'has-popover': outcome.$error}"
+                    ng-if="!(vm.canEdit && vm.isUserInput(lineItem))"
+                >
                     <div ng-if="vm.canEdit && !vm.isUserInput(lineItem)">{{vm.getTotal(project, outcome)}}</div>
                     <div ng-if="!vm.canEdit">{{outcome.value}}</div>
+                </td>
+                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    siglus-requisition-grid-cell line-item-field="outcome" test-consumption-line-items="vm.lineItems"
+                    ng-if="vm.canEdit && vm.isUserInput(lineItem)">
                 </td>
             </tr>
         </tbody>
