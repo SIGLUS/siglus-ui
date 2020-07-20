@@ -289,7 +289,7 @@ describe('SiglusTestConsumptionController', function() {
 
             vm.getTotal(project, outcome);
 
-            expect(outcome.value).toBe(null);
+            expect(outcome.value).toBeUndefined();
         });
 
         it('should get error message when the unjustified value of newLineItem is 2147483647 ' +

@@ -46,19 +46,18 @@
         }
 
         function getTotal(project, outcome) {
+            var total = 0;
             var totalLineItem = _.first(vm.lineItems.filter(vm.isTotal));
             var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
-            totalField.value = vm.lineItems.reduce(function(total, lineItem) {
+            totalField.value = undefined;
+            angular.forEach(vm.lineItems, function(lineItem) {
                 var value = lineItem.projects[project.name].outcomes[outcome.name].value;
                 if (!vm.isTotal(lineItem) && !vm.isAPES(lineItem) && _.isNumber(value)) {
-                    if (_.isNull(total)) {
-                        total = 0;
-                    }
-                    return total + value;
+                    total = total + value;
                 }
-                return total;
-            }, null);
-            if (!_.isUndefined(totalField.value)) {
+            });
+            if (total !== 0) {
+                totalField.value = total;
                 requisitionValidator.validateSiglusLineItemField(totalField);
             }
             return totalField.value;

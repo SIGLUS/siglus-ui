@@ -31,12 +31,13 @@
     requisitionFactory.$inject = [
         '$q', '$resource', 'requisitionUrlFactory', 'RequisitionTemplate', 'LineItem', 'REQUISITION_STATUS',
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
-        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService'
+        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService', 'requisitionUtils'
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
                                 COLUMN_SOURCES, localStorageFactory, dateUtils, $filter, TEMPLATE_COLUMNS,
-                                authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService) {
+                                authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService,
+                                requisitionUtils) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             // SIGLUS-REFACTOR: starts here
@@ -187,13 +188,7 @@
                     });
                 });
             });
-            angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
-                angular.forEach(Object.keys(lineItem.projects), function(project) {
-                    angular.forEach(Object.keys(lineItem.projects[project].outcomes), function(outcome) {
-                        lineItem.projects[project].outcomes[outcome].$error = undefined;
-                    });
-                });
-            });
+            requisitionUtils.clearTestConsumptionError(requisition.testConsumptionLineItems);
         }
         // #387: ends here
 
