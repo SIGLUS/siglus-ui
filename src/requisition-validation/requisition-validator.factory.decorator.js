@@ -48,6 +48,7 @@
         $delegate.validateARVPatientTotal = validateARVPatientTotal;
         $delegate.areAllLineItemsSkipped = areAllLineItemsSkipped;
         $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
+        $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
 
         return $delegate;
 

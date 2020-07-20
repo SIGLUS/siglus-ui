@@ -1,7 +1,7 @@
 <td class="requisition-product-grid-cell" openlmis-invalid="{{lineItemField.$error}}">
 	<input positive-integer
 		   ng-model="lineItemField.value"
-		   ng-change="update(lineItemField)"
-		   ng-blur="update(lineItemField)"
+		   ng-change="testConsumptionLineItems ? update(testConsumptionLineItems) : update(lineItemField)"
+		   ng-blur="testConsumptionLineItems ? update(testConsumptionLineItems) : update(lineItemField)"
 	/>
 </td>
