@@ -29,7 +29,9 @@ describe('requisitionValidator', function() {
             ];
             validationFactory = jasmine.createSpyObj('validationFactory', methods);
             // SIGLUS-REFACTOR: add requisitionUtils
-            requisitionUtils = jasmine.createSpyObj('requisitionUtils', ['isEmpty', 'calculateTotal', 'clearTestConsumptionError']);
+            requisitionUtils = jasmine.createSpyObj('requisitionUtils', [
+                'isEmpty', 'calculateTotal', 'clearTestConsumptionError'
+            ]);
             // SIGLUS-REFACTOR: ends here
 
             $provide.service('validationFactory', function() {

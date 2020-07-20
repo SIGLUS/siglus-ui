@@ -49,6 +49,7 @@
         $delegate.areAllLineItemsSkipped = areAllLineItemsSkipped;
         $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
         $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
+        $delegate.isTestConsumptionEmpty = isTestConsumptionEmpty;
 
         return $delegate;
 
@@ -148,10 +149,12 @@
         function validateTestConsumption(requisition) {
             var isValid = true;
             if (requisition.template.extension.enableRapidTestConsumption && !requisition.emergency) {
-                isValid = validateTestConsumptionLineItems(requisition.testConsumptionLineItems);
+                isValid = !isTestConsumptionEmpty(requisition)
+                    && validateTestConsumptionLineItems(requisition.testConsumptionLineItems);
             }
             return isValid;
         }
+
         function isTestOutcomesFilled(fields) {
             return _.find(fields, function(field) {
                 return isNotEmpty(field.value);
@@ -202,6 +205,21 @@
                 isValid = validateSiglusLineItemField(apesField) && isValid;
             }
             return isValid;
+        }
+
+        function isTestConsumptionEmpty(requisition) {
+            if (!requisition.template.extension.enableRapidTestConsumption || requisition.emergency) {
+                return false;
+            }
+            var isEmpty = true;
+            angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
+                angular.forEach(_.values(lineItem.projects), function(testProject) {
+                    angular.forEach(_.values(testProject.outcomes), function(outcome) {
+                        isEmpty = isEmpty && !isNotEmpty(outcome.value);
+                    });
+                });
+            });
+            return isEmpty;
         }
 
         function validateExtraData(requisition) {
