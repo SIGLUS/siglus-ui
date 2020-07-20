@@ -42,6 +42,7 @@
                     ng-if="vm.canEdit && vm.isUserInput(lineItem)"
                     requisition-grid-cell
                     line-item-field="outcome"
+                    test-consumption-line-items="vm.lineItems"
                 >
                 </td>
                 <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>

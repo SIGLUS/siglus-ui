@@ -29,12 +29,16 @@
             restrict: 'A',
             link: link,
             scope: {
-                lineItemField: '='
+                lineItemField: '=',
+                testConsumptionLineItems: '=?'
             }
         };
 
         function link(scope, element) {
             scope.update = requisitionValidator.validateSiglusLineItemField;
+            if (!_.isUndefined(scope.testConsumptionLineItems)) {
+                scope.update = requisitionValidator.validateTestConsumptionLineItems;
+            }
 
             updateCellContents();
 
