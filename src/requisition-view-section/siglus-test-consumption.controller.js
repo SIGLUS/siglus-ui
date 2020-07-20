@@ -58,7 +58,7 @@
                 }
                 return total;
             }, null);
-            if (!_.isEmpty(totalField.value)) {
+            if (!_.isUndefined(totalField.value)) {
                 requisitionValidator.validateSiglusLineItemField(totalField);
             }
             return totalField.value;

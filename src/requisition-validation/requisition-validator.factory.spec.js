@@ -17,7 +17,7 @@ describe('requisitionValidator', function() {
 
     // SIGLUS-REFACTOR: add requisitionUtils, kitUsageLineItems
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
-        lineItems, column, columns, requisition, requisitionUtils, kitUsageLineItems;
+        lineItems, column, columns, requisition, requisitionUtils, kitUsageLineItems, testConsumptionLineItems;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -92,12 +92,97 @@ describe('requisitionValidator', function() {
         } ];
         // #251: ends here
 
+        // #375: Facility user can create requisition with test consumption section
+        testConsumptionLineItems = [{
+            service: 'HF',
+            name: 'HF',
+            projects: {
+                hivDetermine: {
+                    project: 'hivDetermine',
+                    name: 'hivDetermine',
+                    outcomes: {
+                        consumo: {
+                            outcome: 'consumo',
+                            name: 'consumo',
+                            value: 10
+                        },
+                        positive: {
+                            outcome: 'positive',
+                            name: 'positive',
+                            value: 10
+                        },
+                        unjustified: {
+                            outcome: 'unjustified',
+                            name: 'unjustified',
+                            value: 10
+                        }
+                    }
+                }
+            }
+        }, {
+            service: 'total',
+            name: 'total',
+            projects: {
+                hivDetermine: {
+                    project: 'hivDetermine',
+                    name: 'hivDetermine',
+                    outcomes: {
+                        consumo: {
+                            outcome: 'consumo',
+                            name: 'consumo',
+                            value: 10
+                        },
+                        positive: {
+                            outcome: 'positive',
+                            name: 'positive',
+                            value: 10
+                        },
+                        unjustified: {
+                            outcome: 'unjustified',
+                            name: 'unjustified',
+                            value: 10
+                        }
+                    }
+                }
+            }
+        }, {
+            service: 'APES',
+            name: 'APES',
+            projects: {
+                hivDetermine: {
+                    project: 'hivDetermine',
+                    name: 'hivDetermine',
+                    outcomes: {
+                        consumo: {
+                            outcome: 'consumo',
+                            name: 'consumo',
+                            value: 10
+                        },
+                        positive: {
+                            outcome: 'positive',
+                            name: 'positive',
+                            value: 10
+                        },
+                        unjustified: {
+                            outcome: 'unjustified',
+                            name: 'unjustified',
+                            value: 10
+                        }
+                    }
+                }
+            }
+        }];
+        // #375: ends here
+
         requisition = {
             template: template,
             requisitionLineItems: lineItems,
             // #251: Facility user can create requisition with KIT section
             kitUsageLineItems: kitUsageLineItems,
             // #251: ends here
+            // #375: Facility user can create requisition with test consumption section
+            testConsumptionLineItems: testConsumptionLineItems,
+            // #375: ends here
             // SIGLUS-REFACTOR: starts here
             extraData: {
                 consultationNumber: 1,
@@ -222,6 +307,24 @@ describe('requisitionValidator', function() {
             expect(validator.validateRequisition(requisition)).toBe(false);
         });
         // #251: ends here
+
+        // #375: Facility user can create requisition with test consumption section
+        it('should return true if testConsumptionLineItems are valid', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+
+            expect(validator.validateRequisition(requisition)).toBe(true);
+        });
+
+        it('should return true if test project is empty', function() {
+            requisition.template.extension.enableKitUsage = true;
+
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = null;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = null;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.unjustified.value = null;
+
+            expect(validator.validateRequisition(requisition)).toBe(true);
+        });
+        // #375: ends here
     });
 
     describe('validateSiglusLineItemField', function() {
