@@ -282,14 +282,14 @@ describe('SiglusTestConsumptionController', function() {
             expect(outcome.value).toBe(220);
         });
 
-        it('should return total value 0 when the positive value of newLineItem is null ' +
+        it('should return total value null when the positive value of newLineItem is null ' +
             'and the positive value of anotherLineItem is null', function() {
             var project = lineItems[0].projects['hivDetermine'];
             var outcome = lineItems[0].projects['hivDetermine'].outcomes['positive'];
 
             vm.getTotal(project, outcome);
 
-            expect(outcome.value).toBe(0);
+            expect(outcome.value).toBe(null);
         });
 
         it('should get error message when the unjustified value of newLineItem is 2147483647 ' +
