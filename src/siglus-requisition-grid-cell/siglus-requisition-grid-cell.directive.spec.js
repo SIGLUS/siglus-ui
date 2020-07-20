@@ -46,8 +46,8 @@ describe('requisitionGridCell', function() {
     });
 
     function getCompiledElement() {
-        var rootElement = angular.element('<div><div requisition-grid-cell' +
-            ' line-item-field="lineItemField"></div></div>');
+        var rootElement = angular.element('<div siglus-requisition-grid-cell' +
+            ' line-item-field="lineItemField"></div>');
         var compiledElement = this.$compile(rootElement)(this.scope);
         angular.element('body').append(compiledElement);
         this.scope.$digest();

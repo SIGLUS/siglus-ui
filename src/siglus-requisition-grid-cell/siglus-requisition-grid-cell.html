@@ -1,7 +1,7 @@
-<td class="requisition-product-grid-cell" openlmis-invalid="{{lineItemField.$error}}">
+<div class="input-control" popover openlmis-invalid="{{lineItemField.$error}}" input-control>
 	<input positive-integer
 		   ng-model="lineItemField.value"
 		   ng-change="testConsumptionLineItems ? update(testConsumptionLineItems) : update(lineItemField)"
 		   ng-blur="testConsumptionLineItems ? update(testConsumptionLineItems) : update(lineItemField)"
 	/>
-</td>
+</div>

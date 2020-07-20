@@ -20,26 +20,13 @@
             <td ng-class="{'grey-background': vm.isTotal(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
             <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
             <td ng-repeat-end ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
-                ng-if="vm.canEdit && vm.isUserInput(lineItem)"
-                requisition-grid-cell
-                line-item-field="orderable"
+                openlmis-invalid="{{orderable.$error}}" ng-class="{'is-invalid': orderable.$error, 'has-popover': orderable.$error}"
             >
+                <div ng-if="vm.canEdit && vm.isUserInput(lineItem)" siglus-requisition-grid-cell line-item-field="orderable"></div>
+                <div ng-if="vm.canEdit && !vm.isUserInput(lineItem)"
+                >{{vm.getTotal(information.name, orderable.id)}}</div>
+                <div ng-if="!vm.canEdit">{{orderable.value}}</div>
             </td>
-            <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
-            <td ng-repeat-end ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
-                ng-if="vm.canEdit && !vm.isUserInput(lineItem)"
-                openlmis-invalid="{{orderable.$error}}"
-                ng-class="{'is-invalid': orderable.$error, 'has-popover': orderable.$error}"
-            >
-                {{vm.getTotal(information.name, orderable.id)}}
-            </td>
-            <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
-            <td ng-repeat-end ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
-                ng-if="!vm.canEdit"
-            >
-                {{orderable.value}}
-            </td>
-
         </tr>
         </tbody>
     </table>
