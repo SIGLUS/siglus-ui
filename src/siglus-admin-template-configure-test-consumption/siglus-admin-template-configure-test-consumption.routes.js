@@ -26,7 +26,7 @@
     function routes($stateProvider, REQUISITION_RIGHTS) {
         $stateProvider
             .state('openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption', {
-                label: 'adminProgramTemplate.rapidTestConsumption',
+                label: 'adminProgramTemplate.testConsumption',
                 url: '/testConsumption',
                 templateUrl: 'siglus-admin-template-configure-test-consumption' +
                     '/siglus-test-consumption-template.html',
