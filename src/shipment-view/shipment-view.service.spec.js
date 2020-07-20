@@ -18,7 +18,7 @@ describe('shipmentViewService', function() {
     // #287: add alertService
     var shipmentViewService, OrderDataBuilder, shipmentRepositoryMock, shipmentFactoryMock, order,
         ShipmentDataBuilder, shipment, $rootScope, $q, Order, loadingModalService, $state,
-        notificationService, stateTrackerService, confirmService, alertService;
+        notificationService, stateTrackerService, confirmService, alertService, siglusConfirmModalService;
     // #287: ends here
 
     beforeEach(function() {
@@ -57,6 +57,7 @@ describe('shipmentViewService', function() {
             // #287: Warehouse clerk can skip some products in order
             alertService = $injector.get('alertService');
             // #287: ends here
+            siglusConfirmModalService = $injector.get('siglusConfirmModalService');
 
         });
 
@@ -71,6 +72,7 @@ describe('shipmentViewService', function() {
         // #287: Warehouse clerk can skip some products in order
         spyOn(alertService, 'error');
         // #287: ends here
+        spyOn(siglusConfirmModalService, 'confirm');
 
         shipment = new ShipmentDataBuilder().build();
     });
@@ -421,6 +423,42 @@ describe('shipmentViewService', function() {
 
             expect(notificationService.error).not.toHaveBeenCalled();
             expect(loadingModalService.close).not.toHaveBeenCalled();
+        });
+
+        it('should call createSuborder when it is not fulfilled after choose create suborder', function() {
+            shipment.createSuborder = jasmine.createSpy('createSuborder');
+            siglusConfirmModalService.confirm.andReturn($q.resolve(true));
+            shipment.order.orderLineItems.forEach(function(lineItem) {
+                lineItem.orderedQuantity = 1;
+                lineItem.partialFulfilledQuantity = 0;
+            });
+
+            shipment.confirm();
+            $rootScope.$apply();
+
+            expect(siglusConfirmModalService.confirm).toHaveBeenCalled();
+            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(shipment.createSuborder).toHaveBeenCalled();
+            expect(originalConfirm).not.toHaveBeenCalledWith();
+
+        });
+
+        it('should not call createSuborder when it is not fulfilled after choose confirm shipment', function() {
+            shipment.createSuborder = jasmine.createSpy('createSuborder');
+            siglusConfirmModalService.confirm.andReturn($q.resolve(false));
+            shipment.order.orderLineItems.forEach(function(lineItem) {
+                lineItem.orderedQuantity = 1;
+                lineItem.partialFulfilledQuantity = 0;
+            });
+
+            shipment.confirm();
+            $rootScope.$apply();
+
+            expect(siglusConfirmModalService.confirm).toHaveBeenCalled();
+            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(shipment.createSuborder).not.toHaveBeenCalled();
+            expect(originalConfirm).toHaveBeenCalled();
+
         });
 
     });
