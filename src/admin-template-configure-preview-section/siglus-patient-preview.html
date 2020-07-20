@@ -6,7 +6,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="column in section.columns | orderBy : 'displayOrder'" ng-if="column.isDisplayed">
+        <tr ng-repeat="column in section.columns" ng-if="column.isDisplayed">
             <td ng-class="{'grey-background': vm.isTotal(column)}">{{column.label}}</td>
             <td class="col-source"
                 ng-class="{'user-input': vm.isUserInput(column)}"

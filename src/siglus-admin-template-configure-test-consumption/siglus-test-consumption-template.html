@@ -1,5 +1,5 @@
 <div class="test-consumption-template" ng-if="vm.template.testConsumption.length">
-    <div ng-repeat="section in vm.template.testConsumption">
+    <div ng-repeat="section in vm.template.testConsumption | orderBy : 'displayOrder'">
         <div class="sub-heading">
             <h3>{{section.label}}</h3>
         </div>

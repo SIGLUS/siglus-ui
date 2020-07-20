@@ -25,7 +25,7 @@
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
         $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.patient', {
-            label: 'adminProgramTemplate.patientLineItem',
+            label: 'adminProgramTemplate.patient',
             url: '/patient',
             templateUrl: 'siglus-admin-template-configure-patient/siglus-admin-template-configure-patient.html',
             controller: 'SiglusPatientTemplateController',
