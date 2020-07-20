@@ -397,7 +397,9 @@
             // SIGLUS-REFACTOR: ends here
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                failWithMessage('requisitionView.rnrHasErrors')();
+                // #375: create requisition with test consumption section
+                failedWithAlert();
+                // #375: ends here
             }
 
             function saveThenSubmit() {
@@ -446,7 +448,9 @@
             // SIGLUS-REFACTOR: ends here
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                failWithMessage('requisitionView.rnrHasErrors')();
+                // #375: create requisition with test consumption section
+                failedWithAlert();
+                // #375: ends here
             }
 
             function saveThenAuthorize() {
@@ -499,7 +503,9 @@
                     });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                failWithMessage('requisitionView.rnrHasErrors')();
+                // #375: create requisition with test consumption section
+                failedWithAlert();
+                // #375: ends here
             }
 
             function saveThenSubmitThenAuthorize() {
@@ -581,7 +587,9 @@
                 }
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                failWithMessage('requisitionView.rnrHasErrors')();
+                // #375: create requisition with test consumption section
+                failedWithAlert();
+                // #375: ends here
             }
 
             function saveThenApprove() {
@@ -600,6 +608,16 @@
             }
         }
         // #231: ends here
+
+        // #375: create requisition with test consumption section
+        function failedWithAlert() {
+            if (requisitionValidator.isTestConsumptionEmpty(vm.requisition)) {
+                failWithMessage('requisitionView.emptyTestConsumption')();
+            } else {
+                failWithMessage('requisitionView.rnrHasErrors')();
+            }
+        }
+        // #375: ends here
 
         /**
          * @ngdoc method
