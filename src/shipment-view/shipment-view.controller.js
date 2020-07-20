@@ -240,7 +240,8 @@
             return selectedProducts.map(function(orderable) {
                 return {
                     orderedQuantity: 0,
-                    orderable: orderable
+                    orderable: orderable,
+                    partialFulfilledQuantity: 0
                 };
             });
         }
