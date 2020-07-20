@@ -40,11 +40,6 @@
         function onInit() {
             vm.template = template;
             vm.addColumn = addColumn;
-            enableCurrentSection();
-        }
-
-        function enableCurrentSection() {
-            vm.template.extension.enableRapidTestConsumption = true;
         }
 
         function addColumn(section) {

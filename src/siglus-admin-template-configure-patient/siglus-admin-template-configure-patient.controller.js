@@ -33,11 +33,6 @@
 
         function onInit() {
             vm.template = template;
-            enableCurrentSection();
-        }
-
-        function enableCurrentSection() {
-            vm.template.extension.enablePatient = true;
         }
 
         function addColumn(section) {

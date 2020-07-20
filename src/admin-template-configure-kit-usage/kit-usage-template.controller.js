@@ -45,13 +45,8 @@
         function onInit() {
             vm.template = template;
             vm.tags = tags;
-            enableCurrentSection();
             vm.collection = templateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.COLLECTION);
             vm.service = templateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.SERVICE);
-        }
-
-        function enableCurrentSection() {
-            vm.template.extension.enableKitUsage = true;
         }
 
         function addCollectionColumn() {

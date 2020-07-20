@@ -47,7 +47,8 @@ describe('TemplateConfigureColumnSettingController', function() {
             .withColumn(new TemplateColumnDataBuilder().buildTotalColumn())
             .withColumn(new TemplateColumnDataBuilder().buildRemarksColumn())
             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
-            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn());
+            .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn())
+            .build();
 
         originalTemplate = angular.copy(template);
         spyOn(scope, '$watch');
@@ -61,24 +62,31 @@ describe('TemplateConfigureColumnSettingController', function() {
             template: template,
             originalTemplate: originalTemplate
         });
-        vm.$onInit();
     });
 
     describe('onInit', function() {
 
         it('should set template', function() {
+            vm.$onInit();
+
             expect(vm.template).toEqual(template);
         });
 
         it('should set previousTemplate', function() {
+            vm.$onInit();
+
             expect(vm.previousTemplate).toEqual(template);
         });
 
         it('should call initialize', function() {
+            vm.$onInit();
+
             expect(configureStateRouterService.initialize).toHaveBeenCalledWith(vm.template);
         });
 
         it('should call unsubscribe when $destroy event emit', function() {
+            vm.$onInit();
+
             scope.$emit('$destroy');
             scope.$apply();
 
@@ -86,22 +94,39 @@ describe('TemplateConfigureColumnSettingController', function() {
         });
 
         it('should watch template', function() {
+            vm.$onInit();
+
             expect(scope.$watch).toHaveBeenCalled();
         });
 
         it('should register refresh confrim', function() {
+            vm.$onInit();
+
             expect(refreshConfirmService.register).toHaveBeenCalledWith(scope);
         });
 
         it('should deregister when $destroy event emit', function() {
+            vm.$onInit();
+
             scope.$emit('$destroy');
             scope.$apply();
 
             expect(refreshConfirmService.deregister).toHaveBeenCalled();
         });
+
+        it('should enable product when route to product detail page', function() {
+            state.current.name = 'openlmis.administration.requisitionTemplates.configure.columnSetting.product';
+            vm.$onInit();
+
+            expect(vm.template.extension.enableProduct).toBe(true);
+            expect(originalTemplate.extension.enableProduct).toBe(true);
+        });
     });
 
     describe('cancel', function() {
+        beforeEach(function() {
+            vm.$onInit();
+        });
 
         it('should change state', function() {
             spyOn(state, 'go');
@@ -131,6 +156,7 @@ describe('TemplateConfigureColumnSettingController', function() {
             spyOn(state, 'go').andCallFake(stateGoSpy);
 
             template.isValid = jasmine.createSpy().andReturn(true);
+            vm.$onInit();
         });
 
         it('should display error message when template is invalid', function() {

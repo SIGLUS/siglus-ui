@@ -29,12 +29,15 @@
         .controller('TemplateConfigureColumnSettingController', TemplateConfigureColumnSettingController);
 
     TemplateConfigureColumnSettingController.$inject = [
-        '$state', '$scope', 'template', 'originalTemplate', 'notificationService', 'refreshConfirmService',
+        '$window', '$state', '$scope', 'template', 'originalTemplate', 'notificationService', 'refreshConfirmService',
         'configureStateRouterService'
     ];
 
-    function TemplateConfigureColumnSettingController($state, $scope, template, originalTemplate, notificationService,
-                                                      refreshConfirmService, configureStateRouterService) {
+    function TemplateConfigureColumnSettingController($window, $state, $scope, template, originalTemplate,
+                                                      notificationService, refreshConfirmService,
+                                                      configureStateRouterService) {
+        $window.scrollTo(0, 0);
+
         var vm = this;
 
         vm.$onInit = onInit;
@@ -46,10 +49,25 @@
         vm.previousTemplate = undefined;
 
         function onInit() {
+            enableCurrentSection();
             vm.template = template;
             vm.previousTemplate = angular.copy(template);
             stateRouter();
             refreshConfirm();
+        }
+
+        function enableCurrentSection() {
+            var routerMap = {
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.product': 'enableProduct',
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage': 'enableKitUsage',
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.usageInformation':
+                    'enableUsageInformation',
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.patient': 'enablePatient',
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption':
+                    'enableRapidTestConsumption'
+            };
+            originalTemplate.extension[routerMap[$state.current.name]] = true;
+            template.extension[routerMap[$state.current.name]] = true;
         }
 
         function stateRouter() {
