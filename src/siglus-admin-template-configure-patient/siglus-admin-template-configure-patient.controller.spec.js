@@ -48,10 +48,6 @@ describe('SiglusPatientTemplateController', function() {
         it('should set template', function() {
             expect(vm.template).toEqual(template);
         });
-
-        it('should enable patient', function() {
-            expect(vm.template.extension.enablePatient).toEqual(true);
-        });
     });
 
     describe('addColumn', function() {

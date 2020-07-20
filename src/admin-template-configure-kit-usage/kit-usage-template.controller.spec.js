@@ -78,10 +78,6 @@ describe('KitUsageTemplateController', function() {
             expect(vm.tags).toEqual(tags);
         });
 
-        it('should enable kitUsage', function() {
-            expect(vm.template.extension.enableKitUsage).toEqual(true);
-        });
-
         it('should set collection', function() {
             expect(vm.collection).toBe(collection);
         });

@@ -1,6 +1,6 @@
 [class*="-preview"] {
     .openlmis-table {
-        td {
+        tbody tr td {
             min-width: 100px;
             padding: 16px 8px;
             &.col-source {
@@ -23,10 +23,9 @@
                     border-radius: 5px;
                 }
             }
-        }
-
-        tbody tr td.row-span-border {
-            border-left-width: 1px;
+            &.row-span-border {
+                border-left-width: 1px;
+            }
         }
 
         .bold-label {

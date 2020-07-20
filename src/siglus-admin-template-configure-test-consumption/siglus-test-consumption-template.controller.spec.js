@@ -72,10 +72,6 @@ describe('TestConsumptionController', function() {
         it('should set template', function() {
             expect(vm.template).toEqual(template);
         });
-
-        it('should enable test consumption', function() {
-            expect(vm.template.extension.enableRapidTestConsumption).toEqual(true);
-        });
     });
 
     describe('addColumn', function() {

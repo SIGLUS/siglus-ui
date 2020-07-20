@@ -42,14 +42,9 @@
 
         function onInit() {
             vm.template = template;
-            enableCurrentSection();
             vm.information = templateConfigureService.getSectionByName(template.usageInformation,
                 SECTION_TYPES.INFORMATION);
             vm.service = templateConfigureService.getSectionByName(template.usageInformation, SECTION_TYPES.SERVICE);
-        }
-
-        function enableCurrentSection() {
-            vm.template.extension.enableUsageInformation = true;
         }
 
         function addInformationColumn() {

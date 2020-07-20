@@ -68,10 +68,6 @@ describe('UsageInformationTemplateController', function() {
             expect(vm.template).toEqual(template);
         });
 
-        it('should enable usageInformation', function() {
-            expect(vm.template.extension.enableUsageInformation).toEqual(true);
-        });
-
         it('should set information', function() {
             expect(vm.information).toBe(information);
         });
