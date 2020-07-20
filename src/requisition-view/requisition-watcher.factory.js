@@ -66,6 +66,9 @@
             addWatcher(scope, requisition, 'kitUsageLineItems', this, storage);
             addWatcher(scope, requisition, 'usageInformationLineItems', this, storage);
             // SIGLUS-REFACTOR: ends here
+            // #375: create requisition with test consumption section
+            addWatcher(scope, requisition, 'testConsumptionLineItems', this, storage);
+            // #375: ends here
         }
 
         function enableWatcher() {

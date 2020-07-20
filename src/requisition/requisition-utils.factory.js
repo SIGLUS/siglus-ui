@@ -31,7 +31,8 @@
     function requisitionUtils() {
         return {
             isEmpty: isEmpty,
-            calculateTotal: calculateTotal
+            calculateTotal: calculateTotal,
+            clearTestConsumptionError: clearTestConsumptionError
         };
 
         function isEmpty(value) {
@@ -53,6 +54,16 @@
                     return parseInt(num) + memo;
                 }, 0)
                 .value();
+        }
+
+        function clearTestConsumptionError(lineItems) {
+            angular.forEach(lineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.projects), function(project) {
+                    angular.forEach(Object.keys(lineItem.projects[project].outcomes), function(outcome) {
+                        lineItem.projects[project].outcomes[outcome].$error = undefined;
+                    });
+                });
+            });
         }
     }
 

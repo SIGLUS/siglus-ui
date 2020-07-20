@@ -152,15 +152,19 @@
             }
             return isValid;
         }
+        function isTestOutcomesFilled(fields) {
+            return _.find(fields, function(field) {
+                return isNotEmpty(field.value);
+            });
+        }
 
         function validateTestConsumptionLineItems(lineItems) {
             var isValid = true;
+            requisitionUtils.clearTestConsumptionError(lineItems);
             angular.forEach(lineItems, function(lineItem) {
                 angular.forEach(_.values(lineItem.projects), function(testProject) {
                     var fields = _.values(testProject.outcomes);
-                    if (_.find(fields, function(field) {
-                        return isNotEmpty(field.value);
-                    })) {
+                    if (isTestOutcomesFilled(fields)) {
                         angular.forEach(fields, function(field) {
                             isValid = validateSiglusLineItemField(field) && isValid;
                             isValid = validateAPES(lineItems, testProject, field) && isValid;
