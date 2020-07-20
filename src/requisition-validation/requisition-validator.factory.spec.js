@@ -81,11 +81,11 @@ describe('requisitionValidator', function() {
             collection: 'kitReceived',
             services: {
                 CHW: {
-                    id: '5fa9e34e-ea7c-4e24-a08a-cbeacc66d664',
+                    id: '1',
                     value: 10
                 },
                 HF: {
-                    id: '000f8d2f-1149-46a8-9fbc-8c7a7669ee1e',
+                    id: '2',
                     value: 0
                 }
             }
@@ -267,8 +267,8 @@ describe('requisitionValidator', function() {
         it('should return true if requisition comment is longer than 255 chars', function() {
             spyOn(validator, 'validateLineItem').andReturn(true);
 
-            for (var i = 0; i < 10; i++) {
-                requisition.draftStatusMessage += 'abcdefghijklmnopqrstuvwxyz';
+            for (var i = 0; i < 26; i++) {
+                requisition.draftStatusMessage += '1234567890';
             }
 
             expect(validator.validateRequisition(requisition)).toBe(true);
@@ -294,11 +294,11 @@ describe('requisitionValidator', function() {
                 collection: 'kitOpened',
                 services: {
                     CHW: {
-                        id: '5fa9e34e-ea7c-4e24-a08a-cbeacc66d664',
+                        id: '1',
                         value: ''
                     },
                     HF: {
-                        id: '000f8d2f-1149-46a8-9fbc-8c7a7669ee1e',
+                        id: '2',
                         value: 0
                     }
                 }
