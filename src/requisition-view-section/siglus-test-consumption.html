@@ -39,25 +39,10 @@
                 </td>
                 <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
                 <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
-                    ng-if="vm.canEdit && vm.isUserInput(lineItem)"
-                    requisition-grid-cell
-                    line-item-field="outcome"
-                    test-consumption-line-items="vm.lineItems"
-                >
-                </td>
-                <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
-                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
-                    ng-if="vm.canEdit && !vm.isUserInput(lineItem)"
-                    openlmis-invalid="{{outcome.$error}}"
-                    ng-class="{'is-invalid': outcome.$error, 'has-popover': outcome.$error}"
-                >
-                    {{vm.getTotal(project, outcome)}}
-                </td>
-                <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
-                <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
-                    ng-if="!vm.canEdit"
-                >
-                    {{outcome.value}}
+                    openlmis-invalid="{{outcome.$error}}" ng-class="{'is-invalid': outcome.$error, 'has-popover': outcome.$error}">
+                    <div ng-if="vm.canEdit && vm.isUserInput(lineItem)" siglus-requisition-grid-cell line-item-field="outcome" test-consumption-line-items="vm.lineItems"></div>
+                    <div ng-if="vm.canEdit && !vm.isUserInput(lineItem)">{{vm.getTotal(project, outcome)}}</div>
+                    <div ng-if="!vm.canEdit">{{outcome.value}}</div>
                 </td>
             </tr>
         </tbody>

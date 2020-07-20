@@ -19,7 +19,7 @@
 
     angular
         .module('siglus-requisition-grid-cell')
-        .directive('requisitionGridCell', requisitionGridCell);
+        .directive('siglusRequisitionGridCell', requisitionGridCell);
 
     requisitionGridCell.$inject = ['$templateRequest', '$compile', 'requisitionValidator'];
 
@@ -28,32 +28,17 @@
         return {
             restrict: 'A',
             link: link,
+            templateUrl: 'siglus-requisition-grid-cell/siglus-requisition-grid-cell.html',
             scope: {
                 lineItemField: '=',
                 testConsumptionLineItems: '=?'
             }
         };
 
-        function link(scope, element) {
+        function link(scope) {
             scope.update = requisitionValidator.validateSiglusLineItemField;
             if (!_.isUndefined(scope.testConsumptionLineItems)) {
                 scope.update = requisitionValidator.validateTestConsumptionLineItems;
-            }
-
-            updateCellContents();
-
-            function updateCellContents() {
-                replaceCell();
-            }
-
-            function replaceCell() {
-                var templateHtml = 'siglus-requisition-grid-cell/siglus-requisition-grid-cell.html';
-                $templateRequest(templateHtml).then(function(template) {
-                    var cell = $compile(template)(scope);
-                    element.replaceWith(cell);
-
-                    element = cell;
-                });
             }
         }
     }
