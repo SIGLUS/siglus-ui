@@ -195,7 +195,7 @@
             if (vm.requisition.extraData.isSaved || vm.requisition.$modified) {
                 return;
             }
-            if (canSubmit) {
+            if (canSubmit && !vm.requisition.$isRejected()) {
                 angular.forEach(vm.requisition.requisitionLineItems, function(lineItem) {
                     lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
                 });
