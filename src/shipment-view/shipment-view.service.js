@@ -32,15 +32,15 @@
     shipmentViewService.inject = [
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
-        // #400: add siglusConfirmModalService, messageService
-        'siglusConfirmModalService', 'messageService'
+        // #400: add siglusConfirmModalService
+        'siglusConfirmModalService'
         // #400: ends here
     ];
     // #287: ends here
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
                                  $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
-                                 siglusConfirmModalService, messageService) {
+                                 siglusConfirmModalService) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -123,18 +123,9 @@
                 }
                 // #287: ends here
                 // #400: Facility user partially fulfill an order and create sub-order for an requisition
-                var totalPartialLineItems = isPartialFulfilled(shipment);
+                var totalPartialLineItems = getPartialFulfilledLineItems(shipment);
                 if (totalPartialLineItems) {
-                    return siglusConfirmModalService.confirm(
-                        messageService.get('shipmentView.confirmPartialFulfilled.message', {
-                            totalPartialLineItems: totalPartialLineItems +
-                                (totalPartialLineItems === 1 ? ' product is' : ' products are')
-                        }),
-                        'shipmentView.confirmPartialFulfilled.createSuborder',
-                        'shipmentView.confirmShipment',
-                        undefined,
-                        'shipmentView.confirmPartialFulfilled.title'
-                    )
+                    return siglusConfirmModalService.confirm(totalPartialLineItems)
                         .then(function(isSubOrder) {
                             loadingModalService.open();
                             if (isSubOrder) {
@@ -194,7 +185,7 @@
         // #287: ends here
 
         // #400: Facility user partially fulfill an order and create sub-order for an requisition
-        function isPartialFulfilled(shipment) {
+        function getPartialFulfilledLineItems(shipment) {
             var totalPartialLineItems = 0;
             shipment.order.orderLineItems.forEach(function(orderLineItem) {
                 if (!orderLineItem.added && !orderLineItem.skipped) {

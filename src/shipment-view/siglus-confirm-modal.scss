@@ -1,0 +1,9 @@
+.modal-body.is-info {
+    display: flex;
+    @include icon('exclamation-circle');
+    &:before {
+        margin-right: 0.5em;
+        font-size: 2em;
+        color: #3A95BC;
+    }
+}

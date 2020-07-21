@@ -127,11 +127,9 @@
                 return $q.reject();
             }
 
-            // #400: Facility user partially fulfill an order and create sub-order for an requisition
             return resource.create({
                 isSubOrder: true
             }, this).$promise;
-            // #400: ends here
         }
         // #400: ends here
 
