@@ -53,12 +53,11 @@
             this.lotRepositoryImpl = new LotRepositoryImpl();
             this.orderableResource = new OrderableResource();
 
-            this.resource = $resource(fulfillmentUrlFactory('/api/proofsOfDelivery/:id'), {}, {
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+            this.resource = $resource(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id'), {}, {
+                // #400: ends here
                 update: {
-                    method: 'PUT',
-                    // #330: users can get notifications of the work that they need to do
-                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id')
-                    // #330: ends here
+                    method: 'PUT'
                 }
             });
         }
