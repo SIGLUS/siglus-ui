@@ -38,6 +38,9 @@ describe('ViewTabController', function() {
             this.requisitionService = $injector.get('requisitionService');
             this.loadingModalService = $injector.get('loadingModalService');
             // SIGLUS-REFACTOR: ends here
+            // #409: populate value when requisition is rejected
+            this.REQUISITION_STATUS = $injector.get('REQUISITION_STATUS');
+            // #409: ends here
         });
 
         var requisitionDataBuilder = new RequisitionDataBuilder();
@@ -170,6 +173,87 @@ describe('ViewTabController', function() {
             expect(this.vm.program).toEqual(this.program);
         });
         // #375: ends here
+
+        // #409: populate value when requisition is rejected
+        describe('populate default value', function() {
+            beforeEach(function() {
+                this.canSubmit = true;
+                this.canAuthorize = true;
+                this.hasAuthorizeRight = true;
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    item.theoreticalQuantityToRequest = 17;
+                    item.requestedQuantity = 18;
+                    item.authorizedQuantity = 19;
+                });
+            });
+
+            it('Should populate requestedQuantity from theoreticalQuantityToRequest when can submit', function() {
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.requestedQuantity).toBe(17);
+                });
+            });
+
+            it('Should not populate requestedQuantity from theoreticalQuantityToRequest when requisition ' +
+                'is rejected', function() {
+                this.requisition.status = this.REQUISITION_STATUS.REJECTED;
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.requestedQuantity).toBe(18);
+                });
+            });
+
+            it('Should populate authorizedQuantity from requestedQuantity when can canAuthorize', function() {
+                this.canSubmit = false;
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.authorizedQuantity).toBe(18);
+                });
+            });
+
+            it('Should populate authorizedQuantity from requestedQuantity when can canSubmitAndAuthorize', function() {
+                this.canAuthorize = false;
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.authorizedQuantity).toBe(17);
+                });
+            });
+
+            it('Should populate requestedQuantity and authorizedQuantity from theoreticalQuantityToRequest' +
+                ' when can submit and canAuthorize', function() {
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.requestedQuantity).toBe(17);
+                    expect(item.authorizedQuantity).toBe(17);
+                });
+            });
+
+            it('Should not populate value when requisition is saved', function() {
+                this.requisition.extraData.isSaved = true;
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.requestedQuantity).toBe(18);
+                    expect(item.authorizedQuantity).toBe(19);
+                });
+            });
+
+            it('Should not populate value when requisition is modified', function() {
+                this.requisition.$modified = true;
+                this.initController();
+
+                angular.forEach(this.requisition.requisitionLineItems, function(item) {
+                    expect(item.requestedQuantity).toBe(18);
+                    expect(item.authorizedQuantity).toBe(19);
+                });
+            });
+        });
+        // #409: ends here
 
         describe('Add (Full Supply) Products button', function() {
 
