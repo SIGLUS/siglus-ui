@@ -1,4 +1,3 @@
 {
-  "requisitionViewSection.usageInformation.MonthOrYear": "Month/Year",
-  "requisitionViewSection.testConsumption.program": "${program}"
+  "requisitionViewSection.usageInformation.MonthOrYear": "Month/Year"
 }

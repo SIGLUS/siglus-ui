@@ -193,12 +193,7 @@
                     var addedTableLineItems = new ShipmentViewLineItemFactory()
                         .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
                     addedShipmentLineItems.forEach(function(shipmentLineItem) {
-                        if (!shipment.lineItems.find(function(existedShipmentLineItem) {
-                            return existedShipmentLineItem.orderable.id === shipmentLineItem.orderable.id
-                                && existedShipmentLineItem.lot.id === shipmentLineItem.lot.id;
-                        })) {
-                            shipment.lineItems.push(shipmentLineItem);
-                        }
+                        shipment.lineItems.push(shipmentLineItem);
                     });
                     vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
                     vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);

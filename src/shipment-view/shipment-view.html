@@ -54,7 +54,7 @@
                 <th>{{'shipmentView.product' | message}}</th>
                 <th>{{'shipmentView.lotCode' | message}}</th>
                 <!-- #370: hide VVM Status-->
-<!--                <th>{{'shipmentView.vvmStatus' | message}}</th>-->
+                <!--<th>{{'shipmentView.vvmStatus' | message}}</th>-->
                 <!-- #370: ends here -->
                 <th>{{'shipmentView.expiryDate' | message}}</th>
                 <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.orderQuantity' | message}}</th>
@@ -78,7 +78,7 @@
                 <td ng-if="!tableLineItem.isLot"></td>
                 <td ng-if="tableLineItem.isLot">{{tableLineItem.lot | lotCode}}</td>
                 <!-- #370: hide VVM Status-->
-<!--                <td>{{vm.getVvmStatusLabel(tableLineItem.vvmStatus) | message}}</td>-->
+                <!--<td>{{vm.getVvmStatusLabel(tableLineItem.vvmStatus) | message}}</td>-->
                 <!-- #370: ends here -->
                 <td>{{tableLineItem.lot.expirationDate | openlmisDate}}</td>
                 <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>

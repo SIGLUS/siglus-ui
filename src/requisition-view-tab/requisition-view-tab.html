@@ -19,14 +19,13 @@
             <tr>
                 <td>{{'requisitionViewTab.externalConsultationPerformedNo' | message}}</td>
                 <!-- #385: alert when cursor leaves the input -->
-                <td ng-if="vm.userCanEdit"
-                    openlmis-invalid="{{vm.consultationNumberMessage}}"
-                    ng-class="{'is-invalid': vm.consultationNumberMessage}"
-                >
-                    <input positive-integer ng-model="vm.requisition.extraData.consultationNumber" maxlength="8"
-                           ng-change="vm.validateConsultationNumber()"
-                           ng-blur="vm.validateConsultationNumber()"
-                    />
+                <td ng-if="vm.userCanEdit">
+                    <div class="input-control" popover openlmis-invalid="{{vm.consultationNumberMessage}}" input-control>
+                        <input positive-integer ng-model="vm.requisition.extraData.consultationNumber"
+                               ng-change="vm.validateConsultationNumber()"
+                               ng-blur="vm.validateConsultationNumber()"
+                        />
+                    </div>
                 </td>
                 <!-- #385: ends here -->
                 <td ng-if="!vm.userCanEdit">

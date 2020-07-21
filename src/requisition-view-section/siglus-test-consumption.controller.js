@@ -34,6 +34,7 @@
         vm.testProject = undefined;
         vm.testOutcome = undefined;
         vm.service = undefined;
+        vm.testProjectColspan = undefined;
         vm.programColspan = undefined;
 
         function onInit() {
