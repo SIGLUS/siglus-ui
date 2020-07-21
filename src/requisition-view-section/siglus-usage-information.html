@@ -20,7 +20,7 @@
             <td ng-class="{'grey-background': vm.isTotal(lineItem)}" popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
             <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
             <td ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
-                openlmis-invalid="{{orderable.$error}}" ng-class="{'is-invalid': orderable.$error, 'has-popover': orderable.$error}"
+                openlmis-invalid="{{orderable.$error}}"
                 ng-if="!(vm.canEdit && vm.isUserInput(lineItem))"
             >
                 <div ng-if="vm.canEdit && !vm.isUserInput(lineItem)">{{vm.getTotal(information.name, orderable.id)}}</div>

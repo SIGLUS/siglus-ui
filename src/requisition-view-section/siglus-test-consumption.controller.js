@@ -30,6 +30,7 @@
         vm.isTotal = columnUtils.isTotal;
         vm.isAPES = columnUtils.isAPES;
         vm.isUserInput = columnUtils.isUserInput;
+        vm.validateOnUpdate = validateOnUpdate;
         vm.getTotal = getTotal;
         vm.testProject = undefined;
         vm.testOutcome = undefined;
@@ -64,6 +65,10 @@
                 requisitionValidator.validateSiglusLineItemField(totalField);
             }
             return totalField.value;
+        }
+
+        function validateOnUpdate() {
+            return requisitionValidator.validateTestConsumptionLineItems(vm.lineItems);
         }
 
         function extendLineItems() {

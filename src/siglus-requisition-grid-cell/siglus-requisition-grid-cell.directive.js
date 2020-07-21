@@ -31,14 +31,15 @@
             templateUrl: 'siglus-requisition-grid-cell/siglus-requisition-grid-cell.html',
             scope: {
                 lineItemField: '=',
-                testConsumptionLineItems: '=?'
+                onUpdate: '=?'
             }
         };
 
         function link(scope) {
-            scope.update = requisitionValidator.validateSiglusLineItemField;
-            if (!_.isUndefined(scope.testConsumptionLineItems)) {
-                scope.update = requisitionValidator.validateTestConsumptionLineItems;
+            if (!(scope.onUpdate instanceof Function)) {
+                scope.onUpdate = function() {
+                    return requisitionValidator.validateSiglusLineItemField(scope.lineItemField);
+                };
             }
         }
     }
