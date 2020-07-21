@@ -63,9 +63,11 @@
                         });
                 },
                 // #264: ends here
-                shipment: function(shipmentViewService, order) {
-                    return shipmentViewService.getShipmentForOrder(order);
+                // #372: Improving Fulfilling Order performance
+                shipment: function(shipmentViewService, order, stockCardSummaries) {
+                    return shipmentViewService.getShipmentForOrder(order, stockCardSummaries);
                 },
+                // #372: ends here
                 tableLineItems: function(ShipmentViewLineItemFactory, shipment, stockCardSummaries) {
                     return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
                 },

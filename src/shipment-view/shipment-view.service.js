@@ -58,12 +58,14 @@
          * @param  {Order}   order the order to get the shipment for
          * @return {Promise}       the promise resolving to a decorated Shipment
          */
-        function getShipmentForOrder(order) {
+        // #372: Improving Fulfilling Order performance
+        function getShipmentForOrder(order, stockCardSummaries) {
             if (!order) {
                 return $q.reject('Order can not be undefined');
             }
 
-            return getShipmentBasedOnOrderStatus(order)
+            return getShipmentBasedOnOrderStatus(order, stockCardSummaries)
+            // #372: ends here
                 .then(function(shipment) {
 
                     shipment.save = decorateSave(shipment.save);
@@ -74,20 +76,19 @@
                 });
         }
 
-        function getShipmentBasedOnOrderStatus(order) {
+        // #372: Improving Fulfilling Order performance
+        function getShipmentBasedOnOrderStatus(order, stockCardSummaries) {
             // #400: Facility user partially fulfill an order and create sub-order for an requisition
             if (order.isOrdered() || order.isPartiallyFulfilled()) {
                 // #400: ends here
-                return new ShipmentFactory()
-                    .buildFromOrder(order)
-                    .then(function(shipment) {
-                        return shipmentRepository.createDraft(shipment);
-                    });
+                return shipmentRepository.createDraft(new ShipmentFactory().buildFromOrder(order, stockCardSummaries),
+                    order, stockCardSummaries);
             }
 
             if (order.isFulfilling()) {
-                return shipmentRepository.getDraftByOrderId(order.id);
+                return shipmentRepository.getDraftByOrderId(order, stockCardSummaries);
             }
+            // #372: ends here
 
             if (order.isShipped()) {
                 return shipmentRepository.getByOrderId(order.id);

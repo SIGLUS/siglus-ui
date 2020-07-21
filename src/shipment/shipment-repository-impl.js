@@ -110,15 +110,17 @@
          * @return {Promise}      the promise resolving to combined JSON which can be used for
          *                        creating instance of the Shipment class
          */
-        function createDraft(json) {
-            var orderResource = this.orderResource,
-                stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
+        // #372: Improving Fulfilling Order performance
+        function createDraft(json, order, stockCardSummaries) {
+            // var orderResource = this.orderResource,
+            //     stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
 
             return this.shipmentDraftResource.create(json)
                 .then(function(shipmentJson) {
-                    return extendResponse(shipmentJson, orderResource, stockCardSummaryRepositoryImpl);
+                    return combineResponses(shipmentJson, order, mapCanFulfillForMe(stockCardSummaries));
                 });
         }
+        // #372: ends here
 
         /**
          * @ngdoc method
@@ -178,17 +180,19 @@
          * @return {Promise}         the promise resolving to combined JSON which can be used for
          *                           creating instance of the Shipment class
          */
-        function getDraftByOrderId(orderId) {
-            var orderResource = this.orderResource,
-                stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
+        // #372: Improving Fulfilling Order performance
+        function getDraftByOrderId(order, stockCardSummaries) {
+            // var orderResource = this.orderResource,
+            //     stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
 
             return this.shipmentDraftResource.query({
-                orderId: orderId
+                orderId: order.id
             })
                 .then(function(page) {
-                    return extendResponse(page.content[0], orderResource, stockCardSummaryRepositoryImpl);
+                    return combineResponses(page.content[0], order, mapCanFulfillForMe(stockCardSummaries));
                 });
         }
+        // #372: ends here
 
         function extendResponse(shipmentJson, orderResource, stockCardSummaryRepositoryImpl) {
             return orderResource.get(shipmentJson.order.id)
