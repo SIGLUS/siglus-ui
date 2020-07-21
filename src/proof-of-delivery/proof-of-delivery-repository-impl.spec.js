@@ -104,7 +104,10 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
 
         it('should resolve to combined server responses if requests were successful', function() {
             $httpBackend
-                .expectGET(fulfillmentUrlFactory('/api/proofsOfDelivery/proof-of-delivery-id?expand=shipment.order'))
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                .expectGET(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+                    'proof-of-delivery-id?expand=shipment.order'))
+                // #400: ends here
                 .respond(200, angular.copy(proofOfDeliveryJson));
 
             var result;
@@ -146,7 +149,10 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
 
         it('should reject if request was unsuccessful', function() {
             $httpBackend
-                .expectGET(fulfillmentUrlFactory('/api/proofsOfDelivery/proof-of-delivery-id?expand=shipment.order'))
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                .expectGET(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+                    'proof-of-delivery-id?expand=shipment.order'))
+                // #400: ends here
                 .respond(400);
 
             var rejected;
@@ -161,7 +167,10 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
 
         it('should reject if lot repository rejects', function() {
             $httpBackend
-                .expectGET(fulfillmentUrlFactory('/api/proofsOfDelivery/proof-of-delivery-id?expand=shipment.order'))
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                .expectGET(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+                    'proof-of-delivery-id?expand=shipment.order'))
+                // #400: ends here
                 .respond(200, angular.copy(proofOfDeliveryJson));
 
             lotRepositoryImplMock.query.andReturn($q.reject());
@@ -178,7 +187,10 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
 
         it('should reject if orderable repository rejects', function() {
             $httpBackend
-                .expectGET(fulfillmentUrlFactory('/api/proofsOfDelivery/proof-of-delivery-id?expand=shipment.order'))
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                .expectGET(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+                    'proof-of-delivery-id?expand=shipment.order'))
+                // #400: ends here
                 .respond(200, angular.copy(proofOfDeliveryJson));
 
             orderableResourceMock.query.andReturn($q.reject());
