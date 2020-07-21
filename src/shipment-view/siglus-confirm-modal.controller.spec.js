@@ -16,30 +16,20 @@
 describe('SiglusConfirmModalController', function() {
 
     beforeEach(function() {
-        module('openlmis-modal');
+        module('shipment-view');
 
         inject(function($injector) {
             this.$controller = $injector.get('$controller');
             this.messageService = $injector.get('messageService');
         });
 
-        this.className = 'class-name';
-        this.messageKey = 'modalMessage';
-        this.message = 'Modal message\nWith multiple lines';
-        this.firstConfirmMessage = 'First Confirm Message';
-        this.secondConfirmMessage = 'Second Confirm Message';
-        this.cancelMessage = 'Cancel Message';
-        this.titleMessage = 'Title message';
+        this.message = '1 product is not fully fulfilled, By click “create sub-order”, this order will be fulfilled' +
+            ' and ordering with filling quantity, the rest products will be move to a new sub-order.';
         this.confirmDeferred = jasmine.createSpyObj('confirmDeferred', ['resolve', 'reject']);
         this.modalDeferred = jasmine.createSpyObj('confirmDeferred', ['resolve', 'reject']);
 
         this.vm = this.$controller('SiglusConfirmModalController', {
-            className: this.className,
-            message: this.messageKey,
-            firstConfirmMessage: this.firstConfirmMessage,
-            secondConfirmMessage: this.secondConfirmMessage,
-            cancelMessage: this.cancelMessage,
-            titleMessage: this.titleMessage,
+            totalPartialLineItems: 1,
             confirmDeferred: this.confirmDeferred,
             modalDeferred: this.modalDeferred
         });
@@ -47,43 +37,11 @@ describe('SiglusConfirmModalController', function() {
 
     describe('$onInit', function() {
 
-        it('should expose class name', function() {
-            this.vm.$onInit();
-
-            expect(this.vm.className).toEqual(this.className);
-        });
-
-        it('should expose parsed message', function() {
+        it('should expose message', function() {
             spyOn(this.messageService, 'get').andReturn(this.message);
-
             this.vm.$onInit();
 
-            expect(this.vm.message).toEqual('Modal message<br/>With multiple lines');
-            expect(this.messageService.get).toHaveBeenCalledWith(this.messageKey);
-        });
-
-        it('should expose first confirm message', function() {
-            this.vm.$onInit();
-
-            expect(this.vm.firstConfirmMessage).toEqual(this.firstConfirmMessage);
-        });
-
-        it('should expose second confirm message', function() {
-            this.vm.$onInit();
-
-            expect(this.vm.secondConfirmMessage).toEqual(this.secondConfirmMessage);
-        });
-
-        it('should expose cancel message', function() {
-            this.vm.$onInit();
-
-            expect(this.vm.cancelMessage).toEqual(this.cancelMessage);
-        });
-
-        it('should expose title message', function() {
-            this.vm.$onInit();
-
-            expect(this.vm.titleMessage).toEqual(this.titleMessage);
+            expect(this.vm.message).toEqual(this.message);
         });
     });
 
