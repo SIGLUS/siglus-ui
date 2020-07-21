@@ -161,6 +161,11 @@
             });
         }
 
+        function isTotalAndCalculated(lineItem) {
+            return columnUtils.isTotal(lineItem)
+                && !columnUtils.isUserInput(lineItem);
+        }
+
         function validateTestConsumptionLineItems(lineItems) {
             var isValid = true;
             requisitionUtils.clearTestConsumptionError(lineItems);
@@ -169,14 +174,15 @@
                     var fields = _.values(testProject.outcomes);
                     if (isTestOutcomesFilled(fields)) {
                         angular.forEach(fields, function(field) {
-                            isValid = validateSiglusLineItemField(field) && isValid;
+                            if (!isTotalAndCalculated(lineItem)) {
+                                isValid = validateSiglusLineItemField(field) && isValid;
+                            }
                             isValid = validateAPES(lineItems, testProject, field) && isValid;
                         });
                         isValid = validateTestOutcomeField(fields) && isValid;
                     }
                 });
             });
-
             return isValid;
         }
 
