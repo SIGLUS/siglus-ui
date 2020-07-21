@@ -48,16 +48,18 @@
 
         function getTotal(project, outcome) {
             var total = 0;
+            var isFilled = false;
             var totalLineItem = _.first(vm.lineItems.filter(vm.isTotal));
             var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
             totalField.value = undefined;
             angular.forEach(vm.lineItems, function(lineItem) {
                 var value = lineItem.projects[project.name].outcomes[outcome.name].value;
                 if (!vm.isTotal(lineItem) && !vm.isAPES(lineItem) && _.isNumber(value)) {
+                    isFilled = true;
                     total = total + value;
                 }
             });
-            if (total !== 0) {
+            if (isFilled) {
                 totalField.value = total;
                 requisitionValidator.validateSiglusLineItemField(totalField);
             }
