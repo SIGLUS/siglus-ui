@@ -29,11 +29,11 @@
         .module('shipment-view')
         .factory('ShipmentFactory', ShipmentFactory);
 
-    // #332: save shipment draft
-    ShipmentFactory.$inject = ['StockCardSummaryRepositoryImpl', 'programService', 'STOCKMANAGEMENT_RIGHTS'];
-    // #332: ends here
+    // #372: delete StockCardSummaryRepositoryImpl
+    ShipmentFactory.$inject = [];
+    // #372: ends here
 
-    function ShipmentFactory(StockCardSummaryRepositoryImpl, programService, STOCKMANAGEMENT_RIGHTS) {
+    function ShipmentFactory() {
 
         ShipmentFactory.prototype.buildFromOrder = buildFromOrder;
 
@@ -52,48 +52,34 @@
          * @param  {Object}  order order that we want to create shipment for
          * @return {Promise}       the promise resolving to a shipment
          */
-        function buildFromOrder(order) {
+        // #372: Improving Fulfilling Order performance
+        function buildFromOrder(order, stockCardSummaries) {
             var orderableIds = order.orderLineItems.map(function(lineItem) {
                 return lineItem.orderable.id;
             });
-
-            // #332: save shipment draft
-            return programService.getAllProductsProgram()
-                .then(function(programs) {
-                    return new StockCardSummaryRepositoryImpl().query({
-                        programId: programs[0].id,
-                        facilityId: order.supplyingFacility.id,
-                        orderableId: orderableIds,
-                        rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
-                    });
-                })
-            // #332: ends here
-                .then(function(page) {
-                    var summaries = page.content,
-                        shipmentViewLineItems = summaries.reduce(function(shipmentViewLineItems, summary) {
-                            return shipmentViewLineItems.concat(
-                                summary.canFulfillForMe.map(function(canFulfillForMe) {
-                                    return {
-                                        orderable: {
-                                            id: canFulfillForMe.orderable.id,
-                                            versionNumber: canFulfillForMe.orderable.meta.versionNumber
-                                        },
-                                        lot: canFulfillForMe.lot,
-                                        quantityShipped: 0
-                                    };
-                                })
-                            );
-                        // #374: confirm shipment effect soh
-                        }, []).filter(function(shipmentLineItem) {
-                            return orderableIds.includes(shipmentLineItem.orderable.id);
-                        });
-                        // #374: ends here
-
-                    return {
-                        order: order,
-                        lineItems: shipmentViewLineItems
-                    };
-                });
+            var shipmentViewLineItems = stockCardSummaries.reduce(function(shipmentViewLineItems, summary) {
+                // #372: ends here
+                return shipmentViewLineItems.concat(
+                    summary.canFulfillForMe.map(function(canFulfillForMe) {
+                        return {
+                            orderable: {
+                                id: canFulfillForMe.orderable.id,
+                                versionNumber: canFulfillForMe.orderable.meta.versionNumber
+                            },
+                            lot: canFulfillForMe.lot,
+                            quantityShipped: 0
+                        };
+                    })
+                );
+                // #374: confirm shipment effect soh
+            }, []).filter(function(shipmentLineItem) {
+                return orderableIds.includes(shipmentLineItem.orderable.id);
+            });
+            // #374: ends here
+            return {
+                order: order,
+                lineItems: shipmentViewLineItems
+            };
         }
     }
 

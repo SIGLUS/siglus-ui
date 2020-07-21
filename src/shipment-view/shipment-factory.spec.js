@@ -15,11 +15,11 @@
 
 describe('ShipmentFactory', function() {
 
-    // #332: save shipment draft
-    var shipmentFactory, ShipmentFactory, stockCardRepositoryImplMock, $q, $rootScope,
+    // #372: Improving Fulfilling Order performance
+    var shipmentFactory, ShipmentFactory, stockCardRepositoryImplMock, /*$q, $rootScope,*/
         OrderDataBuilder, order, StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder,
-        stockCardSummaries, OrderableDataBuilder, programServiceMock, programId, rightName;
-    // #332: ends here
+        stockCardSummaries, OrderableDataBuilder;
+    // #372: ends here
 
     beforeEach(function() {
         module('shipment-view', function($provide) {
@@ -31,20 +31,13 @@ describe('ShipmentFactory', function() {
                     return stockCardRepositoryImplMock;
                 };
             });
-
-            // #332: save shipment draft
-            programServiceMock = jasmine.createSpyObj('programService', [
-                'getAllProductsProgram'
-            ]);
-            $provide.factory('programService', function() {
-                return programServiceMock;
-            });
-            // #332: ends here
         });
 
         inject(function($injector) {
-            $q = $injector.get('$q');
-            $rootScope = $injector.get('$rootScope');
+            // #372: Improving Fulfilling Order performance
+            // $q = $injector.get('$q');
+            // $rootScope = $injector.get('$rootScope');
+            // #372: ends here
             ShipmentFactory = $injector.get('ShipmentFactory');
             OrderDataBuilder = $injector.get('OrderDataBuilder');
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
@@ -55,19 +48,7 @@ describe('ShipmentFactory', function() {
         shipmentFactory = new ShipmentFactory();
 
         order = new OrderDataBuilder().build();
-        // #332: save shipment draft
-        order.availableProducts = [
-            {
-                id: 'orderable-id-1'
-            }, {
-                id: 'orderable-id-2'
-            }
-        ];
-        programId = 'all';
-        rightName = 'STOCK_CARDS_VIEW';
-        // #332: ends here
 
-        // #374: confirm shipment effect soh
         stockCardSummaries = [
             new StockCardSummaryDataBuilder()
                 .withCanFulfillForMe([
@@ -98,61 +79,53 @@ describe('ShipmentFactory', function() {
                 ])
                 .build()
         ];
-        // #374: ends here
     });
 
     describe('buildFromOrder', function() {
-        // #332: save shipment draft
-        beforeEach(function() {
-            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
-                id: programId
-            }]));
-        });
-        // #332: ends here
 
-        it('should reject if stock card summary repository reject', function() {
-            stockCardRepositoryImplMock.query.andReturn($q.reject());
-
-            var rejected;
-            shipmentFactory.buildFromOrder(order)
-                .catch(function() {
-                    rejected = true;
-                });
-            $rootScope.$apply();
-
-            expect(rejected).toEqual(true);
-        });
-
-        // #332: save shipment draft
-        it('should fetch stock card summaries for all line items', function() {
-            stockCardRepositoryImplMock.query.andReturn($q.resolve());
-
-            shipmentFactory.buildFromOrder(order);
-            $rootScope.$apply();
-
-            expect(stockCardRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: programId,
-                facilityId: order.supplyingFacility.id,
-                orderableId: [
-                    order.orderLineItems[0].orderable.id,
-                    order.orderLineItems[1].orderable.id
-                ],
-                rightName: rightName
-            });
-        });
-        // #332: ends here
+        // #372: Improving Fulfilling Order performance
+        // it('should reject if stock card summary repository reject', function() {
+        //     stockCardRepositoryImplMock.query.andReturn($q.reject());
+        //
+        //     var rejected;
+        //     shipmentFactory.buildFromOrder(order)
+        //         .catch(function() {
+        //             rejected = true;
+        //         });
+        //     $rootScope.$apply();
+        //
+        //     expect(rejected).toEqual(true);
+        // });
+        //
+        // it('should fetch stock card summaries for all line items', function() {
+        //     stockCardRepositoryImplMock.query.andReturn($q.resolve());
+        //
+        //     shipmentFactory.buildFromOrder(order);
+        //
+        //     expect(stockCardRepositoryImplMock.query).toHaveBeenCalledWith({
+        //         programId: order.program.id,
+        //         facilityId: order.supplyingFacility.id,
+        //         orderableId: [
+        //             order.orderLineItems[0].orderable.id,
+        //             order.orderLineItems[1].orderable.id
+        //         ]
+        //     });
+        // });
 
         it('should create shipment with line items for each canFulfillForMe', function() {
-            stockCardRepositoryImplMock.query.andReturn($q.resolve({
-                content: stockCardSummaries
-            }));
+            // stockCardRepositoryImplMock.query.andReturn($q.resolve({
+            //     content: stockCardSummaries
+            // }));
+            //
+            // var result;
+            // shipmentFactory.buildFromOrder(order)
+            //     .then(function(response) {
+            //         result = response;
+            //     });
+            // $rootScope.$apply();
 
-            var result;
-            shipmentFactory.buildFromOrder(order)
-                .then(function(response) {
-                    result = response;
-                });
-            $rootScope.$apply();
+            var result = shipmentFactory.buildFromOrder(order, stockCardSummaries);
+            // #372: ends here
 
             expect(result.order).toEqual(order);
             expect(result.lineItems[0]).toEqual({
