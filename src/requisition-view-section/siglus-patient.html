@@ -1,0 +1,18 @@
+<div class="requisition-patient">
+    <table class="openlmis-table" ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
+        <thead>
+        <tr>
+            <th colspan="2">{{lineItem.section.label}}</th>
+        </tr>
+        <tbody>
+        <tr ng-repeat="column in lineItem.columns | orderObjectBy : 'displayOrder'">
+            <td popover="{{column.definition}}" popover-trigger-area="element">{{column.label}}</td>
+            <td ng-if="!vm.canEdit">{{column.value}}</td>
+            <td ng-if="vm.canEdit && vm.isCalculated(column)" openlmis-invalid="{{column.$error}}">{{vm.getTotal(lineItem, column)}}</td>
+            <td ng-if="vm.canEdit && vm.isUserInput(column)"
+                siglus-requisition-grid-cell
+                line-item-field="column"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

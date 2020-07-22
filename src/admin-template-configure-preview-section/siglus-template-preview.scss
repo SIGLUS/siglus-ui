@@ -44,17 +44,20 @@
 
 .patient-preview {
     margin-bottom: 2em;
-    .openlmis-table {
-        width: 302px;
-        word-break: break-all;
-        td {
-            width: 100px;
-            &:first-child {
-                width: 200px;
-            }
+}
+
+.patient-preview .openlmis-table,
+.requisition-patient .openlmis-table {
+    width: 302px;
+    word-break: break-all;
+    td {
+        width: 100px;
+        &:first-child {
+            width: 200px;
         }
     }
 }
+
 
 .requisition-template-admin [class*="-preview"].openlmis-table-container .row .main .toolbar {
     padding-top: 0;

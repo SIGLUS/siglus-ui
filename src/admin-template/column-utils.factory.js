@@ -34,6 +34,7 @@
         return {
             isUserInput: isUserInput,
             isStockCards: isStockCards,
+            isCalculated: isCalculated,
             isTotal: isTotal,
             columnDisplayName: columnDisplayName,
             isAPES: isAPES,
@@ -59,7 +60,7 @@
         /**
          * @ngdoc method
          * @methodOf admin-template.columnUtils
-         * @name isUserInput
+         * @name isStockCards
          *
          * @description
          * If column source is stock card.
@@ -69,6 +70,21 @@
          */
         function isStockCards(column) {
             return column.source === COLUMN_SOURCES.STOCK_CARDS;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.columnUtils
+         * @name isCalculated
+         *
+         * @description
+         * If column source calculated.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column source is calculated
+         */
+        function isCalculated(column) {
+            return column.source === COLUMN_SOURCES.CALCULATED;
         }
 
         /**

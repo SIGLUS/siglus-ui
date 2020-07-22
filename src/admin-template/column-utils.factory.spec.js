@@ -43,6 +43,24 @@ describe('columnUtils', function() {
         });
     });
 
+    describe('isCalculated', function() {
+        it('should return true if column source is caculated', function() {
+            var column = {
+                source: COLUMN_SOURCES.CALCULATED
+            };
+
+            expect(columnUtils.isCalculated(column)).toBe(true);
+        });
+
+        it('should return false if column source is reference date', function() {
+            var column = {
+                source: COLUMN_SOURCES.REFERENCE_DATA
+            };
+
+            expect(columnUtils.isCalculated(column)).toBe(false);
+        });
+    });
+
     describe('isStockCards', function() {
         it('should return true if column source is stock cards', function() {
             var column = {
