@@ -8,6 +8,12 @@
             <strong>{{'shipmentView.status' | message}}</strong>
             {{vm.order.status}}
         </li>
+        <!-- #365: add requisition number-->
+        <li ng-if="vm.order.requisitionNumber">
+            <strong>{{'shipmentView.requisitionNumber' | message}}</strong>
+            {{vm.order.requisitionNumber}}
+        </li>
+        <!-- #365: ends here -->
         <li>
             <strong>{{'shipmentView.dateCreated' | message}}</strong>
             {{vm.order.createdDate | openlmisDate}}
