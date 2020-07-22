@@ -378,23 +378,25 @@
          * Otherwise, a success notification modal will be shown.
          */
         function submitRnr() {
-            // SIGLUS-REFACTOR: starts here
+            // #431: alert before signature pop up
             if (requisitionValidator.validateRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function(signature) {
-                    if (!vm.requisition.extraData.signaure) {
-                        vm.requisition.extraData.signaure = {};
-                    }
-                    vm.requisition.extraData.signaure.submit = signature;
-                    if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                        failWithMessage('requisitionView.allLineItemsSkipped')();
-                    } else if (vm.program.enableDatePhysicalStockCountCompleted) {
-                        var modal = new RequisitionStockCountDateModal(vm.requisition);
-                        modal.then(saveThenSubmit);
-                    } else {
-                        saveThenSubmit();
-                    }
-                });
-            // SIGLUS-REFACTOR: ends here
+                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
+                    failWithMessage('requisitionView.allLineItemsSkipped')();
+                } else {
+                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function (signature) {
+                        if (!vm.requisition.extraData.signaure) {
+                            vm.requisition.extraData.signaure = {};
+                        }
+                        vm.requisition.extraData.signaure.submit = signature;
+                        if (vm.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenSubmit);
+                        } else {
+                            saveThenSubmit();
+                        }
+                    });
+                }
+            // #431: ends here
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 // #375: create requisition with test consumption section
@@ -431,21 +433,23 @@
          * Otherwise, a success notification modal will be shown.
          */
         function authorizeRnr() {
-            // SIGLUS-REFACTOR: starts here
+            // #431: alert before signature pop up
             if (requisitionValidator.validateRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                    .then(function(signature) {
-                        vm.requisition.extraData.signaure.authorize = signature;
-                        if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                            failWithMessage('requisitionView.allLineItemsSkipped')();
-                        } else if (vm.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenAuthorize);
-                        } else {
-                            saveThenAuthorize();
-                        }
-                    });
-            // SIGLUS-REFACTOR: ends here
+                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
+                    failWithMessage('requisitionView.allLineItemsSkipped')();
+                } else {
+                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                        .then(function(signature) {
+                            vm.requisition.extraData.signaure.authorize = signature;
+                            if (vm.program.enableDatePhysicalStockCountCompleted) {
+                                var modal = new RequisitionStockCountDateModal(vm.requisition);
+                                modal.then(saveThenAuthorize);
+                            } else {
+                                saveThenAuthorize();
+                            }
+                        });
+                }
+            // #431: ends here
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 // #375: create requisition with test consumption section
@@ -483,24 +487,28 @@
          * Otherwise, a success notification modal will be shown.
          */
         function submitAndAuthorizeRnr() {
+            // #431: alert before signature pop up
             if (requisitionValidator.validateRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                    .then(function(signature) {
-                        if (!vm.requisition.extraData.signaure) {
-                            vm.requisition.extraData.signaure = {
-                                submit: signature
-                            };
-                        }
-                        vm.requisition.extraData.signaure.authorize = signature;
-                        if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                            failWithMessage('requisitionView.allLineItemsSkipped')();
-                        } else if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenSubmitThenAuthorize);
-                        } else {
-                            saveThenSubmitThenAuthorize();
-                        }
-                    });
+                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
+                    failWithMessage('requisitionView.allLineItemsSkipped')();
+                } else {
+                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                        .then(function(signature) {
+                            if (!vm.requisition.extraData.signaure) {
+                                vm.requisition.extraData.signaure = {
+                                    submit: signature
+                                };
+                            }
+                            vm.requisition.extraData.signaure.authorize = signature;
+                            if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                                var modal = new RequisitionStockCountDateModal(vm.requisition);
+                                modal.then(saveThenSubmitThenAuthorize);
+                            } else {
+                                saveThenSubmitThenAuthorize();
+                            }
+                        });
+                }
+            // #431: ends here
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 // #375: create requisition with test consumption section
