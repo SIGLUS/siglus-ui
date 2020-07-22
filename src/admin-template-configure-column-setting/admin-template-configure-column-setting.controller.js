@@ -66,7 +66,6 @@
                 'openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption':
                     'enableRapidTestConsumption'
             };
-            originalTemplate.extension[routerMap[$state.current.name]] = true;
             template.extension[routerMap[$state.current.name]] = true;
         }
 
