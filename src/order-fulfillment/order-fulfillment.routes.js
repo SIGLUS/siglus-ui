@@ -59,7 +59,10 @@
                 },
                 orders: function(paginationService, orderRepository, $stateParams, ORDER_STATUS) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
-                        var availableStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED],
+                        // #400: Facility user partially fulfill an order and create sub-order for an requisition
+                        var availableStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED,
+                                ORDER_STATUS.PARTIALLY_FULFILLED],
+                            // #400: ends here
                             copy = angular.copy(stateParams);
                         if (stateParams.status instanceof Array) {
                             stateParams.status = stateParams.status.filter(function(status) {
