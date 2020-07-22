@@ -17,7 +17,8 @@ describe('requisitionValidator', function() {
 
     // SIGLUS-REFACTOR: add requisitionUtils, kitUsageLineItems
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
-        lineItems, column, columns, requisition, requisitionUtils, kitUsageLineItems, testConsumptionLineItems;
+        lineItems, column, columns, requisition, requisitionUtils, kitUsageLineItems, testConsumptionLineItems,
+        testProject;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -95,84 +96,41 @@ describe('requisitionValidator', function() {
         // #251: ends here
 
         // #375: Facility user can create requisition with test consumption section
+        testProject = {
+            hivDetermine: {
+                project: 'hivDetermine',
+                name: 'hivDetermine',
+                outcomes: {
+                    consumo: {
+                        outcome: 'consumo',
+                        name: 'consumo',
+                        value: 10
+                    },
+                    positive: {
+                        outcome: 'positive',
+                        name: 'positive',
+                        value: 10
+                    },
+                    unjustified: {
+                        outcome: 'unjustified',
+                        name: 'unjustified',
+                        value: 10
+                    }
+                }
+            }
+        };
         testConsumptionLineItems = [{
             service: 'HF',
             name: 'HF',
-            projects: {
-                hivDetermine: {
-                    project: 'hivDetermine',
-                    name: 'hivDetermine',
-                    outcomes: {
-                        consumo: {
-                            outcome: 'consumo',
-                            name: 'consumo',
-                            value: 10
-                        },
-                        positive: {
-                            outcome: 'positive',
-                            name: 'positive',
-                            value: 10
-                        },
-                        unjustified: {
-                            outcome: 'unjustified',
-                            name: 'unjustified',
-                            value: 10
-                        }
-                    }
-                }
-            }
+            projects: testProject
         }, {
             service: 'total',
             name: 'total',
-            projects: {
-                hivDetermine: {
-                    project: 'hivDetermine',
-                    name: 'hivDetermine',
-                    outcomes: {
-                        consumo: {
-                            outcome: 'consumo',
-                            name: 'consumo',
-                            value: 10
-                        },
-                        positive: {
-                            outcome: 'positive',
-                            name: 'positive',
-                            value: 10
-                        },
-                        unjustified: {
-                            outcome: 'unjustified',
-                            name: 'unjustified',
-                            value: 10
-                        }
-                    }
-                }
-            }
+            projects: testProject
         }, {
             service: 'APES',
             name: 'APES',
-            projects: {
-                hivDetermine: {
-                    project: 'hivDetermine',
-                    name: 'hivDetermine',
-                    outcomes: {
-                        consumo: {
-                            outcome: 'consumo',
-                            name: 'consumo',
-                            value: 10
-                        },
-                        positive: {
-                            outcome: 'positive',
-                            name: 'positive',
-                            value: 10
-                        },
-                        unjustified: {
-                            outcome: 'unjustified',
-                            name: 'unjustified',
-                            value: 10
-                        }
-                    }
-                }
-            }
+            projects: testProject
         }];
         // #375: ends here
 
@@ -317,14 +275,37 @@ describe('requisitionValidator', function() {
             expect(validator.validateRequisition(requisition)).toBe(true);
         });
 
-        it('should return true if test project is empty', function() {
-            requisition.template.extension.enableKitUsage = true;
+        it('should return false if test project is empty', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            testProject.hivDetermine.outcomes.consumo.value = null;
+            testProject.hivDetermine.outcomes.positive.value = null;
+            testProject.hivDetermine.outcomes.unjustified.value = null;
 
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if test outcomes of a test project are not completed', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
             requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = null;
-            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = null;
-            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.unjustified.value = null;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = 1;
 
-            expect(validator.validateRequisition(requisition)).toBe(true);
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if consumo is less than positive', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = 1;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = 2;
+
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if total is filled and apes not filled', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[2].projects = angular.copy(testProject);
+            requisition.testConsumptionLineItems[2].projects.hivDetermine.outcomes.consumo.value = null;
+
+            expect(validator.validateRequisition(requisition)).toBe(false);
         });
         // #375: ends here
     });
