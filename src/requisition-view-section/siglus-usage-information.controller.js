@@ -31,6 +31,7 @@
         vm.isTotal = columnUtils.isTotal;
         vm.getTotal = getTotal;
         vm.isUserInput = columnUtils.isUserInput;
+        vm.isCalculated = columnUtils.isCalculated;
         vm.update = requisitionValidator.validateSiglusLineItemField;
         vm.firstService = undefined;
         vm.monthOrYearColspan = 1;

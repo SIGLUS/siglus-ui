@@ -30,6 +30,7 @@
         vm.isTotal = columnUtils.isTotal;
         vm.isAPES = columnUtils.isAPES;
         vm.isUserInput = columnUtils.isUserInput;
+        vm.isCalculated = columnUtils.isCalculated;
         vm.validateOnUpdate = validateOnUpdate;
         vm.getTotal = getTotal;
         vm.testProject = undefined;

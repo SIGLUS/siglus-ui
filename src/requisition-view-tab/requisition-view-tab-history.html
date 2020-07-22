@@ -9,7 +9,7 @@
     <header class="sub-heading">
         <h3>{{'requisitionViewTab.products' | message}}</h3>
     </header>
-    <div class="openlmis-table-container requisition-consultation-number fix-height" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
+    <div class="openlmis-table-container requisition-consultation-number" ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
         <table class="openlmis-table">
             <tbody>
             <tr class="text-center">
@@ -72,6 +72,11 @@
                        added-products="vm.requisition.requisitionLineItems"
                        can-edit="false"
                        ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"/>
+    <siglus-patient sections="vm.requisition.usageTemplate.patient"
+                    line-items="vm.requisition.patientLineItems"
+                    can-edit="false"
+                    ng-if="vm.requisition.template.extension.enablePatient && !vm.requisition.emergency"
+    ></siglus-patient>
     <!-- #375: create requisition with test consumption section -->
     <siglus-test-consumption
             program="vm.program"
