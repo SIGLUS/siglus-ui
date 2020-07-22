@@ -106,7 +106,9 @@ describe('openlmis.orders.fulfillment state', function() {
         expect(orderRepository.search).toHaveBeenCalledWith({
             requestingFacilityId: undefined,
             programId: undefined,
-            status: [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED],
+            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+            status: [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED],
+            // #400: ends here
             page: '0',
             size: '10',
             sort: ['createdDate,desc']

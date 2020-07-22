@@ -45,7 +45,7 @@ describe('ShipmentRepositoryImpl', function() {
 
             // #287: Warehouse clerk can skip some products in order
             siglusShipmentDraftResourceMock = jasmine.createSpyObj('siglusShipmentDraftResource', [
-                'update'
+                'create', 'update'
             ]);
             $provide.factory('SiglusShipmentDraftResource', function() {
                 return function() {
@@ -267,7 +267,7 @@ describe('ShipmentRepositoryImpl', function() {
     describe('createDraft', function() {
 
         it('should reject if save was unsuccessful', function() {
-            shipmentDraftResourceMock.create.andReturn($q.reject());
+            siglusShipmentDraftResourceMock.create.andReturn($q.reject());
 
             var rejected;
             shipmentRepositoryImpl.createDraft(shipment)
@@ -277,7 +277,7 @@ describe('ShipmentRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(rejected).toBe(true);
-            expect(shipmentDraftResourceMock.create).toHaveBeenCalledWith(shipment);
+            expect(siglusShipmentDraftResourceMock.create).toHaveBeenCalledWith(shipment);
             // #372: Improving Fulfilling Order performance
             // expect(orderResourceMock.get).not.toHaveBeenCalled();
             // expect(stockCardSummaryRepositoryImplMock.query).not.toHaveBeenCalled();
@@ -326,7 +326,7 @@ describe('ShipmentRepositoryImpl', function() {
         // });
 
         it('should return combined responses', function() {
-            shipmentDraftResourceMock.create.andReturn($q.resolve(angular.copy(shipment)));
+            siglusShipmentDraftResourceMock.create.andReturn($q.resolve(angular.copy(shipment)));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
@@ -346,7 +346,7 @@ describe('ShipmentRepositoryImpl', function() {
             expect(result.lineItems[1].canFulfillForMe)
                 .toEqual(stockCardSummaries[1].canFulfillForMe[1]);
 
-            expect(shipmentDraftResourceMock.create).toHaveBeenCalledWith(shipment);
+            expect(siglusShipmentDraftResourceMock.create).toHaveBeenCalledWith(shipment);
             // expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             // expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
             //     programId: order.program.id,

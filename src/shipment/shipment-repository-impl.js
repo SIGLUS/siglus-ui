@@ -115,7 +115,7 @@
             // var orderResource = this.orderResource,
             //     stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
 
-            return this.shipmentDraftResource.create(json)
+            return this.siglusShipmentDraftResource.create(json)
                 .then(function(shipmentJson) {
                     return combineResponses(shipmentJson, order, mapCanFulfillForMe(stockCardSummaries));
                 });
