@@ -14,5 +14,6 @@
   "shipmentView.confirmPartialFulfilled.createSuborder": "Create sub-order",
   "shipmentView.confirmPartialFulfilled.cancel": "Cancel",
   "shipmentView.suborderHasBeenConfirmed": "Sub-order has been created",
-  "shipmentView.failedToCreateSuborder": "Failed to create sub-order"
+  "shipmentView.failedToCreateSuborder": "Failed to create sub-order",
+  "shipmentView.requisitionNumber": "Requisition number"
 }

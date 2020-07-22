@@ -34,6 +34,12 @@
             <strong>{{'proofOfDeliveryView.supplyingFacility' | message}}</strong>
             {{vm.order.supplyingFacility.name}}
         </li>
+        <!-- #365: add requisition number-->
+        <li ng-if="vm.order.requisitionNumber">
+            <strong>{{'proofOfDeliveryView.requisitionNumber' | message}}</strong>
+            {{vm.order.requisitionNumber}}
+        </li>
+        <!-- #365: ends here -->
     </ul>
 </aside>
 
