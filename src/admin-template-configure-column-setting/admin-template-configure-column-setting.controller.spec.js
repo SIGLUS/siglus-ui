@@ -119,7 +119,6 @@ describe('TemplateConfigureColumnSettingController', function() {
             vm.$onInit();
 
             expect(vm.template.extension.enableProduct).toBe(true);
-            expect(originalTemplate.extension.enableProduct).toBe(true);
         });
     });
 
