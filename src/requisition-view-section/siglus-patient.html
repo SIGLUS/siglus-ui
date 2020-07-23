@@ -1,5 +1,5 @@
 <div class="requisition-patient">
-    <table class="openlmis-table" ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
+    <table class="openlmis-table" ng-repeat="lineItem in vm.lineItems | orderBy : 'section.displayOrder'">
         <thead>
         <tr>
             <th colspan="2">{{lineItem.section.label}}</th>
