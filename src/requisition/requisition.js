@@ -189,6 +189,11 @@
                 });
             });
             requisitionUtils.clearTestConsumptionError(requisition.testConsumptionLineItems);
+            angular.forEach(requisition.patientLineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.columns), function(columnName) {
+                    lineItem.columns[columnName].$error = undefined;
+                });
+            });
         }
         // #387: ends here
 

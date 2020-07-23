@@ -91,11 +91,13 @@
                added-products="vm.requisition.requisitionLineItems"
                can-edit="vm.userCanEdit"
                ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"/>
+    <!-- #399: Facility user can create requisition with patient section-->
     <siglus-patient sections="vm.requisition.usageTemplate.patient"
                     line-items="vm.requisition.patientLineItems"
                     can-edit="vm.userCanEdit"
                     ng-if="vm.requisition.template.extension.enablePatient && !vm.requisition.emergency"
     ></siglus-patient>
+    <!-- ends here-->
     <!-- #375: create requisition with test consumption section -->
     <siglus-test-consumption
             program="vm.program"
