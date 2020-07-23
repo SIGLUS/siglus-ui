@@ -97,6 +97,76 @@ describe('Requisition', function() {
         });
     });
 
+    // #399: Facility user can create requisition with patient section
+    describe('clear error', function() {
+        beforeEach(function() {
+            this.sourceRequisition.kitUsageLineItems = [{
+                services: {
+                    HF: {
+                        $error: 'This filed is required'
+                    }
+                }
+            }];
+            this.sourceRequisition.patientLineItems = [{
+                columns: {
+                    new: {
+                        $error: 'This filed is required'
+                    }
+                }
+            }];
+            this.sourceRequisition.usageInformationLineItems = [{
+                service: 'HF',
+                informations: {
+                    treatmentsAttended: {
+                        orderables: {
+                            '98-76-54-321': {
+                                $error: 'This filed is required'
+                            }
+                        }
+                    }
+                }
+            }];
+            this.sourceRequisition.testConsumptionLineItems = [{
+                projects: {
+                    hivDetermine: {
+                        outcomes: {
+                            consumo: {
+                                $error: 'This filed is required'
+                            }
+                        }
+                    }
+                }
+            }];
+        });
+
+        it('should clear kit usage lineItems error', function() {
+            var requisition = new this.Requisition(this.sourceRequisition);
+
+            expect(requisition.kitUsageLineItems[0].services.HF.$error).toBeUndefined();
+        });
+
+        it('should clear patient lineItems error', function() {
+            var requisition = new this.Requisition(this.sourceRequisition);
+
+            expect(requisition.patientLineItems[0].columns.new.$error).toBeUndefined();
+        });
+
+        it('should clear usage information lineItems error', function() {
+            var requisition = new this.Requisition(this.sourceRequisition);
+
+            expect(requisition.usageInformationLineItems[0]
+                .informations.treatmentsAttended.orderables['98-76-54-321'].$error).toBeUndefined();
+        });
+
+        it('should clear test consumption lineItems error', function() {
+            var requisition = new this.Requisition(this.sourceRequisition);
+
+            expect(requisition.testConsumptionLineItems[0]
+                .projects.hivDetermine.outcomes.consumo.$error).toBeUndefined();
+        });
+    });
+    // #399: ends here
+
     describe('submit', function() {
 
         it('should submit requisition that is available offline', function() {
