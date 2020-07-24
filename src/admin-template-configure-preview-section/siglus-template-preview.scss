@@ -31,14 +31,17 @@
         .bold-label {
             font-weight: bold;
         }
-
-        .grey-background {
-            background-color: #f0f0f0;
-        }
     }
 
     .openlmis-table + .openlmis-table {
         margin-top: -2px;
+    }
+}
+
+.openlmis-table-container .openlmis-flex-table,
+.openlmis-table {
+    tr td.grey-background {
+        background-color: #f0f0f0;
     }
 }
 

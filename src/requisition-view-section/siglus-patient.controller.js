@@ -30,6 +30,7 @@
         vm.$onInit = onInit;
         vm.isUserInput = columnUtils.isUserInput;
         vm.isCalculated = columnUtils.isCalculated;
+        vm.isTotal = columnUtils.isTotal;
         vm.getTotal = getTotal;
 
         function onInit() {
