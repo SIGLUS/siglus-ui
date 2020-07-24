@@ -458,14 +458,17 @@ describe('RequisitionViewController', function() {
             expect(this.alertService.error).toHaveBeenCalledWith('requisitionView.rnrHasErrors');
         });
 
+        // #431: alert before signature pop up
         it('should show notification if all line items are skipped', function() {
-            this.requisitionValidator.areAllLineItemsSkipped.andReturn(true);
+            this.requisitionValidator.siglusValidRequisition =
+                jasmine.createSpy().andReturn(false);
 
             this.vm.authorizeRnr();
             this.$rootScope.$apply();
 
-            expect(this.alertService.error).toHaveBeenCalledWith('requisitionView.allLineItemsSkipped');
+            expect(this.alertService.error).toHaveBeenCalled();
         });
+        // #431: ends here
 
         it('should call RequisitionStockCountDateModal if enabled', function() {
             this.vm.authorizeRnr();
@@ -628,12 +631,13 @@ describe('RequisitionViewController', function() {
 
         // #309: change error message
         it('should show notification if all line items are skipped', function() {
-            this.requisitionValidator.areAllLineItemsSkipped.andReturn(true);
+            this.requisitionValidator.siglusValidRequisition =
+                jasmine.createSpy().andReturn(false);
 
             this.vm.approveRnr();
             this.$rootScope.$apply();
 
-            expect(this.alertService.error).toHaveBeenCalledWith('requisitionView.approveAllLineItemsSkipped');
+            expect(this.alertService.error).toHaveBeenCalled();
         });
         // #309: ends here
     });
