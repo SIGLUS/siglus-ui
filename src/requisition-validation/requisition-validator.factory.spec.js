@@ -264,6 +264,17 @@ describe('requisitionValidator', function() {
             expect(validator.siglusValidRequisition(requisition)).toBe(false);
             expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
         });
+
+        it('should return false if just apes filled', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[2].projects = angular.copy(testProject);
+            testProject.hivDetermine.outcomes.consumo.value = null;
+            testProject.hivDetermine.outcomes.positive.value = null;
+            testProject.hivDetermine.outcomes.unjustified.value = null;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionValidation.apeOnly');
+        });
         // #375: ends here
 
         // #399: Facility user can create requisition with patient section
