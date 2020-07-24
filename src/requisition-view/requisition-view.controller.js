@@ -379,30 +379,24 @@
          */
         function submitRnr() {
             // #431: alert before signature pop up
-            if (requisitionValidator.validateRequisition(requisition)) {
-                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                    failWithMessage('requisitionView.allLineItemsSkipped')();
-                } else {
-                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function (signature) {
-                        if (!vm.requisition.extraData.signaure) {
-                            vm.requisition.extraData.signaure = {};
-                        }
-                        vm.requisition.extraData.signaure.submit = signature;
-                        if (vm.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenSubmit);
-                        } else {
-                            saveThenSubmit();
-                        }
-                    });
-                }
-            // #431: ends here
+            if (requisitionValidator.siglusValidRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function(signature) {
+                    if (!vm.requisition.extraData.signaure) {
+                        vm.requisition.extraData.signaure = {};
+                    }
+                    vm.requisition.extraData.signaure.submit = signature;
+                    if (vm.program.enableDatePhysicalStockCountCompleted) {
+                        var modal = new RequisitionStockCountDateModal(vm.requisition);
+                        modal.then(saveThenSubmit);
+                    } else {
+                        saveThenSubmit();
+                    }
+                });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                // #375: create requisition with test consumption section
-                failedWithAlert();
-                // #375: ends here
+                failWithMessage(vm.requisition.$error)();
             }
+            // #431: ends here
 
             function saveThenSubmit() {
                 var loadingPromise = loadingModalService.open();
@@ -434,28 +428,22 @@
          */
         function authorizeRnr() {
             // #431: alert before signature pop up
-            if (requisitionValidator.validateRequisition(requisition)) {
-                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                    failWithMessage('requisitionView.allLineItemsSkipped')();
-                } else {
-                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                        .then(function(signature) {
-                            vm.requisition.extraData.signaure.authorize = signature;
-                            if (vm.program.enableDatePhysicalStockCountCompleted) {
-                                var modal = new RequisitionStockCountDateModal(vm.requisition);
-                                modal.then(saveThenAuthorize);
-                            } else {
-                                saveThenAuthorize();
-                            }
-                        });
-                }
-            // #431: ends here
+            if (requisitionValidator.siglusValidRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                    .then(function(signature) {
+                        vm.requisition.extraData.signaure.authorize = signature;
+                        if (vm.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenAuthorize);
+                        } else {
+                            saveThenAuthorize();
+                        }
+                    });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                // #375: create requisition with test consumption section
-                failedWithAlert();
-                // #375: ends here
+                failWithMessage(vm.requisition.$error)();
             }
+            // #431: ends here
 
             function saveThenAuthorize() {
                 var loadingPromise = loadingModalService.open();
@@ -488,33 +476,27 @@
          */
         function submitAndAuthorizeRnr() {
             // #431: alert before signature pop up
-            if (requisitionValidator.validateRequisition(requisition)) {
-                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                    failWithMessage('requisitionView.allLineItemsSkipped')();
-                } else {
-                    signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                        .then(function(signature) {
-                            if (!vm.requisition.extraData.signaure) {
-                                vm.requisition.extraData.signaure = {
-                                    submit: signature
-                                };
-                            }
-                            vm.requisition.extraData.signaure.authorize = signature;
-                            if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
-                                var modal = new RequisitionStockCountDateModal(vm.requisition);
-                                modal.then(saveThenSubmitThenAuthorize);
-                            } else {
-                                saveThenSubmitThenAuthorize();
-                            }
-                        });
-                }
-            // #431: ends here
+            if (requisitionValidator.siglusValidRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                    .then(function(signature) {
+                        if (!vm.requisition.extraData.signaure) {
+                            vm.requisition.extraData.signaure = {
+                                submit: signature
+                            };
+                        }
+                        vm.requisition.extraData.signaure.authorize = signature;
+                        if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenSubmitThenAuthorize);
+                        } else {
+                            saveThenSubmitThenAuthorize();
+                        }
+                    });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                // #375: create requisition with test consumption section
-                failedWithAlert();
-                // #375: ends here
+                failWithMessage(vm.requisition.$error)();
             }
+            // #431: ends here
 
             function saveThenSubmitThenAuthorize() {
                 var loadingPromise = loadingModalService.open();
@@ -576,28 +558,24 @@
          */
         // #231: there is no signature modal when approve
         function approveRnr() {
-            if (requisitionValidator.validateRequisition(requisition)) {
-                if (requisitionValidator.areAllLineItemsSkipped(requisition)) {
-                    failWithMessage('requisitionView.approveAllLineItemsSkipped')();
-                } else {
-                    signatureModalService.confirm('requisitionView.approve.confirmWithSignature')
-                        .then(function(signature) {
-                            var approveSignatures = vm.requisition.extraData.signaure.approve || [];
-                            approveSignatures.push(signature);
-                            vm.requisition.extraData.signaure.approve = approveSignatures;
-                            if (vm.program.enableDatePhysicalStockCountCompleted) {
-                                var modal = new RequisitionStockCountDateModal(vm.requisition);
-                                modal.then(saveThenApprove);
-                            } else {
-                                saveThenApprove();
-                            }
-                        });
-                }
+            if (requisitionValidator.siglusValidRequisition(requisition)) {
+                signatureModalService.confirm('requisitionView.approve.confirmWithSignature')
+                    .then(function(signature) {
+                        var approveSignatures = vm.requisition.extraData.signaure.approve || [];
+                        approveSignatures.push(signature);
+                        vm.requisition.extraData.signaure.approve = approveSignatures;
+                        if (vm.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenApprove);
+                        } else {
+                            saveThenApprove();
+                        }
+                    });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
-                // #375: create requisition with test consumption section
-                failedWithAlert();
-                // #375: ends here
+                // #431: alert before signature pop up
+                failWithMessage(vm.requisition.$error)();
+                // #431: ends here
             }
 
             function saveThenApprove() {
@@ -616,16 +594,6 @@
             }
         }
         // #231: ends here
-
-        // #375: create requisition with test consumption section
-        function failedWithAlert() {
-            if (requisitionValidator.isTestConsumptionEmpty(vm.requisition)) {
-                failWithMessage('requisitionView.emptyTestConsumption')();
-            } else {
-                failWithMessage('requisitionView.rnrHasErrors')();
-            }
-        }
-        // #375: ends here
 
         /**
          * @ngdoc method

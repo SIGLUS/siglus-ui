@@ -176,6 +176,9 @@
 
         // #387: the lost of validation highlight
         function clearErrors(requisition) {
+            // #431: the order of pop-up when requisition is invalid
+            requisition.$error = undefined;
+            // #431: ends here
             angular.forEach(requisition.kitUsageLineItems, function(lineItem) {
                 angular.forEach(Object.keys(lineItem.services), function(serviceName) {
                     lineItem.services[serviceName].$error = undefined;

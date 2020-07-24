@@ -1,3 +1,5 @@
 {
-  "requisitionValidation.positiveLargerThanConsumo": "Positive value can't more than Consumo value"
+  "requisitionValidation.positiveLargerThanConsumo": "Positive value can't more than Consumo value",
+  "requisitionValidation.approveAllLineItemsSkipped": "Cannot approve requisition with all line items skipped.",
+  "requisitionValidation.emptyTestConsumption": "Test consumption cannot be empty"
 }

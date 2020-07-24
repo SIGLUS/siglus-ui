@@ -160,22 +160,127 @@ describe('requisitionValidator', function() {
         };
     });
 
-    // #251: Facility user can create requisition with KIT section
-    describe('areAllLineItemsSkipped', function() {
-
-        it('should return false if product is not enabled', function() {
-            requisition.template.extension.enableProduct = false;
-
-            expect(validator.areAllLineItemsSkipped(requisition)).toBe(false);
+    // #431: alert before signature pop up
+    describe('siglusValidRequisition', function() {
+        beforeEach(function() {
+            requisition.$isAuthorized = jasmine.createSpy().andReturn(false);
+            requisition.$isInApproval = jasmine.createSpy().andReturn(false);
         });
 
-        it('should return false if product is enabled and lineItems are not skipped', function() {
+        // #251: Facility user can create requisition with KIT section
+        it('should return false if product is enabled and lineItems are skipped', function() {
             requisition.template.extension.enableProduct = true;
+            requisition.requisitionLineItems = [{
+                skipped: true
+            }];
 
-            expect(validator.areAllLineItemsSkipped(requisition)).toBe(false);
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.allLineItemsSkipped');
         });
+
+        it('should return false if product is enabled and lineItems are empty', function() {
+            requisition.template.extension.enableProduct = true;
+            requisition.requisitionLineItems = [];
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.allLineItemsSkipped');
+        });
+
+        it('should return true if kitUsageLineItems are valid', function() {
+            requisition.template.extension.enableKitUsage = true;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(true);
+        });
+
+        it('should return false if CHW value is empty', function() {
+            requisition.template.extension.enableKitUsage = true;
+            requisition.kitUsageLineItems[0].services.CHW.value = '';
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+
+        it('should return false if kitReceived is invalid', function() {
+            requisition.template.extension.enableKitUsage = true;
+            requisition.kitUsageLineItems.push({
+                collection: 'kitOpened',
+                services: {
+                    CHW: {
+                        id: '1',
+                        value: ''
+                    },
+                    HF: {
+                        id: '2',
+                        value: 0
+                    }
+                }
+            });
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+        // #251: ends here
+
+        // #375: Facility user can create requisition with test consumption section
+        it('should return true if testConsumptionLineItems are valid', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(true);
+        });
+
+        it('should return false if test project is empty', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            testProject.hivDetermine.outcomes.consumo.value = null;
+            testProject.hivDetermine.outcomes.positive.value = null;
+            testProject.hivDetermine.outcomes.unjustified.value = null;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionValidation.emptyTestConsumption');
+        });
+
+        it('should return false if test outcomes of a test project are not completed', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = null;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = 1;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+
+        it('should return false if consumo is less than positive', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = 1;
+            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = 2;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+
+        it('should return false if total is filled and apes not filled', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[2].projects = angular.copy(testProject);
+            requisition.testConsumptionLineItems[2].projects.hivDetermine.outcomes.consumo.value = null;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+        // #375: ends here
+
+        // #399: Facility user can create requisition with patient section
+        it('should return true if patientLineItems are valid', function() {
+            requisition.template.extension.enablePatient = true;
+
+            expect(validator.validateRequisition(requisition)).toBe(true);
+        });
+
+        it('should return false if new value is empty', function() {
+            requisition.template.extension.enablePatient = true;
+            requisition.patientLineItems[0].columns.new.value = '';
+
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+        // #399: ends here
     });
-    // #251: ends here
 
     describe('validateRequisition', function() {
 
@@ -232,102 +337,12 @@ describe('requisitionValidator', function() {
         it('should return true if requisition comment is longer than 255 chars', function() {
             spyOn(validator, 'validateLineItem').andReturn(true);
 
-            for (var i = 0; i < 26; i++) {
-                requisition.draftStatusMessage += '1234567890';
+            for (var i = 0; i < 10; i++) {
+                requisition.draftStatusMessage += 'abcdefghijklmnopqrstuvwxyz';
             }
 
             expect(validator.validateRequisition(requisition)).toBe(true);
         });
-
-        // #251: Facility user can create requisition with KIT section
-        it('should return true if kitUsageLineItems are valid', function() {
-            requisition.template.extension.enableKitUsage = true;
-
-            expect(validator.validateRequisition(requisition)).toBe(true);
-        });
-
-        it('should return false if CHW value is empty', function() {
-            requisition.template.extension.enableKitUsage = true;
-            requisition.kitUsageLineItems[0].services.CHW.value = '';
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-
-        it('should return false if kitReceived is invalid', function() {
-            requisition.template.extension.enableKitUsage = true;
-            requisition.kitUsageLineItems.push({
-                collection: 'kitOpened',
-                services: {
-                    CHW: {
-                        id: '1',
-                        value: ''
-                    },
-                    HF: {
-                        id: '2',
-                        value: 0
-                    }
-                }
-            });
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-        // #251: ends here
-
-        // #375: Facility user can create requisition with test consumption section
-        it('should return true if testConsumptionLineItems are valid', function() {
-            requisition.template.extension.enableRapidTestConsumption = true;
-
-            expect(validator.validateRequisition(requisition)).toBe(true);
-        });
-
-        it('should return false if test project is empty', function() {
-            requisition.template.extension.enableRapidTestConsumption = true;
-            testProject.hivDetermine.outcomes.consumo.value = null;
-            testProject.hivDetermine.outcomes.positive.value = null;
-            testProject.hivDetermine.outcomes.unjustified.value = null;
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-
-        it('should return false if test outcomes of a test project are not completed', function() {
-            requisition.template.extension.enableRapidTestConsumption = true;
-            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = null;
-            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = 1;
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-
-        it('should return false if consumo is less than positive', function() {
-            requisition.template.extension.enableRapidTestConsumption = true;
-            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.consumo.value = 1;
-            requisition.testConsumptionLineItems[0].projects.hivDetermine.outcomes.positive.value = 2;
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-
-        it('should return false if total is filled and apes not filled', function() {
-            requisition.template.extension.enableRapidTestConsumption = true;
-            requisition.testConsumptionLineItems[2].projects = angular.copy(testProject);
-            requisition.testConsumptionLineItems[2].projects.hivDetermine.outcomes.consumo.value = null;
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-        // #375: ends here
-
-        // #399: Facility user can create requisition with patient section
-        it('should return true if patientLineItems are valid', function() {
-            requisition.template.extension.enablePatient = true;
-
-            expect(validator.validateRequisition(requisition)).toBe(true);
-        });
-
-        it('should return false if new value is empty', function() {
-            requisition.template.extension.enablePatient = true;
-            requisition.patientLineItems[0].columns.new.value = '';
-
-            expect(validator.validateRequisition(requisition)).toBe(false);
-        });
-        // #399: ends here
     });
 
     describe('validateSiglusLineItemField', function() {

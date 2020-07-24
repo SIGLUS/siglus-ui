@@ -38,68 +38,46 @@
 
     function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
                        columnUtils) {
-        var originalAreAllLineItemsSkipped = $delegate.areAllLineItemsSkipped;
-        $delegate.validateRequisition = validateRequisition;
         $delegate.validateUsageReport = validateUsageReport;
         $delegate.validateTotalOfRegiment = validateTotalOfRegiment;
         $delegate.isOnlyAPES = isOnlyAPES;
         $delegate.isEmptyTable = isEmptyTable;
         $delegate.validateRapidTestReport = validateRapidTestReport;
         $delegate.validateARVPatientTotal = validateARVPatientTotal;
-        $delegate.areAllLineItemsSkipped = areAllLineItemsSkipped;
         $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
         $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
-        $delegate.isTestConsumptionEmpty = isTestConsumptionEmpty;
+        $delegate.siglusValidRequisition = siglusValidRequisition;
+        $delegate.validateConsultationNumber = validateConsultationNumber;
 
         return $delegate;
 
         function areAllLineItemsSkipped(requisition) {
-            if (requisition.template.extension.enableProduct) {
-                return originalAreAllLineItemsSkipped(requisition.requisitionLineItems);
+            var error = requisition.$error;
+            if (requisition.template.extension.enableProduct
+                && $delegate.areAllLineItemsSkipped(requisition.requisitionLineItems)) {
+                var message = requisition.$isAuthorized() || requisition.$isInApproval()
+                    ? 'requisitionValidation.approveAllLineItemsSkipped'
+                    : 'requisitionView.allLineItemsSkipped';
+                error = error || messageService.get(message);
             }
-            return false;
+            return !!(requisition.$error = error);
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf requisition-validation.requisitionValidator
-         * @name validateRequisition
-         *
-         * @description
-         * Validates the given requisitions.
-         *
-         * @param  {Object}  requisition the requisition to be validated
-         * @return {Boolean}             true if the requisition is valid, false otherwise
-         */
-        function validateRequisition(requisition) {
-            var valid = true,
-                validator = this,
-                fullSupplyColumns = requisition.template.getColumns(),
-                nonFullSupplyColumns = requisition.template.getColumns(true);
-
-            angular.forEach($filter('filter')(requisition.requisitionLineItems, {
-                $program: {
-                    fullSupply: true
-                }
-            }), function(lineItem) {
-                valid = validator.validateLineItem(lineItem, fullSupplyColumns, requisition) && valid;
-            });
-
-            angular.forEach($filter('filter')(requisition.requisitionLineItems, {
-                $program: {
-                    fullSupply: false
-                }
-            }), function(lineItem) {
-                valid = validator.validateLineItem(lineItem, nonFullSupplyColumns, requisition) && valid;
-            });
-
-            valid = validateExtraData(requisition) && valid;
-            valid = validateKitUsage(requisition) && valid;
-            valid = validateUsageInformation(requisition) && valid;
-            valid = validateTestConsumption(requisition) && valid;
-            valid = validatePatient(requisition) && valid;
-
-            return valid;
+        function siglusValidRequisition(requisition) {
+            var isValid = true;
+            requisition.$error = undefined;
+            isValid = validateConsultationNumber(requisition) && isValid;
+            isValid = validateKitUsage(requisition) && isValid;
+            isValid = $delegate.validateRequisition(requisition) && isValid;
+            isValid = validateUsageInformation(requisition) && isValid;
+            isValid = validatePatient(requisition) && isValid;
+            isValid = validateTestConsumption(requisition) && isValid;
+            if (!isValid) {
+                requisition.$error = messageService.get('requisitionView.rnrHasErrors');
+            }
+            isValid = !areAllLineItemsSkipped(requisition) && isValid;
+            isValid = !isTestConsumptionEmpty(requisition) && isValid;
+            return isValid;
         }
 
         function validateKitUsage(requisition) {
@@ -148,12 +126,10 @@
         }
 
         function validateTestConsumption(requisition) {
-            var isValid = true;
             if (requisition.template.extension.enableRapidTestConsumption && !requisition.emergency) {
-                isValid = !isTestConsumptionEmpty(requisition)
-                    && validateTestConsumptionLineItems(requisition.testConsumptionLineItems);
+                return validateTestConsumptionLineItems(requisition.testConsumptionLineItems);
             }
-            return isValid;
+            return true;
         }
 
         function validatePatient(requisition) {
@@ -238,15 +214,21 @@
                     });
                 });
             });
+            if (isEmpty) {
+                requisition.$error = requisition.$error
+                    || messageService.get('requisitionValidation.emptyTestConsumption');
+            }
             return isEmpty;
         }
 
-        function validateExtraData(requisition) {
-            var flag = true;
+        function validateConsultationNumber(requisition) {
+            var isValid = true;
             if (requisition.template.extension.enableConsultationNumber && !requisition.emergency) {
-                flag = isNotEmpty(requisition.extraData.consultationNumber);
+                isValid = validateSiglusLineItemField({
+                    value: requisition.extraData.consultationNumber
+                });
             }
-            return flag;
+            return isValid;
         }
 
         function isNotEmpty(value) {
