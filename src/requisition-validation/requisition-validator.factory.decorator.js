@@ -40,7 +40,6 @@
                        columnUtils) {
         $delegate.validateUsageReport = validateUsageReport;
         $delegate.validateTotalOfRegiment = validateTotalOfRegiment;
-        $delegate.isOnlyAPES = isOnlyAPES;
         $delegate.isEmptyTable = isEmptyTable;
         $delegate.validateRapidTestReport = validateRapidTestReport;
         $delegate.validateARVPatientTotal = validateARVPatientTotal;
@@ -64,19 +63,15 @@
         }
 
         function siglusValidRequisition(requisition) {
-            var isValid = true;
             requisition.$error = undefined;
-            isValid = validateConsultationNumber(requisition) && isValid;
-            isValid = validateKitUsage(requisition) && isValid;
-            isValid = $delegate.validateRequisition(requisition) && isValid;
-            isValid = validateUsageInformation(requisition) && isValid;
-            isValid = validatePatient(requisition) && isValid;
-            isValid = validateTestConsumption(requisition) && isValid;
+            var isValid = validateConsultationNumber(requisition) && validateKitUsage(requisition) &&
+                $delegate.validateRequisition(requisition) && validateUsageInformation(requisition) &&
+                validatePatient(requisition) && validateTestConsumption(requisition);
             if (!isValid) {
                 requisition.$error = messageService.get('requisitionView.rnrHasErrors');
             }
-            isValid = !areAllLineItemsSkipped(requisition) && isValid;
-            isValid = !isTestConsumptionEmpty(requisition) && isValid;
+            isValid =  isValid && !areAllLineItemsSkipped(requisition) &&
+                !isTestConsumptionEmpty(requisition) && !isOnlyAPESFilled(requisition);
             return isValid;
         }
 
@@ -219,6 +214,32 @@
                     || messageService.get('requisitionValidation.emptyTestConsumption');
             }
             return isEmpty;
+        }
+
+        function isOnlyAPESFilled(requisition) {
+            if (!requisition.template.extension.enableRapidTestConsumption || requisition.emergency) {
+                return false;
+            }
+            var flag = false;
+            var totalLineItem = requisition.testConsumptionLineItems.find(columnUtils.isTotal);
+            var apesLineItem = requisition.testConsumptionLineItems.find(columnUtils.isAPES);
+            var totalField, apesField;
+            angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
+                angular.forEach(_.values(lineItem.projects), function(project) {
+                    angular.forEach(_.values(project.outcomes), function(outcome) {
+                        totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
+                        apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
+                        if (isNotEmpty(apesField.value) && !isNotEmpty(totalField.value)) {
+                            flag =  true;
+                        }
+                    });
+                });
+            });
+            if (flag) {
+                requisition.$error = requisition.$error
+                    || messageService.get('requisitionValidation.apeOnly');
+            }
+            return flag;
         }
 
         function validateConsultationNumber(requisition) {
@@ -398,34 +419,6 @@
             }
 
             return isValid;
-        }
-
-        function isOnlyAPES(requisition) {
-            if (!requisition.template.enableRapidTestServiceModule) {
-                return false;
-            }
-            var serviceLineItems = requisition.serviceLineItems;
-            var flag = false;
-            var groupByColumns = _.groupBy(serviceLineItems, function(item) {
-                return item.serviceColumn.code;
-            });
-
-            for (var col in groupByColumns) {
-                if (groupByColumns.hasOwnProperty(col)) {
-                    var total = groupByColumns[col].find(function(item) {
-                        return item.service.code === 'TOTAL';
-                    });
-                    var ape = groupByColumns[col].find(function(item) {
-                        return item.service.code === 'APES';
-                    });
-
-                    if (!_.isNumber(total.value) && (_.isNumber(ape.value))) {
-                        flag = true;
-                    }
-                }
-            }
-
-            return flag;
         }
 
         function isEmptyTable(requisition) {
