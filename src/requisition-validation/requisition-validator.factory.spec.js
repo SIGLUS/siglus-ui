@@ -15,11 +15,11 @@
 
 describe('requisitionValidator', function() {
 
-    // SIGLUS-REFACTOR: add requisitionUtils, kitUsageLineItems
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
-        lineItems, column, columns, requisition, requisitionUtils, kitUsageLineItems, testConsumptionLineItems,
-        testProject;
-    // SIGLUS-REFACTOR: ends here
+        lineItems, column, columns, requisition,
+        // SIGLUS-REFACTOR: add new variable
+        requisitionUtils, kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems;
+        // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
         module('requisition-validation', function($provide) {
@@ -79,7 +79,7 @@ describe('requisitionValidator', function() {
             }
         }];
 
-        // #251: Facility user can create requisition with KIT section
+        // #251, #375: requisition template
         kitUsageLineItems = [ {
             collection: 'kitReceived',
             services: {
@@ -93,9 +93,7 @@ describe('requisitionValidator', function() {
                 }
             }
         } ];
-        // #251: ends here
 
-        // #375: Facility user can create requisition with test consumption section
         testProject = {
             hivDetermine: {
                 project: 'hivDetermine',
@@ -132,17 +130,24 @@ describe('requisitionValidator', function() {
             name: 'APES',
             projects: testProject
         }];
-        // #375: ends here
+
+        patientLineItems = [{
+            columns: {
+                new: {
+                    value: 1
+                }
+            }
+        }];
+        // #251, #375: ends here
 
         requisition = {
             template: template,
             requisitionLineItems: lineItems,
-            // #251: Facility user can create requisition with KIT section
+            // #251, #375, #399: requisition template
             kitUsageLineItems: kitUsageLineItems,
-            // #251: ends here
-            // #375: Facility user can create requisition with test consumption section
             testConsumptionLineItems: testConsumptionLineItems,
-            // #375: ends here
+            patientLineItems: patientLineItems,
+            // #251, #375, #399: ends here
             // SIGLUS-REFACTOR: starts here
             extraData: {
                 consultationNumber: 1,
@@ -308,6 +313,21 @@ describe('requisitionValidator', function() {
             expect(validator.validateRequisition(requisition)).toBe(false);
         });
         // #375: ends here
+
+        // #399: Facility user can create requisition with patient section
+        it('should return true if patientLineItems are valid', function() {
+            requisition.template.extension.enablePatient = true;
+
+            expect(validator.validateRequisition(requisition)).toBe(true);
+        });
+
+        it('should return false if new value is empty', function() {
+            requisition.template.extension.enablePatient = true;
+            requisition.patientLineItems[0].columns.new.value = '';
+
+            expect(validator.validateRequisition(requisition)).toBe(false);
+        });
+        // #399: ends here
     });
 
     describe('validateSiglusLineItemField', function() {
