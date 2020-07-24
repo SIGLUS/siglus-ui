@@ -97,6 +97,7 @@
             valid = validateKitUsage(requisition) && valid;
             valid = validateUsageInformation(requisition) && valid;
             valid = validateTestConsumption(requisition) && valid;
+            valid = validatePatient(requisition) && valid;
 
             return valid;
         }
@@ -153,6 +154,18 @@
                     && validateTestConsumptionLineItems(requisition.testConsumptionLineItems);
             }
             return isValid;
+        }
+
+        function validatePatient(requisition) {
+            var valid = true;
+            if (requisition.template.extension.enablePatient && !requisition.emergency) {
+                angular.forEach(requisition.patientLineItems, function(lineItem) {
+                    angular.forEach(Object.keys(lineItem.columns), function(columnName) {
+                        valid = validateSiglusLineItemField(lineItem.columns[columnName]) && valid;
+                    });
+                });
+            }
+            return valid;
         }
 
         function isTestOutcomesFilled(fields) {

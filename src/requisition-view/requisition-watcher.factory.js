@@ -57,7 +57,6 @@
             addWatcher(scope, requisition, 'draftStatusMessage', this, storage);
             // SIGLUS-REFACTOR: starts here
             addWatcher(scope, requisition, 'extraData', this, storage);
-            addWatcher(scope, requisition, 'requisitionLineItems', this, storage);
             addWatcher(scope, requisition, 'regimenLineItems', this, storage);
             addWatcher(scope, requisition, 'regimenDispatchLineItems', this, storage);
             addWatcher(scope, requisition, 'patientLineItems', this, storage);
