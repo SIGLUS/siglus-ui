@@ -270,14 +270,15 @@ describe('requisitionValidator', function() {
         it('should return true if patientLineItems are valid', function() {
             requisition.template.extension.enablePatient = true;
 
-            expect(validator.validateRequisition(requisition)).toBe(true);
+            expect(validator.siglusValidRequisition(requisition)).toBe(true);
         });
 
         it('should return false if new value is empty', function() {
             requisition.template.extension.enablePatient = true;
             requisition.patientLineItems[0].columns.new.value = '';
 
-            expect(validator.validateRequisition(requisition)).toBe(false);
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
         });
         // #399: ends here
     });
@@ -337,9 +338,11 @@ describe('requisitionValidator', function() {
         it('should return true if requisition comment is longer than 255 chars', function() {
             spyOn(validator, 'validateLineItem').andReturn(true);
 
-            for (var i = 0; i < 10; i++) {
-                requisition.draftStatusMessage += 'abcdefghijklmnopqrstuvwxyz';
+            // #431: string is like hex encoded texts
+            for (var i = 0; i < 26; i++) {
+                requisition.draftStatusMessage += 'abcdefghijk';
             }
+            // #431: ends here
 
             expect(validator.validateRequisition(requisition)).toBe(true);
         });
