@@ -28,9 +28,8 @@
         .module('admin-template')
         .factory('Template', Template);
 
-    Template.$inject = [
-        '$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn', 'TEMPLATE_SECTIONS'
-    ];
+    Template.$inject = ['$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn',
+        'SIGLUS_TEMPLATE_SECTIONS'];
 
     function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn, TEMPLATE_SECTIONS) {
         Template.prototype.moveColumn = moveColumn;
