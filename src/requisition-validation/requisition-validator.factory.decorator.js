@@ -71,6 +71,7 @@
             isValid = !areAllLineItemsSkipped(requisition) && isValid;
             isValid = !isTestConsumptionEmpty(requisition) && isValid;
             isValid = !isOnlyAPESFilled(requisition) && isValid;
+            isValid = !isTotalWithoutServices(requisition) && isValid;
             return isValid;
         }
 
@@ -160,6 +161,16 @@
                 && !columnUtils.isUserInput(lineItem);
         }
 
+        function getServiceLineItems(lineItems) {
+            return lineItems.filter(function(lineItem) {
+                return !columnUtils.isTotal(lineItem) && !columnUtils.isAPES(lineItem);
+            });
+        }
+
+        function getTestConsumptionFieldValue(lineItem, project, outcome) {
+            return lineItem.projects[project.name].outcomes[outcome.name].value;
+        }
+
         function validateTestConsumptionLineItems(lineItems) {
             var isValid = true;
             requisitionUtils.clearTestConsumptionError(lineItems);
@@ -198,9 +209,7 @@
 
         function validateTotal(lineItems, project, outcome) {
             var isValid = true;
-            var serviceLineItems = lineItems.filter(function(lineItem) {
-                return !columnUtils.isTotal(lineItem) && !columnUtils.isAPES(lineItem);
-            });
+            var serviceLineItems = getServiceLineItems(lineItems);
             var totalLineItem = lineItems.find(columnUtils.isTotal);
             if (!columnUtils.isUserInput(totalLineItem)) {
                 return isValid;
@@ -223,9 +232,10 @@
             if (_.isUndefined(apesLineItem)) {
                 return isValid;
             }
-            var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
             var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
-            if (isNotEmpty(totalField.value) && !isNotEmpty(apesField.value)) {
+
+            if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))
+                && !isNotEmpty(getTestConsumptionFieldValue(apesLineItem, project, outcome))) {
                 isValid = validateSiglusLineItemField(apesField) && isValid;
             }
             return isValid;
@@ -257,16 +267,14 @@
             var flag = false;
             var totalLineItem = requisition.testConsumptionLineItems.find(columnUtils.isTotal);
             var apesLineItem = requisition.testConsumptionLineItems.find(columnUtils.isAPES);
-            var totalField, apesField;
             if (_.isUndefined(apesLineItem)) {
                 return flag;
             }
             angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
                 angular.forEach(_.values(lineItem.projects), function(project) {
                     angular.forEach(_.values(project.outcomes), function(outcome) {
-                        totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
-                        apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
-                        if (isNotEmpty(apesField.value) && !isNotEmpty(totalField.value)) {
+                        if (isNotEmpty(getTestConsumptionFieldValue(apesLineItem, project, outcome))
+                            && !isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))) {
                             flag =  true;
                         }
                     });
@@ -277,6 +285,39 @@
                     || messageService.get('requisitionValidation.apeOnly');
             }
             return flag;
+        }
+
+        function isTotalWithoutServices(requisition) {
+            if (!requisition.template.extension.enableRapidTestConsumption || requisition.emergency) {
+                return false;
+            }
+            var totalLineItem = requisition.testConsumptionLineItems.find(columnUtils.isTotal);
+            if (!columnUtils.isUserInput(totalLineItem)) {
+                return false;
+            }
+            var withServices = true;
+            var serviceLineItems = getServiceLineItems(requisition.testConsumptionLineItems);
+            var isFilled;
+            angular.forEach(serviceLineItems, function(lineItem) {
+                angular.forEach(_.values(lineItem.projects), function(project) {
+                    isFilled = false;
+                    angular.forEach(_.values(project.outcomes), function(outcome) {
+                        if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))) {
+                            angular.forEach(serviceLineItems, function(serviceLineItem) {
+                                if (isNotEmpty(getTestConsumptionFieldValue(serviceLineItem, project, outcome))) {
+                                    isFilled = true;
+                                }
+                            });
+                        }
+                    });
+                    withServices = withServices && isFilled;
+                });
+            });
+            if (!withServices) {
+                requisition.$error = requisition.$error
+                    || messageService.get('requisitionValidation.totalWithoutServices');
+            }
+            return !withServices;
         }
 
         function validateConsultationNumber(requisition) {
