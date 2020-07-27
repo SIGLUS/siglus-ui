@@ -21,7 +21,7 @@
         .module('admin-template-configure-preview-section')
         .controller('UsageInformationPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'templateConfigureService', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SECTION_TYPES'];
 
     function controller(columnUtils, templateConfigureService, SECTION_TYPES) {
 

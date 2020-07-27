@@ -21,7 +21,7 @@
         .module('admin-template-configure-preview-section')
         .controller('ProductPreviewController', controller);
 
-    controller.$inject = ['columnUtils'];
+    controller.$inject = ['siglusColumnUtils'];
 
     function controller(columnUtils) {
 

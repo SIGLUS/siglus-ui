@@ -28,7 +28,7 @@
         .module('siglus-template-configure-group')
         .controller('siglusTemplateConfigureGroupController', controller);
 
-    controller.$inject = ['$scope', 'columnUtils', 'COLUMN_SOURCES', 'MAX_ADD_LENGTH'];
+    controller.$inject = ['$scope', 'siglusColumnUtils', 'COLUMN_SOURCES', 'MAX_ADD_LENGTH'];
 
     function controller($scope, columnUtils, COLUMN_SOURCES, MAX_ADD_LENGTH) {
         var vm = this;

@@ -21,7 +21,7 @@
         .module('requisition-view-section')
         .controller('SiglusTestConsumptionController', controller);
 
-    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService', 'requisitionValidator'];
+    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'templateConfigureService', 'requisitionValidator'];
 
     function controller(columnUtils, SECTION_TYPES, templateConfigureService, requisitionValidator) {
         var vm = this;

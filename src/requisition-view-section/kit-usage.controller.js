@@ -21,7 +21,7 @@
         .module('requisition-view-section')
         .controller('KitUsageController', controller);
 
-    controller.$inject = ['columnUtils', 'templateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
 
     function controller(columnUtils, templateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
 

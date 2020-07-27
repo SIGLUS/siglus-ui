@@ -12,7 +12,7 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-describe('columnUtils', function() {
+describe('siglusColumnUtils', function() {
 
     var columnUtils, COLUMN_SOURCES;
 
@@ -20,7 +20,7 @@ describe('columnUtils', function() {
         module('admin-template');
 
         inject(function($injector) {
-            columnUtils = $injector.get('columnUtils');
+            columnUtils = $injector.get('siglusColumnUtils');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
         });
     });

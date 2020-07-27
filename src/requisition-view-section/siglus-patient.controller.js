@@ -21,7 +21,7 @@
         .module('requisition-view-section')
         .controller('SiglusPatientController', controller);
 
-    controller.$inject = ['columnUtils', 'requisitionValidator'];
+    controller.$inject = ['siglusColumnUtils', 'requisitionValidator'];
 
     function controller(columnUtils, requisitionValidator) {
 
