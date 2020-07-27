@@ -295,23 +295,30 @@
             if (!columnUtils.isUserInput(totalLineItem)) {
                 return false;
             }
-            var withServices = true;
             var serviceLineItems = getServiceLineItems(requisition.testConsumptionLineItems);
-            var isFilled;
+            var isFilled, isProjectEmpty, isServiceFieldEmpty, isTotalFieldEmpty;
+            var projectEmptyMap = {}, projectFillMap = {};
             angular.forEach(serviceLineItems, function(lineItem) {
                 angular.forEach(_.values(lineItem.projects), function(project) {
-                    isFilled = false;
+                    isFilled = projectFillMap[project.name] || false;
+                    isProjectEmpty = projectEmptyMap[project.name] || true;
                     angular.forEach(_.values(project.outcomes), function(outcome) {
-                        if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))) {
-                            angular.forEach(serviceLineItems, function(serviceLineItem) {
-                                if (isNotEmpty(getTestConsumptionFieldValue(serviceLineItem, project, outcome))) {
-                                    isFilled = true;
-                                }
-                            });
+                        isTotalFieldEmpty =
+                            !isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome));
+                        isServiceFieldEmpty =
+                            !isNotEmpty(getTestConsumptionFieldValue(lineItem, project, outcome));
+                        isProjectEmpty = isProjectEmpty && isServiceFieldEmpty && isTotalFieldEmpty;
+                        if (!isTotalFieldEmpty && !isServiceFieldEmpty) {
+                            isFilled = true;
                         }
                     });
-                    withServices = withServices && isFilled;
+                    projectEmptyMap[project.name] = isProjectEmpty;
+                    projectFillMap[project.name] = isFilled;
                 });
+            });
+            var withServices = true;
+            angular.forEach(_.keys(projectEmptyMap), function(projectName) {
+                withServices = withServices && (projectFillMap[projectName] || projectEmptyMap[projectName]);
             });
             if (!withServices) {
                 requisition.$error = requisition.$error
