@@ -277,6 +277,31 @@ describe('requisitionValidator', function() {
         });
         // #375: ends here
 
+        // #445: total service need to record the test result data for services
+        it('should return false if total is user input and not filled when has test result data', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[1].source = 'USER_INPUT';
+            requisition.testConsumptionLineItems[0].projects = angular.copy(testProject);
+            testProject.hivDetermine.outcomes.consumo.value = null;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+
+        it('should return false if total is user input and filled without test result data', function() {
+            requisition.template.extension.enableRapidTestConsumption = true;
+            requisition.testConsumptionLineItems[1].source = 'USER_INPUT';
+            requisition.testConsumptionLineItems[1].projects = angular.copy(testProject);
+            requisition.testConsumptionLineItems[2].projects = angular.copy(testProject);
+            testProject.hivDetermine.outcomes.consumo.value = null;
+            testProject.hivDetermine.outcomes.positive.value = null;
+            testProject.hivDetermine.outcomes.unjustified.value = null;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionValidation.totalWithoutServices');
+        });
+        // #445: ends here
+
         // #399: Facility user can create requisition with patient section
         it('should return true if patientLineItems are valid', function() {
             requisition.template.extension.enablePatient = true;
