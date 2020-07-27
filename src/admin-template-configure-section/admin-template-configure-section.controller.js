@@ -29,7 +29,7 @@
         .controller('TemplateConfigureSectionController', TemplateConfigureSectionController);
 
     TemplateConfigureSectionController.$inject = [
-        '$scope', 'messageService', 'templateValidator', 'columnUtils', 'COLUMN_SOURCES',
+        '$scope', 'messageService', 'templateValidator', 'siglusColumnUtils', 'COLUMN_SOURCES',
         'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'templateConfigureService', 'notificationService'
     ];
 

@@ -34,7 +34,7 @@
     }
 
     decorator.$inject = ['$delegate', '$filter', 'requisitionUtils', 'messageService', 'COLUMN_TYPES',
-        'MAX_INTEGER_VALUE', 'columnUtils'];
+        'MAX_INTEGER_VALUE', 'siglusColumnUtils'];
 
     function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
                        columnUtils) {

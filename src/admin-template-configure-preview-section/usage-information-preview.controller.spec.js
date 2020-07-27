@@ -25,7 +25,7 @@ describe('UsageInformationPreviewController', function() {
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             messageService = $injector.get('messageService');
-            columnUtils = $injector.get('columnUtils');
+            columnUtils = $injector.get('siglusColumnUtils');
         });
         information = {
             name: 'information',

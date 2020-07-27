@@ -26,11 +26,11 @@
      */
     angular
         .module('admin-template')
-        .factory('columnUtils', columnUtils);
+        .factory('siglusColumnUtils', siglusColumnUtils);
 
-    columnUtils.$inject = ['COLUMN_SOURCES', 'SERVICE_TYPES', 'messageService'];
+    siglusColumnUtils.$inject = ['COLUMN_SOURCES', 'SERVICE_TYPES', 'messageService'];
 
-    function columnUtils(COLUMN_SOURCES, SERVICE_TYPES, messageService) {
+    function siglusColumnUtils(COLUMN_SOURCES, SERVICE_TYPES, messageService) {
         return {
             isUserInput: isUserInput,
             isStockCards: isStockCards,
