@@ -64,14 +64,24 @@
 
         function siglusValidRequisition(requisition) {
             requisition.$error = undefined;
-            var isValid = validateConsultationNumber(requisition) && validateKitUsage(requisition) &&
-                $delegate.validateRequisition(requisition) && validateUsageInformation(requisition) &&
-                validatePatient(requisition) && validateTestConsumption(requisition);
+            var isValid = siglusValidRequisitionField(requisition);
             if (!isValid) {
                 requisition.$error = messageService.get('requisitionView.rnrHasErrors');
             }
-            isValid =  isValid && !areAllLineItemsSkipped(requisition) &&
-                !isTestConsumptionEmpty(requisition) && !isOnlyAPESFilled(requisition);
+            isValid = !areAllLineItemsSkipped(requisition) && isValid;
+            isValid = !isTestConsumptionEmpty(requisition) && isValid;
+            isValid = !isOnlyAPESFilled(requisition) && isValid;
+            return isValid;
+        }
+
+        function siglusValidRequisitionField(requisition) {
+            var isValid = true;
+            isValid = validateConsultationNumber(requisition) && isValid;
+            isValid = validateKitUsage(requisition) && isValid;
+            isValid = $delegate.validateRequisition(requisition) && isValid;
+            isValid = validateUsageInformation(requisition) && isValid;
+            isValid = validatePatient(requisition) && isValid;
+            isValid = validateTestConsumption(requisition) && isValid;
             return isValid;
         }
 
