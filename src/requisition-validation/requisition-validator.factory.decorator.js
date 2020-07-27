@@ -171,6 +171,7 @@
                             if (!isTotalAndCalculated(lineItem)) {
                                 isValid = validateSiglusLineItemField(field) && isValid;
                             }
+                            isValid = validateTotal(lineItems, testProject, field) && isValid;
                             isValid = validateAPES(lineItems, testProject, field) && isValid;
                         });
                         isValid = validateTestOutcomeField(fields) && isValid;
@@ -195,10 +196,33 @@
             return isValid;
         }
 
+        function validateTotal(lineItems, project, outcome) {
+            var isValid = true;
+            var serviceLineItems = lineItems.filter(function(lineItem) {
+                return !columnUtils.isTotal(lineItem) && !columnUtils.isAPES(lineItem);
+            });
+            var totalLineItem = lineItems.find(columnUtils.isTotal);
+            if (!columnUtils.isUserInput(totalLineItem)) {
+                return isValid;
+            }
+            var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
+            var serviceField;
+            angular.forEach(serviceLineItems, function(lineItem) {
+                serviceField = lineItem.projects[project.name].outcomes[outcome.name];
+                if (isNotEmpty(serviceField.value) && !isNotEmpty(totalField.value)) {
+                    isValid = validateSiglusLineItemField(totalField) && isValid;
+                }
+            });
+            return isValid;
+        }
+
         function validateAPES(lineItems, project, outcome) {
             var isValid = true;
             var totalLineItem = lineItems.find(columnUtils.isTotal);
             var apesLineItem = lineItems.find(columnUtils.isAPES);
+            if (_.isUndefined(apesLineItem)) {
+                return isValid;
+            }
             var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
             var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
             if (isNotEmpty(totalField.value) && !isNotEmpty(apesField.value)) {
@@ -234,6 +258,9 @@
             var totalLineItem = requisition.testConsumptionLineItems.find(columnUtils.isTotal);
             var apesLineItem = requisition.testConsumptionLineItems.find(columnUtils.isAPES);
             var totalField, apesField;
+            if (_.isUndefined(apesLineItem)) {
+                return flag;
+            }
             angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
                 angular.forEach(_.values(lineItem.projects), function(project) {
                     angular.forEach(_.values(project.outcomes), function(outcome) {
