@@ -26,7 +26,7 @@
      */
     angular
         .module('admin-template')
-        .constant('TEMPLATE_SECTIONS', [
+        .constant('SIGLUS_TEMPLATE_SECTIONS', [
             'kitUsage',
             'usageInformation',
             'testConsumption',

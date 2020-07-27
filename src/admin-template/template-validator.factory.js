@@ -32,7 +32,7 @@
         'UTF8_REGEX', 'MAX_COLUMN_DESCRIPTION_LENGTH', 'TEMPLATE_COLUMNS', 'COLUMN_SOURCES',
         'messageService',
         // SIGLUS-REFACTOR: starts here
-        'notificationService', 'siglusColumnUtils', 'TEMPLATE_SECTIONS'
+        'notificationService', 'siglusColumnUtils', 'SIGLUS_TEMPLATE_SECTIONS'
         // SIGLUS-REFACTOR: ends here
     ];
 
