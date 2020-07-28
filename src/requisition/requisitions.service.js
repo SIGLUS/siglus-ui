@@ -572,10 +572,10 @@
         }
 
         function getArchivedOrderables(requisition) {
-            if (requisition.isInternalApproval) {
-                return archivedProductService.getArchivedOrderables(requisition.facility.id);
+            if (requisition.isExternalApproval) {
+                return [];
             }
-            return [];
+            return archivedProductService.getArchivedOrderables(requisition.facility.id);
         }
 
         function getResourcesFromLineItems(requisition, isOrderable) {

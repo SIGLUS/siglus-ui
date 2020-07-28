@@ -479,8 +479,8 @@ describe('requisitionService', function() {
             expect(result.$outdated).toBe(true);
         });
 
-        it('should get archived product if is internal approve', function() {
-            this.requisition.isInternalApproval = true;
+        it('should not get archived product if is external approve', function() {
+            this.requisition.isExternalApproval = true;
             this.$httpBackend
                 .expectGET(this.requisitionUrlFactory(getRequisitionUrl))
                 .respond(200, this.requisition, headers);
@@ -495,7 +495,7 @@ describe('requisitionService', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            expect(this.archivedProductService.getArchivedOrderables).toHaveBeenCalled();
+            expect(this.archivedProductService.getArchivedOrderables).not.toHaveBeenCalled();
         });
     });
 
