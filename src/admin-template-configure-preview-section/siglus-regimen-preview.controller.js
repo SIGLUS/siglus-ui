@@ -17,20 +17,24 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template.TEMPLATE_SECTIONS
-     *
-     * @description
-     * This is constant template sections.
-     */
     angular
-        .module('admin-template')
-        .constant('TEMPLATE_SECTIONS', [
-            'kitUsage',
-            'usageInformation',
-            'testConsumption',
-            'patient',
-            'regimen'
-        ]);
+        .module('admin-template-configure-preview-section')
+        .controller('SiglusRegimenPreviewController', controller);
+
+    controller.$inject = ['columnUtils'];
+
+    function controller(columnUtils) {
+
+        var vm = this;
+
+        // vm.$onInit = onInit;
+        vm.columnDisplayName = columnUtils.columnDisplayName;
+        vm.isUserInput = columnUtils.isUserInput;
+
+        // function onInit() {
+        //     vm.collection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
+        //     vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+        // }
+    }
+
 })();

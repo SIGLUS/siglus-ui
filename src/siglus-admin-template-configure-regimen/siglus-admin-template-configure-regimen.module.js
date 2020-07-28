@@ -18,19 +18,18 @@
     'use strict';
 
     /**
-     * @ngdoc object
-     * @name admin-template.TEMPLATE_SECTIONS
+     * @module siglus-admin-template-configure-regimen
      *
      * @description
-     * This is constant template sections.
+     * Provides base siglus-admin-template-configure-regimen state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
      */
-    angular
-        .module('admin-template')
-        .constant('TEMPLATE_SECTIONS', [
-            'kitUsage',
-            'usageInformation',
-            'testConsumption',
-            'patient',
-            'regimen'
-        ]);
+    angular.module('siglus-admin-template-configure-regimen', [
+        'ui.router',
+        'openlmis-rights',
+        'requisition-constants',
+        'siglus-template-configure-group',
+        'admin-template-configure-preview-section'
+    ]);
+
 })();

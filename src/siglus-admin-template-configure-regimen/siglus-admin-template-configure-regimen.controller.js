@@ -17,20 +17,32 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template.TEMPLATE_SECTIONS
-     *
-     * @description
-     * This is constant template sections.
-     */
     angular
-        .module('admin-template')
-        .constant('TEMPLATE_SECTIONS', [
-            'kitUsage',
-            'usageInformation',
-            'testConsumption',
-            'patient',
-            'regimen'
-        ]);
+        .module('siglus-admin-template-configure-regimen')
+        .controller('SiglusRegimenTemplateController', controller);
+
+    controller.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template'];
+
+    function controller(COLUMN_SOURCES, templateConfigureService, template) {
+        var vm = this;
+
+        vm.$onInit = onInit;
+        vm.addColumn = addColumn;
+
+        vm.template = undefined;
+
+        function onInit() {
+            vm.template = template;
+        }
+
+        function addColumn(section) {
+            section.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+                source: COLUMN_SOURCES.USER_INPUT,
+                columnDefinition: {
+                    sources: [COLUMN_SOURCES.USER_INPUT],
+                    supportsTag: false
+                }
+            }));
+        }
+    }
 })();
