@@ -118,14 +118,15 @@
             return function() {
                 var shipment = this;
                 // #287: Warehouse clerk can skip some products in order
-                if (areAllLineItemsSkipped(this.order.orderLineItems)) {
+                var unskippedLineItems = getUnskippedLineItems(this.order.orderLineItems);
+                if (unskippedLineItems.length === 0) {
                     return alertService.error('shipmentView.allLineItemsSkipped');
-                } else if (areAllLineItemsNotFulfilled(shipment)) {
+                } else if (areAllLineItemsNotFulfilled(shipment, unskippedLineItems)) {
                     return alertService.error('shipmentView.allLineItemsNotFulfilled');
                 }
                 // #287: ends here
                 // #400: Facility user partially fulfill an order and create sub-order for an requisition
-                var totalPartialLineItems = getPartialFulfilledLineItems(shipment);
+                var totalPartialLineItems = getPartialFulfilledLineItems(shipment, unskippedLineItems);
                 if (totalPartialLineItems) {
                     return confirmService.confirm(messageService.get('shipmentView.confirmPartialFulfilled.message', {
                         totalPartialLineItems: totalPartialLineItems
@@ -165,23 +166,18 @@
         }
 
         // #287: Warehouse clerk can skip some products in order
-        function areAllLineItemsSkipped(lineItems) {
-            var allSkipped = true;
-            lineItems.forEach(function(lineItem) {
-                if (!lineItem.skipped) {
-                    allSkipped = false;
-                    return;
-                }
+        function getUnskippedLineItems(lineItems) {
+            return lineItems.filter(function(lineItem) {
+                return !lineItem.skipped;
             });
-            return allSkipped;
         }
         // #287: ends here
 
         // #400: Facility user partially fulfill an order and create sub-order for an requisition
-        function getPartialFulfilledLineItems(shipment) {
+        function getPartialFulfilledLineItems(shipment, unskippedLineItems) {
             var totalPartialLineItems = 0;
-            shipment.order.orderLineItems.forEach(function(orderLineItem) {
-                if (!orderLineItem.added && !orderLineItem.skipped) {
+            unskippedLineItems.forEach(function(orderLineItem) {
+                if (!orderLineItem.added) {
                     var totalQuantityShipped = getTotalQuantityShipped(shipment.lineItems, orderLineItem);
                     if (totalQuantityShipped + orderLineItem.partialFulfilledQuantity < orderLineItem.orderedQuantity) {
                         totalPartialLineItems = totalPartialLineItems + 1;
@@ -192,10 +188,11 @@
         }
         // #400: ends here
 
-        function areAllLineItemsNotFulfilled(shipment) {
+        // #401: limitation of creating sub-order
+        function areAllLineItemsNotFulfilled(shipment, unskippedLineItems) {
             var allNotFulfilled = true;
-            shipment.order.orderLineItems.forEach(function(lineItem) {
-                if (!lineItem.skipped && getTotalQuantityShipped(shipment.lineItems, lineItem)) {
+            unskippedLineItems.forEach(function(lineItem) {
+                if (getTotalQuantityShipped(shipment.lineItems, lineItem)) {
                     allNotFulfilled = false;
                     return;
                 }
@@ -212,6 +209,7 @@
             });
             return totalQuantityShipped;
         }
+        // #401: ends here
 
         function decorateDelete(originalDelete) {
             return function() {
