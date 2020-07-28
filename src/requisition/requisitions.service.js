@@ -544,7 +544,7 @@
                         getByVersionIdentities(filterOutOrderablesFromLineItems(requisition),
                             new OrderableResource()),
                         getByVersionIdentities(identities, new FacilityTypeApprovedProductResource()),
-                        archivedProductService.getArchivedOrderables(requisition.facility.id)
+                        getArchivedOrderables(requisition)
                     ])
                         .then(function(result) {
                             // SIGLUS-REFACTOR: starts here
@@ -569,6 +569,13 @@
                             return new Requisition(requisition, statusMessages);
                         });
                 });
+        }
+
+        function getArchivedOrderables(requisition) {
+            if (requisition.isInternalApproval) {
+                return archivedProductService.getArchivedOrderables(requisition.facility.id);
+            }
+            return [];
         }
 
         function getResourcesFromLineItems(requisition, isOrderable) {
