@@ -9,11 +9,10 @@
   "shipmentView.none": "None",
   "shipmentView.allLineItemsSkipped": "Cannot fulfill order with all line items skipped.",
   "shipmentView.partialFulfilledQuantity": "Partial Fulfilled",
-  "shipmentView.confirmPartialFulfilled.headMessage": "By confirming this shipment, the order will be fulfilled and the ordering facility will be notified of pending shipment with an electronic Proof of Delivery (POD).",
-  "shipmentView.confirmPartialFulfilled.message": "${totalPartialLineItems} not fully fulfilled, By click “create sub-order”, this order will be fulfilled and ordering with filling quantity, the rest products will be move to a new sub-order.",
+  "shipmentView.confirmPartialFulfilled.message": "${totalPartialLineItems} products are not fully fulfilled. By confirming “create sub-order”, this order will be fulfilled and ordering with filling quantity,  the ordering facility will be notified of pending shipment with an electronic Proof of Delivery (POD). The rest products which not be fully fulfilled will be move to a new sub-order.",
   "shipmentView.confirmPartialFulfilled.createSuborder": "Create sub-order",
-  "shipmentView.confirmPartialFulfilled.cancel": "Cancel",
   "shipmentView.suborderHasBeenConfirmed": "Sub-order has been created",
   "shipmentView.failedToCreateSuborder": "Failed to create sub-order",
-  "shipmentView.requisitionNumber": "Requisition number"
+  "shipmentView.requisitionNumber": "Requisition number",
+  "shipmentView.allLineItemsNotFulfilled": "You cannot confirm the shipment if the shipment doesn't have any line item"
 }

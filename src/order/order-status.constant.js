@@ -39,8 +39,11 @@
             IN_ROUTE: 'IN_ROUTE',
             READY_TO_PACK: 'READY_TO_PACK',
             // #400: Facility user partially fulfill an order and create sub-order for an requisition
-            PARTIALLY_FULFILLED: 'PARTIALLY_FULFILLED'
+            PARTIALLY_FULFILLED: 'PARTIALLY_FULFILLED',
             // #400: ends here
+            // #401: limitation of creating sub-order
+            CLOSED: 'CLOSED'
+            // #401: ends here
         };
     }
 

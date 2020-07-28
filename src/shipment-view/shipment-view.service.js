@@ -32,15 +32,15 @@
     shipmentViewService.inject = [
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
-        // #400: add siglusConfirmModalService
-        'siglusConfirmModalService'
+        // #400: add messageService
+        'messageService'
         // #400: ends here
     ];
     // #287: ends here
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
                                  $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
-                                 siglusConfirmModalService) {
+                                 messageService) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -120,32 +120,25 @@
                 // #287: Warehouse clerk can skip some products in order
                 if (areAllLineItemsSkipped(this.order.orderLineItems)) {
                     return alertService.error('shipmentView.allLineItemsSkipped');
+                } else if (areAllLineItemsNotFulfilled(shipment)) {
+                    return alertService.error('shipmentView.allLineItemsNotFulfilled');
                 }
                 // #287: ends here
                 // #400: Facility user partially fulfill an order and create sub-order for an requisition
                 var totalPartialLineItems = getPartialFulfilledLineItems(shipment);
                 if (totalPartialLineItems) {
-                    return siglusConfirmModalService.confirm(totalPartialLineItems)
-                        .then(function(isSubOrder) {
+                    return confirmService.confirm(messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                        totalPartialLineItems: totalPartialLineItems
+                    }), 'shipmentView.confirmPartialFulfilled.createSuborder')
+                        .then(function() {
                             loadingModalService.open();
-                            if (isSubOrder) {
-                                return shipment.createSuborder()
-                                    .then(function() {
-                                        notificationService.success('shipmentView.suborderHasBeenConfirmed');
-                                        stateTrackerService.goToPreviousState('openlmis.orders.view');
-                                    })
-                                    .catch(function() {
-                                        notificationService.error('shipmentView.failedToCreateSuborder');
-                                        loadingModalService.close();
-                                    });
-                            }
-                            return originalConfirm.apply(shipment)
+                            return shipment.createSuborder()
                                 .then(function() {
-                                    notificationService.success('shipmentView.shipmentHasBeenConfirmed');
+                                    notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                     stateTrackerService.goToPreviousState('openlmis.orders.view');
                                 })
                                 .catch(function() {
-                                    notificationService.error('shipmentView.failedToConfirmShipment');
+                                    notificationService.error('shipmentView.failedToCreateSuborder');
                                     loadingModalService.close();
                                 });
                         });
@@ -189,12 +182,7 @@
             var totalPartialLineItems = 0;
             shipment.order.orderLineItems.forEach(function(orderLineItem) {
                 if (!orderLineItem.added && !orderLineItem.skipped) {
-                    var totalQuantityShipped = 0;
-                    shipment.lineItems.forEach(function(lineItem) {
-                        if (lineItem.orderable.id === orderLineItem.orderable.id) {
-                            totalQuantityShipped = totalQuantityShipped + lineItem.quantityShipped;
-                        }
-                    });
+                    var totalQuantityShipped = getTotalQuantityShipped(shipment.lineItems, orderLineItem);
                     if (totalQuantityShipped + orderLineItem.partialFulfilledQuantity < orderLineItem.orderedQuantity) {
                         totalPartialLineItems = totalPartialLineItems + 1;
                     }
@@ -203,6 +191,27 @@
             return totalPartialLineItems;
         }
         // #400: ends here
+
+        function areAllLineItemsNotFulfilled(shipment) {
+            var allNotFulfilled = true;
+            shipment.order.orderLineItems.forEach(function(lineItem) {
+                if (!lineItem.skipped && getTotalQuantityShipped(shipment.lineItems, lineItem)) {
+                    allNotFulfilled = false;
+                    return;
+                }
+            });
+            return allNotFulfilled;
+        }
+
+        function getTotalQuantityShipped(shipmentLineItems, orderLineItem) {
+            var totalQuantityShipped = 0;
+            shipmentLineItems.forEach(function(lineItem) {
+                if (lineItem.orderable.id === orderLineItem.orderable.id) {
+                    totalQuantityShipped = totalQuantityShipped + lineItem.quantityShipped;
+                }
+            });
+            return totalQuantityShipped;
+        }
 
         function decorateDelete(originalDelete) {
             return function() {
