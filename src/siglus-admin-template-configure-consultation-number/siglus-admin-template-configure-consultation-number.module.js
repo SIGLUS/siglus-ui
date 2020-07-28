@@ -18,24 +18,18 @@
     'use strict';
 
     /**
-     * @ngdoc object
-     * @name admin-template-configure-column-setting.SECTION_TYPES
+     * @module admin-template-configure-kit-usage
      *
      * @description
-     * This is constant for section types.
+     * Provides base siglus-admin-template-configure-consultation-number state
+     * and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
      */
-    angular
-        .module('admin-template-configure-preview-section')
-        .constant('SECTION_TYPES', type());
+    angular.module('siglus-admin-template-configure-consultation-number', [
+        'ui.router',
+        'openlmis-rights',
+        'requisition-constants',
+        'admin-template-configure-section'
+    ]);
 
-    function type() {
-        return {
-            SERVICE: 'service',
-            COLLECTION: 'collection',
-            INFORMATION: 'information',
-            PROJECT: 'project',
-            OUTCOME: 'outcome',
-            NUMBER: 'number'
-        };
-    }
 })();

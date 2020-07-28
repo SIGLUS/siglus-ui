@@ -1,7 +1,9 @@
 <div class="requisition-template-admin">
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableConsultationNumber"/>{{'adminProgramTemplate.consultationNumber' | message}}
+        <a ng-show="vm.template.extension.enableConsultationNumber" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.consultationNumber">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
+    <siglus-consultation-number-preview sections="vm.template.consultationNumber" ng-show="vm.template.extension.enableConsultationNumber"/>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableKitUsage"/>{{'adminProgramTemplate.kitUsage' | message}}
         <a ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>

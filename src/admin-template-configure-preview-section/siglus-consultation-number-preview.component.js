@@ -17,25 +17,15 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template-configure-column-setting.SECTION_TYPES
-     *
-     * @description
-     * This is constant for section types.
-     */
     angular
         .module('admin-template-configure-preview-section')
-        .constant('SECTION_TYPES', type());
+        .component('siglusConsultationNumberPreview', {
+            bindings: {
+                sections: '<'
+            },
+            controller: 'SiglusConsultationNumberPreviewController',
+            controllerAs: 'vm',
+            templateUrl: 'admin-template-configure-preview-section/siglus-consultation-number-preview.html'
+        });
 
-    function type() {
-        return {
-            SERVICE: 'service',
-            COLLECTION: 'collection',
-            INFORMATION: 'information',
-            PROJECT: 'project',
-            OUTCOME: 'outcome',
-            NUMBER: 'number'
-        };
-    }
 })();

@@ -1,4 +1,5 @@
 {
   "adminTemplateConfigurePreview.usageInformation.MonthOrYear": "Month/Year",
-  "adminTemplateConfigurePreview.testConsumption.programName": "Program Name"
+  "adminTemplateConfigurePreview.testConsumption.programName": "Program Name",
+  "adminTemplateConfigurePreview.consultationNumber.requisitionType": "Requisition Type"
 }

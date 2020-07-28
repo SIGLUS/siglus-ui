@@ -80,7 +80,12 @@ describe('templateValidator', function() {
                 valid: true,
                 columns: angular.copy(columns)
             }];
-            // #398:
+            // #398: ends here
+            // #443: consultation number section configure
+            template.consultationNumber = [{
+                columns: angular.copy(columns)
+            }];
+            // #443: ends here
         });
 
         it('should return true if all columns are valid', function() {

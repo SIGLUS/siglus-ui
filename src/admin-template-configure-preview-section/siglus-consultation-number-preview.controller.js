@@ -17,25 +17,25 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template-configure-column-setting.SECTION_TYPES
-     *
-     * @description
-     * This is constant for section types.
-     */
     angular
         .module('admin-template-configure-preview-section')
-        .constant('SECTION_TYPES', type());
+        .controller('SiglusConsultationNumberPreviewController', controller);
 
-    function type() {
-        return {
-            SERVICE: 'service',
-            COLLECTION: 'collection',
-            INFORMATION: 'information',
-            PROJECT: 'project',
-            OUTCOME: 'outcome',
-            NUMBER: 'number'
-        };
+    controller.$inject = ['columnUtils', 'templateConfigureService',
+        'SECTION_TYPES'];
+
+    function controller(columnUtils, templateConfigureService, SECTION_TYPES) {
+
+        var vm = this;
+
+        vm.$onInit = onInit;
+        vm.isUserInput = columnUtils.isUserInput;
+        vm.isTotal = columnUtils.isTotal;
+        vm.columnDisplayName = columnUtils.columnDisplayName;
+
+        function onInit() {
+            vm.consultationNumber = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);
+        }
     }
+
 })();

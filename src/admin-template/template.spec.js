@@ -200,6 +200,41 @@ describe('Template', function() {
             }]);
         });
         // #341: ends here
+
+        // #443: consultation number section configure
+        it('should sort section column of consultation number by displayOrder', function() {
+            this.templateJson.consultationNumber = [{
+                name: 'number',
+                columns: [{
+                    name: 'consultationNumber',
+                    source: 'USER_INPUT',
+                    displayOrder: 1,
+                    columnDefinition: {}
+                }, {
+                    name: 'total',
+                    source: 'USER_INPUT',
+                    displayOrder: 0,
+                    columnDefinition: {}
+                }]
+            }];
+            this.template = new this.Template(this.templateJson);
+
+            expect(this.template.consultationNumber).toEqual([{
+                name: 'number',
+                columns: [{
+                    name: 'total',
+                    source: 'USER_INPUT',
+                    displayOrder: 0,
+                    columnDefinition: {}
+                }, {
+                    name: 'consultationNumber',
+                    source: 'USER_INPUT',
+                    displayOrder: 1,
+                    columnDefinition: {}
+                }]
+            }]);
+        });
+        // #443: ends here
     });
 
     describe('move', function() {
