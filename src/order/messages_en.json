@@ -1,3 +1,4 @@
 {
-  "orderStatus.PARTIALLY_FULFILLED": "Partially Fulfilled"
+  "orderStatus.PARTIALLY_FULFILLED": "Partially Fulfilled",
+  "orderStatus.CLOSED": "Closed"
 }

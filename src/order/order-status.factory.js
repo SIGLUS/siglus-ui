@@ -78,8 +78,14 @@
                 {
                     name: messageService.get('orderStatus.PARTIALLY_FULFILLED'),
                     value: ORDER_STATUS.PARTIALLY_FULFILLED
-                }
+                },
                 // #400: ends here
+                // #401: limitation of creating sub-order
+                {
+                    name: messageService.get('orderStatus.CLOSED'),
+                    value: ORDER_STATUS.CLOSED
+                }
+                // #401: ends here
             ];
         }
     }

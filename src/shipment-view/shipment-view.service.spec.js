@@ -18,7 +18,7 @@ describe('shipmentViewService', function() {
     // #287: add alertService
     var shipmentViewService, OrderDataBuilder, shipmentRepositoryMock, shipmentFactoryMock, order,
         ShipmentDataBuilder, shipment, $rootScope, $q, Order, loadingModalService, $state,
-        notificationService, stateTrackerService, confirmService, alertService, siglusConfirmModalService,
+        notificationService, stateTrackerService, confirmService, alertService,
         StockCardSummaryDataBuilder, stockCardSummaries, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder;
     // #287: ends here
 
@@ -58,7 +58,6 @@ describe('shipmentViewService', function() {
             // #287: Warehouse clerk can skip some products in order
             alertService = $injector.get('alertService');
             // #287: ends here
-            siglusConfirmModalService = $injector.get('siglusConfirmModalService');
             // #372: Improving Fulfilling Order performance
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
@@ -78,7 +77,6 @@ describe('shipmentViewService', function() {
         // #287: Warehouse clerk can skip some products in order
         spyOn(alertService, 'error');
         // #287: ends here
-        spyOn(siglusConfirmModalService, 'confirm');
 
         shipment = new ShipmentDataBuilder().build();
 
@@ -358,6 +356,11 @@ describe('shipmentViewService', function() {
             originalConfirm = shipment.confirm;
 
             shipmentRepositoryMock.getByOrderId.andReturn($q.resolve(shipment));
+            shipment.lineItems[0].orderable.id = 'orderable-id-1';
+            shipment.lineItems[1].orderable.id = 'orderable-id-2';
+            shipment.lineItems.forEach(function(lineItem) {
+                lineItem.quantityShipped = 50;
+            });
 
             order = new Order(new OrderDataBuilder().buildShipped());
 
@@ -386,6 +389,28 @@ describe('shipmentViewService', function() {
             expect(loadingModalService.close).not.toHaveBeenCalled();
         });
         // #287: ends here
+
+        // #401: limitation of creating sub-order
+        it('should alert error message if all items did not been fulfilled', function() {
+            confirmService.confirm.andReturn($q.resolve());
+            shipment.lineItems.forEach(function(lineItem) {
+                lineItem.quantityShipped = 0;
+            });
+
+            shipment.confirm();
+            $rootScope.$apply();
+
+            expect(alertService.error).toHaveBeenCalledWith('shipmentView.allLineItemsNotFulfilled');
+
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+            expect(loadingModalService.open).not.toHaveBeenCalled();
+            expect(originalConfirm).not.toHaveBeenCalled();
+            expect(notificationService.success).not.toHaveBeenCalled();
+            expect(stateTrackerService.goToPreviousState).not.toHaveBeenCalled();
+            expect(notificationService.error).not.toHaveBeenCalled();
+            expect(loadingModalService.close).not.toHaveBeenCalled();
+        });
+        // #401: ends here
 
         it('should reject if confirmation was dismissed', function() {
             confirmService.confirm.andReturn($q.reject());
@@ -478,41 +503,24 @@ describe('shipmentViewService', function() {
             expect(loadingModalService.close).not.toHaveBeenCalled();
         });
 
+        // #400: Facility user partially fulfill an order and create sub-order for an requisition
         it('should call createSuborder when it is not fulfilled after choose create suborder', function() {
-            shipment.createSuborder = jasmine.createSpy('createSuborder');
-            siglusConfirmModalService.confirm.andReturn($q.resolve(true));
+            confirmService.confirm.andReturn($q.resolve());
+            shipment.createSuborder = jasmine.createSpy('createSuborder').andReturn($q.resolve());
             shipment.order.orderLineItems.forEach(function(lineItem) {
-                lineItem.orderedQuantity = 1;
+                lineItem.orderedQuantity = 100;
                 lineItem.partialFulfilledQuantity = 0;
             });
 
             shipment.confirm();
             $rootScope.$apply();
 
-            expect(siglusConfirmModalService.confirm).toHaveBeenCalled();
+            expect(confirmService.confirm).toHaveBeenCalled();
             expect(loadingModalService.open).toHaveBeenCalled();
             expect(shipment.createSuborder).toHaveBeenCalled();
             expect(originalConfirm).not.toHaveBeenCalledWith();
-
         });
-
-        it('should not call createSuborder when it is not fulfilled after choose confirm shipment', function() {
-            shipment.createSuborder = jasmine.createSpy('createSuborder');
-            siglusConfirmModalService.confirm.andReturn($q.resolve(false));
-            shipment.order.orderLineItems.forEach(function(lineItem) {
-                lineItem.orderedQuantity = 1;
-                lineItem.partialFulfilledQuantity = 0;
-            });
-
-            shipment.confirm();
-            $rootScope.$apply();
-
-            expect(siglusConfirmModalService.confirm).toHaveBeenCalled();
-            expect(loadingModalService.open).toHaveBeenCalled();
-            expect(shipment.createSuborder).not.toHaveBeenCalled();
-            expect(originalConfirm).toHaveBeenCalled();
-
-        });
+        // #400: ends here
 
     });
 
