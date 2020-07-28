@@ -31,6 +31,7 @@
             'usageInformation',
             'testConsumption',
             'patient',
-            'regimen'
+            'regimen',
+            'consultationNumber'
         ]);
 })();

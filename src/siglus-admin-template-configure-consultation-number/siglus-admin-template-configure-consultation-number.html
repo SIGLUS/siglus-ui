@@ -1,0 +1,11 @@
+<div class="siglus-consultation-number-template" ng-if="vm.template.consultationNumber.length">
+    <div ng-repeat="section in vm.template.consultationNumber | orderBy : 'displayOrder'">
+        <div class="sub-heading">
+            <h3>{{section.label}}</h3>
+        </div>
+        <template-configure-section
+                section="section"
+                on-add-column="vm.addColumn"
+        />
+    </div>
+</div>

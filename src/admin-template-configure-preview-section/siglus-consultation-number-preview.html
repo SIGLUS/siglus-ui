@@ -1,0 +1,16 @@
+<div class="siglus-consultation-number-preview openlmis-table-container">
+    <table class="openlmis-table">
+        <tbody>
+        <tr>
+            <td colspan="2">{{'adminTemplateConfigurePreview.consultationNumber.requisitionType' | message}}</td>
+        </tr>
+        <tr ng-repeat="consultationNumberColumn in vm.consultationNumber.columns | orderBy : 'displayOrder'"
+            ng-if="consultationNumberColumn.isDisplayed">
+            <td ng-class="{'grey-background': vm.isTotal(consultationNumberColumn)}">{{consultationNumberColumn.label}}</td>
+            <td ng-class="{'user-input': vm.isUserInput(consultationNumberColumn)}" class="col-source">
+                <span>{{vm.columnDisplayName(consultationNumberColumn)}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

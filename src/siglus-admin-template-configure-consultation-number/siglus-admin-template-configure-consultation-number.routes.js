@@ -17,25 +17,22 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template-configure-column-setting.SECTION_TYPES
-     *
-     * @description
-     * This is constant for section types.
-     */
     angular
-        .module('admin-template-configure-preview-section')
-        .constant('SECTION_TYPES', type());
+        .module('siglus-admin-template-configure-consultation-number')
+        .config(routes);
 
-    function type() {
-        return {
-            SERVICE: 'service',
-            COLLECTION: 'collection',
-            INFORMATION: 'information',
-            PROJECT: 'project',
-            OUTCOME: 'outcome',
-            NUMBER: 'number'
-        };
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+
+    function routes($stateProvider, REQUISITION_RIGHTS) {
+        $stateProvider
+            .state('openlmis.administration.requisitionTemplates.configure.columnSetting.consultationNumber', {
+                label: 'adminProgramTemplate.consultationNumber',
+                url: '/consultationNumber',
+                templateUrl: 'siglus-admin-template-configure-consultation-number' +
+                    '/siglus-admin-template-configure-consultation-number.html',
+                controller: 'SiglusConsultationNumberController',
+                controllerAs: 'vm',
+                accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
+            });
     }
 })();
