@@ -17,20 +17,20 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template.TEMPLATE_SECTIONS
-     *
-     * @description
-     * This is constant template sections.
-     */
     angular
-        .module('admin-template')
-        .constant('TEMPLATE_SECTIONS', [
-            'kitUsage',
-            'usageInformation',
-            'testConsumption',
-            'patient',
-            'regimen'
-        ]);
+        .module('siglus-admin-template-configure-regimen')
+        .config(routes);
+
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+
+    function routes($stateProvider, REQUISITION_RIGHTS) {
+        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.regimen', {
+            label: 'adminProgramTemplate.regimen',
+            url: '/regimen',
+            templateUrl: 'siglus-admin-template-configure-regimen/siglus-admin-template-configure-regimen.html',
+            controller: 'SiglusRegimenTemplateController',
+            controllerAs: 'vm',
+            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
+        });
+    }
 })();
