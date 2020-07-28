@@ -478,6 +478,25 @@ describe('requisitionService', function() {
 
             expect(result.$outdated).toBe(true);
         });
+
+        it('should get archived product if is internal approve', function() {
+            this.requisition.isInternalApproval = true;
+            this.$httpBackend
+                .expectGET(this.requisitionUrlFactory(getRequisitionUrl))
+                .respond(200, this.requisition, headers);
+            this.$httpBackend
+                .expectGET(this.requisitionUrlFactory(getStatusMessagesUrl))
+                .respond(200, [this.statusMessage]);
+
+            this.requisition.$modified = false;
+            this.requisitionCacheService.getRequisition.andReturn(this.requisition);
+
+            this.requisitionService.get(this.requisition.id);
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(this.archivedProductService.getArchivedOrderables).toHaveBeenCalled();
+        });
     });
 
     it('should initiate requisition', function() {
