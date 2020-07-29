@@ -35,6 +35,8 @@
             INFORMATION: 'information',
             PROJECT: 'project',
             OUTCOME: 'outcome',
+            REGIMEN: 'regimen',
+            SUMMARY: 'summary',
             NUMBER: 'number'
         };
     }

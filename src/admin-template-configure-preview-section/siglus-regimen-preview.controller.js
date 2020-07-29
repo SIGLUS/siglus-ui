@@ -21,20 +21,40 @@
         .module('admin-template-configure-preview-section')
         .controller('SiglusRegimenPreviewController', controller);
 
-    controller.$inject = ['columnUtils'];
+    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService'];
 
-    function controller(columnUtils) {
+    function controller(columnUtils, SECTION_TYPES, templateConfigureService) {
 
         var vm = this;
+        vm.regimenColumns = undefined;
+        vm.summaryColumns = undefined;
 
-        // vm.$onInit = onInit;
+        vm.$onInit = onInit;
         vm.columnDisplayName = columnUtils.columnDisplayName;
         vm.isUserInput = columnUtils.isUserInput;
 
-        // function onInit() {
-        //     vm.collection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
-        //     vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
-        // }
+        function onInit() {
+            var regimen = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
+            var summary = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
+            vm.regimenTotal = _.find(regimen.columns, columnUtils.isTotal);
+            vm.summaryTotal = _.find(summary.columns, columnUtils.isTotal);
+            vm.regimenColumns = getDisplayedColumns(regimen);
+            vm.summaryColumns = getDisplayedColumns(summary);
+            vm.categories = ['Category 1', 'Category 2'];
+            vm.regimenLineItems = [{
+                code: 'code 1',
+                regimen: 'Regimen name 1'
+            }, {
+                code: 'code 2',
+                regimen: 'Regimen name 2'
+            }];
+        }
+
+        function getDisplayedColumns(section) {
+            return _.filter(section.columns, function(column) {
+                return column.isDisplayed && !column.hide;
+            });
+        }
     }
 
 })();

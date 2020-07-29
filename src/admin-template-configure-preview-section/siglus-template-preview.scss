@@ -42,10 +42,11 @@
 .openlmis-table {
     tr td.grey-background {
         background-color: #f0f0f0;
+        opacity: 0.6;
     }
 }
 
-.patient-preview {
+.patient-preview, regimen-preview {
     margin-bottom: 2em;
 }
 
@@ -57,6 +58,26 @@
         width: 100px;
         &:first-child {
             width: 200px;
+        }
+    }
+}
+
+.regimen-preview .openlmis-table {
+    .grey-background {
+        font-weight: bold;
+    }
+    &:first-child {
+        td:first-child {
+            width: 100px;
+        }
+        td:nth-child(2) {
+            width: 200px;
+        }
+    }
+    td {
+        width: 100px;
+        &:first-child {
+            width: 300px;
         }
     }
 }
