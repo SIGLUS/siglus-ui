@@ -65,7 +65,9 @@
                 // #264: ends here
                 // #372: Improving Fulfilling Order performance
                 shipment: function(shipmentViewService, order, stockCardSummaries) {
-                    return shipmentViewService.getShipmentForOrder(order, stockCardSummaries);
+                    var orderWithoutAvailableProducts = angular.copy(order);
+                    delete orderWithoutAvailableProducts.availableProducts;
+                    return shipmentViewService.getShipmentForOrder(orderWithoutAvailableProducts, stockCardSummaries);
                 },
                 // #372: ends here
                 tableLineItems: function(ShipmentViewLineItemFactory, shipment, stockCardSummaries) {
