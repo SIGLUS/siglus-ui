@@ -295,30 +295,22 @@
             if (!columnUtils.isUserInput(totalLineItem)) {
                 return false;
             }
-            var serviceLineItems = getServiceLineItems(requisition.testConsumptionLineItems);
-            var isFilled, isProjectEmpty, isServiceFieldEmpty, isTotalFieldEmpty;
-            var projectEmptyMap = {}, projectFillMap = {};
-            angular.forEach(serviceLineItems, function(lineItem) {
-                angular.forEach(_.values(lineItem.projects), function(project) {
-                    isFilled = projectFillMap[project.name] || false;
-                    isProjectEmpty = projectEmptyMap[project.name] || true;
-                    angular.forEach(_.values(project.outcomes), function(outcome) {
-                        isTotalFieldEmpty =
-                            !isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome));
-                        isServiceFieldEmpty =
-                            !isNotEmpty(getTestConsumptionFieldValue(lineItem, project, outcome));
-                        isProjectEmpty = isProjectEmpty && isServiceFieldEmpty && isTotalFieldEmpty;
-                        if (!isTotalFieldEmpty && !isServiceFieldEmpty) {
-                            isFilled = true;
-                        }
-                    });
-                    projectEmptyMap[project.name] = isProjectEmpty;
-                    projectFillMap[project.name] = isFilled;
-                });
-            });
             var withServices = true;
-            angular.forEach(_.keys(projectEmptyMap), function(projectName) {
-                withServices = withServices && (projectFillMap[projectName] || projectEmptyMap[projectName]);
+            var serviceLineItems = getServiceLineItems(requisition.testConsumptionLineItems);
+            var isFilled, isAllServiceLineItemsEmpty;
+            angular.forEach(_.values(_.first(serviceLineItems).projects), function(project) {
+                isFilled = true;
+                angular.forEach(_.values(project.outcomes), function(outcome) {
+                    isAllServiceLineItemsEmpty = _.reduce(serviceLineItems, function(isEmpty, serviceLineItem) {
+                        return isEmpty &&
+                            !isNotEmpty(getTestConsumptionFieldValue(serviceLineItem, project, outcome));
+                    }, true);
+                    if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome)) &&
+                        isAllServiceLineItemsEmpty) {
+                        isFilled = false;
+                    }
+                });
+                withServices = withServices && isFilled;
             });
             if (!withServices) {
                 requisition.$error = requisition.$error
