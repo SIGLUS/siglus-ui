@@ -42,7 +42,6 @@
 .openlmis-table {
     tr td.grey-background {
         background-color: #f0f0f0;
-        opacity: 0.6;
     }
 }
 
@@ -69,16 +68,16 @@
     }
     &:first-child {
         th:first-child {
-            width: 100px;
+            width: 120px;
         }
         th:nth-child(2) {
             width: 200px;
         }
     }
     th {
-        width: 100px;
+        width: 120px;
         &:first-child {
-            width: 300px;
+            width: 320px;
         }
     }
 }
