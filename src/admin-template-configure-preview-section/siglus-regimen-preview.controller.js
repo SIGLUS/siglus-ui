@@ -21,13 +21,16 @@
         .module('admin-template-configure-preview-section')
         .controller('SiglusRegimenPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService'];
+    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService', 'COLUMN_SOURCES'];
 
-    function controller(columnUtils, SECTION_TYPES, templateConfigureService) {
+    function controller(columnUtils, SECTION_TYPES, templateConfigureService, COLUMN_SOURCES) {
 
         var vm = this;
         vm.regimenColumns = undefined;
         vm.summaryColumns = undefined;
+        vm.total = undefined;
+        vm.categories = undefined;
+        vm.regimenLineItems = undefined;
 
         vm.$onInit = onInit;
         vm.columnDisplayName = columnUtils.columnDisplayName;
@@ -36,10 +39,13 @@
         function onInit() {
             var regimen = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
             var summary = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
-            vm.regimenTotal = _.find(regimen.columns, columnUtils.isTotal);
-            vm.summaryTotal = _.find(summary.columns, columnUtils.isTotal);
             vm.regimenColumns = getDisplayedColumns(regimen);
             vm.summaryColumns = getDisplayedColumns(summary);
+            vm.total = {
+                name: 'total',
+                label: 'Total',
+                source: COLUMN_SOURCES.CALCULATED
+            };
             vm.categories = ['Category 1', 'Category 2'];
             vm.regimenLineItems = [{
                 code: 'code 1',
@@ -51,9 +57,7 @@
         }
 
         function getDisplayedColumns(section) {
-            return _.filter(section.columns, function(column) {
-                return column.isDisplayed && !column.hide;
-            });
+            return _.filter(section.columns, 'isDisplayed');
         }
     }
 

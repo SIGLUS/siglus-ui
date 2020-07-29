@@ -15,7 +15,7 @@
 
 describe('SiglusRegimenPreviewController', function() {
 
-    var vm, total, regimen, summary;
+    var vm, regimen, summary;
     var $controller, COLUMN_SOURCES;
 
     beforeEach(function() {
@@ -25,32 +25,21 @@ describe('SiglusRegimenPreviewController', function() {
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
         });
-        total = {
-            name: 'total',
-            source: COLUMN_SOURCES.CALCULATED,
-            hide: true
-        };
         regimen = {
             name: 'regimen',
-            columns: [
-                total,
-                {
-                    name: 'patients',
-                    source: COLUMN_SOURCES.USER_INPUT,
-                    isDisplayed: true
-                }
-            ]
+            columns: [{
+                name: 'patients',
+                source: COLUMN_SOURCES.USER_INPUT,
+                isDisplayed: true
+            }]
         };
         summary = {
             name: 'summary',
-            columns: [
-                total,
-                {
-                    name: 'community',
-                    source: COLUMN_SOURCES.USER_INPUT,
-                    isDisplayed: false
-                }
-            ]
+            columns: [{
+                name: 'community',
+                source: COLUMN_SOURCES.USER_INPUT,
+                isDisplayed: false
+            }]
         };
 
         vm = $controller('SiglusRegimenPreviewController');
@@ -59,14 +48,6 @@ describe('SiglusRegimenPreviewController', function() {
     });
 
     describe('onInit', function() {
-
-        it('should set regimenTotal', function() {
-            expect(vm.regimenTotal).toEqual(total);
-        });
-
-        it('should set summaryTotal', function() {
-            expect(vm.summaryTotal).toEqual(total);
-        });
 
         it('should set regimenColumns', function() {
             expect(vm.regimenColumns).toEqual([{
