@@ -1,1 +1,54 @@
-<div>siglus-regimen-preview</div>
+<div class="regimen-preview">
+    <table class="openlmis-table">
+        <thead>
+        <tr>
+            <th ng-repeat="regimenColumn in vm.regimenColumns | orderBy : 'displayOrder'">
+                {{regimenColumn.label}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat-start="category in vm.categories">
+            <td colspan="{{vm.regimenColumns.length}}" class="grey-background">{{category}}</td>
+        </tr>
+        <tr ng-repeat="lineItem in vm.regimenLineItems" ng-repeat-end>
+            <td class="col-source" ng-repeat="regimenColumn in vm.regimenColumns" ng-class="{'user-input': vm.isUserInput(regimenColumn)}">
+                <span ng-if="$index === 0">{{lineItem.code}}</span>
+                <span ng-if="$index === 1">{{lineItem.regimen}}</span>
+                <span ng-if="$index > 1" >
+                    {{vm.columnDisplayName(regimenColumn)}}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="grey-background">{{vm.regimenTotal.label}}</td>
+            <td class="col-source" ng-repeat="i in vm.regimenColumns" ng-if="$index > 0">
+                {{vm.columnDisplayName(vm.regimenTotal)}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="openlmis-table">
+        <thead>
+        <tr>
+            <th ng-repeat="summaryColumn in vm.summaryColumns | orderBy : 'displayOrder'">
+                {{summaryColumn.label}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="lineItem in vm.regimenLineItems">
+            <td class="col-source" ng-repeat="summaryColumn in vm.summaryColumns" ng-class="{'user-input': vm.isUserInput(summaryColumn)}">
+                <span ng-if="$index === 0">{{lineItem.code}}</span>
+                <span ng-if="$index > 0">{{vm.columnDisplayName(summaryColumn)}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="col-source" ng-repeat="summaryColumn in vm.summaryColumns" ng-class="{'user-input': vm.isUserInput(summaryColumn)}">
+                <span class="grey-background" ng-if="$index === 0">{{vm.regimenTotal.label}}</span>
+                <span ng-if="$index > 0">{{vm.columnDisplayName(summaryColumn)}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

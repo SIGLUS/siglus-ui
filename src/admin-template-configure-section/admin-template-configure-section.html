@@ -33,6 +33,7 @@
             dnd-type="vm.section.name"
             dnd-disable-if="!column.columnDefinition.canChangeOrder"
             dnd-effect-allowed="move"
+            ng-if="!column.hide"
         >
             <dnd-nodrag>
                 <td ng-class="{'dnd-handle': column.columnDefinition.canChangeOrder}">
