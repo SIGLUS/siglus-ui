@@ -196,6 +196,9 @@
             var isValid = true;
             var consumoField = testOutcomeFields.find(columnUtils.isConsumo);
             var positiveField = testOutcomeFields.find(columnUtils.isPositive);
+            if (_.isUndefined(positiveField)) {
+                return isValid;
+            }
             if (isNotEmpty(consumoField.value)
                 && isNotEmpty(positiveField.value)
                 && positiveField.value > consumoField.value) {
