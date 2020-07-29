@@ -29,14 +29,10 @@
         .factory('Template', Template);
 
     Template.$inject = [
-        '$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn', 'TEMPLATE_SECTIONS',
-        // #402: Admin can choose regimen section for template configuration
-        'columnUtils'
-        // #402: ends here
+        '$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn', 'TEMPLATE_SECTIONS'
     ];
 
-    function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn, TEMPLATE_SECTIONS,
-                      columnUtils) {
+    function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn, TEMPLATE_SECTIONS) {
         Template.prototype.moveColumn = moveColumn;
         Template.prototype.findCircularCalculatedDependencies = findCircularCalculatedDependencies;
         Template.prototype.changePopulateStockOnHandFromStockCards = changePopulateStockOnHandFromStockCards;
@@ -87,9 +83,6 @@
             // #398: configure the patient data section in template
             this.patient = _.sortBy(template.patient, 'displayOrder');
             // #398: ends here
-            // #402: Admin can choose regimen section for template configuration
-            extendRegimenColumns(this);
-            // #402: ends here
             for (var columnName in template.columnsMap) {
                 this.columnsMap[columnName] = new TemplateColumn(template.columnsMap[columnName]);
             }
@@ -101,18 +94,6 @@
 
             this.repository = repository;
         }
-
-        // #402: Admin can choose regimen section for template configuration
-        function extendRegimenColumns(template) {
-            angular.forEach(template.regimen, function(section) {
-                angular.forEach(section.columns, function(column) {
-                    if (columnUtils.isTotal(column)) {
-                        column.hide = true;
-                    }
-                });
-            });
-        }
-        // #402: ends here
 
         /**
          * @ngdoc method
