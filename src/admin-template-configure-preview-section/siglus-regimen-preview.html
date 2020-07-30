@@ -9,7 +9,7 @@
         </thead>
         <tbody>
         <tr ng-repeat-start="category in vm.categories">
-            <td colspan="{{vm.regimenColumns.length}}" class="grey-background">{{category}}</td>
+            <td colspan="{{vm.regimenColumns.length}}" class="grey-background category">{{category}}</td>
         </tr>
         <tr ng-repeat="lineItem in vm.regimenLineItems" ng-repeat-end>
             <td ng-repeat="regimenColumn in vm.regimenColumns"
