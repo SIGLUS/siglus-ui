@@ -121,7 +121,7 @@
                 var unskippedLineItems = getUnskippedLineItems(this.order.orderLineItems);
                 if (unskippedLineItems.length === 0) {
                     return alertService.error('shipmentView.allLineItemsSkipped');
-                } else if (areAllLineItemsNotFulfilled(shipment, unskippedLineItems)) {
+                } else if (!haveFulfilledLineItem(shipment, unskippedLineItems)) {
                     return alertService.error('shipmentView.allLineItemsNotFulfilled');
                 }
                 // #287: ends here
@@ -189,15 +189,10 @@
         // #400: ends here
 
         // #401: limitation of creating sub-order
-        function areAllLineItemsNotFulfilled(shipment, unskippedLineItems) {
-            var allNotFulfilled = true;
-            unskippedLineItems.forEach(function(lineItem) {
-                if (getTotalQuantityShipped(shipment.lineItems, lineItem)) {
-                    allNotFulfilled = false;
-                    return;
-                }
+        function haveFulfilledLineItem(shipment, unskippedLineItems) {
+            return _.some(unskippedLineItems, function(lineItem) {
+                return getTotalQuantityShipped(shipment.lineItems, lineItem);
             });
-            return allNotFulfilled;
         }
 
         function getTotalQuantityShipped(shipmentLineItems, orderLineItem) {
