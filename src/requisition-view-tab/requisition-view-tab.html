@@ -68,6 +68,12 @@
                 pagination-id="vm.paginationId"
                 on-page-change="vm.cacheRequisition"/>
     </div>
+    <siglus-regimen sections="vm.requisition.usageTemplate.regimen"
+                    regimen-line-items="vm.requisition.regimenLineItems"
+                    regimen-dispatch-line="vm.requisition.regimenDispatchLine"
+                    can-edit="vm.userCanEdit"
+                    ng-if="vm.requisition.template.extension.enableRegimen && !vm.requisition.emergency"
+    ></siglus-regimen>
     <usage-information sections="vm.requisition.usageTemplate.usageInformation"
                line-items="vm.requisition.usageInformationLineItems"
                processing-period-end-date="vm.requisition.processingPeriod.endDate"

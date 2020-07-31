@@ -1,3 +1,7 @@
 {
-  "requisitionViewSection.usageInformation.MonthOrYear": "Month/Year"
+  "requisitionViewSection.usageInformation.MonthOrYear": "Month/Year",
+  "requisitionViewSection.action": "Actions",
+  "requisitionViewSection.addRegimen": "Add Regimen",
+  "requisitionViewSection.remove": "Remove",
+  "requisitionViewSection.total": "Total"
 }

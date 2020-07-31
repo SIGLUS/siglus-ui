@@ -1,0 +1,65 @@
+<div class="requisition-regimen">
+    <table class="openlmis-table">
+        <thead>
+        <tr>
+            <th ng-repeat="regimenColumn in vm.regimenLineItems[0].columns | orderObjectBy : 'displayOrder'"
+                popover="{{regimenColumn.definition}}"
+                popover-trigger-area="element">
+                {{regimenColumn.label}}
+            </th>
+            <th ng-if="vm.canEdit">{{'requisitionViewSection.action' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat-start="(category, lineItems) in vm.regimenLineItems | groupBy: 'regimen.regimenCategory.name'">
+            <td colspan="100" class="grey-background category">{{category}}</td>
+        </tr>
+        <tr ng-repeat="lineItem in lineItems | orderBy: ['regimen.regimenDispatchLine.displayOrder', 'regimen.name']">
+            <td>{{lineItem.regimen.regimenDispatchLine.name}}</td>
+            <td>{{lineItem.regimen.name}}</td>
+            <td ng-repeat="regimenColumn in lineItem.columns" ng-if="$index > 1"
+                siglus-requisition-grid-cell
+                line-item-field="regimenColumn"></td>
+            <td ng-if="vm.canEdit">
+                <button class="danger" ng-if="lineItem.regimen.isCustom">{{'requisitionViewSection.remove' | message}}</button>
+            </td>
+        </tr>
+        <tr ng-repeat-end ng-if="vm.canEdit">
+            <td colspan="100">
+                <button class="add">{{'requisitionViewSection.addRegimen' | message}}</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="grey-background">{{'requisitionViewSection.total' | message}}</td>
+            <td ng-repeat="regimenColumn in vm.regimenLineItems[0].columns" ng-if="$index > 1"></td>
+            <td ng-if="vm.canEdit"></td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="openlmis-table">
+        <thead>
+        <tr>
+            <th ng-repeat="summaryColumn in vm.regimenDispatchLine[0].columns | orderObjectBy : 'displayOrder'"
+                popover="{{summaryColumn.definition}}"
+                popover-trigger-area="element">
+                {{summaryColumn.label}}
+            </th>
+            <th ng-if="vm.canEdit">{{'requisitionViewSection.action' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="line in vm.regimenDispatchLine | orderBy: 'regimenDispatchLine.displayOrder'">
+            <td>{{line.regimenDispatchLine.name}}</td>
+            <td ng-repeat="summaryColumn in line.columns" ng-if="$index > 0"
+                siglus-requisition-grid-cell
+                line-item-field="summaryColumn"></td>
+            <td ng-if="vm.canEdit"></td>
+        </tr>
+        <tr>
+            <td class="grey-background">{{'requisitionViewSection.total' | message}}</td>
+            <td ng-repeat="summaryColumn in vm.regimenDispatchLine[0].columns" ng-if="$index > 0"></td>
+            <td ng-if="vm.canEdit"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
