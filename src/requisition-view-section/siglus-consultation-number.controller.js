@@ -61,7 +61,8 @@
             angular.forEach(vm.lineItems, function(lineItem) {
                 lineItem.section = sectionsMap[lineItem.name];
                 angular.forEach(Object.keys(lineItem.columns), function(columnName) {
-                    _.extend(lineItem.columns[columnName], consultationNumberColumnsMap[columnName]);
+                    lineItem.columns[columnName] =
+                        angular.merge({}, consultationNumberColumnsMap[columnName], lineItem.columns[columnName]);
                 });
             });
         }
