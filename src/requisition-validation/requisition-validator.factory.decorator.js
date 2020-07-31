@@ -297,28 +297,28 @@
             if (!columnUtils.isUserInput(totalLineItem)) {
                 return false;
             }
-            var withServices = true;
+            var isValid = true;
             var serviceLineItems = getServiceLineItems(requisition.testConsumptionLineItems);
-            var isFilled, isAllServiceLineItemsEmpty;
-            angular.forEach(_.values(_.first(serviceLineItems).projects), function(project) {
-                isFilled = true;
-                angular.forEach(_.values(project.outcomes), function(outcome) {
+            var isAllServiceLineItemsEmpty;
+            _.values(_.first(serviceLineItems).projects).some(function(project) {
+                _.values(project.outcomes).some(function(outcome) {
                     isAllServiceLineItemsEmpty = _.reduce(serviceLineItems, function(isEmpty, serviceLineItem) {
                         return isEmpty &&
                             !isNotEmpty(getTestConsumptionFieldValue(serviceLineItem, project, outcome));
                     }, true);
                     if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome)) &&
                         isAllServiceLineItemsEmpty) {
-                        isFilled = false;
+                        isValid = false;
                     }
+                    return !isValid;
                 });
-                withServices = withServices && isFilled;
+                return !isValid;
             });
-            if (!withServices) {
+            if (!isValid) {
                 requisition.$error = requisition.$error
                     || messageService.get('requisitionValidation.totalWithoutServices');
             }
-            return !withServices;
+            return !isValid;
         }
 
         function validateConsultationNumber(requisition) {
