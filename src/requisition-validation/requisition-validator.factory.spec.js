@@ -18,7 +18,8 @@ describe('requisitionValidator', function() {
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
         lineItems, column, columns, requisition,
         // SIGLUS-REFACTOR: add new variable
-        requisitionUtils, kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems;
+        requisitionUtils, kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems,
+        consultationNumberLineItems;
         // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -138,6 +139,15 @@ describe('requisitionValidator', function() {
                 }
             }
         }];
+        consultationNumberLineItems = [
+            {
+                columns: {
+                    consultationNumber: {
+                        value: 1
+                    }
+                }
+            }
+        ];
         // #251, #375: ends here
 
         requisition = {
@@ -147,6 +157,7 @@ describe('requisitionValidator', function() {
             kitUsageLineItems: kitUsageLineItems,
             testConsumptionLineItems: testConsumptionLineItems,
             patientLineItems: patientLineItems,
+            consultationNumberLineItems: consultationNumberLineItems,
             // #251, #375, #399: ends here
             // SIGLUS-REFACTOR: starts here
             extraData: {
@@ -317,6 +328,22 @@ describe('requisitionValidator', function() {
             expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
         });
         // #399: ends here
+
+        // #442: create requisition with consultation number section
+        it('should return true if consultationNumberLineItems are valid', function() {
+            requisition.template.extension.enableConsultationNumber = true;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(true);
+        });
+
+        it('should return false if consultation number section is empty', function() {
+            requisition.template.extension.enableConsultationNumber = true;
+            consultationNumberLineItems[0].columns.consultationNumber.value = null;
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+            expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
+        });
+        // #442: ends here
     });
 
     describe('validateRequisition', function() {

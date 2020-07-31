@@ -46,7 +46,6 @@
         $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
         $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
         $delegate.siglusValidRequisition = siglusValidRequisition;
-        $delegate.validateConsultationNumber = validateConsultationNumber;
 
         return $delegate;
 
@@ -325,8 +324,10 @@
         function validateConsultationNumber(requisition) {
             var isValid = true;
             if (requisition.template.extension.enableConsultationNumber && !requisition.emergency) {
-                isValid = validateSiglusLineItemField({
-                    value: requisition.extraData.consultationNumber
+                angular.forEach(requisition.consultationNumberLineItems, function(lineItem) {
+                    angular.forEach(Object.keys(lineItem.columns), function(columnName) {
+                        isValid = validateSiglusLineItemField(lineItem.columns[columnName]) && isValid;
+                    });
                 });
             }
             return isValid;
