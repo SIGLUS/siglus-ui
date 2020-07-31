@@ -326,7 +326,9 @@
             if (requisition.template.extension.enableConsultationNumber && !requisition.emergency) {
                 angular.forEach(requisition.consultationNumberLineItems, function(lineItem) {
                     angular.forEach(Object.keys(lineItem.columns), function(columnName) {
-                        isValid = validateSiglusLineItemField(lineItem.columns[columnName]) && isValid;
+                        if (lineItem.columns[columnName].isDisplayed) {
+                            isValid = validateSiglusLineItemField(lineItem.columns[columnName]) && isValid;
+                        }
                     });
                 });
             }
