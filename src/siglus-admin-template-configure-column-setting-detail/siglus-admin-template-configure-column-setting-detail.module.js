@@ -17,20 +17,19 @@
 
     'use strict';
 
-    angular
-        .module('siglus-admin-template-configure-patient')
-        .config(routes);
+    /**
+     * @module admin-template-configure-kit-usage
+     *
+     * @description
+     * Provides base siglus-admin-template-configure-column-setting-detail state
+     * and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-admin-template-configure-column-setting-detail', [
+        'ui.router',
+        'openlmis-rights',
+        'requisition-constants',
+        'admin-template-configure-section'
+    ]);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
-
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.patient', {
-            label: 'adminProgramTemplate.patient',
-            url: '/patient',
-            templateUrl: 'siglus-admin-template-configure-patient/siglus-admin-template-configure-patient.html',
-            controller: 'SiglusPatientTemplateController',
-            controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
-        });
-    }
 })();

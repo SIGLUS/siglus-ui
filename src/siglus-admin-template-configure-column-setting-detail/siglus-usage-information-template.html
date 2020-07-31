@@ -1,0 +1,23 @@
+<div class="requisition-template-admin">
+    <aside>
+        <label>
+            <input type="checkbox" id="enableQuickFill"
+                   ng-model="vm.template.quickFill"
+                   ng-change="vm.template.changeQuickFill()"
+                   ng-disabled="true"/>
+            {{'adminProgramTemplate.enableQuickFill.label' | message}}
+        </label>
+        <p>{{'adminProgramTemplate.enableQuickFill.description' | message}}</p>
+    </aside>
+    <div class="usage-information-template" ng-if="vm.sections.length">
+        <div ng-repeat="section in vm.sections | orderBy: 'displayOrder'">
+            <div class="sub-heading">
+                <h3>{{section.label}}</h3>
+            </div>
+            <template-configure-section
+                    section="section"
+                    on-add-column="vm.addColumn"
+            />
+        </div>
+    </div>
+</div>

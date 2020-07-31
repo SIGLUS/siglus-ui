@@ -17,22 +17,29 @@
 
     'use strict';
 
+    /**
+     * @ngdoc controller
+     * @name siglus-admin-template-configure-column-setting-detail:SiglusConsultationNumberController
+     *
+     * @description
+     * Controller for template view page.
+     */
     angular
-        .module('siglus-admin-template-configure-regimen')
-        .controller('SiglusRegimenTemplateController', controller);
+        .module('siglus-admin-template-configure-column-setting-detail')
+        .controller('SiglusColumnSettingDetailController', SiglusColumnSettingDetailController);
 
-    controller.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template'];
+    SiglusColumnSettingDetailController.$inject = ['$state', 'COLUMN_SOURCES', 'templateConfigureService', 'template'];
 
-    function controller(COLUMN_SOURCES, templateConfigureService, template) {
+    function SiglusColumnSettingDetailController($state, COLUMN_SOURCES, templateConfigureService, template) {
         var vm = this;
 
         vm.$onInit = onInit;
+
+        vm.sections = undefined;
         vm.addColumn = addColumn;
 
-        vm.template = undefined;
-
         function onInit() {
-            vm.template = template;
+            vm.sections = template[$state.params.section];
         }
 
         function addColumn(section) {

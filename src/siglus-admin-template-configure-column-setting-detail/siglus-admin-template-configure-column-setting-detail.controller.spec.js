@@ -13,66 +13,57 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('SiglusConsultationNumberController', function() {
+describe('SiglusColumnSettingDetailController', function() {
 
-    var vm, template, column;
-    var TemplateDataBuilder, $controller, COLUMN_SOURCES, templateConfigureService;
+    var vm, template;
+    var $state, $controller, COLUMN_SOURCES, templateConfigureService;
 
     beforeEach(function() {
-        module('siglus-admin-template-configure-consultation-number');
+        module('siglus-admin-template-configure-column-setting-detail');
         module('admin-template-configure-column-setting');
-        module('admin-template-configure-preview-section');
 
         inject(function($injector) {
-            TemplateDataBuilder = $injector.get('TemplateDataBuilder');
+            $state = $injector.get('$state');
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             templateConfigureService = $injector.get('templateConfigureService');
         });
 
-        template = new TemplateDataBuilder().build();
-        template.consultationNumber = [{
-            name: 'number',
-            columns: [{
-                name: 'consultationNumber',
-                source: 'USER_INPUT',
-                displayOrder: 1,
-                columnDefinition: {}
-            }, {
-                name: 'total',
-                source: 'USER_INPUT',
-                displayOrder: 0,
-                columnDefinition: {}
-            }]
-        }];
-        column = {
+        template = {
+            regimen: []
+        };
+        spyOn(templateConfigureService, 'getDefaultColumn').andReturn({
             name: 'newColumn0',
-            source: 'USER_INPUT',
+            source: COLUMN_SOURCES.USER_INPUT,
             displayOrder: 2,
             columnDefinition: {}
-        };
-        spyOn(templateConfigureService, 'getDefaultColumn').andReturn(column);
-
-        vm = $controller('SiglusConsultationNumberController', {
-            template: template
         });
+
+        vm = $controller('SiglusColumnSettingDetailController', {
+            template: template,
+            $state: $state
+        });
+        $state.params.section = 'regimen';
         vm.$onInit();
     });
 
     describe('onInit', function() {
 
         it('should set template', function() {
-            expect(vm.template).toEqual(template);
+            expect(vm.sections).toEqual([]);
         });
     });
 
     describe('addColumn', function() {
 
         it('should add a new column and its column source is user input', function() {
-            vm.addColumn(vm.template.consultationNumber[0]);
+            var section = {
+                columns: []
+            };
+            vm.addColumn(section);
 
-            expect(vm.template.consultationNumber[0].columns.length).toEqual(3);
-            expect(vm.template.consultationNumber[0].columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
+            expect(section.columns.length).toEqual(1);
+            expect(section.columns[0].source).toEqual(COLUMN_SOURCES.USER_INPUT);
         });
     });
 });
