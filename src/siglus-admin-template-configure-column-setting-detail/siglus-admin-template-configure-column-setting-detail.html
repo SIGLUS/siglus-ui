@@ -1,5 +1,5 @@
-<div class="regimen-template">
-    <div ng-repeat="section in vm.template.regimen | orderBy : 'displayOrder'">
+<div ng-if="vm.sections.length">
+    <div ng-repeat="section in vm.sections | orderBy : 'displayOrder'">
         <div class="sub-heading">
             <h3>{{section.label}}</h3>
         </div>
