@@ -13,7 +13,8 @@
     <siglus-consultation-number
             sections="vm.requisition.usageTemplate.consultationNumber"
             line-items="vm.requisition.consultationNumberLineItems"
-            can-edit="vm.userCanEdit"
+            can-edit="false"
+            is-emergency="vm.requisition.emergency"
             ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency"
     />
     <!-- #442: ends here -->
