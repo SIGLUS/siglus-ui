@@ -65,7 +65,9 @@
                 'openlmis.administration.requisitionTemplates.configure.columnSetting.patient': 'enablePatient',
                 'openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption':
                     'enableRapidTestConsumption',
-                'openlmis.administration.requisitionTemplates.configure.columnSetting.regimen': 'enableRegimen'
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.regimen': 'enableRegimen',
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.consultationNumber':
+                    'enableConsultationNumber'
             };
             template.extension[routerMap[$state.current.name]] = true;
         }
