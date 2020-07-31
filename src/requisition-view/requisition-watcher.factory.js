@@ -68,6 +68,9 @@
             // #375: create requisition with test consumption section
             addWatcher(scope, requisition, 'testConsumptionLineItems', this, storage);
             // #375: ends here
+            // #442: create requisition with consultation number section
+            addWatcher(scope, requisition, 'consultationNumberLineItems', this, storage);
+            // #442: ends here
         }
 
         function enableWatcher() {
