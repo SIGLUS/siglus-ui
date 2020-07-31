@@ -23,7 +23,7 @@
             bindings: {
                 sections: '<',
                 regimenLineItems: '<',
-                regimenDispatchLine: '<',
+                regimenDispatchLineItems: '<',
                 canEdit: '<'
             },
             controller: 'SiglusRegimentController',

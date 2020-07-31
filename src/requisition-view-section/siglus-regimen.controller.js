@@ -28,21 +28,22 @@
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.getTotal = getTotal;
 
         function onInit() {
             vm.regimenLineItems = [{
                 columns: {
                     code: {
                         id: '123',
-                        value: undefined
+                        value: null
                     },
                     regiment: {
                         id: '1234',
-                        value: undefined
+                        value: null
                     },
                     patients: {
                         id: '12345',
-                        value: undefined
+                        value: null
                     }
                 },
                 regimen: {
@@ -70,15 +71,15 @@
                 columns: {
                     code: {
                         id: '123',
-                        value: undefined
+                        value: null
                     },
                     regiment: {
                         id: '1234',
-                        value: undefined
+                        value: null
                     },
                     patients: {
                         id: '12345',
-                        value: undefined
+                        value: null
                     }
                 },
                 regimen: {
@@ -103,19 +104,19 @@
                     }
                 }
             }];
-            vm.regimenDispatchLine = [{
+            vm.regimenDispatchLineItems = [{
                 columns: {
                     lines: {
                         id: '123',
-                        value: undefined
+                        value: null
                     },
                     patients: {
                         id: '124',
-                        value: undefined
+                        value: null
                     },
                     community: {
                         id: '125',
-                        value: undefined
+                        value: null
                     }
                 },
                 regimenDispatchLine: {
@@ -128,15 +129,15 @@
                 columns: {
                     lines: {
                         id: '123',
-                        value: undefined
+                        value: null
                     },
                     patients: {
                         id: '124',
-                        value: undefined
+                        value: null
                     },
                     community: {
                         id: '125',
-                        value: undefined
+                        value: null
                     }
                 },
                 regimenDispatchLine: {
@@ -147,7 +148,7 @@
                 }
             }];
             enhanceLineItems(vm.regimenLineItems, SECTION_TYPES.REGIMEN);
-            enhanceLineItems(vm.regimenDispatchLine, SECTION_TYPES.SUMMARY);
+            enhanceLineItems(vm.regimenDispatchLineItems, SECTION_TYPES.SUMMARY);
         }
 
         function enhanceLineItems(lineItems, sectionName) {
@@ -159,6 +160,12 @@
                         columnsMap[columnName], lineItem.columns[columnName]);
                 });
             });
+        }
+
+        function getTotal(lineItems, column) {
+            return _.reduce(lineItems, function(total, lineItem) {
+                return total + lineItem.columns[column.name].value;
+            }, 0);
         }
     }
 
