@@ -143,7 +143,8 @@ describe('requisitionValidator', function() {
             {
                 columns: {
                     consultationNumber: {
-                        value: 1
+                        value: 1,
+                        isDisplayed: true
                     }
                 }
             }
