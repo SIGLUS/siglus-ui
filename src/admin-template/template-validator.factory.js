@@ -37,7 +37,7 @@
     ];
 
     function factory(UTF8_REGEX, MAX_COLUMN_DESCRIPTION_LENGTH, TEMPLATE_COLUMNS,
-                     COLUMN_SOURCES, messageService, notificationService, siglusColumnUtils, TEMPLATE_SECTIONS) {
+                     COLUMN_SOURCES, messageService, notificationService, siglusColumnUtils, SIGLUS_TEMPLATE_SECTIONS) {
 
         var columnValidations = {
                 averageConsumption: validateAverageConsumption,
@@ -95,7 +95,7 @@
             });
             // #398: ends here
             // #248, #247, #341: kit usage section, usage information section, test consumption section configure
-            angular.forEach(TEMPLATE_SECTIONS, function(extension) {
+            angular.forEach(SIGLUS_TEMPLATE_SECTIONS, function(extension) {
                 angular.forEach(template[extension], function(section) {
                     angular.forEach(section.columns, function(column) {
                         isValid = isValid && !validator.getSiglusColumnError(column);
