@@ -21,17 +21,17 @@
         .module('requisition-view-section')
         .controller('SiglusConsultationNumberViewController', controller);
 
-    controller.$inject = ['columnUtils', 'SECTION_TYPES', 'templateConfigureService', 'requisitionValidator',
+    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'templateConfigureService', 'requisitionValidator',
         'messageService'];
 
-    function controller(columnUtils, SECTION_TYPES, templateConfigureService, requisitionValidator,
+    function controller(siglusColumnUtils, SECTION_TYPES, templateConfigureService, requisitionValidator,
                         messageService) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isCalculated = columnUtils.isCalculated;
-        vm.isTotal = columnUtils.isTotal;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isCalculated = siglusColumnUtils.isCalculated;
+        vm.isTotal = siglusColumnUtils.isTotal;
         vm.getTotal = getTotal;
         vm.consultationNumber = undefined;
         vm.requisitionType = undefined;

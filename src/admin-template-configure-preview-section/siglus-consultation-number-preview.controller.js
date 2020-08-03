@@ -21,17 +21,17 @@
         .module('admin-template-configure-preview-section')
         .controller('SiglusConsultationNumberPreviewController', controller);
 
-    controller.$inject = ['columnUtils', 'templateConfigureService',
+    controller.$inject = ['siglusColumnUtils', 'templateConfigureService',
         'SECTION_TYPES'];
 
-    function controller(columnUtils, templateConfigureService, SECTION_TYPES) {
+    function controller(siglusColumnUtils, templateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = columnUtils.isTotal;
-        vm.columnDisplayName = columnUtils.columnDisplayName;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
+        vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
 
         function onInit() {
             vm.consultationNumber = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);

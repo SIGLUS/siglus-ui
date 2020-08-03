@@ -30,7 +30,7 @@
 
     controller.$inject = ['$scope', 'siglusColumnUtils', 'COLUMN_SOURCES', 'MAX_ADD_LENGTH'];
 
-    function controller($scope, columnUtils, COLUMN_SOURCES, MAX_ADD_LENGTH) {
+    function controller($scope, siglusColumnUtils, COLUMN_SOURCES, MAX_ADD_LENGTH) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -61,7 +61,7 @@
                         id: undefined,
                         label: column.columnDefinition.label,
                         definition: column.columnDefinition.definition,
-                        source: columnUtils.isTotal(column) ? COLUMN_SOURCES.USER_INPUT : column.source
+                        source: siglusColumnUtils.isTotal(column) ? COLUMN_SOURCES.USER_INPUT : column.source
                     }));
                 }
             });

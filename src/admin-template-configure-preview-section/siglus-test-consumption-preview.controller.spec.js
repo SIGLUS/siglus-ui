@@ -16,7 +16,7 @@
 describe('TestConsumptionPreviewController', function() {
 
     var vm, testProject, testOutcome, service;
-    var $controller, COLUMN_SOURCES, messageService, columnUtils;
+    var $controller, COLUMN_SOURCES, messageService, siglusColumnUtils;
 
     beforeEach(function() {
         module('admin-template-configure-preview-section');
@@ -25,7 +25,7 @@ describe('TestConsumptionPreviewController', function() {
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             messageService = $injector.get('messageService');
-            columnUtils = $injector.get('siglusColumnUtils');
+            siglusColumnUtils = $injector.get('siglusColumnUtils');
         });
         testProject = {
             name: 'project',
@@ -72,7 +72,7 @@ describe('TestConsumptionPreviewController', function() {
             ]
         };
 
-        spyOn(columnUtils, 'isUserInput');
+        spyOn(siglusColumnUtils, 'isUserInput');
         spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
         spyOn(messageService, 'get').andReturn('User input');
 

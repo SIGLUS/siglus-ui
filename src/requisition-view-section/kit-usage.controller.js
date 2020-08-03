@@ -23,7 +23,7 @@
 
     controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
 
-    function controller(columnUtils, templateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, templateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
 
         var vm = this;
 
@@ -50,7 +50,7 @@
         }
 
         function isUserInput(service, collection) {
-            return vm.canEdit && columnUtils.isUserInput(getColumn(service, collection));
+            return vm.canEdit && siglusColumnUtils.isUserInput(getColumn(service, collection));
         }
     }
 

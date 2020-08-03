@@ -16,7 +16,7 @@
 describe('UsageInformationPreviewController', function() {
 
     var vm, information, service;
-    var $controller, COLUMN_SOURCES, messageService, columnUtils;
+    var $controller, COLUMN_SOURCES, messageService, siglusColumnUtils;
 
     beforeEach(function() {
         module('admin-template-configure-preview-section');
@@ -25,7 +25,7 @@ describe('UsageInformationPreviewController', function() {
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             messageService = $injector.get('messageService');
-            columnUtils = $injector.get('siglusColumnUtils');
+            siglusColumnUtils = $injector.get('siglusColumnUtils');
         });
         information = {
             name: 'information',
@@ -38,7 +38,7 @@ describe('UsageInformationPreviewController', function() {
             columns: []
         };
 
-        spyOn(columnUtils, 'isUserInput');
+        spyOn(siglusColumnUtils, 'isUserInput');
         spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
         spyOn(messageService, 'get').andReturn('User input');
 
@@ -64,10 +64,10 @@ describe('UsageInformationPreviewController', function() {
 
     describe('isUserInput', function() {
 
-        it('should isUserInput of columnUtils be called with service', function() {
+        it('should isUserInput of siglusColumnUtils be called with service', function() {
             vm.isUserInput(service);
 
-            expect(columnUtils.isUserInput).toHaveBeenCalledWith(service);
+            expect(siglusColumnUtils.isUserInput).toHaveBeenCalledWith(service);
         });
     });
 

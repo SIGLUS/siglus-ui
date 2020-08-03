@@ -16,7 +16,7 @@
 describe('KitUsagePreviewController', function() {
 
     var vm, collection, service;
-    var $controller, COLUMN_SOURCES, messageService, columnUtils;
+    var $controller, COLUMN_SOURCES, messageService, siglusColumnUtils;
 
     beforeEach(function() {
         module('admin-template-configure-preview-section');
@@ -25,7 +25,7 @@ describe('KitUsagePreviewController', function() {
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             messageService = $injector.get('messageService');
-            columnUtils = $injector.get('siglusColumnUtils');
+            siglusColumnUtils = $injector.get('siglusColumnUtils');
         });
         collection = {
             name: 'collection',
@@ -37,7 +37,7 @@ describe('KitUsagePreviewController', function() {
             columns: []
         };
 
-        spyOn(columnUtils, 'isUserInput');
+        spyOn(siglusColumnUtils, 'isUserInput');
         spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
         spyOn(messageService, 'get').andReturn('User input');
 
@@ -63,17 +63,17 @@ describe('KitUsagePreviewController', function() {
 
     describe('isUserInput', function() {
 
-        it('should isUserInput of columnUtils be called with collection if service name if HF', function() {
+        it('should isUserInput of siglusColumnUtils be called with collection if service name if HF', function() {
             service.name = 'HF';
             vm.isUserInput(service, collection);
 
-            expect(columnUtils.isUserInput).toHaveBeenCalledWith(collection);
+            expect(siglusColumnUtils.isUserInput).toHaveBeenCalledWith(collection);
         });
 
-        it('should isUserInput of columnUtils be called with service', function() {
+        it('should isUserInput of siglusColumnUtils be called with service', function() {
             vm.isUserInput(service, collection);
 
-            expect(columnUtils.isUserInput).toHaveBeenCalledWith(service);
+            expect(siglusColumnUtils.isUserInput).toHaveBeenCalledWith(service);
         });
     });
 

@@ -23,7 +23,7 @@
 
     controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SECTION_TYPES'];
 
-    function controller(columnUtils, templateConfigureService, SECTION_TYPES) {
+    function controller(siglusColumnUtils, templateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
@@ -34,10 +34,10 @@
         vm.testOutcomeDisplayColumns = undefined;
 
         vm.$onInit = onInit;
-        vm.columnDisplayName = columnUtils.columnDisplayName;
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = columnUtils.isTotal;
-        vm.isAPES = columnUtils.isAPES;
+        vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
+        vm.isAPES = siglusColumnUtils.isAPES;
 
         function onInit() {
             vm.testProject = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);

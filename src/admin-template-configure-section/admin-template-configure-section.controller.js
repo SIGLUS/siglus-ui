@@ -33,8 +33,8 @@
         'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'templateConfigureService', 'notificationService'
     ];
 
-    function TemplateConfigureSectionController($scope, messageService, templateValidator, columnUtils, COLUMN_SOURCES,
-                                                MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
+    function TemplateConfigureSectionController($scope, messageService, templateValidator, siglusColumnUtils,
+                                                COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
                                                 templateConfigureService, notificationService) {
         var vm = this;
 
@@ -96,7 +96,7 @@
         }
 
         function canAssignTag(column) {
-            return columnUtils.isStockCards(column) && column.columnDefinition.supportsTag;
+            return siglusColumnUtils.isStockCards(column) && column.columnDefinition.supportsTag;
         }
 
         function refreshAvailableTags() {
@@ -179,7 +179,7 @@
         }
 
         function sourceChanged(column) {
-            if (!columnUtils.isStockCards(column) && column.columnDefinition.supportsTag && column.tag) {
+            if (!siglusColumnUtils.isStockCards(column) && column.columnDefinition.supportsTag && column.tag) {
                 column.tag = null;
                 refreshAvailableTags();
             }

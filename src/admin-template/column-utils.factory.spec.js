@@ -14,13 +14,13 @@
  */
 describe('siglusColumnUtils', function() {
 
-    var columnUtils, COLUMN_SOURCES;
+    var siglusColumnUtils, COLUMN_SOURCES;
 
     beforeEach(function() {
         module('admin-template');
 
         inject(function($injector) {
-            columnUtils = $injector.get('siglusColumnUtils');
+            siglusColumnUtils = $injector.get('siglusColumnUtils');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
         });
     });
@@ -31,7 +31,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.USER_INPUT
             };
 
-            expect(columnUtils.isUserInput(column)).toBe(true);
+            expect(siglusColumnUtils.isUserInput(column)).toBe(true);
         });
 
         it('should return false if column source is reference date', function() {
@@ -39,7 +39,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(columnUtils.isUserInput(column)).toBe(false);
+            expect(siglusColumnUtils.isUserInput(column)).toBe(false);
         });
     });
 
@@ -49,7 +49,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.CALCULATED
             };
 
-            expect(columnUtils.isCalculated(column)).toBe(true);
+            expect(siglusColumnUtils.isCalculated(column)).toBe(true);
         });
 
         it('should return false if column source is reference date', function() {
@@ -57,7 +57,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(columnUtils.isCalculated(column)).toBe(false);
+            expect(siglusColumnUtils.isCalculated(column)).toBe(false);
         });
     });
 
@@ -67,7 +67,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.STOCK_CARDS
             };
 
-            expect(columnUtils.isStockCards(column)).toBe(true);
+            expect(siglusColumnUtils.isStockCards(column)).toBe(true);
         });
 
         it('should return false if column source is reference date', function() {
@@ -75,7 +75,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(columnUtils.isStockCards(column)).toBe(false);
+            expect(siglusColumnUtils.isStockCards(column)).toBe(false);
         });
     });
 
@@ -85,7 +85,7 @@ describe('siglusColumnUtils', function() {
                 name: 'total'
             };
 
-            expect(columnUtils.isTotal(column)).toBe(true);
+            expect(siglusColumnUtils.isTotal(column)).toBe(true);
         });
 
         it('should return false if column name is HF', function() {
@@ -93,7 +93,7 @@ describe('siglusColumnUtils', function() {
                 name: 'HF'
             };
 
-            expect(columnUtils.isTotal(column)).toBe(false);
+            expect(siglusColumnUtils.isTotal(column)).toBe(false);
         });
     });
 
@@ -103,7 +103,7 @@ describe('siglusColumnUtils', function() {
                 source: COLUMN_SOURCES.REFERENCE_DATA
             };
 
-            expect(columnUtils.columnDisplayName(column)).toBe('requisitionConstants.referenceData');
+            expect(siglusColumnUtils.columnDisplayName(column)).toBe('requisitionConstants.referenceData');
         });
     });
 
@@ -113,7 +113,7 @@ describe('siglusColumnUtils', function() {
                 name: 'APES'
             };
 
-            expect(columnUtils.isAPES(column)).toBe(true);
+            expect(siglusColumnUtils.isAPES(column)).toBe(true);
         });
 
         it('should return false if column name is HF', function() {
@@ -121,7 +121,7 @@ describe('siglusColumnUtils', function() {
                 name: 'HF'
             };
 
-            expect(columnUtils.isAPES(column)).toBe(false);
+            expect(siglusColumnUtils.isAPES(column)).toBe(false);
         });
     });
 
@@ -131,7 +131,7 @@ describe('siglusColumnUtils', function() {
                 name: 'positive'
             };
 
-            expect(columnUtils.isPositive(column)).toBe(true);
+            expect(siglusColumnUtils.isPositive(column)).toBe(true);
         });
 
         it('should return false if column name is HF', function() {
@@ -139,7 +139,7 @@ describe('siglusColumnUtils', function() {
                 name: 'HF'
             };
 
-            expect(columnUtils.isPositive(column)).toBe(false);
+            expect(siglusColumnUtils.isPositive(column)).toBe(false);
         });
     });
 
@@ -149,7 +149,7 @@ describe('siglusColumnUtils', function() {
                 name: 'consumo'
             };
 
-            expect(columnUtils.isConsumo(column)).toBe(true);
+            expect(siglusColumnUtils.isConsumo(column)).toBe(true);
         });
 
         it('should return false if column name is HF', function() {
@@ -157,7 +157,7 @@ describe('siglusColumnUtils', function() {
                 name: 'HF'
             };
 
-            expect(columnUtils.isConsumo(column)).toBe(false);
+            expect(siglusColumnUtils.isConsumo(column)).toBe(false);
         });
     });
 });

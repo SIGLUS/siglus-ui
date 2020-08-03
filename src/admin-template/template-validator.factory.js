@@ -37,7 +37,7 @@
     ];
 
     function factory(UTF8_REGEX, MAX_COLUMN_DESCRIPTION_LENGTH, TEMPLATE_COLUMNS,
-                     COLUMN_SOURCES, messageService, notificationService, columnUtils, TEMPLATE_SECTIONS) {
+                     COLUMN_SOURCES, messageService, notificationService, siglusColumnUtils, TEMPLATE_SECTIONS) {
 
         var columnValidations = {
                 averageConsumption: validateAverageConsumption,
@@ -189,7 +189,7 @@
 
         // #248: kit usage section configure
         function validateSiglusTag(column) {
-            if (isEmpty(column.tag) && columnUtils.isStockCards(column) &&
+            if (isEmpty(column.tag) && siglusColumnUtils.isStockCards(column) &&
                 column.columnDefinition.supportsTag) {
                 return messageService.get('adminProgramTemplate.columnTagEmpty');
             }

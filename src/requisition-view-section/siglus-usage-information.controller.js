@@ -23,15 +23,15 @@
 
     controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'requisitionValidator', 'SECTION_TYPES'];
 
-    function controller(columnUtils, templateConfigureService, requisitionValidator, SECTION_TYPES) {
+    function controller(siglusColumnUtils, templateConfigureService, requisitionValidator, SECTION_TYPES) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isTotal = columnUtils.isTotal;
+        vm.isTotal = siglusColumnUtils.isTotal;
         vm.getTotal = getTotal;
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isCalculated = columnUtils.isCalculated;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isCalculated = siglusColumnUtils.isCalculated;
         vm.update = requisitionValidator.validateSiglusLineItemField;
         vm.firstService = undefined;
         vm.monthOrYearColspan = 1;

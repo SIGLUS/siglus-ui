@@ -23,13 +23,13 @@
 
     controller.$inject = ['siglusColumnUtils'];
 
-    function controller(columnUtils) {
+    function controller(siglusColumnUtils) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.columnDisplayName = columnDisplayName;
-        vm.isUserInput = columnUtils.isUserInput;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
 
         function onInit() {
             vm.items = [{
@@ -56,7 +56,7 @@
         function columnDisplayName(column, lineItem) {
             var value = lineItem[column.name];
             if (!value) {
-                value = columnUtils.columnDisplayName(column);
+                value = siglusColumnUtils.columnDisplayName(column);
             }
             return value;
         }

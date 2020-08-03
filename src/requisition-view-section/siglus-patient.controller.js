@@ -23,14 +23,14 @@
 
     controller.$inject = ['siglusColumnUtils', 'requisitionValidator'];
 
-    function controller(columnUtils, requisitionValidator) {
+    function controller(siglusColumnUtils, requisitionValidator) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isCalculated = columnUtils.isCalculated;
-        vm.isTotal = columnUtils.isTotal;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isCalculated = siglusColumnUtils.isCalculated;
+        vm.isTotal = siglusColumnUtils.isTotal;
         vm.getTotal = getTotal;
 
         function onInit() {

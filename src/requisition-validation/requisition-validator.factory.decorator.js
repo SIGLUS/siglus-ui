@@ -37,7 +37,7 @@
         'MAX_INTEGER_VALUE', 'siglusColumnUtils'];
 
     function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
-                       columnUtils) {
+                       siglusColumnUtils) {
         $delegate.validateUsageReport = validateUsageReport;
         $delegate.validateTotalOfRegiment = validateTotalOfRegiment;
         $delegate.isEmptyTable = isEmptyTable;
@@ -156,13 +156,13 @@
         }
 
         function isTotalAndCalculated(lineItem) {
-            return columnUtils.isTotal(lineItem)
-                && !columnUtils.isUserInput(lineItem);
+            return siglusColumnUtils.isTotal(lineItem)
+                && !siglusColumnUtils.isUserInput(lineItem);
         }
 
         function getServiceLineItems(lineItems) {
             return lineItems.filter(function(lineItem) {
-                return !columnUtils.isTotal(lineItem) && !columnUtils.isAPES(lineItem);
+                return !siglusColumnUtils.isTotal(lineItem) && !siglusColumnUtils.isAPES(lineItem);
             });
         }
 
@@ -193,8 +193,8 @@
 
         function validateTestOutcomeField(testOutcomeFields) {
             var isValid = true;
-            var consumoField = testOutcomeFields.find(columnUtils.isConsumo);
-            var positiveField = testOutcomeFields.find(columnUtils.isPositive);
+            var consumoField = testOutcomeFields.find(siglusColumnUtils.isConsumo);
+            var positiveField = testOutcomeFields.find(siglusColumnUtils.isPositive);
             if (_.isUndefined(positiveField)) {
                 return isValid;
             }
@@ -212,8 +212,8 @@
         function validateTotal(lineItems, project, outcome) {
             var isValid = true;
             var serviceLineItems = getServiceLineItems(lineItems);
-            var totalLineItem = lineItems.find(columnUtils.isTotal);
-            if (!columnUtils.isUserInput(totalLineItem)) {
+            var totalLineItem = lineItems.find(siglusColumnUtils.isTotal);
+            if (!siglusColumnUtils.isUserInput(totalLineItem)) {
                 return isValid;
             }
             var totalField = totalLineItem.projects[project.name].outcomes[outcome.name];
@@ -229,8 +229,8 @@
 
         function validateAPES(lineItems, project, outcome) {
             var isValid = true;
-            var totalLineItem = lineItems.find(columnUtils.isTotal);
-            var apesLineItem = lineItems.find(columnUtils.isAPES);
+            var totalLineItem = lineItems.find(siglusColumnUtils.isTotal);
+            var apesLineItem = lineItems.find(siglusColumnUtils.isAPES);
             if (_.isUndefined(apesLineItem)) {
                 return isValid;
             }
@@ -267,8 +267,8 @@
                 return false;
             }
             var flag = false;
-            var totalLineItem = requisition.testConsumptionLineItems.find(columnUtils.isTotal);
-            var apesLineItem = requisition.testConsumptionLineItems.find(columnUtils.isAPES);
+            var totalLineItem = requisition.testConsumptionLineItems.find(siglusColumnUtils.isTotal);
+            var apesLineItem = requisition.testConsumptionLineItems.find(siglusColumnUtils.isAPES);
             if (_.isUndefined(apesLineItem)) {
                 return flag;
             }
@@ -293,8 +293,8 @@
             if (!requisition.template.extension.enableRapidTestConsumption || requisition.emergency) {
                 return false;
             }
-            var totalLineItem = requisition.testConsumptionLineItems.find(columnUtils.isTotal);
-            if (!columnUtils.isUserInput(totalLineItem)) {
+            var totalLineItem = requisition.testConsumptionLineItems.find(siglusColumnUtils.isTotal);
+            if (!siglusColumnUtils.isUserInput(totalLineItem)) {
                 return false;
             }
             var isValid = true;
