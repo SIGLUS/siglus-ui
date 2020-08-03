@@ -23,13 +23,13 @@
 
     controller.$inject = ['siglusColumnUtils'];
 
-    function controller(columnUtils) {
+    function controller(siglusColumnUtils) {
 
         var vm = this;
 
-        vm.isUserInput = columnUtils.isUserInput;
-        vm.isTotal = columnUtils.isTotal;
-        vm.columnDisplayName = columnUtils.columnDisplayName;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
+        vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
     }
 
 })();

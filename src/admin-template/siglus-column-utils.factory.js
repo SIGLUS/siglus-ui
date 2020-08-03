@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc service
-     * @name admin-template.columnUtils
+     * @name admin-template.siglusColumnUtils
      *
      * @description
      * Responsible for retrieving dates.
@@ -44,7 +44,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isUserInput
          *
          * @description
@@ -59,7 +59,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isStockCards
          *
          * @description
@@ -74,7 +74,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isCalculated
          *
          * @description
@@ -89,7 +89,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isTotal
          *
          * @description
@@ -104,7 +104,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name columnDisplayName
          *
          * @description
@@ -119,7 +119,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isAPES
          *
          * @description
@@ -134,7 +134,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isPositive
          *
          * @description
@@ -149,7 +149,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template.columnUtils
+         * @methodOf admin-template.siglusColumnUtils
          * @name isConsumo
          *
          * @description
