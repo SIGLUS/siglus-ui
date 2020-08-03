@@ -28,131 +28,18 @@
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.regimenSection = undefined;
+        vm.summarySection = undefined;
         vm.getTotal = getTotal;
 
         function onInit() {
-            vm.regimenLineItems = [{
-                columns: {
-                    code: {
-                        id: '123',
-                        value: null
-                    },
-                    regiment: {
-                        id: '1234',
-                        value: null
-                    },
-                    patients: {
-                        id: '12345',
-                        value: null
-                    }
-                },
-                regimen: {
-                    id: 'd5cac41c-e05d-11e9-a67f-0242ac1a0008',
-                    code: 'AZT+3TC+NPVR',
-                    name: 'AZT+3TC+NPVR',
-                    active: true,
-                    isCustom: false,
-                    displayOrder: 5,
-                    programId: 'eae5ab5a-cfd2-11e9-9535-0242ac130005',
-                    regimenCategory: {
-                        id: '3d250db0-de25-11e9-8785-0242ac130007',
-                        code: 'ADULTS',
-                        name: 'Adults',
-                        displayOrder: 0
-                    },
-                    regimenDispatchLine: {
-                        id: 'ba74b29a-e05d-11e9-a67f-0242ac1a0008',
-                        code: '2ND_LINE',
-                        name: '2a Linha',
-                        displayOrder: 1
-                    }
-                }
-            }, {
-                columns: {
-                    code: {
-                        id: '123',
-                        value: null
-                    },
-                    regiment: {
-                        id: '1234',
-                        value: null
-                    },
-                    patients: {
-                        id: '12345',
-                        value: null
-                    }
-                },
-                regimen: {
-                    id: 'd5cac41c-e05d-11e9-a67f-0242ac1a0008',
-                    code: 'ABC+3TC+ATV/r',
-                    name: 'ABC+3TC+ATV/r',
-                    active: true,
-                    isCustom: false,
-                    displayOrder: 4,
-                    programId: 'eae5ab5a-cfd2-11e9-9535-0242ac130005',
-                    regimenCategory: {
-                        id: '3d250db0-de25-11e9-8785-0242ac130007',
-                        code: 'Paediatrics',
-                        name: 'Paediatrics',
-                        displayOrder: 1
-                    },
-                    regimenDispatchLine: {
-                        id: 'ba74b29a-e05d-11e9-a67f-0242ac1a0008',
-                        code: '1ND_LINE',
-                        name: '1a Linha',
-                        displayOrder: 0
-                    }
-                }
-            }];
-            vm.regimenDispatchLineItems = [{
-                columns: {
-                    lines: {
-                        id: '123',
-                        value: null
-                    },
-                    patients: {
-                        id: '124',
-                        value: null
-                    },
-                    community: {
-                        id: '125',
-                        value: null
-                    }
-                },
-                regimenDispatchLine: {
-                    id: 'ba74b29a-e05d-11e9-a67f-0242ac1a0008',
-                    code: '2ND_LINE',
-                    name: '2a Linha',
-                    displayOrder: 1
-                }
-            }, {
-                columns: {
-                    lines: {
-                        id: '123',
-                        value: null
-                    },
-                    patients: {
-                        id: '124',
-                        value: null
-                    },
-                    community: {
-                        id: '125',
-                        value: null
-                    }
-                },
-                regimenDispatchLine: {
-                    id: 'ba74b29a-e05d-11e9-a67f-0242ac1a0008',
-                    code: '1ND_LINE',
-                    name: '1a Linha',
-                    displayOrder: 0
-                }
-            }];
-            enhanceLineItems(vm.regimenLineItems, SECTION_TYPES.REGIMEN);
-            enhanceLineItems(vm.regimenDispatchLineItems, SECTION_TYPES.SUMMARY);
+            vm.regimenSection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
+            vm.summarySection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
+            enhanceLineItems(vm.regimenLineItems, vm.regimenSection);
+            enhanceLineItems(vm.regimenDispatchLineItems, vm.summarySection);
         }
 
-        function enhanceLineItems(lineItems, sectionName) {
-            var section = templateConfigureService.getSectionByName(vm.sections, sectionName);
+        function enhanceLineItems(lineItems, section) {
             var columnsMap = templateConfigureService.getSectionColumnsMap(section);
             angular.forEach(lineItems, function(lineItem) {
                 angular.forEach(Object.keys(lineItem.columns), function(columnName) {
