@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc object
-     * @name admin-template.TEMPLATE_SECTIONS
+     * @name admin-template.SIGLUS_TEMPLATE_SECTIONS
      *
      * @description
      * This is constant template sections.

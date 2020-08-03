@@ -31,7 +31,8 @@
     Template.$inject = ['$q', 'templateValidator', 'COLUMN_SOURCES', 'TemplateColumn', 'RequisitionColumn',
         'SIGLUS_TEMPLATE_SECTIONS'];
 
-    function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn, TEMPLATE_SECTIONS) {
+    function Template($q, templateValidator, COLUMN_SOURCES, TemplateColumn, RequisitionColumn,
+                      SIGLUS_TEMPLATE_SECTIONS) {
         Template.prototype.moveColumn = moveColumn;
         Template.prototype.findCircularCalculatedDependencies = findCircularCalculatedDependencies;
         Template.prototype.changePopulateStockOnHandFromStockCards = changePopulateStockOnHandFromStockCards;
@@ -73,7 +74,7 @@
             // #248: ends here
             // #248, #247, #341: kit usage section, usage information section, test consumption section configure
             var self = this;
-            angular.forEach(TEMPLATE_SECTIONS, function(extension) {
+            angular.forEach(SIGLUS_TEMPLATE_SECTIONS, function(extension) {
                 self[extension] = _.forEach(template[extension], function(section) {
                     section.columns = _.sortBy(section.columns, 'displayOrder');
                 });
