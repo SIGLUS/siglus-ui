@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc object
-     * @name requisition-constants.LOCKED_TEMPLATE_COLUMNS_ORDER
+     * @name requisition-constants.SIGLUS_TEMPLATE_COLUMNS_ORDER
      *
      * @description
-     * This is constant for locked requisition columns order.
+     * This is constant for siglus requisition columns order.
      */
     angular
         .module('requisition-constants')
-        .constant('TEMPLATE_COLUMNS_ORDER', columns());
+        .constant('SIGLUS_TEMPLATE_COLUMNS_ORDER', columns());
 
     function columns() {
         var columnsOrder = {

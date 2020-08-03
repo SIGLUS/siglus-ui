@@ -31,13 +31,13 @@
     // SIGLUS-REFACTOR: starts here
     TemplateAddController.$inject = [
         '$q', 'programs', 'facilityTypes', 'availableColumns', 'confirmService', 'messageService', 'programTemplates',
-        'template', 'TEMPLATE_COLUMNS', 'DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE', 'TEMPLATE_COLUMNS_ORDER'
+        'template', 'TEMPLATE_COLUMNS', 'DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE', 'SIGLUS_TEMPLATE_COLUMNS_ORDER'
     ];
     // SIGLUS-REFACTOR: ends here
 
     function TemplateAddController($q, programs, facilityTypes, availableColumns, confirmService, messageService,
                                    programTemplates, template, TEMPLATE_COLUMNS, DEFAULT_NUMBER_OF_PERIODS_TO_AVERAGE,
-                                   TEMPLATE_COLUMNS_ORDER) {
+                                   SIGLUS_TEMPLATE_COLUMNS_ORDER) {
 
         var vm = this;
 
@@ -281,8 +281,8 @@
         // SIGLUS-REFACTOR: starts here
         function prepareDefaultColumns() {
             vm.availableColumns.sort(function(a, b) {
-                return TEMPLATE_COLUMNS_ORDER.getColumnDisplayOrder(a.name) -
-                    TEMPLATE_COLUMNS_ORDER.getColumnDisplayOrder(b.name);
+                return SIGLUS_TEMPLATE_COLUMNS_ORDER.getColumnDisplayOrder(a.name) -
+                    SIGLUS_TEMPLATE_COLUMNS_ORDER.getColumnDisplayOrder(b.name);
             });
 
             vm.availableColumns.forEach(function(column) {
