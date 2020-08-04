@@ -19,20 +19,20 @@
 
     /**
      * @ngdoc controller
-     * @name admin-template-configure-kit-usage.controller:SiglusKitUsageTemplateController
+     * @name siglus-admin-template-configure-kit-usage.controller:SiglusKitUsageTemplateController
      *
      * @description
      * Controller for template view page.
      */
     angular
-        .module('admin-template-configure-kit-usage')
+        .module('siglus-admin-template-configure-kit-usage')
         .controller('SiglusKitUsageTemplateController', SiglusKitUsageTemplateController);
 
     SiglusKitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'siglusTemplateConfigureService', 'template', 'tags',
         'SECTION_TYPES'];
 
     function SiglusKitUsageTemplateController(COLUMN_SOURCES, siglusTemplateConfigureService, template, tags,
-                                        SECTION_TYPES) {
+                                              SECTION_TYPES) {
         var vm = this;
 
         vm.$onInit = onInit;

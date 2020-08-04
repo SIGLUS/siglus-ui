@@ -17,25 +17,19 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-kit-usage')
-        .config(routes);
+    /**
+     * @module siglus-admin-template-configure-kit-usage
+     *
+     * @description
+     * Provides base siglus-admin-template-configure-kit-usage state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-admin-template-configure-kit-usage', [
+        'ui.router',
+        'openlmis-rights',
+        'requisition-constants',
+        'admin-template-configure-section',
+        'admin-template-configure-preview-section'
+    ]);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
-
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage', {
-            label: 'adminProgramTemplate.kitUsage',
-            url: '/kitUsage',
-            templateUrl: 'admin-template-configure-kit-usage/siglus-kit-usage-template.html',
-            controller: 'SiglusKitUsageTemplateController',
-            controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            resolve: {
-                tags: function(StockReasonTagResource) {
-                    return new StockReasonTagResource().query();
-                }
-            }
-        });
-    }
 })();
