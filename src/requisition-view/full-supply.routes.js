@@ -21,9 +21,10 @@
         .module('requisition-view')
         .config(routes);
 
-    routes.$inject = ['selectProductsModalStateProvider', 'addRegimensModalStateProvider'];
+    // #441: Facility user can create requisition with regimen section
+    routes.$inject = ['selectProductsModalStateProvider', 'siglusAddRegimensModalStateProvider'];
 
-    function routes(selectProductsModalStateProvider, addRegimensModalStateProvider) {
+    function routes(selectProductsModalStateProvider, siglusAddRegimensModalStateProvider) {
         var params = {
             url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
             templateUrl: 'requisition-view-tab/requisition-view-tab.html',
@@ -73,8 +74,9 @@
         };
         selectProductsModalStateProvider
             .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', params);
-        addRegimensModalStateProvider
+        siglusAddRegimensModalStateProvider
             .stateWithAddRegimensChildState('openlmis.requisitions.requisition.fullSupply', params);
     }
+    // #441: ends here
 
 })();

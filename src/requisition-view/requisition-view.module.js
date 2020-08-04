@@ -39,7 +39,7 @@
         'ui.router',
         // #147: starts here
         'referencedata-facility',
-        'add-regimen-model'
+        'siglus-add-regimen-model'
         // #147: ends here
     ]);
 
