@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('TemplateConfigureColumnSettingController', function() {
+describe('SiglusTemplateConfigureColumnSettingController', function() {
 
     //tested
     var vm;
@@ -56,7 +56,7 @@ describe('TemplateConfigureColumnSettingController', function() {
         spyOn(refreshConfirmService, 'deregister');
         spyOn(configureStateRouterService, 'initialize').andReturn(unsubscribe);
 
-        vm = $controller('TemplateConfigureColumnSettingController', {
+        vm = $controller('SiglusTemplateConfigureColumnSettingController', {
             $state: state,
             $scope: scope,
             template: template,
