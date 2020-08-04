@@ -21,9 +21,9 @@
         .module('requisition-view-section')
         .controller('KitUsageController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, templateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
 
         var vm = this;
 
@@ -31,10 +31,10 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            var collection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
-            var collectionColumnsMap = templateConfigureService.getSectionColumnsMap(collection);
-            var service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
-            var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(service);
+            var collection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
+            var collectionColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(collection);
+            var service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(service);
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, collectionColumnsMap[lineItem.collection]);
                 angular.forEach(Object.keys(lineItem.services), function(serviceName) {

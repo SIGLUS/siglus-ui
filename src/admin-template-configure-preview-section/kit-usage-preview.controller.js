@@ -21,9 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('KitUsagePreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, templateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
 
         var vm = this;
 
@@ -35,8 +35,8 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            vm.collection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
-            vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.collection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
+            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
         }
 
         function getColumn(service, collection) {

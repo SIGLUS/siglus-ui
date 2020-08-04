@@ -34,8 +34,8 @@
     ];
 
     function SiglusTemplateConfigureColumnSettingController($window, $state, $scope, template, originalTemplate,
-                                                      notificationService, refreshConfirmService,
-                                                      configureStateRouterService) {
+                                                            notificationService, refreshConfirmService,
+                                                            configureStateRouterService) {
         $window.scrollTo(0, 0);
 
         var vm = this;

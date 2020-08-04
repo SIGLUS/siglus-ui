@@ -21,10 +21,10 @@
         .module('admin-template-configure-preview-section')
         .controller('SiglusConsultationNumberPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'templateConfigureService',
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService',
         'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, templateConfigureService, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
@@ -34,7 +34,7 @@
         vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
 
         function onInit() {
-            vm.consultationNumber = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);
+            vm.consultationNumber = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);
         }
     }
 

@@ -21,9 +21,10 @@
         .module('requisition-view-section')
         .controller('SiglusTestConsumptionController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'templateConfigureService', 'requisitionValidator'];
+    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'siglusTemplateConfigureService',
+        'requisitionValidator'];
 
-    function controller(siglusColumnUtils, SECTION_TYPES, templateConfigureService, requisitionValidator) {
+    function controller(siglusColumnUtils, SECTION_TYPES, siglusTemplateConfigureService, requisitionValidator) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -40,9 +41,9 @@
         vm.programColspan = undefined;
 
         function onInit() {
-            vm.testProject = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
-            vm.testOutcome = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
-            vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
+            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
+            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             vm.testProjectColspan = getTestProjectColspan();
             vm.programColspan = getProgramColspan();
             extendLineItems();
@@ -73,9 +74,9 @@
         }
 
         function extendLineItems() {
-            var serviceColumnsMap = templateConfigureService.getSectionColumnsMap(vm.service);
-            var testProjectColumnsMap = templateConfigureService.getSectionColumnsMap(vm.testProject);
-            var testOutcomeColumnsMap = templateConfigureService.getSectionColumnsMap(vm.testOutcome);
+            var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.service);
+            var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
+            var testOutcomeColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testOutcome);
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
                 angular.forEach(Object.keys(lineItem.projects), function(project) {

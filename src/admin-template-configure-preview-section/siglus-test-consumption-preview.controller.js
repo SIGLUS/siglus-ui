@@ -21,9 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('TestConsumptionPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'templateConfigureService', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, templateConfigureService, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
@@ -40,9 +40,9 @@
         vm.isAPES = siglusColumnUtils.isAPES;
 
         function onInit() {
-            vm.testProject = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
-            vm.testOutcome = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
-            vm.service = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
+            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
+            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
             vm.testOutcomeDisplayedCount = vm.testOutcome.columns.filter(function(column) {
                 return column.isDisplayed;
             }).length;

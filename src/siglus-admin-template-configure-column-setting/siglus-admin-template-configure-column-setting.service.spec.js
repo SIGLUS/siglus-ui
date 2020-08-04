@@ -13,14 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('templateConfigureService', function() {
+describe('siglusTemplateConfigureService', function() {
 
     beforeEach(function() {
         module('siglus-admin-template-configure-column-setting');
         module('admin-template-configure-preview-section');
 
         inject(function($injector) {
-            this.templateConfigureService = $injector.get('templateConfigureService');
+            this.siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');
             this.COLUMN_TYPES = $injector.get('COLUMN_TYPES');
             this.SECTION_TYPES = $injector.get('SECTION_TYPES');
         });
@@ -28,7 +28,7 @@ describe('templateConfigureService', function() {
 
     it('should get default column',
         function() {
-            var column = this.templateConfigureService.getDefaultColumn();
+            var column = this.siglusTemplateConfigureService.getDefaultColumn();
 
             expect(column).toEqual({
                 id: null,
@@ -60,7 +60,7 @@ describe('templateConfigureService', function() {
 
     it('should get section by name',
         function() {
-            var collection = this.templateConfigureService.getSectionByName([{
+            var collection = this.siglusTemplateConfigureService.getSectionByName([{
                 name: 'collection'
             }, {
                 name: 'service'
@@ -73,7 +73,7 @@ describe('templateConfigureService', function() {
 
     it('should get column map',
         function() {
-            var columnsMap = this.templateConfigureService.getSectionColumnsMap({
+            var columnsMap = this.siglusTemplateConfigureService.getSectionColumnsMap({
                 name: 'collection',
                 columns: [ {
                     name: 'kitReceived',

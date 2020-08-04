@@ -29,7 +29,8 @@
             abstract: 'true',
             label: 'adminTemplateConfigure.columnSetting.label',
             url: '/columnSetting',
-            templateUrl: 'siglus-admin-template-configure-column-setting/siglus-admin-template-configure-column-setting.html',
+            templateUrl: 'siglus-admin-template-configure-column-setting' +
+                '/siglus-admin-template-configure-column-setting.html',
             controller: 'SiglusTemplateConfigureColumnSettingController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
