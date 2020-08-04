@@ -19,7 +19,7 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .controller('KitUsagePreviewController', controller);
+        .controller('SiglusKitUsagePreviewController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',
         'SECTION_TYPES'];
