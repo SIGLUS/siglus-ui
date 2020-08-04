@@ -19,7 +19,7 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .controller('ProductPreviewController', controller);
+        .controller('SiglusProductPreviewController', controller);
 
     controller.$inject = ['siglusColumnUtils'];
 

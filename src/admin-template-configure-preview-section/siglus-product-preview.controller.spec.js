@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('ProductPreviewController', function() {
+describe('SiglusProductPreviewController', function() {
 
     var vm, $controller, COLUMN_SOURCES;
 
@@ -25,7 +25,7 @@ describe('ProductPreviewController', function() {
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
         });
 
-        vm = $controller('ProductPreviewController');
+        vm = $controller('SiglusProductPreviewController');
     });
 
     describe('onInit', function() {

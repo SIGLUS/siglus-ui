@@ -19,13 +19,13 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .component('productPreview', {
+        .component('siglusProductPreview', {
             bindings: {
                 columnsMap: '<'
             },
-            controller: 'ProductPreviewController',
+            controller: 'SiglusProductPreviewController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-preview-section/product-preview.html'
+            templateUrl: 'admin-template-configure-preview-section/siglus-product-preview.html'
         });
 
 })();
