@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc controller
-     * @name siglus-admin-template-configure-column-setting.controller:KitUsageTemplateController
+     * @name siglus-admin-template-configure-column-setting.controller:SiglusTemplateConfigureColumnSettingController
      *
      * @description
      * Controller for template view page.

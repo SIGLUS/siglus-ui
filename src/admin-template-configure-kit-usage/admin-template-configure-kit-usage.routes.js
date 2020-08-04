@@ -28,7 +28,7 @@
             label: 'adminProgramTemplate.kitUsage',
             url: '/kitUsage',
             templateUrl: 'admin-template-configure-kit-usage/siglus-kit-usage-template.html',
-            controller: 'KitUsageTemplateController',
+            controller: 'SiglusKitUsageTemplateController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
             resolve: {
