@@ -19,24 +19,24 @@
 
     /**
      * @ngdoc service
-     * @name add-regimen-model.addRegimensModalState
+     * @name siglus-add-regimen-model.addRegimensModalState
      *
      * @description
      * Provider for defining states which should be displayed as modals.
      */
     angular
-        .module('add-regimen-model')
-        .provider('addRegimensModalState', addRegimensModalStateProvider);
+        .module('siglus-add-regimen-model')
+        .provider('siglusAddRegimensModalState', siglusAddRegimensModalStateProvider);
 
-    addRegimensModalStateProvider.$inject = ['modalStateProvider', '$stateProvider'];
+    siglusAddRegimensModalStateProvider.$inject = ['modalStateProvider', '$stateProvider'];
 
-    function addRegimensModalStateProvider(modalStateProvider) {
+    function siglusAddRegimensModalStateProvider(modalStateProvider) {
         this.stateWithAddRegimensChildState = stateWithAddRegimensChildState;
         this.$get = [function() {}];
 
         /**
          * @ngdoc method
-         * @methodOf add-regimen-model.addRegimensModalState
+         * @methodOf siglus-add-regimen-model.addRegimensModalState
          * @name state
          *
          * @description
@@ -58,7 +58,7 @@
                 .state(stateName + '.addRegimens', {
                     controller: 'SelectProductsModalController',
                     controllerAs: 'vm',
-                    templateUrl: 'add-regimen-model/add-regimen-model.html',
+                    templateUrl: 'siglus-add-regimen-model/siglus-add-regimen-model.html',
                     nonTrackable: true,
                     params: {
                         addRegimensPage: undefined,

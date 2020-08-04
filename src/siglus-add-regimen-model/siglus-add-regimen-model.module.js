@@ -17,7 +17,7 @@
 
     'use strict';
 
-    angular.module('add-regimen-model', [
+    angular.module('siglus-add-regimen-model', [
         'openlmis-auth',
         'openlmis-form',
         'openlmis-pagination',

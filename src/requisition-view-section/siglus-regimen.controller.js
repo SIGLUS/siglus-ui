@@ -21,9 +21,10 @@
         .module('requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
-    controller.$inject = ['siglusTemplateConfigureService', 'SECTION_TYPES', 'selectProductsModalService'];
+    controller.$inject = ['SECTION_TYPES', 'COLUMN_SOURCES', 'siglusTemplateConfigureService',
+        'selectProductsModalService'];
 
-    function controller(siglusTemplateConfigureService, SECTION_TYPES, selectProductsModalService) {
+    function controller(SECTION_TYPES, COLUMN_SOURCES, siglusTemplateConfigureService, selectProductsModalService) {
 
         var vm = this;
 
@@ -32,6 +33,7 @@
         vm.summarySection = undefined;
         vm.getTotal = getTotal;
         vm.addRegimen = addRegimen;
+        vm.removeRegimen = removeRegimen;
 
         function onInit() {
             vm.regimenSection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
@@ -52,22 +54,41 @@
 
         function getTotal(lineItems, column) {
             return _.reduce(lineItems, function(total, lineItem) {
-                return total + lineItem.columns[column.name].value;
+                return total + (lineItem.columns[column.name].value || 0);
             }, 0);
         }
 
-        function addRegimen() {
+        function addRegimen(category) {
             var notYetAddedRegimens = vm.customRegimens.filter(function(regimen) {
-                return !_.find(vm.regimenLineItems, {
-                    regimen: {
-                        id: regimen.id
-                    }
-                });
+                return !_.find(vm.regimenLineItems, function(item) {
+                    return item.regimen.id === regimen.id;
+                }) && regimen.regimenCategory.name === category ;
             });
             selectProductsModalService.show({
                 products: notYetAddedRegimens,
                 state: '.addRegimens'
+            }).then(function(regimens) {
+                angular.forEach(regimens, function(regimen) {
+                    vm.regimenLineItems.push({
+                        columns: getColumns(),
+                        regimen: regimen
+                    });
+                });
             });
+        }
+
+        function getColumns() {
+            var columns = _.filter(vm.regimenSection.columns, {
+                source: COLUMN_SOURCES.USER_INPUT
+            });
+            return angular.copy(_.indexBy(columns, 'name'));
+        }
+
+        function removeRegimen(regime) {
+            var index = _.findIndex(vm.regimenLineItems, regime);
+            if (index >= 0) {
+                vm.regimenLineItems.splice(index, 1);
+            }
         }
     }
 
