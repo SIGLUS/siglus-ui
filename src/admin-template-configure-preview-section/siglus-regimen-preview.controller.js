@@ -21,9 +21,9 @@
         .module('admin-template-configure-preview-section')
         .controller('SiglusRegimenPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'templateConfigureService', 'COLUMN_SOURCES'];
+    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'siglusTemplateConfigureService', 'COLUMN_SOURCES'];
 
-    function controller(siglusColumnUtils, SECTION_TYPES, templateConfigureService, COLUMN_SOURCES) {
+    function controller(siglusColumnUtils, SECTION_TYPES, siglusTemplateConfigureService, COLUMN_SOURCES) {
 
         var vm = this;
         vm.regimenColumns = undefined;
@@ -37,8 +37,8 @@
         vm.isUserInput = siglusColumnUtils.isUserInput;
 
         function onInit() {
-            var regimen = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
-            var summary = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
+            var regimen = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
+            var summary = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
             vm.regimenColumns = getDisplayedColumns(regimen);
             vm.summaryColumns = getDisplayedColumns(summary);
             vm.total = {

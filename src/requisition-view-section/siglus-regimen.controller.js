@@ -21,9 +21,9 @@
         .module('requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
-    controller.$inject = ['SECTION_TYPES', 'templateConfigureService', 'selectProductsModalService'];
+    controller.$inject = ['siglusTemplateConfigureService', 'SECTION_TYPES', 'selectProductsModalService'];
 
-    function controller(SECTION_TYPES, templateConfigureService, selectProductsModalService) {
+    function controller(siglusTemplateConfigureService, SECTION_TYPES, selectProductsModalService) {
 
         var vm = this;
 
@@ -34,14 +34,14 @@
         vm.addRegimen = addRegimen;
 
         function onInit() {
-            vm.regimenSection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
-            vm.summarySection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
+            vm.regimenSection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
+            vm.summarySection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
             enhanceLineItems(vm.regimenLineItems, vm.regimenSection);
             enhanceLineItems(vm.regimenDispatchLineItems, vm.summarySection);
         }
 
         function enhanceLineItems(lineItems, section) {
-            var columnsMap = templateConfigureService.getSectionColumnsMap(section);
+            var columnsMap = siglusTemplateConfigureService.getSectionColumnsMap(section);
             angular.forEach(lineItems, function(lineItem) {
                 angular.forEach(Object.keys(lineItem.columns), function(columnName) {
                     lineItem.columns[columnName] = angular.merge({},

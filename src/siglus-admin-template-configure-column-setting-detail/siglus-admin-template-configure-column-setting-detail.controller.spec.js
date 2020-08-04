@@ -16,7 +16,7 @@
 describe('SiglusColumnSettingDetailController', function() {
 
     var vm, template;
-    var $state, $controller, COLUMN_SOURCES, templateConfigureService;
+    var $state, $controller, COLUMN_SOURCES, siglusTemplateConfigureService;
 
     beforeEach(function() {
         module('siglus-admin-template-configure-column-setting-detail');
@@ -26,13 +26,13 @@ describe('SiglusColumnSettingDetailController', function() {
             $state = $injector.get('$state');
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
-            templateConfigureService = $injector.get('templateConfigureService');
+            siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');
         });
 
         template = {
             regimen: []
         };
-        spyOn(templateConfigureService, 'getDefaultColumn').andReturn({
+        spyOn(siglusTemplateConfigureService, 'getDefaultColumn').andReturn({
             name: 'newColumn0',
             source: COLUMN_SOURCES.USER_INPUT,
             displayOrder: 2,

@@ -28,9 +28,10 @@
         .module('siglus-admin-template-configure-column-setting-detail')
         .controller('SiglusColumnSettingDetailController', SiglusColumnSettingDetailController);
 
-    SiglusColumnSettingDetailController.$inject = ['$state', 'COLUMN_SOURCES', 'templateConfigureService', 'template'];
+    SiglusColumnSettingDetailController.$inject = ['$state', 'COLUMN_SOURCES', 'siglusTemplateConfigureService',
+        'template'];
 
-    function SiglusColumnSettingDetailController($state, COLUMN_SOURCES, templateConfigureService, template) {
+    function SiglusColumnSettingDetailController($state, COLUMN_SOURCES, siglusTemplateConfigureService, template) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -43,7 +44,7 @@
         }
 
         function addColumn(section) {
-            section.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+            section.columns.push(angular.merge({}, siglusTemplateConfigureService.getDefaultColumn(), {
                 source: COLUMN_SOURCES.USER_INPUT,
                 columnDefinition: {
                     sources: [COLUMN_SOURCES.USER_INPUT],

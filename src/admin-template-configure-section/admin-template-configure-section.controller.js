@@ -30,12 +30,12 @@
 
     TemplateConfigureSectionController.$inject = [
         '$scope', 'messageService', 'templateValidator', 'siglusColumnUtils', 'COLUMN_SOURCES',
-        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'templateConfigureService', 'notificationService'
+        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'siglusTemplateConfigureService', 'notificationService'
     ];
 
     function TemplateConfigureSectionController($scope, messageService, templateValidator, siglusColumnUtils,
                                                 COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
-                                                templateConfigureService, notificationService) {
+                                                siglusTemplateConfigureService, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -60,7 +60,7 @@
 
         function onInit() {
             vm.maxColumnDescriptionLength = MAX_COLUMN_DESCRIPTION_LENGTH;
-            vm.columnMap = templateConfigureService.getSectionColumnsMap(vm.section);
+            vm.columnMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.section);
             refreshAvailableTags();
             updateDisplayOrder();
             updateSectionError();

@@ -17,7 +17,7 @@ describe('KitUsageTemplateController', function() {
 
     var vm, template, tags, collection, service, column;
 
-    var TemplateColumnDataBuilder, TemplateDataBuilder, $controller, COLUMN_SOURCES, templateConfigureService;
+    var TemplateColumnDataBuilder, TemplateDataBuilder, $controller, COLUMN_SOURCES, siglusTemplateConfigureService;
 
     beforeEach(function() {
         module('admin-template-configure-kit-usage');
@@ -28,7 +28,7 @@ describe('KitUsageTemplateController', function() {
             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
             $controller = $injector.get('$controller');
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
-            templateConfigureService = $injector.get('templateConfigureService');
+            siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');
         });
 
         template = new TemplateDataBuilder()
@@ -59,7 +59,7 @@ describe('KitUsageTemplateController', function() {
                 supportsTag: true
             }
         };
-        spyOn(templateConfigureService, 'getDefaultColumn').andReturn(column);
+        spyOn(siglusTemplateConfigureService, 'getDefaultColumn').andReturn(column);
 
         vm = $controller('KitUsageTemplateController', {
             template: template,

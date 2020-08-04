@@ -28,10 +28,11 @@
         .module('admin-template-configure-kit-usage')
         .controller('KitUsageTemplateController', KitUsageTemplateController);
 
-    KitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'templateConfigureService', 'template', 'tags',
+    KitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'siglusTemplateConfigureService', 'template', 'tags',
         'SECTION_TYPES'];
 
-    function KitUsageTemplateController(COLUMN_SOURCES, templateConfigureService, template, tags, SECTION_TYPES) {
+    function KitUsageTemplateController(COLUMN_SOURCES, siglusTemplateConfigureService, template, tags,
+                                        SECTION_TYPES) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -45,12 +46,13 @@
         function onInit() {
             vm.template = template;
             vm.tags = tags;
-            vm.collection = templateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.COLLECTION);
-            vm.service = templateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.SERVICE);
+            vm.collection =
+                siglusTemplateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.COLLECTION);
+            vm.service = siglusTemplateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.SERVICE);
         }
 
         function addCollectionColumn() {
-            vm.collection.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+            vm.collection.columns.push(angular.merge({}, siglusTemplateConfigureService.getDefaultColumn(), {
                 columnDefinition: {
                     sources: [COLUMN_SOURCES.STOCK_CARDS, COLUMN_SOURCES.USER_INPUT]
                 }
@@ -58,7 +60,7 @@
         }
 
         function addServiceColumn() {
-            vm.service.columns.push(angular.merge({}, templateConfigureService.getDefaultColumn(), {
+            vm.service.columns.push(angular.merge({}, siglusTemplateConfigureService.getDefaultColumn(), {
                 source: COLUMN_SOURCES.USER_INPUT,
                 columnDefinition: {
                     sources: [COLUMN_SOURCES.USER_INPUT],
