@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc controller
-     * @name admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
+     * @name siglus-admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
      *
      * @description
      * Controller for template view page.
      */
     angular
-        .module('admin-template-configure-preview')
+        .module('siglus-admin-template-configure-preview')
         .controller('SiglusRequisitionTemplatePreviewController', SiglusRequisitionTemplatePreviewController);
 
     SiglusRequisitionTemplatePreviewController.$inject = [
@@ -34,7 +34,7 @@
     ];
 
     function SiglusRequisitionTemplatePreviewController($state, template, notificationService, loadingModalService,
-                                                  confirmService, requisitionTemplateService) {
+                                                        confirmService, requisitionTemplateService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -43,7 +43,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
+         * @propertyOf siglus-admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
          * @name template
          * @type {Object}
          *
@@ -53,7 +53,7 @@
         vm.template = undefined;
         /**
          * @ngdoc method
-         * @methodOf admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
+         * @methodOf siglus-admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
          * @name goToTemplateList
          *
          * @description
@@ -65,7 +65,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
+         * @methodOf siglus-admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
          * @name goToTemplateList
          *
          * @description
@@ -79,7 +79,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
+         * @methodOf siglus-admin-template-configure-preview.controller:SiglusRequisitionTemplatePreviewController
          * @name saveTemplate
          *
          * @description
