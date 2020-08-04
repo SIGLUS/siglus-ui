@@ -19,13 +19,13 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .component('kitUsagePreview', {
+        .component('siglusKitUsagePreview', {
             bindings: {
                 sections: '<'
             },
-            controller: 'KitUsagePreviewController',
+            controller: 'SiglusKitUsagePreviewController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-preview-section/kit-usage-preview.html'
+            templateUrl: 'admin-template-configure-preview-section/siglus-kit-usage-preview.html'
         });
 
 })();

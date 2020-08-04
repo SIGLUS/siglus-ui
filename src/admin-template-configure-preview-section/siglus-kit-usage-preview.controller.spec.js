@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('KitUsagePreviewController', function() {
+describe('SiglusKitUsagePreviewController', function() {
 
     var vm, collection, service;
     var $controller, COLUMN_SOURCES, messageService, siglusColumnUtils;
@@ -41,7 +41,7 @@ describe('KitUsagePreviewController', function() {
         spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
         spyOn(messageService, 'get').andReturn('User input');
 
-        vm = $controller('KitUsagePreviewController');
+        vm = $controller('SiglusKitUsagePreviewController');
     });
 
     describe('onInit', function() {

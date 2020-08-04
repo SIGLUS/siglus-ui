@@ -8,7 +8,7 @@
         <input type="checkbox" ng-model="vm.template.extension.enableKitUsage"/>{{'adminProgramTemplate.kitUsage' | message}}
         <a ng-show="vm.template.extension.enableKitUsage" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
-    <kit-usage-preview sections="vm.template.kitUsage" ng-show="vm.template.extension.enableKitUsage"/>
+    <siglus-kit-usage-preview sections="vm.template.kitUsage" ng-show="vm.template.extension.enableKitUsage"/>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableProduct"/>{{'adminProgramTemplate.product' | message}}
         <a ng-show="vm.template.extension.enableProduct" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.product">{{'adminProgramTemplate.setting' | message}}</a>
