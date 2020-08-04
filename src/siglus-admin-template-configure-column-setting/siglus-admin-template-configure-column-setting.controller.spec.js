@@ -28,7 +28,7 @@ describe('TemplateConfigureColumnSettingController', function() {
     var scope, originalTemplate, refreshConfirmService;
 
     beforeEach(function() {
-        module('admin-template-configure-column-setting');
+        module('siglus-admin-template-configure-column-setting');
         module('admin-template');
 
         inject(function($injector) {

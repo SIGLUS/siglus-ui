@@ -20,7 +20,7 @@ describe('SiglusColumnSettingDetailController', function() {
 
     beforeEach(function() {
         module('siglus-admin-template-configure-column-setting-detail');
-        module('admin-template-configure-column-setting');
+        module('siglus-admin-template-configure-column-setting');
 
         inject(function($injector) {
             $state = $injector.get('$state');

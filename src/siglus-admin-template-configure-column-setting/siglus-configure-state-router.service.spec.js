@@ -16,7 +16,7 @@
 describe('configureStateRouterService', function() {
 
     beforeEach(function() {
-        module('admin-template-configure-column-setting');
+        module('siglus-admin-template-configure-column-setting');
 
         inject(function($injector) {
             this.$rootScope = $injector.get('$rootScope');

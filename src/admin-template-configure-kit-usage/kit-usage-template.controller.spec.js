@@ -21,7 +21,7 @@ describe('KitUsageTemplateController', function() {
 
     beforeEach(function() {
         module('admin-template-configure-kit-usage');
-        module('admin-template-configure-column-setting');
+        module('siglus-admin-template-configure-column-setting');
 
         inject(function($injector) {
             TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');

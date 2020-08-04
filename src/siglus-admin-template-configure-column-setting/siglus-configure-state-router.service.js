@@ -18,12 +18,12 @@
 
     /**
      * @ngdoc service
-     * @name admin-template-configure-column-setting.configureStateRouterService
+     * @name siglus-admin-template-configure-column-setting.configureStateRouterService
      *
      * @description
      * Check if state being transitioned is valid.
      */
-    angular.module('admin-template-configure-column-setting')
+    angular.module('siglus-admin-template-configure-column-setting')
         .service('configureStateRouterService', service);
 
     service.$inject = [

@@ -17,22 +17,19 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-column-setting')
-        .config(routes);
+    /**
+     * @module siglus-admin-template-configure-column-setting
+     *
+     * @description
+     * Provides base siglus-admin-template-configure-column-setting state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-admin-template-configure-column-setting', [
+        'ui.router',
+        'openlmis-rights',
+        'openlmis-modal',
+        'refresh-confirm',
+        'requisition-constants'
+    ]);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
-
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-
-        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting', {
-            abstract: 'true',
-            label: 'adminTemplateConfigure.columnSetting.label',
-            url: '/columnSetting',
-            templateUrl: 'admin-template-configure-column-setting/admin-template-configure-column-setting.html',
-            controller: 'TemplateConfigureColumnSettingController',
-            controllerAs: 'vm',
-            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
-        });
-    }
 })();

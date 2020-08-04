@@ -16,7 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('admin-template-configure-column-setting')
+    angular.module('siglus-admin-template-configure-column-setting')
         .service('templateConfigureService', service);
 
     service.$inject = ['COLUMN_TYPES'];

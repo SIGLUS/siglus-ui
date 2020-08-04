@@ -19,9 +19,10 @@
 
     angular.module('requisition-view-section', [
         'admin-template',
-        'admin-template-configure-column-setting',
         'admin-template-configure-preview-section',
-        'add-regimen-model'
+        'add-regimen-model',
+        'siglus-admin-template-configure-column-setting',
+        'admin-template-configure-preview-section'
     ]);
 
 })();
