@@ -27,7 +27,7 @@
         $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting.kitUsage', {
             label: 'adminProgramTemplate.kitUsage',
             url: '/kitUsage',
-            templateUrl: 'admin-template-configure-kit-usage/kit-usage-template.html',
+            templateUrl: 'admin-template-configure-kit-usage/siglus-kit-usage-template.html',
             controller: 'KitUsageTemplateController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
