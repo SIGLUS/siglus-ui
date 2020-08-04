@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('KitUsageTemplateController', function() {
+describe('SiglusKitUsageTemplateController', function() {
 
     var vm, template, tags, collection, service, column;
 
@@ -61,7 +61,7 @@ describe('KitUsageTemplateController', function() {
         };
         spyOn(siglusTemplateConfigureService, 'getDefaultColumn').andReturn(column);
 
-        vm = $controller('KitUsageTemplateController', {
+        vm = $controller('SiglusKitUsageTemplateController', {
             template: template,
             tags: tags
         });

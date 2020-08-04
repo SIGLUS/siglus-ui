@@ -19,19 +19,19 @@
 
     /**
      * @ngdoc controller
-     * @name admin-template-configure-kit-usage.controller:KitUsageTemplateController
+     * @name admin-template-configure-kit-usage.controller:SiglusKitUsageTemplateController
      *
      * @description
      * Controller for template view page.
      */
     angular
         .module('admin-template-configure-kit-usage')
-        .controller('KitUsageTemplateController', KitUsageTemplateController);
+        .controller('SiglusKitUsageTemplateController', SiglusKitUsageTemplateController);
 
-    KitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'siglusTemplateConfigureService', 'template', 'tags',
+    SiglusKitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'siglusTemplateConfigureService', 'template', 'tags',
         'SECTION_TYPES'];
 
-    function KitUsageTemplateController(COLUMN_SOURCES, siglusTemplateConfigureService, template, tags,
+    function SiglusKitUsageTemplateController(COLUMN_SOURCES, siglusTemplateConfigureService, template, tags,
                                         SECTION_TYPES) {
         var vm = this;
 
