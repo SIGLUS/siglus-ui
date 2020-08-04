@@ -27,7 +27,7 @@
         $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columns', {
             label: 'adminProgramTemplate.templateColumns',
             url: '/columns',
-            templateUrl: 'admin-template-configure-preview/template-preview.html',
+            templateUrl: 'admin-template-configure-preview/siglus-template-preview.html',
             controller: 'RequisitionTemplatePreviewController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
