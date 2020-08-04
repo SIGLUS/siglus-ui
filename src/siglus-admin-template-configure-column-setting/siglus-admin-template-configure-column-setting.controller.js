@@ -30,12 +30,12 @@
 
     SiglusTemplateConfigureColumnSettingController.$inject = [
         '$window', '$state', '$scope', 'template', 'originalTemplate', 'notificationService', 'refreshConfirmService',
-        'configureStateRouterService'
+        'siglusConfigureStateRouterService'
     ];
 
     function SiglusTemplateConfigureColumnSettingController($window, $state, $scope, template, originalTemplate,
                                                             notificationService, refreshConfirmService,
-                                                            configureStateRouterService) {
+                                                            siglusConfigureStateRouterService) {
         $window.scrollTo(0, 0);
 
         var vm = this;
@@ -73,7 +73,7 @@
         }
 
         function stateRouter() {
-            var unsubscribe = configureStateRouterService.initialize(template);
+            var unsubscribe = siglusConfigureStateRouterService.initialize(template);
             $scope.$on('$destroy', function() {
                 unsubscribe();
             });

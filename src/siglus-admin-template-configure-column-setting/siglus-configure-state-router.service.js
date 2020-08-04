@@ -18,13 +18,13 @@
 
     /**
      * @ngdoc service
-     * @name siglus-admin-template-configure-column-setting.configureStateRouterService
+     * @name siglus-admin-template-configure-column-setting.siglusConfigureStateRouterService
      *
      * @description
      * Check if state being transitioned is valid.
      */
     angular.module('siglus-admin-template-configure-column-setting')
-        .service('configureStateRouterService', service);
+        .service('siglusConfigureStateRouterService', service);
 
     service.$inject = [
         '$rootScope', 'loadingModalService', 'notificationService'
