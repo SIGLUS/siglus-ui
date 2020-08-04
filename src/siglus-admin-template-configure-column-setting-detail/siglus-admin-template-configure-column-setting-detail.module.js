@@ -18,7 +18,7 @@
     'use strict';
 
     /**
-     * @module admin-template-configure-kit-usage
+     * @module siglus-admin-template-configure-column-setting-detail
      *
      * @description
      * Provides base siglus-admin-template-configure-column-setting-detail state

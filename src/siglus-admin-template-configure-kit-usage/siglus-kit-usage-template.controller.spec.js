@@ -20,7 +20,7 @@ describe('SiglusKitUsageTemplateController', function() {
     var TemplateColumnDataBuilder, TemplateDataBuilder, $controller, COLUMN_SOURCES, siglusTemplateConfigureService;
 
     beforeEach(function() {
-        module('admin-template-configure-kit-usage');
+        module('siglus-admin-template-configure-kit-usage');
         module('siglus-admin-template-configure-column-setting');
 
         inject(function($injector) {
