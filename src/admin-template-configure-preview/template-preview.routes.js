@@ -28,7 +28,7 @@
             label: 'adminProgramTemplate.templateColumns',
             url: '/columns',
             templateUrl: 'admin-template-configure-preview/siglus-template-preview.html',
-            controller: 'RequisitionTemplatePreviewController',
+            controller: 'SiglusRequisitionTemplatePreviewController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
         });

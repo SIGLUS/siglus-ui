@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('RequisitionTemplatePreviewController', function() {
+describe('SiglusRequisitionTemplatePreviewController', function() {
 
     //tested
     var vm;
@@ -49,7 +49,7 @@ describe('RequisitionTemplatePreviewController', function() {
         template.kitUsage = [];
 
         initController = function() {
-            vm = $controller('RequisitionTemplatePreviewController', {
+            vm = $controller('SiglusRequisitionTemplatePreviewController', {
                 template: template,
                 $state: state
             });
