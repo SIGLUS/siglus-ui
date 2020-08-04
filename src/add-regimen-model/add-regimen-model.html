@@ -5,7 +5,7 @@
                 <h4>{{'addRegimesModal.addRegimes' | message}}</h4>
             </div>
             <div class="modal-body">
-                <form id="RegimeForm" ng-submit="vm.selectRegimes()">
+                <form id="RegimeForm" ng-submit="vm.selectProducts()">
                     <fieldset class="form-group">
                         <label for="search">
                             {{'addRegimesModal.searchRegime' | message}}
@@ -25,13 +25,13 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="regimen in vm.lineItems">
-                                <td><input type="checkbox" ng-model="vm.selections[regimen.regimen.id]"/></td>
-                                <td>{{regimen.regimen.name}}</td>
+                                <td><input type="checkbox" ng-model="vm.selections[regimen.id]" ng-true-value="{{regimen}}"/></td>
+                                <td>{{regimen.fullProductName}}</td>
                             </tr>
                             </tbody>
                         </table>
                         <openlmis-pagination
-                                list="vm.filteredRegimes"
+                                list="vm.filteredOrderables"
                                 paged-list="vm.lineItems"/>
                     </div>
                 </form>

@@ -21,9 +21,9 @@
         .module('requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
-    controller.$inject = ['templateConfigureService', 'SECTION_TYPES'];
+    controller.$inject = ['SECTION_TYPES', 'templateConfigureService', 'selectProductsModalService'];
 
-    function controller(templateConfigureService, SECTION_TYPES) {
+    function controller(SECTION_TYPES, templateConfigureService, selectProductsModalService) {
 
         var vm = this;
 
@@ -31,6 +31,7 @@
         vm.regimenSection = undefined;
         vm.summarySection = undefined;
         vm.getTotal = getTotal;
+        vm.addRegimen = addRegimen;
 
         function onInit() {
             vm.regimenSection = templateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
@@ -53,6 +54,20 @@
             return _.reduce(lineItems, function(total, lineItem) {
                 return total + lineItem.columns[column.name].value;
             }, 0);
+        }
+
+        function addRegimen() {
+            var notYetAddedRegimens = vm.customRegimens.filter(function(regimen) {
+                return !_.find(vm.regimenLineItems, {
+                    regimen: {
+                        id: regimen.id
+                    }
+                });
+            });
+            selectProductsModalService.show({
+                products: notYetAddedRegimens,
+                state: '.addRegimens'
+            });
         }
     }
 

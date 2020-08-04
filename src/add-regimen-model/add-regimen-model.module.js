@@ -22,7 +22,8 @@
         'openlmis-form',
         'openlmis-pagination',
         'openlmis-templates',
-        'openlmis-modal'
+        'openlmis-modal',
+        'select-products-modal'
     ]);
 
 })();

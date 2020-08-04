@@ -15,9 +15,9 @@
         <tr ng-repeat-start="(category, lineItems) in vm.regimenLineItems | groupBy: 'regimen.regimenCategory.name'">
             <td colspan="100" class="grey-background category">{{category}}</td>
         </tr>
-        <tr ng-repeat="lineItem in lineItems | orderBy: ['regimen.regimenDispatchLine.displayOrder', 'regimen.name']">
+        <tr ng-repeat="lineItem in lineItems | orderBy: ['regimen.regimenDispatchLine.displayOrder', 'regimen.fullProductName']">
             <td>{{lineItem.regimen.regimenDispatchLine.name}}</td>
-            <td>{{lineItem.regimen.name}}</td>
+            <td>{{lineItem.regimen.fullProductName}}</td>
             <td ng-repeat="regimenColumn in lineItem.columns"
                 siglus-requisition-grid-cell
                 line-item-field="regimenColumn"></td>
@@ -27,7 +27,7 @@
         </tr>
         <tr ng-repeat-end ng-if="vm.canEdit">
             <td colspan="100">
-                <button class="add">{{'requisitionViewSection.addRegimen' | message}}</button>
+                <button class="add" ng-click="vm.addRegimen()">{{'requisitionViewSection.addRegimen' | message}}</button>
             </td>
         </tr>
         <tr>
@@ -46,7 +46,6 @@
                 popover-trigger-area="element">
                 {{summaryColumn.label}}
             </th>
-            <th ng-if="vm.canEdit"></th>
         </tr>
         </thead>
         <tbody>
@@ -55,12 +54,10 @@
             <td ng-repeat="summaryColumn in line.columns"
                 siglus-requisition-grid-cell
                 line-item-field="summaryColumn"></td>
-            <td ng-if="vm.canEdit"></td>
         </tr>
         <tr>
             <td class="grey-background">{{'requisitionViewSection.total' | message}}</td>
             <td ng-repeat="summaryColumn in vm.regimenDispatchLineItems[0].columns | orderObjectBy: 'displayOrder'">{{vm.getTotal(vm.regimenDispatchLineItems, summaryColumn)}}</td>
-            <td ng-if="vm.canEdit"></td>
         </tr>
         </tbody>
     </table>
