@@ -26,14 +26,14 @@
      */
     angular
         .module('siglus-admin-template-configure-column-setting')
-        .controller('TemplateConfigureColumnSettingController', TemplateConfigureColumnSettingController);
+        .controller('SiglusTemplateConfigureColumnSettingController', SiglusTemplateConfigureColumnSettingController);
 
-    TemplateConfigureColumnSettingController.$inject = [
+    SiglusTemplateConfigureColumnSettingController.$inject = [
         '$window', '$state', '$scope', 'template', 'originalTemplate', 'notificationService', 'refreshConfirmService',
         'configureStateRouterService'
     ];
 
-    function TemplateConfigureColumnSettingController($window, $state, $scope, template, originalTemplate,
+    function SiglusTemplateConfigureColumnSettingController($window, $state, $scope, template, originalTemplate,
                                                       notificationService, refreshConfirmService,
                                                       configureStateRouterService) {
         $window.scrollTo(0, 0);
