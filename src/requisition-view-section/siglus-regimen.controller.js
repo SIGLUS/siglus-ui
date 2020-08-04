@@ -21,17 +21,19 @@
         .module('requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
-    controller.$inject = ['SECTION_TYPES', 'COLUMN_SOURCES', 'siglusTemplateConfigureService',
-        'selectProductsModalService'];
+    controller.$inject = ['SECTION_TYPES', 'COLUMN_SOURCES', 'MAX_INTEGER_VALUE', 'siglusTemplateConfigureService',
+        'selectProductsModalService', 'messageService', 'requisitionUtils'];
 
-    function controller(SECTION_TYPES, COLUMN_SOURCES, siglusTemplateConfigureService, selectProductsModalService) {
+    function controller(SECTION_TYPES, COLUMN_SOURCES, MAX_INTEGER_VALUE, siglusTemplateConfigureService,
+                        selectProductsModalService, messageService, requisitionUtils) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.regimenSection = undefined;
         vm.summarySection = undefined;
-        vm.getTotal = getTotal;
+        vm.getTotal = requisitionUtils.getBasicLineItemsTotal;
+        vm.validateTotal = validateTotal;
         vm.addRegimen = addRegimen;
         vm.removeRegimen = removeRegimen;
 
@@ -52,10 +54,10 @@
             });
         }
 
-        function getTotal(lineItems, column) {
-            return _.reduce(lineItems, function(total, lineItem) {
-                return total + (lineItem.columns[column.name].value || 0);
-            }, 0);
+        function validateTotal(lineItems, column) {
+            if (vm.getTotal(lineItems, column) > MAX_INTEGER_VALUE) {
+                return messageService.get('requisitionValidation.numberTooLarge');
+            }
         }
 
         function addRegimen(category) {

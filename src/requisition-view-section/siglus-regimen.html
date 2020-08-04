@@ -32,7 +32,10 @@
         </tr>
         <tr>
             <td colspan="2" class="grey-background">{{'requisitionViewSection.total' | message}}</td>
-            <td ng-repeat="regimenColumn in vm.regimenLineItems[0].columns | orderObjectBy: 'displayOrder'">{{vm.getTotal(vm.regimenLineItems, regimenColumn)}}</td>
+            <td ng-repeat="regimenColumn in vm.regimenLineItems[0].columns | orderObjectBy: 'displayOrder'"
+                openlmis-invalid="{{vm.validateTotal(vm.regimenLineItems, regimenColumn)}}">
+                {{vm.getTotal(vm.regimenLineItems, regimenColumn)}}
+            </td>
             <td ng-if="vm.canEdit"></td>
         </tr>
         </tbody>
@@ -57,7 +60,8 @@
         </tr>
         <tr>
             <td class="grey-background">{{'requisitionViewSection.total' | message}}</td>
-            <td ng-repeat="summaryColumn in vm.regimenDispatchLineItems[0].columns | orderObjectBy: 'displayOrder'">{{vm.getTotal(vm.regimenDispatchLineItems, summaryColumn)}}</td>
+            <td ng-repeat="summaryColumn in vm.regimenDispatchLineItems[0].columns | orderObjectBy: 'displayOrder'"
+                openlmis-invalid="{{vm.validateTotal(vm.regimenDispatchLineItems, summaryColumn)}}">{{vm.getTotal(vm.regimenDispatchLineItems, summaryColumn)}}</td>
         </tr>
         </tbody>
     </table>

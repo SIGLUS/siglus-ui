@@ -32,8 +32,15 @@
         return {
             isEmpty: isEmpty,
             calculateTotal: calculateTotal,
-            clearTestConsumptionError: clearTestConsumptionError
+            clearTestConsumptionError: clearTestConsumptionError,
+            getBasicLineItemsTotal: getBasicLineItemsTotal
         };
+
+        function getBasicLineItemsTotal(lineItems, column) {
+            return _.reduce(lineItems, function(total, lineItem) {
+                return total + (lineItem.columns[column.name].value || 0);
+            }, 0);
+        }
 
         function isEmpty(value) {
             return value === '' || _.isUndefined(value) || _.isNull(value);

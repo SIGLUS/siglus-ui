@@ -79,10 +79,30 @@
             isValid = validateConsultationNumber(requisition) && isValid;
             isValid = validateKitUsage(requisition) && isValid;
             isValid = $delegate.validateRequisition(requisition) && isValid;
+            isValid = validateRegimen(requisition) && isValid;
             isValid = validateUsageInformation(requisition) && isValid;
             isValid = validatePatient(requisition) && isValid;
             isValid = validateTestConsumption(requisition) && isValid;
             return isValid;
+        }
+
+        function validateRegimen(requisition) {
+            var valid = true;
+            if (requisition.template.extension.enableRegimen && !requisition.emergency) {
+                valid = validateBasicLineItems(requisition.regimenLineItems) && valid;
+                valid = validateBasicLineItems(requisition.regimenDispatchLineItems) && valid;
+            }
+            return valid;
+        }
+
+        function validateBasicLineItems(lineItems) {
+            var valid = true;
+            angular.forEach(lineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.columns), function(columnName) {
+                    valid = validateSiglusLineItemField(lineItem.columns[columnName]) && valid;
+                });
+            });
+            return valid;
         }
 
         function validateKitUsage(requisition) {
@@ -138,15 +158,10 @@
         }
 
         function validatePatient(requisition) {
-            var valid = true;
             if (requisition.template.extension.enablePatient && !requisition.emergency) {
-                angular.forEach(requisition.patientLineItems, function(lineItem) {
-                    angular.forEach(Object.keys(lineItem.columns), function(columnName) {
-                        valid = validateSiglusLineItemField(lineItem.columns[columnName]) && valid;
-                    });
-                });
+                return validateBasicLineItems(requisition.patientLineItems);
             }
-            return valid;
+            return true;
         }
 
         function isTestOutcomesFilled(fields) {
@@ -322,17 +337,10 @@
         }
 
         function validateConsultationNumber(requisition) {
-            var isValid = true;
             if (requisition.template.extension.enableConsultationNumber && !requisition.emergency) {
-                angular.forEach(requisition.consultationNumberLineItems, function(lineItem) {
-                    angular.forEach(Object.keys(lineItem.columns), function(columnName) {
-                        if (lineItem.columns[columnName].isDisplayed) {
-                            isValid = validateSiglusLineItemField(lineItem.columns[columnName]) && isValid;
-                        }
-                    });
-                });
+                return validateBasicLineItems(requisition.consultationNumberLineItems);
             }
-            return isValid;
+            return true;
         }
 
         function isNotEmpty(value) {

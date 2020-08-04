@@ -1,9 +1,9 @@
 {
-  "addRegimesModal.addRegimes": "Add Regime",
-  "addRegimesModal.searchRegime": "Search Regime",
+  "addRegimesModal.addRegimes": "Add Regimen",
+  "addRegimesModal.searchRegime": "Search Regimen",
   "addRegimesModal.select": "Select",
-  "addRegimesModal.Regime": "Regime Name",
+  "addRegimesModal.Regime": "Regimen Name",
   "addRegimesModal.cancel": "Cancel",
-  "addRegimesModal.addRegimes.emptyList": "You have not selected any regimes.",
+  "addRegimesModal.addRegimes.emptyList": "You have not selected any regimens.",
   "addRegimesModal.searchByCodeInfo": "Please type in a part of the regimen name."
 }
