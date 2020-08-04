@@ -26,7 +26,7 @@ describe('SiglusRequisitionTemplatePreviewController', function() {
         confirmService, requisitionTemplateService, TemplateColumnDataBuilder, TemplateDataBuilder;
 
     beforeEach(function() {
-        module('admin-template-configure-preview');
+        module('siglus-admin-template-configure-preview');
 
         inject(function($injector) {
             q = $injector.get('$q');

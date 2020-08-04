@@ -18,13 +18,13 @@
     'use strict';
 
     /**
-     * @module admin-template-configure-preview
+     * @module siglus-admin-template-configure-preview
      *
      * @description
-     * Provides base admin-template-configure-preview state and service/factory/controller
+     * Provides base siglus-admin-template-configure-preview state and service/factory/controller
      * for retrieving templates from the OpenLMIS server.
      */
-    angular.module('admin-template-configure-preview', [
+    angular.module('siglus-admin-template-configure-preview', [
         'ui.router',
         'openlmis-rights',
         'admin-template-configure-columns'
