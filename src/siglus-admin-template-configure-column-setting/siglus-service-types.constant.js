@@ -18,18 +18,23 @@
     'use strict';
 
     /**
-     * @module admin-template-configure-column-setting
-     *
-     * @description
-     * Provides base admin-template-configure-column-setting state and service/factory/controller
-     * for retrieving templates from the OpenLMIS server.
-     */
-    angular.module('admin-template-configure-column-setting', [
-        'ui.router',
-        'openlmis-rights',
-        'openlmis-modal',
-        'refresh-confirm',
-        'requisition-constants'
-    ]);
+    * @ngdoc object
+    * @name siglus-admin-template-configure-column-setting.SERVICE_TYPES
+    *
+    * @description
+    * This is constant for service types.
+    */
+    angular
+        .module('siglus-admin-template-configure-column-setting')
+        .constant('SERVICE_TYPES', type());
 
+    function type() {
+        return {
+            HF: 'HF',
+            TOTAL: 'total',
+            APES: 'APES',
+            CONSUMO: 'consumo',
+            POSITIVE: 'positive'
+        };
+    }
 })();

@@ -31,7 +31,7 @@
         'requisition',
         'requisition-constants',
         // #248: refactor isTotal
-        'admin-template-configure-column-setting'
+        'siglus-admin-template-configure-column-setting'
         // #248: ends here
     ]);
 })();

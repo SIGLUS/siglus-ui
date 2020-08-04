@@ -17,24 +17,22 @@
 
     'use strict';
 
-    /**
-    * @ngdoc object
-    * @name admin-template-configure-column-setting.SERVICE_TYPES
-    *
-    * @description
-    * This is constant for service types.
-    */
     angular
-        .module('admin-template-configure-column-setting')
-        .constant('SERVICE_TYPES', type());
+        .module('siglus-admin-template-configure-column-setting')
+        .config(routes);
 
-    function type() {
-        return {
-            HF: 'HF',
-            TOTAL: 'total',
-            APES: 'APES',
-            CONSUMO: 'consumo',
-            POSITIVE: 'positive'
-        };
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+
+    function routes($stateProvider, REQUISITION_RIGHTS) {
+
+        $stateProvider.state('openlmis.administration.requisitionTemplates.configure.columnSetting', {
+            abstract: 'true',
+            label: 'adminTemplateConfigure.columnSetting.label',
+            url: '/columnSetting',
+            templateUrl: 'siglus-admin-template-configure-column-setting/siglus-admin-template-configure-column-setting.html',
+            controller: 'TemplateConfigureColumnSettingController',
+            controllerAs: 'vm',
+            accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE]
+        });
     }
 })();

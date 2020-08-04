@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc controller
-     * @name admin-template-configure-column-setting.controller:KitUsageTemplateController
+     * @name siglus-admin-template-configure-column-setting.controller:KitUsageTemplateController
      *
      * @description
      * Controller for template view page.
      */
     angular
-        .module('admin-template-configure-column-setting')
+        .module('siglus-admin-template-configure-column-setting')
         .controller('TemplateConfigureColumnSettingController', TemplateConfigureColumnSettingController);
 
     TemplateConfigureColumnSettingController.$inject = [

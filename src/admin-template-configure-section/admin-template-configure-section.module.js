@@ -29,7 +29,7 @@
         'admin-template',
         'dndLists',
         'openlmis-i18n',
-        'admin-template-configure-column-setting'
+        'siglus-admin-template-configure-column-setting'
     ]);
 
 })();

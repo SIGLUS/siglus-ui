@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc object
-     * @name admin-template-configure-column-setting.SECTION_TYPES
+     * @name admin-template-configure-preview-section.SECTION_TYPES
      *
      * @description
      * This is constant for section types.
