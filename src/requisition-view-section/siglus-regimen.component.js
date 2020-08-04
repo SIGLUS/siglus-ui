@@ -24,6 +24,7 @@
                 sections: '<',
                 regimenLineItems: '<',
                 regimenDispatchLineItems: '<',
+                customRegimens: '<',
                 canEdit: '<'
             },
             controller: 'SiglusRegimentController',

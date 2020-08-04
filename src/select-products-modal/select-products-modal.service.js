@@ -70,7 +70,7 @@
             var stateParams = {};
             stateParams.productName = undefined;
             stateParams.productCode = undefined;
-            $state.go('.addOrderables', stateParams, {
+            $state.go(config.state || '.addOrderables', stateParams, {
                 notify: false
             });
 

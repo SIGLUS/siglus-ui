@@ -21,57 +21,60 @@
         .module('requisition-view')
         .config(routes);
 
-    routes.$inject = ['selectProductsModalStateProvider'];
+    routes.$inject = ['selectProductsModalStateProvider', 'addRegimensModalStateProvider'];
 
-    function routes(selectProductsModalStateProvider) {
-        selectProductsModalStateProvider
-            .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', {
-                url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
-                templateUrl: 'requisition-view-tab/requisition-view-tab.html',
-                controller: 'ViewTabController',
-                controllerAs: 'vm',
-                isOffline: true,
-                nonTrackable: true,
-                resolve: {
-                    lineItems: function($filter, requisition) {
-                        // #227: user can add both full supply & non-fully supply product
-                        var fullSupplyLineItems = requisition.template.hideSkippedLineItems()
-                            ? $filter('filter')(requisition.requisitionLineItems, {
-                                skipped: '!true'
-                            }) : requisition.requisitionLineItems;
-                        // #227: ends here
+    function routes(selectProductsModalStateProvider, addRegimensModalStateProvider) {
+        var params = {
+            url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
+            templateUrl: 'requisition-view-tab/requisition-view-tab.html',
+            controller: 'ViewTabController',
+            controllerAs: 'vm',
+            isOffline: true,
+            nonTrackable: true,
+            resolve: {
+                lineItems: function($filter, requisition) {
+                    // #227: user can add both full supply & non-fully supply product
+                    var fullSupplyLineItems = requisition.template.hideSkippedLineItems()
+                        ? $filter('filter')(requisition.requisitionLineItems, {
+                            skipped: '!true'
+                        }) : requisition.requisitionLineItems;
+                    // #227: ends here
 
-                        return $filter('orderBy')(fullSupplyLineItems, [
-                            '$program.orderableCategoryDisplayOrder',
-                            '$program.orderableCategoryDisplayName',
-                            '$program.displayOrder',
-                            'orderable.fullProductName'
-                        ]);
-                    },
-                    items: function(paginationService, lineItems, $stateParams, requisitionValidator,
-                        paginationFactory) {
-                        return paginationService.registerList(
-                            requisitionValidator.isLineItemValid, $stateParams, function(params) {
-                                return paginationFactory.getPage(lineItems, parseInt(params.page),
-                                    parseInt(params.size));
-                            }, {
-                                paginationId: 'fullSupplyList'
-                            }
-                        );
-                    },
-                    columns: function(requisition) {
-                        // SIGLUS-REFACTOR: starts here
-                        return requisition.template.getDisplayedColumns(requisition);
-                        // SIGLUS-REFACTOR: ends here
-                    },
-                    fullSupply: function() {
-                        return true;
-                    },
-                    homeFacility: function(facilityFactory) {
-                        return facilityFactory.getUserHomeFacility();
-                    }
+                    return $filter('orderBy')(fullSupplyLineItems, [
+                        '$program.orderableCategoryDisplayOrder',
+                        '$program.orderableCategoryDisplayName',
+                        '$program.displayOrder',
+                        'orderable.fullProductName'
+                    ]);
+                },
+                items: function(paginationService, lineItems, $stateParams, requisitionValidator,
+                    paginationFactory) {
+                    return paginationService.registerList(
+                        requisitionValidator.isLineItemValid, $stateParams, function(params) {
+                            return paginationFactory.getPage(lineItems, parseInt(params.page),
+                                parseInt(params.size));
+                        }, {
+                            paginationId: 'fullSupplyList'
+                        }
+                    );
+                },
+                columns: function(requisition) {
+                    // SIGLUS-REFACTOR: starts here
+                    return requisition.template.getDisplayedColumns(requisition);
+                    // SIGLUS-REFACTOR: ends here
+                },
+                fullSupply: function() {
+                    return true;
+                },
+                homeFacility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
                 }
-            });
+            }
+        };
+        selectProductsModalStateProvider
+            .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', params);
+        addRegimensModalStateProvider
+            .stateWithAddRegimensChildState('openlmis.requisitions.requisition.fullSupply', params);
     }
 
 })();
