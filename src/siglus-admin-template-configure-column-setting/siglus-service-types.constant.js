@@ -19,14 +19,14 @@
 
     /**
     * @ngdoc object
-    * @name siglus-admin-template-configure-column-setting.SERVICE_TYPES
+    * @name siglus-admin-template-configure-column-setting.SIGLUS_SERVICE_TYPES
     *
     * @description
     * This is constant for service types.
     */
     angular
         .module('siglus-admin-template-configure-column-setting')
-        .constant('SERVICE_TYPES', type());
+        .constant('SIGLUS_SERVICE_TYPES', type());
 
     function type() {
         return {

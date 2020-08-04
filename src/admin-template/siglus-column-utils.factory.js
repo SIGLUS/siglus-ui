@@ -28,9 +28,9 @@
         .module('admin-template')
         .factory('siglusColumnUtils', siglusColumnUtils);
 
-    siglusColumnUtils.$inject = ['COLUMN_SOURCES', 'SERVICE_TYPES', 'messageService'];
+    siglusColumnUtils.$inject = ['COLUMN_SOURCES', 'SIGLUS_SERVICE_TYPES', 'messageService'];
 
-    function siglusColumnUtils(COLUMN_SOURCES, SERVICE_TYPES, messageService) {
+    function siglusColumnUtils(COLUMN_SOURCES, SIGLUS_SERVICE_TYPES, messageService) {
         return {
             isUserInput: isUserInput,
             isStockCards: isStockCards,
@@ -99,7 +99,7 @@
          * @return {Boolean} true if column name is total
          */
         function isTotal(column) {
-            return column.name === SERVICE_TYPES.TOTAL;
+            return column.name === SIGLUS_SERVICE_TYPES.TOTAL;
         }
 
         /**
@@ -129,7 +129,7 @@
          * @return {Boolean} true if column name is APES
          */
         function isAPES(column) {
-            return column.name === SERVICE_TYPES.APES;
+            return column.name === SIGLUS_SERVICE_TYPES.APES;
         }
 
         /**
@@ -144,7 +144,7 @@
          * @return {Boolean} true if column name is positive
          */
         function isPositive(column) {
-            return column.name === SERVICE_TYPES.POSITIVE;
+            return column.name === SIGLUS_SERVICE_TYPES.POSITIVE;
         }
 
         /**
@@ -159,7 +159,7 @@
          * @return {Boolean} true if column name is consumo
          */
         function isConsumo(column) {
-            return column.name === SERVICE_TYPES.CONSUMO;
+            return column.name === SIGLUS_SERVICE_TYPES.CONSUMO;
         }
     }
 
