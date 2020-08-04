@@ -21,9 +21,10 @@
         .module('requisition-view-section')
         .controller('KitUsageController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SERVICE_TYPES', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',
+        'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SERVICE_TYPES, SECTION_TYPES) {
 
         var vm = this;
 
@@ -46,7 +47,7 @@
         }
 
         function getColumn(service, collection) {
-            return service.name === SERVICE_TYPES.HF ? collection : service;
+            return service.name === SIGLUS_SERVICE_TYPES.HF ? collection : service;
         }
 
         function isUserInput(service, collection) {
