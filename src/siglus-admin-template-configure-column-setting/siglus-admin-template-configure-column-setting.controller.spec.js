@@ -22,7 +22,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
     var template, unsubscribe = jasmine.createSpy();
 
     //injects
-    var $controller, state, notificationService, rootScope, configureStateRouterService,
+    var $controller, state, notificationService, rootScope, siglusConfigureStateRouterService,
         TemplateColumnDataBuilder, TemplateDataBuilder;
 
     var scope, originalTemplate, refreshConfirmService;
@@ -39,7 +39,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
             TemplateColumnDataBuilder = $injector.get('TemplateColumnDataBuilder');
             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
             scope = rootScope.$new();
-            configureStateRouterService = $injector.get('configureStateRouterService');
+            siglusConfigureStateRouterService = $injector.get('siglusConfigureStateRouterService');
             refreshConfirmService = $injector.get('refreshConfirmService');
         });
 
@@ -54,7 +54,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
         spyOn(scope, '$watch');
         spyOn(refreshConfirmService, 'register');
         spyOn(refreshConfirmService, 'deregister');
-        spyOn(configureStateRouterService, 'initialize').andReturn(unsubscribe);
+        spyOn(siglusConfigureStateRouterService, 'initialize').andReturn(unsubscribe);
 
         vm = $controller('SiglusTemplateConfigureColumnSettingController', {
             $state: state,
@@ -81,7 +81,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
         it('should call initialize', function() {
             vm.$onInit();
 
-            expect(configureStateRouterService.initialize).toHaveBeenCalledWith(vm.template);
+            expect(siglusConfigureStateRouterService.initialize).toHaveBeenCalledWith(vm.template);
         });
 
         it('should call unsubscribe when $destroy event emit', function() {

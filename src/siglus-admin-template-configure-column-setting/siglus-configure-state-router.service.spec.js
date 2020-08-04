@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('configureStateRouterService', function() {
+describe('siglusConfigureStateRouterService', function() {
 
     beforeEach(function() {
         module('siglus-admin-template-configure-column-setting');
@@ -22,7 +22,7 @@ describe('configureStateRouterService', function() {
             this.$rootScope = $injector.get('$rootScope');
             this.loadingModalService = $injector.get('loadingModalService');
             this.notificationService = $injector.get('notificationService');
-            this.configureStateRouterService = $injector.get('configureStateRouterService');
+            this.siglusConfigureStateRouterService = $injector.get('siglusConfigureStateRouterService');
         });
 
         spyOn(this.loadingModalService, 'close');
@@ -37,7 +37,7 @@ describe('configureStateRouterService', function() {
 
     it('should prevent state change if template is invalid when user route to columns tab page',
         function() {
-            this.configureStateRouterService.initialize({
+            this.siglusConfigureStateRouterService.initialize({
                 isValid: function() {
                     return false;
                 }
@@ -50,7 +50,7 @@ describe('configureStateRouterService', function() {
         });
 
     it('should not get notification if template is invalid and tostate is home', function() {
-        this.configureStateRouterService.initialize({
+        this.siglusConfigureStateRouterService.initialize({
             isValid: function() {
                 return false;
             }
@@ -63,7 +63,7 @@ describe('configureStateRouterService', function() {
 
     it('should not get notification if template is valid when route from product configure to configure tab',
         function() {
-            this.configureStateRouterService.initialize({
+            this.siglusConfigureStateRouterService.initialize({
                 isValid: function() {
                     return true;
                 }
