@@ -70,6 +70,47 @@ describe('orderService', function() {
         });
     });
 
+    // #401: get closed & suborder status from backend
+    describe('getStatus', function() {
+
+        var order;
+
+        beforeEach(function() {
+            order = new OrderResponseDataBuilder().build();
+
+            $httpBackend.whenGET(fulfillmentUrlFactory('/api/siglusapi/orders/' + order.id + '/status'))
+                .respond(200, {
+                    closed: false,
+                    suborder: false
+                });
+        });
+
+        it('should call /api/siglusapi/orders status endpoint', function() {
+            $httpBackend.expectGET(fulfillmentUrlFactory('/api/siglusapi/orders/' + order.id + '/status'));
+
+            orderService.getStatus(order.id);
+
+            $httpBackend.flush();
+        });
+
+        it('should return response', function() {
+            var expectResult = {
+                closed: false,
+                suborder: false
+            };
+            var result;
+            orderService.getStatus(order.id)
+                .then(function(status) {
+                    result = status;
+                });
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson(expectResult));
+        });
+    });
+    // #401: ends here
+
     describe('retry', function() {
 
         var order;

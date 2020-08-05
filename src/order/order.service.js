@@ -46,6 +46,12 @@
                 transformResponse: transformResponse
                 // #264: ends here
             },
+            // #401: get closed & suborder status from backend
+            getStatus: {
+                method: 'GET',
+                url: fulfillmentUrlFactory('/api/siglusapi/orders/:id/status')
+            },
+            // #401: ends here
             retry: {
                 method: 'GET',
                 url: fulfillmentUrlFactory('/api/orders/:id/retry')
@@ -55,6 +61,9 @@
         this.search = search;
         this.get = get;
         this.retryTransfer = retryTransfer;
+        // #401: get closed & suborder status from backend
+        this.getStatus = getStatus;
+        // #401: ends here
 
         /**
          * @ngdoc method
@@ -92,6 +101,27 @@
             };
             return resource.get(params).$promise;
         }
+
+        // #401: get closed & suborder status from backend
+        /**
+         * @ngdoc method
+         * @methodOf order.orderService
+         * @name get
+         *
+         * @description
+         * Retrieves an Order.
+         *
+         * @param  {String} orderId the ID of the given order
+         * @param  {Object} expand  property name to expand (may be list of strings)
+         * @return {Promise}        the order
+         */
+        function getStatus(orderId) {
+            var params = {
+                id: orderId
+            };
+            return resource.getStatus(params).$promise;
+        }
+        // #401: ends here
 
         /**
          * @ngdoc method

@@ -19,7 +19,8 @@ describe('shipmentViewService', function() {
     var shipmentViewService, OrderDataBuilder, shipmentRepositoryMock, shipmentFactoryMock, order,
         ShipmentDataBuilder, shipment, $rootScope, $q, Order, loadingModalService, $state,
         notificationService, stateTrackerService, confirmService, alertService,
-        StockCardSummaryDataBuilder, stockCardSummaries, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder;
+        StockCardSummaryDataBuilder, stockCardSummaries, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
+        orderService;
     // #287: ends here
 
     beforeEach(function() {
@@ -62,6 +63,7 @@ describe('shipmentViewService', function() {
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            orderService = $injector.get('orderService');
             // #372: ends here
 
         });
@@ -76,6 +78,7 @@ describe('shipmentViewService', function() {
         spyOn(confirmService, 'confirmDestroy');
         // #287: Warehouse clerk can skip some products in order
         spyOn(alertService, 'error');
+        spyOn(orderService, 'getStatus');
         // #287: ends here
 
         shipment = new ShipmentDataBuilder().build();
@@ -349,7 +352,7 @@ describe('shipmentViewService', function() {
 
     describe('decorated confirm', function() {
 
-        var originalConfirm;
+        var originalConfirm, orderStatus;
 
         beforeEach(function() {
             shipment.confirm = jasmine.createSpy('confirm');
@@ -366,6 +369,11 @@ describe('shipmentViewService', function() {
 
             shipmentViewService.getShipmentForOrder(order);
             $rootScope.$apply();
+            orderStatus = {
+                closed: false,
+                suborder: false
+            };
+            orderService.getStatus.andReturn($q.resolve(orderStatus));
         });
 
         // #287: Warehouse clerk can skip some products in order
@@ -511,6 +519,11 @@ describe('shipmentViewService', function() {
                 lineItem.orderedQuantity = 100;
                 lineItem.partialFulfilledQuantity = 0;
             });
+            orderStatus = {
+                closed: false,
+                suborder: true
+            };
+            orderService.getStatus.andReturn($q.resolve(orderStatus));
 
             shipment.confirm();
             $rootScope.$apply();
