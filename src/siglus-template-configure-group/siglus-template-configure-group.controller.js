@@ -28,9 +28,9 @@
         .module('siglus-template-configure-group')
         .controller('siglusTemplateConfigureGroupController', controller);
 
-    controller.$inject = ['$scope', 'siglusColumnUtils', 'COLUMN_SOURCES', 'MAX_ADD_LENGTH'];
+    controller.$inject = ['$scope', 'siglusColumnUtils', 'COLUMN_SOURCES', 'SIGLUS_MAX_ADD_LENGTH'];
 
-    function controller($scope, siglusColumnUtils, COLUMN_SOURCES, MAX_ADD_LENGTH) {
+    function controller($scope, siglusColumnUtils, COLUMN_SOURCES, SIGLUS_MAX_ADD_LENGTH) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -81,7 +81,7 @@
             if (!overMaxAddLength()) {
                 var defaultName = 'newSection';
                 var i = 0;
-                while (vm.sectionMap[defaultName + i] && i < MAX_ADD_LENGTH) {
+                while (vm.sectionMap[defaultName + i] && i < SIGLUS_MAX_ADD_LENGTH) {
                     i++;
                 }
                 vm.sections.push({
@@ -96,7 +96,7 @@
             var addedSections = _.filter(vm.sections, function(section) {
                 return !section.isDefault;
             });
-            return addedSections.length >= MAX_ADD_LENGTH;
+            return addedSections.length >= SIGLUS_MAX_ADD_LENGTH;
         }
 
         function removeGroup(section) {

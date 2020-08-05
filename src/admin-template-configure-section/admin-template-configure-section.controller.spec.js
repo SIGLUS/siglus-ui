@@ -22,7 +22,7 @@ describe('SiglusTemplateConfigureSectionController', function() {
     var tags;
 
     //injects
-    var $rootScope, $scope, $controller, COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
+    var $rootScope, $scope, $controller, COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, SIGLUS_MAX_ADD_LENGTH,
         notificationService, templateValidator;
 
     beforeEach(function() {
@@ -34,7 +34,7 @@ describe('SiglusTemplateConfigureSectionController', function() {
             COLUMN_SOURCES = $injector.get('COLUMN_SOURCES');
             $controller = $injector.get('$controller');
             MAX_COLUMN_DESCRIPTION_LENGTH = $injector.get('MAX_COLUMN_DESCRIPTION_LENGTH');
-            MAX_ADD_LENGTH = $injector.get('MAX_ADD_LENGTH');
+            SIGLUS_MAX_ADD_LENGTH = $injector.get('SIGLUS_MAX_ADD_LENGTH');
             notificationService = $injector.get('notificationService');
             templateValidator = $injector.get('templateValidator');
         });
@@ -179,8 +179,8 @@ describe('SiglusTemplateConfigureSectionController', function() {
             });
         });
 
-        it('should not add column is added column exceed MAX_ADD_LENGTH', function() {
-            for (var i = 0; i < MAX_ADD_LENGTH; i++) {
+        it('should not add column is added column exceed SIGLUS_MAX_ADD_LENGTH', function() {
+            for (var i = 0; i < SIGLUS_MAX_ADD_LENGTH; i++) {
                 vm.section.columns.push({
                     columnDefinition: {}
                 });
@@ -291,8 +291,8 @@ describe('SiglusTemplateConfigureSectionController', function() {
             expect(vm.overMaxColumnsLength()).toBe(false);
         });
 
-        it('should return true if added column exceed MAX_ADD_LENGTH', function() {
-            for (var i = 0; i < MAX_ADD_LENGTH; i++) {
+        it('should return true if added column exceed SIGLUS_MAX_ADD_LENGTH', function() {
+            for (var i = 0; i < SIGLUS_MAX_ADD_LENGTH; i++) {
                 vm.section.columns.push({
                     columnDefinition: {}
                 });
