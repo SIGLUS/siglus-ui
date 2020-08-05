@@ -21,10 +21,10 @@
         .module('requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
-    controller.$inject = ['SECTION_TYPES', 'COLUMN_SOURCES', 'MAX_INTEGER_VALUE', 'siglusTemplateConfigureService',
-        'selectProductsModalService', 'messageService', 'requisitionUtils'];
+    controller.$inject = ['SIGLUS_SECTION_TYPES', 'COLUMN_SOURCES', 'MAX_INTEGER_VALUE',
+        'siglusTemplateConfigureService', 'selectProductsModalService', 'messageService', 'requisitionUtils'];
 
-    function controller(SECTION_TYPES, COLUMN_SOURCES, MAX_INTEGER_VALUE, siglusTemplateConfigureService,
+    function controller(SIGLUS_SECTION_TYPES, COLUMN_SOURCES, MAX_INTEGER_VALUE, siglusTemplateConfigureService,
                         selectProductsModalService, messageService, requisitionUtils) {
 
         var vm = this;
@@ -38,8 +38,10 @@
         vm.removeRegimen = removeRegimen;
 
         function onInit() {
-            vm.regimenSection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.REGIMEN);
-            vm.summarySection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SUMMARY);
+            vm.regimenSection =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.REGIMEN);
+            vm.summarySection =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
             enhanceLineItems(vm.regimenLineItems, vm.regimenSection);
             enhanceLineItems(vm.regimenDispatchLineItems, vm.summarySection);
         }

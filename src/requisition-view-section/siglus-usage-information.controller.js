@@ -22,9 +22,10 @@
         .controller('SiglusUsageInformationController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'requisitionValidator',
-        'SECTION_TYPES'];
+        'SIGLUS_SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, requisitionValidator, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, requisitionValidator,
+                        SIGLUS_SECTION_TYPES) {
 
         var vm = this;
 
@@ -65,9 +66,12 @@
         }
 
         function extendLineItems() {
-            var information = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.INFORMATION);
-            var informationColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(information);
-            var service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            var information =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.INFORMATION);
+            var informationColumnsMap =
+                siglusTemplateConfigureService.getSectionColumnsMap(information);
+            var service =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(service);
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);

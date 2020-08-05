@@ -22,9 +22,9 @@
         .controller('KitUsageController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',
-        'SECTION_TYPES'];
+        'SIGLUS_SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SERVICE_TYPES, SIGLUS_SECTION_TYPES) {
 
         var vm = this;
 
@@ -32,9 +32,10 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            var collection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
+            var collection =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.COLLECTION);
             var collectionColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(collection);
-            var service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            var service = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(service);
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, collectionColumnsMap[lineItem.collection]);

@@ -21,9 +21,9 @@
         .module('siglus-admin-template-configure-preview-section')
         .controller('SiglusUsageInformationPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES) {
 
         var vm = this;
 
@@ -38,8 +38,10 @@
         vm.isTotal = siglusColumnUtils.isTotal;
 
         function onInit() {
-            vm.information = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.INFORMATION);
-            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.information =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.INFORMATION);
+            vm.service =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
             vm.products = getProducts(vm.information);
             vm.monthOrYearColspan = vm.products.length + 1;
         }
