@@ -38,8 +38,8 @@
             var deferred = $q.defer();
 
             openlmisModalService.createDialog({
-                templateUrl: 'openlmis-modal/signature-modal.html',
-                controller: 'SignatureModalController',
+                templateUrl: 'openlmis-modal/siglus-signature-modal.html',
+                controller: 'SiglusSignatureModalController',
                 controllerAs: 'vm',
                 resolve: {
                     confirmMessage: function() {

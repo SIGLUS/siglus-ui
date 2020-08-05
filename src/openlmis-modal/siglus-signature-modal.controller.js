@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc controller
-     * @name openlmis-modal.controller:SignatureModalController
+     * @name openlmis-modal.controller:SiglusSignatureModalController
      *
      * @description
      * Exposes data to the confirmation modal view.
      */
     angular
         .module('openlmis-modal')
-        .controller('SignatureModalController', controller);
+        .controller('SiglusSignatureModalController', controller);
 
     controller.$inject = [
         'message', 'confirmMessage', 'cancelMessage', 'confirmDeferred', 'modalDeferred'
@@ -42,7 +42,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf openlmis-modal.controller:SignatureModalController
+         * @propertyOf openlmis-modal.controller:SiglusSignatureModalController
          * @type {String}
          * @name message
          *
@@ -53,7 +53,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf openlmis-modal.controller:SignatureModalController
+         * @propertyOf openlmis-modal.controller:SiglusSignatureModalController
          * @type {String}
          * @name confirmMessage
          *
@@ -64,7 +64,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf openlmis-modal.controller:SignatureModalController
+         * @propertyOf openlmis-modal.controller:SiglusSignatureModalController
          * @type {String}
          * @name cancelMessage
          *
@@ -75,11 +75,11 @@
 
         /**
          * @ngdoc method
-         * @methodOf openlmis-modal.controller:SignatureModalController
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
          * @name $onInit
          *
          * @description
-         * Initialization method of the SignatureModalController.
+         * Initialization method of the SiglusSignatureModalController.
          */
         function onInit() {
             vm.message = message;
@@ -89,7 +89,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf openlmis-modal.controller:SignatureModalController
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
          * @name confirm
          *
          * @description
@@ -106,7 +106,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf openlmis-modal.controller:SignatureModalController
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
          * @name cancel
          *
          * @description
