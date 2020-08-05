@@ -19,25 +19,25 @@
 
     /**
      * @ngdoc service
-     * @name referencedata-user.InitialInventoryResource
+     * @name referencedata-user.SiglusInitialInventoryResource
      *
      * @description
-     * Implementation of the InitialInventoryResource interface. Communicates with the REST API of the OpenLMIS
+     * Implementation of the SiglusInitialInventoryResource interface. Communicates with the REST API of the OpenLMIS
      * server.
      */
     angular
         .module('referencedata-user')
-        .factory('InitialInventoryResource', InitialInventoryResource);
+        .factory('SiglusInitialInventoryResource', SiglusInitialInventoryResource);
 
-    InitialInventoryResource.$inject = ['openlmisUrlFactory', 'OpenlmisResource', 'classExtender'];
+    SiglusInitialInventoryResource.$inject = ['openlmisUrlFactory', 'OpenlmisResource', 'classExtender'];
 
-    function InitialInventoryResource(openlmisUrlFactory, OpenlmisResource, classExtender) {
+    function SiglusInitialInventoryResource(openlmisUrlFactory, OpenlmisResource, classExtender) {
 
-        classExtender.extend(InitialInventoryResource, OpenlmisResource);
+        classExtender.extend(SiglusInitialInventoryResource, OpenlmisResource);
 
-        return InitialInventoryResource;
+        return SiglusInitialInventoryResource;
 
-        function InitialInventoryResource() {
+        function SiglusInitialInventoryResource() {
             this.super('/api/siglusapi/initialInventory');
         }
     }

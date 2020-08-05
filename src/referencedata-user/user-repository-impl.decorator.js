@@ -35,9 +35,9 @@
         $provide.decorator('UserRepositoryImpl', decorator);
     }
 
-    decorator.$inject = ['$delegate', '$q', 'InitialInventoryResource'];
+    decorator.$inject = ['$delegate', '$q', 'SiglusInitialInventoryResource'];
 
-    function decorator($delegate, $q, InitialInventoryResource) {
+    function decorator($delegate, $q, SiglusInitialInventoryResource) {
 
         $delegate.prototype.get = get;
 
@@ -82,7 +82,7 @@
             }
 
             if (referenceDataUser.homeFacilityId) {
-                return new InitialInventoryResource().query({
+                return new SiglusInitialInventoryResource().query({
                     facility: referenceDataUser.homeFacilityId
                 })
                     .then(function(initialStatus) {

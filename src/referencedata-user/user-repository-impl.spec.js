@@ -29,7 +29,7 @@ describe('UserRepositoryImpl', function() {
             this.AuthUserResource = $injector.get('AuthUserResource');
             this.UserContactDetailsResource = $injector.get('UserContactDetailsResource');
             // SIGLUS-REFACTOR: starts here
-            this.InitialInventoryResource = $injector.get('InitialInventoryResource');
+            this.SiglusInitialInventoryResource = $injector.get('SiglusInitialInventoryResource');
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -52,7 +52,7 @@ describe('UserRepositoryImpl', function() {
         spyOn(this.AuthUserResource.prototype, 'create').andReturn(this.$q.resolve(this.authUser));
         spyOn(this.AuthUserResource.prototype, 'get').andReturn(this.$q.resolve(this.authUser));
         // SIGLUS-REFACTOR: starts here
-        spyOn(this.InitialInventoryResource.prototype, 'query').andReturn(this.$q.resolve({
+        spyOn(this.SiglusInitialInventoryResource.prototype, 'query').andReturn(this.$q.resolve({
             canInitialInventory: false
         }));
         // SIGLUS-REFACTOR: starts here
