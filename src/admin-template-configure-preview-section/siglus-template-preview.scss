@@ -61,24 +61,20 @@
     }
 }
 
-.requisition-regimen .openlmis-table,
 .regimen-preview .openlmis-table {
     word-break: break-all;
     .category {
         font-weight: bold;
     }
     &:first-child {
-        th:first-child {
-            width: 120px;
-        }
         th:nth-child(2) {
             width: 200px;
         }
     }
     th {
-        width: 120px;
+        width: 168px;
         &:first-child {
-            width: 320px;
+            width: 368px;
         }
     }
 }

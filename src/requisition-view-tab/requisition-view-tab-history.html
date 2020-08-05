@@ -59,6 +59,13 @@
                 list="vm.lineItems"
                 paged-list="vm.items"/>
     </div>
+    <siglus-regimen sections="vm.requisition.usageTemplate.regimen"
+                    regimen-line-items="vm.requisition.regimenLineItems"
+                    regimen-dispatch-line-items="vm.requisition.regimenDispatchLineItems"
+                    custom-regimens="vm.requisition.customRegimens"
+                    can-edit="false"
+                    ng-if="vm.requisition.template.extension.enableRegimen && !vm.requisition.emergency"
+    ></siglus-regimen>
     <usage-information sections="vm.requisition.usageTemplate.usageInformation"
                        line-items="vm.requisition.usageInformationLineItems"
                        processing-period-end-date="vm.requisition.processingPeriod.endDate"

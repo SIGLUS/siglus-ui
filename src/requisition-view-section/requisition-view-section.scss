@@ -15,3 +15,21 @@
     }
 }
 
+.requisition-regimen .openlmis-table {
+    word-break: break-all;
+    .category {
+        font-weight: bold;
+    }
+    &:first-child {
+        th:nth-child(2) {
+            width: 200px;
+        }
+    }
+    th {
+        width: 180px;
+        &:first-child {
+            width: 380px;
+        }
+    }
+}
+
