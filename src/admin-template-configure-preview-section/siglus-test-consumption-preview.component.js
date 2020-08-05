@@ -19,11 +19,11 @@
 
     angular
         .module('admin-template-configure-preview-section')
-        .component('testConsumptionPreview', {
+        .component('siglusTestConsumptionPreview', {
             bindings: {
                 sections: '<'
             },
-            controller: 'TestConsumptionPreviewController',
+            controller: 'SiglusTestConsumptionPreviewController',
             controllerAs: 'vm',
             templateUrl: 'admin-template-configure-preview-section/siglus-test-consumption-preview.html'
         });
