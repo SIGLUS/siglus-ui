@@ -30,12 +30,14 @@
 
     SiglusTemplateConfigureSectionController.$inject = [
         '$scope', 'messageService', 'templateValidator', 'siglusColumnUtils', 'COLUMN_SOURCES',
-        'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'siglusTemplateConfigureService', 'notificationService'
+        'MAX_COLUMN_DESCRIPTION_LENGTH', 'SIGLUS_MAX_ADD_LENGTH', 'siglusTemplateConfigureService',
+        'notificationService'
     ];
 
     function SiglusTemplateConfigureSectionController($scope, messageService, templateValidator, siglusColumnUtils,
-                                                      COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
-                                                      siglusTemplateConfigureService, notificationService) {
+                                                      COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH,
+                                                      SIGLUS_MAX_ADD_LENGTH, siglusTemplateConfigureService,
+                                                      notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -135,7 +137,7 @@
         function setDefaultName(column) {
             var defaultName = 'newColumn';
             var i = 0;
-            while (vm.columnMap[defaultName + i] && i < MAX_ADD_LENGTH) {
+            while (vm.columnMap[defaultName + i] && i < SIGLUS_MAX_ADD_LENGTH) {
                 i++;
             }
             column.name = defaultName + i;
@@ -175,7 +177,7 @@
             var addedColumns = _.filter(vm.section.columns, function(column) {
                 return !column.columnDefinition.id;
             });
-            return addedColumns.length >= MAX_ADD_LENGTH;
+            return addedColumns.length >= SIGLUS_MAX_ADD_LENGTH;
         }
 
         function sourceChanged(column) {
