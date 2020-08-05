@@ -33,14 +33,14 @@
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
-        'messageService'
+        'messageService', 'orderService'
         // #400: ends here
     ];
     // #287: ends here
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
                                  $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
-                                 messageService) {
+                                 messageService, orderService) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -126,42 +126,49 @@
                 }
                 // #287: ends here
                 // #400: Facility user partially fulfill an order and create sub-order for an requisition
-                var totalPartialLineItems = getPartialFulfilledLineItems(shipment, unskippedLineItems);
-                if (totalPartialLineItems) {
-                    return confirmService.confirm(messageService.get('shipmentView.confirmPartialFulfilled.message', {
-                        totalPartialLineItems: totalPartialLineItems
-                    }), 'shipmentView.confirmPartialFulfilled.createSuborder')
+                return orderService.getStatus(this.order.id).then(function(result) {
+                    if (result.suborder && result.closed) {
+                        return alertService.error('shipmentView.closed');
+                    }
+                    var totalPartialLineItems = getPartialFulfilledLineItems(shipment, unskippedLineItems);
+                    if (!result.closed && totalPartialLineItems) {
+                        return confirmService.confirm(
+                            messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                                totalPartialLineItems: totalPartialLineItems
+                            }), 'shipmentView.confirmPartialFulfilled.createSuborder'
+                        )
+                            .then(function() {
+                                loadingModalService.open();
+                                return shipment.createSuborder()
+                                    .then(function() {
+                                        notificationService.success('shipmentView.suborderHasBeenConfirmed');
+                                        stateTrackerService.goToPreviousState('openlmis.orders.view');
+                                    })
+                                    .catch(function() {
+                                        notificationService.error('shipmentView.failedToCreateSuborder');
+                                        loadingModalService.close();
+                                    });
+                            });
+                    }
+                    // #400: ends here
+                    return confirmService.confirm(
+                        'shipmentView.confirmShipment.question',
+                        'shipmentView.confirmShipment'
+                    )
                         .then(function() {
                             loadingModalService.open();
-                            return shipment.createSuborder()
+
+                            return originalConfirm.apply(shipment)
                                 .then(function() {
-                                    notificationService.success('shipmentView.suborderHasBeenConfirmed');
+                                    notificationService.success('shipmentView.shipmentHasBeenConfirmed');
                                     stateTrackerService.goToPreviousState('openlmis.orders.view');
                                 })
                                 .catch(function() {
-                                    notificationService.error('shipmentView.failedToCreateSuborder');
+                                    notificationService.error('shipmentView.failedToConfirmShipment');
                                     loadingModalService.close();
                                 });
                         });
-                }
-                // #400: ends here
-                return confirmService.confirm(
-                    'shipmentView.confirmShipment.question',
-                    'shipmentView.confirmShipment'
-                )
-                    .then(function() {
-                        loadingModalService.open();
-
-                        return originalConfirm.apply(shipment)
-                            .then(function() {
-                                notificationService.success('shipmentView.shipmentHasBeenConfirmed');
-                                stateTrackerService.goToPreviousState('openlmis.orders.view');
-                            })
-                            .catch(function() {
-                                notificationService.error('shipmentView.failedToConfirmShipment');
-                                loadingModalService.close();
-                            });
-                    });
+                });
             };
         }
 

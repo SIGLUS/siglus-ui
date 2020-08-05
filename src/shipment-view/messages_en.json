@@ -14,5 +14,6 @@
   "shipmentView.suborderHasBeenConfirmed": "Sub-order has been created",
   "shipmentView.failedToCreateSuborder": "Failed to create sub-order",
   "shipmentView.requisitionNumber": "Requisition number",
-  "shipmentView.allLineItemsNotFulfilled": "You cannot confirm the shipment if the shipment doesn't have any line item"
+  "shipmentView.allLineItemsNotFulfilled": "You cannot confirm the shipment if the shipment doesn't have any line item",
+  "shipmentView.closed": "The order was closed, You cannot fulfill a closed order. Please back to the order list and refresh the list."
 }
