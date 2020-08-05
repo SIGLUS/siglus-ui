@@ -20,15 +20,17 @@
     .category {
         font-weight: bold;
     }
-    &:first-child {
-        th:nth-child(2) {
-            width: 200px;
-        }
-    }
     th {
+        box-sizing: content-box;
+        width: 152px;
+    }
+    &:first-child th:nth-child(2) {
         width: 180px;
+    }
+    &:nth-child(2) th {
+        width: 161px;
         &:first-child {
-            width: 380px;
+            width: 389px;
         }
     }
 }
