@@ -18,14 +18,14 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
+        .module('siglus-admin-template-configure-preview-section')
         .component('siglusRegimenPreview', {
             bindings: {
                 sections: '<'
             },
             controller: 'SiglusRegimenPreviewController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-preview-section/siglus-regimen-preview.html'
+            templateUrl: 'siglus-admin-template-configure-preview-section/siglus-regimen-preview.html'
         });
 
 })();

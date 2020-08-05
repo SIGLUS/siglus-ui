@@ -17,18 +17,19 @@
 
     'use strict';
 
-    /**
-     * @module admin-template-configure-preview-section
-     *
-     * @description
-     * Provides base admin-template-configure-preview-section state and service/factory/controller
-     * for retrieving templates from the OpenLMIS server.
-     */
-    angular.module('admin-template-configure-preview-section', [
-        'requisition-constants',
-        'admin-template',
-        'openlmis-i18n',
-        'siglus-admin-template-configure-column-setting'
-    ]);
+    angular
+        .module('siglus-admin-template-configure-preview-section')
+        .controller('siglusPatientPreviewController', controller);
+
+    controller.$inject = ['siglusColumnUtils'];
+
+    function controller(siglusColumnUtils) {
+
+        var vm = this;
+
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
+        vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
+    }
 
 })();

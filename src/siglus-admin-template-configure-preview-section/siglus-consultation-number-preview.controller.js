@@ -18,18 +18,24 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
-        .controller('siglusPatientPreviewController', controller);
+        .module('siglus-admin-template-configure-preview-section')
+        .controller('SiglusConsultationNumberPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService',
+        'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
+        vm.$onInit = onInit;
         vm.isUserInput = siglusColumnUtils.isUserInput;
         vm.isTotal = siglusColumnUtils.isTotal;
         vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
+
+        function onInit() {
+            vm.consultationNumber = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);
+        }
     }
 
 })();

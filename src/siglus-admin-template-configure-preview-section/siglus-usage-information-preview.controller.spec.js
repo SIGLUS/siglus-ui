@@ -13,13 +13,13 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('SiglusKitUsagePreviewController', function() {
+describe('SiglusUsageInformationPreviewController', function() {
 
-    var vm, collection, service;
+    var vm, information, service;
     var $controller, COLUMN_SOURCES, messageService, siglusColumnUtils;
 
     beforeEach(function() {
-        module('admin-template-configure-preview-section');
+        module('siglus-admin-template-configure-preview-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
@@ -27,13 +27,14 @@ describe('SiglusKitUsagePreviewController', function() {
             messageService = $injector.get('messageService');
             siglusColumnUtils = $injector.get('siglusColumnUtils');
         });
-        collection = {
-            name: 'collection',
+        information = {
+            name: 'information',
             source: COLUMN_SOURCES.USER_INPUT,
             columns: []
         };
         service = {
             name: 'service',
+            source: COLUMN_SOURCES.USER_INPUT,
             columns: []
         };
 
@@ -41,20 +42,20 @@ describe('SiglusKitUsagePreviewController', function() {
         spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
         spyOn(messageService, 'get').andReturn('User input');
 
-        vm = $controller('SiglusKitUsagePreviewController');
+        vm = $controller('SiglusUsageInformationPreviewController');
     });
 
     describe('onInit', function() {
 
-        it('should set collection', function() {
-            vm.sections = [collection, service];
+        it('should set information', function() {
+            vm.sections = [information, service];
             vm.$onInit();
 
-            expect(vm.collection).toEqual(collection);
+            expect(vm.information).toEqual(information);
         });
 
         it('should set service', function() {
-            vm.sections = [collection, service];
+            vm.sections = [information, service];
             vm.$onInit();
 
             expect(vm.service).toEqual(service);
@@ -63,15 +64,8 @@ describe('SiglusKitUsagePreviewController', function() {
 
     describe('isUserInput', function() {
 
-        it('should isUserInput of siglusColumnUtils be called with collection if service name if HF', function() {
-            service.name = 'HF';
-            vm.isUserInput(service, collection);
-
-            expect(siglusColumnUtils.isUserInput).toHaveBeenCalledWith(collection);
-        });
-
         it('should isUserInput of siglusColumnUtils be called with service', function() {
-            vm.isUserInput(service, collection);
+            vm.isUserInput(service);
 
             expect(siglusColumnUtils.isUserInput).toHaveBeenCalledWith(service);
         });
@@ -79,9 +73,8 @@ describe('SiglusKitUsagePreviewController', function() {
 
     describe('columnDisplayName', function() {
 
-        it('getLabel should be called with user input if service name if HF', function() {
-            service.name = 'HF';
-            vm.columnDisplayName(service, collection);
+        it('should called getLabel with user input when called columnDisplayName', function() {
+            vm.columnDisplayName(service);
 
             expect(COLUMN_SOURCES.getLabel).toHaveBeenCalledWith(COLUMN_SOURCES.USER_INPUT);
             expect(messageService.get).toHaveBeenCalledWith('requisitionConstants.userInput');

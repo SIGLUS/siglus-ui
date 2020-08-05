@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
+        .module('siglus-admin-template-configure-preview-section')
         .controller('SiglusRegimenPreviewController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'siglusTemplateConfigureService', 'COLUMN_SOURCES'];

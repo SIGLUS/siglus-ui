@@ -18,39 +18,40 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
-        .controller('SiglusKitUsagePreviewController', controller);
+        .module('siglus-admin-template-configure-preview-section')
+        .controller('SiglusUsageInformationPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',
-        'SECTION_TYPES'];
+    controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SECTION_TYPES) {
 
         var vm = this;
 
-        vm.collection = undefined;
+        vm.information = undefined;
         vm.service = undefined;
+        vm.products = undefined;
+        vm.monthOrYearColspan = undefined;
 
         vm.$onInit = onInit;
-        vm.columnDisplayName = columnDisplayName;
-        vm.isUserInput = isUserInput;
+        vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
 
         function onInit() {
-            vm.collection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
+            vm.information = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.INFORMATION);
             vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.products = getProducts(vm.information);
+            vm.monthOrYearColspan = vm.products.length + 1;
         }
 
-        function getColumn(service, collection) {
-            return service.name === SIGLUS_SERVICE_TYPES.HF ? collection : service;
-        }
-
-        function isUserInput(service, collection) {
-            return siglusColumnUtils.isUserInput(getColumn(service, collection));
-        }
-
-        function columnDisplayName(service, collection) {
-            var column = getColumn(service, collection);
-            return siglusColumnUtils.columnDisplayName(column);
+        function getProducts(information) {
+            var result = [];
+            information.columns.forEach(function(column) {
+                if (column.isDisplayed) {
+                    result = result.concat(['Product 1', 'Product 2']);
+                }
+            });
+            return result;
         }
     }
 
