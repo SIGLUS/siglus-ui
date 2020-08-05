@@ -19,7 +19,7 @@
 
     angular
         .module('siglus-admin-template-configure-section')
-        .component('templateConfigureSection', {
+        .component('siglusTemplateConfigureSection', {
             bindings: {
                 section: '<',
                 tags: '<?',
