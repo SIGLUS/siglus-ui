@@ -18,13 +18,13 @@
     'use strict';
 
     /**
-     * @module admin-template-configure-section
+     * @module siglus-admin-template-configure-section
      *
      * @description
-     * Provides base admin-template-configure-section state and service/factory/controller
+     * Provides base siglus-admin-template-configure-section state and service/factory/controller
      * for retrieving templates from the OpenLMIS server.
      */
-    angular.module('admin-template-configure-section', [
+    angular.module('siglus-admin-template-configure-section', [
         'requisition-constants',
         'admin-template',
         'dndLists',

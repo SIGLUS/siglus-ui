@@ -17,19 +17,14 @@
 
     'use strict';
 
+    /**
+    * @ngdoc object
+    * @name siglus-admin-template-configure-section.SIGLUS_MAX_ADD_LENGTH
+    *
+    * @description
+    * This is constant for max column items length.
+    */
     angular
-        .module('admin-template-configure-section')
-        .component('templateConfigureSection', {
-            bindings: {
-                section: '<',
-                tags: '<?',
-                onAddColumn: '<',
-                editHeader: '<?',
-                onRemoveGroup: '<?'
-            },
-            controller: 'SiglusTemplateConfigureSectionController',
-            controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-section/siglus-admin-template-configure-section.html'
-        });
-
+        .module('siglus-admin-template-configure-section')
+        .constant('SIGLUS_MAX_ADD_LENGTH', 10);
 })();
