@@ -109,13 +109,13 @@
             return vm.requisition.$save();
         }
 
-        function validateTotalOfRegiment() {
-            vm.commentsRequired = !requisitionValidator.validateTotalOfRegiment(requisition);
+        function validateTotalEqualOfRegimen() {
+            vm.commentsRequired = !requisitionValidator.validateTotalEqualOfRegimen(requisition);
             vm.forceOpen = vm.commentsRequired;
         }
 
         function submitRnr() {
-            validateTotalOfRegiment();
+            validateTotalEqualOfRegimen();
             if (requisitionValidator.validateUsageReport(requisition)) {
                 signatureModalService.confirm('requisitionView.usageReport.submit.confirmWithSignature')
                     .then(function(signature) {
@@ -161,7 +161,7 @@
                 'requisitionView.authorize.confirm',
                 'requisitionView.authorize.label'
             ).then(function() {
-                validateTotalOfRegiment();
+                validateTotalEqualOfRegimen();
                 if (requisitionValidator.validateUsageReport(requisition)) {
                     signatureModalService.confirm('requisitionView.usageReport.submit.confirmWithSignature')
                         .then(function(signature) {
@@ -202,7 +202,7 @@
         }
 
         function submitAndAuthorizeRnr() {
-            validateTotalOfRegiment();
+            validateTotalEqualOfRegimen();
             if (requisitionValidator.validateUsageReport(requisition)) {
                 signatureModalService.confirm('requisitionView.usageReport.submit.confirmWithSignature')
                     .then(function(signature) {
@@ -269,7 +269,7 @@
                 'requisitionView.approve.confirm',
                 'requisitionView.approve.label'
             ).then(function() {
-                validateTotalOfRegiment();
+                validateTotalEqualOfRegimen();
                 if (requisitionValidator.validateUsageReport(requisition)) {
                     var loadingPromise = loadingModalService.open();
                     vm.requisition.$save().then(function() {

@@ -39,7 +39,7 @@
     function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
                        siglusColumnUtils) {
         $delegate.validateUsageReport = validateUsageReport;
-        $delegate.validateTotalOfRegiment = validateTotalOfRegiment;
+        $delegate.validateTotalEqualOfRegimen = validateTotalEqualOfRegimen;
         $delegate.isEmptyTable = isEmptyTable;
         $delegate.validateRapidTestReport = validateRapidTestReport;
         $delegate.validateARVPatientTotal = validateARVPatientTotal;
@@ -88,10 +88,28 @@
 
         function validateRegimen(requisition) {
             var valid = true;
-            if (requisition.template.extension.enableRegimen && !requisition.emergency) {
+            if (requisition.template.extension.enableRegimen && !requisition.emergency
+                && requisition.regimenLineItems.length) {
                 valid = validateBasicLineItems(requisition.regimenLineItems) && valid;
                 valid = validateBasicLineItems(requisition.regimenDispatchLineItems) && valid;
+                valid = validateTotalEqualOfRegimen(requisition) && valid;
+                valid = validateTotalOfRegimen(requisition) && valid;
             }
+            return valid;
+        }
+
+        function validateTotalOfRegimen(requisition) {
+            var valid = true;
+            var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
+            var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
+            valid = !_.some(regimenColumns, function(column) {
+                return requisitionUtils
+                    .getBasicLineItemsTotal(requisition.regimenLineItems, column) > MAX_INTEGER_VALUE;
+            }) && valid;
+            valid = !_.some(summaryColumns, function(column) {
+                return requisitionUtils
+                    .getBasicLineItemsTotal(requisition.regimenDispatchLineItems, column) > MAX_INTEGER_VALUE;
+            }) && valid;
             return valid;
         }
 
@@ -369,7 +387,7 @@
             if (requisition.template.enableRapidTestServiceModule) {
                 isValide = validateRapidTestReport(requisition) && isValide;
             }
-            isValide = validateTotalOfRegiment(requisition) && isValide;
+            isValide = validateTotalEqualOfRegimen(requisition) && isValide;
             return isValide;
         }
 
@@ -545,27 +563,27 @@
             return isValid;
         }
 
-        function validateTotalOfRegiment(requisition) {
+        function validateTotalEqualOfRegimen(requisition) {
             var isValide = true;
-            if (!requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages) &&
-                requisition.template.enableARVTherapeuticLinesModule &&
-                requisition.template.enableARVTherapeuticRegimentModule) {
-                var totalPatientsOfRegiment = requisitionUtils.calculateTotal(
-                    requisition.regimenLineItems, 'hfPatients'
-                );
-                var totalPharmacyOfRegiment = requisitionUtils.calculateTotal(
-                    requisition.regimenLineItems, 'chwPatients'
-                );
-                var totalPatientsOfRegimentCategory = requisitionUtils.calculateTotal(
-                    requisition.regimenDispatchLineItems, 'hfPatients'
-                );
-                var totalPharmacyOfRegimentCategory = requisitionUtils.calculateTotal(
-                    requisition.regimenDispatchLineItems, 'chwPatients'
-                );
-                isValide = (totalPatientsOfRegiment === totalPatientsOfRegimentCategory) &&
-                    (totalPharmacyOfRegiment === totalPharmacyOfRegimentCategory);
+            if (!requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages)) {
+                var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
+                var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
+                var len = Math.min(regimenColumns.length, summaryColumns.length);
+                for (var i = 0; i < len; i++) {
+                    var regimenTotal = requisitionUtils
+                        .getBasicLineItemsTotal(requisition.regimenLineItems, regimenColumns[i]);
+                    var summaryTotal = requisitionUtils
+                        .getBasicLineItemsTotal(requisition.regimenDispatchLineItems, regimenColumns[i]);
+                    if (regimenTotal !== summaryTotal) {
+                        isValide = false;
+                    }
+                }
             }
             return isValide;
+        }
+
+        function getLineItemsColumns(lineItems) {
+            return _.sortBy(_.values(_.first(lineItems).columns), 'displayOrder');
         }
 
         function validateARVPatientTotal(item) {

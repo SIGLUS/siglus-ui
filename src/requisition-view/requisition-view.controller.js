@@ -366,6 +366,13 @@
             return vm.requisition.$save();
         }
 
+        // #441: Facility user can create requisition with regimen section
+        function validateTotalEqualOfRegimen() {
+            vm.commentsRequired = !requisitionValidator.validateTotalEqualOfRegimen(requisition);
+            vm.forceOpen = vm.commentsRequired;
+        }
+        // #441: ends here
+
         /**
          * @ngdoc method
          * @methodOf requisition-view.controller:RequisitionViewController
@@ -379,6 +386,7 @@
          */
         function submitRnr() {
             // #431: alert before signature pop up
+            validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function(signature) {
                     if (!vm.requisition.extraData.signaure) {
@@ -428,6 +436,7 @@
          */
         function authorizeRnr() {
             // #431: alert before signature pop up
+            validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
                     .then(function(signature) {
@@ -476,6 +485,7 @@
          */
         function submitAndAuthorizeRnr() {
             // #431: alert before signature pop up
+            validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
                     .then(function(signature) {
@@ -558,6 +568,7 @@
          */
         // #231: there is no signature modal when approve
         function approveRnr() {
+            validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 signatureModalService.confirm('requisitionView.approve.confirmWithSignature')
                     .then(function(signature) {

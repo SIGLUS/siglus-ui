@@ -7,7 +7,13 @@
     <button ng-click="vm.updateRequisition();">{{ 'requisitionView.update' | message }}</button>
 </p>
 <ng-include src="'requisition-view/header.html'"></ng-include>
-<status-messages requisition="vm.requisition"></status-messages>
+<!--#441: Facility user can create requisition with regimen section-->
+<status-messages
+        requisition="vm.requisition"
+        comments-required="vm.commentsRequired"
+        force-open="vm.forceOpen">
+</status-messages>
+<!--#441: ends here-->
 <!-- SIGLUS-REFACTOR: starts here -->
 <!--<nav>-->
 <!--    <ul>-->
