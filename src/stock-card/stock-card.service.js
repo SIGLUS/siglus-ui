@@ -59,6 +59,7 @@
         // SIGLUS-REFACTOR: ends here
         this.getStockCard = getStockCard;
         this.print = print;
+        this.printByProduct = printByProduct;
 
         /**
          * @ngdoc method
@@ -78,7 +79,12 @@
         }
 
         function print(stockCardId) {
-            var url = stockmanagementUrlFactory('/api/stockCards/' + stockCardId + '/print');
+            var url = stockmanagementUrlFactory('/api/siglusapi/stockCards/' + stockCardId + '/print');
+            $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+        }
+
+        function printByProduct(orderableId) {
+            var url = stockmanagementUrlFactory('/api/siglusapi/stockCards/' + orderableId + '/print?isProduct=true');
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
 

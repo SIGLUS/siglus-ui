@@ -62,7 +62,8 @@
          *
          */
         vm.print = function() {
-            stockCardService.print(vm.stockCard.id);
+            $state.params.isViewProductCard ? stockCardService.printByProduct(vm.stockCard.orderable.id) :
+                stockCardService.print(vm.stockCard.id);
         };
 
         // #103: archive product

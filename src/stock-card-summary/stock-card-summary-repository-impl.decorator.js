@@ -33,11 +33,14 @@
         $provide.decorator('StockCardSummaryRepositoryImpl', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'LotResource', 'SiglusOrderableResource', 'SiglusStockCardSummaryResource'];
+    decorator.$inject = ['$delegate', 'LotResource', 'SiglusOrderableResource', 'SiglusStockCardSummaryResource',
+        '$window', 'accessTokenFactory', 'stockmanagementUrlFactory'];
 
-    function decorator($delegate,  LotResource, SiglusOrderableResource, SiglusStockCardSummaryResource) {
+    function decorator($delegate,  LotResource, SiglusOrderableResource, SiglusStockCardSummaryResource, $window,
+                       accessTokenFactory, stockmanagementUrlFactory) {
 
         StockCardSummaryRepositoryImpl.prototype = $delegate.prototype;
+        StockCardSummaryRepositoryImpl.prototype.print = print;
 
         return StockCardSummaryRepositoryImpl;
 
@@ -54,6 +57,25 @@
             this.LotResource = new LotResource();
             this.orderableResource = new SiglusOrderableResource();
             this.resource = new SiglusStockCardSummaryResource();
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-card-summary.StockCardSummaryRepositoryImpl
+         * @name print
+         *
+         * @description
+         * Opens window with Stock Card Summaries.
+         *
+         * @param {string} program  the program UUID the stock cards will be retrieved
+         * @param {string} facility the facility UUID the stock cards will be retrieved
+         */
+        function print(program, facility) {
+            var sohPrintUrl = '/api/siglusapi/stockCardSummaries/print',
+                params = 'program=' + program + '&' + 'facility=' + facility;
+            $window.open(accessTokenFactory.addAccessToken(
+                stockmanagementUrlFactory(sohPrintUrl + '?' + params)
+            ), '_blank');
         }
 
     }
