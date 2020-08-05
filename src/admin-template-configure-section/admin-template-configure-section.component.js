@@ -27,9 +27,9 @@
                 editHeader: '<?',
                 onRemoveGroup: '<?'
             },
-            controller: 'TemplateConfigureSectionController',
+            controller: 'SiglusTemplateConfigureSectionController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-section/admin-template-configure-section.html'
+            templateUrl: 'admin-template-configure-section/siglus-admin-template-configure-section.html'
         });
 
 })();
