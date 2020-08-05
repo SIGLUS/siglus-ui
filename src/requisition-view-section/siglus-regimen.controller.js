@@ -82,8 +82,8 @@
         }
 
         function getColumns() {
-            var columns = _.filter(vm.regimenSection.columns, {
-                source: COLUMN_SOURCES.USER_INPUT
+            var columns = _.filter(vm.regimenSection.columns, function(column) {
+                return column.source === COLUMN_SOURCES.USER_INPUT && column.isDisplayed;
             });
             return angular.copy(_.indexBy(columns, 'name'));
         }
