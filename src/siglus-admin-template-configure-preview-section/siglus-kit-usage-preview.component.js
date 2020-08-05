@@ -18,14 +18,14 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
-        .component('siglusUsageInformationPreview', {
+        .module('siglus-admin-template-configure-preview-section')
+        .component('siglusKitUsagePreview', {
             bindings: {
                 sections: '<'
             },
-            controller: 'SiglusUsageInformationPreviewController',
+            controller: 'SiglusKitUsagePreviewController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-preview-section/siglus-usage-information-preview.html'
+            templateUrl: 'siglus-admin-template-configure-preview-section/siglus-kit-usage-preview.html'
         });
 
 })();

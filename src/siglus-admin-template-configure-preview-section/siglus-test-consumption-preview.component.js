@@ -18,14 +18,14 @@
     'use strict';
 
     angular
-        .module('admin-template-configure-preview-section')
-        .component('siglusProductPreview', {
+        .module('siglus-admin-template-configure-preview-section')
+        .component('siglusTestConsumptionPreview', {
             bindings: {
-                columnsMap: '<'
+                sections: '<'
             },
-            controller: 'SiglusProductPreviewController',
+            controller: 'SiglusTestConsumptionPreviewController',
             controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-preview-section/siglus-product-preview.html'
+            templateUrl: 'siglus-admin-template-configure-preview-section/siglus-test-consumption-preview.html'
         });
 
 })();

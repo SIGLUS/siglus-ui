@@ -17,15 +17,18 @@
 
     'use strict';
 
-    angular
-        .module('admin-template-configure-preview-section')
-        .component('siglusKitUsagePreview', {
-            bindings: {
-                sections: '<'
-            },
-            controller: 'SiglusKitUsagePreviewController',
-            controllerAs: 'vm',
-            templateUrl: 'admin-template-configure-preview-section/siglus-kit-usage-preview.html'
-        });
+    /**
+     * @module siglus-admin-template-configure-preview-section
+     *
+     * @description
+     * Provides base siglus-admin-template-configure-preview-section state and service/factory/controller
+     * for retrieving templates from the OpenLMIS server.
+     */
+    angular.module('siglus-admin-template-configure-preview-section', [
+        'requisition-constants',
+        'admin-template',
+        'openlmis-i18n',
+        'siglus-admin-template-configure-column-setting'
+    ]);
 
 })();

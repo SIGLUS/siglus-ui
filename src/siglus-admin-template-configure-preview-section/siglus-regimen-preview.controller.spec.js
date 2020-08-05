@@ -19,7 +19,7 @@ describe('SiglusRegimenPreviewController', function() {
     var $controller, COLUMN_SOURCES;
 
     beforeEach(function() {
-        module('admin-template-configure-preview-section');
+        module('siglus-admin-template-configure-preview-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');

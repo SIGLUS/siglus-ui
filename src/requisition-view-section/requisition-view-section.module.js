@@ -22,7 +22,7 @@
         'admin-template-configure-preview-section',
         'siglus-add-regimen-model',
         'siglus-admin-template-configure-column-setting',
-        'admin-template-configure-preview-section'
+        'siglus-admin-template-configure-preview-section'
     ]);
 
 })();

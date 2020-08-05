@@ -17,7 +17,7 @@ describe('siglusTemplateConfigureService', function() {
 
     beforeEach(function() {
         module('siglus-admin-template-configure-column-setting');
-        module('admin-template-configure-preview-section');
+        module('siglus-admin-template-configure-preview-section');
 
         inject(function($injector) {
             this.siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');

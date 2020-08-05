@@ -29,7 +29,7 @@
         'openlmis-rights',
         'requisition-constants',
         'admin-template-configure-section',
-        'admin-template-configure-preview-section'
+        'siglus-admin-template-configure-preview-section'
     ]);
 
 })();
