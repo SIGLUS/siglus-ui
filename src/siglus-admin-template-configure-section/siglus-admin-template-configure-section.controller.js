@@ -19,13 +19,13 @@
 
     /**
      * @ngdoc controller
-     * @name admin-template-configure-section.controller:SiglusTemplateConfigureSectionController
+     * @name siglus-admin-template-configure-section.controller:SiglusTemplateConfigureSectionController
      *
      * @description
      * Controller for template view page.
      */
     angular
-        .module('admin-template-configure-section')
+        .module('siglus-admin-template-configure-section')
         .controller('SiglusTemplateConfigureSectionController', SiglusTemplateConfigureSectionController);
 
     SiglusTemplateConfigureSectionController.$inject = [

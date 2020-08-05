@@ -26,7 +26,7 @@ describe('SiglusTemplateConfigureSectionController', function() {
         notificationService, templateValidator;
 
     beforeEach(function() {
-        module('admin-template-configure-section');
+        module('siglus-admin-template-configure-section');
 
         inject(function($injector) {
             $rootScope = $injector.get('$rootScope');

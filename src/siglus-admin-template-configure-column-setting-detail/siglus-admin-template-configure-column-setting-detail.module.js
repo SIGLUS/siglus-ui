@@ -29,7 +29,7 @@
         'ui.router',
         'openlmis-rights',
         'requisition-constants',
-        'admin-template-configure-section'
+        'siglus-admin-template-configure-section'
     ]);
 
 })();

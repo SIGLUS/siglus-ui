@@ -25,7 +25,7 @@
      * for retrieving templates from the OpenLMIS server.
      */
     angular.module('siglus-template-configure-group', [
-        'admin-template-configure-section'
+        'siglus-admin-template-configure-section'
     ]);
 
 })();
