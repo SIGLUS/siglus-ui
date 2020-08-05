@@ -33,7 +33,7 @@
         <input type="checkbox" ng-model="vm.template.extension.enableRapidTestConsumption"/>{{'adminProgramTemplate.testConsumption' | message}}
         <a ng-show="vm.template.extension.enableRapidTestConsumption" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
-    <test-consumption-preview sections="vm.template.testConsumption" ng-show="vm.template.extension.enableRapidTestConsumption"/>
+    <siglus-test-consumption-preview sections="vm.template.testConsumption" ng-show="vm.template.extension.enableRapidTestConsumption"/>
 </div>
 <div class="openlmis-toolbar">
     <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.confirm' | message}}"/>

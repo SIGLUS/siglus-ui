@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('TestConsumptionPreviewController', function() {
+describe('SiglusTestConsumptionPreviewController', function() {
 
     var vm, testProject, testOutcome, service;
     var $controller, COLUMN_SOURCES, messageService, siglusColumnUtils;
@@ -76,7 +76,7 @@ describe('TestConsumptionPreviewController', function() {
         spyOn(COLUMN_SOURCES, 'getLabel').andReturn('requisitionConstants.userInput');
         spyOn(messageService, 'get').andReturn('User input');
 
-        vm = $controller('TestConsumptionPreviewController');
+        vm = $controller('SiglusTestConsumptionPreviewController');
         vm.sections = [testProject, testOutcome, service];
         vm.$onInit();
     });
