@@ -67,6 +67,9 @@
         font-weight: bold;
     }
     &:first-child {
+        th:first-child {
+            width: 168px;
+        }
         th:nth-child(2) {
             width: 200px;
         }
@@ -78,7 +81,6 @@
         }
     }
 }
-
 
 .requisition-template-admin [class*="-preview"].openlmis-table-container .row .main .toolbar {
     padding-top: 0;

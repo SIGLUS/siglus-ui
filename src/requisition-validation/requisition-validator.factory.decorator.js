@@ -565,7 +565,9 @@
 
         function validateTotalEqualOfRegimen(requisition) {
             var isValide = true;
-            if (!requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages)) {
+            if (!requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages) &&
+                requisition.template.extension.enableRegimen && !requisition.emergency &&
+                requisition.regimenLineItems.length) {
                 var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
                 var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
                 var len = Math.min(regimenColumns.length, summaryColumns.length);
