@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('TemplateConfigureSectionController', function() {
+describe('SiglusTemplateConfigureSectionController', function() {
 
     //tested
     var vm;
@@ -45,7 +45,7 @@ describe('TemplateConfigureSectionController', function() {
             'tag-3'
         ];
 
-        vm = $controller('TemplateConfigureSectionController', {
+        vm = $controller('SiglusTemplateConfigureSectionController', {
             $scope: $scope
         });
         vm.section = {

@@ -19,23 +19,23 @@
 
     /**
      * @ngdoc controller
-     * @name admin-template-configure-section.controller:TemplateConfigureSectionController
+     * @name admin-template-configure-section.controller:SiglusTemplateConfigureSectionController
      *
      * @description
      * Controller for template view page.
      */
     angular
         .module('admin-template-configure-section')
-        .controller('TemplateConfigureSectionController', TemplateConfigureSectionController);
+        .controller('SiglusTemplateConfigureSectionController', SiglusTemplateConfigureSectionController);
 
-    TemplateConfigureSectionController.$inject = [
+    SiglusTemplateConfigureSectionController.$inject = [
         '$scope', 'messageService', 'templateValidator', 'siglusColumnUtils', 'COLUMN_SOURCES',
         'MAX_COLUMN_DESCRIPTION_LENGTH', 'MAX_ADD_LENGTH', 'siglusTemplateConfigureService', 'notificationService'
     ];
 
-    function TemplateConfigureSectionController($scope, messageService, templateValidator, siglusColumnUtils,
-                                                COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
-                                                siglusTemplateConfigureService, notificationService) {
+    function SiglusTemplateConfigureSectionController($scope, messageService, templateValidator, siglusColumnUtils,
+                                                      COLUMN_SOURCES, MAX_COLUMN_DESCRIPTION_LENGTH, MAX_ADD_LENGTH,
+                                                      siglusTemplateConfigureService, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
