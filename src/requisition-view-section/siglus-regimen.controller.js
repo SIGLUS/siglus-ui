@@ -84,8 +84,12 @@
         function getColumns() {
             var columns = _.filter(vm.regimenSection.columns, function(column) {
                 return column.source === COLUMN_SOURCES.USER_INPUT && column.isDisplayed;
+            }).map(function(column) {
+                return angular.merge({}, column, {
+                    id: null
+                });
             });
-            return angular.copy(_.indexBy(columns, 'name'));
+            return _.indexBy(columns, 'name');
         }
 
         function removeRegimen(regime) {
