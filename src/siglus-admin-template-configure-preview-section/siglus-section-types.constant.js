@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc object
-     * @name siglus-admin-template-configure-preview-section.SECTION_TYPES
+     * @name siglus-admin-template-configure-preview-section.SIGLUS_SECTION_TYPES
      *
      * @description
      * This is constant for section types.
      */
     angular
         .module('siglus-admin-template-configure-preview-section')
-        .constant('SECTION_TYPES', type());
+        .constant('SIGLUS_SECTION_TYPES', type());
 
     function type() {
         return {

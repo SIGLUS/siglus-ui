@@ -29,10 +29,10 @@
         .controller('SiglusKitUsageTemplateController', SiglusKitUsageTemplateController);
 
     SiglusKitUsageTemplateController.$inject = ['COLUMN_SOURCES', 'siglusTemplateConfigureService', 'template', 'tags',
-        'SECTION_TYPES'];
+        'SIGLUS_SECTION_TYPES'];
 
     function SiglusKitUsageTemplateController(COLUMN_SOURCES, siglusTemplateConfigureService, template, tags,
-                                              SECTION_TYPES) {
+                                              SIGLUS_SECTION_TYPES) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -47,8 +47,9 @@
             vm.template = template;
             vm.tags = tags;
             vm.collection =
-                siglusTemplateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.COLLECTION);
-            vm.service = siglusTemplateConfigureService.getSectionByName(template.kitUsage, SECTION_TYPES.SERVICE);
+                siglusTemplateConfigureService.getSectionByName(template.kitUsage, SIGLUS_SECTION_TYPES.COLLECTION);
+            vm.service =
+                siglusTemplateConfigureService.getSectionByName(template.kitUsage, SIGLUS_SECTION_TYPES.SERVICE);
         }
 
         function addCollectionColumn() {

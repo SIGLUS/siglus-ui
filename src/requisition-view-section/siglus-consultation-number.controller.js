@@ -21,10 +21,10 @@
         .module('requisition-view-section')
         .controller('SiglusConsultationNumberViewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'siglusTemplateConfigureService',
+    controller.$inject = ['siglusColumnUtils', 'SIGLUS_SECTION_TYPES', 'siglusTemplateConfigureService',
         'requisitionValidator', 'messageService'];
 
-    function controller(siglusColumnUtils, SECTION_TYPES, siglusTemplateConfigureService, requisitionValidator,
+    function controller(siglusColumnUtils, SIGLUS_SECTION_TYPES, siglusTemplateConfigureService, requisitionValidator,
                         messageService) {
         var vm = this;
 
@@ -37,7 +37,8 @@
         vm.requisitionType = undefined;
 
         function onInit() {
-            vm.consultationNumber = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);
+            vm.consultationNumber =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.NUMBER);
             vm.requisitionType = messageService.get(
                 vm.isEmergency ? 'requisitionView.emergency' : 'requisitionView.regular'
             );

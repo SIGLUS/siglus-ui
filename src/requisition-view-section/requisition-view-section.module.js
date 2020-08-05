@@ -19,7 +19,6 @@
 
     angular.module('requisition-view-section', [
         'admin-template',
-        'admin-template-configure-preview-section',
         'siglus-add-regimen-model',
         'siglus-admin-template-configure-column-setting',
         'siglus-admin-template-configure-preview-section'

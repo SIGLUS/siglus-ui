@@ -22,9 +22,9 @@
         .controller('SiglusConsultationNumberPreviewController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService',
-        'SECTION_TYPES'];
+        'SIGLUS_SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES) {
 
         var vm = this;
 
@@ -34,7 +34,8 @@
         vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
 
         function onInit() {
-            vm.consultationNumber = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.NUMBER);
+            vm.consultationNumber =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.NUMBER);
         }
     }
 

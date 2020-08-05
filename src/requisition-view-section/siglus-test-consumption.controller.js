@@ -21,10 +21,10 @@
         .module('requisition-view-section')
         .controller('SiglusTestConsumptionController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'SECTION_TYPES', 'siglusTemplateConfigureService',
+    controller.$inject = ['siglusColumnUtils', 'SIGLUS_SECTION_TYPES', 'siglusTemplateConfigureService',
         'requisitionValidator'];
 
-    function controller(siglusColumnUtils, SECTION_TYPES, siglusTemplateConfigureService, requisitionValidator) {
+    function controller(siglusColumnUtils, SIGLUS_SECTION_TYPES, siglusTemplateConfigureService, requisitionValidator) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -41,9 +41,9 @@
         vm.programColspan = undefined;
 
         function onInit() {
-            vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.PROJECT);
-            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.OUTCOME);
-            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.PROJECT);
+            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.OUTCOME);
+            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
             vm.testProjectColspan = getTestProjectColspan();
             vm.programColspan = getProgramColspan();
             extendLineItems();

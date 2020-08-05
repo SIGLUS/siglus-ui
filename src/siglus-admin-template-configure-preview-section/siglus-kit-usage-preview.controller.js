@@ -22,9 +22,10 @@
         .controller('SiglusKitUsagePreviewController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',
-        'SECTION_TYPES'];
+        'SIGLUS_SECTION_TYPES'];
 
-    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SERVICE_TYPES, SECTION_TYPES) {
+    function controller(siglusColumnUtils, siglusTemplateConfigureService, SIGLUS_SERVICE_TYPES,
+                        SIGLUS_SECTION_TYPES) {
 
         var vm = this;
 
@@ -36,8 +37,10 @@
         vm.isUserInput = isUserInput;
 
         function onInit() {
-            vm.collection = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.COLLECTION);
-            vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SECTION_TYPES.SERVICE);
+            vm.collection =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.COLLECTION);
+            vm.service =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
         }
 
         function getColumn(service, collection) {

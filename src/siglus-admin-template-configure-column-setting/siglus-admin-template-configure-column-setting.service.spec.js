@@ -22,7 +22,7 @@ describe('siglusTemplateConfigureService', function() {
         inject(function($injector) {
             this.siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');
             this.COLUMN_TYPES = $injector.get('COLUMN_TYPES');
-            this.SECTION_TYPES = $injector.get('SECTION_TYPES');
+            this.SIGLUS_SECTION_TYPES = $injector.get('SIGLUS_SECTION_TYPES');
         });
     });
 
@@ -64,7 +64,7 @@ describe('siglusTemplateConfigureService', function() {
                 name: 'collection'
             }, {
                 name: 'service'
-            }], this.SECTION_TYPES.COLLECTION);
+            }], this.SIGLUS_SECTION_TYPES.COLLECTION);
 
             expect(collection).toEqual({
                 name: 'collection'
