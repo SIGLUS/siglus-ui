@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('archivedProductService', function() {
+describe('siglusArchivedProductService', function() {
     var OrderableGroupDataBuilder;
 
     beforeEach(function() {
@@ -21,7 +21,7 @@ describe('archivedProductService', function() {
         module('stock-orderable-group');
 
         inject(function($injector) {
-            this.archivedProductService = $injector.get('archivedProductService');
+            this.siglusArchivedProductService = $injector.get('siglusArchivedProductService');
             this.alertService = $injector.get('alertService');
             this.openlmisUrlFactory = $injector.get('openlmisUrlFactory');
             this.$httpBackend = $injector.get('$httpBackend');
@@ -41,7 +41,7 @@ describe('archivedProductService', function() {
             this.orderableGroup[0].orderable.archived = false;
             this.orderableGroup[1].orderable.archived = false;
 
-            this.archivedProductService.alterInfo(this.orderableGroup);
+            this.siglusArchivedProductService.alterInfo(this.orderableGroup);
 
             expect(this.alertService.info).not.toHaveBeenCalled();
         });
@@ -50,7 +50,7 @@ describe('archivedProductService', function() {
             this.orderableGroup[0].orderable.archived = false;
             this.orderableGroup[1].orderable.archived = true;
 
-            this.archivedProductService.alterInfo(this.orderableGroup);
+            this.siglusArchivedProductService.alterInfo(this.orderableGroup);
 
             expect(this.alertService.info).toHaveBeenCalled();
         });
@@ -66,7 +66,7 @@ describe('archivedProductService', function() {
         });
 
         it('should return promise', function() {
-            var result = this.archivedProductService.getArchivedOrderables(this.facilityId);
+            var result = this.siglusArchivedProductService.getArchivedOrderables(this.facilityId);
             this.$httpBackend.flush();
 
             expect(result.then).not.toBeUndefined();
@@ -75,7 +75,7 @@ describe('archivedProductService', function() {
         it('should resolve to array object', function() {
             var result;
 
-            this.archivedProductService.getArchivedOrderables(this.facilityId).then(function(data) {
+            this.siglusArchivedProductService.getArchivedOrderables(this.facilityId).then(function(data) {
                 result = data;
             });
             this.$httpBackend.flush();
