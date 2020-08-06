@@ -17,10 +17,10 @@
 
     'use strict';
     angular
-        .module('stock-input-select')
+        .module('siglus-stock-input-select')
         .directive('stockInputSelect', [function() {
             return {
-                templateUrl: 'stock-input-select/stock-input-select.html',
+                templateUrl: 'siglus-stock-input-select/siglus-stock-input-select.html',
                 restrict: 'E',
                 scope: {
                     lineItem: '=',

@@ -42,7 +42,7 @@ describe('stockInputSelectDirective', function() {
     siglusAutoGenerateService.autoGenerateLotCode.andReturn('SEM-LOTE-22A05-062020-0');
     // Load the stock-adjustment-creation module, which contains the directive
     beforeEach(function() {
-        module('stock-input-select');
+        module('siglus-stock-input-select');
     });
 
     describe('When enable input', function() {
