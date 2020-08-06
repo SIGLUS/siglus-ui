@@ -35,13 +35,13 @@
      * ```
      */
     angular
-        .module('requisition-date-picker')
+        .module('siglus-requisition-date-picker')
         .directive('requisitionDatePicker', requisitionDatePicker);
 
     function requisitionDatePicker() {
         return {
             restrict: 'E',
-            templateUrl: 'requisition-date-picker/requisition-date-picker.html',
+            templateUrl: 'siglus-requisition-date-picker/siglus-requisition-date-picker.html',
             link: link,
             scope: {
                 startDate: '=',

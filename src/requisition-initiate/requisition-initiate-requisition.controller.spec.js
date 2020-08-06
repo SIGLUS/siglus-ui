@@ -36,7 +36,7 @@ describe('RequisitionInitiateRequisitionController', function() {
             this.UuidGenerator = $injector.get('UuidGenerator');
             this.confirmService = $injector.get('confirmService');
             this.requisitionInitiateService = $injector.get('requisitionInitiateService');
-            this.requisitionDatePickerService = $injector.get('requisitionDatePickerService');
+            this.siglusRequisitionDatePickerService = $injector.get('siglusRequisitionDatePickerService');
             this.dateUtils = $injector.get('dateUtils');
 
             this.user = {

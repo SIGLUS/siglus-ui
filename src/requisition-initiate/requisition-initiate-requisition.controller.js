@@ -32,14 +32,15 @@
     Controller.$inject = [
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
-        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'requisitionDatePickerService',
+        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'siglusRequisitionDatePickerService',
         'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'hasAuthorizeRight'
     ];
 
     function Controller(requisitionService, $state, loadingModalService, notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods, canInitiateRnr, UuidGenerator,
-                        confirmService, requisitionInitiateService, REQUISITION_STATUS, requisitionDatePickerService,
-                        alertService, dateUtils, moment, inventoryDates, program, hasAuthorizeRight) {
+                        confirmService, requisitionInitiateService, REQUISITION_STATUS,
+                        siglusRequisitionDatePickerService, alertService, dateUtils, moment, inventoryDates, program,
+                        hasAuthorizeRight) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
@@ -131,7 +132,7 @@
             var endDate = dateUtils.toStringDate(selectedPeriod.submitEndDate);
             var datesDisabled = getDiffDates(startDate, endDate, vm.inventoryDates);
             loadingModalService.open();
-            requisitionDatePickerService.show(startDate, endDate, datesDisabled)
+            siglusRequisitionDatePickerService.show(startDate, endDate, datesDisabled)
                 .then(function(inventoryDate) {
                     initiate(selectedPeriod, inventoryDate);
                 }, function() {

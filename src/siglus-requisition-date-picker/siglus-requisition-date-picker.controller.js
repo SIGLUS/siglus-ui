@@ -14,10 +14,32 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('requisition-date-picker', [
-        'openlmis-modal',
-        'openlmis-date'
-    ]);
+    /**
+     * @ngdoc controller
+     * @name stock-choose-date-modal.controller:ChooseDateModalController
+     *
+     * @description
+     * Manages Choose Date Modal.
+     */
+    angular
+        .module('siglus-requisition-date-picker')
+        .controller('SiglusRequisitionDatePickerController', controller);
+
+    controller.$inject = ['startDate', 'endDate', 'datesDisabled', '$filter', 'modalDeferred'];
+
+    function controller(startDate, endDate, datesDisabled, $filter, modalDeferred) {
+        var vm = this;
+
+        vm.startDate = startDate;
+        vm.endDate = endDate;
+        vm.datesDisabled = datesDisabled;
+        vm.inventoryDate = undefined;
+
+        vm.submit = function() {
+            modalDeferred.resolve(vm.inventoryDate);
+        };
+    }
 })();

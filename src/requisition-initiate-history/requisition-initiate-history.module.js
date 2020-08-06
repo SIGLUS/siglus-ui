@@ -40,7 +40,7 @@
         'openlmis-modal',
         'referencedata-program',
         'ui.router',
-        'requisition-date-picker'
+        'siglus-requisition-date-picker'
     ]);
 
 })();

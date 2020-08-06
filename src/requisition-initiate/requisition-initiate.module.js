@@ -41,7 +41,7 @@
         'referencedata-program',
         'ui.router',
         // SIGLUS-REFACTOR: starts here
-        'requisition-date-picker'
+        'siglus-requisition-date-picker'
         // SIGLUS-REFACTOR: ends here
     ]);
 
