@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('RequisitionInitiateRequisitionController', function() {
+describe('SiglusRequisitionInitiateRequisitionController', function() {
 
     beforeEach(function() {
         module('requisition-initiate');
@@ -78,7 +78,7 @@ describe('RequisitionInitiateRequisitionController', function() {
                 return context.key;
             });
 
-            this.vm = $injector.get('$controller')('RequisitionInitiateRequisitionController', {
+            this.vm = $injector.get('$controller')('SiglusRequisitionInitiateRequisitionController', {
                 periods: this.periods,
                 $stateParams: this.$stateParams,
                 canInitiateRnr: this.canInitiateRnr,

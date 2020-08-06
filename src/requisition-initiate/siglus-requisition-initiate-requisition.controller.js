@@ -27,7 +27,7 @@
      */
     angular
         .module('requisition-initiate')
-        .controller('RequisitionInitiateRequisitionController', Controller);
+        .controller('SiglusRequisitionInitiateRequisitionController', Controller);
 
     Controller.$inject = [
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',

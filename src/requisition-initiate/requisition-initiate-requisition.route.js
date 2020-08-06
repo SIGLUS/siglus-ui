@@ -26,7 +26,7 @@
     function routes($stateProvider, REQUISITION_RIGHTS) {
         $stateProvider.state('openlmis.requisitions.initRnr.requisition', {
             url: '/requisition?supervised&program&facility&emergency',
-            controller: 'RequisitionInitiateRequisitionController',
+            controller: 'SiglusRequisitionInitiateRequisitionController',
             controllerAs: 'vm',
             templateUrl: 'requisition-initiate/requisition-initiate-requisition.html',
             accessRights: [
