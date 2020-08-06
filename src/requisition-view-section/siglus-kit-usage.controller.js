@@ -19,7 +19,7 @@
 
     angular
         .module('requisition-view-section')
-        .controller('KitUsageController', controller);
+        .controller('SiglusKitUsageController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',
         'SIGLUS_SECTION_TYPES'];
