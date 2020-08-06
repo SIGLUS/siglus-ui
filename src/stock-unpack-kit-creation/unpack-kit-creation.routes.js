@@ -95,9 +95,9 @@
                             return programs[0];
                         });
                 },
-                kit: function($stateParams, facility, stockKitUnpackService) {
+                kit: function($stateParams, facility, siglusStockKitUnpackService) {
                     if (_.isUndefined($stateParams.kit)) {
-                        return stockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
+                        return siglusStockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
                     }
                     return $stateParams.kit;
                 }

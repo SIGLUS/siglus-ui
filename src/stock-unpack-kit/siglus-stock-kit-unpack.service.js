@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc service
-     * @name stock-unpack-kit.stockKitUnpackService
+     * @name stock-unpack-kit.SiglusStockReceiveCreationController
      *
      * @description
      * Responsible for retrieving unpack kit information from server.
      */
     angular
         .module('stock-unpack-kit')
-        .service('stockKitUnpackService', service);
+        .service('siglusStockKitUnpackService', service);
 
     service.$inject = [
         '$resource', 'stockmanagementUrlFactory'

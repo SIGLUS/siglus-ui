@@ -35,9 +35,9 @@
                     // SIGLUS-REFACTOR:  replaced controller and templateUrl
                     // controller: 'StockAdjustmentController'
                     // templateUrl: 'stock-adjustment/stock-adjustment.html
-                    controller: 'KitUnpackController',
+                    controller: 'SiglusKitUnpackController',
                     controllerAs: 'vm',
-                    templateUrl: 'stock-unpack-kit/stock-kit-unpack.html'
+                    templateUrl: 'stock-unpack-kit/siglus-stock-kit-unpack.html'
                     //SIGLUS-REFACTOR: ends here
                 }
             },
@@ -57,8 +57,8 @@
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.KIT_UNPACK;
                 }*/
-                unpackKits: function(facility, stockKitUnpackService) {
-                    return stockKitUnpackService.getUnpackKits(facility.id);
+                unpackKits: function(facility, siglusStockKitUnpackService) {
+                    return siglusStockKitUnpackService.getUnpackKits(facility.id);
                 }
                 // SIGLUS-REFACTOR: ends here
             }
