@@ -46,7 +46,7 @@ describe('RequisitionViewController', function() {
             this.alertService = $injector.get('alertService');
             this.confirmService = $injector.get('confirmService');
             // SIGLUS-REFACTOR: starts here
-            this.signatureModalService = $injector.get('signatureModalService');
+            this.siglusSignatureModalService = $injector.get('siglusSignatureModalService');
             // SIGLUS-REFACTOR: ends here
             this.loadingModalService = $injector.get('loadingModalService');
             this.stateTrackerService = $injector.get('stateTrackerService');
@@ -124,7 +124,7 @@ describe('RequisitionViewController', function() {
         spyOn(this.confirmService, 'confirm');
         spyOn(this.confirmService, 'confirmDestroy');
         // SIGLUS-REFACTOR: starts here
-        spyOn(this.signatureModalService, 'confirm');
+        spyOn(this.siglusSignatureModalService, 'confirm');
         // SIGLUS-REFACTOR: ends here
         spyOn(this.authorizationService, 'hasRight');
         spyOn(this.RequisitionWatcher.prototype, 'disableWatcher');
@@ -423,7 +423,7 @@ describe('RequisitionViewController', function() {
         beforeEach(function() {
             this.confirmService.confirm.andReturn(this.$q.resolve(true));
             // SIGLUS-REFACTOR: different data structure
-            this.signatureModalService.confirm.andReturn(this.$q.resolve(true));
+            this.siglusSignatureModalService.confirm.andReturn(this.$q.resolve(true));
             this.requisition.extraData = {
                 signaure: {
                     authorize: undefined
@@ -499,7 +499,7 @@ describe('RequisitionViewController', function() {
         beforeEach(function() {
             this.confirmService.confirm.andReturn(this.$q.resolve(true));
             // SIGLUS-REFACTOR: starts here
-            this.signatureModalService.confirm.andReturn(this.$q.resolve(true));
+            this.siglusSignatureModalService.confirm.andReturn(this.$q.resolve(true));
             // SIGLUS-REFACTOR: ends here
             this.requisition.$save.andReturn(this.$q.resolve(true));
             this.requisition.$submit.andReturn(this.$q.resolve(true));
@@ -576,7 +576,7 @@ describe('RequisitionViewController', function() {
 
         beforeEach(function() {
             // #231: there is no signature modal when approve
-            this.signatureModalService.confirm.andReturn(this.$q.resolve('approver'));
+            this.siglusSignatureModalService.confirm.andReturn(this.$q.resolve('approver'));
             this.RequisitionStockCountDateModalMock.andReturn(this.$q.resolve());
             this.requisition.extraData = {
                 signaure: {

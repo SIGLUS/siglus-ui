@@ -15,11 +15,11 @@
 
 describe('StockAdjustmentCreationController', function() {
 
-    // SIGLUS-REFACTOR: remove UNPACK_REASONS and add signatureModalService
+    // SIGLUS-REFACTOR: remove UNPACK_REASONS and add siglusSignatureModalService
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, signatureModalService;
+        orderableGroups, LotDataBuilder, siglusSignatureModalService;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -52,11 +52,11 @@ describe('StockAdjustmentCreationController', function() {
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
 
             // SIGLUS-REFACTOR: starts here
-            signatureModalService = jasmine.createSpyObj('signatureModalService', ['confirm']);
+            siglusSignatureModalService = jasmine.createSpyObj('siglusSignatureModalService', ['confirm']);
 
             var deferred = q.defer();
             deferred.resolve();
-            signatureModalService.confirm.andReturn(deferred.promise);
+            siglusSignatureModalService.confirm.andReturn(deferred.promise);
             // SIGLUS-REFACTOR: ends here
 
             state = jasmine.createSpyObj('$state', ['go']);
@@ -391,7 +391,7 @@ describe('StockAdjustmentCreationController', function() {
             });
 
             // SIGLUS-REFACTOR: starts here
-            expect(signatureModalService.confirm).toHaveBeenCalled();
+            expect(siglusSignatureModalService.confirm).toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
             expect(notificationService.success).toHaveBeenCalledWith('stockAdjustmentCreation.submitted');
             expect(alertService.error).not.toHaveBeenCalled();
@@ -410,7 +410,7 @@ describe('StockAdjustmentCreationController', function() {
             rootScope.$apply();
 
             // SIGLUS-REFACTOR: starts here
-            expect(signatureModalService.confirm).toHaveBeenCalled();
+            expect(siglusSignatureModalService.confirm).toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
             expect(state.go).not.toHaveBeenCalled();
             expect(alertService.error).toHaveBeenCalledWith('error occurred');
@@ -486,7 +486,7 @@ describe('StockAdjustmentCreationController', function() {
             reasons: reasons,
             orderableGroups: orderableGroups,
             displayItems: [],
-            signatureModalService: signatureModalService,
+            siglusSignatureModalService: siglusSignatureModalService,
             draft: {}
             // SIGLUS-REFACTOR: ends here
         });

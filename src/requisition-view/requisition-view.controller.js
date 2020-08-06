@@ -35,7 +35,7 @@
         'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize',
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
-        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'signatureModalService'
+        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       signatureModalService) {
+                                       siglusSignatureModalService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -388,18 +388,19 @@
             // #431: alert before signature pop up
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.submit.confirmWithSignature').then(function(signature) {
-                    if (!vm.requisition.extraData.signaure) {
-                        vm.requisition.extraData.signaure = {};
-                    }
-                    vm.requisition.extraData.signaure.submit = signature;
-                    if (vm.program.enableDatePhysicalStockCountCompleted) {
-                        var modal = new RequisitionStockCountDateModal(vm.requisition);
-                        modal.then(saveThenSubmit);
-                    } else {
-                        saveThenSubmit();
-                    }
-                });
+                siglusSignatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                    .then(function(signature) {
+                        if (!vm.requisition.extraData.signaure) {
+                            vm.requisition.extraData.signaure = {};
+                        }
+                        vm.requisition.extraData.signaure.submit = signature;
+                        if (vm.program.enableDatePhysicalStockCountCompleted) {
+                            var modal = new RequisitionStockCountDateModal(vm.requisition);
+                            modal.then(saveThenSubmit);
+                        } else {
+                            saveThenSubmit();
+                        }
+                    });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 failWithMessage(vm.requisition.$error)();
@@ -438,7 +439,7 @@
             // #431: alert before signature pop up
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                siglusSignatureModalService.confirm('requisitionView.submit.confirmWithSignature')
                     .then(function(signature) {
                         vm.requisition.extraData.signaure.authorize = signature;
                         if (vm.program.enableDatePhysicalStockCountCompleted) {
@@ -487,7 +488,7 @@
             // #431: alert before signature pop up
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.submit.confirmWithSignature')
+                siglusSignatureModalService.confirm('requisitionView.submit.confirmWithSignature')
                     .then(function(signature) {
                         if (!vm.requisition.extraData.signaure) {
                             vm.requisition.extraData.signaure = {
@@ -570,7 +571,7 @@
         function approveRnr() {
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
-                signatureModalService.confirm('requisitionView.approve.confirmWithSignature')
+                siglusSignatureModalService.confirm('requisitionView.approve.confirmWithSignature')
                     .then(function(signature) {
                         var approveSignatures = vm.requisition.extraData.signaure.approve || [];
                         approveSignatures.push(signature);
