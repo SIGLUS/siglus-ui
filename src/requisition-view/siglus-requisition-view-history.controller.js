@@ -19,27 +19,27 @@
 
     /**
      * @ngdoc controller
-     * @name requisition-view-tab.controller:HistoryViewTabController
+     * @name requisition-view-tab.controller:SiglusHistoryViewTabController
      *
      * @description
      * Responsible for managing product grid for non full supply products.
      */
     angular
         .module('requisition-view-tab')
-        .controller('HistoryViewTabController', HistoryViewTabController);
+        .controller('SiglusHistoryViewTabController', SiglusHistoryViewTabController);
 
-    HistoryViewTabController.$inject = [
+    SiglusHistoryViewTabController.$inject = [
         '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
         'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'processingPeriod', 'program', 'facility'
     ];
 
-    function HistoryViewTabController($filter, selectProductsModalService, requisitionValidator, requisition, columns,
-                                      messageService, lineItems, alertService, canSubmit, canAuthorize,
-                                      fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator,
-                                      canApproveAndReject, items, paginationService, $stateParams,
-                                      processingPeriod, program, facility) {
+    function SiglusHistoryViewTabController($filter, selectProductsModalService, requisitionValidator, requisition,
+                                            columns, messageService, lineItems, alertService, canSubmit, canAuthorize,
+                                            fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator,
+                                            canApproveAndReject, items, paginationService, $stateParams,
+                                            processingPeriod, program, facility) {
         var vm = this;
         vm.processingPeriod = processingPeriod;
         vm.program = program;
@@ -54,7 +54,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf requisition-view-tab.controller:HistoryViewTabController
+         * @propertyOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name lineItems
          * @type {Array}
          *
@@ -65,7 +65,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf requisition-view-tab.controller:HistoryViewTabController
+         * @propertyOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name items
          * @type {Array}
          *
@@ -76,7 +76,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf requisition-view-tab.controller:HistoryViewTabController
+         * @propertyOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name requisition
          * @type {Object}
          *
@@ -87,7 +87,7 @@
 
         /**
          * @ngdoc property
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name showAddFullSupplyProductsButton
          * @type {Boolean}
          *
@@ -99,7 +99,7 @@
 
         /**
          * @ngdoc property
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name showAddNonFullSupplyProductsButton
          * @type {Boolean}
          *
@@ -110,7 +110,7 @@
 
         /**
          * @ngdoc property
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name showUnskipFullSupplyProductsButton
          * @type {Boolean}
          *
@@ -121,7 +121,7 @@
 
         /**
          * @ngdoc property
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name showAddFullSupplyProductControls
          * @type {Boolean}
          *
@@ -133,7 +133,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf requisition-view-tab.controller:HistoryViewTabController
+         * @propertyOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name columns
          * @type {Array}
          *
@@ -193,7 +193,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name deleteLineItem
          *
          * @description
@@ -209,7 +209,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name showDeleteColumn
          *
          * @description
@@ -226,7 +226,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name getDescriptionForColumn
          *
          * @description
@@ -246,7 +246,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name unskipFullSupplyProducts
          *
          * @description
@@ -263,7 +263,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf requisition-view-tab.controller:HistoryViewTabController
+         * @methodOf requisition-view-tab.controller:SiglusHistoryViewTabController
          * @name skippedFullSupplyProductCountMessage
          *
          * @description
