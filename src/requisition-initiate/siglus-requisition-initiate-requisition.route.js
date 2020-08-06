@@ -28,7 +28,7 @@
             url: '/requisition?supervised&program&facility&emergency',
             controller: 'SiglusRequisitionInitiateRequisitionController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-initiate/requisition-initiate-requisition.html',
+            templateUrl: 'requisition-initiate/siglus-requisition-initiate-requisition.html',
             accessRights: [
                 REQUISITION_RIGHTS.REQUISITION_CREATE,
                 REQUISITION_RIGHTS.REQUISITION_DELETE,
