@@ -27,7 +27,7 @@
             },
             controller: 'KitUsageController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-view-section/kit-usage.html'
+            templateUrl: 'requisition-view-section/siglus-kit-usage.html'
         });
 
 })();
