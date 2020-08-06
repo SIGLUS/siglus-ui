@@ -25,7 +25,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
     var $controller, state, notificationService, rootScope, siglusConfigureStateRouterService,
         TemplateColumnDataBuilder, TemplateDataBuilder;
 
-    var scope, originalTemplate, refreshConfirmService;
+    var scope, originalTemplate, siglusRefreshConfirmService;
 
     beforeEach(function() {
         module('siglus-admin-template-configure-column-setting');
@@ -40,7 +40,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
             TemplateDataBuilder = $injector.get('TemplateDataBuilder');
             scope = rootScope.$new();
             siglusConfigureStateRouterService = $injector.get('siglusConfigureStateRouterService');
-            refreshConfirmService = $injector.get('refreshConfirmService');
+            siglusRefreshConfirmService = $injector.get('siglusRefreshConfirmService');
         });
 
         template = new TemplateDataBuilder()
@@ -52,8 +52,8 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
 
         originalTemplate = angular.copy(template);
         spyOn(scope, '$watch');
-        spyOn(refreshConfirmService, 'register');
-        spyOn(refreshConfirmService, 'deregister');
+        spyOn(siglusRefreshConfirmService, 'register');
+        spyOn(siglusRefreshConfirmService, 'deregister');
         spyOn(siglusConfigureStateRouterService, 'initialize').andReturn(unsubscribe);
 
         vm = $controller('SiglusTemplateConfigureColumnSettingController', {
@@ -102,7 +102,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
         it('should register refresh confrim', function() {
             vm.$onInit();
 
-            expect(refreshConfirmService.register).toHaveBeenCalledWith(scope);
+            expect(siglusRefreshConfirmService.register).toHaveBeenCalledWith(scope);
         });
 
         it('should deregister when $destroy event emit', function() {
@@ -111,7 +111,7 @@ describe('SiglusTemplateConfigureColumnSettingController', function() {
             scope.$emit('$destroy');
             scope.$apply();
 
-            expect(refreshConfirmService.deregister).toHaveBeenCalled();
+            expect(siglusRefreshConfirmService.deregister).toHaveBeenCalled();
         });
 
         it('should enable product when route to product detail page', function() {

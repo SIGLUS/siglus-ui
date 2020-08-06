@@ -29,12 +29,12 @@
         .controller('SiglusTemplateConfigureColumnSettingController', SiglusTemplateConfigureColumnSettingController);
 
     SiglusTemplateConfigureColumnSettingController.$inject = [
-        '$window', '$state', '$scope', 'template', 'originalTemplate', 'notificationService', 'refreshConfirmService',
-        'siglusConfigureStateRouterService'
+        '$window', '$state', '$scope', 'template', 'originalTemplate', 'notificationService',
+        'siglusRefreshConfirmService', 'siglusConfigureStateRouterService'
     ];
 
     function SiglusTemplateConfigureColumnSettingController($window, $state, $scope, template, originalTemplate,
-                                                            notificationService, refreshConfirmService,
+                                                            notificationService, siglusRefreshConfirmService,
                                                             siglusConfigureStateRouterService) {
         $window.scrollTo(0, 0);
 
@@ -85,9 +85,9 @@
             }, function(newValue) {
                 $scope.needToConfirm = !angular.equals(originalTemplate, newValue);
             }, true);
-            refreshConfirmService.register($scope);
+            siglusRefreshConfirmService.register($scope);
             $scope.$on('$destroy', function() {
-                refreshConfirmService.deregister();
+                siglusRefreshConfirmService.deregister();
             });
         }
 

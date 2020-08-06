@@ -19,19 +19,19 @@
 
     /**
      * @ngdoc service
-     * @name refresh-confirm.refreshConfirmService
+     * @name refresh-confirm.siglusRefreshConfirmService
      *
      * @description
      * Service allows to register handler on window's beforeunload event.
      */
     angular.module('refresh-confirm')
-        .service('refreshConfirmService', refreshConfirmService);
+        .service('siglusRefreshConfirmService', siglusRefreshConfirmService);
 
-    function refreshConfirmService() {
+    function siglusRefreshConfirmService() {
 
         /**
          * @ngdoc method
-         * @methodOf refresh-confirm.refreshConfirmService
+         * @methodOf refresh-confirm.siglusRefreshConfirmService
          * @name register
          *
          * @description
@@ -52,7 +52,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf refresh-confirm.refreshConfirmService
+         * @methodOf refresh-confirm.siglusRefreshConfirmService
          * @name deregister
          *
          * @description
