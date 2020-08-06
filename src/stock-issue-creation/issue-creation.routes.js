@@ -30,8 +30,8 @@
             views: {
                 '@openlmis': {
                     // SIGLUS-REFACTOR: starts here
-                    controller: 'StockIssueCreationController',
-                    templateUrl: 'stock-issue-creation/issue-creation.html',
+                    controller: 'SiglusStockIssueCreationController',
+                    templateUrl: 'stock-issue-creation/siglus-issue-creation.html',
                     // SIGLUS-REFACTOR: ends here
                     controllerAs: 'vm'
                 }
