@@ -16,7 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('stock-archived-product', [
+    angular.module('siglus-stock-archived-product', [
         'openlmis-modal'
     ]);
 })();

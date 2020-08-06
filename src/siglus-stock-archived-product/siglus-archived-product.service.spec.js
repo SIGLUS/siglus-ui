@@ -17,7 +17,7 @@ describe('siglusArchivedProductService', function() {
     var OrderableGroupDataBuilder;
 
     beforeEach(function() {
-        module('stock-archived-product');
+        module('siglus-stock-archived-product');
         module('stock-orderable-group');
 
         inject(function($injector) {

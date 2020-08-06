@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc filter
-     * @name stock-archived-product.filter:siglusOrderByArchived
+     * @name siglus-stock-archived-product.filter:siglusOrderByArchived
      *
      * @description
      * Order the orderableGroup with the archived flag
@@ -28,7 +28,7 @@
      * @return  {Object} orderableGroups
      */
     angular
-        .module('stock-archived-product')
+        .module('siglus-stock-archived-product')
         .filter('siglusOrderByArchived', orderByArchivedFilter);
 
     function orderByArchivedFilter() {
