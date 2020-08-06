@@ -32,11 +32,11 @@
         '$filter', 'openlmisDateFilter', 'messageService', 'productNameFilter', 'dateUtils',
         // SIGLUS-REFACTOR: starts here
         // '$resource', 'stockmanagementUrlFactory',
-        'stockEventService', 'ADJUSTMENT_TYPE'
+        'siglusStockEventService', 'ADJUSTMENT_TYPE'
         // SIGLUS-REFACTOR: ends here
     ];
 
-    function service($filter, openlmisDateFilter, messageService, productNameFilter, dateUtils, stockEventService,
+    function service($filter, openlmisDateFilter, messageService, productNameFilter, dateUtils, siglusStockEventService,
                      ADJUSTMENT_TYPE) {
         // SIGLUS-REFACTOR: starts here
         // var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
@@ -123,7 +123,7 @@
                     programId: item.programId
                 }, buildSourceDestinationInfo(item, adjustmentType));
             });
-            return stockEventService.submit(event);
+            return siglusStockEventService.submit(event);
         }
 
         function buildSourceDestinationInfo(item, adjustmentType) {

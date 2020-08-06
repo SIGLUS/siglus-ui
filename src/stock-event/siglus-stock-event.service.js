@@ -16,7 +16,7 @@
 
     angular
         .module('stock-event')
-        .service('stockEventService', service);
+        .service('siglusStockEventService', service);
 
     service.$inject = ['$resource', 'stockmanagementUrlFactory', 'moment'];
 
