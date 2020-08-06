@@ -35,7 +35,7 @@ describe('RequisitionInitiateRequisitionController', function() {
             this.loadingModalService = $injector.get('loadingModalService');
             this.UuidGenerator = $injector.get('UuidGenerator');
             this.confirmService = $injector.get('confirmService');
-            this.requisitionInitiateService = $injector.get('requisitionInitiateService');
+            this.siglusRequisitionInitiateService = $injector.get('siglusRequisitionInitiateService');
             this.siglusRequisitionDatePickerService = $injector.get('siglusRequisitionDatePickerService');
             this.dateUtils = $injector.get('dateUtils');
 
@@ -87,7 +87,7 @@ describe('RequisitionInitiateRequisitionController', function() {
                 program: []
             });
 
-            spyOn(this.requisitionInitiateService, 'getLatestPhysicalInventory')
+            spyOn(this.siglusRequisitionInitiateService, 'getLatestPhysicalInventory')
                 .andReturn(this.$q.resolve({
                     occurredDate: new Date().toJSON()
                         .slice(0, 10)

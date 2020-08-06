@@ -48,11 +48,11 @@
                     }
                     return [];
                 },
-                inventoryDates: function(periods, requisitionInitiateService, dateUtils, $stateParams) {
+                inventoryDates: function(periods, siglusRequisitionInitiateService, dateUtils, $stateParams) {
                     if (periods.length) {
                         var startDate = dateUtils.toStringDate(periods[0].submitStartDate);
                         var endDate = dateUtils.toStringDate(periods[0].submitEndDate);
-                        return requisitionInitiateService.getPhysicalInventoryDates(
+                        return siglusRequisitionInitiateService.getPhysicalInventoryDates(
                             $stateParams.facility,
                             startDate,
                             endDate

@@ -16,7 +16,7 @@
 describe('openlmis.requisitions.initRnr.requisition state', function() {
 
     var $q, $state, $rootScope, $stateParams, requisitionInitiateFactory, PeriodDataBuilder, periods,
-        periodFactory, requisitionInitiateService, authorizationService, programService;
+        periodFactory, siglusRequisitionInitiateService, authorizationService, programService;
 
     beforeEach(function() {
         module('referencedata-period');
@@ -29,7 +29,7 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
             periodFactory = $injector.get('periodFactory');
             PeriodDataBuilder = $injector.get('PeriodDataBuilder');
             requisitionInitiateFactory = $injector.get('requisitionInitiateFactory');
-            requisitionInitiateService = $injector.get('requisitionInitiateService');
+            siglusRequisitionInitiateService = $injector.get('siglusRequisitionInitiateService');
             authorizationService = $injector.get('authorizationService');
             programService = $injector.get('programService');
         });
@@ -49,7 +49,7 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
         spyOn(requisitionInitiateFactory, 'canInitiate').andReturn($q.resolve(true));
         spyOn(periodFactory, 'get').andReturn($q.resolve(periods));
-        spyOn(requisitionInitiateService, 'getPhysicalInventoryDates').andReturn($q.resolve([]));
+        spyOn(siglusRequisitionInitiateService, 'getPhysicalInventoryDates').andReturn($q.resolve([]));
         spyOn(authorizationService, 'getUser').andReturn($q.resolve({}));
         spyOn(programService, 'get').andReturn($q.resolve([]));
         spyOn(authorizationService, 'hasRight').andReturn($q.resolve(true));
