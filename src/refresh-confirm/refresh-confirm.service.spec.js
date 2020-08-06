@@ -13,27 +13,27 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('refreshConfirmService', function() {
+describe('siglusRefreshConfirmService', function() {
 
-    var refreshConfirmService;
+    var siglusRefreshConfirmService;
 
     beforeEach(function() {
 
         module('refresh-confirm');
 
-        inject(function(_refreshConfirmService_) {
-            refreshConfirmService = _refreshConfirmService_;
+        inject(function(_siglusRefreshConfirmService_) {
+            siglusRefreshConfirmService = _siglusRefreshConfirmService_;
         });
     });
 
     it('should register handler on window', function() {
-        refreshConfirmService.register();
+        siglusRefreshConfirmService.register();
 
         expect(window.onbeforeunload).toBeDefined();
     });
 
     it('should deregister handler on window', function() {
-        refreshConfirmService.deregister();
+        siglusRefreshConfirmService.deregister();
 
         expect(window.onbeforeunload).toBe(null);
     });
