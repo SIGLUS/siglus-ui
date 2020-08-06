@@ -36,7 +36,7 @@ describe('RequisitionInitiateController', function() {
             this.UuidGenerator = $injector.get('UuidGenerator');
             // SIGLUS-REFACTOR: starts here
             this.confirmService = $injector.get('confirmService');
-            this.requisitionInitiateService = $injector.get('requisitionInitiateService');
+            this.siglusRequisitionInitiateService = $injector.get('siglusRequisitionInitiateService');
             this.siglusRequisitionDatePickerService = $injector.get('siglusRequisitionDatePickerService');
             this.dateUtils = $injector.get('dateUtils');
             // SIGLUS-REFACTOR: ends here
@@ -92,7 +92,7 @@ describe('RequisitionInitiateController', function() {
             });
 
             // SIGLUS-REFACTOR: starts here
-            spyOn(this.requisitionInitiateService, 'getLatestPhysicalInventory')
+            spyOn(this.siglusRequisitionInitiateService, 'getLatestPhysicalInventory')
                 .andReturn(this.$q.resolve({
                     occurredDate: new Date().toJSON()
                         .slice(0, 10)

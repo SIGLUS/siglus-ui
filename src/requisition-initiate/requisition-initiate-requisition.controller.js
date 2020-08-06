@@ -32,13 +32,13 @@
     Controller.$inject = [
         'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
-        'confirmService', 'requisitionInitiateService', 'REQUISITION_STATUS', 'siglusRequisitionDatePickerService',
+        'confirmService', 'siglusRequisitionInitiateService', 'REQUISITION_STATUS', 'siglusRequisitionDatePickerService',
         'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program', 'hasAuthorizeRight'
     ];
 
     function Controller(requisitionService, $state, loadingModalService, notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods, canInitiateRnr, UuidGenerator,
-                        confirmService, requisitionInitiateService, REQUISITION_STATUS,
+                        confirmService, siglusRequisitionInitiateService, REQUISITION_STATUS,
                         siglusRequisitionDatePickerService, alertService, dateUtils, moment, inventoryDates, program,
                         hasAuthorizeRight) {
         var vm = this,
@@ -175,7 +175,7 @@
             }
             if (isCurrentSubmitDuration(selectedPeriod) || vm.emergency) {
                 loadingModalService.open();
-                requisitionInitiateService.getLatestPhysicalInventory($stateParams.facility)
+                siglusRequisitionInitiateService.getLatestPhysicalInventory($stateParams.facility)
                     .then(function(result) {
                         var today = dateUtils.toStringDate(new Date());
                         if (result.occurredDate === today) {

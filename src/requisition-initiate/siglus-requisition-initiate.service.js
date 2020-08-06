@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc service
-     * @name requisition.requisitionInitiateService
+     * @name requisition.siglusRequisitionInitiateService
      *
      * @description
      * Responsible for retrieving all information from server.
      */
     angular
         .module('requisition-initiate')
-        .service('requisitionInitiateService', service);
+        .service('siglusRequisitionInitiateService', service);
 
     service.$inject = [
         'requisitionUrlFactory', '$resource'
