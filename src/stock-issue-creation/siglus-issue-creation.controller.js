@@ -19,40 +19,36 @@
 
     /**
      * @ngdoc controller
-     * @name stock-receive-creation.controller:StockReceiveCreationController
+     * @name stock-issue-creation.controller:SiglusStockIssueCreationController
      *
      * @description
-     * Controller for managing stock receive creation.
+     * Controller for managing stock issue creation.
      */
     angular
-        .module('stock-receive-creation')
-        .controller('StockReceiveCreationController', controller);
+        .module('stock-issue-creation')
+        .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService'
+        'siglusSignatureModalService', 'stockAdjustmentService', 'draft'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, orderableLotMapping, stockAdjustmentService,
-                        draft, siglusArchivedProductService) {
+                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft) {
         var vm = this,
             previousAdded = {};
 
         vm.draft = draft;
 
-        orderableLotMapping.setOrderableGroups(orderableGroups);
-
         /**
          * @ngdoc property
-         * @propertyOf stock-receive-creation.controller:StockReceiveCreationController
+         * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name vvmStatuses
          * @type {Object}
          *
@@ -63,7 +59,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-receive-creation.controller:StockReceiveCreationController
+         * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name showVVMStatusColumn
          * @type {boolean}
          *
@@ -78,7 +74,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name search
          *
          * @description
@@ -98,52 +94,39 @@
             });
         };
 
-        // first add without lot
-        vm.addProductWithoutLot = function() {
+        /**
+         * @ngdoc method
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+         * @name addProduct
+         *
+         * @description
+         * Add a product for stock adjustment.
+         */
+        vm.addProduct = function() {
             var selectedItem = orderableGroupService
-                .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
+                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
             var item = _.extend(
                 {
                     $errors: {},
-                    $previewSOH: null,
-                    lotOptions: angular.copy(vm.lots),
-                    orderableId: vm.selectedOrderableGroup[0].orderable.id,
-                    showSelect: false
+                    $previewSOH: selectedItem.stockOnHand
                 },
                 selectedItem, copyDefaultValue()
             );
-
-            item.isKit = !!(item.orderable && item.orderable.isKit);
-            if (item.isKit) {
-                var selectedOrderableGroup =
-                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
-                var selectedLot = orderableGroupService
-                    .findByLotInOrderableGroup(selectedOrderableGroup, null);
-                if (selectedLot) {
-                    item.$previewSOH = selectedLot.stockOnHand;
-                }
-            }
-
             vm.addedLineItems.unshift(item);
 
             previousAdded = vm.addedLineItems[0];
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
-            // #105: activate archived product
-            siglusArchivedProductService.alterInfo([item]);
-            // #105: ends here
         };
 
-        $scope.$on('lotCodeChange', function(event, data) {
-            var lineItem = data.lineItem;
-            // var globalIndex = getPageNumber() * parseInt($stateParams.size) + data.index;
-            // vm.addedLineItems[globalIndex] = lineItem;
-            // vm.search();
-            vm.validateLot(lineItem);
-            vm.validateLotDate(lineItem);
-        });
+        // if reason Contains correction then show input
+        vm.isReasonCorrection = function(lineItem) {
+            if (lineItem.reason && lineItem.reason.name) {
+                lineItem.reason.isFreeTextAllowed = lineItem.reason.name.toLowerCase().indexOf('correction') >= 0;
+            }
+        };
 
         vm.filterDestinationsByProduct = function(destinations, programs) {
             var parentIds = [];
@@ -175,23 +158,9 @@
             };
         }
 
-        vm.filterReasonsByProduct = function(reasons, programs) {
-            var parentIds = [];
-            programs.forEach(function(program) {
-                parentIds.push(program.parentId);
-            });
-            var updatedReasons = [];
-            reasons.forEach(function(reason) {
-                if (parentIds.indexOf(reason.programId) !== -1) {
-                    updatedReasons.push(reason);
-                }
-            });
-            return updatedReasons;
-        };
-
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name remove
          *
          * @description
@@ -209,7 +178,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name removeDisplayItems
          *
          * @description
@@ -218,10 +187,8 @@
         vm.removeDisplayItems = function() {
             confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
                 .then(function() {
-                    loadingModalService.open();
                     vm.addedLineItems = [];
                     vm.displayItems = [];
-                    loadingModalService.close();
                     notificationService.success(vm.key('cleared'));
                     $stateParams.isAddProduct = true;
                     vm.search($state.current.name);
@@ -230,7 +197,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name validateQuantity
          *
          * @description
@@ -241,6 +208,8 @@
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
+            } else if (lineItem.quantity > lineItem.$previewSOH) {
+                lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberLargerThanSOH');
             } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
             } else {
@@ -251,7 +220,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name validateAssignment
          *
          * @description
@@ -269,7 +238,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name validateReason
          *
          * @description
@@ -285,30 +254,17 @@
         };
 
         vm.validateLot = function(lineItem) {
-            if (!lineItem.isKit) {
-                if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
-                    lineItem.$errors.lotCodeInvalid = false;
-                } else {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
-                }
-            }
-            return lineItem;
-        };
-
-        vm.validateLotDate = function(lineItem) {
-            if (!lineItem.isKit) {
-                if (lineItem.lot && lineItem.lot.expirationDate) {
-                    lineItem.$errors.lotDateInvalid = false;
-                } else {
-                    lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
-                }
+            if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
+                lineItem.$errors.lotCodeInvalid = false;
+            } else {
+                lineItem.$errors.lotCodeInvalid = true;
             }
             return lineItem;
         };
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name validateDate
          *
          * @description
@@ -323,7 +279,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name clearFreeText
          *
          * @description
@@ -338,7 +294,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name submit
          *
          * @description
@@ -361,7 +317,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name orderableSelectionChanged
          *
          * @description
@@ -377,14 +333,13 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            //vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
-            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
+            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
         /**
          * @ngdoc method
-         * @methodOf stock-receive-creation.controller:StockReceiveCreationController
+         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
          * @name getStatusDisplay
          *
          * @description
@@ -412,7 +367,6 @@
                     $stateParams.isAddProduct = false;
                     vm.search(true);
                 });
-
         };
 
         function isEmpty(value) {
@@ -425,8 +379,6 @@
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
-                vm.validateLot(item);
-                vm.validateLotDate(item);
             });
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
@@ -469,11 +421,10 @@
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = findParentId(lineItem);
                 lineItem.reason = _.find(reasons, {
-                    name: 'Receive'
+                    name: 'Issue'
                 });
             });
 
-            generateKitConstituentLineItem(addedLineItems);
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
                 addedLineItems, adjustmentType, signature)
                 .then(function() {
@@ -487,32 +438,6 @@
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
                 });
-        }
-
-        function generateKitConstituentLineItem(addedLineItems) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                return;
-            }
-
-            //CREDIT reason ID
-            var creditReason = reasons
-                .filter(function(reason) {
-                    return reason.reasonType === 'CREDIT';
-                })
-                .pop();
-
-            var constituentLineItems = [];
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.orderable.children.forEach(function(constituent) {
-                    constituent.reason = creditReason;
-                    constituent.occurredDate = lineItem.occurredDate;
-                    constituent.quantity = lineItem.quantity * constituent.quantity;
-                    constituentLineItems.push(constituent);
-                });
-            });
-
-            addedLineItems.push.apply(addedLineItems, constituentLineItems);
         }
 
         function findParentId(lineItem) {
