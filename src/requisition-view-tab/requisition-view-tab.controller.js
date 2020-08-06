@@ -35,7 +35,7 @@
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility',
-        'archivedProductService', 'program'
+        'siglusArchivedProductService', 'program'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +44,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility,
-                               archivedProductService, program) {
+                               siglusArchivedProductService, program) {
 
         var vm = this;
 
@@ -361,7 +361,7 @@
                     var addedLineItems = vm.lineItems.filter(function(lineItem) {
                         return addedOrderableIds.includes(lineItem.orderable.id);
                     });
-                    archivedProductService.alterInfo(addedLineItems);
+                    siglusArchivedProductService.alterInfo(addedLineItems);
                 });
             // SIGLUS-REFACTOR: ends here
         }

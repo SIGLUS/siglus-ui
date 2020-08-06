@@ -34,7 +34,7 @@
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft',
-        'archivedProductService'
+        'siglusArchivedProductService'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -42,7 +42,7 @@
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureModalService, orderableLotMapping, stockAdjustmentService,
-                        draft, archivedProductService) {
+                        draft, siglusArchivedProductService) {
         var vm = this,
             previousAdded = {};
 
@@ -132,7 +132,7 @@
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
             // #105: activate archived product
-            archivedProductService.alterInfo([item]);
+            siglusArchivedProductService.alterInfo([item]);
             // #105: ends here
         };
 

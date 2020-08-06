@@ -36,8 +36,8 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         // SIGLUS-REFACTOR: starts here
-        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService', 'archivedProductService',
-        'orderableLotMapping'
+        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
+        'siglusArchivedProductService', 'orderableLotMapping'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -48,7 +48,7 @@
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, MAX_STRING_VALUE, currentUserService, navigationStateService,
-                        archivedProductService, orderableLotMapping) {
+                        siglusArchivedProductService, orderableLotMapping) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -236,7 +236,7 @@
                 reload($state.current.name);
 
                 // #105: activate archived product
-                archivedProductService.alterInfo(addedItems);
+                siglusArchivedProductService.alterInfo(addedItems);
                 // #105: ends here
             });
         };

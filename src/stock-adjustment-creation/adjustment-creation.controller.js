@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
         'siglusSignatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft',
-        'archivedProductService'
+        'siglusArchivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
                         siglusSignatureModalService, orderableLotMapping, stockAdjustmentService, draft,
-                        archivedProductService) {
+                        siglusArchivedProductService) {
         var vm = this,
             previousAdded = {};
 
@@ -175,7 +175,7 @@
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
             // #105: activate archived product
-            archivedProductService.alterInfo([item]);
+            siglusArchivedProductService.alterInfo([item]);
             // #105: ends here
         };
 

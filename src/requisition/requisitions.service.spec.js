@@ -78,7 +78,7 @@ describe('requisitionService', function() {
             this.FacilityTypeApprovedProductResource = $injector.get('FacilityTypeApprovedProductResource');
             this.periodService = $injector.get('periodService');
             // #105: activate archived product
-            this.archivedProductService = $injector.get('archivedProductService');
+            this.siglusArchivedProductService = $injector.get('siglusArchivedProductService');
             // #105: ends here
         });
 
@@ -243,7 +243,7 @@ describe('requisitionService', function() {
             .andReturn(this.$q.when(this.approvedProducts));
         spyOn(this.periodService, 'get').andReturn(this.requisition.processingPeriod);
         // #105: activate archived product
-        spyOn(this.archivedProductService, 'getArchivedOrderables').andReturn([]);
+        spyOn(this.siglusArchivedProductService, 'getArchivedOrderables').andReturn([]);
         // #105: ends here
 
         this.OrderableResource.prototype.getByVersionIdentities.andCallFake(function(identities) {
@@ -495,7 +495,7 @@ describe('requisitionService', function() {
             this.$httpBackend.flush();
             this.$rootScope.$apply();
 
-            expect(this.archivedProductService.getArchivedOrderables).not.toHaveBeenCalled();
+            expect(this.siglusArchivedProductService.getArchivedOrderables).not.toHaveBeenCalled();
         });
     });
 

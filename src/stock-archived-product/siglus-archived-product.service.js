@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc service
-     * @name stock-archived-product.archivedProductService
+     * @name stock-archived-product.siglusArchivedProductService
      *
      * @description
      * Some method of archived product.
      */
     angular
         .module('stock-archived-product')
-        .service('archivedProductService', service);
+        .service('siglusArchivedProductService', service);
 
     service.$inject = ['alertService', '$resource', 'openlmisUrlFactory'];
 
