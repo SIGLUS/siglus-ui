@@ -50,19 +50,22 @@
 
         function getTotal(informationName, orderableId) {
             var total = 0;
+            var isFilled = false;
+            var totalLineItem = _.first(vm.lineItems.filter(vm.isTotal));
+            var totalField = totalLineItem.informations[informationName].orderables[orderableId];
             angular.forEach(vm.lineItems, function(lineItem) {
-                if (!vm.isTotal(lineItem)) {
-                    total = total + lineItem.informations[informationName].orderables[orderableId].value;
+                var value = lineItem.informations[informationName].orderables[orderableId].value;
+                if (!vm.isTotal(lineItem) && _.isNumber(value)) {
+                    isFilled = true;
+                    total = total + value;
                 }
             });
-            angular.forEach(vm.lineItems, function(lineItem) {
-                if (vm.isTotal(lineItem)) {
-                    lineItem.informations[informationName].orderables[orderableId].value = total;
-                    requisitionValidator.validateSiglusLineItemField(lineItem.
-                        informations[informationName].orderables[orderableId]);
-                }
-            });
-            return total;
+            totalField.value = undefined;
+            if (isFilled) {
+                totalField.value = total;
+                requisitionValidator.validateSiglusLineItemField(totalField);
+            }
+            return totalField.value;
         }
 
         function extendLineItems() {

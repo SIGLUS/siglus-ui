@@ -115,8 +115,8 @@ describe('SiglusPatientController', function() {
 
     describe('getTotal', function() {
 
-        it('should return 0 if noting is input', function() {
-            expect(vm.getTotal(vm.lineItems[0], vm.lineItems[0].columns.total)).toBe(0);
+        it('should return undefined if noting is input', function() {
+            expect(vm.getTotal(vm.lineItems[0], vm.lineItems[0].columns.total)).toBeUndefined();
         });
 
         it('should return calculated total', function() {
@@ -126,6 +126,7 @@ describe('SiglusPatientController', function() {
         });
 
         it('validateSiglusLineItemField should be called', function() {
+            vm.lineItems[0].columns.new.value = 100;
             vm.getTotal(vm.lineItems[0], vm.lineItems[0].columns.total);
 
             expect(requisitionValidator.validateSiglusLineItemField)
