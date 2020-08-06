@@ -19,18 +19,18 @@
 
     /**
      * @ngdoc service
-     * @name openlmis-modal.signatureModalService
+     * @name openlmis-modal.siglusSignatureModalService
      *
      * @description
      * Service allows to display signature modal with custom message.
      */
 
     angular.module('openlmis-modal')
-        .service('signatureModalService', signatureModalService);
+        .service('siglusSignatureModalService', siglusSignatureModalService);
 
-    signatureModalService.$inject = ['openlmisModalService', '$q'];
+    siglusSignatureModalService.$inject = ['openlmisModalService', '$q'];
 
-    function signatureModalService(openlmisModalService, $q) {
+    function siglusSignatureModalService(openlmisModalService, $q) {
 
         this.confirm = confirm;
 

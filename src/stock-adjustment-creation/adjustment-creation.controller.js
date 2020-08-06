@@ -35,7 +35,8 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
-        'signatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft', 'archivedProductService'
+        'siglusSignatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft',
+        'archivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +45,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
-                        signatureModalService, orderableLotMapping, stockAdjustmentService, draft,
+                        siglusSignatureModalService, orderableLotMapping, stockAdjustmentService, draft,
                         archivedProductService) {
         var vm = this,
             previousAdded = {};
@@ -458,7 +459,7 @@
                 //     number: vm.addedLineItems.length
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
-                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
                     confirmSubmit(signature);
                 });

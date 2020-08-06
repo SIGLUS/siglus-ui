@@ -26,8 +26,8 @@
         'notificationService', 'confirmService', '$window', 'requisitionUrlFactory', '$filter',
         '$scope', 'RequisitionWatcher', 'accessTokenFactory', 'messageService', 'stateTrackerService',
         'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canSubmitAndAuthorize', 'canAuthorize',
-        'canDelete', 'hasAuthorizeRight', 'canApproveAndReject', 'canSync', 'signatureModalService', 'processingPeriod',
-        'program', 'facility'
+        'canDelete', 'hasAuthorizeRight', 'canApproveAndReject', 'canSync', 'siglusSignatureModalService',
+        'processingPeriod', 'program', 'facility'
     ];
 
     function RequisitionReportController($state, requisition, requisitionValidator, requisitionService,

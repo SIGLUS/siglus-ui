@@ -33,14 +33,14 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'signatureModalService', 'stockAdjustmentService', 'draft'
+        'siglusSignatureModalService', 'stockAdjustmentService', 'draft'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, signatureModalService, stockAdjustmentService, draft) {
+                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft) {
         var vm = this,
             previousAdded = {};
 
@@ -303,7 +303,7 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
                     confirmSubmit(signature);
                 });

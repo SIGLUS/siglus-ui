@@ -31,13 +31,13 @@
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'kit', 'messageService',
         'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
-        'kitCreationService', 'signatureModalService', 'notificationService', 'dateUtils',
+        'kitCreationService', 'siglusSignatureModalService', 'notificationService', 'dateUtils',
         'UNPACK_REASONS'
     ];
 
     function controller($scope, $state, $stateParams, facility, allProductsProgram, kit, messageService,
                         MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService, stockKitUnpackService,
-                        alertService, kitCreationService, signatureModalService, notificationService, dateUtils,
+                        alertService, kitCreationService, siglusSignatureModalService, notificationService, dateUtils,
                         UNPACK_REASONS) {
         var vm = this;
 
@@ -244,7 +244,7 @@
             if (vm.submitValidate()) {
                 $scope.$broadcast('openlmis-form-submit');
             } else {
-                signatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
                     var kitItem = {
                         orderableId: vm.kit.id,
