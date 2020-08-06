@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('requisition-view-section')
+        .module('siglus-requisition-view-section')
         .component('usageInformation', {
             bindings: {
                 sections: '<',
@@ -29,7 +29,7 @@
             },
             controller: 'SiglusUsageInformationController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-view-section/siglus-usage-information.html'
+            templateUrl: 'siglus-requisition-view-section/siglus-usage-information.html'
         });
 
 })();

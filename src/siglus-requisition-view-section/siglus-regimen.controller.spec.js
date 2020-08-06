@@ -19,7 +19,7 @@ describe('SiglusRegimentController', function() {
         $q, $rootScope;
 
     beforeEach(function() {
-        module('requisition-view-section');
+        module('siglus-requisition-view-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');

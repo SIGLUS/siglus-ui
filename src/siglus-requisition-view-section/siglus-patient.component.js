@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('requisition-view-section')
+        .module('siglus-requisition-view-section')
         .component('siglusPatient', {
             bindings: {
                 sections: '<',
@@ -27,7 +27,7 @@
             },
             controller: 'SiglusPatientController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-view-section/siglus-patient.html'
+            templateUrl: 'siglus-requisition-view-section/siglus-patient.html'
         });
 
 })();

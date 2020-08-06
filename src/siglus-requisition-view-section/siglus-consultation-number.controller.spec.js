@@ -18,7 +18,7 @@ describe('SiglusConsultationNumberViewController', function() {
     var vm, $controller, program, ProgramDataBuilder, sections, lineItems, canEdit, isEmergency;
 
     beforeEach(function() {
-        module('requisition-view-section');
+        module('siglus-requisition-view-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
