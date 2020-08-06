@@ -16,7 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('stock-input-select', [
+    angular.module('siglus-stock-input-select', [
         'stock-orderable-group',
         'stock-product-name',
         'stock-constants'

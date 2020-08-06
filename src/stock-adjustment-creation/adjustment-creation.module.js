@@ -30,7 +30,7 @@
         // SIGLUS-REFACTOR: starts here
         // 'stock-unpack-kit',
         'referencedata-lot',
-        'stock-input-select',
+        'siglus-stock-input-select',
         'stock-event',
         'siglus-stock-archived-product'
         // SIGLUS-REFACTOR: ends here
