@@ -18,7 +18,7 @@ describe('requisitionValidator', function() {
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
         lineItems, column, columns, requisition,
         // SIGLUS-REFACTOR: add new variable
-        requisitionUtils, kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems,
+        siglusRequisitionUtils, kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems,
         consultationNumberLineItems;
         // SIGLUS-REFACTOR: ends here
 
@@ -30,8 +30,8 @@ describe('requisitionValidator', function() {
                 'requestedQuantityExplanation'
             ];
             validationFactory = jasmine.createSpyObj('validationFactory', methods);
-            // SIGLUS-REFACTOR: add requisitionUtils
-            requisitionUtils = jasmine.createSpyObj('requisitionUtils', [
+            // SIGLUS-REFACTOR: add siglusRequisitionUtils
+            siglusRequisitionUtils = jasmine.createSpyObj('siglusRequisitionUtils', [
                 'isEmpty', 'calculateTotal', 'clearTestConsumptionError'
             ]);
             // SIGLUS-REFACTOR: ends here
@@ -39,9 +39,9 @@ describe('requisitionValidator', function() {
             $provide.service('validationFactory', function() {
                 return validationFactory;
             });
-            // SIGLUS-REFACTOR: add requisitionUtils
-            $provide.factory('requisitionUtils', function() {
-                return requisitionUtils;
+            // SIGLUS-REFACTOR: add siglusRequisitionUtils
+            $provide.factory('siglusRequisitionUtils', function() {
+                return siglusRequisitionUtils;
             });
             // SIGLUS-REFACTOR: ends here
         });
