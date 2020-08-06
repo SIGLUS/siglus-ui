@@ -27,7 +27,7 @@
         $stateProvider.state('openlmis.requisitions.history', {
             label: 'requisitionView.viewRequisition',
             url: '/history/:rnr?page&size',
-            templateUrl: 'requisition-view-tab/requisition-view-tab-history.html',
+            templateUrl: 'requisition-view-tab/siglus-requisition-view-tab-history.html',
             controller: 'SiglusHistoryViewTabController',
             controllerAs: 'vm',
             isOffline: true,
