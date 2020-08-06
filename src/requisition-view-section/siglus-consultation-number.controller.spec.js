@@ -152,7 +152,7 @@ describe('SiglusConsultationNumberViewController', function() {
             expect(total.value).toBe(220);
         });
 
-        it('should return total value 0 when the value of consultationNumberField is null ' +
+        it('should return total value undefined when the value of consultationNumberField is null ' +
             'and the value of newField is null', function() {
             vm.lineItems[0].columns['consultationNumber'].value = null;
             vm.lineItems[0].columns['new'].value = null;
@@ -160,7 +160,7 @@ describe('SiglusConsultationNumberViewController', function() {
 
             vm.getTotal(lineItems[0], total);
 
-            expect(total.value).toBe(0);
+            expect(total.value).toBeUndefined();
         });
 
         it('should get error message when the value of consultationNumberField is 2147483647 ' +

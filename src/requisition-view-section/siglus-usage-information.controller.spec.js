@@ -138,6 +138,20 @@ describe('SiglusUsageInformationController', function() {
         it('should return total when informationName and orderableId', function() {
             var informationName = 'treatmentsAttended';
             var orderableId = '98-76-54-321';
+            vm.lineItems.push({
+                service: 'total',
+                name: 'total',
+                informations: {
+                    treatmentsAttended: {
+                        orderables: {
+                            '98-76-54-321': {
+                                usageInformationLineItemId: '98-76-54-321',
+                                value: 0
+                            }
+                        }
+                    }
+                }
+            });
 
             expect(vm.getTotal(informationName, orderableId)).toBe(2);
         });

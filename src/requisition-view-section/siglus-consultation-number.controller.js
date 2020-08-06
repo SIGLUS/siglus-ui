@@ -46,13 +46,19 @@
         }
 
         function getTotal(lineItem, column) {
-            column.value = _.reduce(lineItem.columns, function(total, column) {
-                if (!vm.isCalculated(column)) {
+            var isFilled = false;
+            var total = _.reduce(lineItem.columns, function(total, column) {
+                if (!vm.isCalculated(column) && _.isNumber(column.value)) {
+                    isFilled = true;
                     return total + column.value;
                 }
                 return total;
             }, 0);
-            requisitionValidator.validateSiglusLineItemField(column);
+            column.value = undefined;
+            if (isFilled) {
+                column.value = total;
+                requisitionValidator.validateSiglusLineItemField(column);
+            }
             return column.value;
         }
 

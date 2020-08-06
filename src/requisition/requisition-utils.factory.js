@@ -37,9 +37,14 @@
         };
 
         function getBasicLineItemsTotal(lineItems, column) {
-            return _.reduce(lineItems, function(total, lineItem) {
-                return total + (lineItem.columns[column.name].value || 0);
-            }, 0);
+            return lineItems.reduce(function(total, lineItem) {
+                if (_.isNumber(lineItem.columns[column.name].value)) {
+                    if (_.isUndefined(total)) {
+                        total = 0;
+                    }
+                    return total + lineItem.columns[column.name].value;
+                }
+            }, undefined);
         }
 
         function isEmpty(value) {
