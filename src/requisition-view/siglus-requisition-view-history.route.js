@@ -28,7 +28,7 @@
             label: 'requisitionView.viewRequisition',
             url: '/history/:rnr?page&size',
             templateUrl: 'requisition-view-tab/requisition-view-tab-history.html',
-            controller: 'HistoryViewTabController',
+            controller: 'SiglusHistoryViewTabController',
             controllerAs: 'vm',
             isOffline: true,
             nonTrackable: true,

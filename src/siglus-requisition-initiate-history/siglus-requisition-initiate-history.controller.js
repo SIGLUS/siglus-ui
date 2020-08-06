@@ -33,9 +33,9 @@
     ];
 
     function SiglusRequisitionInitiateHistoryController($state, $filter, $stateParams,
-                                                      facilities, offlineService,
-                                                      localStorageFactory, confirmService,
-                                                      requisitions) {
+                                                        facilities, offlineService,
+                                                        localStorageFactory, confirmService,
+                                                        requisitions) {
         var vm = this;
         vm.$onInit = onInit;
         vm.openRnr = openRnr;
