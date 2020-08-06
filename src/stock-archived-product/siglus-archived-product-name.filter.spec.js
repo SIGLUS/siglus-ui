@@ -25,7 +25,7 @@ describe('archived product name filter', function() {
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
         });
 
-        this.archivedProductNameFilter = this.$filter('archivedProductName');
+        this.archivedProductNameFilter = this.$filter('siglusArchivedProductName');
         this.orderable = new OrderableDataBuilder().build();
     });
 

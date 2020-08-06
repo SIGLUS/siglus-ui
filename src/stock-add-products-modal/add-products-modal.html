@@ -19,7 +19,7 @@
                         <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
                         <!-- #105: activate archived product-->
                         <select id="productSelect" ng-model="vm.selectedOrderableGroup"
-                                ng-options="(orderableGroup[0].orderable | archivedProductName) for orderableGroup in (vm.orderableGroups | orderByArchived)"
+                                ng-options="(orderableGroup[0].orderable | siglusArchivedProductName) for orderableGroup in (vm.orderableGroups | orderByArchived)"
                                 ng-change="vm.orderableSelectionChanged()"
                                 required>
                         </select>

@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc filter
-     * @name stock-archived-product.filter:archivedProductName
+     * @name stock-archived-product.filter:siglusArchivedProductName
      *
      * @description
      * Add archived tag for archived product name.
@@ -29,7 +29,7 @@
      */
     angular
         .module('stock-archived-product')
-        .filter('archivedProductName', archivedProductNameFilter);
+        .filter('siglusArchivedProductName', archivedProductNameFilter);
 
     function archivedProductNameFilter() {
         return function(orderable) {
