@@ -47,7 +47,7 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
             this.orderableGroupService = $injector.get('orderableGroupService');
             this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
             // SIGLUS-REFACTOR: starts here
-            this.stockKitUnpackService = $injector.get('stockKitUnpackService');
+            this.siglusStockKitUnpackService = $injector.get('siglusStockKitUnpackService');
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -71,8 +71,8 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         spyOn(this.orderableGroupService, 'getKitOnlyOrderablegroup').andCallThrough();
         // SIGLUS-REFACTOR: starts here
         spyOn(this.programService, 'getAllProductsProgram').andReturn(this.$q.resolve(this.program));
-        spyOn(this.stockKitUnpackService, 'getUnpackKits').andReturn('kits');
-        spyOn(this.stockKitUnpackService, 'getUnpackKit').andReturn('kit');
+        spyOn(this.siglusStockKitUnpackService, 'getUnpackKits').andReturn('kits');
+        spyOn(this.siglusStockKitUnpackService, 'getUnpackKit').andReturn('kit');
         // SIGLUS-REFACTOR: ends here
 
         this.state = this.$state.get('openlmis.stockmanagement.kitunpack.creation');

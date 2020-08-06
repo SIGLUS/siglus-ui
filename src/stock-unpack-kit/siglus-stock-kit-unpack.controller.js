@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc controller
-     * @name stock-unpack-kit.controller:KitUnpackController
+     * @name stock-unpack-kit.controller:SiglusKitUnpackController
      *
      * @description
      * Controller for making adjustment.
      */
     angular
         .module('stock-unpack-kit')
-        .controller('KitUnpackController', controller);
+        .controller('SiglusKitUnpackController', controller);
 
     controller.$inject = ['$state', 'facility', 'unpackKits'];
 

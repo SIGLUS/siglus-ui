@@ -38,7 +38,7 @@ describe('openlmis.stockmanagement.kitunpack state', function() {
             this.stockProgramUtilService =  $injector.get('stockProgramUtilService');
             this.ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE'); */
             this.STOCKMANAGEMENT_RIGHTS = $injector.get('STOCKMANAGEMENT_RIGHTS');
-            this.stockKitUnpackService = $injector.get('stockKitUnpackService');
+            this.siglusStockKitUnpackService = $injector.get('siglusStockKitUnpackService');
         });
 
         this.homeFacility = new MinimalFacilityDataBuilder()
@@ -56,7 +56,7 @@ describe('openlmis.stockmanagement.kitunpack state', function() {
         /*
         spyOn(this.authorizationService, 'getUser').andReturn(this.$q.resolve(this.user));
         spyOn(this.stockProgramUtilService, 'getPrograms').andReturn(this.$q.resolve(this.programs));*/
-        spyOn(this.stockKitUnpackService, 'getUnpackKits').andReturn('kits');
+        spyOn(this.siglusStockKitUnpackService, 'getUnpackKits').andReturn('kits');
 
         this.state = this.$state.get('openlmis.stockmanagement.kitunpack');
 
@@ -106,7 +106,7 @@ describe('openlmis.stockmanagement.kitunpack state', function() {
             this.goToUrl('/stockmanagement/unpack');
 
             //expect(this.$templateCache.get).toHaveBeenCalledWith('stock-adjustment/stock-adjustment.html');
-            expect(this.$templateCache.get).toHaveBeenCalledWith('stock-unpack-kit/stock-kit-unpack.html');
+            expect(this.$templateCache.get).toHaveBeenCalledWith('stock-unpack-kit/siglus-stock-kit-unpack.html');
             // SIGLUS-REFACTOR: ends here
         });
 

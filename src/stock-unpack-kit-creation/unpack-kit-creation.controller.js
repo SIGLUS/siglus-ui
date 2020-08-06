@@ -30,13 +30,13 @@
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'kit', 'messageService',
-        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'stockKitUnpackService', 'alertService',
+        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'siglusStockKitUnpackService', 'alertService',
         'kitCreationService', 'siglusSignatureModalService', 'notificationService', 'dateUtils',
         'UNPACK_REASONS'
     ];
 
     function controller($scope, $state, $stateParams, facility, allProductsProgram, kit, messageService,
-                        MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService, stockKitUnpackService,
+                        MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService, siglusStockKitUnpackService,
                         alertService, kitCreationService, siglusSignatureModalService, notificationService, dateUtils,
                         UNPACK_REASONS) {
         var vm = this;
