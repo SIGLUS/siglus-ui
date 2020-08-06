@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('requisition-initiate-history')
+        .module('siglus-requisition-initiate-history')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
@@ -32,9 +32,9 @@
                 size: '1000',
                 sort: ['createdDate,desc']
             },
-            controller: 'RequisitionInitiateHistoryController',
+            controller: 'SiglusRequisitionInitiateHistoryController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-initiate-history/requisition-initiate-history.html',
+            templateUrl: 'siglus-requisition-initiate-history/siglus-requisition-initiate-history.html',
             canAccess: function(permissionService, REQUISITION_RIGHTS) {
                 return permissionService.hasRoleWithRight(REQUISITION_RIGHTS.REQUISITION_VIEW);
             },
