@@ -34,8 +34,8 @@
                     // SIGLUS-REFACTOR:  replaced controller and templateUrl
                     //controller: 'StockAdjustmentCreationController',
                     //templateUrl: 'stock-adjustment-creation/adjustment-creation.html',
-                    controller: 'UnpackKitCreationController',
-                    templateUrl: 'stock-unpack-kit-creation/unpack-kit-creation.html',
+                    controller: 'SiglusUnpackKitCreationController',
+                    templateUrl: 'stock-unpack-kit-creation/siglus-unpack-kit-creation.html',
                     controllerAs: 'vm'
                     //SIGLUS-REFACTOR: ends here
                 }

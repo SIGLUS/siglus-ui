@@ -19,19 +19,19 @@
 
     /**
      * @ngdoc controller
-     * @name stock-unpack-kit-creation.controller:UnpackKitCreationController
+     * @name stock-unpack-kit-creation.controller:SiglusUnpackKitCreationController
      *
      * @description
      * Controller for managing stock adjustment creation.
      */
     angular
         .module('stock-unpack-kit-creation')
-        .controller('UnpackKitCreationController', controller);
+        .controller('SiglusUnpackKitCreationController', controller);
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'kit', 'messageService',
-        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'siglusStockKitUnpackService', 'alertService',
-        'kitCreationService', 'siglusSignatureModalService', 'notificationService', 'dateUtils',
+        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'siglusStockKitUnpackService',
+        'alertService', 'kitCreationService', 'siglusSignatureModalService', 'notificationService', 'dateUtils',
         'UNPACK_REASONS'
     ];
 
