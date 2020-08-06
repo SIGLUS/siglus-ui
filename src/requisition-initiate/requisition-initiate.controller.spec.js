@@ -113,7 +113,7 @@ describe('RequisitionInitiateController', function() {
     // });
     // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // SIGLUS-REFACTOR: move to siglus-requisition-initiate-requisition.controller.spec.js
     // it('should change page to requisition full supply for newly initialized requisition in selected period',
     //     function() {
     //         this.vm.$onInit();
@@ -138,7 +138,7 @@ describe('RequisitionInitiateController', function() {
     //     });
     // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // SIGLUS-REFACTOR: move to siglus-requisition-initiate-requisition.controller.spec.js
     // it('should initiate requisition with idempotency key', function() {
     //     this.vm.$onInit();
     //     spyOn(this.$state, 'go');
@@ -156,7 +156,7 @@ describe('RequisitionInitiateController', function() {
     // });
     // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // SIGLUS-REFACTOR: move to siglus-requisition-initiate-requisition.controller.spec.js
     // it('should display error when user has no right to init requisition', function() {
     //     this.permissionService.hasPermission.andReturn(this.$q.reject());
     //
@@ -175,7 +175,7 @@ describe('RequisitionInitiateController', function() {
     // });
     // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // SIGLUS-REFACTOR: move to siglus-requisition-initiate-requisition.controller.spec.js
     // it('should not change page to requisitions.requisition with selected period without rnrId and when invalid' +
     //     ' response from service', function() {
     //
@@ -192,7 +192,7 @@ describe('RequisitionInitiateController', function() {
     // });
     // SIGLUS-REFACTOR: ends here
 
-    // SIGLUS-REFACTOR: move to requisition-initiate-requisition.controller.spec.js
+    // SIGLUS-REFACTOR: move to siglus-requisition-initiate-requisition.controller.spec.js
     // it('should open loading modal', function() {
     //     spyOn(this.loadingModalService, 'open');
     //     this.vm.program = this.programs[0];

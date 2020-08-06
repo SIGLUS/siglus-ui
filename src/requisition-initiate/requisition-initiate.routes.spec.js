@@ -12,7 +12,7 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-// SIGLUS-REFACTOR: move test to requisition-initiate-requisition.controller.spec.js
+// SIGLUS-REFACTOR: move test to siglus-requisition-initiate-requisition.controller.spec.js
 // describe('openlmis.requisitions.initRnr state', function() {
 //
 //     var $q, $state, $rootScope, $stateParams, requisitionInitiateFactory, PeriodDataBuilder, periods,
