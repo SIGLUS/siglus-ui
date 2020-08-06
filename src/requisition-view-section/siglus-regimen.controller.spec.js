@@ -15,14 +15,15 @@
 
 describe('SiglusRegimentController', function() {
 
-    var vm, columnsDefination, sections, $controller, requisitionUtils, selectProductsModalService, $q, $rootScope;
+    var vm, columnsDefination, sections, $controller, siglusRequisitionUtils, selectProductsModalService,
+        $q, $rootScope;
 
     beforeEach(function() {
         module('requisition-view-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            requisitionUtils = $injector.get('requisitionUtils');
+            siglusRequisitionUtils = $injector.get('siglusRequisitionUtils');
             selectProductsModalService = $injector.get('selectProductsModalService');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
@@ -58,7 +59,7 @@ describe('SiglusRegimentController', function() {
             columns: columnsDefination
         }];
 
-        spyOn(requisitionUtils, 'getBasicLineItemsTotal').andReturn(1);
+        spyOn(siglusRequisitionUtils, 'getBasicLineItemsTotal').andReturn(1);
         vm = $controller('SiglusRegimentController');
         vm.sections = sections;
         vm.regimenLineItems = [{
@@ -161,13 +162,13 @@ describe('SiglusRegimentController', function() {
         });
 
         it('should return nothing when total is 2147483647', function() {
-            requisitionUtils.getBasicLineItemsTotal.andReturn(2147483647);
+            siglusRequisitionUtils.getBasicLineItemsTotal.andReturn(2147483647);
 
             expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community)).toBeUndefined();
         });
 
         it('should return error message when total is 2147483648', function() {
-            requisitionUtils.getBasicLineItemsTotal.andReturn(2147483648);
+            siglusRequisitionUtils.getBasicLineItemsTotal.andReturn(2147483648);
 
             expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community))
                 .toBe('requisitionValidation.numberTooLarge');

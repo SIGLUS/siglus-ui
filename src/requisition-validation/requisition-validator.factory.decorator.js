@@ -33,10 +33,10 @@
         $provide.decorator('requisitionValidator', decorator);
     }
 
-    decorator.$inject = ['$delegate', '$filter', 'requisitionUtils', 'messageService', 'COLUMN_TYPES',
+    decorator.$inject = ['$delegate', '$filter', 'siglusRequisitionUtils', 'messageService', 'COLUMN_TYPES',
         'MAX_INTEGER_VALUE', 'siglusColumnUtils'];
 
-    function decorator($delegate, $filter, requisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
+    function decorator($delegate, $filter, siglusRequisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
                        siglusColumnUtils) {
         $delegate.validateUsageReport = validateUsageReport;
         $delegate.validateTotalEqualOfRegimen = validateTotalEqualOfRegimen;
@@ -103,11 +103,11 @@
             var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
             var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
             valid = !_.some(regimenColumns, function(column) {
-                return requisitionUtils
+                return siglusRequisitionUtils
                     .getBasicLineItemsTotal(requisition.regimenLineItems, column) > MAX_INTEGER_VALUE;
             }) && valid;
             valid = !_.some(summaryColumns, function(column) {
-                return requisitionUtils
+                return siglusRequisitionUtils
                     .getBasicLineItemsTotal(requisition.regimenDispatchLineItems, column) > MAX_INTEGER_VALUE;
             }) && valid;
             return valid;
@@ -205,7 +205,7 @@
 
         function validateTestConsumptionLineItems(lineItems) {
             var isValid = true;
-            requisitionUtils.clearTestConsumptionError(lineItems);
+            siglusRequisitionUtils.clearTestConsumptionError(lineItems);
             angular.forEach(lineItems, function(lineItem) {
                 angular.forEach(_.values(lineItem.projects), function(testProject) {
                     var fields = _.values(testProject.outcomes);
@@ -572,9 +572,9 @@
                 var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
                 var len = Math.min(regimenColumns.length, summaryColumns.length);
                 for (var i = 0; i < len; i++) {
-                    var regimenTotal = requisitionUtils
+                    var regimenTotal = siglusRequisitionUtils
                         .getBasicLineItemsTotal(requisition.regimenLineItems, regimenColumns[i]);
-                    var summaryTotal = requisitionUtils
+                    var summaryTotal = siglusRequisitionUtils
                         .getBasicLineItemsTotal(requisition.regimenDispatchLineItems, regimenColumns[i]);
                     if (regimenTotal !== summaryTotal) {
                         isValide = false;

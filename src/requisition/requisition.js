@@ -31,13 +31,13 @@
     requisitionFactory.$inject = [
         '$q', '$resource', 'requisitionUrlFactory', 'RequisitionTemplate', 'LineItem', 'REQUISITION_STATUS',
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
-        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService', 'requisitionUtils'
+        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService', 'siglusRequisitionUtils'
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
                                 COLUMN_SOURCES, localStorageFactory, dateUtils, $filter, TEMPLATE_COLUMNS,
                                 authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService,
-                                requisitionUtils) {
+                                siglusRequisitionUtils) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             // SIGLUS-REFACTOR: starts here
@@ -191,7 +191,7 @@
                     });
                 });
             });
-            requisitionUtils.clearTestConsumptionError(requisition.testConsumptionLineItems);
+            siglusRequisitionUtils.clearTestConsumptionError(requisition.testConsumptionLineItems);
             angular.forEach(requisition.patientLineItems, function(lineItem) {
                 angular.forEach(Object.keys(lineItem.columns), function(columnName) {
                     lineItem.columns[columnName].$error = undefined;

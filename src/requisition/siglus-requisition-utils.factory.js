@@ -26,9 +26,9 @@
      */
     angular
         .module('requisition')
-        .factory('requisitionUtils', requisitionUtils);
+        .factory('siglusRequisitionUtils', siglusRequisitionUtils);
 
-    function requisitionUtils() {
+    function siglusRequisitionUtils() {
         return {
             isEmpty: isEmpty,
             calculateTotal: calculateTotal,

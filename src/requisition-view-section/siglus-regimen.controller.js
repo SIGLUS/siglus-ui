@@ -22,17 +22,17 @@
         .controller('SiglusRegimentController', controller);
 
     controller.$inject = ['SIGLUS_SECTION_TYPES', 'COLUMN_SOURCES', 'MAX_INTEGER_VALUE',
-        'siglusTemplateConfigureService', 'selectProductsModalService', 'messageService', 'requisitionUtils'];
+        'siglusTemplateConfigureService', 'selectProductsModalService', 'messageService', 'siglusRequisitionUtils'];
 
     function controller(SIGLUS_SECTION_TYPES, COLUMN_SOURCES, MAX_INTEGER_VALUE, siglusTemplateConfigureService,
-                        selectProductsModalService, messageService, requisitionUtils) {
+                        selectProductsModalService, messageService, siglusRequisitionUtils) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.regimenSection = undefined;
         vm.summarySection = undefined;
-        vm.getTotal = requisitionUtils.getBasicLineItemsTotal;
+        vm.getTotal = siglusRequisitionUtils.getBasicLineItemsTotal;
         vm.validateTotal = validateTotal;
         vm.addRegimen = addRegimen;
         vm.removeRegimen = removeRegimen;
