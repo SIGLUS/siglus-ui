@@ -25,7 +25,7 @@ describe('order by archived filter', function() {
             OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
         });
 
-        this.orderByArchivedFilter = this.$filter('orderByArchived');
+        this.orderByArchivedFilter = this.$filter('siglusOrderByArchived');
         this.orderableGroups = [
             new OrderableGroupDataBuilder().build(),
             new OrderableGroupDataBuilder().build(),
