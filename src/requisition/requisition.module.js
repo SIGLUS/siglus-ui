@@ -48,7 +48,7 @@
         'ui.router',
         'openlmis-database',
         // #105: activate archived product
-        'stock-archived-product'
+        'siglus-stock-archived-product'
         // #105: ends here
     ]);
 

@@ -32,7 +32,7 @@
         'referencedata-lot',
         'stock-input-select',
         'stock-event',
-        'stock-archived-product'
+        'siglus-stock-archived-product'
         // SIGLUS-REFACTOR: ends here
     ]);
 })();
