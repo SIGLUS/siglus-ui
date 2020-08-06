@@ -28,7 +28,7 @@
         'ui.router',
         'openlmis-rights',
         'openlmis-modal',
-        'refresh-confirm',
+        'siglus-refresh-confirm',
         'requisition-constants'
     ]);
 

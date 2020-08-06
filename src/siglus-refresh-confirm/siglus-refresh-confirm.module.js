@@ -16,6 +16,6 @@
 (function() {
     'use strict';
 
-    angular.module('refresh-confirm', [
+    angular.module('siglus-refresh-confirm', [
     ]);
 })();

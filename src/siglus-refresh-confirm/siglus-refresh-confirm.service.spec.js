@@ -19,7 +19,7 @@ describe('siglusRefreshConfirmService', function() {
 
     beforeEach(function() {
 
-        module('refresh-confirm');
+        module('siglus-refresh-confirm');
 
         inject(function(_siglusRefreshConfirmService_) {
             siglusRefreshConfirmService = _siglusRefreshConfirmService_;
