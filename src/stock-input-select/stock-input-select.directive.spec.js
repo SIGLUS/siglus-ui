@@ -24,7 +24,7 @@ describe('stockInputSelectDirective', function() {
         mockOrderableGroups,
         mockSelectedItem,
         orderableGroupService,
-        autoGenerateService,
+        siglusAutoGenerateService,
         orderableLotMapping;
 
     mockItems = getMockItems();
@@ -38,8 +38,8 @@ describe('stockInputSelectDirective', function() {
         ['findSelectedOrderableGroupsByOrderableId', 'findAllOrderableIds']);
     orderableLotMapping.findSelectedOrderableGroupsByOrderableId.andReturn(mockOrderableGroups);
 
-    autoGenerateService = jasmine.createSpyObj('autoGenerateService', ['autoGenerateLotCode']);
-    autoGenerateService.autoGenerateLotCode.andReturn('SEM-LOTE-22A05-062020-0');
+    siglusAutoGenerateService = jasmine.createSpyObj('siglusAutoGenerateService', ['autoGenerateLotCode']);
+    siglusAutoGenerateService.autoGenerateLotCode.andReturn('SEM-LOTE-22A05-062020-0');
     // Load the stock-adjustment-creation module, which contains the directive
     beforeEach(function() {
         module('stock-input-select');

@@ -16,7 +16,7 @@
 
     angular
         .module('stock-adjustment-creation')
-        .service('autoGenerateService', service);
+        .service('siglusAutoGenerateService', service);
 
     service.$inject = ['dateUtils'];
     // store postFix

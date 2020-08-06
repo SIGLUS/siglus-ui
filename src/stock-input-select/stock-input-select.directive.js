@@ -27,9 +27,9 @@
                     lineItems: '=',
                     enableInput: '<'
                 },
-                controller: ['$scope', 'orderableGroupService', 'autoGenerateService',
+                controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
                     'orderableLotMapping', '$timeout', 'messageService', 'dateUtils',
-                    function($scope, orderableGroupService, autoGenerateService,
+                    function($scope, orderableGroupService, siglusAutoGenerateService,
                         orderableLotMapping, $timeout, messageService, dateUtils) {
                         $scope.$watch('lineItem.lot', function(newLot, oldLot) {
                             if ((!_.isEqual(newLot, oldLot))) {
@@ -48,7 +48,7 @@
                                 && (lineItem.lot.isAuto || lineItem.isTryAuto)) {
                                 // id means from option
                                 if (!lineItem.lot.id) {
-                                    var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
+                                    var lotCode = siglusAutoGenerateService.autoGenerateLotCode(lineItem);
                                     lineItem.lot = {
                                         lotCode: lotCode,
                                         expirationDate: lineItem.lot.expirationDate,
@@ -80,7 +80,7 @@
                             var lineItem = $scope.lineItem;
                             //lot.id means option
                             if (lineItem.lot && lineItem.lot.expirationDate && !lineItem.lot.id) {
-                                var lotCode = autoGenerateService.autoGenerateLotCode(lineItem);
+                                var lotCode = siglusAutoGenerateService.autoGenerateLotCode(lineItem);
                                 $scope.lineItem.lot = {
                                     lotCode: lotCode,
                                     expirationDate: lineItem.lot.expirationDate,
