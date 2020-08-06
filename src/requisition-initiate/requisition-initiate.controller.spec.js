@@ -37,7 +37,7 @@ describe('RequisitionInitiateController', function() {
             // SIGLUS-REFACTOR: starts here
             this.confirmService = $injector.get('confirmService');
             this.requisitionInitiateService = $injector.get('requisitionInitiateService');
-            this.requisitionDatePickerService = $injector.get('requisitionDatePickerService');
+            this.siglusRequisitionDatePickerService = $injector.get('siglusRequisitionDatePickerService');
             this.dateUtils = $injector.get('dateUtils');
             // SIGLUS-REFACTOR: ends here
 
