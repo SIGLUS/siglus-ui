@@ -28,7 +28,7 @@
         .module('siglus-add-regimen-model')
         .provider('siglusAddRegimensModalState', siglusAddRegimensModalStateProvider);
 
-    siglusAddRegimensModalStateProvider.$inject = ['modalStateProvider', '$stateProvider'];
+    siglusAddRegimensModalStateProvider.$inject = ['modalStateProvider'];
 
     function siglusAddRegimensModalStateProvider(modalStateProvider) {
         this.stateWithAddRegimensChildState = stateWithAddRegimensChildState;
