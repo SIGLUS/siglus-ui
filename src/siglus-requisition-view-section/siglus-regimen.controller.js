@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('requisition-view-section')
+        .module('siglus-requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
     controller.$inject = ['SIGLUS_SECTION_TYPES', 'COLUMN_SOURCES', 'MAX_INTEGER_VALUE',

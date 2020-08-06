@@ -18,17 +18,17 @@
     'use strict';
 
     angular
-        .module('requisition-view-section')
-        .component('siglusConsultationNumber', {
+        .module('siglus-requisition-view-section')
+        .component('siglusTestConsumption', {
             bindings: {
+                program: '<',
                 sections: '<',
                 lineItems: '<',
-                canEdit: '<',
-                isEmergency: '<'
+                canEdit: '<'
             },
-            controller: 'SiglusConsultationNumberViewController',
+            controller: 'SiglusTestConsumptionController',
             controllerAs: 'vm',
-            templateUrl: 'requisition-view-section/siglus-consultation-number.html'
+            templateUrl: 'siglus-requisition-view-section/siglus-test-consumption.html'
         });
 
 })();

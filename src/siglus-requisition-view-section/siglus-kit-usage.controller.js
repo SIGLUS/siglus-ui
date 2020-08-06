@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('requisition-view-section')
+        .module('siglus-requisition-view-section')
         .controller('SiglusKitUsageController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'SIGLUS_SERVICE_TYPES',

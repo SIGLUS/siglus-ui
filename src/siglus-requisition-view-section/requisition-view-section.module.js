@@ -17,19 +17,11 @@
 
     'use strict';
 
-    angular
-        .module('requisition-view-section')
-        .component('siglusRegimen', {
-            bindings: {
-                sections: '<',
-                regimenLineItems: '<',
-                regimenDispatchLineItems: '<',
-                customRegimens: '<',
-                canEdit: '<'
-            },
-            controller: 'SiglusRegimentController',
-            controllerAs: 'vm',
-            templateUrl: 'requisition-view-section/siglus-regimen.html'
-        });
+    angular.module('siglus-requisition-view-section', [
+        'admin-template',
+        'siglus-add-regimen-model',
+        'siglus-admin-template-configure-column-setting',
+        'siglus-admin-template-configure-preview-section'
+    ]);
 
 })();

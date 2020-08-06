@@ -17,37 +17,19 @@
 
     'use strict';
 
-    /**
-     * @ngdoc filter
-     * @name admin-template-configure-columns.filter:orderObjectBy
-     *
-     * @description
-     * Orders object properties by given attribute.
-     *
-     * @param  {Object} value object to be sorted by given attribute
-     * @param  {String} key   object properties will be sorted using this key
-     * @return {Array}        sorted properties
-     */
-
     angular
-        .module('requisition-view-section')
-        .filter('siglusOrderObjectBy', filter);
-
-    filter.$inject = ['$filter'];
-
-    function filter($filter) {
-        return function(input, attribute) {
-            if (!angular.isObject(input)) {
-                return input;
-            }
-
-            var columns = [];
-
-            for (var objectKey in input) {
-                columns.push(input[objectKey]);
-            }
-            return $filter('orderBy')(columns, attribute);
-        };
-    }
+        .module('siglus-requisition-view-section')
+        .component('siglusRegimen', {
+            bindings: {
+                sections: '<',
+                regimenLineItems: '<',
+                regimenDispatchLineItems: '<',
+                customRegimens: '<',
+                canEdit: '<'
+            },
+            controller: 'SiglusRegimentController',
+            controllerAs: 'vm',
+            templateUrl: 'siglus-requisition-view-section/siglus-regimen.html'
+        });
 
 })();

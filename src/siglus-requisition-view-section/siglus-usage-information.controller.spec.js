@@ -18,7 +18,7 @@ describe('SiglusUsageInformationController', function() {
     var vm, sections, usageInformationLineItems, $controller, productMap;
 
     beforeEach(function() {
-        module('requisition-view-section');
+        module('siglus-requisition-view-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');

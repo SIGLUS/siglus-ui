@@ -18,7 +18,7 @@ describe('SiglusPatientController', function() {
     var vm, sections, patientLineItems, $controller, requisitionValidator;
 
     beforeEach(function() {
-        module('requisition-view-section');
+        module('siglus-requisition-view-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');

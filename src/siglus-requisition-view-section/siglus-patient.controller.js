@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('requisition-view-section')
+        .module('siglus-requisition-view-section')
         .controller('SiglusPatientController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'requisitionValidator'];
