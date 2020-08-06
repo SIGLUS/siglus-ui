@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('KitUsageController', function() {
+describe('SiglusKitUsageController', function() {
 
     var vm, sections, kitUsageLineItems, $controller;
 
@@ -68,7 +68,7 @@ describe('KitUsageController', function() {
             }
         } ];
 
-        vm = $controller('KitUsageController');
+        vm = $controller('SiglusKitUsageController');
         vm.sections = sections;
         vm.lineItems = kitUsageLineItems;
         vm.$onInit();

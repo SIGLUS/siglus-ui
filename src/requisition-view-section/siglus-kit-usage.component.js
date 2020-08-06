@@ -25,7 +25,7 @@
                 lineItems: '<',
                 canEdit: '<'
             },
-            controller: 'KitUsageController',
+            controller: 'SiglusKitUsageController',
             controllerAs: 'vm',
             templateUrl: 'requisition-view-section/siglus-kit-usage.html'
         });
