@@ -32,12 +32,12 @@
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
         'productNameFilter', 'stockEventFactory',
         // SIGLUS-REFACTOR: starts here
-        'stockEventService'
+        'siglusStockEventService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, stockEventService) {
+                     productNameFilter, stockEventFactory, siglusStockEventService) {
         // SIGLUS-REFACTOR: starts here
         var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/physicalInventories'), {}, {
             get: {
@@ -86,7 +86,7 @@
             })
                 .$promise
                 .then(function(response) {
-                    stockEventService.formatResponse(response[0]);
+                    siglusStockEventService.formatResponse(response[0]);
                     return response;
                 });
         }
@@ -108,7 +108,7 @@
             })
                 .$promise
                 .then(function(response) {
-                    return stockEventService.formatResponse(response);
+                    return siglusStockEventService.formatResponse(response);
                 });
         }
 
@@ -189,7 +189,7 @@
         function saveDraft(draft) {
             return resource.update({
                 id: draft.id
-            }, stockEventService.formatPayload(draft)).$promise;
+            }, siglusStockEventService.formatPayload(draft)).$promise;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -224,7 +224,7 @@
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
             // SIGLUS-REFACTOR: starts here
-            return stockEventService.submit(event);
+            return siglusStockEventService.submit(event);
             // SIGLUS-REFACTOR: ends here
         }
 
@@ -244,7 +244,7 @@
             })
                 .$promise
                 .then(function(response) {
-                    stockEventService.formatResponse(response[0]);
+                    siglusStockEventService.formatResponse(response[0]);
                     return response;
                 });
         }
