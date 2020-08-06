@@ -24,15 +24,15 @@
      * Controller for requisition view page.
      */
     angular
-        .module('requisition-initiate-history')
-        .controller('RequisitionInitiateHistoryController', RequisitionInitiateRequisitionController);
+        .module('siglus-requisition-initiate-history')
+        .controller('SiglusRequisitionInitiateHistoryController', SiglusRequisitionInitiateHistoryController);
 
-    RequisitionInitiateRequisitionController.$inject = [
+    SiglusRequisitionInitiateHistoryController.$inject = [
         '$state', '$filter', '$stateParams', 'facilities', 'offlineService', 'localStorageFactory', 'confirmService',
         'requisitions'
     ];
 
-    function RequisitionInitiateRequisitionController($state, $filter, $stateParams,
+    function SiglusRequisitionInitiateHistoryController($state, $filter, $stateParams,
                                                       facilities, offlineService,
                                                       localStorageFactory, confirmService,
                                                       requisitions) {

@@ -23,7 +23,7 @@
      * @description
      * Responsible for initiate requisition screen.
      */
-    angular.module('requisition-initiate-history', [
+    angular.module('siglus-requisition-initiate-history', [
         'angular.filter',
         'ngResource',
         'requisition',
