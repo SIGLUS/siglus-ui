@@ -34,12 +34,18 @@
             nonTrackable: true,
             resolve: {
                 lineItems: function($filter, requisition) {
-                    // #227: user can add both full supply & non-fully supply product
-                    var fullSupplyLineItems = requisition.template.hideSkippedLineItems()
-                        ? $filter('filter')(requisition.requisitionLineItems, {
-                            skipped: '!true'
-                        }) : requisition.requisitionLineItems;
-                    // #227: ends here
+                    var filterObject = requisition.template.hideSkippedLineItems() ?
+                        {
+                            skipped: '!true',
+                            $program: {
+                                fullSupply: true
+                            }
+                        } : {
+                            $program: {
+                                fullSupply: true
+                            }
+                        };
+                    var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
 
                     return $filter('orderBy')(fullSupplyLineItems, [
                         '$program.orderableCategoryDisplayOrder',

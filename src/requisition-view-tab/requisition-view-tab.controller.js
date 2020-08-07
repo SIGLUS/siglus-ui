@@ -422,13 +422,21 @@
         }
 
         function refreshLineItems() {
-            // #227: user can add both full supply & non-fully supply product
-            vm.lineItems = (vm.requisition.template.hasSkipColumn() &&
-                vm.requisition.template.hideSkippedLineItems())
-                ? $filter('filter')(vm.requisition.requisitionLineItems, {
-                    skipped: '!true'
-                }) : vm.requisition.requisitionLineItems;
-            // #227: ends here
+            var filterObject = (fullSupply &&
+                vm.requisition.template.hasSkipColumn() &&
+                vm.requisition.template.hideSkippedLineItems()) ?
+                {
+                    skipped: '!true',
+                    $program: {
+                        fullSupply: fullSupply
+                    }
+                } : {
+                    $program: {
+                        fullSupply: fullSupply
+                    }
+                };
+
+            vm.lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
 
             // #271: fix add product performance. The follow code was added to fix OLMIS-6234, but with uniq
             // pagination id, line item's validator will not be covered by add product pagination,

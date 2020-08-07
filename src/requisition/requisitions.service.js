@@ -584,10 +584,13 @@
             requisition.requisitionLineItems.forEach(function(item) {
                 if (isOrderable) {
                     identities.push(item.orderable);
-                // #227: user can add both full supply & non-fully supply product
-                } else if (item.approvedProduct)  {
-                    identities.push(item.approvedProduct);
-                // #227: ends here
+                } else {
+                    // SIGLUS-REFACTOR: starts here
+                    var program = item.orderable.programs[0];
+                    if (item.approvedProduct && program.fullSupply) {
+                        identities.push(item.approvedProduct);
+                    }
+                    // SIGLUS-REFACTOR: ends here
                 }
             });
             return identities;
