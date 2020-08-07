@@ -83,10 +83,10 @@ pipeline {
         }
         stage('Notify to build reference-ui release') {
             when {
-                branch 'release-1.0'
+                branch 'release-1.1'
             }
             steps {
-                build job: '../siglus-reference-ui/release-1.0', wait: false
+                build job: '../siglus-reference-ui/release-1.1', wait: false
             }
         }
     }
