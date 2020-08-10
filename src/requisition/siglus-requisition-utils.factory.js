@@ -39,11 +39,9 @@
         function getBasicLineItemsTotal(lineItems, column) {
             return lineItems.reduce(function(total, lineItem) {
                 if (_.isNumber(lineItem.columns[column.name].value)) {
-                    if (_.isUndefined(total)) {
-                        total = 0;
-                    }
-                    return total + lineItem.columns[column.name].value;
+                    return (total || 0) + lineItem.columns[column.name].value;
                 }
+                return total;
             }, undefined);
         }
 
