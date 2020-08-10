@@ -672,7 +672,7 @@
          * @return {String} the prepared URL
          */
         function getPrintUrl() {
-            return requisitionUrlFactory('/api/requisitions/' + vm.requisition.id + '/print');
+            return requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
         }
 
         /**
