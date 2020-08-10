@@ -34,7 +34,9 @@
             TOTAL: 'total',
             APES: 'APES',
             CONSUMO: 'consumo',
-            POSITIVE: 'positive'
+            POSITIVE: 'positive',
+            PATIENTS: 'patients',
+            COMMUNITY: 'community'
         };
     }
 })();

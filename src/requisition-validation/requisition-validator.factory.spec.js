@@ -18,7 +18,7 @@ describe('requisitionValidator', function() {
     var validator, TEMPLATE_COLUMNS, COLUMN_SOURCES, MAX_INTEGER_VALUE, COLUMN_TYPES, validationFactory, lineItem,
         lineItems, column, columns, requisition,
         // SIGLUS-REFACTOR: add new variable
-        siglusRequisitionUtils, kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems,
+        kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems,
         consultationNumberLineItems;
         // SIGLUS-REFACTOR: ends here
 
@@ -30,19 +30,18 @@ describe('requisitionValidator', function() {
                 'requestedQuantityExplanation'
             ];
             validationFactory = jasmine.createSpyObj('validationFactory', methods);
-            // SIGLUS-REFACTOR: add siglusRequisitionUtils
-            siglusRequisitionUtils = jasmine.createSpyObj('siglusRequisitionUtils', [
-                'isEmpty', 'calculateTotal', 'clearTestConsumptionError'
-            ]);
-            // SIGLUS-REFACTOR: ends here
 
             $provide.service('validationFactory', function() {
                 return validationFactory;
             });
-            // SIGLUS-REFACTOR: add siglusRequisitionUtils
-            $provide.factory('siglusRequisitionUtils', function() {
-                return siglusRequisitionUtils;
-            });
+
+            // SIGLUS-REFACTOR: add requisitionUtils
+            // siglusRequisitionUtils = jasmine.createSpyObj('siglusRequisitionUtils', [
+            //     'isEmpty', 'calculateTotal', 'clearTestConsumptionError', 'getBasicLineItemsTotal'
+            // ]);
+            // $provide.factory('siglusRequisitionUtils', function() {
+            //     return siglusRequisitionUtils;
+            // });
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -57,7 +56,9 @@ describe('requisitionValidator', function() {
 
         lineItem = lineItemSpy('One');
 
+        // SIGLUS-REFACTOR: add extension
         var template = jasmine.createSpyObj('template', ['getColumns', 'extension']);
+        // SIGLUS-REFACTOR: ends here
         template.getColumns.andCallFake(function(nonFullSupply) {
             return nonFullSupply ? nonFullSupplyColumns() : fullSupplyColumns();
         });
@@ -154,13 +155,11 @@ describe('requisitionValidator', function() {
         requisition = {
             template: template,
             requisitionLineItems: lineItems,
-            // #251, #375, #399: requisition template
+            // SIGLUS-REFACTOR: starts here
             kitUsageLineItems: kitUsageLineItems,
             testConsumptionLineItems: testConsumptionLineItems,
             patientLineItems: patientLineItems,
             consultationNumberLineItems: consultationNumberLineItems,
-            // #251, #375, #399: ends here
-            // SIGLUS-REFACTOR: starts here
             extraData: {
                 consultationNumber: 1,
                 openedKitByCHW: 7,
@@ -172,7 +171,7 @@ describe('requisitionValidator', function() {
         };
     });
 
-    // #431: alert before signature pop up
+    // SIGLUS-REFACTOR: starts here
     describe('siglusValidRequisition', function() {
         beforeEach(function() {
             requisition.$isAuthorized = jasmine.createSpy().andReturn(false);
@@ -347,6 +346,183 @@ describe('requisitionValidator', function() {
         // #442: ends here
     });
 
+    describe('validateSiglusLineItemField', function() {
+        it('should return true if field is valid', function() {
+            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
+
+            expect(result).toBe(true);
+        });
+
+        it('should return false if field is no set', function() {
+            kitUsageLineItems[0].services.CHW.value = undefined;
+
+            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
+
+            expect(result).toBe(false);
+        });
+
+        it('should return false if field has value greater than max int value', function() {
+            kitUsageLineItems[0].services.CHW.value = MAX_INTEGER_VALUE + 1;
+
+            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
+
+            expect(kitUsageLineItems[0].services.CHW.$error).toBe('requisitionValidation.numberTooLarge');
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('validateTotalEqualOfRegimen', function() {
+        it('should return true if regimen is not enabled', function() {
+            requisition.template.extension.enableRegimen = false;
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true if regimen enabled but requisition is emergency', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.emergency = true;
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true when there is draft comment', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.draftStatusMessage = 'a';
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true when there is draft history', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.$statusMessages = ['a'];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true when there is no regimen items', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true when total patient is equal', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        value: 10
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true when total community is equal', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    community: {
+                        value: 11
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return true when total patients and community is equal', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    },
+                    new: {
+                        value: 12
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('should return false when total patients is not equal', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 10
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        value: 11
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
+        });
+
+        it('should return false when total community is not equal', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    community: {
+                        value: 10
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    community: {
+                        value: 11
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
+        });
+    });
+    // SIGLUS-REFACTOR: ends here
+
     describe('validateRequisition', function() {
 
         it('should return true if requisition is valid', function() {
@@ -409,31 +585,6 @@ describe('requisitionValidator', function() {
             // #431: ends here
 
             expect(validator.validateRequisition(requisition)).toBe(true);
-        });
-    });
-
-    describe('validateSiglusLineItemField', function() {
-        it('should return true if field is valid', function() {
-            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
-
-            expect(result).toBe(true);
-        });
-
-        it('should return false if field is no set', function() {
-            kitUsageLineItems[0].services.CHW.value = undefined;
-
-            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
-
-            expect(result).toBe(false);
-        });
-
-        it('should return false if field has value greater than max int value', function() {
-            kitUsageLineItems[0].services.CHW.value = MAX_INTEGER_VALUE + 1;
-
-            var result = validator.validateSiglusLineItemField(kitUsageLineItems[0].services.CHW);
-
-            expect(kitUsageLineItems[0].services.CHW.$error).toBe('requisitionValidation.numberTooLarge');
-            expect(result).toBe(false);
         });
     });
 
