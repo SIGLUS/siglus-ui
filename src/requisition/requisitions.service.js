@@ -554,9 +554,6 @@
                             });
                             requisition.availableFullSupplyProducts =  result[0];
                             // SIGLUS-REFACTOR: ends here
-                            // #331: Facility user can create requisition with product usage information section
-                            requisition.productMap = getProductMap(result[0], result[1]);
-                            // #331: ends here
                             requisition.availableNonFullSupplyProducts =
                                 filterOrderables(false, result[0], requisition.program.id);
 
@@ -629,16 +626,6 @@
             });
             return match;
         }
-
-        // #331: Facility user can create requisition with product usage information section
-        function getProductMap(avaiableProducts, addedProducts) {
-            var products = angular.copy(avaiableProducts);
-            angular.forEach(addedProducts, function(product) {
-                products = products.concat(product.orderable);
-            });
-            return _.indexBy(products, 'id');
-        }
-        // #331: ends here
 
     }
 })();

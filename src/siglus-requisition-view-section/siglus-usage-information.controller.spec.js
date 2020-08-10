@@ -15,7 +15,7 @@
 
 describe('SiglusUsageInformationController', function() {
 
-    var vm, sections, usageInformationLineItems, $controller, productMap;
+    var vm, sections, usageInformationLineItems, $controller, availableProducts;
 
     beforeEach(function() {
         module('siglus-requisition-view-section');
@@ -72,17 +72,15 @@ describe('SiglusUsageInformationController', function() {
             }
         }];
 
-        productMap = {
-            '98-76-54-321': {
-                id: '98-76-54-321',
-                fullProductName: 'Product for Test'
-            }
-        };
+        availableProducts = [{
+            id: '98-76-54-321',
+            fullProductName: 'Product for Test'
+        }];
 
         vm = $controller('SiglusUsageInformationController');
         vm.sections = sections;
         vm.lineItems = usageInformationLineItems;
-        vm.productMap = productMap;
+        vm.availableProducts = availableProducts;
         vm.$onInit();
     });
 

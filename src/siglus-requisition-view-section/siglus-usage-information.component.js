@@ -24,7 +24,8 @@
                 sections: '<',
                 lineItems: '<',
                 processingPeriodEndDate: '<',
-                productMap: '<',
+                availableProducts: '<',
+                addedProducts: '<',
                 canEdit: '<'
             },
             controller: 'SiglusUsageInformationController',

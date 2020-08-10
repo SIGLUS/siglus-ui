@@ -69,7 +69,8 @@
     <usage-information sections="vm.requisition.usageTemplate.usageInformation"
                        line-items="vm.requisition.usageInformationLineItems"
                        processing-period-end-date="vm.requisition.processingPeriod.endDate"
-                       product-map="vm.requisition.productMap"
+                       available-products="vm.requisition.availableFullSupplyProducts"
+                       added-products="vm.requisition.requisitionLineItems"
                        can-edit="false"
                        ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"/>
     <siglus-patient sections="vm.requisition.usageTemplate.patient"
