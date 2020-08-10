@@ -2,9 +2,8 @@
     <aside>
         <label>
             <input type="checkbox" id="enableQuickFill"
-                   ng-model="vm.template.quickFill"
-                   ng-change="vm.template.changeQuickFill()"
-                   ng-disabled="true"/>
+                   ng-model="vm.template.extension.enableQuicklyFill"
+            />
             {{'adminProgramTemplate.enableQuickFill.label' | message}}
         </label>
         <p>{{'adminProgramTemplate.enableQuickFill.description' | message}}</p>

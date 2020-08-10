@@ -2,15 +2,10 @@
 <div class="view-tab">
     <header class="sub-heading">
         <h3>{{'requisitionViewTab.products' | message}}</h3>
-        <button class="add" tabindex="-1"
-                ng-if="vm.requisition.template.extension.enableProduct"
-                ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
-                ng-click="vm.siglusAddProducts()"
-        >
-            {{'requisitionViewTab.addProduct' | message}}
+        <button ng-if="vm.showQuicklyFill()" ng-click="vm.quicklyFillHandler()" class="primary">
+            {{'requisitionViewTab.quicklyFill' | message}}
         </button>
     </header>
-    <!-- #442: create requisition with consultation number section-->
     <siglus-consultation-number
             sections="vm.requisition.usageTemplate.consultationNumber"
             line-items="vm.requisition.consultationNumberLineItems"
@@ -18,11 +13,19 @@
             is-emergency="vm.requisition.emergency"
             ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency"
     />
-    <!-- #442: ends here -->
     <kit-usage sections="vm.requisition.usageTemplate.kitUsage"
                line-items="vm.requisition.kitUsageLineItems"
                can-edit="vm.userCanEdit"
                ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
+    <div class="add-wrapper">
+        <button class="add" tabindex="-1"
+                ng-if="vm.requisition.template.extension.enableProduct"
+                ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
+                ng-click="vm.siglusAddProducts()"
+        >
+            {{'requisitionViewTab.addProduct' | message}}
+        </button>
+    </div>
     <div class="toolbar skipbar" ng-if="vm.requisition.template.extension.enableProduct && vm.showSkipControls">
         <h4>{{'requisitionViewTab.skip' | message}}</h4>
         <ul>
@@ -88,7 +91,7 @@
                     can-edit="vm.userCanEdit"
                     ng-if="vm.requisition.template.extension.enablePatient && !vm.requisition.emergency"
     ></siglus-patient>
-    <!-- ends here-->
+    <!-- #399: ends here-->
     <!-- #375: create requisition with test consumption section -->
     <siglus-test-consumption
             program="vm.program"
@@ -97,5 +100,5 @@
             can-edit="vm.userCanEdit"
             ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
     />
-    <!-- #: ends here -->
+    <!-- #375: ends here -->
 </div>
