@@ -34,10 +34,10 @@
     }
 
     decorator.$inject = ['$delegate', '$filter', 'siglusRequisitionUtils', 'messageService', 'COLUMN_TYPES',
-        'MAX_INTEGER_VALUE', 'siglusColumnUtils'];
+        'MAX_INTEGER_VALUE', 'siglusColumnUtils', 'SIGLUS_SERVICE_TYPES'];
 
     function decorator($delegate, $filter, siglusRequisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
-                       siglusColumnUtils) {
+                       siglusColumnUtils, SIGLUS_SERVICE_TYPES) {
         $delegate.validateUsageReport = validateUsageReport;
         $delegate.validateTotalEqualOfRegimen = validateTotalEqualOfRegimen;
         $delegate.isEmptyTable = isEmptyTable;
@@ -564,28 +564,39 @@
         }
 
         function validateTotalEqualOfRegimen(requisition) {
-            var isValide = true;
-            if (!requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages) &&
-                requisition.template.extension.enableRegimen && !requisition.emergency &&
-                requisition.regimenLineItems.length) {
-                var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
-                var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
-                var len = Math.min(regimenColumns.length, summaryColumns.length);
-                for (var i = 0; i < len; i++) {
-                    var regimenTotal = siglusRequisitionUtils
-                        .getBasicLineItemsTotal(requisition.regimenLineItems, regimenColumns[i]);
-                    var summaryTotal = siglusRequisitionUtils
-                        .getBasicLineItemsTotal(requisition.regimenDispatchLineItems, regimenColumns[i]);
-                    if (regimenTotal !== summaryTotal) {
-                        isValide = false;
-                    }
-                }
+            if (noCommentWhenEnableRegimen(requisition)) {
+                return isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.PATIENTS) &&
+                    isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.COMMUNITY);
             }
-            return isValide;
+            return true;
+        }
+
+        function isRegimenColumnEqual(requisition, columnName) {
+            if (_.first(requisition.regimenLineItems).columns[columnName] &&
+                _.first(requisition.regimenDispatchLineItems).columns[columnName]) {
+                var regimenTotal = siglusRequisitionUtils.getBasicLineItemsTotal(
+                    requisition.regimenLineItems, {
+                        name: columnName
+                    }
+                );
+                var summaryTotal = siglusRequisitionUtils.getBasicLineItemsTotal(
+                    requisition.regimenDispatchLineItems, {
+                        name: columnName
+                    }
+                );
+                return regimenTotal === summaryTotal;
+            }
+            return true;
+        }
+
+        function noCommentWhenEnableRegimen(requisition) {
+            return !requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages) &&
+                requisition.template.extension.enableRegimen && !requisition.emergency &&
+                requisition.regimenLineItems.length;
         }
 
         function getLineItemsColumns(lineItems) {
-            return _.sortBy(_.values(_.first(lineItems).columns), 'displayOrder');
+            return _.first(lineItems).columns;
         }
 
         function validateARVPatientTotal(item) {
