@@ -88,8 +88,7 @@
 
         function validateRegimen(requisition) {
             var valid = true;
-            if (requisition.template.extension.enableRegimen && !requisition.emergency
-                && requisition.regimenLineItems.length) {
+            if (hasRegimen(requisition)) {
                 valid = validateBasicLineItems(requisition.regimenLineItems) && valid;
                 valid = validateBasicLineItems(requisition.regimenDispatchLineItems) && valid;
                 valid = validateTotalEqualOfRegimen(requisition) && valid;
@@ -98,17 +97,24 @@
             return valid;
         }
 
+        function hasRegimen(requisition) {
+            return requisition.template.extension.enableRegimen && !requisition.emergency
+                && requisition.regimenLineItems.length;
+        }
+
         function validateTotalOfRegimen(requisition) {
             var valid = true;
             var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
             var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
-            valid = !_.some(regimenColumns, function(column) {
-                return siglusRequisitionUtils
-                    .getBasicLineItemsTotal(requisition.regimenLineItems, column) > MAX_INTEGER_VALUE;
+            valid = !_.some(Object.keys(regimenColumns), function(columnName) {
+                return siglusRequisitionUtils.getBasicLineItemsTotal(
+                    requisition.regimenLineItems, regimenColumns[columnName]
+                ) > MAX_INTEGER_VALUE;
             }) && valid;
-            valid = !_.some(summaryColumns, function(column) {
-                return siglusRequisitionUtils
-                    .getBasicLineItemsTotal(requisition.regimenDispatchLineItems, column) > MAX_INTEGER_VALUE;
+            valid = !_.some(Object.keys(summaryColumns), function(columnName) {
+                return siglusRequisitionUtils.getBasicLineItemsTotal(
+                    requisition.regimenDispatchLineItems, summaryColumns[columnName]
+                ) > MAX_INTEGER_VALUE;
             }) && valid;
             return valid;
         }
@@ -591,8 +597,7 @@
 
         function noCommentWhenEnableRegimen(requisition) {
             return !requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages) &&
-                requisition.template.extension.enableRegimen && !requisition.emergency &&
-                requisition.regimenLineItems.length;
+                hasRegimen(requisition);
         }
 
         function getLineItemsColumns(lineItems) {

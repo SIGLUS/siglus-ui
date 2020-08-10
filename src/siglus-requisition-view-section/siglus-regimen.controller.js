@@ -57,8 +57,12 @@
         }
 
         function validateTotal(lineItems, column) {
-            if (vm.getTotal(lineItems, column) > MAX_INTEGER_VALUE) {
+            var total = vm.getTotal(lineItems, column);
+            if (total > MAX_INTEGER_VALUE) {
                 return messageService.get('requisitionValidation.numberTooLarge');
+            }
+            if (siglusRequisitionUtils.isEmpty(total)) {
+                return messageService.get('requisitionValidation.required');
             }
         }
 
