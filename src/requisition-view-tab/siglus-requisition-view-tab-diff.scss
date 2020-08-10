@@ -9,6 +9,11 @@
     .skipbar + .openlmis-table-container.requisition-product>.row>.main>.toolbar {
         padding-top: 0;
     }
+
+    .add-wrapper {
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
 #productForm .error {
