@@ -59,7 +59,7 @@ describe('SiglusRegimentController', function() {
             columns: columnsDefination
         }];
 
-        spyOn(siglusRequisitionUtils, 'getBasicLineItemsTotal').andReturn(1);
+        spyOn(siglusRequisitionUtils, 'getBasicLineItemsTotal').andReturn(0);
         vm = $controller('SiglusRegimentController');
         vm.sections = sections;
         vm.regimenLineItems = [{
@@ -157,7 +157,7 @@ describe('SiglusRegimentController', function() {
 
     describe('validateTotal', function() {
 
-        it('should return nothing when total is 1', function() {
+        it('should return nothing when total is 0', function() {
             expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community)).toBeUndefined();
         });
 
@@ -172,6 +172,13 @@ describe('SiglusRegimentController', function() {
 
             expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community))
                 .toBe('requisitionValidation.numberTooLarge');
+        });
+
+        it('should return error message when total is undefined', function() {
+            siglusRequisitionUtils.getBasicLineItemsTotal.andReturn(undefined);
+
+            expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community))
+                .toBe('requisitionValidation.required');
         });
     });
 

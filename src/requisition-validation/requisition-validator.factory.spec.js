@@ -371,6 +371,115 @@ describe('requisitionValidator', function() {
         });
     });
 
+    describe('validateRegimen', function() {
+        it('should return false if regimenLineItems is invalid', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        name: 'patients'
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        name: 'patients'
+                    }
+                }
+            }];
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if regimenDispatchLineItems is invalid', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        name: 'patients'
+                    }
+                }
+            }];
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if one regimen line item is 2147483648', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 2147483648,
+                        name: 'patients'
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                }
+            }];
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+        });
+
+        it('should return false if one dispatch line item is 2147483648', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        value: 2147483648,
+                        name: 'patients'
+                    }
+                }
+            }];
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(false);
+        });
+
+        it('should return true if regimenLineItems and regimenDispatchLineItems are valid', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                }
+            }];
+
+            expect(validator.siglusValidRequisition(requisition)).toBe(true);
+        });
+    });
+
     describe('validateTotalEqualOfRegimen', function() {
         it('should return true if regimen is not enabled', function() {
             requisition.template.extension.enableRegimen = false;
