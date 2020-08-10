@@ -270,7 +270,9 @@ describe('RequisitionViewController', function() {
             this.initController();
 
             expect(this.vm.getPrintUrl())
-                .toEqual(this.requisitionUrlFactory('/api/requisitions/requisition-id-1/print'));
+            // SIGLUS-REFACTOR: enable print
+                .toEqual(this.requisitionUrlFactory('/api/siglusapi/requisitions/requisition-id-1/print'));
+            // SIGLUS-REFACTOR: ends here
         });
 
     });
@@ -716,7 +718,9 @@ describe('RequisitionViewController', function() {
             this.$rootScope.$apply();
 
             expect(this.accessTokenFactory.addAccessToken)
-                .toHaveBeenCalledWith(this.requisitionUrlFactory('api/requisitions/requisition-id-1/print'));
+            // SIGLUS-REFACTOR: enable print
+                .toHaveBeenCalledWith(this.requisitionUrlFactory('api/siglusapi/requisitions/requisition-id-1/print'));
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should not open report when sync failed', function() {

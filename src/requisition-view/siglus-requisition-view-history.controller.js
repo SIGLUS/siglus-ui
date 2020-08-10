@@ -32,14 +32,16 @@
         '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
         'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
-        '$stateParams', 'processingPeriod', 'program', 'facility'
+        '$stateParams', 'processingPeriod', 'program', 'facility', 'requisitionUrlFactory', '$window',
+        'accessTokenFactory'
     ];
 
     function SiglusHistoryViewTabController($filter, selectProductsModalService, requisitionValidator, requisition,
                                             columns, messageService, lineItems, alertService, canSubmit, canAuthorize,
                                             fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator,
                                             canApproveAndReject, items, paginationService, $stateParams,
-                                            processingPeriod, program, facility) {
+                                            processingPeriod, program, facility, requisitionUrlFactory, $window,
+                                            accessTokenFactory) {
         var vm = this;
         vm.processingPeriod = processingPeriod;
         vm.program = program;
@@ -51,6 +53,7 @@
         vm.isLineItemValid = requisitionValidator.isLineItemValid;
         vm.getDescriptionForColumn = getDescriptionForColumn;
         vm.skippedFullSupplyProductCountMessage = skippedFullSupplyProductCountMessage;
+        vm.print = print;
 
         /**
          * @ngdoc property
@@ -274,6 +277,11 @@
             return  messageService.get('requisitionViewTab.fullSupplyProductsSkipped', {
                 skippedProductCount: getCountOfSkippedFullSupplyProducts()
             });
+        }
+
+        function print() {
+            var url = requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
+            $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
 
         function selectProducts(availableProducts) {

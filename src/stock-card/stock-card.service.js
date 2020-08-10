@@ -84,7 +84,7 @@
         }
 
         function printByProduct(orderableId) {
-            var url = stockmanagementUrlFactory('/api/siglusapi/stockCards/' + orderableId + '/print?isProduct=true');
+            var url = stockmanagementUrlFactory('/api/siglusapi/orderable/' + orderableId + '/print');
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
 
