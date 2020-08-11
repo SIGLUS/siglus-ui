@@ -9,5 +9,7 @@
   "adminProgramTemplate.confirm": "Confirm",
   "adminProgramTemplate.setting": "Setting",
   "adminProgramTemplate.templateSave.title": "Save changes to the template",
-  "adminProgramTemplate.templateSave.description": "All changes to the template columns and settings will only affect future initiated requisitions/reports."
+  "adminProgramTemplate.templateSave.description": "All changes to the template columns and settings will only affect future initiated requisitions/reports.",
+  "adminProgramTemplate.enableQuicklyFill.label": "Enable “quick fill” function",
+  "adminProgramTemplate.enableQuicklyFill.description": "Empty fields will be populated with number 0 after user click “quick fill” instead of being entered one by one manually."
 }

@@ -1,4 +1,11 @@
 <div class="requisition-template-admin template-preview">
+    <aside>
+        <label>
+            <input type="checkbox" id="enableQuicklyFill" ng-model="vm.template.extension.enableQuicklyFill"/>
+            {{'adminProgramTemplate.enableQuicklyFill.label' | message}}
+        </label>
+        <p>{{'adminProgramTemplate.enableQuicklyFill.description' | message}}</p>
+    </aside>
     <div class="requisition-template-module-container">
         <input type="checkbox" ng-model="vm.template.extension.enableConsultationNumber"/>{{'adminProgramTemplate.consultationNumber' | message}}
         <a ng-show="vm.template.extension.enableConsultationNumber" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.consultationNumber">{{'adminProgramTemplate.setting' | message}}</a>
