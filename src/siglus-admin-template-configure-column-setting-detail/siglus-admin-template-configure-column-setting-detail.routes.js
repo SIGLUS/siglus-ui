@@ -28,7 +28,7 @@
         addStateForDetail('patient', 'siglus-admin-template-configure-patient.html');
         addStateForDetail('regimen', 'siglus-admin-template-configure-column-setting-detail.html');
         addStateForDetail('testConsumption', 'siglus-admin-template-configure-column-setting-detail.html');
-        addStateForDetail('usageInformation', 'siglus-usage-information-template.html');
+        addStateForDetail('usageInformation', 'siglus-admin-template-configure-column-setting-detail.html');
 
         function addStateForDetail(section, templateFile) {
             $stateProvider
