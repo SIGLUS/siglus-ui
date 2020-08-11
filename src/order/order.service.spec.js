@@ -184,6 +184,7 @@ describe('orderService', function() {
         });
     });
 
+    // #447: DDM facility can see the fulfilment which is supervised by DPM facility
     describe('searchFulfill', function() {
 
         var searchParams, someId, page;
@@ -226,6 +227,7 @@ describe('orderService', function() {
             expect(angular.toJson(result)).toEqual(angular.toJson(page));
         });
     });
+    // #447: ends here
 
     afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();

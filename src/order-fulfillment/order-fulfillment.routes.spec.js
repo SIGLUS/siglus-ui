@@ -76,7 +76,9 @@ describe('openlmis.orders.fulfillment state', function() {
 
         spyOn(facilityFactory, 'getSupervisedFacilitiesBasedOnRights').andReturn($q.when(facilities));
         spyOn(requestingFacilityFactory, 'loadRequestingFacilities').andReturn($q.when(minimalFacilities));
+        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         spyOn(orderRepository, 'searchFulfill').andReturn($q.when([]));
+        // #447: ends here
         // #295: get virtual program
         spyOn(programService, 'getVirtualPrograms').andReturn($q.when(programs));
         // #295: ends here
@@ -103,7 +105,9 @@ describe('openlmis.orders.fulfillment state', function() {
     it('should set FULFILLING and ORDERED statuses as default', function() {
         goToState();
 
+        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         expect(orderRepository.searchFulfill).toHaveBeenCalledWith({
+            // #447: ends here
             requestingFacilityId: undefined,
             programId: undefined,
             // #400: Facility user partially fulfill an order and create sub-order for an requisition
@@ -120,7 +124,9 @@ describe('openlmis.orders.fulfillment state', function() {
 
         goToState();
 
+        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         expect(orderRepository.searchFulfill).toHaveBeenCalledWith({
+            // #447: ends here
             requestingFacilityId: undefined,
             programId: undefined,
             status: [ORDER_STATUS.ORDERED],
