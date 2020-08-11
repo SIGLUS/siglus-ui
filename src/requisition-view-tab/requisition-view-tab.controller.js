@@ -35,7 +35,7 @@
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility',
-        'siglusArchivedProductService', 'program'
+        'siglusArchivedProductService', 'program', '$scope', 'notificationService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +44,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility,
-                               siglusArchivedProductService, program) {
+                               siglusArchivedProductService, program, $scope, notificationService) {
 
         var vm = this;
 
@@ -61,6 +61,10 @@
         // #352: can add skipped products
         vm.siglusAddProducts = siglusAddProducts;
         // #352: ends here
+        // #340: quickly fill the tables in R&R during creating an R&R
+        vm.showQuicklyFill = showQuicklyFill;
+        vm.quicklyFillHandler = quicklyFillHandler;
+        // #340: ends here
 
         var isInternalApproval = homeFacility.id === requisition.facility.id;
 
@@ -460,6 +464,18 @@
                 && requisition.template.getColumn(TEMPLATE_COLUMNS.SKIPPED).$display;
         }
         // #286 ends here
+
+        // #340: quickly fill the tables in R&R during creating an R&R
+        function showQuicklyFill() {
+            return vm.requisition.template.extension.enableQuicklyFill
+                && (canSubmit || canAuthorize);
+        }
+
+        function quicklyFillHandler() {
+            $scope.$broadcast('siglus-quickly-fill');
+            notificationService.success('requisitionViewTab.quicklyFill.success');
+        }
+        // #340: ends here
 
         function showAddFullSupplyProductsButton() {
             return vm.userCanEdit && fullSupply && requisition.emergency;

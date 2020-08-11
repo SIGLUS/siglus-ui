@@ -41,6 +41,12 @@
                     return requisitionValidator.validateSiglusLineItemField(scope.lineItemField);
                 };
             }
+            scope.$on('siglus-quickly-fill', function() {
+                if (!scope.lineItemField.value) {
+                    scope.lineItemField.value = 0;
+                    scope.lineItemField.$error = undefined;
+                }
+            });
         }
     }
 
