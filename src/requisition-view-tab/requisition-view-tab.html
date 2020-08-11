@@ -2,7 +2,7 @@
 <div class="view-tab">
     <header class="sub-heading">
         <h3>{{'requisitionViewTab.products' | message}}</h3>
-        <button class="add"
+        <button class="add" tabindex="-1"
                 ng-if="vm.requisition.template.extension.enableProduct"
                 ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
                 ng-click="vm.siglusAddProducts()"

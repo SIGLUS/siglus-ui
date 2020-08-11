@@ -26,14 +26,18 @@
     th {
         box-sizing: content-box;
         width: 152px;
+        min-width: 152px;
     }
     &:first-child th:nth-child(2) {
         width: 180px;
+        min-width: 180px;
     }
     &:nth-child(2) th {
         width: 161px;
+        min-width: 161px;
         &:first-child {
             width: 389px;
+            min-width: 389px;
         }
     }
 }
