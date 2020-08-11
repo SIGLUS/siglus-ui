@@ -184,6 +184,49 @@ describe('orderService', function() {
         });
     });
 
+    describe('searchFulfill', function() {
+
+        var searchParams, someId, page;
+
+        beforeEach(function() {
+            someId = 'some-facility-id';
+
+            searchParams = {
+                supplyingFacility: someId
+            };
+
+            page = PageDataBuilder.buildWithContent([
+                new BasicOrderResponseDataBuilder().build(),
+                new BasicOrderResponseDataBuilder().build()
+            ]);
+
+            $httpBackend.whenGET(
+                fulfillmentUrlFactory('/api/siglusapi/orders/fulfill?supplyingFacility=' + someId)
+            ).respond(200, page);
+        });
+
+        it('should call /api/siglusapi/orders endpoint', function() {
+            $httpBackend.expectGET(
+                fulfillmentUrlFactory('/api/siglusapi/orders/fulfill?supplyingFacility=' + someId)
+            );
+
+            orderService.searchFulfill(searchParams);
+            $httpBackend.flush();
+        });
+
+        it('should return page', function() {
+            var result;
+            orderService.searchFulfill(searchParams)
+                .then(function(page) {
+                    result = page;
+                });
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(angular.toJson(result)).toEqual(angular.toJson(page));
+        });
+    });
+
     afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();

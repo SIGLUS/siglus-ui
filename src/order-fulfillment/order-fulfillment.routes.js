@@ -72,7 +72,7 @@
                         } else if (!stateParams.status || availableStatuses.indexOf(stateParams.status) < 0) {
                             copy.status = availableStatuses;
                         }
-                        return orderRepository.search(copy);
+                        return orderRepository.searchFulfill(copy);
                     });
                 }
             }
