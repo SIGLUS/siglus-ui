@@ -6,5 +6,6 @@
   "requisitionViewTab.openedKitNo": "No.of Kit Opened",
   "requisitionViewTab.selectTooMany": "You can just add no more than 10 products per emergency requisition",
   "requisitionViewTab.noFullSupplyProducts": "No items have been added.",
-  "requisitionViewTab.quicklyFill": "Quick Filling"
+  "requisitionViewTab.quicklyFill": "Quick Filling",
+  "requisitionViewTab.quicklyFill.success": "The empty fields except product fields have been filled with \"0\" successfully"
 }

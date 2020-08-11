@@ -37,6 +37,7 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: starts here
             this.requisitionService = $injector.get('requisitionService');
             this.loadingModalService = $injector.get('loadingModalService');
+            this.notificationService = $injector.get('notificationService');
             // SIGLUS-REFACTOR: ends here
             // #409: populate value when requisition is rejected
             this.REQUISITION_STATUS = $injector.get('REQUISITION_STATUS');
@@ -1010,6 +1011,7 @@ describe('ViewTabController', function() {
             requisitionService: this.requisitionService,
             loadingModalService: this.loadingModalService,
             homeFacility: this.homeFacility,
+            $scope: this.$rootScope.$new(),
             // SIGLUS-REFACTOR: ends here
             // #375: create requisition with test consumption section
             program: this.program
