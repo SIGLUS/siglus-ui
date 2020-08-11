@@ -39,6 +39,12 @@
                 url: fulfillmentUrlFactory('/api/siglusapi/orders')
                 // #400: ends here
             },
+            // #447: DDM facility can see the fulfilment which is supervised by DPM facility
+            searchFulfill: {
+                method: 'GET',
+                url: fulfillmentUrlFactory('/api/siglusapi/orders/fulfill')
+            },
+            // #447: ends here
             get: {
                 method: 'GET',
                 // #264: warehouse clerk can add product to orders
@@ -64,6 +70,9 @@
         // #401: get closed & suborder status from backend
         this.getStatus = getStatus;
         // #401: ends here
+        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
+        this.searchFulfill = searchFulfill;
+        // #447: ends here
 
         /**
          * @ngdoc method
@@ -81,6 +90,25 @@
         function search(params) {
             return resource.search(params).$promise;
         }
+
+        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
+        /**
+         * @ngdoc method
+         * @methodOf order.orderService
+         * @name searchFulfill
+         *
+         * @description
+         * Retrieves a list of Orders from the OpenLMIS server based on the given parameters.
+         * Parameters that are not supported by the server will be ignored. "supplyingFacility" is
+         * the only required parameter.
+         *
+         * @param  {Object} params the key-value map of parameters
+         * @return {Promise}       the list of all matching orders
+         */
+        function searchFulfill(params) {
+            return resource.searchFulfill(params).$promise;
+        }
+        // #447: ends here
 
         /**
          * @ngdoc method
