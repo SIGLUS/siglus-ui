@@ -45,10 +45,6 @@
     }
 }
 
-.patient-preview, .regimen-preview {
-    margin-bottom: 2em;
-}
-
 .patient-preview .openlmis-table,
 .requisition-patient .openlmis-table {
     width: 302px;
@@ -61,7 +57,7 @@
     }
 }
 
-.regimen-preview .openlmis-table {
+.regimen-preview .table-container-scroll-x {
     word-break: break-all;
     .category {
         font-weight: bold;
@@ -69,15 +65,19 @@
     &:first-child {
         th:first-child {
             width: 168px;
+            min-width: 168px;
         }
         th:nth-child(2) {
             width: 200px;
+            min-width: 200px;
         }
     }
     th {
         width: 168px;
+        min-width: 168px;
         &:first-child {
             width: 368px;
+            min-width: 368px;
         }
     }
 }
@@ -85,4 +85,8 @@
 .requisition-template-admin [class*="-preview"].openlmis-table-container .row .main .toolbar {
     padding-top: 0;
     margin-bottom: 0;
+}
+
+.template-preview-section {
+    margin-bottom: 2em;
 }

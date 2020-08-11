@@ -1,3 +1,18 @@
 .ps-container {
   overflow: hidden !important;
 }
+
+.table-container-scroll-x {
+  width: 100%;
+  overflow-x: auto;
+}
+.table-container-scroll-x::-webkit-scrollbar {
+  height: 10px;
+}
+.table-container-scroll-x::-webkit-scrollbar-track {
+  background: #d7d7d7;
+}
+.table-container-scroll-x::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 4px;
+}
