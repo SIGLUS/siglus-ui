@@ -22,10 +22,10 @@
         .controller('SiglusUsageInformationController', controller);
 
     controller.$inject = ['siglusColumnUtils', 'siglusTemplateConfigureService', 'requisitionValidator',
-        'SIGLUS_SECTION_TYPES'];
+        'SIGLUS_SECTION_TYPES', 'messageService'];
 
     function controller(siglusColumnUtils, siglusTemplateConfigureService, requisitionValidator,
-                        SIGLUS_SECTION_TYPES) {
+                        SIGLUS_SECTION_TYPES, messageService) {
 
         var vm = this;
 
@@ -49,21 +49,20 @@
         }
 
         function getTotal(informationName, orderableId) {
-            var total = 0;
-            var isFilled = false;
             var totalLineItem = _.first(vm.lineItems.filter(vm.isTotal));
             var totalField = totalLineItem.informations[informationName].orderables[orderableId];
-            angular.forEach(vm.lineItems, function(lineItem) {
+            var total = _.reduce(vm.lineItems, function(total, lineItem) {
                 var value = lineItem.informations[informationName].orderables[orderableId].value;
                 if (!vm.isTotal(lineItem) && _.isNumber(value)) {
-                    isFilled = true;
-                    total = total + value;
+                    return (total || 0) + value;
                 }
-            });
-            totalField.value = undefined;
-            if (isFilled) {
-                totalField.value = total;
+                return total;
+            }, undefined);
+            totalField.value = total;
+            if (_.isNumber(totalField.value)) {
                 requisitionValidator.validateSiglusLineItemField(totalField);
+            } else if (totalField.$error === messageService.get('requisitionValidation.numberTooLarge')) {
+                totalField.$error = undefined;
             }
             return totalField.value;
         }

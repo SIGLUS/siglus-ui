@@ -15,7 +15,7 @@
 
 describe('SiglusPatientController', function() {
 
-    var vm, sections, patientLineItems, $controller, requisitionValidator;
+    var vm, sections, patientLineItems, $controller, requisitionValidator, messageService;
 
     beforeEach(function() {
         module('siglus-requisition-view-section');
@@ -23,6 +23,7 @@ describe('SiglusPatientController', function() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             requisitionValidator = $injector.get('requisitionValidator');
+            messageService = $injector.get('messageService');
         });
         sections = [{
             id: '7467b211-b38b-4122-a91e-4bc2476b7eb5',
@@ -68,6 +69,7 @@ describe('SiglusPatientController', function() {
         }];
 
         spyOn(requisitionValidator, 'validateSiglusLineItemField');
+        spyOn(messageService, 'get').andReturn('requisitionValidation.numberTooLarge');
 
         vm = $controller('SiglusPatientController');
         vm.sections = sections;
@@ -115,7 +117,9 @@ describe('SiglusPatientController', function() {
 
     describe('getTotal', function() {
 
-        it('should return undefined if noting is input', function() {
+        it('should clear the last total value and return undefined if noting is input', function() {
+            vm.lineItems[0].columns.total.value = 100;
+
             expect(vm.getTotal(vm.lineItems[0], vm.lineItems[0].columns.total)).toBeUndefined();
         });
 
@@ -131,6 +135,19 @@ describe('SiglusPatientController', function() {
 
             expect(requisitionValidator.validateSiglusLineItemField)
                 .toHaveBeenCalledWith(vm.lineItems[0].columns.total);
+        });
+
+        it('should clear the last error message and calculate the new total value ' +
+            'when the value of newField is null', function() {
+            var total = vm.lineItems[0].columns.total;
+            total.value = 2147483648;
+            total.$error = 'requisitionValidation.numberTooLarge';
+            vm.lineItems[0].columns.new.value = null;
+
+            vm.getTotal(vm.lineItems[0], total);
+
+            expect(total.value).toBeUndefined();
+            expect(total.$error).toBeUndefined();
         });
     });
 });
