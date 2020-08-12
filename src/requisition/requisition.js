@@ -31,13 +31,18 @@
     requisitionFactory.$inject = [
         '$q', '$resource', 'requisitionUrlFactory', 'RequisitionTemplate', 'LineItem', 'REQUISITION_STATUS',
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
-        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService', 'siglusRequisitionUtils'
+        'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService',
+        // SIGLUS-REFACTOR: starts here
+        'siglusRequisitionUtils', 'siglusTemplateConfigureService', 'SIGLUS_SECTION_TYPES', 'SIGLUS_SERVICE_TYPES',
+        'siglusColumnUtils'
+        // SIGLUS-REFACTOR: ends here
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
                                 COLUMN_SOURCES, localStorageFactory, dateUtils, $filter, TEMPLATE_COLUMNS,
                                 authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService,
-                                siglusRequisitionUtils) {
+                                siglusRequisitionUtils, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES,
+                                SIGLUS_SERVICE_TYPES, siglusColumnUtils) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             // SIGLUS-REFACTOR: starts here
@@ -169,16 +174,37 @@
             if (!this.idempotencyKey) {
                 generateIdempotencyKey(this);
             }
-            // #387: the lost of validation highlight
+            // SIGLUS-REFACTOR: starts here
+            addTotalLineItemForRegimen(this);
             clearErrors(this);
-            // #387: ends here
+            // SIGLUS-REFACTOR: ends here
         }
 
-        // #387: the lost of validation highlight
+        // SIGLUS-REFACTOR: starts here
+        function addTotalLineItemForRegimen(requisition) {
+            if (siglusRequisitionUtils.hasRegimen(requisition) && !hasTotalLineItem(requisition.regimenLineItems) &&
+                !hasTotalLineItem(requisition.regimenDispatchLineItems)) {
+                var regimenSection = siglusTemplateConfigureService
+                    .getSectionByName(requisition.usageTemplate.regimen, SIGLUS_SECTION_TYPES.REGIMEN);
+                requisition.regimenLineItems.push({
+                    name: SIGLUS_SERVICE_TYPES.TOTAL,
+                    columns: siglusRequisitionUtils.getInputColumnsMap(regimenSection.columns)
+                });
+                var summarySection = siglusTemplateConfigureService
+                    .getSectionByName(requisition.usageTemplate.regimen, SIGLUS_SECTION_TYPES.SUMMARY);
+                requisition.regimenDispatchLineItems.push({
+                    name: SIGLUS_SERVICE_TYPES.TOTAL,
+                    columns: siglusRequisitionUtils.getInputColumnsMap(summarySection.columns)
+                });
+            }
+        }
+
+        function hasTotalLineItem(lineItems) {
+            return _.find(lineItems, siglusColumnUtils.isTotal);
+        }
+
         function clearErrors(requisition) {
-            // #431: the order of pop-up when requisition is invalid
             requisition.$error = undefined;
-            // #431: ends here
             angular.forEach(requisition.kitUsageLineItems, function(lineItem) {
                 angular.forEach(Object.keys(lineItem.services), function(serviceName) {
                     lineItem.services[serviceName].$error = undefined;
@@ -192,18 +218,20 @@
                 });
             });
             siglusRequisitionUtils.clearTestConsumptionError(requisition.testConsumptionLineItems);
-            angular.forEach(requisition.patientLineItems, function(lineItem) {
-                angular.forEach(Object.keys(lineItem.columns), function(columnName) {
-                    lineItem.columns[columnName].$error = undefined;
-                });
-            });
-            angular.forEach(requisition.consultationNumberLineItems, function(lineItem) {
+            removeBasicLineItemsError(requisition.patientLineItems);
+            removeBasicLineItemsError(requisition.consultationNumberLineItems);
+            removeBasicLineItemsError(requisition.regimenLineItems);
+            removeBasicLineItemsError(requisition.regimenDispatchLineItems);
+        }
+
+        function removeBasicLineItemsError(lineItems) {
+            angular.forEach(lineItems, function(lineItem) {
                 angular.forEach(Object.keys(lineItem.columns), function(columnName) {
                     lineItem.columns[columnName].$error = undefined;
                 });
             });
         }
-        // #387: ends here
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method

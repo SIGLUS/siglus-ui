@@ -21,19 +21,22 @@
         .module('siglus-requisition-view-section')
         .controller('SiglusRegimentController', controller);
 
-    controller.$inject = ['SIGLUS_SECTION_TYPES', 'COLUMN_SOURCES', 'MAX_INTEGER_VALUE',
-        'siglusTemplateConfigureService', 'selectProductsModalService', 'messageService', 'siglusRequisitionUtils'];
+    controller.$inject = ['SIGLUS_SECTION_TYPES', 'COLUMN_SOURCES', 'siglusTemplateConfigureService',
+        'selectProductsModalService', 'siglusRequisitionUtils', 'siglusColumnUtils', 'requisitionValidator'];
 
-    function controller(SIGLUS_SECTION_TYPES, COLUMN_SOURCES, MAX_INTEGER_VALUE, siglusTemplateConfigureService,
-                        selectProductsModalService, messageService, siglusRequisitionUtils) {
+    function controller(SIGLUS_SECTION_TYPES, COLUMN_SOURCES, siglusTemplateConfigureService,
+                        selectProductsModalService, siglusRequisitionUtils, siglusColumnUtils, requisitionValidator) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.regimenSection = undefined;
         vm.summarySection = undefined;
-        vm.getTotal = siglusRequisitionUtils.getBasicLineItemsTotal;
-        vm.validateTotal = validateTotal;
+        vm.regimenTotal = undefined;
+        vm.summaryTotal = undefined;
+        vm.groupedLineItems = undefined;
+        vm.getTotal = getTotal;
+        vm.isTotal = siglusColumnUtils.isTotal;
         vm.addRegimen = addRegimen;
         vm.removeRegimen = removeRegimen;
 
@@ -42,6 +45,8 @@
                 siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.REGIMEN);
             vm.summarySection =
                 siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
+            vm.regimenTotal = _.find(vm.regimenLineItems, siglusColumnUtils.isTotal);
+            vm.summaryTotal = _.find(vm.regimenDispatchLineItems, siglusColumnUtils.isTotal);
             enhanceLineItems(vm.regimenLineItems, vm.regimenSection);
             enhanceLineItems(vm.regimenDispatchLineItems, vm.summarySection);
         }
@@ -56,14 +61,14 @@
             });
         }
 
-        function validateTotal(lineItems, column) {
-            var total = vm.getTotal(lineItems, column);
-            if (total > MAX_INTEGER_VALUE) {
-                return messageService.get('requisitionValidation.numberTooLarge');
+        function getTotal(lineItems, column) {
+            column.value = siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, column);
+            if (_.isNumber(column.value)) {
+                requisitionValidator.validateSiglusLineItemField(column);
+            } else {
+                column.$error = undefined;
             }
-            if (siglusRequisitionUtils.isEmpty(total)) {
-                return messageService.get('requisitionValidation.required');
-            }
+            return column.value;
         }
 
         function addRegimen(category) {
@@ -78,22 +83,11 @@
             }).then(function(regimens) {
                 angular.forEach(regimens, function(regimen) {
                     vm.regimenLineItems.push({
-                        columns: getColumns(),
+                        columns: siglusRequisitionUtils.getInputColumnsMap(vm.regimenSection.columns),
                         regimen: regimen
                     });
                 });
             });
-        }
-
-        function getColumns() {
-            var columns = _.filter(vm.regimenSection.columns, function(column) {
-                return column.source === COLUMN_SOURCES.USER_INPUT && column.isDisplayed;
-            }).map(function(column) {
-                return angular.merge({}, column, {
-                    id: null
-                });
-            });
-            return _.indexBy(columns, 'name');
         }
 
         function removeRegimen(regime) {

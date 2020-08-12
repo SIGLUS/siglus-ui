@@ -15,7 +15,7 @@
 
 describe('SiglusRegimentController', function() {
 
-    var vm, columnsDefination, sections, $controller, siglusRequisitionUtils, selectProductsModalService,
+    var vm, columnsDefination, sections, $controller, selectProductsModalService,
         $q, $rootScope;
 
     beforeEach(function() {
@@ -23,7 +23,6 @@ describe('SiglusRegimentController', function() {
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            siglusRequisitionUtils = $injector.get('siglusRequisitionUtils');
             selectProductsModalService = $injector.get('selectProductsModalService');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
@@ -59,7 +58,6 @@ describe('SiglusRegimentController', function() {
             columns: columnsDefination
         }];
 
-        spyOn(siglusRequisitionUtils, 'getBasicLineItemsTotal').andReturn(0);
         vm = $controller('SiglusRegimentController');
         vm.sections = sections;
         vm.regimenLineItems = [{
@@ -155,33 +153,6 @@ describe('SiglusRegimentController', function() {
         });
     });
 
-    describe('validateTotal', function() {
-
-        it('should return nothing when total is 0', function() {
-            expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community)).toBeUndefined();
-        });
-
-        it('should return nothing when total is 2147483647', function() {
-            siglusRequisitionUtils.getBasicLineItemsTotal.andReturn(2147483647);
-
-            expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community)).toBeUndefined();
-        });
-
-        it('should return error message when total is 2147483648', function() {
-            siglusRequisitionUtils.getBasicLineItemsTotal.andReturn(2147483648);
-
-            expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community))
-                .toBe('requisitionValidation.numberTooLarge');
-        });
-
-        it('should return error message when total is undefined', function() {
-            siglusRequisitionUtils.getBasicLineItemsTotal.andReturn(undefined);
-
-            expect(vm.validateTotal(vm.regimenLineItems, vm.regimenLineItems[0].columns.community))
-                .toBe('requisitionValidation.required');
-        });
-    });
-
     describe('addRegimen', function() {
         beforeEach(function() {
             vm.customRegimens = [{
@@ -274,6 +245,60 @@ describe('SiglusRegimentController', function() {
             vm.removeRegimen(vm.regimenLineItems[0]);
 
             expect(vm.regimenLineItems.length).toBe(0);
+        });
+    });
+
+    describe('getTotal', function() {
+        beforeEach(function() {
+            vm.regimenLineItems.push({
+                name: 'total',
+                columns: {
+                    community: {
+                        id: '1',
+                        name: 'community',
+                        value: undefined
+                    }
+                }
+            });
+        });
+
+        it('should return undefined if noting is input', function() {
+            expect(vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community)).toBeUndefined();
+        });
+
+        it('should no error when total is undefined', function() {
+            vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community);
+
+            expect(vm.regimenLineItems[1].columns.community.$error).toBeUndefined();
+        });
+
+        it('should return calculated total', function() {
+            vm.regimenLineItems[0].columns.community.value = 2147483647;
+
+            expect(vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community)).toBe(2147483647);
+        });
+
+        it('should no error when total is 2147483647', function() {
+            vm.regimenLineItems[0].columns.community.value = 2147483647;
+            vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community);
+
+            expect(vm.regimenLineItems[1].columns.community.$error).toBeUndefined();
+        });
+
+        it('should has error when total is 2147483648', function() {
+            vm.regimenLineItems[0].columns.community.value = 2147483648;
+            vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community);
+
+            expect(vm.regimenLineItems[1].columns.community.$error).not.toBeUndefined();
+        });
+
+        it('Should clear error when total is undefined even if it has error before', function() {
+            vm.regimenLineItems[0].columns.community.value = 2147483648;
+            vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community);
+            vm.regimenLineItems[0].columns.community.value = undefined;
+            vm.getTotal(vm.regimenLineItems, vm.regimenLineItems[1].columns.community);
+
+            expect(vm.regimenLineItems[1].columns.community.$error).toBeUndefined();
         });
     });
 });

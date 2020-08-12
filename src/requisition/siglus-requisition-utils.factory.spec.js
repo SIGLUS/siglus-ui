@@ -14,13 +14,52 @@
  */
 describe('siglusRequisitionUtils', function() {
 
-    var siglusRequisitionUtils, lineItems;
+    var siglusRequisitionUtils, lineItems, requisition;
 
     beforeEach(function() {
         module('requisition');
 
         inject(function($injector) {
             siglusRequisitionUtils = $injector.get('siglusRequisitionUtils');
+        });
+    });
+
+    describe('hasRegimen', function() {
+        beforeEach(function() {
+            requisition = {
+                template: {
+                    extension: {
+                        enableRegimen: false
+                    }
+                },
+                emergency: true,
+                regimenLineItems: []
+            };
+        });
+
+        it('Should return false if enableRegimen is false', function() {
+            expect(siglusRequisitionUtils.hasRegimen(requisition)).toBe(false);
+        });
+
+        it('Should return false if is emergency', function() {
+            requisition.template.extension.enableRegimen = true;
+
+            expect(siglusRequisitionUtils.hasRegimen(requisition)).toBe(false);
+        });
+
+        it('Should return false if regimenLineItems is empty', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.emergency = false;
+
+            expect(siglusRequisitionUtils.hasRegimen(requisition)).toBe(false);
+        });
+
+        it('Should return true if has regimen', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.emergency = false;
+            requisition.regimenLineItems = [{}];
+
+            expect(siglusRequisitionUtils.hasRegimen(requisition)).toBe(true);
         });
     });
 
@@ -84,6 +123,23 @@ describe('siglusRequisitionUtils', function() {
         it('should return total if all items value are not empty', function() {
             lineItems[0].columns.patients.value = 10;
             lineItems[1].columns.patients.value = 10;
+
+            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+                name: 'patients'
+            })).toBe(20);
+        });
+
+        it('should not include total line item when get total', function() {
+            lineItems[0].columns.patients.value = 10;
+            lineItems[1].columns.patients.value = 10;
+            lineItems.push({
+                name: 'total',
+                columns: {
+                    patients: {
+                        value: 10
+                    }
+                }
+            });
 
             expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
                 name: 'patients'
