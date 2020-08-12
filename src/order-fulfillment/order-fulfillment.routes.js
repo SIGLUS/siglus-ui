@@ -72,7 +72,9 @@
                         } else if (!stateParams.status || availableStatuses.indexOf(stateParams.status) < 0) {
                             copy.status = availableStatuses;
                         }
-                        return orderRepository.search(copy);
+                        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
+                        return orderRepository.searchFulfill(copy);
+                        // #447: ends here
                     });
                 }
             }
