@@ -36,65 +36,18 @@
     decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource'];
     function decorator($delegate, openlmisUrlFactory, $resource) {
         var resource = $resource(openlmisUrlFactory('/api/siglusapi/programs'), {}, {
-            getAll: {
-                method: 'GET',
-                isArray: true
-            },
             getAllProductsProgram: {
                 method: 'GET',
                 params: {
                     code: 'ALL'
                 },
                 isArray: true
-            },
-            getById: {
-                url: openlmisUrlFactory('/api/siglusapi/programs/:id'),
-                method: 'GET'
             }
         });
 
-        $delegate.getRealPrograms = getRealPrograms;
-        $delegate.getVirtualPrograms = getVirtualPrograms;
         $delegate.getAllProductsProgram = getAllProductsProgram;
-        $delegate.get = get;
 
         return $delegate;
-
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-program.programService
-         * @name getRealPrograms
-         *
-         * @description
-         * Get real programs.
-         */
-        function getRealPrograms() {
-            return resource.getAll()
-                .$promise
-                .then(function(programs) {
-                    return _.filter(programs, function(p) {
-                        return !p.isVirtual;
-                    });
-                });
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-program.programService
-         * @name getVirtualPrograms
-         *
-         * @description
-         * Get virtual programs.
-         */
-        function getVirtualPrograms() {
-            return resource.getAll()
-                .$promise
-                .then(function(programs) {
-                    return _.filter(programs, function(p) {
-                        return p.isVirtual;
-                    });
-                });
-        }
 
         /**
          * @ngdoc method
@@ -107,30 +60,6 @@
         function getAllProductsProgram() {
             return resource.getAllProductsProgram()
                 .$promise;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf referencedata-program.programService
-         * @name get
-         *
-         * @description
-         * Gets program by id.
-         *
-         * @param  {String}  id Program UUID
-         * @return {Promise}    Program info
-         */
-        function get(id) {
-            if (id) {
-                return resource.getById({
-                    id: id
-                })
-                    .$promise
-                    .then(function(program) {
-                        return program;
-                    });
-            }
-            return undefined;
         }
     }
 })();

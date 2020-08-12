@@ -57,7 +57,7 @@
                 },
                 // #163: add associate program
                 programs: function(programService) {
-                    return programService.getVirtualPrograms();
+                    return programService.getAll();
                 },
                 templateAssociatePrograms: function(template, programs) {
                     return programs.filter(function(program) {

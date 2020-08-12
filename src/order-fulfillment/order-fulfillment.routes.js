@@ -53,9 +53,7 @@
                     });
                 },
                 programs: function(programService) {
-                    // #295: get virtual program
-                    return programService.getVirtualPrograms();
-                    // #295: ends here
+                    return programService.getAll();
                 },
                 orders: function(paginationService, orderRepository, $stateParams, ORDER_STATUS) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
