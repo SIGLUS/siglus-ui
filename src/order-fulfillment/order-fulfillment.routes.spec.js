@@ -79,9 +79,7 @@ describe('openlmis.orders.fulfillment state', function() {
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         spyOn(orderRepository, 'searchFulfill').andReturn($q.when([]));
         // #447: ends here
-        // #295: get virtual program
-        spyOn(programService, 'getVirtualPrograms').andReturn($q.when(programs));
-        // #295: ends here
+        spyOn(programService, 'getAll').andReturn($q.when(programs));
     });
 
     it('should fetch a list of ordering facilities', function() {
