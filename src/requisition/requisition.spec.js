@@ -97,7 +97,7 @@ describe('Requisition', function() {
         });
     });
 
-    // #399: Facility user can create requisition with patient section
+    // SIGLUS-REFACTOR: starts here
     describe('clear error', function() {
         beforeEach(function() {
             this.sourceRequisition.kitUsageLineItems = [{
@@ -165,7 +165,81 @@ describe('Requisition', function() {
                 .projects.hivDetermine.outcomes.consumo.$error).toBeUndefined();
         });
     });
-    // #399: ends here
+
+    describe('addTotalLineItemForRegimen', function() {
+        beforeEach(function() {
+            this.columns = [{
+                name: 'patients',
+                source: 'USER_INPUT',
+                isDisplayed: true
+            }, {
+                name: 'community',
+                source: 'USER_INPUT',
+                isDisplayed: true
+            }];
+            this.sourceRequisition.template.extension = {};
+            this.sourceRequisition.template.extension.enableRegimen = true;
+            this.sourceRequisition.usageTemplate = {};
+            this.sourceRequisition.usageTemplate.regimen = [{
+                name: 'regimen',
+                columns: angular.copy(this.columns)
+            }, {
+                name: 'summary',
+                columns: angular.copy(this.columns)
+            }];
+        });
+
+        it('Should add total for regimen line items', function() {
+            this.sourceRequisition.regimenLineItems = [{
+                columns: angular.copy(this.columns)
+            }];
+            this.sourceRequisition.regimenDispatchLineItems = [{
+                columns: angular.copy(this.columns)
+            }];
+            var columnMap = {
+                patients: {
+                    id: null,
+                    name: 'patients',
+                    source: 'USER_INPUT',
+                    isDisplayed: true
+                },
+                community: {
+                    id: null,
+                    name: 'community',
+                    source: 'USER_INPUT',
+                    isDisplayed: true
+                }
+            };
+            var requisition = new this.Requisition(this.sourceRequisition);
+
+            expect(requisition.regimenLineItems[1]).toEqual({
+                name: 'total',
+                columns: columnMap
+            });
+
+            expect(requisition.regimenDispatchLineItems[1]).toEqual({
+                name: 'total',
+                columns: columnMap
+            });
+        });
+
+        it('Should not add total for regimen line items if already has total line item', function() {
+            this.sourceRequisition.regimenLineItems = [{
+                columns: angular.copy(this.columns)
+            }];
+            this.sourceRequisition.regimenDispatchLineItems = [{
+                columns: angular.copy(this.columns)
+            }];
+            var requisition = new this.Requisition(this.sourceRequisition);
+
+            expect(requisition.regimenLineItems.length).toBe(2);
+
+            requisition = new this.Requisition(requisition);
+
+            expect(requisition.regimenLineItems.length).toBe(2);
+        });
+    });
+    // SIGLUS-REFACTOR: ends here
 
     describe('submit', function() {
 

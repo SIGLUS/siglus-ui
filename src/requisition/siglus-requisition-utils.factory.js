@@ -28,17 +28,37 @@
         .module('requisition')
         .factory('siglusRequisitionUtils', siglusRequisitionUtils);
 
-    function siglusRequisitionUtils() {
+    siglusRequisitionUtils.$inject = ['COLUMN_SOURCES', 'siglusColumnUtils'];
+
+    function siglusRequisitionUtils(COLUMN_SOURCES, siglusColumnUtils) {
         return {
             isEmpty: isEmpty,
             calculateTotal: calculateTotal,
             clearTestConsumptionError: clearTestConsumptionError,
-            getBasicLineItemsTotal: getBasicLineItemsTotal
+            getBasicLineItemsTotal: getBasicLineItemsTotal,
+            hasRegimen: hasRegimen,
+            getInputColumnsMap: getInputColumnsMap
         };
+
+        function getInputColumnsMap(columns) {
+            var filterColumns = _.filter(columns, function(column) {
+                return column.source === COLUMN_SOURCES.USER_INPUT && column.isDisplayed;
+            }).map(function(column) {
+                return angular.merge({}, column, {
+                    id: null
+                });
+            });
+            return _.indexBy(filterColumns, 'name');
+        }
+
+        function hasRegimen(requisition) {
+            return requisition.template.extension.enableRegimen && !requisition.emergency
+                && !!requisition.regimenLineItems.length;
+        }
 
         function getBasicLineItemsTotal(lineItems, column) {
             return lineItems.reduce(function(total, lineItem) {
-                if (_.isNumber(lineItem.columns[column.name].value)) {
+                if (_.isNumber(lineItem.columns[column.name].value) && !siglusColumnUtils.isTotal(lineItem)) {
                     return (total || 0) + lineItem.columns[column.name].value;
                 }
                 return total;

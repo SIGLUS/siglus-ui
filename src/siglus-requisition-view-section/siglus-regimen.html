@@ -14,29 +14,29 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat-start="(category, lineItems) in vm.regimenLineItems | groupBy: 'regimen.regimenCategory.name'">
+            <tr ng-repeat-start="(category, lineItems) in vm.regimenLineItems | groupBy: 'regimen.regimenCategory.name'" ng-if="category !== 'undefined'">
                 <td colspan="100" class="grey-background category">{{category}}</td>
             </tr>
-            <tr ng-repeat="lineItem in lineItems | orderBy: ['regimen.regimenDispatchLine.displayOrder', 'regimen.fullProductName']">
+            <tr ng-repeat="lineItem in lineItems | orderBy: ['regimen.regimenDispatchLine.displayOrder', 'regimen.fullProductName']" ng-if="!vm.isTotal(lineItem)">
                 <td>{{lineItem.regimen.regimenDispatchLine.name}}</td>
                 <td>{{lineItem.regimen.fullProductName}}</td>
-                <td ng-if="vm.canEdit" ng-repeat="regimenColumn in lineItem.columns"
+                <td ng-if="vm.canEdit" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'"
                     siglus-requisition-grid-cell
                     line-item-field="regimenColumn"></td>
-                <td ng-if="!vm.canEdit" ng-repeat="regimenColumn in lineItem.columns">{{regimenColumn.value}}</td>
+                <td ng-if="!vm.canEdit" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'">{{regimenColumn.value}}</td>
                 <td ng-if="vm.canEdit" class="text-center">
                     <button tabindex="-1" class="danger" ng-if="lineItem.regimen.isCustom" ng-click="vm.removeRegimen(lineItem)">{{'requisitionViewSection.remove' | message}}</button>
                 </td>
             </tr>
-            <tr ng-repeat-end ng-if="vm.canEdit">
+            <tr ng-repeat-end ng-if="vm.canEdit && category !== 'undefined'">
                 <td colspan="100">
                     <button tabindex="-1" class="add" ng-click="vm.addRegimen(category)">{{'requisitionViewSection.addRegimen' | message}}</button>
                 </td>
             </tr>
             <tr ng-if="vm.regimenLineItems.length">
                 <td colspan="2" class="grey-background">{{'requisitionViewSection.total' | message}}</td>
-                <td ng-repeat="regimenColumn in vm.regimenLineItems[0].columns | orderObjectBy: 'displayOrder'"
-                    openlmis-invalid="{{vm.validateTotal(vm.regimenLineItems, regimenColumn)}}">
+                <td ng-repeat="regimenColumn in vm.regimenTotal.columns | orderObjectBy: 'displayOrder'"
+                    openlmis-invalid="{{regimenColumn.$error}}">
                     {{vm.getTotal(vm.regimenLineItems, regimenColumn)}}
                 </td>
                 <td ng-if="vm.canEdit"></td>
@@ -58,17 +58,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="line in vm.regimenDispatchLineItems | orderBy: 'regimenDispatchLine.displayOrder'">
+            <tr ng-repeat="line in vm.regimenDispatchLineItems | orderBy: 'regimenDispatchLine.displayOrder'" ng-if="!vm.isTotal(line)">
                 <td>{{line.regimenDispatchLine.name}}</td>
-                <td ng-if="vm.canEdit" ng-repeat="summaryColumn in line.columns"
+                <td ng-if="vm.canEdit" ng-repeat="summaryColumn in line.columns | orderObjectBy: 'displayOrder'"
                     siglus-requisition-grid-cell
                     line-item-field="summaryColumn"></td>
-                <td ng-if="!vm.canEdit" ng-repeat="summaryColumn in line.columns">{{summaryColumn.value}}</td>
+                <td ng-if="!vm.canEdit" ng-repeat="summaryColumn in line.columns | orderObjectBy: 'displayOrder'">{{summaryColumn.value}}</td>
             </tr>
             <tr ng-if="vm.regimenDispatchLineItems.length">
                 <td class="grey-background">{{'requisitionViewSection.total' | message}}</td>
-                <td ng-repeat="summaryColumn in vm.regimenDispatchLineItems[0].columns | orderObjectBy: 'displayOrder'"
-                    openlmis-invalid="{{vm.validateTotal(vm.regimenDispatchLineItems, summaryColumn)}}">{{vm.getTotal(vm.regimenDispatchLineItems, summaryColumn)}}</td>
+                <td ng-repeat="summaryColumn in vm.summaryTotal.columns | orderObjectBy: 'displayOrder'"
+                    openlmis-invalid="{{summaryColumn.$error}}">{{vm.getTotal(vm.regimenDispatchLineItems, summaryColumn)}}</td>
             </tr>
             </tbody>
         </table>

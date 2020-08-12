@@ -88,34 +88,11 @@
 
         function validateRegimen(requisition) {
             var valid = true;
-            if (hasRegimen(requisition)) {
+            if (siglusRequisitionUtils.hasRegimen(requisition)) {
                 valid = validateBasicLineItems(requisition.regimenLineItems) && valid;
                 valid = validateBasicLineItems(requisition.regimenDispatchLineItems) && valid;
-                valid = validateTotalEqualOfRegimen(requisition) && valid;
-                valid = validateTotalOfRegimen(requisition) && valid;
+                valid = valid && validateTotalEqualOfRegimen(requisition);
             }
-            return valid;
-        }
-
-        function hasRegimen(requisition) {
-            return requisition.template.extension.enableRegimen && !requisition.emergency
-                && requisition.regimenLineItems.length;
-        }
-
-        function validateTotalOfRegimen(requisition) {
-            var valid = true;
-            var regimenColumns = getLineItemsColumns(requisition.regimenLineItems);
-            var summaryColumns = getLineItemsColumns(requisition.regimenDispatchLineItems);
-            valid = !_.some(Object.keys(regimenColumns), function(columnName) {
-                return siglusRequisitionUtils.getBasicLineItemsTotal(
-                    requisition.regimenLineItems, regimenColumns[columnName]
-                ) > MAX_INTEGER_VALUE;
-            }) && valid;
-            valid = !_.some(Object.keys(summaryColumns), function(columnName) {
-                return siglusRequisitionUtils.getBasicLineItemsTotal(
-                    requisition.regimenDispatchLineItems, summaryColumns[columnName]
-                ) > MAX_INTEGER_VALUE;
-            }) && valid;
             return valid;
         }
 
@@ -570,7 +547,9 @@
         }
 
         function validateTotalEqualOfRegimen(requisition) {
-            if (noCommentWhenEnableRegimen(requisition)) {
+            if (noCommentWhenEnableRegimen(requisition) &&
+                validateBasicLineItems(requisition.regimenLineItems) &&
+                validateBasicLineItems(requisition.regimenDispatchLineItems)) {
                 return isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.PATIENTS) &&
                     isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.COMMUNITY);
             }
@@ -597,11 +576,7 @@
 
         function noCommentWhenEnableRegimen(requisition) {
             return !requisition.draftStatusMessage && _.isEmpty(requisition.$statusMessages) &&
-                hasRegimen(requisition);
-        }
-
-        function getLineItemsColumns(lineItems) {
-            return _.first(lineItems).columns;
+                siglusRequisitionUtils.hasRegimen(requisition);
         }
 
         function validateARVPatientTotal(item) {

@@ -47,9 +47,12 @@
         'referencedata',
         'ui.router',
         'openlmis-database',
-        // #105: activate archived product
-        'siglus-stock-archived-product'
-        // #105: ends here
+        // SIGLUS-REFACTOR: starts here
+        'siglus-stock-archived-product',
+        'admin-template',
+        'siglus-admin-template-configure-preview-section',
+        'siglus-admin-template-configure-column-setting'
+        // SIGLUS-REFACTOR: ends here
     ]);
 
 })();

@@ -34,15 +34,6 @@ describe('requisitionValidator', function() {
             $provide.service('validationFactory', function() {
                 return validationFactory;
             });
-
-            // SIGLUS-REFACTOR: add requisitionUtils
-            // siglusRequisitionUtils = jasmine.createSpyObj('siglusRequisitionUtils', [
-            //     'isEmpty', 'calculateTotal', 'clearTestConsumptionError', 'getBasicLineItemsTotal'
-            // ]);
-            // $provide.factory('siglusRequisitionUtils', function() {
-            //     return siglusRequisitionUtils;
-            // });
-            // SIGLUS-REFACTOR: ends here
         });
 
         inject(function(_requisitionValidator_, _TEMPLATE_COLUMNS_, _COLUMN_SOURCES_,
@@ -628,6 +619,39 @@ describe('requisitionValidator', function() {
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
+        });
+
+        it('Should return true if regimenLineItems filed is invalid', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    community: {
+                        value: null
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
+        });
+
+        it('Should return true if regimenDispatchLineItems filed is invalid', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    community: {
+                        value: 10
+                    }
+                }
+            }];
+            requisition.regimenDispatchLineItems = [{
+                columns: {
+                    community: {
+                        value: null
+                    }
+                }
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
         });
     });
     // SIGLUS-REFACTOR: ends here
