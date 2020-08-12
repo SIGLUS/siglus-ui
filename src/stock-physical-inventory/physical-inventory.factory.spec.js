@@ -54,7 +54,12 @@ describe('physicalInventoryFactory', function() {
                             orderable: {
                                 id: 'orderable-1',
                                 code: 'orderable-code-1',
-                                name: 'orderable-name-1'
+                                name: 'orderable-name-1',
+                                // #475: Revert code change about the virtual program and real program conversion
+                                programs: [{
+                                    programId: ''
+                                }]
+                                // #475: ends here
                             }
                         },
                         {
@@ -66,7 +71,12 @@ describe('physicalInventoryFactory', function() {
                             orderable: {
                                 id: 'orderable-2',
                                 code: 'orderable-code-2',
-                                name: 'orderable-name-2'
+                                name: 'orderable-name-2',
+                                // #475: Revert code change about the virtual program and real program conversion
+                                programs: [{
+                                    programId: ''
+                                }]
+                                // #475: ends here
                             }
                         }
                     ]

@@ -254,7 +254,7 @@
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
                 var stockCardId = summary.stockCard && summary.stockCard.id;
-                var virtualProgramId = getVirtualProgramId(summary.orderable);
+                var programId = _.first(summary.orderable.programs).programId;
                 stockCardLineItems.push({
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
@@ -263,11 +263,11 @@
                     vvmStatus: null,
                     stockAdjustments: [],
                     stockCardId: stockCardId,
-                    programId: virtualProgramId
+                    programId: programId
                 });
                 summary.stockAdjustments = [];
                 summary.stockCardId = stockCardId;
-                summary.programId = virtualProgramId;
+                summary.programId = programId;
             });
             draftToReturn.summaries = summaries;
             if (_.isEmpty(draftLineItems)) {
@@ -294,7 +294,7 @@
                         stockAdjustments: item.stockAdjustments || [],
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
-                        programId: getVirtualProgramId(summary.orderable)
+                        programId: _.first(summary.orderable.programs).programId
                     });
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
@@ -312,13 +312,6 @@
                 draftLOt = angular.copy(summary.lot);
             }
             return draftLOt;
-        }
-
-        function getVirtualProgramId(orderable) {
-            var program = _.find(orderable.programs, function(program) {
-                return !!program.parentId;
-            });
-            return program && program.parentId;
         }
 
         /*function identityOfLines(identifiable) {

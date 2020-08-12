@@ -145,20 +145,6 @@
             vm.validateLotDate(lineItem);
         });
 
-        vm.filterDestinationsByProduct = function(destinations, programs) {
-            var parentIds = [];
-            programs.forEach(function(program) {
-                parentIds.push(program.parentId);
-            });
-            var updatedDst = [];
-            destinations.forEach(function(destination) {
-                if (parentIds.indexOf(destination.programId) !== -1) {
-                    updatedDst.push(destination);
-                }
-            });
-            return updatedDst;
-        };
-
         function copyDefaultValue() {
             var defaultDate;
             if (previousAdded.occurredDate) {
@@ -175,18 +161,18 @@
             };
         }
 
-        vm.filterReasonsByProduct = function(reasons, programs) {
-            var parentIds = [];
+        vm.filterByProgram = function(items, programs) {
+            var programIds = [];
             programs.forEach(function(program) {
-                parentIds.push(program.parentId);
+                programIds.push(program.programId);
             });
-            var updatedReasons = [];
-            reasons.forEach(function(reason) {
-                if (parentIds.indexOf(reason.programId) !== -1) {
-                    updatedReasons.push(reason);
+            var updatedItems = [];
+            items.forEach(function(item) {
+                if (programIds.indexOf(item.programId) !== -1) {
+                    updatedItems.push(item);
                 }
             });
-            return updatedReasons;
+            return updatedItems;
         };
 
         /**
@@ -467,7 +453,7 @@
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = findParentId(lineItem);
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
                 lineItem.reason = _.find(reasons, {
                     name: 'Receive'
                 });
@@ -513,18 +499,6 @@
             });
 
             addedLineItems.push.apply(addedLineItems, constituentLineItems);
-        }
-
-        function findParentId(lineItem) {
-            if (lineItem && lineItem.orderable && lineItem.orderable.programs) {
-                for (var i = 0; i < lineItem.orderable.programs.length; i++) {
-                    if (lineItem.orderable.programs[i] && lineItem.orderable.programs[i].parentId) {
-                        return lineItem.orderable.programs[i].parentId;
-                    }
-                }
-            }
-
-            return null;
         }
 
         function onInit() {

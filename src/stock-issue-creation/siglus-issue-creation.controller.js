@@ -128,18 +128,18 @@
             }
         };
 
-        vm.filterDestinationsByProduct = function(destinations, programs) {
-            var parentIds = [];
+        vm.filterByProgram = function(items, programs) {
+            var programIds = [];
             programs.forEach(function(program) {
-                parentIds.push(program.parentId);
+                programIds.push(program.programId);
             });
-            var updatedDst = [];
-            destinations.forEach(function(destination) {
-                if (parentIds.indexOf(destination.programId) !== -1) {
-                    updatedDst.push(destination);
+            var updatedItems = [];
+            items.forEach(function(item) {
+                if (programIds.indexOf(item.programId) !== -1) {
+                    updatedItems.push(item);
                 }
             });
-            return updatedDst;
+            return updatedItems;
         };
 
         function copyDefaultValue() {
@@ -419,7 +419,7 @@
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = findParentId(lineItem);
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
                 lineItem.reason = _.find(reasons, {
                     name: 'Issue'
                 });
@@ -438,18 +438,6 @@
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
                 });
-        }
-
-        function findParentId(lineItem) {
-            if (lineItem && lineItem.orderable && lineItem.orderable.programs) {
-                for (var i = 0; i < lineItem.orderable.programs.length; i++) {
-                    if (lineItem.orderable.programs[i] && lineItem.orderable.programs[i].parentId) {
-                        return lineItem.orderable.programs[i].parentId;
-                    }
-                }
-            }
-
-            return null;
         }
 
         function onInit() {
