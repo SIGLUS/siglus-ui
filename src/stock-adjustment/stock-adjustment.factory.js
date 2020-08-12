@@ -84,8 +84,6 @@
                         draftLineItem.orderableId,
                         draftLineItem.lotId
                     );
-                    var program = orderable.programs && orderable.programs[0];
-                    var parentId = program && program.parentId;
                     var newItem = {
                         $errors: {},
                         $previewSOH: soh,
@@ -115,7 +113,7 @@
                     newItem.assignment = getAssignmentById(
                         srcDstAssignments,
                         srcDstId,
-                        parentId
+                        _.first(orderable.programs).programId
                     );
 
                     var filteredReasons = reasons;
@@ -184,10 +182,10 @@
             return stockOnHand;
         }
 
-        function getAssignmentById(srcDstAssignments, srcDstId, parentId) {
+        function getAssignmentById(srcDstAssignments, srcDstId, programId) {
             var assignment = null;
             _.forEach(srcDstAssignments, function(item) {
-                if (item.programId === parentId && item.node && item.node.id === srcDstId) {
+                if (item.programId === programId && item.node && item.node.id === srcDstId) {
                     assignment = item;
                 }
             });
@@ -195,13 +193,13 @@
         }
 
         function filterReasonsByProduct(reasons, programs) {
-            var parentIds = [];
+            var programIds = [];
             programs.forEach(function(program) {
-                parentIds.push(program.parentId);
+                programIds.push(program.programId);
             });
             var updatedReasons = [];
             reasons.forEach(function(reason) {
-                if (parentIds.indexOf(reason.programId) !== -1) {
+                if (programIds.indexOf(reason.programId) !== -1) {
                     updatedReasons.push(reason);
                 }
             });

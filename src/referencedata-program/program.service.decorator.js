@@ -42,10 +42,15 @@
                     code: 'ALL'
                 },
                 isArray: true
+            },
+            getById: {
+                url: openlmisUrlFactory('/api/siglusapi/programs/:id'),
+                method: 'GET'
             }
         });
 
         $delegate.getAllProductsProgram = getAllProductsProgram;
+        $delegate.get = get;
 
         return $delegate;
 
@@ -60,6 +65,30 @@
         function getAllProductsProgram() {
             return resource.getAllProductsProgram()
                 .$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf referencedata-program.programService
+         * @name get
+         *
+         * @description
+         * Gets program by id.
+         *
+         * @param  {String}  id Program UUID
+         * @return {Promise}    Program info
+         */
+        function get(id) {
+            if (id) {
+                return resource.getById({
+                    id: id
+                })
+                    .$promise
+                    .then(function(program) {
+                        return program;
+                    });
+            }
+            return undefined;
         }
     }
 })();

@@ -222,19 +222,20 @@
             return lots;
         }
 
-        vm.filterReasonsByProduct = function(reasons, programs) {
-            var parentIds = [];
+        vm.filterByProgram = function(items, programs) {
+            var programIds = [];
             programs.forEach(function(program) {
-                parentIds.push(program.parentId);
+                programIds.push(program.programId);
             });
-            var updatedReasons = [];
-            reasons.forEach(function(reason) {
-                if (parentIds.indexOf(reason.programId) !== -1) {
-                    updatedReasons.push(reason);
+            var updatedItems = [];
+            items.forEach(function(item) {
+                if (programIds.indexOf(item.programId) !== -1) {
+                    updatedItems.push(item);
                 }
             });
-            return updatedReasons;
+            return updatedItems;
         };
+
         function copyDefaultValue() {
             var defaultDate;
             if (previousAdded.occurredDate) {
@@ -585,7 +586,7 @@
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = findParentId(lineItem);
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
             });
 
             // generateKitConstituentLineItem(addedLineItems);
@@ -629,20 +630,6 @@
         //
         //     addedLineItems.push.apply(addedLineItems, constituentLineItems);
         // }
-        // SIGLUS-REFACTOR: ends here
-
-        // SIGLUS-REFACTOR: starts here
-        function findParentId(lineItem) {
-            if (lineItem && lineItem.orderable && lineItem.orderable.programs) {
-                for (var i = 0; i < lineItem.orderable.programs.length; i++) {
-                    if (lineItem.orderable.programs[i] && lineItem.orderable.programs[i].parentId) {
-                        return lineItem.orderable.programs[i].parentId;
-                    }
-                }
-            }
-
-            return null;
-        }
         // SIGLUS-REFACTOR: ends here
 
         function onInit() {

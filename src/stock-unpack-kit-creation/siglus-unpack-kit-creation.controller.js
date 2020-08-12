@@ -72,14 +72,6 @@
                     vm.groupedProducts = getGroupedProducts(newValue);
                 }
             }, true);
-            // $scope.$watchCollection(function() {
-            //     return vm.pageProducts;
-            // }, function(newList) {
-            //     vm.groupedPageProducts = _.chain(newList).flatten()
-            //         .groupBy('productCode')
-            //         .values()
-            //         .value();
-            // }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
         };
 
@@ -196,7 +188,7 @@
                 occurredDate: dateUtils.toStringDate(new Date()),
                 dateInvalid: false,
                 orderableId: product.id,
-                programId: product.parentProgramId,
+                programId: product.programId,
                 documentationNo: vm.kit.documentationNo
             });
         }
@@ -251,7 +243,7 @@
                         quantity: vm.kit.unpackQuantity,
                         occurredDate: dateUtils.toStringDate(new Date()),
                         documentationNo: vm.kit.documentationNo,
-                        programId: vm.kit.parentProgramId,
+                        programId: vm.kit.programId,
                         reasonId: UNPACK_REASONS.KIT_UNPACK_REASON_ID,
                         extraData: {}
                     };
