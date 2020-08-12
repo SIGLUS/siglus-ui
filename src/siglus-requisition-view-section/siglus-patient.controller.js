@@ -21,9 +21,9 @@
         .module('siglus-requisition-view-section')
         .controller('SiglusPatientController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'requisitionValidator'];
+    controller.$inject = ['siglusColumnUtils', 'requisitionValidator', 'messageService'];
 
-    function controller(siglusColumnUtils, requisitionValidator) {
+    function controller(siglusColumnUtils, requisitionValidator, messageService) {
 
         var vm = this;
 
@@ -47,18 +47,17 @@
         }
 
         function getTotal(lineItem, column) {
-            var isFilled = false;
             var total = _.reduce(lineItem.columns, function(total, column) {
                 if (!vm.isCalculated(column) && _.isNumber(column.value)) {
-                    isFilled = true;
-                    return total + column.value;
+                    return (total || 0) + column.value;
                 }
                 return total;
-            }, 0);
-            column.value = undefined;
-            if (isFilled) {
-                column.value = total;
+            }, undefined);
+            column.value = total;
+            if (_.isNumber(column.value)) {
                 requisitionValidator.validateSiglusLineItemField(column);
+            } else if (column.$error === messageService.get('requisitionValidation.numberTooLarge')) {
+                column.$error = undefined;
             }
             return column.value;
         }

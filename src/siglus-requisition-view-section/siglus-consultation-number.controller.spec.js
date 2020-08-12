@@ -152,11 +152,13 @@ describe('SiglusConsultationNumberViewController', function() {
             expect(total.value).toBe(220);
         });
 
-        it('should return total value undefined when the value of consultationNumberField is null ' +
+        it('should clear the last total value and return total value undefined ' +
+            'when the value of consultationNumberField is null ' +
             'and the value of newField is null', function() {
+            var total = lineItems[0].columns['total'];
+            total.value = 100;
             vm.lineItems[0].columns['consultationNumber'].value = null;
             vm.lineItems[0].columns['new'].value = null;
-            var total = lineItems[0].columns['total'];
 
             vm.getTotal(lineItems[0], total);
 
@@ -173,6 +175,21 @@ describe('SiglusConsultationNumberViewController', function() {
 
             expect(total.value).toBe(2147483648);
             expect(total.$error).toBe('requisitionValidation.numberTooLarge');
+        });
+
+        it('should clear the last error message and calculate the new total value ' +
+            'when the value of consultationNumberField is is 100' +
+            'and the value of newField is 150', function() {
+            var total = lineItems[0].columns['total'];
+            total.value = 2147483648;
+            total.$error = 'requisitionValidation.numberTooLarge';
+            vm.lineItems[0].columns['consultationNumber'].value = 100;
+            vm.lineItems[0].columns['new'].value = 150;
+
+            vm.getTotal(lineItems[0], total);
+
+            expect(total.value).toBe(250);
+            expect(total.$error).toBeUndefined();
         });
     });
 });

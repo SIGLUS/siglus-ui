@@ -132,10 +132,7 @@ describe('SiglusUsageInformationController', function() {
     });
 
     describe('getTotal', function() {
-
-        it('should return total when informationName and orderableId', function() {
-            var informationName = 'treatmentsAttended';
-            var orderableId = '98-76-54-321';
+        beforeEach(function() {
             vm.lineItems.push({
                 service: 'total',
                 name: 'total',
@@ -150,8 +147,31 @@ describe('SiglusUsageInformationController', function() {
                     }
                 }
             });
+        });
 
-            expect(vm.getTotal(informationName, orderableId)).toBe(2);
+        it('should clear the last total value and return new total ' +
+            'when informationName and orderableId', function() {
+            var informationName = 'treatmentsAttended';
+            var orderableId = '98-76-54-321';
+            var total = vm.lineItems[1].informations[informationName].orderables[orderableId];
+            total.value = 100;
+
+            vm.getTotal(informationName, orderableId);
+
+            expect(total.value).toBe(2);
+        });
+
+        it('should clear the last error message and calculate the new total value', function() {
+            var informationName = 'treatmentsAttended';
+            var orderableId = '98-76-54-321';
+            var total = vm.lineItems[1].informations[informationName].orderables[orderableId];
+            total.value = 2147483648;
+            total.$error = 'requisitionValidation.numberTooLarge';
+
+            vm.getTotal(informationName, orderableId);
+
+            expect(total.value).toBe(2);
+            expect(total.$error).toBeUndefined();
         });
     });
 });
