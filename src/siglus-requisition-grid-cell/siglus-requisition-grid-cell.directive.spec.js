@@ -45,6 +45,36 @@ describe('requisitionGridCell', function() {
         );
     });
 
+    it('should set the default value when the quickly fill event is triggered', function() {
+        this.getCompiledElement();
+        this.scope.lineItemField.value = null;
+        this.$rootScope.$broadcast('siglus-quickly-fill');
+        this.scope.$apply();
+
+        expect(this.scope.lineItemField.value).toEqual(0);
+    });
+
+    it('should clear the last calculated error when the quickly fill event is triggered', function() {
+        this.getCompiledElement();
+        this.scope.lineItemField.value = null;
+        this.scope.lineItemField.$error = 'This field is required';
+        this.$rootScope.$broadcast('siglus-quickly-fill');
+        this.scope.$apply();
+
+        expect(this.scope.lineItemField.$error).toBeUndefined();
+        expect(this.scope.lineItemField.value).toBe(0);
+    });
+
+    it('should not set the default value 0 when the field has value ' +
+        'even the quickly fill event is triggered', function() {
+        this.getCompiledElement();
+        this.scope.lineItemField.value = 1000;
+        this.$rootScope.$broadcast('siglus-quickly-fill');
+        this.scope.$apply();
+
+        expect(this.scope.lineItemField.value).toBe(1000);
+    });
+
     function getCompiledElement() {
         var rootElement = angular.element('<div siglus-requisition-grid-cell' +
             ' line-item-field="lineItemField"></div>');

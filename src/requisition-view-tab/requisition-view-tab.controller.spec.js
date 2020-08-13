@@ -38,9 +38,12 @@ describe('ViewTabController', function() {
             this.requisitionService = $injector.get('requisitionService');
             this.loadingModalService = $injector.get('loadingModalService');
             this.notificationService = $injector.get('notificationService');
+            this.$scope = this.$rootScope.$new();
             // SIGLUS-REFACTOR: ends here
             // #409: populate value when requisition is rejected
             this.REQUISITION_STATUS = $injector.get('REQUISITION_STATUS');
+            spyOn(this.$scope, '$broadcast');
+            spyOn(this.notificationService, 'success');
             // #409: ends here
         });
 
@@ -991,6 +994,51 @@ describe('ViewTabController', function() {
     });
     // #352: ends here
 
+    // #340: quickly fill the tables in R&R during creating an R&R
+    describe('showQuicklyFill', function() {
+
+        beforeEach(function() {
+            this.canSubmit = true;
+            this.canAuthorize = true;
+            this.requisition.template.extension.enableQuicklyFill = true;
+            this.requisition.template.extension.enableConsultationNumber = true;
+            this.requisition.template.extension.enableProduct = true;
+        });
+
+        it('should show quickly fill button', function() {
+            this.initController();
+
+            expect(this.vm.showQuicklyFill()).toEqual(true);
+        });
+
+        it('should not show quickly fill button when the requisition can not submit or authorize', function() {
+            this.canSubmit = false;
+            this.canAuthorize = false;
+            this.initController();
+
+            expect(this.vm.showQuicklyFill()).toEqual(false);
+        });
+
+        it('should not show quickly fill button when the quickly fill is not enabled', function() {
+            this.requisition.template.extension.enableQuicklyFill = false;
+            this.initController();
+
+            expect(this.vm.showQuicklyFill()).toEqual(false);
+        });
+    });
+
+    describe('quicklyFillHandler', function() {
+
+        it('should show quickly fill button', function() {
+            this.initController();
+            this.vm.quicklyFillHandler();
+
+            expect(this.$scope.$broadcast).toHaveBeenCalledWith('siglus-quickly-fill');
+            expect(this.notificationService.success).toHaveBeenCalledWith('requisitionViewTab.quicklyFill.success');
+        });
+    });
+    // #340: ends here
+
     function initController() {
         this.vm = this.$controller('ViewTabController', {
             lineItems: [],
@@ -1011,9 +1059,9 @@ describe('ViewTabController', function() {
             requisitionService: this.requisitionService,
             loadingModalService: this.loadingModalService,
             homeFacility: this.homeFacility,
-            $scope: this.$rootScope.$new(),
             // SIGLUS-REFACTOR: ends here
             // #375: create requisition with test consumption section
+            $scope: this.$scope,
             program: this.program
             // #375: ends here
         });
