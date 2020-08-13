@@ -1,0 +1,26 @@
+<h2>{{'adminProgramList.programs' | message}}</h2>
+<div class="openlmis-table-container">
+    <button id="add-program" class="add" ng-click="vm.goToAddProgram()">
+        {{'adminProgramList.addProgram' | message}}
+    </button>
+    <table class="openlmis-table" ng-if="vm.programs.length">
+        <thead>
+            <tr>
+                <th>{{'adminProgramList.program' | message}}</th>
+                <th>{{'adminProgramList.programSettings' | message}}</th>
+                <th>{{'adminProgramList.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="program in vm.programs">
+                <td>{{program.name}}</td>
+                <td>{{program.active ? 'adminProgramList.active' : 'adminProgramList.notActive' | message}}</td>
+                <td>
+                    <!-- #480: Admin can manage the "Additional Products" for a program -->
+                    <button ui-sref="openlmis.administration.programs.settings.general({programId: program.id})">{{'adminProgramList.edit' | message}}</button>
+                    <!-- #480: ends here -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,28 @@
+<!-- #480: Admin can manage the "Additional Products" for a program -->
+<!--<header>-->
+<!--    <h2>{{'adminProgramSettings.settings' | message:({program: vm.program.name})}}</h2>-->
+<!--</header>-->
+<!--<ng-include src="'admin-program-add/program-form.html'"></ng-include>-->
+<!--<div class="button-group">-->
+<!--    <button class="primary" type="submit" form="program-form">{{'adminProgramSettings.save' | message}}</button>-->
+<!--    <button ui-sref="openlmis.administration.programs">{{'adminProgramSettings.cancel' | message}}</button>-->
+<!--</div>-->
+<header>
+    <h2>{{'adminProgramSettings.edit' | message:({program: vm.program.name})}}</h2>
+</header>
+<nav>
+    <ul>
+        <li ui-sref-active="active" role="presentation">
+            <a ui-sref="openlmis.administration.programs.settings.general">
+                {{'adminProgramSettings.general' | message}}
+            </a>
+        </li>
+        <li ui-sref-active="active" role="presentation">
+            <a ui-sref="openlmis.administration.programs.settings.additionalProducts">
+                {{'adminProgramSettings.additionalProducts' | message}}
+            </a>
+        </li>
+    </ul>
+</nav>
+<div ui-view=""></div>
+<!-- #480: ends here -->
