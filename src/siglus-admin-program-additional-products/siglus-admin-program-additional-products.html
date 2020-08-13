@@ -1,0 +1,54 @@
+<div class="additional-products">
+    <p class="note">{{'adminProgramAdditionalProducts.message' | message}}</p>
+</div>
+<section class="openlmis-table-container">
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label>{{'adminProgramAdditionalProducts.code' | message}}</label>
+            <input type="text" ng-model="vm.productCode"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>{{'adminProgramAdditionalProducts.name' | message}}</label>
+            <input type="text" ng-model="vm.productName"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label>{{'adminProgramAdditionalProducts.programs' | message}}</label>
+            <select id="additionalProductsProgram" ng-model="vm.additionalProductsProgram"
+                    ng-options="program as program.name for program in vm.allPrograms">
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminProgramAdditionalProducts.search' | message}}"/>
+    </form>
+    <button class="add" ng-click="vm.addAdditionalProducts()">
+        {{'adminProgramAdditionalProducts.addProduct' | message}}
+    </button>
+    <table>
+        <caption ng-if="!vm.additionalProducts || vm.additionalProducts.length === 0">
+            {{'adminProgramAdditionalProducts.noProducts' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th>{{'adminProgramAdditionalProducts.code' | message}}</th>
+            <th>{{'adminProgramAdditionalProducts.name' | message}}</th>
+            <th>{{'adminProgramAdditionalProducts.description' | message}}</th>
+            <th>{{'adminProgramAdditionalProducts.program' | message}}</th>
+            <th>{{'adminProgramAdditionalProducts.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="additionalProduct in vm.additionalProducts">
+            <td>{{additionalProduct.productCode}}</td>
+            <td>{{additionalProduct.fullProductName}}</td>
+            <td>{{additionalProduct.description}}</td>
+            <td>{{additionalProduct.program.name}}</td>
+            <td>
+                <button class="danger" ng-click="vm.remove(additionalProduct)">{{'adminProgramAdditionalProducts.remove' | message}}</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination/>
+</section>
+<div class="button-group">
+    <button ui-sref="openlmis.administration.programs" ui-sref-opts="{reload: true}">{{'adminProgramSettings.cancel' | message}}</button>
+</div>

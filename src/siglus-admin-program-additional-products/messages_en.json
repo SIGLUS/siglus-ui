@@ -1,0 +1,14 @@
+{
+  "adminProgramAdditionalProducts.label": "Additional Products",
+  "adminProgramAdditionalProducts.message": "By adding additional products to this program, the additional products will be able to show in the related template(report only) of this program.\nThis setting will not change the program information of added products(the added product still belongs to original program).",
+  "adminProgramAdditionalProducts.code": "Code",
+  "adminProgramAdditionalProducts.name": "Name",
+  "adminProgramAdditionalProducts.programs": "Program",
+  "adminProgramAdditionalProducts.addProduct": "Add Product",
+  "adminProgramAdditionalProducts.search": "Search",
+  "adminProgramAdditionalProducts.noProducts": "No products found",
+  "adminProgramAdditionalProducts.description": "Description",
+  "adminProgramAdditionalProducts.program": "Program(original)",
+  "adminProgramAdditionalProducts.actions": "Actions",
+  "adminProgramAdditionalProducts.remove": "Remove"
+}
