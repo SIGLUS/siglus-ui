@@ -33,9 +33,9 @@
      */
     angular
         .module('openlmis-form')
-        .directive('integer', integer);
+        .directive('siglusInteger', siglusInteger);
 
-    function integer() {
+    function siglusInteger() {
         var directive = {
             require: 'ngModel',
             link: link,
