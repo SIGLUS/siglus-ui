@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('integer', function() {
+describe('siglusInteger', function() {
 
     beforeEach(function() {
         module('openlmis-form');
@@ -28,7 +28,7 @@ describe('integer', function() {
         this.compileElement = function() {
             this.element = this.$compile(
                 '<form name="form_test">' +
-                '<input name="input_test" integer ng-model="example" type="text"/></form>'
+                '<input name="input_test" siglus-integer ng-model="example" type="text"/></form>'
             )(this.$scope);
             angular.element('body').append(this.element);
             this.$rootScope.$apply();
