@@ -110,9 +110,13 @@ describe('TemplateAddController', function() {
                 skippedColumn.columnDefinition
             ]);
         });
+
+        // #163: add associate program
+        it('should resolve associate programs', function() {
+            expect(vm.associatePrograms).toEqual([program, programTwo]);
+        });
     });
 
-    // #163: add associate program
     describe('addAssociateProgram', function() {
 
         it('should add associate program', function() {
