@@ -60,22 +60,32 @@
                     return programService.getAll();
                 },
                 templateAssociatePrograms: function(template, programs) {
-                    return programs.filter(function(program) {
-                        var associatePrograms = template.associatePrograms.filter(function(associateProgram) {
-                            return program.id === associateProgram.id;
-                        });
-                        return associatePrograms.length > 0;
+                    var templateAssociatePrograms = [];
+                    programs.forEach(function(program) {
+                        if (template.associatePrograms && template.associatePrograms.length > 0) {
+                            template.associatePrograms.forEach(function(associateProgram) {
+                                if (program.id === associateProgram.id) {
+                                    templateAssociatePrograms.push(program);
+                                }
+                            });
+                        }
                     });
+                    return templateAssociatePrograms;
                 },
                 availableAssociatePrograms: function(template, programs) {
                     return programs.filter(function(program) {
-                        if (program.id === template.program.id) {
-                            return false;
+                        var flag = true;
+                        if (template.associatePrograms && template.associatePrograms.length > 0) {
+                            template.associatePrograms.forEach(function(associateProgram) {
+                                if (program.id === associateProgram.id) {
+                                    flag = false;
+                                }
+                            });
                         }
-                        var associatePrograms = template.associatePrograms.filter(function(associateProgram) {
-                            return program.id === associateProgram.id;
-                        });
-                        return associatePrograms.length === 0;
+                        if (program.id === template.program.id) {
+                            flag = false;
+                        }
+                        return flag;
                     });
                 }
                 // #163: ends here
