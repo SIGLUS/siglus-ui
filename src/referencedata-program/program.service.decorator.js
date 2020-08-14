@@ -80,6 +80,9 @@
          * @return {Promise}    Program info
          */
         function get(id) {
+            if (!id) {
+                return $q.resolve(undefined);
+            }
             var cachedProgram = programsCache.getBy('id', id);
 
             if (cachedProgram) {
