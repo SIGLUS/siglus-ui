@@ -73,8 +73,8 @@
 
         function addRegimen(category) {
             var notYetAddedRegimens = vm.customRegimens.filter(function(regimen) {
-                return !_.find(vm.regimenLineItems, function(item) {
-                    return item.regimen.id === regimen.id;
+                return  !_.find(vm.regimenLineItems, function(item) {
+                    return item.regimen && item.regimen.id === regimen.id;
                 }) && regimen.regimenCategory.name === category ;
             });
             selectProductsModalService.show({
