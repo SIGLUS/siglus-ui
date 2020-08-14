@@ -66,9 +66,7 @@
             this.columnsMap = {};
             this.facilityTypes = template.facilityTypes;
             this.name = template.name;
-            // #163: add associate program
-            this.associatePrograms = template.associatePrograms;
-            // #163: ends here
+            this.extension = template.extension;
             // #248: kit usage section configure
             this.extension = template.extension || {};
             // #248: ends here
