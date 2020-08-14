@@ -33,21 +33,22 @@
         $provide.decorator('programService', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource'];
-    function decorator($delegate, openlmisUrlFactory, $resource) {
+    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource', '$q', 'localStorageFactory'];
+    function decorator($delegate, openlmisUrlFactory, $resource, $q, localStorageFactory) {
         var resource = $resource(openlmisUrlFactory('/api/siglusapi/programs'), {}, {
-            getAllProductsProgram: {
-                method: 'GET',
-                params: {
-                    code: 'ALL'
+                getAllProductsProgram: {
+                    method: 'GET',
+                    params: {
+                        code: 'ALL'
+                    },
+                    isArray: true
                 },
-                isArray: true
-            },
-            getById: {
-                url: openlmisUrlFactory('/api/siglusapi/programs/:id'),
-                method: 'GET'
-            }
-        });
+                getById: {
+                    url: openlmisUrlFactory('/api/siglusapi/programs/:id'),
+                    method: 'GET'
+                }
+            }),
+            programsCache = localStorageFactory('programs');
 
         $delegate.getAllProductsProgram = getAllProductsProgram;
         $delegate.get = get;
@@ -79,16 +80,20 @@
          * @return {Promise}    Program info
          */
         function get(id) {
-            if (id) {
-                return resource.getById({
-                    id: id
-                })
-                    .$promise
-                    .then(function(program) {
-                        return program;
-                    });
+            var cachedProgram = programsCache.getBy('id', id);
+
+            if (cachedProgram) {
+                return $q.resolve(cachedProgram);
             }
-            return undefined;
+
+            return resource.getById({
+                id: id
+            })
+                .$promise
+                .then(function(program) {
+                    programsCache.put(program);
+                    return program;
+                });
         }
     }
 })();
