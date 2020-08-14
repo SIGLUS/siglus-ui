@@ -237,6 +237,27 @@ describe('SiglusRegimentController', function() {
                 state: '.addRegimens'
             });
         });
+
+        it('should call selectProductsModalService when regimenLineItems have total item', function() {
+            vm.regimenLineItems.push({
+                name: 'total',
+                columns: {
+                    community: {
+                        id: '1',
+                        name: 'community',
+                        value: undefined
+                    }
+                }
+            });
+            spyOn(selectProductsModalService, 'show').andReturn($q.resolve([vm.customRegimens[0]]));
+            vm.addRegimen('Adults');
+            $rootScope.$apply();
+
+            expect(selectProductsModalService.show).toHaveBeenCalledWith({
+                products: [vm.customRegimens[0]],
+                state: '.addRegimens'
+            });
+        });
     });
 
     describe('removeRegimen', function() {
