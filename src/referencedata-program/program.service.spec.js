@@ -74,23 +74,21 @@ describe('programService', function() {
         this.$rootScope.$apply();
 
         expect(angular.toJson(result)).toEqual(angular.toJson(this.program1));
-        // expect(this.programsStorage.put).toHaveBeenCalled();
+        expect(this.programsStorage.put).toHaveBeenCalled();
     });
 
-    // SIGLUS-REFACTOR: starts here
-    // it('should get program by id from storage while offline', function() {
-    //     this.programsStorage.getBy.andReturn(this.program1);
-    //     this.offlineService.isOffline.andReturn(true);
-    //
-    //     var result;
-    //     this.programService.get(this.program1.id).then(function(program) {
-    //         result = program;
-    //     });
-    //     this.$rootScope.$apply();
-    //
-    //     expect(angular.toJson(result)).toBe(angular.toJson(this.program1));
-    // });
-    // SIGLUS-REFACTOR: ends here
+    it('should get program by id from storage while offline', function() {
+        this.programsStorage.getBy.andReturn(this.program1);
+        this.offlineService.isOffline.andReturn(true);
+
+        var result;
+        this.programService.get(this.program1.id).then(function(program) {
+            result = program;
+        });
+        this.$rootScope.$apply();
+
+        expect(angular.toJson(result)).toBe(angular.toJson(this.program1));
+    });
 
     it('should get all programs', function() {
 
