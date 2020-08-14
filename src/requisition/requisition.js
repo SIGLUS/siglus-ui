@@ -663,7 +663,7 @@
 
         // SIGLUS-REFACTOR: add new method addProductLineItem
         function addProductLineItem(lineItem) {
-            var orderableProgram = this.program;
+            var orderableProgram = _.first(lineItem.orderable.programs);
             var newLineItem = new LineItem(_.extend(lineItem, {
                 pricePerPack: orderableProgram.pricePerPack,
                 $deletable: true
@@ -792,9 +792,7 @@
 
         function getOrderableProgramById(programs, programId) {
             return programs.filter(function(program) {
-                // SIGLUS-REFACTOR: get program by parent id
-                return program.parentId === programId;
-                // SIGLUS-REFACTOR: ends here
+                return program.programId === programId;
             })[0];
         }
 

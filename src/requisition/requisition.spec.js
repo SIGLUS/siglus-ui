@@ -1295,13 +1295,12 @@ describe('Requisition', function() {
             requisition.availableFullSupplyProducts = [
                 requisition.availableProducts[0]
             ];
+
             var orderable = requisition.availableFullSupplyProducts[0];
 
             expect(function() {
                 requisition.addLineItem(orderable, 10, 'explanation');
-                // SIGLUS-REFACTOR: starts here
-            }).toThrow('The given product is not available for this requisition');
-            // SIGLUS-REFACTOR: ends here
+            }).toThrow('Can not add full supply line items to regular requisition');
         });
 
         it('should add new available full supply line item to emergency requisition', function() {
@@ -1311,11 +1310,6 @@ describe('Requisition', function() {
             ];
 
             var orderable = this.requisition.availableFullSupplyProducts[0];
-            // SIGLUS-REFACTOR: starts here
-            orderable.programs.forEach(function(program) {
-                program.parentId = program.programId;
-            });
-            // SIGLUS-REFACTOR: ends here
 
             this.requisition.addLineItem(orderable, 16, 'explanation');
 
@@ -1333,11 +1327,6 @@ describe('Requisition', function() {
             ];
 
             var orderable = this.requisition.availableNonFullSupplyProducts[0];
-            // SIGLUS-REFACTOR: starts here
-            orderable.programs.forEach(function(program) {
-                program.parentId = program.programId;
-            });
-            // SIGLUS-REFACTOR: ends here
 
             this.requisition.addLineItem(orderable, 16, 'explanation');
 
@@ -1354,11 +1343,6 @@ describe('Requisition', function() {
                 this.requisition.availableProducts[3]
             ];
             var orderable = this.requisition.availableNonFullSupplyProducts[0];
-            // SIGLUS-REFACTOR: starts here
-            orderable.programs.forEach(function(program) {
-                program.parentId = program.programId;
-            });
-            // SIGLUS-REFACTOR: ends here
 
             this.requisition.addLineItem(orderable, 16, 'explanation');
 
