@@ -1,9 +1,5 @@
 {
   "adminTemplateAdd.addTemplate": "Add Template",
   "adminTemplateAdd.confirm": "Confirm",
-  "adminTemplateAdd.createTemplate.confirm": "Do you want to create a new template for the ${program} program?",
-  "adminTemplateAdd.associateProgram": "Associate Program",
-  "adminTemplateAdd.addAssociateProgram": "Add Associate Program",
-  "adminTemplateAdd.associateProgramNeedsToBeSelected": "You need to select program first. By adding associate program, the products within the main program and associated  programs will shown on product section",
-  "adminTemplateAdd.noAssociateProgramsAdded": "No associate programs added yet"
+  "adminTemplateAdd.createTemplate.confirm": "Do you want to create a new template for the ${program} program?"
 }
