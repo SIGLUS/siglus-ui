@@ -153,6 +153,9 @@
             vm.programs = programs;
             vm.availableColumns = availableColumns;
             vm.template = template;
+            // #163: add associate program
+            vm.associatePrograms = programs;
+            // #163: ends here
         }
 
         /**
