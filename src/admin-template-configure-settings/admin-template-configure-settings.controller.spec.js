@@ -207,27 +207,43 @@ describe('AdminTemplateConfigureSettingsController', function() {
     // #163: add associate program
     describe('addAssociateProgram', function() {
 
-        it('should add associate program to template associate programs', function() {
+        beforeEach(function() {
             initController();
             vm.associateProgram = programTwo;
+        });
 
+        it('should add facility type to template facility types', function() {
             vm.addAssociateProgram();
             rootScope.$apply();
 
             expect(vm.template.associatePrograms).toEqual([program, programTwo]);
+        });
+
+        it('should remove facility type from available facility types', function() {
+            vm.addAssociateProgram();
+            rootScope.$apply();
+
             expect(vm.associatePrograms).toEqual([]);
         });
     });
 
     describe('removeAssociateProgram', function() {
 
-        it('should remove associate program from template associate programs', function() {
+        beforeEach(function() {
             initController();
+        });
 
+        it('should remove facility type from template facility types', function() {
             vm.removeAssociateProgram(program);
             rootScope.$apply();
 
             expect(vm.template.associatePrograms).toEqual([]);
+        });
+
+        it('should add facility type to available facility types', function() {
+            vm.removeAssociateProgram(program);
+            rootScope.$apply();
+
             expect(vm.associatePrograms).toEqual([programTwo, program]);
         });
     });
