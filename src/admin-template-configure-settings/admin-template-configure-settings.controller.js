@@ -227,6 +227,7 @@
         function addAssociateProgram() {
             vm.template.associatePrograms.push(vm.associateProgram);
             vm.associatePrograms.splice(vm.associatePrograms.indexOf(vm.associateProgram), 1);
+            return $q.resolve();
         }
 
         /**

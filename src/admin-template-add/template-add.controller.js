@@ -46,7 +46,7 @@
         vm.addFacilityType = addFacilityType;
         vm.removeFacilityType = removeFacilityType;
         // #163: add associate program
-        vm.populateProgramRelatedVariable = populateProgramRelatedVariable;
+        vm.populateFacilityTypesAndAssociatePrograms = populateFacilityTypesAndAssociatePrograms;
         vm.addAssociateProgram = addAssociateProgram;
         vm.removeAssociateProgram = removeAssociateProgram;
         // #163: ends here
@@ -214,40 +214,33 @@
         /**
          * @ngdoc property
          * @methodOf admin-template-add.controller:TemplateAddController
-         * @name populateProgramRelatedVariable
+         * @name populateFacilityTypesAndAssociatePrograms
          *
          * @description
-         * Populates program related variable.
+         * Populates Facility Type list and Associate Program list after selecting a Program.
          */
-        function populateProgramRelatedVariable() {
+        function populateFacilityTypesAndAssociatePrograms() {
             if (vm.template.program) {
-                populateFacilityTypes();
-                populateAssociatePrograms();
-            }
-        }
+                vm.selectedFacilityType = undefined;
+                vm.template.facilityTypes = [];
 
-        function populateFacilityTypes() {
-            vm.selectedFacilityType = undefined;
-            vm.template.facilityTypes = [];
-
-            vm.facilityTypes = facilityTypes
-                .filter(function(facilityType) {
-                    var isAssigned = false;
-                    programTemplates[vm.template.program.id].forEach(function(template) {
-                        template.facilityTypes.forEach(function(assignedFacilityType) {
-                            isAssigned = isAssigned || assignedFacilityType.id === facilityType.id;
+                vm.facilityTypes = facilityTypes
+                    .filter(function(facilityType) {
+                        var isAssigned = false;
+                        programTemplates[vm.template.program.id].forEach(function(template) {
+                            template.facilityTypes.forEach(function(assignedFacilityType) {
+                                isAssigned = isAssigned || assignedFacilityType.id === facilityType.id;
+                            });
                         });
+                        return !isAssigned;
                     });
-                    return !isAssigned;
-                });
-        }
 
-        function populateAssociatePrograms() {
-            vm.selectedAssociateProgram = undefined;
-            vm.template.associatePrograms = [];
-            vm.associatePrograms = programs.filter(function(program) {
-                return program !== vm.template.program;
-            });
+                vm.selectedAssociateProgram = undefined;
+                vm.template.associatePrograms = [];
+                vm.associatePrograms = programs.filter(function(program) {
+                    return program !== vm.template.program;
+                });
+            }
         }
 
         /**
@@ -263,6 +256,7 @@
         function addAssociateProgram() {
             vm.template.associatePrograms.push(vm.selectedAssociateProgram);
             vm.associatePrograms.splice(vm.associatePrograms.indexOf(vm.selectedAssociateProgram), 1);
+            return $q.resolve();
         }
 
         /**
@@ -276,8 +270,10 @@
          * @param {Object} associateProgram Associate Program to be removed from list
          */
         function removeAssociateProgram(associateProgram) {
-            vm.associatePrograms.push(associateProgram);
-            vm.template.associatePrograms.splice(vm.template.associatePrograms.indexOf(associateProgram), 1);
+            if (vm.template.associatePrograms.indexOf(associateProgram) > -1) {
+                vm.associatePrograms.push(associateProgram);
+                vm.template.associatePrograms.splice(vm.template.associatePrograms.indexOf(associateProgram), 1);
+            }
         }
         // #163: ends here
 
