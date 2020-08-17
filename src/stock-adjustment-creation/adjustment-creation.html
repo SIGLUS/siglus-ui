@@ -55,7 +55,7 @@
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
                 <td ng-if="!lineItem.isKit">
-                    <stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></stock-input-select>
+                    <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
                 </td>
                 <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                     <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
