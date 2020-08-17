@@ -603,7 +603,7 @@
                 return vm.pagedLineItems;
             }, function(newList) {
                 // SIGLUS-REFACTOR: starts here
-                var categories = $filter('groupByAllProductProgramProductCategory')(newList);
+                var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 // SIGLUS-REFACTOR: ends here
             }, true);
