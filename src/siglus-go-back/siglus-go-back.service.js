@@ -18,30 +18,26 @@
     'use strict';
 
     /**
-     * @module requisition-view
+     * @ngdoc service
+     * @name siglusGoBackService
      *
      * @description
-     * Responsible for requisition view screen.
+     * Responsible for going back to previous page..
      */
-    angular.module('requisition-view', [
-        'openlmis-templates',
-        'openlmis-i18n',
-        'openlmis-state-tracker',
-        'openlmis-modal',
-        'openlmis-date',
-        'openlmis-invalid',
-        'openlmis-permissions',
-        'requisition',
-        'requisition-summary',
-        'requisition-validation',
-        'requisition-status-messages',
-        'requisition-view-tab',
-        'ui.router',
-        // #147: starts here
-        'referencedata-facility',
-        'siglus-add-regimen-model',
-        'siglus-go-back'
-        // #147: ends here
-    ]);
+    angular
+        .module('siglus-go-back')
+        .service('siglusGoBackService', service);
 
+    service.$inject = ['$window'];
+
+    function service($window) {
+
+        return {
+            goBack: goBack
+        };
+
+        function goBack() {
+            $window.history.back();
+        }
+    }
 })();
