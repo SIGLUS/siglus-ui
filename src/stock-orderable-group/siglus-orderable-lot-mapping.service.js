@@ -16,7 +16,7 @@
 
     angular
         .module('stock-orderable-group')
-        .service('orderableLotMapping', service);
+        .service('siglusOrderableLotMapping', service);
 
     service.$inject = [];
 

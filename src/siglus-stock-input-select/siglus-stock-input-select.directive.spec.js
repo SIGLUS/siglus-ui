@@ -25,7 +25,7 @@ describe('stockInputSelectDirective', function() {
         mockSelectedItem,
         orderableGroupService,
         siglusAutoGenerateService,
-        orderableLotMapping;
+        siglusOrderableLotMapping;
 
     mockItems = getMockItems();
     mockOrderableGroups = getMockOrderableGroups();
@@ -34,9 +34,9 @@ describe('stockInputSelectDirective', function() {
     orderableGroupService = jasmine.createSpyObj('orderableGroupService', ['findByLotInOrderableGroup', 'lotsOf']);
     orderableGroupService.findByLotInOrderableGroup.andReturn(mockSelectedItem);
 
-    orderableLotMapping = jasmine.createSpyObj('orderableLotMapping',
+    siglusOrderableLotMapping = jasmine.createSpyObj('siglusOrderableLotMapping',
         ['findSelectedOrderableGroupsByOrderableId', 'findAllOrderableIds']);
-    orderableLotMapping.findSelectedOrderableGroupsByOrderableId.andReturn(mockOrderableGroups);
+    siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId.andReturn(mockOrderableGroups);
 
     siglusAutoGenerateService = jasmine.createSpyObj('siglusAutoGenerateService', ['autoGenerateLotCode']);
     siglusAutoGenerateService.autoGenerateLotCode.andReturn('SEM-LOTE-22A05-062020-0');

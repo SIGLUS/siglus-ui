@@ -29,10 +29,10 @@
         .factory('stockAdjustmentFactory', factory);
 
     factory.$inject = [
-        '$q', 'stockAdjustmentService', 'orderableLotMapping', 'orderableGroupService', 'LotRepositoryImpl'
+        '$q', 'stockAdjustmentService', 'orderableGroupService', 'LotRepositoryImpl'
     ];
 
-    function factory($q, stockAdjustmentService, orderableLotMapping, orderableGroupService, LotRepositoryImpl) {
+    function factory($q, stockAdjustmentService, orderableGroupService, LotRepositoryImpl) {
 
         return {
             getDrafts: getDrafts,

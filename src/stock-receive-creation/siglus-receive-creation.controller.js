@@ -33,7 +33,7 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft',
+        'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
         'siglusArchivedProductService'
     ];
 
@@ -41,14 +41,14 @@
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, orderableLotMapping, stockAdjustmentService,
+                        ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
                         draft, siglusArchivedProductService) {
         var vm = this,
             previousAdded = {};
 
         vm.draft = draft;
 
-        orderableLotMapping.setOrderableGroups(orderableGroups);
+        siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
         /**
          * @ngdoc property
@@ -117,7 +117,7 @@
             item.isKit = !!(item.orderable && item.orderable.isKit);
             if (item.isKit) {
                 var selectedOrderableGroup =
-                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
+                    siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
                 var selectedLot = orderableGroupService
                     .findByLotInOrderableGroup(selectedOrderableGroup, null);
                 if (selectedLot) {

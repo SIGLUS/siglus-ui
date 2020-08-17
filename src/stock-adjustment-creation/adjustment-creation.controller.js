@@ -35,7 +35,7 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
-        'siglusSignatureModalService', 'orderableLotMapping', 'stockAdjustmentService', 'draft',
+        'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
         'siglusArchivedProductService'
         // SIGLUS-REFACTOR: ends here
     ];
@@ -45,13 +45,13 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
-                        siglusSignatureModalService, orderableLotMapping, stockAdjustmentService, draft,
+                        siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
                         siglusArchivedProductService) {
         var vm = this,
             previousAdded = {};
 
         // SIGLUS-REFACTOR: starts here
-        orderableLotMapping.setOrderableGroups(orderableGroups);
+        siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
         vm.draft = draft;
         // SIGLUS-REFACTOR: ends here
@@ -160,7 +160,7 @@
             item.isKit = !!(item.orderable && item.orderable.isKit);
             if (item.isKit) {
                 var selectedOrderableGroup =
-                    orderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
+                    siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
                 var selectedLot = orderableGroupService
                     .findByLotInOrderableGroup(selectedOrderableGroup, null);
                 if (selectedLot) {
@@ -209,12 +209,12 @@
         }
 
         function getAllLotsOfOtherProducts(orderableId) {
-            var ids = orderableLotMapping.findAllOrderableIds();
+            var ids = siglusOrderableLotMapping.findAllOrderableIds();
             var lots = [];
             ids.forEach(function(id) {
                 if (id !== orderableId) {
                     var selectedOrderableGroup =
-                        orderableLotMapping.findSelectedOrderableGroupsByOrderableId(id);
+                        siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(id);
                     var selectedLots = orderableGroupService.lotsOf(selectedOrderableGroup);
                     lots = lots.concat(selectedLots);
                 }
