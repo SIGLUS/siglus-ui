@@ -18,7 +18,7 @@
     'use strict';
     angular
         .module('siglus-stock-input-select')
-        .directive('stockInputSelect', [function() {
+        .directive('siglusStockInputSelect', [function() {
             return {
                 templateUrl: 'siglus-stock-input-select/siglus-stock-input-select.html',
                 restrict: 'E',

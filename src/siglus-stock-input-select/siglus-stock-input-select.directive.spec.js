@@ -57,10 +57,10 @@ describe('stockInputSelectDirective', function() {
             scope = $rootScope.$new();
             scope.lineItems = mockItems;
             // Compile a piece of HTML containing the directive
-            element = $compile('<stock-input-select ' +
+            element = $compile('<siglus-stock-input-select ' +
                 'line-items="lineItems" ' +
                 'line-item="lineItems[0]" ' +
-                'enable-input="true"></stock-input-select>')(scope);
+                'enable-input="true"></siglus-stock-input-select>')(scope);
             angular.element(document.body).append(element);
             // fire all the watches, so the scope expression will be evaluated
             scope.$digest();
@@ -140,9 +140,9 @@ describe('stockInputSelectDirective', function() {
             scope = $rootScope.$new();
             scope.lineItems = mockItems;
             // Compile a piece of HTML containing the directive
-            element = $compile('<stock-input-select ' +
+            element = $compile('<siglus-stock-input-select ' +
                 'line-items="lineItems" ' +
-                'line-item="lineItems[0]"></stock-input-select>')(scope);
+                'line-item="lineItems[0]"></siglus-stock-input-select>')(scope);
             angular.element(document.body).append(element);
             // fire all the watches, so the scope expression will be evaluated
             scope.$digest();
