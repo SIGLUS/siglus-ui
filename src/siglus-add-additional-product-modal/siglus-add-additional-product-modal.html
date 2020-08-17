@@ -1,0 +1,51 @@
+<div class="modal add-additional-product-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>{{'selectAdditionalProductModal.addAdditionalProduct' | message}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="openlmis-table-container">
+                    <form ng-submit="vm.search()">
+                        <fieldset class="form-group">
+                            <label for="searchByName">
+                                {{'selectAdditionalProductModal.productName' | message}}
+                            </label>
+                            <input type="text" id="searchByName" name="searchByName" ng-model="vm.name"/>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="searchByCode">
+                                {{'selectAdditionalProductModal.productCode' | message}}
+                            </label>
+                            <input type="text" id="searchByCode" name="searchByCode" ng-model="vm.code"/>
+                        </fieldset>
+                        <input type="submit" value="{{'selectAdditionalProductModal.search' | message}}"/>
+                    </form>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>{{'selectAdditionalProductModal.select' | message}}</th>
+                            <th>{{'selectAdditionalProductModal.productCode' | message}}</th>
+                            <th>{{'selectAdditionalProductModal.productName' | message}}</th>
+                            <th>{{'selectAdditionalProductModal.program' | message}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="additionalProduct in vm.orderables">
+                            <td><input type="checkbox" ng-model="vm.selections[additionalProduct.id]" ng-true-value="{{additionalProduct}}"/></td>
+                            <td>{{additionalProduct.productCode}}</td>
+                            <td>{{additionalProduct.fullProductName}}</td>
+                            <td>{{additionalProduct.program.name}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <openlmis-pagination pagination-id="'addAdditionalProduct'"></openlmis-pagination>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.close()">{{'selectAdditionalProductModal.cancel' | message}}</button>
+                <button class="primary" type="submit" ng-click="vm.selectProducts()">{{'selectAdditionalProductModal.add' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

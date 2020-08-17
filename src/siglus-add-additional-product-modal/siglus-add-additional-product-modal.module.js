@@ -17,16 +17,13 @@
 
     'use strict';
 
-    /**
-     * @module admin-program-settings
-     *
-     * @description
-     * Provides admin edit screen for program settings.
-     */
-    angular.module('siglus-admin-program-additional-products', [
-        'referencedata-program',
+    angular.module('siglus-add-additional-product-modal', [
+        'openlmis-auth',
+        'openlmis-form',
+        'openlmis-pagination',
+        'openlmis-templates',
         'openlmis-modal',
-        'openlmis-rights',
-        'ui.router'
+        'select-products-modal'
     ]);
+
 })();

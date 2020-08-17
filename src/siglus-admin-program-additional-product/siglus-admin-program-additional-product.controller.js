@@ -19,28 +19,34 @@
 
     /**
      * @ngdoc controller
-     * @name admin-program-settings.controller:ProgramSettingsController
+     * @name siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
      *
      * @description
      * Controller for program settings edit screen.
      */
     angular
-        .module('siglus-admin-program-additional-products')
-        .controller('SiglusAdminProgramAdditionalProductsController', controller);
+        .module('siglus-admin-program-additional-product')
+        .controller('SiglusAdminProgramAdditionalProductController', controller);
 
     controller.$inject = [
-        '$stateParams', '$state', 'allPrograms', 'additionalProducts', '$filter'
+        '$stateParams', '$state', 'allPrograms', 'additionalProducts', '$filter', 'confirmService',
+        'siglusAdminProgramAdditionalProductService', 'loadingModalService', 'notificationService',
+        'selectProductsModalService'
     ];
 
-    function controller($stateParams, $state, allPrograms, additionalProducts, $filter) {
+    function controller($stateParams, $state, allPrograms, additionalProducts, $filter, confirmService,
+                        siglusAdminProgramAdditionalProductService, loadingModalService, notificationService,
+                        selectProductsModalService) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.search = search;
+        vm.addAdditionalProducts = addAdditionalProducts;
+        vm.remove = remove;
         /**
          * @ngdoc property
-         * @propertyOf siglus-admin-program-additional-products.controller:AdditionalProgramController
+         * @propertyOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
          * @name additionalProductsProgram
          * @type {Object}
          *
@@ -51,7 +57,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf siglus-admin-program-additional-products.controller:AdditionalProgramController
+         * @propertyOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
          * @name allPrograms
          * @type {Object}
          *
@@ -62,7 +68,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf siglus-admin-program-additional-products.controller:AdditionalProgramController
+         * @propertyOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
          * @name additionalProducts
          * @type {Object}
          *
@@ -73,7 +79,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf siglus-admin-program-additional-products.controller:AdditionalProgramController
+         * @methodOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
          * @name $onInit
          *
          * @description
@@ -106,7 +112,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf siglus-admin-program-additional-products.controller:AdditionalProgramController
+         * @methodOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
          * @name search
          *
          * @description
@@ -125,6 +131,54 @@
             $state.go('openlmis.administration.programs.settings.additionalProducts', stateParams, {
                 reload: true
             });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
+         * @name addAdditionalProducts
+         *
+         * @description
+         * Add a additional product.
+         *
+         */
+        function addAdditionalProducts() {
+            selectProductsModalService.show({
+                state: '.addAdditionalProduct'
+            }).then(function(additionalProducts) {
+                angular.forEach(additionalProducts, function(additionalProduct) {
+                    vm.additionalProducts.push(additionalProduct);
+                });
+            });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf siglus-admin-program-additional-product.controller:SiglusAdminProgramAdditionalProductController
+         * @name remove
+         *
+         * @description
+         * Remove a additional product from added additional products.
+         *
+         * @param {Object} additionalProduct additional product to be removed.
+         */
+        function remove(additionalProduct) {
+            return confirmService.confirm(
+                'adminProgramAdditionalProducts.question'
+            )
+                .then(function() {
+                    loadingModalService.open();
+
+                    return siglusAdminProgramAdditionalProductService.remove(additionalProduct.id)
+                        .then(function() {
+                            notificationService.success('adminProgramAdditionalProducts.productHasBeenRemoved');
+                            search();
+                        })
+                        .catch(function() {
+                            notificationService.error('adminProgramAdditionalProducts.failedToRemoveProduct');
+                            loadingModalService.close();
+                        });
+                });
         }
     }
 })();
