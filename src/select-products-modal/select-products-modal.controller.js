@@ -32,12 +32,13 @@
         'orderables', '$state', 'selectProductsModalService', 'external', '$stateParams',
         'isUnpackKitState',
         // SIGLUS-REFACTOR: starts here
-        'alertService'
+        'alertService', 'isAdditionalProductState', 'siglusAdminProgramAdditionalProductService', 'notificationService'
         // SIGLUS-REFACTOR: starts here
     ];
 
     function controller(orderables, $state, selectProductsModalService, external, $stateParams,
-                        isUnpackKitState, alertService) {
+                        isUnpackKitState, alertService, isAdditionalProductState,
+                        siglusAdminProgramAdditionalProductService, notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -70,6 +71,7 @@
             vm.filteredOrderables = filterOrderables(orderables, $stateParams.search);
             vm.isUnpackKitState = isUnpackKitState;
             // SIGLUS-REFACTOR: starts here
+            vm.isAdditionalProductState = isAdditionalProductState;
             vm.limit = selectProductsModalService.getLimit();
             vm.overLimit = false;
             validateSelection();
@@ -138,10 +140,33 @@
 
         function selectProducts() {
             if (selectItems()) {
-                selectProductsModalService.resolve();
+                if (vm.isAdditionalProductState) {
+                    siglusAdminProgramAdditionalProductService.addAdditionalProducts(getAdditionalProducts())
+                        .then(function() {
+                            notificationService.success('selectProductsModal.productHasBeenAdded');
+                            $state.go('^', {}, {
+                                reload: 'openlmis.administration.programs.settings.additionalProducts'
+                            });
+                        });
+                } else {
+                    selectProductsModalService.resolve();
+                }
             } else {
                 alertService.error('selectProductsModal.addProducts.emptyList');
             }
+        }
+
+        function getAdditionalProducts() {
+            var additionalProducts = [];
+            angular.forEach(vm.selections, function(selection) {
+                var additionalProduct = {
+                    programId: $stateParams.programId,
+                    additionalOrderableId: selection.id,
+                    orderableOriginProgramId: selection.program.id
+                };
+                additionalProducts.push(additionalProduct);
+            });
+            return additionalProducts;
         }
 
         // SIGLUS-REFACTOR: ends here

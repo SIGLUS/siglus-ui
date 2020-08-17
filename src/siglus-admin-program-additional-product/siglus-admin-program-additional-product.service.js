@@ -19,15 +19,15 @@
 
     /**
      * @ngdoc service
-     * @name order.orderService
+     * @name siglus-admin-program-additional-product.siglusAdminProgramAdditionalProductService
      *
      * @description
      * Responsible for RESTful communication with the Orders endpoint from the OpenLMIS server. Uses
      * URL set in the configuration file that points to the fulfillment service.
      */
     angular
-        .module('siglus-admin-program-additional-products')
-        .service('siglusAdminProgramAdditionalProductsService', service);
+        .module('siglus-admin-program-additional-product')
+        .service('siglusAdminProgramAdditionalProductService', service);
 
     service.$inject = ['$resource', 'requisitionUrlFactory'];
 
@@ -35,14 +35,23 @@
         var resource = $resource(requisitionUrlFactory('/api/siglusapi/programadditionalorderables'), {}, {
             search: {
                 method: 'GET'
+            },
+            addAdditionalProducts: {
+                method: 'POST'
+            },
+            delete: {
+                method: 'DELETE',
+                url: requisitionUrlFactory('api/siglusapi/programadditionalorderables/:id')
             }
         });
 
         this.search = search;
+        this.addAdditionalProducts = addAdditionalProducts;
+        this.remove = remove;
 
         /**
          * @ngdoc method
-         * @methodOf siglus-admin-program-additional-products.additionalProductsService
+         * @methodOf siglus-admin-program-additional-product.siglusAdminProgramAdditionalProductService
          * @name search
          *
          * @description
@@ -55,6 +64,39 @@
          */
         function search(params) {
             return resource.search(params).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf siglus-admin-program-additional-product.siglusAdminProgramAdditionalProductService
+         * @name addAdditionalProducts
+         *
+         * @description
+         * Retrieves a list of additional products from the OpenLMIS server based on the given parameters.
+         * Parameters that are not supported by the server will be ignored. "programId" is
+         * the only required parameter.
+         *
+         * @param  {Object} additionalProducts the key-value map of parameters
+         * @return {Promise}       the list of all matching orders
+         */
+        function addAdditionalProducts(additionalProducts) {
+            return resource.addAdditionalProducts(additionalProducts).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf siglus-admin-program-additional-product.siglusAdminProgramAdditionalProductService
+         * @name remove
+         *
+         * @description
+         * remove a additional product from list of additional products
+         *
+         * @param  {Object} additionalProductId
+         */
+        function remove(additionalProductId) {
+            return resource.delete({
+                id: additionalProductId
+            }).$promise;
         }
 
     }

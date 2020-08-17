@@ -10,5 +10,8 @@
   "adminProgramAdditionalProducts.description": "Description",
   "adminProgramAdditionalProducts.program": "Program(original)",
   "adminProgramAdditionalProducts.actions": "Actions",
-  "adminProgramAdditionalProducts.remove": "Remove"
+  "adminProgramAdditionalProducts.remove": "Remove",
+  "adminProgramAdditionalProducts.question": "Are you sure you want to remove this product?",
+  "adminProgramAdditionalProducts.productHasBeenRemoved": "This product has been removed successfully",
+  "adminProgramAdditionalProducts.failedToRemoveProduct": "Failed to remove this product"
 }

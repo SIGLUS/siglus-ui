@@ -18,34 +18,46 @@
     'use strict';
 
     angular
-        .module('siglus-admin-program-additional-products')
+        .module('siglus-admin-program-additional-product')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'siglusAddAdditionalProductModalStateProvider'];
 
-    function routes($stateProvider, REQUISITION_RIGHTS) {
-        $stateProvider.state('openlmis.administration.programs.settings.additionalProducts', {
+    function routes($stateProvider, REQUISITION_RIGHTS, siglusAddAdditionalProductModalStateProvider) {
+        var params = {
             label: 'adminProgramAdditionalProducts.label',
             url: '/additionalProducts?page&size&code&name&orderableOriginProgramId',
-            templateUrl: 'siglus-admin-program-additional-products/siglus-admin-program-additional-products.html',
-            controller: 'SiglusAdminProgramAdditionalProductsController',
+            templateUrl: 'siglus-admin-program-additional-product/siglus-admin-program-additional-product.html',
+            controller: 'SiglusAdminProgramAdditionalProductController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
+            params: {
+                additionalProductPage: undefined,
+                additionalProductSize: undefined,
+                name: undefined,
+                code: undefined,
+                orderableOriginProgramId: undefined
+            },
             resolve: {
                 allPrograms: function(programService) {
                     return programService.getAll();
                 },
-                additionalProducts: function(paginationService, siglusAdminProgramAdditionalProductsService,
+                additionalProducts: function(paginationService, siglusAdminProgramAdditionalProductService,
                     $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.programId) {
                             stateParams.sort = 'fullProductName';
-                            return siglusAdminProgramAdditionalProductsService.search(stateParams);
+                            return siglusAdminProgramAdditionalProductService.search(stateParams);
                         }
                         return undefined;
+                    }, {
+                        paginationId: 'additionalProduct'
                     });
                 }
             }
-        });
+        };
+        siglusAddAdditionalProductModalStateProvider
+            .stateWithAddAdditionalProductChildState('openlmis.administration.programs.settings.additionalProducts',
+                params);
     }
 })();
