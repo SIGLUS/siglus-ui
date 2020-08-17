@@ -36,7 +36,7 @@
         'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         // SIGLUS-REFACTOR: starts here
-        'REASON_TYPES', 'MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
+        'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping'
         // SIGLUS-REFACTOR: ends here
     ];
@@ -47,7 +47,7 @@
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
                         reasons, stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
-                        REASON_TYPES, MAX_STRING_VALUE, currentUserService, navigationStateService,
+                        REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping) {
         var vm = this;
 
@@ -474,7 +474,7 @@
             if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
                     lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
-                } else if (lineItem.lot.lotCode.length > MAX_STRING_VALUE) {
+                } else if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
                 } else if (hasDuplicateLotCode(lineItem, lots)) {
                     lineItem.$errors.lotCodeInvalid = messageService

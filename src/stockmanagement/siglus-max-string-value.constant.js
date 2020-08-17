@@ -24,6 +24,6 @@
      * This is constant for max string value.
      */
     angular.module('stockmanagement')
-        .constant('MAX_STRING_VALUE', 30);
+        .constant('SIGLUS_MAX_STRING_VALUE', 30);
 
 })();
