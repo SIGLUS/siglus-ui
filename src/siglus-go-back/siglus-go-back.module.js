@@ -14,34 +14,7 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-     * @module requisition-view
-     *
-     * @description
-     * Responsible for requisition view screen.
-     */
-    angular.module('requisition-view', [
-        'openlmis-templates',
-        'openlmis-i18n',
-        'openlmis-state-tracker',
-        'openlmis-modal',
-        'openlmis-date',
-        'openlmis-invalid',
-        'openlmis-permissions',
-        'requisition',
-        'requisition-summary',
-        'requisition-validation',
-        'requisition-status-messages',
-        'requisition-view-tab',
-        'ui.router',
-        // #147: starts here
-        'referencedata-facility',
-        'siglus-add-regimen-model',
-        'siglus-go-back'
-        // #147: ends here
-    ]);
-
+    angular.module('siglus-go-back', []);
 })();

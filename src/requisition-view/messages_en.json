@@ -15,5 +15,6 @@
   "requisitionView.usageReport.updateForbidden": "This usage report has changed status or you lost the rights required for syncing it; the server version will be used.",
   "requisitionView.usageReport.versionMismatch": "This rapid report has a newer version on the server; the server version will be used, and you will need to remake your changes.",
   "requisitionView.save.label": "Save",
-  "requisitionView.requisitionNumber": "Requisition number"
+  "requisitionView.requisitionNumber": "Requisition number",
+  "requisitionView.back.label": "Back to previous"
 }
