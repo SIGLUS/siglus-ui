@@ -28,9 +28,9 @@
                     enableInput: '<'
                 },
                 controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
-                    'orderableLotMapping', '$timeout', 'messageService', 'dateUtils',
+                    'siglusOrderableLotMapping', '$timeout', 'messageService', 'dateUtils',
                     function($scope, orderableGroupService, siglusAutoGenerateService,
-                        orderableLotMapping, $timeout, messageService, dateUtils) {
+                        siglusOrderableLotMapping, $timeout, messageService, dateUtils) {
                         $scope.$watch('lineItem.lot', function(newLot, oldLot) {
                             if ((!_.isEqual(newLot, oldLot))) {
                                 $scope.$emit('lotCodeChange', {
@@ -66,7 +66,7 @@
                             lineItem.isFromInput = false;
                             lineItem.isFromSelect = true;
 
-                            var selectedOrderableGroup = orderableLotMapping
+                            var selectedOrderableGroup = siglusOrderableLotMapping
                                 .findSelectedOrderableGroupsByOrderableId(lineItem.orderable.id);
                             var selectedItem = orderableGroupService
                                 .findByLotInOrderableGroup(selectedOrderableGroup, lineItem.lot);
@@ -123,7 +123,7 @@
                                     lineItem.$previewSOH = null;
                                 } else {
                                     // if found option
-                                    var selectedOrderableGroup = orderableLotMapping
+                                    var selectedOrderableGroup = siglusOrderableLotMapping
                                         .findSelectedOrderableGroupsByOrderableId(lineItem.orderable.id);
                                     var selectedItem = orderableGroupService
                                         .findByLotInOrderableGroup(selectedOrderableGroup, option);
