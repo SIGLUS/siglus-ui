@@ -106,6 +106,9 @@
     </table>
 </form>
 <div ng-show="vm.shipment.isEditable()" class="openlmis-toolbar">
+    <!-- #462: add back to previous button -->
+    <button ng-click="vm.backToPrevious()">{{'shipmentView.back.label' | message}}</button>
+    <!-- #462: ends here -->
     <div class="button-group primary">
         <button ng-show="vm.shipment.canBeConfirmed()" form="shipmentForm" class="primary">{{'shipmentView.confirmShipment' | message}}</button>
         <button ng-show="vm.shipment.id" class="danger" ng-click="vm.shipment.delete()">{{'shipmentView.deleteDraft' | message}}</button>
