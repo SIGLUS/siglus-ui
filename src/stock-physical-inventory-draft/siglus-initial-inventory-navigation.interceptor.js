@@ -18,23 +18,24 @@
 
     /**
      * @ngdoc service
-     * @name stock-physical-inventory-draft.initialInventoryNavigationInterceptor
+     * @name stock-physical-inventory-draft.siglusInitialInventoryNavigationInterceptor
      *
      * @description
      * Check if state being transitioned is able to be viewed initial inventory, if the
      * initial inventory hasn't been finished.
      */
     angular.module('stock-physical-inventory-draft')
-        .run(initialInventoryNavigationInterceptor);
+        .run(siglusInitialInventoryNavigationInterceptor);
 
-    initialInventoryNavigationInterceptor.$inject = [
+    siglusInitialInventoryNavigationInterceptor.$inject = [
         '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
         '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService'
     ];
 
-    function initialInventoryNavigationInterceptor($rootScope, loadingModalService, confirmService, $state,
-                                                   stockmanagementUrlFactory, $http, programService, facilityFactory,
-                                                   physicalInventoryFactory, currentUserService) {
+    function siglusInitialInventoryNavigationInterceptor($rootScope, loadingModalService, confirmService, $state,
+                                                         stockmanagementUrlFactory, $http, programService,
+                                                         facilityFactory, physicalInventoryFactory,
+                                                         currentUserService) {
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             if (checkInitialInventoryStatus() && !toState.url.contains('/initialInventory')
                 && toState.showInNavigation && toState.url !== '/home') {
