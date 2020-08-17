@@ -33,7 +33,7 @@
         'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'processingPeriod', 'program', 'facility', 'requisitionUrlFactory', '$window',
-        'accessTokenFactory'
+        'accessTokenFactory', 'siglusGoBackService'
     ];
 
     function SiglusHistoryViewTabController($filter, selectProductsModalService, requisitionValidator, requisition,
@@ -41,7 +41,7 @@
                                             fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator,
                                             canApproveAndReject, items, paginationService, $stateParams,
                                             processingPeriod, program, facility, requisitionUrlFactory, $window,
-                                            accessTokenFactory) {
+                                            accessTokenFactory, siglusGoBackService) {
         var vm = this;
         vm.processingPeriod = processingPeriod;
         vm.program = program;
@@ -54,6 +54,7 @@
         vm.getDescriptionForColumn = getDescriptionForColumn;
         vm.skippedFullSupplyProductCountMessage = skippedFullSupplyProductCountMessage;
         vm.print = print;
+        vm.backToPrevious = siglusGoBackService.goBack;
 
         /**
          * @ngdoc property
