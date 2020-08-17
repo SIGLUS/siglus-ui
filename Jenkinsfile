@@ -45,7 +45,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             when {
-                branch 'master'
+                branch 'dev'
             }
             steps {
                 withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONARQUBE_TOKEN')]) {
@@ -73,6 +73,14 @@ pipeline {
                 }
             }
         }
+        stage('Notify to build reference-ui dev') {
+                    when {
+                        branch 'dev'
+                    }
+                    steps {
+                        build job: '../siglus-reference-ui/dev', wait: false
+                    }
+                }
         stage('Notify to build reference-ui master') {
             when {
                 branch 'master'
