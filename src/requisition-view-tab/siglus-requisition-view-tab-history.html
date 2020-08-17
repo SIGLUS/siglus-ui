@@ -9,7 +9,6 @@
     <header class="sub-heading">
         <h3>{{'requisitionViewTab.products' | message}}</h3>
     </header>
-    <!-- #442: create requisition with consultation number section-->
     <siglus-consultation-number
             sections="vm.requisition.usageTemplate.consultationNumber"
             line-items="vm.requisition.consultationNumberLineItems"
@@ -17,7 +16,6 @@
             is-emergency="vm.requisition.emergency"
             ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency"
     />
-    <!-- #442: ends here -->
     <kit-usage sections="vm.requisition.usageTemplate.kitUsage"
                line-items="vm.requisition.kitUsageLineItems"
                can-edit="false"
@@ -78,7 +76,6 @@
                     can-edit="false"
                     ng-if="vm.requisition.template.extension.enablePatient && !vm.requisition.emergency"
     ></siglus-patient>
-    <!-- #375: create requisition with test consumption section -->
     <siglus-test-consumption
             program="vm.program"
             sections="vm.requisition.usageTemplate.rapidTestConsumption"
@@ -86,5 +83,7 @@
             can-edit="false"
             ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
     />
-    <!-- #375: ends here -->
+</div>
+<div class="openlmis-toolbar button-group">
+    <button ng-click="vm.backToPrevious()">{{'requisitionView.back.label' | message}}</button>
 </div>
