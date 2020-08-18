@@ -28,16 +28,23 @@
         .module('siglus-go-back')
         .service('siglusGoBackService', service);
 
-    service.$inject = ['$window'];
+    service.$inject = ['$window', '$state'];
 
-    function service($window) {
+    function service($window, $state) {
 
         return {
             goBack: goBack
         };
 
         function goBack() {
+            var prevPage = $window.location.href;
             $window.history.back();
+            $window.onpopstate = function() {
+                if ($window.location.href === prevPage) {
+                    $state.go('openlmis.home');
+                }
+                $window.onpopstate = null;
+            };
         }
     }
 })();
