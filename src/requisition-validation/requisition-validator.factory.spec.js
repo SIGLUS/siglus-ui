@@ -19,7 +19,7 @@ describe('requisitionValidator', function() {
         lineItems, column, columns, requisition,
         // SIGLUS-REFACTOR: add new variable
         kitUsageLineItems, testConsumptionLineItems, testProject, patientLineItems,
-        consultationNumberLineItems;
+        consultationNumberLineItems, messageService;
         // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -37,12 +37,15 @@ describe('requisitionValidator', function() {
         });
 
         inject(function(_requisitionValidator_, _TEMPLATE_COLUMNS_, _COLUMN_SOURCES_,
-            _calculationFactory_, _MAX_INTEGER_VALUE_, _COLUMN_TYPES_) {
+            _calculationFactory_, _MAX_INTEGER_VALUE_, _COLUMN_TYPES_, _messageService_) {
             validator = _requisitionValidator_;
             TEMPLATE_COLUMNS = _TEMPLATE_COLUMNS_;
             COLUMN_SOURCES = _COLUMN_SOURCES_;
             MAX_INTEGER_VALUE = _MAX_INTEGER_VALUE_;
             COLUMN_TYPES = _COLUMN_TYPES_;
+            // SIGLUS-REFACTOR: starts here
+            messageService = _messageService_;
+            // SIGLUS-REFACTOR: ends here
         });
 
         lineItem = lineItemSpy('One');
@@ -937,6 +940,41 @@ describe('requisitionValidator', function() {
             expect(validator.areLineItemsValid(lineItems)).toBe(false);
         });
 
+    });
+
+    describe('validateTotalColumn', function() {
+        beforeEach(function() {
+            spyOn(messageService, 'get').andReturn('This field is required');
+        });
+
+        it('Should validate column when column has value', function() {
+            var column = {
+                value: 2147483648
+            };
+            validator.validateTotalColumn(column);
+
+            expect(column.$error).not.toBeUndefined();
+        });
+
+        it('Should clear max error when column value is undefined', function() {
+            var column = {
+                value: undefined,
+                $error: 'This number is larger than what can be saved'
+            };
+            validator.validateTotalColumn(column);
+
+            expect(column.$error).toBeUndefined();
+        });
+
+        it('Should not clear required error when column value is undefined', function() {
+            var column = {
+                value: undefined,
+                $error: 'This field is required'
+            };
+            validator.validateTotalColumn(column);
+
+            expect(column.$error).not.toBeUndefined();
+        });
     });
 
     function nonFullSupplyColumns() {

@@ -15,14 +15,13 @@
 
 describe('SiglusPatientController', function() {
 
-    var vm, sections, patientLineItems, $controller, requisitionValidator, messageService;
+    var vm, sections, patientLineItems, $controller, messageService;
 
     beforeEach(function() {
         module('siglus-requisition-view-section');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            requisitionValidator = $injector.get('requisitionValidator');
             messageService = $injector.get('messageService');
         });
         sections = [{
@@ -68,8 +67,7 @@ describe('SiglusPatientController', function() {
             }
         }];
 
-        spyOn(requisitionValidator, 'validateSiglusLineItemField');
-        spyOn(messageService, 'get').andReturn('requisitionValidation.numberTooLarge');
+        spyOn(messageService, 'get').andReturn('This field is required');
 
         vm = $controller('SiglusPatientController');
         vm.sections = sections;
@@ -130,18 +128,17 @@ describe('SiglusPatientController', function() {
         });
 
         it('validateSiglusLineItemField should be called', function() {
-            vm.lineItems[0].columns.new.value = 100;
+            vm.lineItems[0].columns.new.value = 2147483648;
             vm.getTotal(vm.lineItems[0], vm.lineItems[0].columns.total);
 
-            expect(requisitionValidator.validateSiglusLineItemField)
-                .toHaveBeenCalledWith(vm.lineItems[0].columns.total);
+            expect(vm.lineItems[0].columns.total.$error).not.toBeUndefined();
         });
 
         it('should clear the last error message and calculate the new total value ' +
             'when the value of newField is null', function() {
             var total = vm.lineItems[0].columns.total;
             total.value = 2147483648;
-            total.$error = 'requisitionValidation.numberTooLarge';
+            total.$error = 'This number is larger than what can be saved';
             vm.lineItems[0].columns.new.value = null;
 
             vm.getTotal(vm.lineItems[0], total);

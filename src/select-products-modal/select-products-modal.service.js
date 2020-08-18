@@ -70,9 +70,11 @@
             var stateParams = {};
             stateParams.productName = undefined;
             stateParams.productCode = undefined;
+            // SIGLUS-REFACTOR: starts here
             $state.go(config.state || '.addOrderables', stateParams, {
                 notify: false
             });
+            // SIGLUS-REFACTOR: ends here
 
             return deferred.promise;
         }

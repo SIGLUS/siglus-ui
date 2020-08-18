@@ -46,18 +46,13 @@
         }
 
         function getTotal(lineItem, column) {
-            var total = _.reduce(lineItem.columns, function(total, column) {
+            column.value = _.reduce(lineItem.columns, function(total, column) {
                 if (!vm.isCalculated(column) && _.isNumber(column.value)) {
                     return (total || 0) + column.value;
                 }
                 return total;
             }, undefined);
-            column.value = total;
-            if (_.isNumber(column.value)) {
-                requisitionValidator.validateSiglusLineItemField(column);
-            } else if (column.$error === messageService.get('requisitionValidation.numberTooLarge')) {
-                column.$error = undefined;
-            }
+            requisitionValidator.validateTotalColumn(column);
             return column.value;
         }
 
