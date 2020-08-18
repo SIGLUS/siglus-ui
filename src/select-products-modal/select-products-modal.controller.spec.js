@@ -17,6 +17,9 @@ describe('SelectProductsModalController', function() {
 
     beforeEach(function() {
         module('select-products-modal');
+        // SIGLUS-REFACTOR: Admin can manage the "Additional Products" for a program
+        module('siglus-admin-program-additional-product');
+        // SIGLUS-REFACTOR: ends here
 
         inject(function($injector) {
             this.$q = $injector.get('$q');
@@ -26,6 +29,11 @@ describe('SelectProductsModalController', function() {
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.selectProductsModalService = $injector.get('selectProductsModalService');
             this.$state = $injector.get('$state');
+            // SIGLUS-REFACTOR: Admin can manage the "Additional Products" for a program
+            this.siglusAdminProgramAdditionalProductService = $injector
+                .get('siglusAdminProgramAdditionalProductService');
+            this.notificationService = $injector.get('notificationService');
+            // SIGLUS-REFACTOR: ends here
         });
 
         this.external = false;
@@ -82,7 +90,10 @@ describe('SelectProductsModalController', function() {
                 orderables: this.orderables,
                 external: this.external,
                 $stateParams: this.$stateParams,
-                isUnpackKitState: false
+                isUnpackKitState: false,
+                // SIGLUS-REFACTOR: Admin can manage the "Additional Products" for a program
+                isAdditionalProductState: false
+                // SIGLUS-REFACTOR: ends here
             });
             this.vm.$onInit();
         };
