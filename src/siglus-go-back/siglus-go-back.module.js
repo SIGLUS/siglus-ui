@@ -16,5 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('siglus-go-back', []);
+    angular.module('siglus-go-back', [
+        'ui.router'
+    ]);
 })();

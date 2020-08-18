@@ -29,9 +29,10 @@ describe('siglusGoBackService', function() {
         spyOn($window.history, 'back');
     });
 
-    it('should call the back method of the history object', function() {
+    it('should call the back method of the history object and set the listener', function() {
         siglusGoBackService.goBack();
 
         expect($window.history.back).toHaveBeenCalled();
+        expect($window.onpopstate).not.toBeUndefined();
     });
 });
