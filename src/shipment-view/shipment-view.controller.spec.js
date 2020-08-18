@@ -33,6 +33,7 @@ describe('ShipmentViewController', function() {
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
         module('shipment');
+        module('siglus-go-back');
         // #287: ends here
         inject(function($injector) {
             $q = $injector.get('$q');
