@@ -21,68 +21,72 @@
         .module('requisition-view')
         .config(routes);
 
-    // #441: Facility user can create requisition with regimen section
-    routes.$inject = ['selectProductsModalStateProvider', 'siglusAddRegimensModalStateProvider'];
+    routes.$inject = [
+        'selectProductsModalStateProvider',
+        // #441: Facility user can create requisition with regimen section
+        'siglusAddRegimensModalStateProvider'
+        // #441: ends here
+    ];
 
     function routes(selectProductsModalStateProvider, siglusAddRegimensModalStateProvider) {
-        var params = {
-            url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
-            templateUrl: 'requisition-view-tab/requisition-view-tab.html',
-            controller: 'ViewTabController',
-            controllerAs: 'vm',
-            isOffline: true,
-            nonTrackable: true,
-            resolve: {
-                lineItems: function($filter, requisition) {
-                    var filterObject = requisition.template.hideSkippedLineItems() ?
-                        {
-                            skipped: '!true',
-                            $program: {
-                                fullSupply: true
-                            }
-                        } : {
-                            $program: {
-                                fullSupply: true
-                            }
-                        };
-                    var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
-
-                    return $filter('orderBy')(fullSupplyLineItems, [
-                        '$program.orderableCategoryDisplayOrder',
-                        '$program.orderableCategoryDisplayName',
-                        '$program.displayOrder',
-                        'orderable.fullProductName'
-                    ]);
-                },
-                items: function(paginationService, lineItems, $stateParams, requisitionValidator,
-                    paginationFactory) {
-                    return paginationService.registerList(
-                        requisitionValidator.isLineItemValid, $stateParams, function(params) {
-                            return paginationFactory.getPage(lineItems, parseInt(params.page),
-                                parseInt(params.size));
-                        }, {
-                            paginationId: 'fullSupplyList'
-                        }
-                    );
-                },
-                columns: function(requisition) {
-                    // SIGLUS-REFACTOR: starts here
-                    return requisition.template.getDisplayedColumns(requisition);
-                    // SIGLUS-REFACTOR: ends here
-                },
-                fullSupply: function() {
-                    return true;
-                },
-                homeFacility: function(facilityFactory) {
-                    return facilityFactory.getUserHomeFacility();
-                }
-            }
-        };
         selectProductsModalStateProvider
-            .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', params);
+            .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', {
+                url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
+                templateUrl: 'requisition-view-tab/requisition-view-tab.html',
+                controller: 'ViewTabController',
+                controllerAs: 'vm',
+                isOffline: true,
+                nonTrackable: true,
+                resolve: {
+                    lineItems: function($filter, requisition) {
+                        var filterObject = requisition.template.hideSkippedLineItems() ?
+                            {
+                                skipped: '!true',
+                                $program: {
+                                    fullSupply: true
+                                }
+                            } : {
+                                $program: {
+                                    fullSupply: true
+                                }
+                            };
+                        var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
+
+                        return $filter('orderBy')(fullSupplyLineItems, [
+                            '$program.orderableCategoryDisplayOrder',
+                            '$program.orderableCategoryDisplayName',
+                            '$program.displayOrder',
+                            'orderable.fullProductName'
+                        ]);
+                    },
+                    items: function(paginationService, lineItems, $stateParams, requisitionValidator,
+                        paginationFactory) {
+                        return paginationService.registerList(
+                            requisitionValidator.isLineItemValid, $stateParams, function(params) {
+                                return paginationFactory.getPage(lineItems, parseInt(params.page),
+                                    parseInt(params.size));
+                            }, {
+                                paginationId: 'fullSupplyList'
+                            }
+                        );
+                    },
+                    // SIGLUS-REFACTOR: starts here
+                    columns: function(requisition) {
+                        return requisition.template.getDisplayedColumns(requisition);
+                    },
+                    homeFacility: function(facilityFactory) {
+                        return facilityFactory.getUserHomeFacility();
+                    },
+                    // SIGLUS-REFACTOR: ends here
+                    fullSupply: function() {
+                        return true;
+                    }
+                }
+            });
+        // #441: Facility user can create requisition with regimen section
         siglusAddRegimensModalStateProvider
-            .stateWithAddRegimensChildState('openlmis.requisitions.requisition.fullSupply', params);
+            .stateWithAddRegimensChildState('openlmis.requisitions.requisition.fullSupply');
+        // #441: ends here
     }
-    // #441: ends here
 
 })();

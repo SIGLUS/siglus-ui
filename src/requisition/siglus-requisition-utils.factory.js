@@ -35,7 +35,7 @@
             isEmpty: isEmpty,
             calculateTotal: calculateTotal,
             clearTestConsumptionError: clearTestConsumptionError,
-            getBasicLineItemsTotal: getBasicLineItemsTotal,
+            getRegimenLineItemsTotal: getRegimenLineItemsTotal,
             hasRegimen: hasRegimen,
             getInputColumnsMap: getInputColumnsMap
         };
@@ -56,7 +56,7 @@
                 && !!requisition.regimenLineItems.length;
         }
 
-        function getBasicLineItemsTotal(lineItems, column) {
+        function getRegimenLineItemsTotal(lineItems, column) {
             return lineItems.reduce(function(total, lineItem) {
                 if (_.isNumber(lineItem.columns[column.name].value) && !siglusColumnUtils.isTotal(lineItem)) {
                     return (total || 0) + lineItem.columns[column.name].value;

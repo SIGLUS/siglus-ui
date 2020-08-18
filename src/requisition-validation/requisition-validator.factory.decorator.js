@@ -46,8 +46,18 @@
         $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
         $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
         $delegate.siglusValidRequisition = siglusValidRequisition;
+        $delegate.validateTotalColumn = validateTotalColumn;
 
         return $delegate;
+
+        function validateTotalColumn(column) {
+            if (_.isNumber(column.value)) {
+                validateSiglusLineItemField(column);
+                // required value error occurred when submit requisition, it should not be cleared
+            } else if (column.$error !== messageService.get('requisitionValidation.required')) {
+                column.$error = undefined;
+            }
+        }
 
         function areAllLineItemsSkipped(requisition) {
             var error = requisition.$error;
@@ -559,12 +569,12 @@
         function isRegimenColumnEqual(requisition, columnName) {
             if (_.first(requisition.regimenLineItems).columns[columnName] &&
                 _.first(requisition.regimenDispatchLineItems).columns[columnName]) {
-                var regimenTotal = siglusRequisitionUtils.getBasicLineItemsTotal(
+                var regimenTotal = siglusRequisitionUtils.getRegimenLineItemsTotal(
                     requisition.regimenLineItems, {
                         name: columnName
                     }
                 );
-                var summaryTotal = siglusRequisitionUtils.getBasicLineItemsTotal(
+                var summaryTotal = siglusRequisitionUtils.getRegimenLineItemsTotal(
                     requisition.regimenDispatchLineItems, {
                         name: columnName
                     }

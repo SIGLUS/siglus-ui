@@ -63,7 +63,7 @@ describe('siglusRequisitionUtils', function() {
         });
     });
 
-    describe('getBasicLineItemsTotal', function() {
+    describe('getRegimenLineItemsTotal', function() {
         beforeEach(function() {
             lineItems = [{
                 columns: {
@@ -81,7 +81,7 @@ describe('siglusRequisitionUtils', function() {
         });
 
         it('should return undefined if line items value are undefined', function() {
-            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+            expect(siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, {
                 name: 'patients'
             })).toBeUndefined();
         });
@@ -93,7 +93,7 @@ describe('siglusRequisitionUtils', function() {
                 }
             });
 
-            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+            expect(siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, {
                 name: 'patients'
             })).toBeUndefined();
         });
@@ -107,7 +107,7 @@ describe('siglusRequisitionUtils', function() {
                 }
             });
 
-            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+            expect(siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, {
                 name: 'patients'
             })).toBeUndefined();
         });
@@ -115,7 +115,7 @@ describe('siglusRequisitionUtils', function() {
         it('should return total if a item value is not empty', function() {
             lineItems[0].columns.patients.value = 10;
 
-            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+            expect(siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, {
                 name: 'patients'
             })).toBe(10);
         });
@@ -124,7 +124,7 @@ describe('siglusRequisitionUtils', function() {
             lineItems[0].columns.patients.value = 10;
             lineItems[1].columns.patients.value = 10;
 
-            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+            expect(siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, {
                 name: 'patients'
             })).toBe(20);
         });
@@ -141,7 +141,7 @@ describe('siglusRequisitionUtils', function() {
                 }
             });
 
-            expect(siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, {
+            expect(siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, {
                 name: 'patients'
             })).toBe(20);
         });

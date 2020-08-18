@@ -25,7 +25,8 @@
         'selectProductsModalService', 'siglusRequisitionUtils', 'siglusColumnUtils', 'requisitionValidator'];
 
     function controller(SIGLUS_SECTION_TYPES, COLUMN_SOURCES, siglusTemplateConfigureService,
-                        selectProductsModalService, siglusRequisitionUtils, siglusColumnUtils, requisitionValidator) {
+                        selectProductsModalService, siglusRequisitionUtils, siglusColumnUtils,
+                        requisitionValidator) {
 
         var vm = this;
 
@@ -62,12 +63,8 @@
         }
 
         function getTotal(lineItems, column) {
-            column.value = siglusRequisitionUtils.getBasicLineItemsTotal(lineItems, column);
-            if (_.isNumber(column.value)) {
-                requisitionValidator.validateSiglusLineItemField(column);
-            } else {
-                column.$error = undefined;
-            }
+            column.value = siglusRequisitionUtils.getRegimenLineItemsTotal(lineItems, column);
+            requisitionValidator.validateTotalColumn(column);
             return column.value;
         }
 
@@ -75,7 +72,7 @@
             var notYetAddedRegimens = vm.customRegimens.filter(function(regimen) {
                 return  !_.find(vm.regimenLineItems, function(item) {
                     return item.regimen && item.regimen.id === regimen.id;
-                }) && regimen.regimenCategory.name === category ;
+                }) && regimen.regimenCategory.name === category;
             });
             selectProductsModalService.show({
                 products: notYetAddedRegimens,
