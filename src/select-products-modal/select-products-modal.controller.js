@@ -32,13 +32,13 @@
         'orderables', '$state', 'selectProductsModalService', 'external', '$stateParams',
         'isUnpackKitState',
         // SIGLUS-REFACTOR: starts here
-        'alertService', 'isAdditionalProductState', 'siglusAdminProgramAdditionalProductService', 'notificationService'
+        'alertService', 'siglusAdminProgramAdditionalProductService', 'notificationService'
         // SIGLUS-REFACTOR: starts here
     ];
 
     function controller(orderables, $state, selectProductsModalService, external, $stateParams,
-                        isUnpackKitState, alertService, isAdditionalProductState,
-                        siglusAdminProgramAdditionalProductService, notificationService) {
+                        isUnpackKitState, alertService, siglusAdminProgramAdditionalProductService,
+                        notificationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -71,7 +71,7 @@
             vm.filteredOrderables = filterOrderables(orderables, $stateParams.search);
             vm.isUnpackKitState = isUnpackKitState;
             // SIGLUS-REFACTOR: starts here
-            vm.isAdditionalProductState = isAdditionalProductState;
+            vm.isAdditionalProductState = $state.current.name.contains('additionalProducts');
             vm.limit = selectProductsModalService.getLimit();
             vm.overLimit = false;
             validateSelection();
