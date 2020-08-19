@@ -148,7 +148,7 @@
             loadingModalService.open();
             selectProductsModalService.show({
                 state: '.addAdditionalProduct'
-            });
+            }).finally(loadingModalService.close);
         }
 
         /**
