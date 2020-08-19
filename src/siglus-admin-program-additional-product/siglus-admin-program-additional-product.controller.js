@@ -127,6 +127,8 @@
             stateParams.name = vm.productName ? vm.productName : null;
             stateParams.orderableOriginProgramId = vm.additionalProductsProgram ?
                 vm.additionalProductsProgram.id : null;
+            stateParams.additionalProductPage = stateParams.code || stateParams.name
+            || stateParams.orderableOriginProgramId ? 0 : stateParams.additionalProductPage;
 
             $state.go('openlmis.administration.programs.settings.additionalProducts', stateParams, {
                 reload: true
@@ -145,10 +147,6 @@
         function addAdditionalProducts() {
             selectProductsModalService.show({
                 state: '.addAdditionalProduct'
-            }).then(function(additionalProducts) {
-                angular.forEach(additionalProducts, function(additionalProduct) {
-                    vm.additionalProducts.push(additionalProduct);
-                });
             });
         }
 

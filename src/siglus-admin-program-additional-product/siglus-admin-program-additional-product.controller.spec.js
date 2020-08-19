@@ -116,7 +116,8 @@ describe('SiglusAdminProgramAdditionalProductController', function() {
                 .toHaveBeenCalledWith('openlmis.administration.programs.settings.additionalProducts', {
                     code: 'product-one',
                     name: null,
-                    orderableOriginProgramId: 'program-1'
+                    orderableOriginProgramId: 'program-1',
+                    additionalProductPage: 0
                 }, {
                     reload: true
                 });
@@ -131,7 +132,8 @@ describe('SiglusAdminProgramAdditionalProductController', function() {
                 .toHaveBeenCalledWith('openlmis.administration.programs.settings.additionalProducts', {
                     code: null,
                     name: 'product-name',
-                    orderableOriginProgramId: 'program-1'
+                    orderableOriginProgramId: 'program-1',
+                    additionalProductPage: 0
                 }, {
                     reload: true
                 });
@@ -148,7 +150,8 @@ describe('SiglusAdminProgramAdditionalProductController', function() {
                 .toHaveBeenCalledWith('openlmis.administration.programs.settings.additionalProducts', {
                     code: null,
                     name: null,
-                    orderableOriginProgramId: 'program-1'
+                    orderableOriginProgramId: 'program-1',
+                    additionalProductPage: 0
                 }, {
                     reload: true
                 });

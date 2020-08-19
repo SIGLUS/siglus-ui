@@ -26,18 +26,11 @@
     function routes($stateProvider, REQUISITION_RIGHTS, siglusAddAdditionalProductModalStateProvider) {
         var params = {
             label: 'adminProgramAdditionalProducts.label',
-            url: '/additionalProducts?page&size&code&name&orderableOriginProgramId',
+            url: '/additionalProducts?additionalProductPage&additionalProductSize&code&name&orderableOriginProgramId',
             templateUrl: 'siglus-admin-program-additional-product/siglus-admin-program-additional-product.html',
             controller: 'SiglusAdminProgramAdditionalProductController',
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
-            params: {
-                additionalProductPage: undefined,
-                additionalProductSize: undefined,
-                name: undefined,
-                code: undefined,
-                orderableOriginProgramId: undefined
-            },
             resolve: {
                 allPrograms: function(programService) {
                     return programService.getAll();
