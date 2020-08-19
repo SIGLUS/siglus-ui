@@ -145,6 +145,7 @@
          *
          */
         function addAdditionalProducts() {
+            loadingModalService.open();
             selectProductsModalService.show({
                 state: '.addAdditionalProduct'
             });
