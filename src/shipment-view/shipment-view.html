@@ -116,3 +116,8 @@
     <button ng-click="vm.shipment.save()">{{'shipmentView.saveDelete' | message}}</button>
     <button ng-show="vm.shipment.isEditable()" ng-click="vm.printShipment()">{{'shipmentView.generatePickPackList' | message}}</button>
 </div>
+<!-- #462: add back to previous button -->
+<div class="openlmis-toolbar button-group" ng-show="!vm.shipment.isEditable()">
+    <button ng-click="vm.backToPrevious()">{{'shipmentView.back.label' | message}}</button>
+</div>
+<!-- #462: ends here -->
