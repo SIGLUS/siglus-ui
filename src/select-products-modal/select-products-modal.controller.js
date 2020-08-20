@@ -92,6 +92,10 @@
                 var stateParams = angular.copy($stateParams);
                 stateParams.productCode = vm.code;
                 stateParams.productName = vm.name;
+                if (vm.isAdditionalProductState) {
+                    stateParams.addAdditionalProductPage = stateParams.productCode || stateParams.productName
+                        ? 0 : stateParams.addAdditionalProductPage;
+                }
                 $state.go('.', stateParams, {
                     reload: $state.$current.name,
                     notify: false
