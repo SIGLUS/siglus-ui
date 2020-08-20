@@ -87,7 +87,7 @@
                             return paginationService.registerUrl($stateParams, function(stateParams) {
                                 var params = {
                                     sort: 'fullProductName',
-                                    page: stateParams.productCode || stateParams.productName ? 0 : stateParams.page,
+                                    page: stateParams.page,
                                     size: stateParams.size,
                                     code: stateParams.productCode,
                                     name: stateParams.productName,
