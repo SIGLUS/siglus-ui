@@ -141,9 +141,12 @@
                 return column.source === COLUMN_SOURCES.USER_INPUT && scope.userCanEdit;
             }
 
+            // #107: remove unnecessary code
             function canSkip() {
-                return scope.userCanEdit && lineItem.canBeSkipped(scope.requisition);
+                return scope.requisition.isExternalApproval && scope.requisition.$isEditable &&
+                    lineItem.canBeSkipped(scope.requisition);
             }
+            // #107: ends here
 
         }
 
