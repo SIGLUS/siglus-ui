@@ -29,10 +29,10 @@
         .controller('SiglusHistoryViewTabController', Controller);
 
     Controller.$inject = ['requisition', 'columns', 'lineItems', 'program', 'processingPeriod', 'facility',
-        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'siglusGoBackService'];
+        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'siglusGoBackService', 'TEMPLATE_COLUMNS'];
 
     function Controller(requisition, columns, lineItems, program, processingPeriod, facility, requisitionUrlFactory,
-                        $window, accessTokenFactory, siglusGoBackService) {
+                        $window, accessTokenFactory, siglusGoBackService, TEMPLATE_COLUMNS) {
         var vm = this;
         vm.program = undefined;
         vm.processingPeriod = undefined;
@@ -92,7 +92,28 @@
             vm.lineItems = lineItems;
             vm.requisition = requisition;
             vm.columns = columns;
+            // Rejected requisition has authorizedQuantity and approvedQuantity, it should not displayed in screen
+            hideAuthorizedQuantity(vm.requisition);
+            hideApprovedQuantity(vm.requisition);
             setTypeAndClass();
+        }
+
+        function hideAuthorizedQuantity(requisition) {
+            if (!vm.requisition.$isAfterAuthorize() &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].isDisplayed) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.authorizedQuantity = undefined;
+                });
+            }
+        }
+
+        function hideApprovedQuantity(requisition) {
+            if (vm.requisition.$isAuthorized() &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].isDisplayed) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.approvedQuantity = undefined;
+                });
+            }
         }
 
         function setTypeAndClass() {
