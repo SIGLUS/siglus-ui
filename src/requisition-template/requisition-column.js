@@ -209,9 +209,6 @@
 
         // #346: show all column in history when it configs display by admin
         function enhanceDisplayColumn(column, requisition) {
-            if (requisition.isHistory) {
-                return column.isDisplayed;
-            }
             if (TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY === column.name) {
                 return displayQuantityAuthorized(column, requisition);
             }

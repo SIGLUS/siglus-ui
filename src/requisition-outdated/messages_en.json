@@ -1,5 +1,0 @@
-{
-  "requisitionViewReport.update": "Update Usage Report",
-  "requisitionViewReport.updateOffline": "Can't update this usage report while offline",
-  "requisitionViewReport.updateWarning": "Updating this usage report will remove any changes that have been made to the offline usage report"
-}
