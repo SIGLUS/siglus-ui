@@ -50,6 +50,12 @@ describe('SiglusHistoryViewTabController', function() {
                     .buildJson()
             ])
             .build();
+        this.requisition.template.columnsMap.approvedQuantity = {
+            isDisplayed: true
+        };
+        this.requisition.template.columnsMap.authorizedQuantity = {
+            isDisplayed: true
+        };
 
         this.initController = initController;
     });
@@ -116,6 +122,22 @@ describe('SiglusHistoryViewTabController', function() {
             this.initController();
 
             expect(this.vm.requisitionTypeClass).toBe('report-only');
+        });
+
+        it('should hide approved qty when requisition is authorized', function() {
+            this.requisition.$isAuthorized.andReturn(true);
+            this.requisition.requisitionLineItems[0].approvedQuantity = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].approvedQuantity).toBeUndefined();
+        });
+
+        it('should hide authorized qty when requisition is not after authorize', function() {
+            this.requisition.$isAfterAuthorize.andReturn(false);
+            this.requisition.requisitionLineItems[0].authorizedQuantity = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].authorizedQuantity).toBeUndefined();
         });
     });
 
