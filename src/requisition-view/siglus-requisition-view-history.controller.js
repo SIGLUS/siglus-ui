@@ -34,9 +34,9 @@
     function Controller(requisition, columns, lineItems, program, processingPeriod, facility, requisitionUrlFactory,
                         $window, accessTokenFactory, siglusGoBackService) {
         var vm = this;
-        vm.program = program;
-        vm.processingPeriod = processingPeriod;
-        vm.facility = facility;
+        vm.program = undefined;
+        vm.processingPeriod = undefined;
+        vm.facility = undefined;
         vm.$onInit = onInit;
         vm.print = print;
         vm.backToPrevious = siglusGoBackService.goBack;
@@ -86,8 +86,10 @@
         vm.columns = undefined;
 
         function onInit() {
+            vm.program = program;
+            vm.processingPeriod = processingPeriod;
+            vm.facility = facility;
             vm.lineItems = lineItems;
-
             vm.requisition = requisition;
             vm.columns = columns;
             setTypeAndClass();
