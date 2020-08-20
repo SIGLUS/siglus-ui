@@ -17,7 +17,14 @@
                line-items="vm.requisition.kitUsageLineItems"
                can-edit="vm.userCanEdit"
                ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
-    <div class="add-wrapper">
+    <div class="toolbar-wrapper" ng-class="{'has-skipbar' : vm.requisition.template.extension.enableProduct && vm.showSkipControls}">
+        <div class="toolbar skipbar" ng-if="vm.requisition.template.extension.enableProduct && vm.showSkipControls">
+            <h4>{{'requisitionViewTab.skip' | message}}</h4>
+            <ul>
+                <li><a ng-click="vm.requisition.skipAllLineItems()">{{'requisitionViewTab.all' | message}}</a></li>
+                <li><a ng-click="vm.requisition.unskipAllLineItems()">{{'requisitionViewTab.none' | message}}</a></li>
+            </ul>
+        </div>
         <button class="add" tabindex="-1"
                 ng-if="vm.requisition.template.extension.enableProduct"
                 ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
@@ -25,13 +32,6 @@
         >
             {{'requisitionViewTab.addProduct' | message}}
         </button>
-    </div>
-    <div class="toolbar skipbar" ng-if="vm.requisition.template.extension.enableProduct && vm.showSkipControls">
-        <h4>{{'requisitionViewTab.skip' | message}}</h4>
-        <ul>
-            <li><a ng-click="vm.requisition.skipAllLineItems()">{{'requisitionViewTab.all' | message}}</a></li>
-            <li><a ng-click="vm.requisition.unskipAllLineItems()">{{'requisitionViewTab.none' | message}}</a></li>
-        </ul>
     </div>
     <div class="openlmis-table-container requisition-product" ng-if="vm.requisition.template.extension.enableProduct">
 <!-- SIGLUS-REFACTOR: ends here -->
