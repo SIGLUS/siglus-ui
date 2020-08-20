@@ -3,17 +3,17 @@
     .requisition-product-grid-cell.has-popover {
         padding-right: $table-cell-padding !important;
     }
-    .skipbar {
-        margin-top: 1.5em;
-    }
-    .skipbar + .openlmis-table-container.requisition-product>.row>.main>.toolbar {
+    .openlmis-table-container.requisition-product>.row>.main>.toolbar {
         padding-top: 0;
     }
-
-    .add-wrapper {
+    .toolbar-wrapper {
         display: flex;
         justify-content: flex-end;
         margin-top: 20px;
+    }
+    .toolbar-wrapper.has-skipbar {
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
