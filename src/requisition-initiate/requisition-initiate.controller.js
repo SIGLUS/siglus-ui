@@ -87,10 +87,6 @@
         // vm.canInitiateRnr = undefined;
         // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
-        vm.usageReport = undefined;
-        // SIGLUS-REFACTOR: ends here
-
         /**
          * @ngdoc method
          * @methodOf requisition-initiate.controller:RequisitionInitiateController

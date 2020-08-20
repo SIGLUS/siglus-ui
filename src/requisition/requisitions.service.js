@@ -139,12 +139,9 @@
          * Retrieves requisition by id.
          *
          * @param  {String}  id Requisition UUID
-         * @param  {Boolean}  isHistory history flag
          * @return {Promise}    requisition promise
          */
-        // SIGLUS-REFACTOR: starts here
-        function get(id, isHistory) {
-        // SIGLUS-REFACTOR: ends here
+        function get(id) {
             var requisition,
                 statusMessages;
 
@@ -159,9 +156,6 @@
                 return getRequisition(id).then(prepareRequisition);
             }
             return getRequisition(id).then(function(requisition) {
-                // SIGLUS-REFACTOR: starts here
-                requisition.isHistory = isHistory;
-                // SIGLUS-REFACTOR: ends here
                 filterRequisitionStockAdjustmentReasons(requisition);
 
                 requisition.$availableOffline = !onlineOnlyRequisitions.contains(id);

@@ -51,28 +51,20 @@
                 column: '=',
                 lineItem: '=',
                 userCanEdit: '=',
-                canApprove: '=',
-                // SIGLUS-REFACTOR: starts here
-                isHistory: '='
-                // SIGLUS-REFACTOR: ends here
+                canApprove: '='
             }
         };
 
         function link(scope, element) {
             var requisition = scope.requisition,
                 column = scope.column,
-                lineItem = scope.lineItem,
-                // SIGLUS-REFACTOR: starts here
-                isHistory = scope.isHistory;
-                // SIGLUS-REFACTOR: ends here
+                lineItem = scope.lineItem;
 
             scope.lineItem = lineItem;
             scope.column = column;
             scope.validate = validate;
             scope.update = update;
-            // SIGLUS-REFACTOR: starts here
-            scope.isReadOnly = isReadOnly(requisition, column) || isHistory;
-            // SIGLUS-REFACTOR: ends here
+            scope.isReadOnly = isReadOnly(requisition, column);
             scope.canSkip = canSkip;
             if (!scope.isReadOnly) {
                 setupValueWatcher(scope);
@@ -150,9 +142,7 @@
             }
 
             function canSkip() {
-                // #286 high level approver can skip some products in requisition
-                return !scope.isHistory && lineItem.canBeSkipped();
-                // #286 ends here
+                return scope.userCanEdit && lineItem.canBeSkipped(scope.requisition);
             }
 
         }

@@ -122,10 +122,7 @@
          * displayed. Otherwise add button will not be displayed.
          */
         function displayAddComment() {
-            // SIGLUS-REFACTOR: starts here
-            return !vm.requisition.draftStatusMessage && !vm.isTextAreaVisible
-                && vm.requisition.$isEditable && !vm.requisition.isHistory;
-            // SIGLUS-REFACTOR: ends here
+            return !vm.requisition.draftStatusMessage && !vm.isTextAreaVisible && vm.requisition.$isEditable;
         }
 
         /**
@@ -138,9 +135,7 @@
          * Only if add button is not displayed and requisition is editable.
          */
         function displayEditComment() {
-            // SIGLUS-REFACTOR: starts here
-            return !vm.displayAddComment() && vm.requisition.$isEditable && !vm.requisition.isHistory;
-            // SIGLUS-REFACTOR: ends here
+            return !vm.displayAddComment() && vm.requisition.$isEditable;
         }
     }
 })();

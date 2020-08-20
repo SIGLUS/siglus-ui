@@ -33,39 +33,23 @@
             isOffline: true,
             nonTrackable: true,
             resolve: {
-                user: function(currentUserService) {
-                    return currentUserService.getUserInfo();
-                },
                 requisition: function($stateParams, requisitionService) {
-                    if ($stateParams.requisition) {
-                        var rnr = angular.copy($stateParams.requisition);
-                        $stateParams.requisition = undefined;
-                        return rnr;
-                    }
-                    return requisitionService.get($stateParams.rnr, true);
+                    return requisitionService.get($stateParams.rnr).then(function(requisition) {
+                        var copyRequisition = angular.copy(requisition);
+                        copyRequisition.$isEditable = false;
+                        return copyRequisition;
+                    });
                 },
-                canSubmit: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canSubmit(user.id, requisition);
+                program: function(programService, requisition) {
+                    return programService.get(requisition.program.id);
                 },
-                canSubmitAndAuthorize: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canSubmitAndAuthorize(user.id, requisition);
+                processingPeriod: function(periodService, requisition) {
+                    return periodService.get(requisition.processingPeriod.id);
                 },
-                canAuthorize: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canAuthorize(user.id, requisition);
+                facility: function(facilityService, requisition) {
+                    return facilityService.get(requisition.facility.id);
                 },
-                canApproveAndReject: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canApproveAndReject(user, requisition);
-                },
-                canDelete: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canDelete(user.id, requisition);
-                },
-                canSkip: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canSkip(user.id, requisition);
-                },
-                canSync: function(canSubmit, canAuthorize, canApproveAndReject) {
-                    return canSubmit || canAuthorize || canApproveAndReject;
-                },
-                lineItems: function($filter, requisition) {
+                lineItems: function($filter, requisition, paginationService, paginationFactory, $stateParams) {
                     var filterObject = requisition.template.hideSkippedLineItems() ?
                         {
                             skipped: '!true',
@@ -79,34 +63,27 @@
                         };
                     var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
 
-                    return $filter('orderBy')(fullSupplyLineItems, [
+                    var lineItems = $filter('orderBy')(fullSupplyLineItems, [
                         '$program.orderableCategoryDisplayOrder',
                         '$program.orderableCategoryDisplayName',
                         '$program.displayOrder',
                         'orderable.fullProductName'
                     ]);
-                },
-                items: function(paginationService, lineItems, $stateParams, requisitionValidator, paginationFactory) {
-                    return paginationService.registerList(
-                        requisitionValidator.isLineItemValid, $stateParams, function(params) {
-                            return paginationFactory.getPage(lineItems, parseInt(params.page), parseInt(params.size));
-                        }
-                    );
+
+                    return paginationService.registerList(null, $stateParams, function() {
+                        return lineItems;
+                    });
                 },
                 columns: function(requisition) {
-                    return requisition.template.getColumns();
-                },
-                fullSupply: function() {
-                    return true;
-                },
-                processingPeriod: function(periodService, requisition) {
-                    return periodService.get(requisition.processingPeriod.id);
-                },
-                program: function(programService, requisition) {
-                    return programService.get(requisition.program.id);
-                },
-                facility: function(facilityService, requisition) {
-                    return facilityService.get(requisition.facility.id);
+                    var columns = [],
+                        columnsMap = requisition.template.columnsMap;
+                    for (var columnName in columnsMap) {
+                        if (columnsMap.hasOwnProperty(columnName) &&
+                            columnsMap[columnName].isDisplayed) {
+                            columns.push(columnsMap[columnName]);
+                        }
+                    }
+                    return columns;
                 }
             }
         });

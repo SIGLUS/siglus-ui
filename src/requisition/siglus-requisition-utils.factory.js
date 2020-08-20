@@ -33,7 +33,6 @@
     function siglusRequisitionUtils(COLUMN_SOURCES, siglusColumnUtils) {
         return {
             isEmpty: isEmpty,
-            calculateTotal: calculateTotal,
             clearTestConsumptionError: clearTestConsumptionError,
             getRegimenLineItemsTotal: getRegimenLineItemsTotal,
             hasRegimen: hasRegimen,
@@ -67,23 +66,6 @@
 
         function isEmpty(value) {
             return value === '' || _.isUndefined(value) || _.isNull(value);
-        }
-
-        function calculateTotal(lineItems, field) {
-            var allEmpty = _.every(lineItems, function(item) {
-                return isEmpty(item[field]);
-            });
-            if (allEmpty) {
-                return undefined;
-            }
-            return _.chain(lineItems).map(function(item) {
-                return item[field];
-            })
-                .compact()
-                .reduce(function(memo, num) {
-                    return parseInt(num) + memo;
-                }, 0)
-                .value();
         }
 
         function clearTestConsumptionError(lineItems) {

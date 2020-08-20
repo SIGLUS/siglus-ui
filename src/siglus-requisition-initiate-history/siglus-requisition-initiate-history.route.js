@@ -26,7 +26,7 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.requisitions.initRnr.history', {
-            url: '/history?supervised&program&facility&emergency&report&page&size',
+            url: '/history?supervised&program&facility&emergency&page&size',
             params: {
                 page: '0',
                 size: '1000',
