@@ -47,6 +47,9 @@ describe('SiglusRequisitionTemplatePreviewController', function() {
             .withColumn(new TemplateColumnDataBuilder().buildStockOnHandColumn())
             .withColumn(new TemplateColumnDataBuilder().buildAverageConsumptionColumn());
         template.kitUsage = [];
+        template.extension = {
+            enableKitUsage: true
+        };
 
         initController = function() {
             vm = $controller('SiglusRequisitionTemplatePreviewController', {
@@ -105,7 +108,7 @@ describe('SiglusRequisitionTemplatePreviewController', function() {
             initController();
         });
 
-        it('should display error message when template is invalid', function() {
+        it('should display an error message that the template is invalid', function() {
             template.isValid.andReturn(false);
 
             vm.saveTemplate();
@@ -115,6 +118,20 @@ describe('SiglusRequisitionTemplatePreviewController', function() {
             expect(stateGoSpy).not.toHaveBeenCalled();
             expect(loadingModalService.open).not.toHaveBeenCalled();
             expect(errorNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.template.invalid');
+            expect(confirmService.confirm).not.toHaveBeenCalled();
+        });
+
+        it('should display an error message that the template does not have any selected sections', function() {
+            template.isValid.andReturn(false);
+            template.extension = {};
+
+            vm.saveTemplate();
+
+            rootScope.$apply();
+
+            expect(stateGoSpy).not.toHaveBeenCalled();
+            expect(loadingModalService.open).not.toHaveBeenCalled();
+            expect(errorNotificationServiceSpy).toHaveBeenCalledWith('adminProgramTemplate.template.invalidSections');
             expect(confirmService.confirm).not.toHaveBeenCalled();
         });
 

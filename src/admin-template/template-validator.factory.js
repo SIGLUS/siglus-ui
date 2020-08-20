@@ -43,23 +43,20 @@
                 averageConsumption: validateAverageConsumption,
                 // SIGLUS-REFACTOR: starts here
                 // requestedQuantity: validateRequestedQuantity,
-                // SIGLUS-REFACTOR: ends here
                 requestedQuantityExplanation: validateRequestedQuantityExplanation,
                 totalStockoutDays: validateTotalStockoutDays,
-                // #199: product sections for column changes
                 // calculatedOrderQuantity: validateCalculatedOrderQuantity,
-                // #199: ends here
+                // SIGLUS-REFACTOR: ends here
                 additionalQuantityRequired: validateAdditionalQuantityRequired
             },
             validator = {
                 getColumnError: getColumnError,
                 isTemplateValid: isTemplateValid,
-                // #248: kit usage section configure
+                // SIGLUS-REFACTOR: starts here
                 getSiglusColumnError: getSiglusColumnError,
-                // #248: ends here
-                // #398: configure the patient data section in template
-                getSiglusSectionError: getSiglusSectionError
-                // #398: ends here
+                getSiglusSectionError: getSiglusSectionError,
+                isOptionsValid: isOptionsValid
+                // SIGLUS-REFACTOR: ends here
             };
 
         return validator;
@@ -85,16 +82,9 @@
 
             // SIGLUS-REFACTOR: starts here
             isValid = isValid && isOptionsValid(template);
-            if (!isOptionsValid(template)) {
-                notificationService.error('adminProgramTemplate.template.invalidOptions');
-            }
-            // SIGLUS-REFACTOR: ends here
-            // #398: configure the patient data section in template
             angular.forEach(template.patient, function(section) {
                 isValid = isValid && !validator.getSiglusSectionError(section);
             });
-            // #398: ends here
-            // #248, #247, #341: kit usage section, usage information section, test consumption section configure
             angular.forEach(SIGLUS_TEMPLATE_SECTIONS, function(extension) {
                 angular.forEach(template[extension], function(section) {
                     angular.forEach(section.columns, function(column) {
@@ -102,7 +92,7 @@
                     });
                 });
             });
-            // #248, #247, #341: ends here
+            // SIGLUS-REFACTOR: ends here
 
             return isValid;
         }

@@ -30,11 +30,11 @@
 
     SiglusRequisitionTemplatePreviewController.$inject = [
         '$state', 'template', 'notificationService', 'loadingModalService', 'confirmService',
-        'requisitionTemplateService'
+        'requisitionTemplateService', 'templateValidator'
     ];
 
     function SiglusRequisitionTemplatePreviewController($state, template, notificationService, loadingModalService,
-                                                        confirmService, requisitionTemplateService) {
+                                                        confirmService, requisitionTemplateService, templateValidator) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -104,7 +104,9 @@
                         });
                     });
             } else {
-                notificationService.error('adminProgramTemplate.template.invalid');
+                templateValidator.isOptionsValid(vm.template)
+                    ? notificationService.error('adminProgramTemplate.template.invalid')
+                    : notificationService.error('adminProgramTemplate.template.invalidSections');
             }
         }
     }
