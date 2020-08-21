@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
         'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService'
+        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
                         siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
-                        siglusArchivedProductService) {
+                        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE) {
         var vm = this,
             previousAdded = {};
 
@@ -184,19 +184,7 @@
 
             vm.validateLot(lineItem);
             vm.validateLotDate(lineItem);
-            validateDuplicatedLotCode(lineItem);
         });
-
-        function validateDuplicatedLotCode(lineItem) {
-            if (lineItem.lot && lineItem.lot.lotCode) {
-                if (hasInvalidLotCode(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid =
-                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
-                } else {
-                    lineItem.$errors.lotCodeInvalid = false;
-                }
-            }
-        }
 
         function hasInvalidLotCode(lineItem) {
             var allLots = getAllLotsOfOtherProducts(lineItem.orderableId);
@@ -381,12 +369,23 @@
          * @param {Object} lineItem line item to be validated.
          */
         vm.validateLot = function(lineItem) {
-            if (!lineItem.isKit) {
-                if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
-                    lineItem.$errors.lotCodeInvalid = false;
+            if (lineItem.isKit) {
+                return ;
+            }
+            if (lineItem.lotId) {
+                lineItem.$errors.lotCodeInvalid = false;
+            } else if (lineItem.lot && lineItem.lot.lotCode) {
+                if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
+                    lineItem.$errors.lotCodeInvalid =
+                        messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
+                } else if (hasInvalidLotCode(lineItem)) {
+                    lineItem.$errors.lotCodeInvalid =
+                        messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+                    lineItem.$errors.lotCodeInvalid = false;
                 }
+            } else {
+                lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
             }
             return lineItem;
         };
