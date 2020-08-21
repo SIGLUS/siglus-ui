@@ -70,14 +70,11 @@
                             }
                         );
                     },
-                    // SIGLUS-REFACTOR: starts here
                     columns: function(requisition) {
-                        return requisition.template.getDisplayedColumns(requisition);
+                        // SIGLUS-REFACTOR: starts here
+                        return requisition.template.getColumns();
+                        // SIGLUS-REFACTOR: ends here
                     },
-                    homeFacility: function(facilityFactory) {
-                        return facilityFactory.getUserHomeFacility();
-                    },
-                    // SIGLUS-REFACTOR: ends here
                     fullSupply: function() {
                         return true;
                     }

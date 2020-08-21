@@ -196,23 +196,35 @@
          * @param  {Object}            requisition requisition object from server
          * @return {RequisitionColumn}             column with additional info
          */
-        function displayColumn(column, requisition) {
+        // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
+        // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
+        // function displayColumn(column, requisition) {
+        //     if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
+        //         typeof column.option !== 'undefined') {
+        //         return (column.option.optionName === 'showPackToShipInApprovalPage' &&
+        //             requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
+        //     }
+        //     return column.isDisplayed && (
+        //         [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
+        //         requisition.$isAfterAuthorize());
+        // }
+        function siglusDisplayColumn(column, requisition) {
             if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
                 typeof column.option !== 'undefined') {
-                return (column.option.optionName === 'showPackToShipInApprovalPage' &&
-                    requisition.$isAfterAuthorize()) || column.option.optionName === 'showPackToShipInAllPages';
+                return (column.option.optionName === 'showPackToShipInApprovalPage' && requisition.$isAfterAuthorize()
+                    && requisition.isExternalApproval) || column.option.optionName === 'showPackToShipInAllPages';
             }
             return column.isDisplayed && (
-                [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS].indexOf(column.name) === -1 ||
-                requisition.$isAfterAuthorize());
+                [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS,
+                    TEMPLATE_COLUMNS.SUGGESTED_QUANTITY, TEMPLATE_COLUMNS.SKIPPED].indexOf(column.name) === -1 ||
+                (requisition.$isAfterAuthorize() && requisition.isExternalApproval));
         }
 
-        // #346: show all column in history when it configs display by admin
         function enhanceDisplayColumn(column, requisition) {
             if (TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY === column.name) {
                 return displayQuantityAuthorized(column, requisition);
             }
-            return displayColumn(column, requisition);
+            return siglusDisplayColumn(column, requisition);
         }
 
         function displayQuantityAuthorized(column, requisition) {
@@ -240,7 +252,7 @@
                 }
             );
         }
-        // #346: ends here
+        // SIGLUS-REFACTOR: ends here
 
         function columnDependencies(column) {
             return dependencies[column.name];

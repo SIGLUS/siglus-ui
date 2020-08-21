@@ -27,19 +27,15 @@
     angular
         .module('requisition-template')
         .factory('RequisitionTemplate', template);
-    // #147 starts here
-    template.$inject = ['RequisitionColumn', 'TEMPLATE_COLUMNS', 'permissionService', '$q', 'REQUISITION_RIGHTS',
-        'facilityFactory'];
+    template.$inject = ['RequisitionColumn'];
 
-    function template(RequisitionColumn, TEMPLATE_COLUMNS, permissionService, $q, REQUISITION_RIGHTS,
-                      facilityFactory) {
+    function template(RequisitionColumn) {
 
         RequisitionTemplate.prototype.getColumns = getColumns;
         RequisitionTemplate.prototype.getColumn = getColumn;
         RequisitionTemplate.prototype.hasSkipColumn = hasSkipColumn;
         RequisitionTemplate.prototype.hideSkippedLineItems = hideSkippedLineItems;
-        RequisitionTemplate.prototype.getDisplayedColumns = getDisplayedColumns;
-        // #147 ends here
+
         return RequisitionTemplate;
 
         /**
@@ -103,48 +99,6 @@
             }
             return columns;
         }
-        // #147 starts here
-        function getDisplayedColumns(requisition) {
-            var columnsMap = this.columnsMap;
-            var getColumns = this.getColumns.bind(this);
-
-            return $q.all([hasApproveRequisitionRight(requisition),
-                facilityFactory.getUserHomeFacility()]).then(function(response) {
-
-                if (columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY] &&
-                    columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY]) {
-
-                    var canApprove = response[0];
-                    var homeFacility = response[1];
-                    if (canApprove) {
-                        // same facility
-                        // TODO: suggested_quantity should not be affected if not isInternalApproval
-                        var isInternalApproval = homeFacility.id === requisition.facility.id;
-                        if (isInternalApproval) {
-                            columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
-                            columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].$display = false;
-                            columnsMap[TEMPLATE_COLUMNS.SKIPPED].$display = false;
-                        }
-                    } else {
-                        // approved quantity handled by requisition-column.js displayColumn()
-                        columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].$display = false;
-                        columnsMap[TEMPLATE_COLUMNS.SKIPPED].$display = false;
-                    }
-                }
-
-                return getColumns();
-            });
-        }
-
-        function hasApproveRequisitionRight(requisition) {
-            if (requisition.$isAuthorized() || requisition.$isInApproval()) {
-                return permissionService.hasRoleWithRightForProgramAndSupervisoryNode(
-                    REQUISITION_RIGHTS.REQUISITION_APPROVE, requisition.program.id, requisition.supervisoryNode
-                );
-            }
-            return $q.resolve(false);
-        }
-        // #147 ends here
 
         /**
          * @ngdoc method
