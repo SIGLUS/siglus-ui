@@ -101,7 +101,7 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
         spyOn(this.facilityService, 'get').andReturn(this.$q.resolve(this.facility));
         spyOn(this.periodService, 'get').andReturn(this.$q.resolve(this.period));
 
-        spyOn(this.requisition.template, 'getDisplayedColumns').andReturn(this.columns);
+        this.requisition.template.getColumns.andReturn(this.columns);
     });
 
     it('should prepare full supply line items', function() {
@@ -124,7 +124,7 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
 
         expect(this.getResolvedValue('columns')).toEqual(this.columns);
         // SIGLUS-REFACTOR: starts here
-        expect(this.requisition.template.getDisplayedColumns).toHaveBeenCalled();
+        expect(this.requisition.template.getColumns).toHaveBeenCalled();
         // SIGLUS-REFACTOR: ends here
     });
 

@@ -34,7 +34,7 @@
         'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES', 'homeFacility',
+        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
         'siglusArchivedProductService', 'program', '$scope', 'notificationService'
         // SIGLUS-REFACTOR: ends here
     ];
@@ -43,8 +43,8 @@
                                messageService, lineItems, alertService, canSubmit, canAuthorize,
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
-                               requisitionService, loadingModalService, COLUMN_SOURCES, homeFacility,
-                               siglusArchivedProductService, program, $scope, notificationService) {
+                               requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
+                               program, $scope, notificationService) {
 
         var vm = this;
 
@@ -65,8 +65,6 @@
         vm.showQuicklyFill = showQuicklyFill;
         vm.quicklyFillHandler = quicklyFillHandler;
         // #340: ends here
-
-        var isInternalApproval = homeFacility.id === requisition.facility.id;
 
         /**
          * @ngdoc property
@@ -163,7 +161,7 @@
             vm.items = items;
             vm.requisition = requisition;
             vm.columns = columns;
-            vm.userCanEdit = canAuthorize || canSubmit || (canApproveAndReject && isInternalApproval);
+            vm.userCanEdit = canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
             vm.showAddNonFullSupplyProductsButton = showAddNonFullSupplyProductsButton();
             vm.showUnskipFullSupplyProductsButton = showUnskipFullSupplyProductsButton();
