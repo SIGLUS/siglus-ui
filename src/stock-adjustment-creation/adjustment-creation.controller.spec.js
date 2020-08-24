@@ -355,6 +355,65 @@ describe('StockAdjustmentCreationController', function() {
     //         notify: false
     //     });
     // });
+    it('should get no error when the lot code is valid', function() {
+        var lineItem = {
+            lot: new LotDataBuilder().build(),
+            id: '1',
+            isKit: false,
+            $errors: {}
+        };
+        vm.validateLot(lineItem);
+
+        expect(lineItem.$errors.lotCodeInvalid).toBeFalsy();
+    });
+
+    it('should get an error of openlmisForm.required when the lot code is not given', function() {
+        var lineItem = {
+            id: '1',
+            isKit: false,
+            $errors: {}
+        };
+        vm.validateLot(lineItem);
+
+        expect(lineItem.$errors.lotCodeInvalid).toBe('openlmisForm.required');
+    });
+
+    it('should get an error of stockPhysicalInventoryDraft.lotCodeTooLong when the lot code is too long', function() {
+        var lineItem = {
+            id: '1',
+            lot: {
+                lotCode: '0123456789' + '01234567890'+'012345678901'
+            },
+            isKit: false,
+            $errors: {}
+        };
+        vm.validateLot(lineItem);
+
+        expect(lineItem.$errors.lotCodeInvalid).toBe('stockPhysicalInventoryDraft.lotCodeTooLong');
+    });
+
+    it('should get an error of stockPhysicalInventoryDraft.lotCodeDuplicate ' +
+        'when the lot code is duplicated', function() {
+        var newLot = {
+            lotCode: 'new-lot'
+        };
+        var lineItem1 = {
+            id: '1',
+            lot: newLot,
+            isKit: false,
+            $errors: {}
+        };
+        var lineItem2 = {
+            id: '1',
+            lot: newLot,
+            isKit: false,
+            $errors: {}
+        };
+        vm.addedLineItems = [lineItem1, lineItem2];
+        vm.validateLot(lineItem1);
+
+        expect(lineItem1.$errors.lotCodeInvalid).toBe('stockPhysicalInventoryDraft.lotCodeDuplicate');
+    });
     // SIGLUS-REFACTOR: ends here
 
     describe('getStatusDisplay', function() {

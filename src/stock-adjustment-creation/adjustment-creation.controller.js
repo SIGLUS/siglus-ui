@@ -187,16 +187,18 @@
         });
 
         function hasInvalidLotCode(lineItem) {
-            var allLots = getAllLotsOfOtherProducts(lineItem.orderableId);
-            for (var i = 0; i < allLots.length; i++) {
-                if (allLots[i].lotCode === lineItem.lot.lotCode) {
-                    return true;
-                }
-            }
-            return false;
+            var allLots = getAllLotsOfOtherProductsAndNewAdded(lineItem.orderableId);
+            var duplicatedLots = hasLot(lineItem) ? _.filter(allLots, function(lot) {
+                return lot.lotCode.toUpperCase() === lineItem.lot.lotCode.toUpperCase();
+            }) : [];
+            return duplicatedLots.length > 1 && lineItem.lot && !lineItem.lot.id;
         }
 
-        function getAllLotsOfOtherProducts(orderableId) {
+        function hasLot(lineItem) {
+            return lineItem.lot && lineItem.lot.lotCode;
+        }
+
+        function getAllLotsOfOtherProductsAndNewAdded(orderableId) {
             var ids = siglusOrderableLotMapping.findAllOrderableIds();
             var lots = [];
             ids.forEach(function(id) {
@@ -205,6 +207,11 @@
                         siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(id);
                     var selectedLots = orderableGroupService.lotsOf(selectedOrderableGroup);
                     lots = lots.concat(selectedLots);
+                }
+            });
+            _.each(vm.addedLineItems, function(item) {
+                if (item.lot && item.lot.lotCode && !item.lot.id) {
+                    lots.push(item.lot);
                 }
             });
             return lots;
@@ -374,7 +381,7 @@
             }
             if (lineItem.lotId) {
                 lineItem.$errors.lotCodeInvalid = false;
-            } else if (lineItem.lot && lineItem.lot.lotCode) {
+            } else if (hasLot(lineItem)) {
                 if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
