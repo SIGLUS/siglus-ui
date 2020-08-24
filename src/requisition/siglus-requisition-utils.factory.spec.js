@@ -146,4 +146,51 @@ describe('siglusRequisitionUtils', function() {
             })).toBe(20);
         });
     });
+
+    describe('getInputColumnsMap', function() {
+        it('should get user input and displayed column map', function() {
+            var columns = [{
+                isDisplayed: false,
+                name: 'additionalQuantityRequired',
+                source: 'USER_INPUT'
+            }, {
+                isDisplayed: true,
+                name: 'adjustedConsumption',
+                source: 'CALCULATED'
+            }, {
+                isDisplayed: true,
+                name: 'approvedQuantity',
+                source: 'USER_INPUT'
+            }];
+
+            expect(siglusRequisitionUtils.getInputColumnsMap(columns)).toEqual({
+                approvedQuantity: {
+                    id: null,
+                    isDisplayed: true,
+                    name: 'approvedQuantity',
+                    source: 'USER_INPUT'
+                }
+            });
+        });
+    });
+
+    describe('clearTestConsumptionError', function() {
+        it('should clear error', function() {
+            var testConsumptionLineItems = [{
+                projects: {
+                    hivDetermine: {
+                        outcomes: {
+                            consumo: {
+                                $error: 'This filed is required'
+                            }
+                        }
+                    }
+                }
+            }];
+            siglusRequisitionUtils.clearTestConsumptionError(testConsumptionLineItems);
+
+            expect(testConsumptionLineItems[0]
+                .projects.hivDetermine.outcomes.consumo.$error).toBeUndefined();
+        });
+    });
 });

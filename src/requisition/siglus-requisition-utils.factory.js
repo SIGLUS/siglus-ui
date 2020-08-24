@@ -32,7 +32,6 @@
 
     function siglusRequisitionUtils(COLUMN_SOURCES, siglusColumnUtils) {
         return {
-            isEmpty: isEmpty,
             clearTestConsumptionError: clearTestConsumptionError,
             getRegimenLineItemsTotal: getRegimenLineItemsTotal,
             hasRegimen: hasRegimen,
@@ -62,10 +61,6 @@
                 }
                 return total;
             }, undefined);
-        }
-
-        function isEmpty(value) {
-            return value === '' || _.isUndefined(value) || _.isNull(value);
         }
 
         function clearTestConsumptionError(lineItems) {
