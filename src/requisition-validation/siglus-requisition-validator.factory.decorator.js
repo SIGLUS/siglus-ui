@@ -73,10 +73,11 @@
             if (!isValid) {
                 requisition.$error = messageService.get('requisitionView.rnrHasErrors');
             }
-            isValid = !areAllLineItemsSkipped(requisition) && isValid;
-            isValid = !isTestConsumptionEmpty(requisition) && isValid;
-            isValid = !isOnlyAPESFilled(requisition) && isValid;
-            isValid = !isTotalWithoutServices(requisition) && isValid;
+            isValid = isValid && !areAllLineItemsSkipped(requisition);
+            isValid = isValid && validateTotalEqualOfRegimen(requisition);
+            isValid = isValid && !isTestConsumptionEmpty(requisition);
+            isValid = isValid && !isOnlyAPESFilled(requisition);
+            isValid = isValid && !isTotalWithoutServices(requisition);
             return isValid;
         }
 
@@ -97,7 +98,6 @@
             if (siglusRequisitionUtils.hasRegimen(requisition)) {
                 valid = validateBasicLineItems(requisition.regimenLineItems) && valid;
                 valid = validateBasicLineItems(requisition.regimenDispatchLineItems) && valid;
-                valid = valid && validateTotalEqualOfRegimen(requisition);
             }
             return valid;
         }
@@ -355,13 +355,18 @@
         }
 
         function validateTotalEqualOfRegimen(requisition) {
+            var isValid = true;
             if (noCommentWhenEnableRegimen(requisition) &&
                 validateBasicLineItems(requisition.regimenLineItems) &&
                 validateBasicLineItems(requisition.regimenDispatchLineItems)) {
-                return isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.PATIENTS) &&
+                isValid = isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.PATIENTS) &&
                     isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.COMMUNITY);
             }
-            return true;
+            if (!isValid) {
+                requisition.$error = requisition.$error
+                    || messageService.get('requisitionValidation.totalNotEqual');
+            }
+            return isValid;
         }
 
         function isRegimenColumnEqual(requisition, columnName) {
