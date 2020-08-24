@@ -92,26 +92,15 @@
             vm.lineItems = lineItems;
             vm.requisition = requisition;
             vm.columns = columns;
-            // Rejected requisition has authorizedQuantity and approvedQuantity, it should not displayed in screen
-            hideAuthorizedQuantity(vm.requisition);
-            hideApprovedQuantity(vm.requisition);
+            hidePacksToShip(requisition);
             setTypeAndClass();
         }
 
-        function hideAuthorizedQuantity(requisition) {
-            if (!vm.requisition.$isAfterAuthorize() &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY].isDisplayed) {
+        function hidePacksToShip(requisition) {
+            if (requisition.template.columnsMap[TEMPLATE_COLUMNS.PACKS_TO_SHIP].isDisplayed &&
+                !requisition.template.columnsMap[TEMPLATE_COLUMNS.PACKS_TO_SHIP].$display) {
                 angular.forEach(requisition.requisitionLineItems, function(lineItem) {
-                    lineItem.authorizedQuantity = undefined;
-                });
-            }
-        }
-
-        function hideApprovedQuantity(requisition) {
-            if (vm.requisition.$isAuthorized() &&
-                requisition.template.columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].isDisplayed) {
-                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
-                    lineItem.approvedQuantity = undefined;
+                    lineItem.packsToShip = undefined;
                 });
             }
         }

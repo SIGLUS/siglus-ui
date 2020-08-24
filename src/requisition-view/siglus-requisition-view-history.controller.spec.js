@@ -50,11 +50,9 @@ describe('SiglusHistoryViewTabController', function() {
                     .buildJson()
             ])
             .build();
-        this.requisition.template.columnsMap.approvedQuantity = {
-            isDisplayed: true
-        };
-        this.requisition.template.columnsMap.authorizedQuantity = {
-            isDisplayed: true
+        this.requisition.template.columnsMap.packsToShip = {
+            isDisplayed: true,
+            $display: false
         };
 
         this.initController = initController;
@@ -124,20 +122,11 @@ describe('SiglusHistoryViewTabController', function() {
             expect(this.vm.requisitionTypeClass).toBe('report-only');
         });
 
-        it('should hide approved qty when requisition is authorized', function() {
-            this.requisition.$isAuthorized.andReturn(true);
-            this.requisition.requisitionLineItems[0].approvedQuantity = 10;
+        it('should hide packsToShip when packsToShip $display is false but isDisplayed is true', function() {
+            this.requisition.requisitionLineItems[0].packsToShip = 10;
             this.initController();
 
-            expect(this.requisition.requisitionLineItems[0].approvedQuantity).toBeUndefined();
-        });
-
-        it('should hide authorized qty when requisition is not after authorize', function() {
-            this.requisition.$isAfterAuthorize.andReturn(false);
-            this.requisition.requisitionLineItems[0].authorizedQuantity = 10;
-            this.initController();
-
-            expect(this.requisition.requisitionLineItems[0].authorizedQuantity).toBeUndefined();
+            expect(this.requisition.requisitionLineItems[0].packsToShip).toBeUndefined();
         });
     });
 
