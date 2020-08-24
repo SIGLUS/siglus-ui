@@ -382,7 +382,7 @@ describe('StockAdjustmentCreationController', function() {
         var lineItem = {
             id: '1',
             lot: {
-                lotCode: '0123456789' + '01234567890'+'012345678901'
+                lotCode: '0123456789' + '01234567890' + '012345678901'
             },
             isKit: false,
             $errors: {}
