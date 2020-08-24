@@ -475,6 +475,11 @@ describe('requisitionValidator', function() {
     });
 
     describe('validateTotalEqualOfRegimen', function() {
+        beforeEach(function() {
+            spyOn(messageService, 'get').andReturn('The total patients number of regimens is not equal,' +
+                ' Please explain the justification for the difference in "Comments".');
+        });
+
         it('should return true if regimen is not enabled', function() {
             requisition.template.extension.enableRegimen = false;
 
@@ -602,6 +607,8 @@ describe('requisitionValidator', function() {
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
+            expect(requisition.$error).toBe('The total patients number of regimens is not equal, Please explain' +
+                ' the justification for the difference in "Comments".');
         });
 
         it('should return false when total community is not equal', function() {
