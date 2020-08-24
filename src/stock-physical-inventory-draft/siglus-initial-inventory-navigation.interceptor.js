@@ -29,13 +29,14 @@
 
     siglusInitialInventoryNavigationInterceptor.$inject = [
         '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
-        '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService'
+        '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService',
+        'authorizationService', 'alertService'
     ];
 
     function siglusInitialInventoryNavigationInterceptor($rootScope, loadingModalService, confirmService, $state,
                                                          stockmanagementUrlFactory, $http, programService,
                                                          facilityFactory, physicalInventoryFactory,
-                                                         currentUserService) {
+                                                         currentUserService, authorizationService, alertService) {
         $rootScope.$on('$stateChangeStart', function(event, toState) {
             if (checkInitialInventoryStatus() && !toState.url.contains('/initialInventory')
                 && toState.showInNavigation && toState.url !== '/home') {
@@ -72,8 +73,19 @@
         function propopConfirm() {
             confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialInventory.initialInventory')
                 .then(function() {
-                    $state.go('openlmis.stockmanagement.initialInventory');
+                    if (cannotViewState()) {
+                        alertService.error('openlmisAuth.authorization.error',
+                            'stockInitialInventory.authorization.message');
+                    } else {
+                        $state.go('openlmis.stockmanagement.initialInventory');
+                    }
                 });
+        }
+
+        function cannotViewState() {
+            var toState = $state.get('openlmis.stockmanagement.initialInventory');
+            return toState.accessRights &&
+                !authorizationService.hasRights(toState.accessRights, toState.areAllRightsRequired);
         }
     }
 
