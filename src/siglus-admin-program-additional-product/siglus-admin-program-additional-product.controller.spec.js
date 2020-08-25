@@ -62,7 +62,7 @@ describe('SiglusAdminProgramAdditionalProductController', function() {
 
         vm = $controller('SiglusAdminProgramAdditionalProductController', {
             $stateParams: stateParams,
-            allPrograms: programs,
+            programList: programs,
             additionalProducts: additionalProducts
         });
         vm.$onInit();
