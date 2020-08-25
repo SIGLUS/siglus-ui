@@ -29,12 +29,12 @@
         .controller('SiglusAdminProgramAdditionalProductController', controller);
 
     controller.$inject = [
-        '$stateParams', '$state', 'allPrograms', 'additionalProducts', '$filter', 'confirmService',
+        '$stateParams', '$state', 'programList', 'additionalProducts', '$filter', 'confirmService',
         'siglusAdminProgramAdditionalProductService', 'loadingModalService', 'notificationService',
         'selectProductsModalService'
     ];
 
-    function controller($stateParams, $state, allPrograms, additionalProducts, $filter, confirmService,
+    function controller($stateParams, $state, programList, additionalProducts, $filter, confirmService,
                         siglusAdminProgramAdditionalProductService, loadingModalService, notificationService,
                         selectProductsModalService) {
 
@@ -87,7 +87,7 @@
          * setting data to be available on the view.
          */
         function onInit() {
-            vm.allPrograms = allPrograms;
+            vm.allPrograms = programList;
             vm.additionalProducts = _.map(additionalProducts, function(additionalProduct) {
                 additionalProduct.program = _.find(vm.allPrograms, function(program) {
                     return program.id === additionalProduct.orderableOriginProgramId;

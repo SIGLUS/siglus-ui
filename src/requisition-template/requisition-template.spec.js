@@ -110,7 +110,7 @@ describe('RequisitionTemplate', function() {
                 // new RequisitionTemplateDataBuilder().withSkipColumn()
                 //     .buildJson(),
                 // new RequisitionDataBuilder().buildJson()
-                new RequisitionTemplateDataBuilder().withSkipColumn(undefined, requisition)
+                new RequisitionTemplateDataBuilder().withSkipColumn()
                     .buildJson(), requisition
                 // SIGLUS-REFACTOR: ends here
             );
@@ -139,7 +139,7 @@ describe('RequisitionTemplate', function() {
                     // new RequisitionTemplateDataBuilder().withSkipColumn(true)
                     //     .buildJson(),
                     // new RequisitionDataBuilder().buildJson()
-                    new RequisitionTemplateDataBuilder().withSkipColumn(true, requisition)
+                    new RequisitionTemplateDataBuilder().withSkipColumn(true)
                         .buildJson(), requisition
                     // SIGLUS-REFACTOR: ends here
                 );
@@ -155,7 +155,7 @@ describe('RequisitionTemplate', function() {
                     // new RequisitionTemplateDataBuilder().withSkipColumn(false)
                     //     .buildJson(),
                     // new RequisitionDataBuilder().buildJson()
-                    new RequisitionTemplateDataBuilder().withSkipColumn(false, requisition)
+                    new RequisitionTemplateDataBuilder().withSkipColumn(false)
                         .buildJson(), requisition
                     // SIGLUS-REFACTOR: ends here
                 );
