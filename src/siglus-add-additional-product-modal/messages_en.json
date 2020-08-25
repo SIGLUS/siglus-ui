@@ -6,5 +6,7 @@
   "selectAdditionalProductModal.select": "Select",
   "selectAdditionalProductModal.program": "Program(Original)",
   "selectAdditionalProductModal.cancel": "Cancel",
-  "selectAdditionalProductModal.add": "Add"
+  "selectAdditionalProductModal.add": "Add",
+  "selectAdditionalProductModal.productHasBeenAdded": "This product has been added successfully",
+  "selectAdditionalProductModal.addProducts.emptyList": "You have not selected any products."
 }

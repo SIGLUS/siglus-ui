@@ -204,7 +204,7 @@
             return builder.build();
         }
 
-        function buildSkipColumn(hideOptionSelected, requisition) {
+        function buildSkipColumn(hideOptionSelected) {
             var builder = this;
 
             builder.name = 'skipped';
@@ -230,7 +230,7 @@
             };
             // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
             // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
-            requisition = requisition || {
+            var requisition = {
                 $isAfterAuthorize: function() {
                     return true;
                 },

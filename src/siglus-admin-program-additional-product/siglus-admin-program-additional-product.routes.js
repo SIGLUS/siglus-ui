@@ -32,9 +32,6 @@
             controllerAs: 'vm',
             accessRights: [REQUISITION_RIGHTS.REQUISITION_TEMPLATES_MANAGE],
             resolve: {
-                allPrograms: function(programService) {
-                    return programService.getAll();
-                },
                 additionalProducts: function(paginationService, siglusAdminProgramAdditionalProductService,
                     $stateParams) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {

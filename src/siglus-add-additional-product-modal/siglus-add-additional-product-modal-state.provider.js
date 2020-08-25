@@ -59,7 +59,7 @@
 
             modalStateProvider
                 .state(stateName + '.addAdditionalProduct', {
-                    controller: 'SelectProductsModalController',
+                    controller: 'SiglusAddAdditionalProductModalController',
                     controllerAs: 'vm',
                     templateUrl: 'siglus-add-additional-product-modal/siglus-add-additional-product-modal.html',
                     nonTrackable: true,
@@ -70,20 +70,8 @@
                         productCode: undefined
                     },
                     resolve: {
-                        external: function() {
-                            return false;
-                        },
-                        isUnpackKitState: function() {
-                            return true;
-                        },
-                        isAdditionalProductState: function() {
-                            return true;
-                        },
-                        allPrograms: function(programService) {
-                            return programService.getAll();
-                        },
                         orderables: function(paginationService, $stateParams, SiglusAdditionalOrderableResource,
-                            allPrograms) {
+                            programList) {
                             return paginationService.registerUrl($stateParams, function(stateParams) {
                                 var params = {
                                     sort: 'fullProductName',
@@ -96,13 +84,12 @@
                                 return new SiglusAdditionalOrderableResource().query(params)
                                     .then(function(result) {
                                         var orderables = result.content;
-                                        var newOrderables = _.map(orderables, function(orderable) {
-                                            orderable.program = _.find(allPrograms, function(program) {
+                                        result.content = _.map(orderables, function(orderable) {
+                                            orderable.program = _.find(programList, function(program) {
                                                 return program.id === _.first(orderable.programs).programId;
                                             });
                                             return orderable;
                                         });
-                                        result.content = newOrderables;
                                         return result;
                                     });
                             }, {

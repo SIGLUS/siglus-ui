@@ -103,29 +103,91 @@ describe('RequisitionColumn', function() {
         });
     });
 
+    // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
+    // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
     [
         {
             name: 'should hide Approved Quantity column if status is before authorize',
             column: 'approvedQuantity',
             afterAuthorize: false,
+            isExternalApproval: true,
             result: false
         },
         {
             name: 'should hide Remarks column if status is before authorize',
             column: 'remarks',
             afterAuthorize: false,
+            isExternalApproval: true,
             result: false
         },
         {
-            name: 'should show Approved Quantity column if status is after authorize',
+            name: 'should hide Suggested Quantity column if status is before authorize',
+            column: 'approvedQuantity',
+            afterAuthorize: false,
+            isExternalApproval: true,
+            result: false
+        },
+        {
+            name: 'should hide Skip column if status is before authorize',
+            column: 'remarks',
+            afterAuthorize: false,
+            isExternalApproval: true,
+            result: false
+        },
+        {
+            name: 'should hide Approved Quantity column if it is internal approval',
             column: 'approvedQuantity',
             afterAuthorize: true,
+            isExternalApproval: false,
+            result: false
+        },
+        {
+            name: 'should hide Remarks column if it is internal approval',
+            column: 'remarks',
+            afterAuthorize: true,
+            isExternalApproval: false,
+            result: false
+        },
+        {
+            name: 'should hide Suggested Quantity column if it is internal approval',
+            column: 'approvedQuantity',
+            afterAuthorize: true,
+            isExternalApproval: false,
+            result: false
+        },
+        {
+            name: 'should hide Skip column if it is internal approval',
+            column: 'remarks',
+            afterAuthorize: true,
+            isExternalApproval: false,
+            result: false
+        },
+        {
+            name: 'should show Approved Quantity column if status is after authorize and external approval',
+            column: 'approvedQuantity',
+            afterAuthorize: true,
+            isExternalApproval: true,
             result: true
         },
         {
-            name: 'should show Remarks column if status is after authorize',
+            name: 'should show Remarks column if status is after authorize and external approval',
             column: 'remarks',
             afterAuthorize: true,
+            isExternalApproval: true,
+            result: true
+        },
+        {
+            name: 'should show Suggested Quantity column if status is after authorize and external approval',
+            column: 'approvedQuantity',
+            afterAuthorize: true,
+            isExternalApproval: true,
+            result: true
+        },
+        {
+            name: 'should show Skip column if status is after authorize and external approval',
+            column: 'remarks',
+            afterAuthorize: true,
+            isExternalApproval: true,
             result: true
         }
     ].forEach(function(testCase) {
@@ -134,9 +196,7 @@ describe('RequisitionColumn', function() {
             requisition.$isAfterAuthorize = function() {
                 return testCase.afterAuthorize;
             };
-            // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
-            // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
-            requisition.isExternalApproval = true;
+            requisition.isExternalApproval = testCase.isExternalApproval;
             // SIGLUS-REFACTOR: ends here
 
             var column = new RequisitionColumn(columnDef, requisition);
@@ -192,6 +252,18 @@ describe('RequisitionColumn', function() {
 
             expect(packToShipColumn.$display).toBe(true);
         });
+
+        // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
+        // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
+        it('should hide if requisition is in internal approval stage and showPackToShipInApprovalPage is selected',
+            function() {
+                spyOn(requisition, '$isAfterAuthorize').andReturn(true);
+                requisition.isExternalApproval = false;
+                var packToShipColumn =  new RequisitionColumn(columnDef, requisition);
+
+                expect(packToShipColumn.$display).toBe(false);
+            });
+        // SIGLUS-REFACTOR: ends here
 
         it('should show if requisition is not in approval stage and showPackToShipInAllPages is selected', function() {
             spyOn(requisition, '$isAfterAuthorize').andReturn(false);
