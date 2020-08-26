@@ -131,15 +131,14 @@
         Requisition.prototype.getAvailableNonFullSupplyProducts = getAvailableNonFullSupplyProducts;
         Requisition.prototype.getAvailableFullSupplyProducts = getAvailableFullSupplyProducts;
         Requisition.prototype.getSkippedFullSupplyProducts = getSkippedFullSupplyProducts;
-        // #352: can add skipped products
-        Requisition.prototype.getSkippedProducts = getSkippedProducts;
-        // #352: ends here
         Requisition.prototype.addLineItem = addLineItem;
         Requisition.prototype.addLineItems = addLineItems;
         Requisition.prototype.deleteLineItem = deleteLineItem;
         Requisition.prototype.unskipFullSupplyProducts = unskipFullSupplyProducts;
         // SIGLUS-REFACTOR: starts here
         Requisition.prototype.addProductLineItem = addProductLineItem;
+        Requisition.prototype.getSkippedProducts = getSkippedProducts;
+        Requisition.prototype.$isAfterApprove = isAfterApprove;
         // SIGLUS-REFACTOR: ends here
 
         return Requisition;
@@ -523,6 +522,11 @@
          */
         function isAfterAuthorize() {
             return [REQUISITION_STATUS.AUTHORIZED, REQUISITION_STATUS.IN_APPROVAL,
+                REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED].indexOf(this.status) !== -1;
+        }
+
+        function isAfterApprove() {
+            return [REQUISITION_STATUS.IN_APPROVAL,
                 REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED].indexOf(this.status) !== -1;
         }
 
