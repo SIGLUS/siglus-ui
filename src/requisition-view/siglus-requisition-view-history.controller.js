@@ -92,16 +92,34 @@
             vm.lineItems = lineItems;
             vm.requisition = requisition;
             vm.columns = columns;
-            hidePacksToShip(requisition);
+            hideApprovedQuantity(vm.requisition);
+            hidePacksToShip(vm.requisition);
             setTypeAndClass();
         }
 
+        function hideApprovedQuantity(requisition) {
+            if (vm.requisition.$isAuthorized() &&
+                requisition.template.columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].isDisplayed) {
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    lineItem.approvedQuantity = undefined;
+                });
+            }
+        }
+
         function hidePacksToShip(requisition) {
-            if (requisition.template.columnsMap[TEMPLATE_COLUMNS.PACKS_TO_SHIP].isDisplayed &&
-                !requisition.template.columnsMap[TEMPLATE_COLUMNS.PACKS_TO_SHIP].$display) {
+            if (!shouldDispalyPacksToship(requisition)) {
                 angular.forEach(requisition.requisitionLineItems, function(lineItem) {
                     lineItem.packsToShip = undefined;
                 });
+            }
+        }
+
+        function shouldDispalyPacksToship(requisition) {
+            var packsToship = requisition.template.columnsMap[TEMPLATE_COLUMNS.PACKS_TO_SHIP];
+            if (packsToship.isDisplayed && typeof packsToship.option !== 'undefined') {
+                return (packsToship.option.optionName === 'showPackToShipInApprovalPage' &&
+                    requisition.$isAfterApprove() && !requisition.isApprovedByInternal) ||
+                    packsToship.option.optionName === 'showPackToShipInAllPages';
             }
         }
 
