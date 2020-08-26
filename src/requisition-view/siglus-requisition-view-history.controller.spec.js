@@ -50,9 +50,14 @@ describe('SiglusHistoryViewTabController', function() {
                     .buildJson()
             ])
             .build();
+        this.requisition.template.columnsMap.approvedQuantity = {
+            isDisplayed: true
+        };
         this.requisition.template.columnsMap.packsToShip = {
             isDisplayed: true,
-            $display: false
+            option: {
+                optionName: 'showPackToShipInApprovalPage'
+            }
         };
 
         this.initController = initController;
@@ -122,11 +127,59 @@ describe('SiglusHistoryViewTabController', function() {
             expect(this.vm.requisitionTypeClass).toBe('report-only');
         });
 
-        it('should hide packsToShip when packsToShip $display is false but isDisplayed is true', function() {
+        it('should hide approved qty when requisition is authorized', function() {
+            this.requisition.$isAuthorized.andReturn(true);
+            this.requisition.requisitionLineItems[0].approvedQuantity = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].approvedQuantity).toBeUndefined();
+        });
+
+        it('should hide packsToShip when requisition is authorized - showPackToShipInApprovalPage', function() {
+            this.requisition.status = 'AUTHORIZED';
+            this.requisition.isApprovedByInternal = false;
             this.requisition.requisitionLineItems[0].packsToShip = 10;
             this.initController();
 
             expect(this.requisition.requisitionLineItems[0].packsToShip).toBeUndefined();
+        });
+
+        it('should hide packsToShip when requisition is in_approval and approved by internal approve -' +
+            ' showPackToShipInApprovalPage', function() {
+            this.requisition.status = 'IN_APPROVAL';
+            this.requisition.isApprovedByInternal = true;
+            this.requisition.requisitionLineItems[0].packsToShip = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].packsToShip).toBeUndefined();
+        });
+
+        it('should not hide packsToShip when requisition is in_approval and approved by external approve -' +
+            ' showPackToShipInApprovalPage', function() {
+            this.requisition.status = 'IN_APPROVAL';
+            this.requisition.isApprovedByInternal = false;
+            this.requisition.requisitionLineItems[0].packsToShip = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].packsToShip).toBe(10);
+        });
+
+        it('should not hide packsToShip when requisition is approved and approved by external approve -' +
+            ' showPackToShipInApprovalPage', function() {
+            this.requisition.status = 'APPROVED';
+            this.requisition.isApprovedByInternal = false;
+            this.requisition.requisitionLineItems[0].packsToShip = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].packsToShip).toBe(10);
+        });
+
+        it('should not hide packsToShip - showPackToShipInAllPages', function() {
+            this.requisition.template.columnsMap.packsToShip.option.optionName = 'showPackToShipInAllPages';
+            this.requisition.requisitionLineItems[0].packsToShip = 10;
+            this.initController();
+
+            expect(this.requisition.requisitionLineItems[0].packsToShip).toBe(10);
         });
     });
 
