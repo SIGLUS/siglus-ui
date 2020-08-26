@@ -239,6 +239,44 @@ describe('Requisition', function() {
             expect(requisition.regimenLineItems.length).toBe(2);
         });
     });
+
+    describe('$isAfterApprove', function() {
+        it('should return false for requisition status INITIATED', function() {
+            this.requisition.status = this.REQUISITION_STATUS.INITIATED;
+
+            expect(this.requisition.$isAfterApprove()).toBe(false);
+        });
+
+        it('should return false for requisition status SUBMITTED', function() {
+            this.requisition.status = this.REQUISITION_STATUS.SUBMITTED;
+
+            expect(this.requisition.$isAfterApprove()).toBe(false);
+        });
+
+        it('should return true for requisition status AUTHORIZED', function() {
+            this.requisition.status = this.REQUISITION_STATUS.AUTHORIZED;
+
+            expect(this.requisition.$isAfterApprove()).toBe(false);
+        });
+
+        it('should return true for requisition status IN_APPROVAL', function() {
+            this.requisition.status = this.REQUISITION_STATUS.IN_APPROVAL;
+
+            expect(this.requisition.$isAfterApprove()).toBe(true);
+        });
+
+        it('should return true requisition status APPROVED', function() {
+            this.requisition.status = this.REQUISITION_STATUS.APPROVED;
+
+            expect(this.requisition.$isAfterApprove()).toBe(true);
+        });
+
+        it('should return true requisition status RELEASED', function() {
+            this.requisition.status = this.REQUISITION_STATUS.RELEASED;
+
+            expect(this.requisition.$isAfterApprove()).toBe(true);
+        });
+    });
     // SIGLUS-REFACTOR: ends here
 
     describe('submit', function() {

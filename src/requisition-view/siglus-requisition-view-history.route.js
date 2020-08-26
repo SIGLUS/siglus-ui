@@ -35,9 +35,8 @@
             resolve: {
                 requisition: function($stateParams, requisitionService) {
                     return requisitionService.get($stateParams.rnr).then(function(requisition) {
-                        var copyRequisition = angular.copy(requisition);
-                        copyRequisition.$isEditable = false;
-                        return copyRequisition;
+                        requisition.$isEditable = false;
+                        return requisition;
                     });
                 },
                 program: function(programService, requisition) {
