@@ -29,17 +29,16 @@
         .controller('SiglusHistoryViewTabController', Controller);
 
     Controller.$inject = ['requisition', 'columns', 'lineItems', 'program', 'processingPeriod', 'facility',
-        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'siglusGoBackService', 'TEMPLATE_COLUMNS'];
+        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS'];
 
     function Controller(requisition, columns, lineItems, program, processingPeriod, facility, requisitionUrlFactory,
-                        $window, accessTokenFactory, siglusGoBackService, TEMPLATE_COLUMNS) {
+                        $window, accessTokenFactory, TEMPLATE_COLUMNS) {
         var vm = this;
         vm.program = undefined;
         vm.processingPeriod = undefined;
         vm.facility = undefined;
         vm.$onInit = onInit;
         vm.print = print;
-        vm.backToPrevious = siglusGoBackService.goBack;
 
         /**
          * @ngdoc property
