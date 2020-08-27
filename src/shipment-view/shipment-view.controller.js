@@ -37,7 +37,7 @@
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'siglusGoBackService'
+        'ShipmentViewLineItemGroup'
         // #287: ends here
     ];
 
@@ -46,7 +46,7 @@
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-                                    ShipmentLineItem, ShipmentViewLineItemGroup, siglusGoBackService) {
+                                    ShipmentLineItem, ShipmentViewLineItemGroup) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -62,7 +62,6 @@
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
         vm.canSkip = canSkip;
-        vm.backToPrevious = siglusGoBackService.goBack;
         // #287: ends here
 
         /**

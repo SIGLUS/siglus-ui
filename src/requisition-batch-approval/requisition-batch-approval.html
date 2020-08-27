@@ -79,7 +79,7 @@
     </form>
     <div class="openlmis-toolbar button-group" ng-if="vm.requisitions.length">
         <!-- #462: add back to previous button -->
-        <button ng-click="vm.backToPrevious()">{{'requisitionView.back.label' | message}}</button>
+        <siglus-go-back />
         <!-- #462: ends here -->
         <button ng-disabled="vm.isOffline()" ng-click="vm.sync()">{{'requisitionBatchApproval.sync' | message}}</button>
         <div class="button-group primary">

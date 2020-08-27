@@ -17,34 +17,12 @@
 
     'use strict';
 
-    /**
-     * @ngdoc service
-     * @name siglusGoBackService
-     *
-     * @description
-     * Responsible for going back to previous page..
-     */
     angular
         .module('siglus-go-back')
-        .service('siglusGoBackService', service);
+        .component('siglusGoBack', {
+            controller: 'SiglusGoBackController',
+            controllerAs: 'vm',
+            templateUrl: 'siglus-go-back/siglus-go-back.html'
+        });
 
-    service.$inject = ['$window', '$state'];
-
-    function service($window, $state) {
-
-        return {
-            goBack: goBack
-        };
-
-        function goBack() {
-            var prevPage = $window.location.href;
-            $window.history.back();
-            $window.onpopstate = function() {
-                if ($window.location.href === prevPage) {
-                    $state.go('openlmis.home');
-                }
-                $window.onpopstate = null;
-            };
-        }
-    }
 })();
