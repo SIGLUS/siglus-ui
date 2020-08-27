@@ -13,26 +13,29 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('siglusGoBackService', function() {
+describe('SiglusGoBackController', function() {
 
-    var siglusGoBackService, $window;
+    var vm, $controller, $window;
 
     beforeEach(function() {
-
         module('siglus-go-back');
 
         inject(function($injector) {
-            siglusGoBackService = $injector.get('siglusGoBackService');
+            $controller = $injector.get('$controller');
             $window = $injector.get('$window');
         });
 
+        vm = $controller('SiglusGoBackController');
         spyOn($window.history, 'back');
     });
 
-    it('should call the back method of the history object and set the listener', function() {
-        siglusGoBackService.goBack();
+    describe('backToPrevious', function() {
 
-        expect($window.history.back).toHaveBeenCalled();
-        expect($window.onpopstate).not.toBeUndefined();
+        it('should call the back method of the history object and set the listener', function() {
+            vm.backToPrevious();
+
+            expect($window.history.back).toHaveBeenCalled();
+            expect($window.onpopstate).not.toBeUndefined();
+        });
     });
 });

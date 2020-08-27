@@ -35,7 +35,7 @@
         'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize',
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
-        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'siglusGoBackService'
+        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       siglusSignatureModalService, siglusGoBackService) {
+                                       siglusSignatureModalService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -227,7 +227,6 @@
         vm.authorizeRnr = authorizeRnr;
         // SIGLUS-REFACTOR: starts here
         vm.submitAndAuthorizeRnr = submitAndAuthorizeRnr;
-        vm.backToPrevious = siglusGoBackService.goBack;
         // SIGLUS-REFACTOR: ends here
         vm.removeRnr = removeRnr;
         vm.approveRnr = approveRnr;

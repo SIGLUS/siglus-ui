@@ -101,12 +101,6 @@ describe('SiglusHistoryViewTabController', function() {
             expect(this.vm.columns).toEqual([]);
         });
 
-        it('should bind backToPrevious property to vm', function() {
-            this.initController();
-
-            expect(this.vm.backToPrevious).not.toBeUndefined();
-        });
-
         it('should set requisitionTypeClass to regular', function() {
             this.initController();
 

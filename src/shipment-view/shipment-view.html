@@ -107,7 +107,7 @@
 </form>
 <div ng-show="vm.shipment.isEditable()" class="openlmis-toolbar">
     <!-- #462: add back to previous button -->
-    <button ng-click="vm.backToPrevious()">{{'shipmentView.back.label' | message}}</button>
+    <siglus-go-back />
     <!-- #462: ends here -->
     <div class="button-group primary">
         <button ng-show="vm.shipment.canBeConfirmed()" form="shipmentForm" class="primary">{{'shipmentView.confirmShipment' | message}}</button>
@@ -117,7 +117,7 @@
     <button ng-show="vm.shipment.isEditable()" ng-click="vm.printShipment()">{{'shipmentView.generatePickPackList' | message}}</button>
 </div>
 <!-- #462: add back to previous button -->
-<div class="openlmis-toolbar button-group" ng-show="!vm.shipment.isEditable()">
-    <button ng-click="vm.backToPrevious()">{{'shipmentView.back.label' | message}}</button>
+<div class="openlmis-toolbar button-group" ng-if="!vm.shipment.isEditable()">
+    <siglus-go-back />
 </div>
 <!-- #462: ends here -->
