@@ -44,6 +44,18 @@ describe('RequisitionColumn', function() {
             status: REQUISITION_STATUS.SUBMITTED,
             $isAfterAuthorize: function() {
                 return false;
+            },
+            $isAuthorized: function() {
+                return false;
+            },
+            $isInApproval: function() {
+                return false;
+            },
+            $isApproved: function() {
+                return false;
+            },
+            $isReleased: function() {
+                return false;
             }
         };
     });
@@ -109,92 +121,137 @@ describe('RequisitionColumn', function() {
         {
             name: 'should hide Approved Quantity column if status is before authorize',
             column: 'approvedQuantity',
-            afterAuthorize: false,
-            isExternalApproval: true,
+            isAuthorized: false,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
+            isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Remarks column if status is before authorize',
             column: 'remarks',
-            afterAuthorize: false,
-            isExternalApproval: true,
+            isAuthorized: false,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
+            isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Suggested Quantity column if status is before authorize',
             column: 'approvedQuantity',
-            afterAuthorize: false,
-            isExternalApproval: true,
+            isAuthorized: false,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
+            isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Skip column if status is before authorize',
             column: 'remarks',
-            afterAuthorize: false,
-            isExternalApproval: true,
+            isAuthorized: false,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
+            isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Approved Quantity column if it is internal approval',
             column: 'approvedQuantity',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Remarks column if it is internal approval',
             column: 'remarks',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Suggested Quantity column if it is internal approval',
             column: 'approvedQuantity',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: false,
             result: false
         },
         {
             name: 'should hide Skip column if it is internal approval',
             column: 'remarks',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: false,
             result: false
         },
         {
             name: 'should show Approved Quantity column if status is after authorize and external approval',
             column: 'approvedQuantity',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: true,
             result: true
         },
         {
             name: 'should show Remarks column if status is after authorize and external approval',
             column: 'remarks',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: true,
             result: true
         },
         {
             name: 'should show Suggested Quantity column if status is after authorize and external approval',
             column: 'approvedQuantity',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: true,
             result: true
         },
         {
             name: 'should show Skip column if status is after authorize and external approval',
             column: 'remarks',
-            afterAuthorize: true,
+            isAuthorized: true,
+            isInApproval: false,
+            isApproved: false,
+            isReleased: false,
             isExternalApproval: true,
             result: true
         }
     ].forEach(function(testCase) {
         it(testCase.name, function() {
             columnDef.name = testCase.column;
-            requisition.$isAfterAuthorize = function() {
-                return testCase.afterAuthorize;
+            requisition.$isAuthorized = function() {
+                return testCase.isAuthorized;
+            };
+            requisition.$isInApproval = function() {
+                return testCase.isInApproval;
+            };
+            requisition.$isApproved = function() {
+                return testCase.isApproved;
+            };
+            requisition.$isReleased = function() {
+                return testCase.isReleased;
             };
             requisition.isExternalApproval = testCase.isExternalApproval;
             // SIGLUS-REFACTOR: ends here
@@ -243,7 +300,7 @@ describe('RequisitionColumn', function() {
         });
 
         it('should show if requisition is in approval stage and showPackToShipInApprovalPage is selected', function() {
-            spyOn(requisition, '$isAfterAuthorize').andReturn(true);
+            spyOn(requisition, '$isAuthorized').andReturn(true);
             // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
             // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
             requisition.isExternalApproval = true;
@@ -257,7 +314,7 @@ describe('RequisitionColumn', function() {
         // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
         it('should hide if requisition is in internal approval stage and showPackToShipInApprovalPage is selected',
             function() {
-                spyOn(requisition, '$isAfterAuthorize').andReturn(true);
+                spyOn(requisition, '$isAuthorized').andReturn(true);
                 requisition.isExternalApproval = false;
                 var packToShipColumn =  new RequisitionColumn(columnDef, requisition);
 
