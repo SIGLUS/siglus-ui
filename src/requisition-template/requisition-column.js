@@ -211,13 +211,13 @@
         function siglusDisplayColumn(column, requisition) {
             if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
                 typeof column.option !== 'undefined') {
-                return (column.option.optionName === 'showPackToShipInApprovalPage' && requisition.$isAfterAuthorize()
-                    && requisition.isExternalApproval) || column.option.optionName === 'showPackToShipInAllPages';
+                return (column.option.optionName === 'showPackToShipInApprovalPage' &&
+                  showInExternalApprove(requisition)) || column.option.optionName === 'showPackToShipInAllPages';
             }
             return column.isDisplayed && (
                 [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS,
                     TEMPLATE_COLUMNS.SUGGESTED_QUANTITY, TEMPLATE_COLUMNS.SKIPPED].indexOf(column.name) === -1 ||
-                (requisition.$isAfterAuthorize() && requisition.isExternalApproval));
+              showInExternalApprove(requisition));
         }
 
         function enhanceDisplayColumn(column, requisition) {
@@ -251,6 +251,15 @@
                     facilityId: requisition.facility.id
                 }
             );
+        }
+
+        function showInExternalApprove(requisition) {
+            if (requisition.$isAuthorized() || requisition.$isInApproval()) {
+                return requisition.isExternalApproval;
+            } else if (requisition.$isApproved() || requisition.$isReleased()) {
+                return true;
+            }
+            return false;
         }
         // SIGLUS-REFACTOR: ends here
 

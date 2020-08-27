@@ -36,7 +36,7 @@ describe('RequisitionTemplate', function() {
         // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
         // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
         requisition = new RequisitionDataBuilder().buildJson();
-        requisition.$isAfterAuthorize = function() {
+        requisition.$isAuthorized = function() {
             return true;
         };
         requisition.isExternalApproval = true;
