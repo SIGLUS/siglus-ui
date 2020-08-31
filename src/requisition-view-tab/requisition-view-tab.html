@@ -26,7 +26,7 @@
             </ul>
         </div>
         <button class="add" tabindex="-1"
-                ng-if="vm.requisition.template.extension.enableProduct"
+                ng-if="vm.requisition.template.extension.enableProduct && vm.userCanEdit"
                 ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
                 ng-click="vm.siglusAddProducts()"
         >
