@@ -136,7 +136,9 @@
                                     lineItem.isFromInput = true;
                                     $scope.hideAllSelect();
                                     if (selectedItem) {
-                                        lineItem = _.extend(lineItem, selectedItem);
+                                        lineItem = _.extend(lineItem, selectedItem, {
+                                            occurredDate: lineItem.occurredDate
+                                        });
                                         lineItem.$previewSOH = selectedItem.stockOnHand;
                                     }
                                 }
