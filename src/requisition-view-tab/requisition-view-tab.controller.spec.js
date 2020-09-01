@@ -502,6 +502,8 @@ describe('ViewTabController', function() {
                 this.columns[0].$display = true;
                 this.requisition.template.hasSkipColumn.andReturn(true);
                 this.requisition.template.getColumn.andReturn(this.columns[0]);
+                this.canApproveAndReject = true;
+                this.requisition.isExternalApproval = true;
 
                 this.initController();
 
@@ -580,6 +582,44 @@ describe('ViewTabController', function() {
         });
 
     });
+
+    // #537: hide add products button in view requisition page
+    describe('showAddProducts', function() {
+
+        it('should be hidden', function() {
+            this.canSubmit = false;
+            this.canAuthorize = false;
+            this.canApproveAndReject = false;
+            this.initController();
+
+            expect(this.vm.showAddProducts()).toBe(false);
+        });
+
+        it('should be shown if the requisition can be submitted', function() {
+            this.canSubmit = true;
+
+            this.initController();
+
+            expect(this.vm.showAddProducts()).toBe(true);
+        });
+
+        it('should be shown if the requisition can be authorized', function() {
+            this.canAuthorize = true;
+
+            this.initController();
+
+            expect(this.vm.showAddProducts()).toBe(true);
+        });
+
+        it('should be shown if the requisition can be approved', function() {
+            this.canApproveAndReject = true;
+
+            this.initController();
+
+            expect(this.vm.showAddProducts()).toBe(true);
+        });
+    });
+    // #537: ends here
 
     describe('deleteLineItem', function() {
 
