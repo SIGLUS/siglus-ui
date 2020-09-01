@@ -60,6 +60,7 @@
         vm.cacheRequisition = cacheRequisition;
         // #352: can add skipped products
         vm.siglusAddProducts = siglusAddProducts;
+        vm.showAddProducts = showAddProducts;
         // #352: ends here
         // #340: quickly fill the tables in R&R during creating an R&R
         vm.showQuicklyFill = showQuicklyFill;
@@ -459,7 +460,12 @@
         // #286 high level approver can skip some products in requisition
         function showSkipControls() {
             return requisition.template.hasSkipColumn()
-                && requisition.template.getColumn(TEMPLATE_COLUMNS.SKIPPED).$display;
+                && requisition.template.getColumn(TEMPLATE_COLUMNS.SKIPPED).$display
+                && canApproveAndReject && requisition.isExternalApproval;
+        }
+
+        function showAddProducts() {
+            return canAuthorize || canSubmit || canApproveAndReject;
         }
         // #286 ends here
 
