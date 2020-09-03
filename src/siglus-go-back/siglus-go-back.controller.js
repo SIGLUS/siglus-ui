@@ -28,22 +28,15 @@
         .module('siglus-go-back')
         .controller('SiglusGoBackController', controller);
 
-    controller.$inject = ['$window', '$state'];
+    controller.$inject = ['stateTrackerService'];
 
-    function controller($window, $state) {
+    function controller(stateTrackerService) {
         var vm = this;
 
         vm.backToPrevious = goBack;
 
         function goBack() {
-            var prevPage = $window.location.href;
-            $window.history.back();
-            $window.onpopstate = function() {
-                if ($window.location.href === prevPage) {
-                    $state.go('openlmis.home');
-                }
-                $window.onpopstate = null;
-            };
+            stateTrackerService.goToPreviousState('openlmis.home');
         }
     }
 })();
