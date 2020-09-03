@@ -38,12 +38,14 @@ describe('ViewTabController', function() {
             this.requisitionService = $injector.get('requisitionService');
             this.loadingModalService = $injector.get('loadingModalService');
             this.notificationService = $injector.get('notificationService');
+            this.offlineService = $injector.get('offlineService');
             this.$scope = this.$rootScope.$new();
             // SIGLUS-REFACTOR: ends here
             // #409: populate value when requisition is rejected
             this.REQUISITION_STATUS = $injector.get('REQUISITION_STATUS');
             spyOn(this.$scope, '$broadcast');
             spyOn(this.notificationService, 'success');
+            spyOn(this.offlineService, 'isOffline');
             // #409: ends here
         });
 
@@ -583,7 +585,7 @@ describe('ViewTabController', function() {
 
     });
 
-    // #537: hide add products button in view requisition page
+    // SIGLUS-REFACTOR: starts here
     describe('showAddProducts', function() {
 
         it('should be hidden', function() {
@@ -619,7 +621,17 @@ describe('ViewTabController', function() {
             expect(this.vm.showAddProducts()).toBe(true);
         });
     });
-    // #537: ends here
+
+    describe('isOffline', function() {
+
+        it('should call the isOffline of the offlineService', function() {
+            this.initController();
+            this.vm.isOffline();
+
+            expect(this.offlineService.isOffline).toHaveBeenCalled();
+        });
+    });
+    // SIGLUS-REFACTOR: ends here
 
     describe('deleteLineItem', function() {
 
