@@ -35,7 +35,7 @@
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
-        'siglusArchivedProductService', 'program', '$scope', 'notificationService'
+        'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +44,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
-                               program, $scope, notificationService) {
+                               program, $scope, notificationService, offlineService) {
 
         var vm = this;
 
@@ -58,14 +58,13 @@
         vm.getDescriptionForColumn = getDescriptionForColumn;
         vm.skippedFullSupplyProductCountMessage = skippedFullSupplyProductCountMessage;
         vm.cacheRequisition = cacheRequisition;
-        // #352: can add skipped products
+        // SIGLUS-REFACTOR: starts here
         vm.siglusAddProducts = siglusAddProducts;
         vm.showAddProducts = showAddProducts;
-        // #352: ends here
-        // #340: quickly fill the tables in R&R during creating an R&R
         vm.showQuicklyFill = showQuicklyFill;
         vm.quicklyFillHandler = quicklyFillHandler;
-        // #340: ends here
+        vm.isOffline = offlineService.isOffline;
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
