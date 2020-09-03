@@ -27,7 +27,7 @@
         </div>
         <button class="add" tabindex="-1"
                 ng-if="vm.requisition.template.extension.enableProduct && vm.showAddProducts()"
-                ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10"
+                ng-disabled="vm.requisition.emergency && vm.requisition.requisitionLineItems.length >= 10 || vm.isOffline()"
                 ng-click="vm.siglusAddProducts()"
         >
             {{'requisitionViewTab.addProduct' | message}}
