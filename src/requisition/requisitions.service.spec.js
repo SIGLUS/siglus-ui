@@ -79,6 +79,7 @@ describe('requisitionService', function() {
             this.periodService = $injector.get('periodService');
             // #105: activate archived product
             this.siglusArchivedProductService = $injector.get('siglusArchivedProductService');
+            this.siglusArchivedProductCacheService = $injector.get('siglusArchivedProductCacheService');
             // #105: ends here
         });
 
@@ -243,7 +244,9 @@ describe('requisitionService', function() {
             .andReturn(this.$q.when(this.approvedProducts));
         spyOn(this.periodService, 'get').andReturn(this.requisition.processingPeriod);
         // #105: activate archived product
-        spyOn(this.siglusArchivedProductService, 'getArchivedOrderables').andReturn([]);
+        spyOn(this.siglusArchivedProductService, 'getArchivedOrderables').andReturn(this.$q.resolve([]));
+        spyOn(this.siglusArchivedProductCacheService, 'cacheArchivedOrderables').andReturn([]);
+        spyOn(this.siglusArchivedProductCacheService, 'getArchivedOrderables').andReturn([]);
         // #105: ends here
 
         this.OrderableResource.prototype.getByVersionIdentities.andCallFake(function(identities) {
@@ -270,6 +273,7 @@ describe('requisitionService', function() {
             getStatusMessagesUrl = '/api/requisitions/' + this.requisition.id + '/statusMessages';
             // SIGLUS-REFACTOR: starts here
             getRequisitionUrl = '/api/siglusapi/requisitions/' + this.requisition.id;
+            this.offlineService.isOffline.andReturn(false);
             // SIGLUS-REFACTOR: ends here
         });
 
