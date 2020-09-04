@@ -29,10 +29,10 @@
         .controller('SiglusHistoryViewTabController', Controller);
 
     Controller.$inject = ['requisition', 'columns', 'lineItems', 'program', 'processingPeriod', 'facility',
-        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS'];
+        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS', 'messageService'];
 
     function Controller(requisition, columns, lineItems, program, processingPeriod, facility, requisitionUrlFactory,
-                        $window, accessTokenFactory, TEMPLATE_COLUMNS) {
+                        $window, accessTokenFactory, TEMPLATE_COLUMNS, messageService) {
         var vm = this;
         vm.program = undefined;
         vm.processingPeriod = undefined;
@@ -83,6 +83,8 @@
          * Holds the list of columns visible on this screen.
          */
         vm.columns = undefined;
+
+        vm.getDescriptionForColumn = getDescriptionForColumn;
 
         function onInit() {
             vm.program = program;
@@ -139,6 +141,16 @@
             var url = requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
             $window.open(accessTokenFactory.addAccessToken(url), '_blank');
         }
+
+        function getDescriptionForColumn(column) {
+            if (requisition.template.populateStockOnHandFromStockCards &&
+                column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS) {
+                return column.definition + ' ' +
+                    messageService.get('requisitionViewTab.totalLossesAndAdjustment.disabled');
+            }
+            return column.definition;
+        }
+
     }
 
 })();

@@ -286,7 +286,6 @@ describe('ProductGridCell', function() {
         it('should change disabled state if lineItem changes its skipability and user has right to edit', function() {
             // #107: remove unnecessary code
             // this.scope.userCanEdit = true;
-            this.scope.requisition.isExternalApproval = true;
             this.scope.requisition.$isEditable = true;
             // #107: ends here
             this.scope.lineItem.canBeSkipped.andReturn(true);
