@@ -143,8 +143,7 @@
 
             // #107: remove unnecessary code
             function canSkip() {
-                return scope.requisition.isExternalApproval && scope.requisition.$isEditable &&
-                    lineItem.canBeSkipped(scope.requisition);
+                return scope.requisition.$isEditable && lineItem.canBeSkipped(scope.requisition);
             }
             // #107: ends here
 
