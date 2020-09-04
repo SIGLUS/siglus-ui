@@ -32,14 +32,15 @@
         '$q', '$resource', 'requisitionUrlFactory', 'Requisition', 'dateUtils', 'localStorageFactory', 'offlineService',
         '$filter', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService', 'siglusArchivedProductService'
+        'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService', 'siglusArchivedProductService',
+        'siglusArchivedProductCacheService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($q, $resource, requisitionUrlFactory, Requisition, dateUtils, localStorageFactory, offlineService,
                      $filter, requisitionCacheService,
                      OrderableResource, FacilityTypeApprovedProductResource, periodService,
-                     siglusArchivedProductService) {
+                     siglusArchivedProductService, siglusArchivedProductCacheService) {
 
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
@@ -567,7 +568,15 @@
             if (requisition.isExternalApproval) {
                 return [];
             }
-            return siglusArchivedProductService.getArchivedOrderables(requisition.facility.id);
+            if (offlineService.isOffline()) {
+                return siglusArchivedProductCacheService.getArchivedOrderables(requisition.facility.id);
+            }
+            return siglusArchivedProductService.getArchivedOrderables(requisition.facility.id)
+                .then(function(archivedOrderables) {
+                    siglusArchivedProductCacheService
+                        .cacheArchivedOrderables(requisition.facility.id, archivedOrderables);
+                    return $q.resolve(archivedOrderables);
+                });
         }
 
         function getResourcesFromLineItems(requisition, isOrderable) {
