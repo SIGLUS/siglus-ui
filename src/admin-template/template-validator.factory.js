@@ -127,8 +127,7 @@
                 validateUserInput(column) ||
                 validateColumn(column, template) ||
                 validateTag(column, template) ||
-                validateSelectedStockCard(column, template) ||
-                validateSuggestedQuantity(column, template);
+                validateSelectedStockCard(column, template);
 
             return error;
         }
@@ -156,18 +155,6 @@
             }
         }
         // #398: ends here
-
-        // #147: starts here
-        function validateSuggestedQuantity(column, template) {
-            if (column.name === TEMPLATE_COLUMNS.SUGGESTED_QUANTITY) {
-                var isApprovedQuantityDisplayed = template.columnsMap[TEMPLATE_COLUMNS.APPROVED_QUANTITY].isDisplayed;
-                var isSuggestedQuantityDisplayed = template.columnsMap[TEMPLATE_COLUMNS.SUGGESTED_QUANTITY].isDisplayed;
-                if (isSuggestedQuantityDisplayed && !isApprovedQuantityDisplayed) {
-                    return messageService.get('adminProgramTemplate.template.invalidSuggestedQuantity');
-                }
-            }
-        }
-        // #147: ends here
 
         function validateTag(column, template) {
             if (isEmpty(column.tag) &&

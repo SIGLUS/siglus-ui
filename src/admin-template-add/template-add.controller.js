@@ -228,7 +228,8 @@
                     TEMPLATE_COLUMNS.UNIT_UNIT_OF_ISSUE,
                     TEMPLATE_COLUMNS.ADDITIONAL_QUANTITY_REQUIRED,
                     TEMPLATE_COLUMNS.TOTAL_COST,
-                    TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS
+                    TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS,
+                    TEMPLATE_COLUMNS.SUGGESTED_QUANTITY
                 ];
                 var isDisplayed = nonDisplayedColumns.indexOf(column.name) === -1;
 

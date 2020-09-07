@@ -139,16 +139,6 @@ describe('RequisitionColumn', function() {
             result: false
         },
         {
-            name: 'should hide Suggested Quantity column if status is before authorize',
-            column: 'approvedQuantity',
-            isAuthorized: false,
-            isInApproval: false,
-            isApproved: false,
-            isReleased: false,
-            isExternalApproval: false,
-            result: false
-        },
-        {
             name: 'should hide Skip column if status is before authorize',
             column: 'remarks',
             isAuthorized: false,
@@ -179,16 +169,6 @@ describe('RequisitionColumn', function() {
             result: false
         },
         {
-            name: 'should hide Suggested Quantity column if it is internal approval',
-            column: 'approvedQuantity',
-            isAuthorized: true,
-            isInApproval: false,
-            isApproved: false,
-            isReleased: false,
-            isExternalApproval: false,
-            result: false
-        },
-        {
             name: 'should hide Skip column if it is internal approval',
             column: 'remarks',
             isAuthorized: true,
@@ -211,16 +191,6 @@ describe('RequisitionColumn', function() {
         {
             name: 'should show Remarks column if status is after authorize and external approval',
             column: 'remarks',
-            isAuthorized: true,
-            isInApproval: false,
-            isApproved: false,
-            isReleased: false,
-            isExternalApproval: true,
-            result: true
-        },
-        {
-            name: 'should show Suggested Quantity column if status is after authorize and external approval',
-            column: 'approvedQuantity',
             isAuthorized: true,
             isInApproval: false,
             isApproved: false,

@@ -57,7 +57,7 @@
                             <input disable-drag positive-integer id="numberOfPeriods" ng-model="vm.template.numberOfPeriodsToAverage" class="form-control"/>
                         </div>
                         <div ng-if="column.columnDefinition.options.length > 0">
-                            <div ng-if="!vm.canChangeSource(column) && !vm.isPackToShip(column)">{{column.option.optionLabel | message}}</div>
+                            <div ng-if="!vm.canChangeSource(column) && !vm.isPackToShip(column) && !vm.isSuggestedQuantity(column)">{{column.option.optionLabel | message}}</div>
                             <div ng-if="vm.canChangeSource(column) || vm.isPackToShip(column)">
                                 <select ng-model="column.option" ng-options="option as (option.optionLabel | message) for option in column.columnDefinition.options" ng-required="column.isDisplayed"></select>
                             </div>
@@ -66,6 +66,11 @@
                             <label for="tag">{{'adminProgramTemplate.tag' | message}}</label>
                             <select id="tag" ng-model="column.tag" ng-options="tag for tag in vm.availableTags[column.name] | orderBy:'toString()'"
                                     ng-required="vm.template.populateStockOnHandFromStockCards" ng-change="vm.refreshAvailableTags()"></select>
+                        </div>
+                        <div ng-if="vm.isSuggestedQuantity(column)">
+                            <label for="suggestedQuantity">{{'adminProgramTemplate.suggestedQuantityCalculationBasedOn' | message}}</label>
+                            <select id="suggestedQuantity" ng-model="column.option" ng-options="option as (option.optionLabel | message) for option in column.columnDefinition.options"
+                                    ng-required="column.isDisplayed"></select>
                         </div>
                         <div class="error">{{vm.getColumnError(column, vm.template)}}</div>
                     </td>

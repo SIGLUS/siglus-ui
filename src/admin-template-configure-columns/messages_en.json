@@ -1,5 +1,5 @@
 {
   "adminProgramTemplate.shouldDisplayRequestedQuantity": "If ${calculatedOrderQuantity} is not displayed, then ${requestedQuantity} should be displayed",
   "adminProgramTemplate.template.invalidSections": "You must select at least one section",
-  "adminProgramTemplate.template.invalidSuggestedQuantity": "This column should be displayed/not displayed together with \"Approved Quantity\""
+  "adminProgramTemplate.suggestedQuantityCalculationBasedOn": "Calculation based on:"
 }

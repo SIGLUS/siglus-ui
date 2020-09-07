@@ -21,5 +21,7 @@
     "requisitionConstants.releasedWithoutOrder": "Released without order",
     "requisitionConstants.skipped" : "Skipped",
     "requisitionConstants.notDisplayTogetherWithApprovedQuantity": "This column should be not displayed together with Approved Quantity",
-    "requisitionConstants.displayTogetherWithApprovedQuantity" : "This column should be displayed together with Approved Quantity"
+    "requisitionConstants.displayTogetherWithApprovedQuantity" : "This column should be displayed together with Approved Quantity",
+    "requisitionConstants.cmm": "CMM (for quarterly requisition)",
+    "requisitionConstants.cp": "CP (for monthly requisition)"
 }
