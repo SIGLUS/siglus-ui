@@ -196,7 +196,7 @@
          * @param  {Object}            requisition requisition object from server
          * @return {RequisitionColumn}             column with additional info
          */
-        // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS, SUGGESTED_QUANTITY,
+        // SIGLUS-REFACTOR: Only external approval can see APPROVED_QUANTITY, REMARKS,
         // SKIPPED and PACKS_TO_SHIP if it's showPackToShipInApprovalPage
         // function displayColumn(column, requisition) {
         //     if (column.isDisplayed && TEMPLATE_COLUMNS.PACKS_TO_SHIP === column.name &&
@@ -216,7 +216,7 @@
             }
             return column.isDisplayed && (
                 [TEMPLATE_COLUMNS.APPROVED_QUANTITY, TEMPLATE_COLUMNS.REMARKS,
-                    TEMPLATE_COLUMNS.SUGGESTED_QUANTITY, TEMPLATE_COLUMNS.SKIPPED].indexOf(column.name) === -1 ||
+                    TEMPLATE_COLUMNS.SKIPPED].indexOf(column.name) === -1 ||
               showInExternalApprove(requisition));
         }
 
