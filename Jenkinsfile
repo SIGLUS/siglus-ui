@@ -12,7 +12,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'setting_env', variable: 'ENV_FILE')]) {
                     sh '''
-                        rm -rf .env node_modules build .tmp yarn.lock lcov.info
+                        rm -rf .env node_modules build .tmp lcov.info
                         cp $ENV_FILE .env
                         if [ "$GIT_BRANCH" != "master" ]; then
                             sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
