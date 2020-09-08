@@ -291,7 +291,7 @@
                 id = this.id;
             return handlePromise(resource.save({
                 id: this.id
-            }, this).$promise, function(saved) {
+            }, angular.copy(this)).$promise, function(saved) {
                 saveToStorage(saved, availableOffline);
             }, function(saved) {
                 if (saved.status === 409 || saved.status === 403) {
@@ -934,13 +934,16 @@
             }
         }
 
+        // #517: admin can set details of suggested quantity
         function transformLineItem(lineItem, columns) {
             angular.forEach(columns, function(column) {
-                if (!column.$display || column.source === COLUMN_SOURCES.CALCULATED) {
+                if (!column.$display || (column.source === COLUMN_SOURCES.CALCULATED
+                    && column.name !== TEMPLATE_COLUMNS.SUGGESTED_QUANTITY)) {
                     lineItem[column.name] = null;
                 }
             });
         }
+        // #517: ends here
 
         function hasRight(right, requisition) {
             return authorizationService.hasRight(right, {

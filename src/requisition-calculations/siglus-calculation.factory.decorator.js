@@ -40,11 +40,13 @@
         var A = TEMPLATE_COLUMNS.BEGINNING_BALANCE,
             B = TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
             C = TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
-            E = TEMPLATE_COLUMNS.STOCK_ON_HAND;
+            E = TEMPLATE_COLUMNS.STOCK_ON_HAND,
+            SQ = TEMPLATE_COLUMNS.SUGGESTED_QUANTITY;
 
         $delegate.theoreticalQuantityToRequest = calculateTheoreticalQuantityToRequest;
         $delegate.theoreticalStockAtEndofPeriod = calculateTheoreticalStockAtEndOfPeriod;
         $delegate.difference = calculateDifference;
+        $delegate.suggestedQuantity = calculateSuggestedQuantity;
 
         return $delegate;
 
@@ -93,6 +95,23 @@
          */
         function calculateDifference(lineItem) {
             return getItem(lineItem, E) - (getItem(lineItem, A) + getItem(lineItem, B) - getItem(lineItem, C));
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf requisition-calculations.calculationFactory
+         * @name calculateSuggestedQuantity
+         *
+         * @description
+         * Calculates the value of the suggested quantity.
+         * The suggested quantity is calculated by the back end,
+         * but it's source is calculated, so return it directly.
+         *
+         * @param  {Object}  lineItem     the line item object
+         * @return {Number}               the suggested quantity value
+         */
+        function calculateSuggestedQuantity(lineItem) {
+            return getItem(lineItem, SQ);
         }
 
         function getItem(lineItem, name) {
