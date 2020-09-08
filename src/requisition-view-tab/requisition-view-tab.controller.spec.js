@@ -127,6 +127,7 @@ describe('ViewTabController', function() {
         this.canSubmit = false;
         this.canAuthorize = false;
         // SIGLUS-REFACTOR: starts here
+        this.canSync = false;
         this.hasAuthorizeRight = false;
         // SIGLUS-REFACTOR: ends here
         this.canApproveAndReject = true;
@@ -589,36 +590,9 @@ describe('ViewTabController', function() {
     describe('showAddProducts', function() {
 
         it('should be hidden', function() {
-            this.canSubmit = false;
-            this.canAuthorize = false;
-            this.canApproveAndReject = false;
             this.initController();
 
-            expect(this.vm.showAddProducts()).toBe(false);
-        });
-
-        it('should be shown if the requisition can be submitted', function() {
-            this.canSubmit = true;
-
-            this.initController();
-
-            expect(this.vm.showAddProducts()).toBe(true);
-        });
-
-        it('should be shown if the requisition can be authorized', function() {
-            this.canAuthorize = true;
-
-            this.initController();
-
-            expect(this.vm.showAddProducts()).toBe(true);
-        });
-
-        it('should be shown if the requisition can be approved', function() {
-            this.canApproveAndReject = true;
-
-            this.initController();
-
-            expect(this.vm.showAddProducts()).toBe(true);
+            expect(this.vm.showAddProducts).toBe(false);
         });
     });
 
@@ -1114,7 +1088,8 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: ends here
             // #375: create requisition with test consumption section
             $scope: this.$scope,
-            program: this.program
+            program: this.program,
+            canSync: this.canSync
             // #375: ends here
         });
         this.vm.$onInit();
