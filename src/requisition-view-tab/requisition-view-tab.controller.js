@@ -35,7 +35,7 @@
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
-        'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService'
+        'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +44,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
-                               program, $scope, notificationService, offlineService) {
+                               program, $scope, notificationService, offlineService, canSync) {
 
         var vm = this;
 
@@ -60,7 +60,7 @@
         vm.cacheRequisition = cacheRequisition;
         // SIGLUS-REFACTOR: starts here
         vm.siglusAddProducts = siglusAddProducts;
-        vm.showAddProducts = showAddProducts;
+        vm.showAddProducts = canSync;
         vm.showQuicklyFill = showQuicklyFill;
         vm.quicklyFillHandler = quicklyFillHandler;
         vm.isOffline = offlineService.isOffline;
@@ -461,10 +461,6 @@
             return requisition.template.hasSkipColumn()
                 && requisition.template.getColumn(TEMPLATE_COLUMNS.SKIPPED).$display
                 && canApproveAndReject && requisition.isExternalApproval;
-        }
-
-        function showAddProducts() {
-            return canAuthorize || canSubmit || canApproveAndReject;
         }
         // #286 ends here
 
