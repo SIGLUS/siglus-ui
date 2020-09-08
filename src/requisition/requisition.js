@@ -291,7 +291,7 @@
                 id = this.id;
             return handlePromise(resource.save({
                 id: this.id
-            }, angular.copy(this)).$promise, function(saved) {
+            }, this).$promise, function(saved) {
                 saveToStorage(saved, availableOffline);
             }, function(saved) {
                 if (saved.status === 409 || saved.status === 403) {
