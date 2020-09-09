@@ -12,7 +12,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'setting_env', variable: 'ENV_FILE')]) {
                     sh '''
-                        rm -f .env
+                        rm -rf .env node_modules build .tmp lcov.info
                         cp $ENV_FILE .env
                         if [ "$GIT_BRANCH" != "master" ]; then
                             sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
@@ -20,7 +20,6 @@ pipeline {
                         docker-compose pull
                         docker-compose down --volumes
                         docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
-                        docker-compose build image
                         docker-compose down --volumes
                     '''
                 }
@@ -53,7 +52,6 @@ pipeline {
                         cp -r .tmp/javascript/src/ .
                         sed 's|SF:/app/.tmp/javascript/|SF:|g' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov.info > lcov.info
                         /ebs2/sonar/sonar-scanner-4.3.0.2102-linux/bin/sonar-scanner -Dsonar.projectKey=siglus-ui -Dsonar.sources=. -Dsonar.host.url=http://13.234.176.65:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.javascript.lcov.reportPaths=lcov.info
-                        rm -rf node_modules build .tmp yarn.lock lcov.info
                     '''
                 }
             }
@@ -65,10 +63,11 @@ pipeline {
                         set +x
                         docker login -u $USER -p $PASS
                         IMAGE_TAG=${BRANCH_NAME}-$(git rev-parse HEAD)
-                        docker tag siglusdevops/siglus-ui:latest siglusdevops/siglus-ui:${IMAGE_TAG}
-                        docker push siglusdevops/siglus-ui:${IMAGE_TAG}
-                        docker push siglusdevops/siglus-ui:latest
-                        docker rmi siglusdevops/siglus-ui:${IMAGE_TAG} siglusdevops/siglus-ui:latest
+                        IMAGE_REPO=siglusdevops/siglusapi
+                        IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
+                        docker build -t ${IMAGE_NAME} .
+                        docker push ${IMAGE_NAME}
+                        docker rmi ${IMAGE_NAME}
                     '''
                 }
             }
@@ -91,10 +90,10 @@ pipeline {
         }
         stage('Notify to build reference-ui release') {
             when {
-                branch 'release-1.1'
+                branch 'release-1.2'
             }
             steps {
-                build job: '../siglus-reference-ui/release-1.1', wait: false
+                build job: '../siglus-reference-ui/release-1.2', wait: false
             }
         }
     }
