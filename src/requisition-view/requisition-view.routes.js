@@ -39,13 +39,23 @@
                 REQUISITION_RIGHTS.REQUISITION_APPROVE,
                 FULFILLMENT_RIGHTS.ORDERS_EDIT
             ],
+            // #539: reduce initial requisition response time
+            params: {
+                requisition: undefined
+            },
+            // #539: ends here
             resolve: {
                 user: function(currentUserService) {
                     return currentUserService.getUserInfo();
                 },
+                // #539: reduce initial requisition response time
                 requisition: function($stateParams, requisitionService) {
+                    if ($stateParams.requisition) {
+                        return angular.copy($stateParams.requisition);
+                    }
                     return requisitionService.get($stateParams.rnr);
                 },
+                // #539: ends here
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);
                 },
