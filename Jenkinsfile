@@ -1,3 +1,4 @@
+def IMAGE_TAG
 pipeline {
     agent any
     options {
@@ -67,8 +68,7 @@ pipeline {
                         IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
                         docker build -t ${IMAGE_NAME} .
                         docker push ${IMAGE_NAME}
-                        docker push ${IMAGE_REPO}:latest
-                        docker rmi ${IMAGE_NAME} ${IMAGE_REPO}:latest
+                        docker rmi ${IMAGE_NAME}
                     '''
                 }
             }
@@ -78,7 +78,7 @@ pipeline {
                         branch 'dev'
                     }
                     steps {
-                        build job: '../siglus-reference-ui/dev', wait: false
+                        build job: '../siglus-reference-ui/dev', wait: false,  parameters: [string(name: 'SIGLUS_UI_IMAGE_TAG', value: String.valueOf(${IMAGE_TAG}))]
                     }
                 }
         stage('Notify to build reference-ui master') {
@@ -86,7 +86,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                build job: '../siglus-reference-ui/master', wait: false
+                build job: '../siglus-reference-ui/master', wait: false,  parameters: [string(name: 'SIGLUS_UI_IMAGE_TAG', value: String.valueOf(${IMAGE_TAG}))]
             }
         }
         stage('Notify to build reference-ui release') {
@@ -94,7 +94,7 @@ pipeline {
                 branch 'release-1.2'
             }
             steps {
-                build job: '../siglus-reference-ui/release-1.2', wait: false
+                build job: '../siglus-reference-ui/release-1.2', wait: false,  parameters: [string(name: 'SIGLUS_UI_IMAGE_TAG', value: String.valueOf(${IMAGE_TAG}))]
             }
         }
     }
