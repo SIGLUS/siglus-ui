@@ -63,7 +63,7 @@ pipeline {
                         set +x
                         docker login -u $USER -p $PASS
                         IMAGE_TAG=${BRANCH_NAME}-$(git rev-parse HEAD)
-                        IMAGE_REPO=siglusdevops/siglusapi
+                        IMAGE_REPO=siglusdevops/siglus-ui
                         IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
                         docker build -t ${IMAGE_NAME} .
                         docker push ${IMAGE_NAME}
