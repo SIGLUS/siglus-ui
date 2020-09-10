@@ -65,7 +65,7 @@ pipeline {
                         set +x
                         docker login -u $USER -p $PASS
                         IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
-                        sh 'echo IMAGE_NAME: ${IMAGE_NAME}'
+                        echo IMAGE_NAME: ${IMAGE_NAME}
                         docker build -t ${IMAGE_NAME} .
                         docker push ${IMAGE_NAME}
                         docker rmi ${IMAGE_NAME}
