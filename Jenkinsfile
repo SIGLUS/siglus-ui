@@ -67,7 +67,8 @@ pipeline {
                         IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
                         docker build -t ${IMAGE_NAME} .
                         docker push ${IMAGE_NAME}
-                        docker rmi ${IMAGE_NAME}
+                        docker push ${IMAGE_REPO}:latest
+                        docker rmi ${IMAGE_NAME} ${IMAGE_REPO}:latest
                     '''
                 }
             }
