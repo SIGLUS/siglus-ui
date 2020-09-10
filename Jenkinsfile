@@ -1,3 +1,4 @@
+def IMAGE_TAG
 pipeline {
     agent any
     options {
@@ -6,6 +7,8 @@ pipeline {
     environment {
       PATH = "/usr/local/bin/:$PATH"
       COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${BRANCH_NAME}"
+      IMAGE_REPO = "siglusdevops/siglus-ui"
+      IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
     }
     stages {
         stage('Build') {
@@ -62,31 +65,30 @@ pipeline {
                     sh '''
                         set +x
                         docker login -u $USER -p $PASS
-                        IMAGE_TAG=${BRANCH_NAME}-$(git rev-parse HEAD)
-                        IMAGE_REPO=siglusdevops/siglus-ui
                         IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
                         docker build -t ${IMAGE_NAME} .
                         docker push ${IMAGE_NAME}
-                        docker push ${IMAGE_REPO}:latest
-                        docker rmi ${IMAGE_NAME} ${IMAGE_REPO}:latest
+                        docker rmi ${IMAGE_NAME}
                     '''
                 }
             }
         }
         stage('Notify to build reference-ui dev') {
-                    when {
-                        branch 'dev'
-                    }
-                    steps {
-                        build job: '../siglus-reference-ui/dev', wait: false
-                    }
-                }
+            when {
+                branch 'dev'
+            }
+            steps {
+                sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
+                build job: '../siglus-reference-ui/dev', wait: false,  parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
+            }
+        }
         stage('Notify to build reference-ui master') {
             when {
                 branch 'master'
             }
             steps {
-                build job: '../siglus-reference-ui/master', wait: false
+                sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
+                build job: '../siglus-reference-ui/master', wait: false,  parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
             }
         }
         stage('Notify to build reference-ui release') {
@@ -94,7 +96,8 @@ pipeline {
                 branch 'release-1.2'
             }
             steps {
-                build job: '../siglus-reference-ui/release-1.2', wait: false
+                sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
+                build job: '../siglus-reference-ui/release-1.2', wait: false,  parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
             }
         }
     }
