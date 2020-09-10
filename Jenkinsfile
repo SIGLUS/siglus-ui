@@ -8,6 +8,7 @@ pipeline {
       COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${BRANCH_NAME}"
       IMAGE_REPO = "siglusdevops/siglus-ui"
       IMAGE_TAG = "${BRANCH_NAME}-${GIT_COMMIT}"
+      IMAGE_NAME = "${IMAGE_REPO}:${IMAGE_TAG}"
     }
     stages {
         stage('Build') {
@@ -23,6 +24,7 @@ pipeline {
                         docker-compose down --volumes
                         docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
                         docker-compose down --volumes
+                        docker build -t ${IMAGE_NAME} .
                     '''
                 }
             }
@@ -64,10 +66,7 @@ pipeline {
                     sh '''
                         set +x
                         docker login -u $USER -p $PASS
-                        IMAGE_NAME=${IMAGE_REPO}:${IMAGE_TAG}
-                        docker build -t ${IMAGE_NAME} .
                         docker push ${IMAGE_NAME}
-                        docker rmi ${IMAGE_NAME}
                     '''
                 }
             }
