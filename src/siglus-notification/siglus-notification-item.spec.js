@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('Notification', function() {
+describe('NotificationItem', function() {
 
     beforeEach(function() {
         module('siglus-notification');
@@ -24,10 +24,10 @@ describe('Notification', function() {
             this.ORDER_STATUS = $injector.get('ORDER_STATUS');
             this.NOTIFICATION_TYPE = $injector.get('NOTIFICATION_TYPE');
             this.$state = $injector.get('$state');
-            this.Notification = $injector.get('Notification');
+            this.NotificationItem = $injector.get('NotificationItem');
         });
 
-        this.notification = new this.Notification({
+        this.notification = new this.NotificationItem({
             createdDate: '2020-09-11T07:40:52.753Z',
             emergency: false,
             id: 'fa907bec-65d3-4892-9f31-06708118e5c4',
