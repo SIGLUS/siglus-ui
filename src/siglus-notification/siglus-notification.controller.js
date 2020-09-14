@@ -21,28 +21,43 @@
         .module('siglus-notification')
         .controller('SiglusNotificationController', controller);
 
-    controller.$inject = ['$state', 'loadingModalService', 'alertService', 'REQUISITION_STATUS', 'ORDER_STATUS',
-        'messageService', 'siglusNotificationService'];
+    controller.$inject = ['$state', 'loadingModalService', 'alertService', 'siglusNotificationService',
+        'NotificationItem', 'NOTIFICATION_TYPE'];
 
-    function controller($state, loadingModalService, alertService, REQUISITION_STATUS, ORDER_STATUS,
-                        messageService, siglusNotificationService) {
+    function controller($state, loadingModalService, alertService, siglusNotificationService, NotificationItem,
+                        NOTIFICATION_TYPE) {
         var vm = this;
 
         vm.showDropdown = false;
-        vm.notifications = [];
+        vm.notificationItems = [];
+        vm.notifications = [{
+            type: NOTIFICATION_TYPE.TODO,
+            icon: 'fa-check-square',
+            msg: 'notification.type.todo',
+            title: 'notification.todo.title',
+            showDropdown: false
+        }, {
+            type: NOTIFICATION_TYPE.UPDATE,
+            icon: 'fa-bell',
+            msg: 'notification.type.update',
+            title: 'notification.update.title',
+            showDropdown: false
+        }];
+        vm.notification = undefined;
 
         vm.getNotifications = getNotifications;
         vm.hideDropdown = hideDropdown;
-        vm.getNotificationMsg = getNotificationMsg;
         vm.viewNotification = viewNotification;
-        vm.hideDropdown = hideDropdown;
 
-        function getNotifications() {
+        function getNotifications(notification) {
+            vm.notification = notification;
             loadingModalService.open();
-            siglusNotificationService.getNotifications()
+            siglusNotificationService.getNotifications(notification.type)
                 .then(function(notifications) {
-                    vm.notifications = notifications;
-                    vm.showDropdown = true;
+                    vm.notificationItems = _.map(notifications, function(notification) {
+                        return new NotificationItem(notification);
+                    });
+                    vm.notification.showDropdown = true;
                 })
                 .finally(function() {
                     loadingModalService.close();
@@ -50,56 +65,13 @@
         }
 
         function hideDropdown() {
-            vm.showDropdown = false;
+            vm.notification.showDropdown = false;
         }
 
-        function getNotificationMsg(notification) {
-            var result = '';
-            var msg = 'notification.message.requisition';
-            if (isOrder(notification)) {
-                msg = 'notification.message.order';
-            } else if (isPOD(notification)) {
-                msg = 'notification.message.POD';
-            }
-            if (notification.emergency) {
-                result = messageService.get('notification.emergency');
-            }
-            result += messageService.get(msg, {
-                facility: notification.sourceFacilityName
-            });
-            return result;
-        }
-
-        function isOrder(notification) {
-            return notification.status === ORDER_STATUS.ORDERED || notification.status === ORDER_STATUS.FULFILLING;
-        }
-
-        function isPOD(notification) {
-            return notification.status === ORDER_STATUS.SHIPPED;
-        }
-
-        function navigate(notification) {
-            if (notification.status === REQUISITION_STATUS.APPROVED) {
-                $state.go('openlmis.requisitions.convertToOrder');
-            } else if (isOrder(notification)) {
-                $state.go('openlmis.orders.shipmentView', {
-                    id: notification.referenceId
-                });
-            } else if (isPOD(notification)) {
-                $state.go('openlmis.orders.podManage.podView', {
-                    podId: notification.referenceId
-                });
-            } else {
-                $state.go('openlmis.requisitions.requisition.fullSupply', {
-                    rnr: notification.referenceId
-                });
-            }
-        }
-
-        function viewNotification(notification) {
-            siglusNotificationService.viewNotification(notification.id)
+        function viewNotification(notificationItem) {
+            siglusNotificationService.viewNotification(notificationItem.id)
                 .then(function() {
-                    navigate(notification);
+                    notificationItem.navigate();
                 })
                 .catch(function(error) {
                     if (error.status === 409) {

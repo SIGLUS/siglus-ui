@@ -16,7 +16,7 @@
 describe('SiglusNotificationController', function() {
 
     var vm, $q, $controller, $rootScope, $state, loadingModalService, siglusNotificationService,
-        alertService, messageService;
+        alertService, messageService, mockNotification, NotificationItem;
 
     beforeEach(function() {
         module('siglus-notification');
@@ -30,20 +30,26 @@ describe('SiglusNotificationController', function() {
             siglusNotificationService = $injector.get('siglusNotificationService');
             alertService = $injector.get('alertService');
             messageService = $injector.get('messageService');
+            NotificationItem = $injector.get('NotificationItem');
         });
 
-        spyOn(loadingModalService, 'open');
-        spyOn(loadingModalService, 'close');
-        spyOn(messageService, 'get');
-        spyOn(siglusNotificationService, 'getNotifications').andReturn($q.resolve([{
+        mockNotification = {
+            type: 'TODO',
             id: 'b0b08344-01a2-469c-9fc0-bdbca6b6dc52',
             emergency: true,
             sourceFacilityName: 'CS Molumbo',
             referenceId: 'b8218a82-e419-480f-b610-aa662db6e010',
-            status: 'SHIPPED'
-        }]));
+            status: 'SHIPPED',
+            createdDate: new Date()
+        };
+
+        spyOn(loadingModalService, 'open');
+        spyOn(loadingModalService, 'close');
+        spyOn(messageService, 'get');
+        spyOn(siglusNotificationService, 'getNotifications').andReturn($q.resolve([mockNotification]));
         spyOn(siglusNotificationService, 'viewNotification').andReturn($q.resolve());
         spyOn($state, 'go').andReturn($q.resolve());
+        spyOn(NotificationItem.prototype, 'navigate');
         spyOn(alertService, 'error');
 
         vm = $controller('SiglusNotificationController');
@@ -52,155 +58,59 @@ describe('SiglusNotificationController', function() {
     describe('getNotifications', function() {
 
         it('should get notifications if API return notification list', function() {
-            vm.getNotifications();
+            vm.getNotifications({});
             $rootScope.$apply();
 
             expect(loadingModalService.open).toHaveBeenCalled();
             expect(loadingModalService.close).toHaveBeenCalled();
-            expect(vm.notifications).toEqual([{
-                id: 'b0b08344-01a2-469c-9fc0-bdbca6b6dc52',
-                emergency: true,
-                sourceFacilityName: 'CS Molumbo',
-                referenceId: 'b8218a82-e419-480f-b610-aa662db6e010',
-                status: 'SHIPPED'
-            }]);
+            expect(vm.notificationItems).toEqual([new NotificationItem(mockNotification)]);
         });
 
         it('should set showDropdown to true when get resolve response', function() {
-            vm.getNotifications();
+            vm.getNotifications({});
             $rootScope.$apply();
 
-            expect(vm.showDropdown).toBe(true);
+            expect(vm.notification.showDropdown).toBe(true);
         });
 
         it('should close loading modal if API reject error', function() {
             siglusNotificationService.getNotifications.andReturn($q.reject());
-            vm.getNotifications();
+            vm.getNotifications({});
             $rootScope.$apply();
 
             expect(loadingModalService.open).toHaveBeenCalled();
             expect(loadingModalService.close).toHaveBeenCalled();
-            expect(vm.notifications).toEqual([]);
+            expect(vm.notificationItems).toEqual([]);
         });
     });
 
     describe('hideDropdown', function() {
 
         it('should set showDropdown to false', function() {
-            vm.showDropdown = true;
+            vm.notification = {
+                showDropdown: true
+            };
             vm.hideDropdown();
 
-            expect(vm.showDropdown).toBe(false);
-        });
-    });
-
-    describe('getNotificationMsg', function() {
-
-        it('should return requisition message', function() {
-            vm.getNotificationMsg({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'AUTHORIZED'
-            });
-
-            expect(messageService.get.calls[0].args[0]).toBe('notification.emergency');
-            expect(messageService.get.calls[1].args[0]).toBe('notification.message.requisition');
-            expect(messageService.get.calls[1].args[1]).toEqual({
-                facility: 'DPM NAMPULA'
-            });
-        });
-
-        it('should return order message', function() {
-            vm.getNotificationMsg({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'ORDERED'
-            });
-
-            expect(messageService.get.calls[0].args[0]).toBe('notification.emergency');
-            expect(messageService.get.calls[1].args[0]).toBe('notification.message.order');
-            expect(messageService.get.calls[1].args[1]).toEqual({
-                facility: 'DPM NAMPULA'
-            });
-        });
-
-        it('should return POD message', function() {
-            vm.getNotificationMsg({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: false,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'SHIPPED'
-            });
-
-            expect(messageService.get).toHaveBeenCalledWith('notification.message.POD', {
-                facility: 'DPM NAMPULA'
-            });
+            expect(vm.notification.showDropdown).toBe(false);
         });
     });
 
     describe('viewNotification', function() {
 
-        it('should navigate to requisition if status is AUTHORIZED', function() {
-            vm.viewNotification({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'AUTHORIZED'
-            });
+        it('should call navigate when success view notification', function() {
+            var notification = new NotificationItem(mockNotification);
+            vm.viewNotification(notification);
             $rootScope.$apply();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
-                rnr: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575'
-            });
-        });
-
-        it('should navigate to view shipment if status is ORDERED', function() {
-            vm.viewNotification({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'ORDERED'
-            });
-            $rootScope.$apply();
-
-            expect($state.go).toHaveBeenCalledWith('openlmis.orders.shipmentView', {
-                id: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575'
-            });
-        });
-
-        it('should navigate to view pod if status is SHIPPED', function() {
-            vm.viewNotification({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'SHIPPED'
-            });
-            $rootScope.$apply();
-
-            expect($state.go).toHaveBeenCalledWith('openlmis.orders.podManage.podView', {
-                podId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575'
-            });
+            expect(notification.navigate).toHaveBeenCalled();
         });
 
         it('should alert viewed message if API reject 409', function() {
             siglusNotificationService.viewNotification.andReturn($q.reject({
                 status: 409
             }));
-            vm.viewNotification({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'SHIPPED'
-            });
+            vm.viewNotification({});
             $rootScope.$apply();
 
             expect(alertService.error).toHaveBeenCalledWith('notification.processed');
@@ -210,13 +120,7 @@ describe('SiglusNotificationController', function() {
             siglusNotificationService.viewNotification.andReturn($q.reject({
                 status: 410
             }));
-            vm.viewNotification({
-                id: '24bb436d-e917-41e6-83c2-29410bcc1a63',
-                emergency: true,
-                sourceFacilityName: 'DPM NAMPULA',
-                referenceId: 'dea5e3b9-6ad0-4d82-8266-e1f7bb2fa575',
-                status: 'SHIPPED'
-            });
+            vm.viewNotification({});
             $rootScope.$apply();
 
             expect(alertService.error).toHaveBeenCalledWith('notification.viewed');

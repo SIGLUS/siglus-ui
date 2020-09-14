@@ -2,47 +2,82 @@
     line-height: 20px;
     height: 20px;
     position: relative;
-    a i {
-        font-size: 20px;
-        color: #22a5f7;
+    color: #222222;
+    .dropdown-button {
+        display: inline-block;
+    }
+    a {
+        text-decoration: none;
+        color: #777777;
+        margin-left: 1em;
+        i {
+            font-size: 20px;
+            color: #22a5f7;
+        }
     }
     .dropdown-menu {
-        left: auto !important;
-        right: -2.6em !important;
         padding: 0;
         width: 320px;
-        margin: 8px;
-        &::before {
-            content: "";
-            position: absolute;
-            top: -0.4em;
-            right: 2.3em;
-            width: 0em;
-            height: 0em;
-            border-left: 0.4em solid transparent;
-            border-right: 0.4em solid transparent;
-            border-bottom: 0.45em solid #fff;
-        }
         .notification-title {
             text-align: center;
             height: 24px;
-            background-color: #d8d8d8;
+            background-color: #f0f0f0;
         }
         .notification-empty {
             padding: 8px;
         }
+        .notification-line::after {
+            content: "";
+            display: block;
+            border-bottom: #bebebe 1px solid;
+            margin: 4px 0;
+            opacity: 0.7;
+        }
         li {
             padding: 0 8px;
-            i {
-                margin-right: 4px;
-                color: #0070d2;
-                background-color: #d9d9d9;
-                border-radius: 50%;
+            .notification-header {
+                font-size: 10px;
+                .chip {
+                    display: inline-block;
+                    width: 58px;
+                    height: 16px;
+                    line-height: 16px;
+                    border-radius: 5px;
+                    color: white;
+                    text-align: center;
+                }
+                .emergency {
+                    font-weight: normal;
+                    background-color: #d25555;
+                }
+                .requisition {
+                    background-color: #2fafe8;
+                }
+                .order {
+                    background-color: #31666a;
+                }
+                .pod {
+                    background-color: #fbcb0c;
+                }
+                .period {
+                    float: right;
+                    color: #7c8f91;
+                }
+            }
+            .notification-footer {
+                display: flex;
+                justify-content: space-between;
+                line-height: 1em;
+                align-items: flex-end;
+                span {
+                    line-height: 9px;
+                    font-size: 9px;
+                    color: #7c8f91;
+                }
             }
             a {
-                padding: 0;
                 color: $link-color;
-                text-align: right;
+                padding: 0;
                 &:hover {
                     background-color: transparent;
                     text-decoration: underline;

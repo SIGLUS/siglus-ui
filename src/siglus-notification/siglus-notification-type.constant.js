@@ -17,34 +17,23 @@
 
     'use strict';
 
+    /**
+     * @ngdoc object
+     * @name siglus-notification.NOTIFICATION_TYPE
+     *
+     * @description
+     * This is constant for requisition types
+     */
     angular
         .module('siglus-notification')
-        .service('siglusNotificationService', service);
+        .constant('NOTIFICATION_TYPE', types());
 
-    service.$inject = ['$resource', 'openlmisUrlFactory'];
+    function types() {
 
-    function service($resource, openlmisUrlFactory) {
-        var resource = $resource(openlmisUrlFactory('/api/siglusapi/notifications'), {}, {
-            view: {
-                method: 'PATCH',
-                url: openlmisUrlFactory('/api/siglusapi/notifications/:id')
-            }
-        });
-
-        this.getNotifications = getNotifications;
-        this.viewNotification = viewNotification;
-
-        function getNotifications(notificationType) {
-            return resource.query({
-                type: notificationType
-            }).$promise;
-        }
-
-        function viewNotification(id) {
-            return resource.view({
-                id: id
-            }, {})
-                .$promise;
-        }
+        return {
+            TODO: 'TODO',
+            UPDATE: 'UPDATE'
+        };
     }
+
 })();
