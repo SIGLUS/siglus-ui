@@ -1,24 +1,39 @@
 <div class="siglus-notification">
-    <a bs-dropdown
-       aria-haspopup="true"
-       aria-expanded="false"
-       data-trigger="manual"
-       bs-show="vm.showDropdown"
-       bs-on-hide="vm.hideDropdown"
-       ng-click="vm.getNotifications()"
-    >
-        <i class="fa fa-bell" aria-hidden="true"></i>
-    </a>
-    <ul class="dropdown-menu" role="menu">
-        <li class="notification-title">{{'notification.title' | message}}</li>
-        <li class="notification-empty" ng-if="!vm.notifications.length">{{'notification.empty' | message}}</li>
-        <li ng-repeat="notification in vm.notifications">
-            <div>
-                <i class="fa fa-bullhorn" aria-hidden="true"></i>
-                <span>{{vm.getNotificationMsg(notification)}}</span>
-            </div>
-            <a class="dropdown-link" ng-click="vm.viewNotification(notification)">{{'notification.view' | message}}</a>
-        </li>
-    </ul>
+    <div class="dropdown-button" ng-repeat="notification in vm.notifications">
+        <a bs-dropdown
+           aria-haspopup="true"
+           aria-expanded="false"
+           data-trigger="manual"
+           bs-show="notification.showDropdown"
+           bs-on-hide="vm.hideDropdown"
+           ng-click="vm.getNotifications(notification)"
+        >
+            <i class="fa {{notification.icon}}" aria-hidden="true"></i>
+            <span>{{notification.msg | message}}</span>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="notification-title">{{notification.title | message}}</li>
+            <li class="notification-empty" ng-if="!vm.notificationItems.length">{{'notification.empty' | message}}</li>
+            <li class="notification-line" ng-repeat="notificationItem in vm.notificationItems">
+                <div class="notification-header">
+                    <span ng-if="notificationItem.emergency" class="emergency chip">{{'notification.emergency' | message}}</span>
+                    <span class="chip {{notificationItem.config.class}}">{{notificationItem.config.label | message}}</span>
+                    <span class="period">{{'notification.period' | message: {periodName: notificationItem.processingPeriod.name} }}</span>
+                </div>
+                <div class="notification-content">
+                    {{notificationItem.config.content | message: {
+                    submittedDate: notificationItem.requisitionSubmittedDate,
+                    programName: notificationItem.program.name,
+                    programName: notificationItem.facility.name,
+                    author: notificationItem.author}
+                    }}
+                </div>
+                <div class="notification-footer">
+                    <span>{{notificationItem.config.date | message: {date: notificationItem.createdDate} }}</span>
+                    <a ng-click="vm.viewNotification(notificationItem)">{{'notification.view' | message}}</a>
+                </div>
+            </li>
+        </ul>
+    </div>
 </div>
 
