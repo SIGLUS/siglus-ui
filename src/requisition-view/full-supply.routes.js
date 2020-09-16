@@ -24,11 +24,11 @@
     routes.$inject = [
         'selectProductsModalStateProvider',
         // #441: Facility user can create requisition with regimen section
-        'siglusAddRegimensModalStateProvider'
+        'siglusAddRegimensModalStateProvider', 'REQUISITION_RIGHTS'
         // #441: ends here
     ];
 
-    function routes(selectProductsModalStateProvider, siglusAddRegimensModalStateProvider) {
+    function routes(selectProductsModalStateProvider, siglusAddRegimensModalStateProvider, REQUISITION_RIGHTS) {
         selectProductsModalStateProvider
             .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', {
                 url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
@@ -37,6 +37,9 @@
                 controllerAs: 'vm',
                 isOffline: true,
                 nonTrackable: true,
+                accessRights: [
+                    REQUISITION_RIGHTS.REQUISITION_VIEW
+                ],
                 resolve: {
                     lineItems: function($filter, requisition) {
                         var filterObject = requisition.template.hideSkippedLineItems() ?
