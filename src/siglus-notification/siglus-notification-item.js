@@ -82,8 +82,8 @@
                 APPROVED: {
                     class: 'requisition',
                     label: 'notification.requisition',
-                    content: 'notification.update.requisition.approved.message',
-                    date: 'notification.update.requisition.approved.date'
+                    content: 'notification.todo.requisition.approved.message',
+                    date: 'notification.todo.requisition.approved.date'
                 },
                 ORDERED: {
                     class: 'order',
@@ -94,8 +94,8 @@
                 SHIPPED: {
                     class: 'pod',
                     label: 'notification.pod',
-                    content: 'notification.todo.order.shipped.message',
-                    date: 'notification.todo.order.shipped.date'
+                    content: 'notification.todo.pod.shipped.message',
+                    date: 'notification.todo.pod.shipped.date'
                 }
             }
         };
