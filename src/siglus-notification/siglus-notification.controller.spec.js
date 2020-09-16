@@ -115,15 +115,5 @@ describe('SiglusNotificationController', function() {
 
             expect(alertService.error).toHaveBeenCalledWith('notification.processed');
         });
-
-        it('should alert processed message if API reject 410', function() {
-            siglusNotificationService.viewNotification.andReturn($q.reject({
-                status: 410
-            }));
-            vm.viewNotification({});
-            $rootScope.$apply();
-
-            expect(alertService.error).toHaveBeenCalledWith('notification.viewed');
-        });
     });
 });

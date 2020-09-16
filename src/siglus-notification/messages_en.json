@@ -1,5 +1,4 @@
 {
-  "notification.viewed": "This notification has been viewed, please try again.",
   "notification.processed": "This notification has been processed, please try again.",
   "notification.title": "Notification Center",
   "notification.empty": "No notification found.",
@@ -22,7 +21,7 @@
   "notification.update.pod.received.message": "The Proof of Delivery for ${programName} at ${facilityName} has been confirmed.",
   "notification.update.pod.received.date": "received date: ${date}",
   "notification.todo.title": "To-Do Task",
-  "notification.todo.requisition.rejected.message": "The requisition submitted on ${submittedDate} for the ${programName} at ${facilityName} is rejected by {author}.",
+  "notification.todo.requisition.rejected.message": "The requisition submitted on ${submittedDate} for the ${programName} at ${facilityName} is rejected by ${author}.",
   "notification.todo.requisition.rejected.date": "change date: ${date}",
   "notification.todo.requisition.submitted.message": "The requisition for ${programName} at ${facilityName} is ready for authorization.",
   "notification.todo.requisition.submitted.date": "submitted date: ${date}",

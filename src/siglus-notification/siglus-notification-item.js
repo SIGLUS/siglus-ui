@@ -136,7 +136,7 @@
 
         function updateNavigate(notificationItem) {
             if (notificationItem.status === REQUISITION_STATUS.APPROVED) {
-                goToRequisition(notificationItem);
+                goToHistory(notificationItem);
             } else {
                 goToPOD(notificationItem);
             }
@@ -144,6 +144,12 @@
 
         function goToRequisition(notificationItem) {
             $state.go('openlmis.requisitions.requisition.fullSupply', {
+                rnr: notificationItem.referenceId
+            });
+        }
+
+        function goToHistory(notificationItem) {
+            $state.go('openlmis.requisitions.history', {
                 rnr: notificationItem.referenceId
             });
         }
