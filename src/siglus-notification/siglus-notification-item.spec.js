@@ -109,7 +109,7 @@ describe('NotificationItem', function() {
             this.notification.type = 'UPDATE';
             this.notification.navigate();
 
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.history', {
                 rnr: 'f433700a-1182-41a9-8dda-30cb1c1681c2'
             });
         });

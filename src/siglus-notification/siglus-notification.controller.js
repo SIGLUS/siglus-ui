@@ -51,6 +51,7 @@
 
         function getNotifications(notification) {
             vm.notification = notification;
+            vm.notification.showDropdown = false;
             loadingModalService.open();
             siglusNotificationService.getNotifications(notification.type)
                 .then(function(notifications) {
@@ -76,9 +77,6 @@
                 .catch(function(error) {
                     if (error.status === 409) {
                         alertService.error('notification.processed');
-                    }
-                    if (error.status === 410) {
-                        alertService.error('notification.viewed');
                     }
                 });
         }
