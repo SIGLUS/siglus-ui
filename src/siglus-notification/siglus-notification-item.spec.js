@@ -53,8 +53,8 @@ describe('NotificationItem', function() {
         expect(this.notification.config).toEqual({
             class: 'pod',
             label: 'notification.pod',
-            content: 'notification.todo.order.shipped.message',
-            date: 'notification.todo.order.shipped.date'
+            content: 'notification.todo.pod.shipped.message',
+            date: 'notification.todo.pod.shipped.date'
         });
     });
 

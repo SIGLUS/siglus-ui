@@ -31,6 +31,6 @@
   "notification.todo.requisition.approved.date": "approved date: ${date}",
   "notification.todo.order.ordered.message": "The order for the ${programName} at ${facilityName} is ready to be fulfilled.",
   "notification.todo.order.ordered.date": "order date: ${date}",
-  "notification.todo.order.shipped.message": "The Proof of Delivery for the ${programName} at ${facilityName} is ready to be confirmed.",
-  "notification.todo.order.shipped.date": "shipped date: ${date}"
+  "notification.todo.pod.shipped.message": "The Proof of Delivery for the ${programName} at ${facilityName} is ready to be confirmed.",
+  "notification.todo.pod.shipped.date": "shipped date: ${date}"
 }
