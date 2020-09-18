@@ -1,7 +1,9 @@
 <div class="openlmis-toolbar">
     <div class="button-group">
         <button class="danger" ng-disabled="!vm.addedLineItems.length" ng-click="vm.removeDisplayItems()">
-            {{vm.key('clear') | message}}
+            <!-- SIGLUS-REFACTOR: change the clear button -->
+            {{vm.key('delete') | message}}
+            <!-- SIGLUS-REFACTOR: ends here -->
         </button>
     </div>
     <!-- SIGLUS-REFACTOR: Add save button -->

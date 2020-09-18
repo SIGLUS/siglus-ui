@@ -185,13 +185,19 @@
          * Remove all displayed line items.
          */
         vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('clearAll'), vm.key('clear'))
+            confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
                 .then(function() {
-                    vm.addedLineItems = [];
-                    vm.displayItems = [];
-                    notificationService.success(vm.key('cleared'));
-                    $stateParams.isAddProduct = true;
-                    vm.search($state.current.name);
+                    loadingModalService.open();
+                    stockAdjustmentService.deleteDraft(draft.id).then(function() {
+                        $scope.needToConfirm = false;
+                        notificationService.success(vm.key('deleted'));
+                        $state.go('openlmis.stockmanagement.issue', $stateParams, {
+                            reload: true
+                        });
+                    })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
                 });
         };
 
