@@ -160,4 +160,22 @@ describe('siglusColumnUtils', function() {
             expect(siglusColumnUtils.isConsumo(column)).toBe(false);
         });
     });
+
+    describe('isCode', function() {
+        it('should return true if column name is code', function() {
+            var column = {
+                name: 'code'
+            };
+
+            expect(siglusColumnUtils.isCode(column)).toBe(true);
+        });
+
+        it('should return false if column name is HF', function() {
+            var column = {
+                name: 'HF'
+            };
+
+            expect(siglusColumnUtils.isCode(column)).toBe(false);
+        });
+    });
 });

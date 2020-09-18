@@ -36,7 +36,8 @@
             CONSUMO: 'consumo',
             POSITIVE: 'positive',
             PATIENTS: 'patients',
-            COMMUNITY: 'community'
+            COMMUNITY: 'community',
+            CODE: 'code'
         };
     }
 })();
