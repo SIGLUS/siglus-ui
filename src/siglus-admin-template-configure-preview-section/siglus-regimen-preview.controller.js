@@ -21,12 +21,12 @@
         .module('siglus-admin-template-configure-preview-section')
         .controller('SiglusRegimenPreviewController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'SIGLUS_SECTION_TYPES', 'siglusTemplateConfigureService',
-        'COLUMN_SOURCES'];
+    controller.$inject = ['siglusColumnUtils', 'SIGLUS_SECTION_TYPES', 'siglusTemplateConfigureService'];
 
-    function controller(siglusColumnUtils, SIGLUS_SECTION_TYPES, siglusTemplateConfigureService, COLUMN_SOURCES) {
+    function controller(siglusColumnUtils, SIGLUS_SECTION_TYPES, siglusTemplateConfigureService) {
 
         var vm = this;
+        vm.summary = undefined;
         vm.regimenColumns = undefined;
         vm.summaryColumns = undefined;
         vm.total = undefined;
@@ -34,31 +34,40 @@
         vm.regimenLineItems = undefined;
 
         vm.$onInit = onInit;
-        vm.columnDisplayName = siglusColumnUtils.columnDisplayName;
+        vm.columnDisplayName = columnDisplayName;
         vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
 
         function onInit() {
             var regimen = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.REGIMEN);
-            var summary = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
+            vm.summary = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
             vm.regimenColumns = getDisplayedColumns(regimen);
-            vm.summaryColumns = getDisplayedColumns(summary);
-            vm.total = {
-                name: 'total',
-                label: 'Total',
-                source: COLUMN_SOURCES.CALCULATED
-            };
+            vm.summaryColumns = getDisplayedColumns(vm.summary);
+            vm.colspan = _.find(vm.regimenColumns, siglusColumnUtils.isCode) ? 2 : 1;
+            vm.total = _.find(vm.summaryColumns, siglusColumnUtils.isTotal);
             vm.categories = ['Category 1', 'Category 2'];
-            vm.regimenLineItems = [{
-                code: 'code 1',
-                regimen: 'Regimen name 1'
-            }, {
-                code: 'code 2',
-                regimen: 'Regimen name 2'
-            }];
+            vm.regimenLineItem = {
+                code: 'code',
+                regiment: 'Regimen name'
+            };
         }
 
         function getDisplayedColumns(section) {
             return _.filter(section.columns, 'isDisplayed');
+        }
+
+        function columnDisplayName(column, categoryIndex, lineItemIndex) {
+            var value = vm.regimenLineItem[column.name];
+            if (value) {
+                value = value + ' ' + getIndex(categoryIndex, lineItemIndex);
+            } else {
+                value = siglusColumnUtils.columnDisplayName(column);
+            }
+            return value;
+        }
+
+        function getIndex(categoryIndex, lineItemIndex) {
+            return 2 * categoryIndex + lineItemIndex + 1;
         }
     }
 

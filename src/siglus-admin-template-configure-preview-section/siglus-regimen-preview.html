@@ -8,52 +8,33 @@
                 </th>
             </tr>
             </thead>
-            <tbody>
-            <tr ng-repeat-start="category in vm.categories">
-                <td colspan="{{vm.regimenColumns.length}}" class="grey-background category">{{category}}</td>
-            </tr>
-            <tr ng-repeat="lineItem in vm.regimenLineItems" ng-repeat-end>
-                <td ng-repeat="regimenColumn in vm.regimenColumns"
-                    ng-class="{'user-input': vm.isUserInput(regimenColumn), 'col-source': $index > 1}">
-                    <span ng-if="$index === 0">{{lineItem.code}}</span>
-                    <span ng-if="$index === 1">{{lineItem.regimen}}</span>
-                    <span ng-if="$index > 1" >
-                    {{vm.columnDisplayName(regimenColumn)}}
-                </span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="grey-background">{{vm.total.label}}</td>
-                <td class="col-source" ng-repeat="regimenColumn in vm.regimenColumns" ng-if="$index > 1">
-                    {{vm.columnDisplayName(vm.total)}}
-                </td>
-            </tr>
+            <tbody ng-repeat="category in vm.categories" tbody-title="{{category}}" ng-init="cIndex = $index">
+                <tr ng-repeat="i in [0, 1]">
+                    <td ng-repeat="regimenColumn in vm.regimenColumns"
+                        ng-class="{'user-input': vm.isUserInput(regimenColumn), 'col-source': $index > 1}">
+                        <span>{{vm.columnDisplayName(regimenColumn, cIndex, i)}}</span>
+                    </td>
+                </tr>
+                <tr ng-if="$last">
+                    <td colspan="{{vm.colspan}}" class="grey-background">{{vm.total.label}}</td>
+                    <td class="col-source" ng-class="{'user-input': vm.isUserInput(vm.total)}" ng-repeat="regimenColumn in vm.regimenColumns" ng-if="vm.isUserInput(regimenColumn)">
+                        {{vm.columnDisplayName(vm.total)}}
+                    </td>
+                </tr>
             </tbody>
-        </table>
-    </div>
-    <div class="table-container-scroll-x">
-        <table class="openlmis-table">
             <thead>
             <tr>
-                <th ng-repeat="summaryColumn in vm.summaryColumns | orderBy : 'displayOrder'">
-                    {{summaryColumn.label}}
-                </th>
+                <th colspan="{{vm.regimenColumns.length}}">{{vm.summary.label}}</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="lineItem in vm.regimenLineItems">
-                <td ng-repeat="summaryColumn in vm.summaryColumns"
-                    ng-class="{'user-input': vm.isUserInput(summaryColumn), 'col-source': $index > 0}">
-                    <span ng-if="$index === 0">{{lineItem.code}}</span>
-                    <span ng-if="$index > 0">{{vm.columnDisplayName(summaryColumn)}}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="grey-background">{{vm.total.label}}</td>
-                <td class="col-source" ng-repeat="summaryColumn in vm.summaryColumns" ng-if="$index > 0">
-                    {{vm.columnDisplayName(vm.total)}}
-                </td>
-            </tr>
+                <tr ng-repeat="summaryColumn in vm.summaryColumns | orderBy: 'displayOrder'">
+                    <td colspan="{{vm.colspan}}">{{summaryColumn.label}}</td>
+                    <td ng-repeat="regimenColumn in vm.regimenColumns" class="col-source" ng-class="{'user-input': vm.isUserInput(summaryColumn)}" ng-if="vm.isUserInput(regimenColumn)">
+                        <span ng-if="vm.isTotal(summaryColumn)">{{vm.columnDisplayName(vm.total)}}</span>
+                        <span ng-if="!vm.isTotal(summaryColumn)">{{vm.columnDisplayName(regimenColumn)}}</span>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>

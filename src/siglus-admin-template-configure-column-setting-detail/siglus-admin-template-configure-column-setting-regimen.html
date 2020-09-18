@@ -1,0 +1,12 @@
+<div ng-if="vm.sections.length">
+    <div ng-repeat="section in vm.sections | orderBy : 'displayOrder'">
+        <div class="sub-heading">
+            <h3>{{section.label}}</h3>
+        </div>
+        <siglus-template-configure-section
+                section="section"
+                edit-header="!$first"
+                on-add-column="vm.addColumn"
+        />
+    </div>
+</div>

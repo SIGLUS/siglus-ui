@@ -49,6 +49,11 @@ $ grunt build --openlmisServerUrl=<openlmis server url> --serve
 // Run unit tests
 $ grunt karma:unit
 
+// Run unit tests not in docker
+// NOTE: make sure you have build your latest code, because siglus-ui have many other project dependency,
+// so we have to load all the source code in .tmp folder. Use karma.config.js for unit test config in webstorm.
+// So that you can run a any test you want.
+
 // Run a watch process that will build and test your code
 // NOTE: You must change a file at least once before your code is rebuilt
 $ grunt watch --openlmisServerUrl=<openlmis server url> --serve

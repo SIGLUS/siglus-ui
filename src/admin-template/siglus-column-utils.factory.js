@@ -39,7 +39,8 @@
             columnDisplayName: columnDisplayName,
             isAPES: isAPES,
             isPositive: isPositive,
-            isConsumo: isConsumo
+            isConsumo: isConsumo,
+            isCode: isCode
         };
 
         /**
@@ -160,6 +161,21 @@
          */
         function isConsumo(column) {
             return column.name === SIGLUS_SERVICE_TYPES.CONSUMO;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-template.siglusColumnUtils
+         * @name isCode
+         *
+         * @description
+         * If column name is code.
+         *
+         * @param {Object} column
+         * @return {Boolean} true if column name is code
+         */
+        function isCode(column) {
+            return column.name === SIGLUS_SERVICE_TYPES.CODE;
         }
     }
 

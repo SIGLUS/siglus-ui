@@ -24,11 +24,12 @@
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS'];
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
-        addStateForDetail('consultationNumber', 'siglus-admin-template-configure-column-setting-detail.html');
+        var defaultTemplate = 'siglus-admin-template-configure-column-setting-detail.html';
+        addStateForDetail('consultationNumber', defaultTemplate);
         addStateForDetail('patient', 'siglus-admin-template-configure-patient.html');
-        addStateForDetail('regimen', 'siglus-admin-template-configure-column-setting-detail.html');
-        addStateForDetail('testConsumption', 'siglus-admin-template-configure-column-setting-detail.html');
-        addStateForDetail('usageInformation', 'siglus-admin-template-configure-column-setting-detail.html');
+        addStateForDetail('regimen', 'siglus-admin-template-configure-column-setting-regimen.html');
+        addStateForDetail('testConsumption', defaultTemplate);
+        addStateForDetail('usageInformation', defaultTemplate);
 
         function addStateForDetail(section, templateFile) {
             $stateProvider
