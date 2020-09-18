@@ -3,5 +3,8 @@
   "stockIssueCreation.documentationNo": "Documentation No.",
   "stockIssueCreation.save": "Save",
   "stockIssueCreation.saved": "Save is successful",
-  "stockIssueCreation.cleared": "Clear is successful"
+  "stockIssueCreation.cleared": "Clear is successful",
+  "stockIssueCreation.deleted": "Delete is successful",
+  "stockIssueCreation.delete": "Delete",
+  "stockIssueCreation.deleteDraft": "Do you want to delete this draft?"
 }

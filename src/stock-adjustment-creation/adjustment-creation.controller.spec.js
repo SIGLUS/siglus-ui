@@ -262,13 +262,12 @@ describe('StockAdjustmentCreationController', function() {
         vm.removeDisplayItems();
         rootScope.$apply();
 
-        expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.clearAll',
-            'stockAdjustmentCreation.clear');
-
         // SIGLUS-REFACTOR: starts here
-        expect(vm.addedLineItems).toEqual([]);
+        expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.deleteDraft',
+            'stockAdjustmentCreation.delete');
+        // expect(vm.addedLineItems).toEqual([lineItem2]);
+        // expect(vm.displayItems).toEqual([]);
         // SIGLUS-REFACTOR: ends here
-        expect(vm.displayItems).toEqual([]);
     });
 
     it('should remove one line item from added line items', function() {
