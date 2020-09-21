@@ -28,6 +28,17 @@ describe('SiglusRegimentController', function() {
             $rootScope = $injector.get('$rootScope');
         });
         columnsDefination = [{
+            name: 'code',
+            label: 'code',
+            indicator: 'RE',
+            displayOrder: 0,
+            isDisplayed: true,
+            option: null,
+            definition: 'record the number of patients',
+            tag: null,
+            source: 'USER_INPUT',
+            id: '60a3a5ab-7f59-45f8-af98-e79ff8c1818d'
+        }, {
             name: 'patients',
             label: 'Total patients',
             indicator: 'RE',
@@ -36,7 +47,7 @@ describe('SiglusRegimentController', function() {
             option: null,
             definition: 'record the number of patients',
             tag: null,
-            source: 'USER_INPUT',
+            source: 'REFERENCE_DATA',
             id: '60a3a5ab-7f59-45f8-af98-e79ff8c1818d'
         }, {
             name: 'community',
@@ -290,8 +301,11 @@ describe('SiglusRegimentController', function() {
             spyOn(selectProductsModalService, 'show').andReturn($q.resolve([vm.customRegimens[0]]));
             vm.addRegimen('Adults');
             $rootScope.$apply();
-            columnsDefination.forEach(function(column) {
+            var columns = columnsDefination.filter(function(column) {
+                return column.source === 'USER_INPUT';
+            }).map(function(column) {
                 column.id = null;
+                return column;
             });
 
             expect(selectProductsModalService.show).toHaveBeenCalledWith({
@@ -300,7 +314,7 @@ describe('SiglusRegimentController', function() {
             });
 
             expect(vm.regimenLineItems[2]).toEqual({
-                columns: _.indexBy(columnsDefination, 'name'),
+                columns: _.indexBy(columns, 'name'),
                 regimen: vm.customRegimens[0]
             });
         });

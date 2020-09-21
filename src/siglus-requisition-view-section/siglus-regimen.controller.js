@@ -50,7 +50,7 @@
                 siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.REGIMEN);
             vm.summarySection =
                 siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
-            vm.hasCode = !!_.find(vm.regimenSection.columns, siglusColumnUtils.isCode);
+            vm.hasCode = _.find(vm.regimenSection.columns, siglusColumnUtils.isCode).isDisplayed;
             vm.regimenTotal = _.find(vm.regimenLineItems, siglusColumnUtils.isTotal);
             enhanceColumns(vm.regimenLineItems, vm.regimenSection);
             enhanceColumns(vm.regimenSummaryLineItems, vm.regimenSection);

@@ -43,7 +43,7 @@
             vm.summary = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
             vm.regimenColumns = getDisplayedColumns(regimen);
             vm.summaryColumns = getDisplayedColumns(vm.summary);
-            vm.colspan = _.find(vm.regimenColumns, siglusColumnUtils.isCode) ? 2 : 1;
+            vm.hasCode = !!_.find(vm.regimenColumns, siglusColumnUtils.isCode);
             vm.total = _.find(vm.summaryColumns, siglusColumnUtils.isTotal);
             vm.categories = ['Category 1', 'Category 2'];
             vm.regimenLineItem = {

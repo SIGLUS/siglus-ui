@@ -86,13 +86,13 @@ describe('SiglusRegimenPreviewController', function() {
             }]);
         });
 
-        it('should set colspan to 1 when do not have code column', function() {
+        it('should set hasCode to false when do not have code column', function() {
             vm.$onInit();
 
-            expect(vm.colspan).toBe(1);
+            expect(vm.hasCode).toBe(false);
         });
 
-        it('should set colspan to 2 when have code column', function() {
+        it('should set colspan to true when have code column', function() {
             regimen.columns.push({
                 name: 'code',
                 source: COLUMN_SOURCES.REFERENCE_DATA,
@@ -100,7 +100,7 @@ describe('SiglusRegimenPreviewController', function() {
             });
             vm.$onInit();
 
-            expect(vm.colspan).toBe(2);
+            expect(vm.hasCode).toBe(true);
         });
 
         it('should set total', function() {

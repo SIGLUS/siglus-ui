@@ -3,5 +3,6 @@
   "requisitionViewSection.action": "Actions",
   "requisitionViewSection.addRegimen": "Add Regimen",
   "requisitionViewSection.remove": "Remove",
-  "requisitionViewSection.total": "Total"
+  "requisitionViewSection.total": "Total",
+  "requisitionViewSection.noRegimen": "There is no regimen. Please contact the Admin if no regimen is available."
 }
