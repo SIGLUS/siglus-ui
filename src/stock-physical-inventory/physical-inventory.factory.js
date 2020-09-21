@@ -285,7 +285,7 @@
                         }
                         return summary.orderable.id === item.orderableId;
                     });
-                    draftToReturn.lineItems.push({
+                    summary && draftToReturn.lineItems.push({
                         stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
                         lot: getLot(summary, item),
                         orderable: summary.orderable,
