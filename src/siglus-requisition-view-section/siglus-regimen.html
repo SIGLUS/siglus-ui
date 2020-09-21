@@ -1,7 +1,7 @@
 <div class="requisition-regimen requisition-view-section">
     <div class="table-container-scroll-x">
         <table class="openlmis-table">
-            <caption ng-if="!vm.regimenLineItems.length">{{'requisitionViewTab.noFullSupplyProducts' | message}}</caption>
+            <caption ng-if="!vm.regimenLineItems.length">{{'requisitionViewSection.noRegimen' | message}}</caption>
             <thead>
             <tr>
                 <th ng-repeat="regimenColumn in vm.regimenSection.columns | orderBy : 'displayOrder'"
@@ -30,8 +30,8 @@
                     <button tabindex="-1" class="add" ng-click="vm.addRegimen(category.name)">{{'requisitionViewSection.addRegimen' | message}}</button>
                 </td>
             </tr>
-            <tr ng-if="vm.regimenLineItems.length && $last">
-                <td colspan="{{vm.hasCode ? 2: 1}}" class="grey-background"
+            <tr ng-if="$last">
+                <td colspan="{{vm.hasCode + 1}}" class="grey-background"
                     popover="{{vm.regimenTotal.column.definition}}"
                     popover-trigger-area="element">{{vm.regimenTotal.column.label}}</td>
                 <td ng-repeat-start="regimenColumn in vm.regimenTotal.columns | orderObjectBy: 'displayOrder'" ng-if="!vm.canEdit">
@@ -44,12 +44,12 @@
                 <td ng-if="vm.canEdit"></td>
             </tr>
             </tbody>
-            <thead>
+            <thead ng-if="vm.regimenSummaryLineItems.length">
                 <th colspan="{{vm.regimenSection.columns.length + vm.canEdit}}">{{vm.summarySection.label}}</th>
             </thead>
             <tbody>
                 <tr ng-repeat="lineItem in vm.regimenSummaryLineItems | orderBy: 'column.displayOrder'">
-                    <td colspan="{{vm.hasCode ? 2: 1}}" ng-class="{'grey-background': vm.isTotal(lineItem.column)}"
+                    <td colspan="{{vm.hasCode + 1}}" ng-class="{'grey-background': vm.isTotal(lineItem.column)}"
                         popover="{{lineItem.column.definition}}"
                         popover-trigger-area="element">{{lineItem.column.label}}</td>
                     <td ng-repeat-start="summaryColumn in lineItem.columns | orderObjectBy: 'displayOrder'"

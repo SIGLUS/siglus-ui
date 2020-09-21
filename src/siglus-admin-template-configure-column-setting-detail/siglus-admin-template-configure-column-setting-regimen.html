@@ -1,7 +1,8 @@
 <div ng-if="vm.sections.length">
     <div ng-repeat="section in vm.sections | orderBy : 'displayOrder'">
         <div class="sub-heading">
-            <h3>{{section.label}}</h3>
+            <h3 ng-if="$first">{{section.label}}</h3>
+            <h3 ng-if="!$first">{{"summary" | message}}</h3>
         </div>
         <siglus-template-configure-section
                 section="section"
