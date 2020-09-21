@@ -13,12 +13,9 @@
                 <th ng-if="vm.canEdit">{{'requisitionViewSection.action' | message}}</th>
             </tr>
             </thead>
-            <tbody>
-            <tr ng-repeat-start="(category, lineItems) in vm.regimenLineItems | groupBy: 'regimen.regimenCategory.name'" ng-if="category !== 'undefined'">
-                <td colspan="100" class="grey-background category">{{category}}</td>
-            </tr>
-            <tr ng-repeat="lineItem in lineItems | orderBy: ['regimen.regimenDispatchLine.displayOrder', 'regimen.fullProductName']" ng-if="!vm.isTotal(lineItem)">
-                <td>{{lineItem.regimen.regimenDispatchLine.name}}</td>
+            <tbody ng-repeat="category in vm.categories | orderBy: 'displayOrder'" tbody-title="{{category.name}}">
+            <tr ng-repeat="lineItem in vm.regimenLineItems | orderBy: ['regimen.code', 'regimen.fullProductName']" ng-if="lineItem.regimen.regimenCategory.name === category.name">
+                <td ng-if="vm.hasCode">{{lineItem.regimen.code}}</td>
                 <td>{{lineItem.regimen.fullProductName}}</td>
                 <td ng-if="vm.canEdit" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'"
                     siglus-requisition-grid-cell
@@ -28,48 +25,43 @@
                     <button tabindex="-1" class="danger" ng-if="lineItem.regimen.isCustom" ng-click="vm.removeRegimen(lineItem)">{{'requisitionViewSection.remove' | message}}</button>
                 </td>
             </tr>
-            <tr ng-repeat-end ng-if="vm.canEdit && category !== 'undefined'">
+            <tr ng-if="vm.canEdit">
                 <td colspan="100">
-                    <button tabindex="-1" class="add" ng-click="vm.addRegimen(category)">{{'requisitionViewSection.addRegimen' | message}}</button>
+                    <button tabindex="-1" class="add" ng-click="vm.addRegimen(category.name)">{{'requisitionViewSection.addRegimen' | message}}</button>
                 </td>
             </tr>
-            <tr ng-if="vm.regimenLineItems.length">
-                <td colspan="2" class="grey-background">{{'requisitionViewSection.total' | message}}</td>
-                <td ng-repeat="regimenColumn in vm.regimenTotal.columns | orderObjectBy: 'displayOrder'"
-                    openlmis-invalid="{{regimenColumn.$error}}">
-                    {{vm.getTotal(vm.regimenLineItems, regimenColumn)}}
+            <tr ng-if="vm.regimenLineItems.length && $last">
+                <td colspan="{{vm.hasCode ? 2: 1}}" class="grey-background"
+                    popover="{{vm.regimenTotal.column.definition}}"
+                    popover-trigger-area="element">{{vm.regimenTotal.column.label}}</td>
+                <td ng-repeat-start="regimenColumn in vm.regimenTotal.columns | orderObjectBy: 'displayOrder'" ng-if="!vm.canEdit">
+                    {{regimenColumn.value}}
                 </td>
+                <td ng-if="vm.canEdit && vm.isCalculated(vm.regimenTotal.column)" openlmis-invalid="{{regimenColumn.$error}}">{{vm.getTotal(vm.regimenLineItems, regimenColumn)}}</td>
+                <td ng-repeat-end ng-if="vm.canEdit && vm.isUserInput(vm.regimenTotal.column)"
+                    siglus-requisition-grid-cell
+                    line-item-field="regimenColumn"></td>
                 <td ng-if="vm.canEdit"></td>
             </tr>
             </tbody>
-        </table>
-    </div>
-    <div class="table-container-scroll-x">
-        <table class="openlmis-table">
-            <caption ng-if="!vm.regimenDispatchLineItems.length">{{'requisitionViewTab.noFullSupplyProducts' | message}}</caption>
             <thead>
-            <tr>
-                <th ng-repeat="summaryColumn in vm.summarySection.columns | orderBy : 'displayOrder'"
-                    ng-if="summaryColumn.isDisplayed"
-                    popover="{{summaryColumn.definition}}"
-                    popover-trigger-area="element">
-                    {{summaryColumn.label}}
-                </th>
-            </tr>
+                <th colspan="{{vm.regimenSection.columns.length + vm.canEdit}}">{{vm.summarySection.label}}</th>
             </thead>
             <tbody>
-            <tr ng-repeat="line in vm.regimenDispatchLineItems | orderBy: 'regimenDispatchLine.displayOrder'" ng-if="!vm.isTotal(line)">
-                <td>{{line.regimenDispatchLine.name}}</td>
-                <td ng-if="vm.canEdit" ng-repeat="summaryColumn in line.columns | orderObjectBy: 'displayOrder'"
-                    siglus-requisition-grid-cell
-                    line-item-field="summaryColumn"></td>
-                <td ng-if="!vm.canEdit" ng-repeat="summaryColumn in line.columns | orderObjectBy: 'displayOrder'">{{summaryColumn.value}}</td>
-            </tr>
-            <tr ng-if="vm.regimenDispatchLineItems.length">
-                <td class="grey-background">{{'requisitionViewSection.total' | message}}</td>
-                <td ng-repeat="summaryColumn in vm.summaryTotal.columns | orderObjectBy: 'displayOrder'"
-                    openlmis-invalid="{{summaryColumn.$error}}">{{vm.getTotal(vm.regimenDispatchLineItems, summaryColumn)}}</td>
-            </tr>
+                <tr ng-repeat="lineItem in vm.regimenSummaryLineItems | orderBy: 'column.displayOrder'">
+                    <td colspan="{{vm.hasCode ? 2: 1}}" ng-class="{'grey-background': vm.isTotal(lineItem.column)}"
+                        popover="{{lineItem.column.definition}}"
+                        popover-trigger-area="element">{{lineItem.column.label}}</td>
+                    <td ng-repeat-start="summaryColumn in lineItem.columns | orderObjectBy: 'displayOrder'"
+                        ng-if="!vm.canEdit">
+                        {{summaryColumn.value}}
+                    </td>
+                    <td ng-if="vm.canEdit && vm.isCalculated(lineItem.column)" openlmis-invalid="{{summaryColumn.$error}}">{{vm.getTotal(vm.regimenSummaryLineItems, summaryColumn)}}</td>
+                    <td ng-repeat-end ng-if="vm.canEdit && vm.isUserInput(lineItem.column)"
+                        siglus-requisition-grid-cell
+                        line-item-field="summaryColumn"></td>
+                    <td ng-if="vm.canEdit"></td>
+                </tr>
             </tbody>
         </table>
     </div>

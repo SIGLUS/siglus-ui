@@ -33,16 +33,14 @@
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
         'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'siglusRequisitionUtils', 'siglusTemplateConfigureService', 'SIGLUS_SECTION_TYPES', 'SIGLUS_SERVICE_TYPES',
-        'siglusColumnUtils'
+        'siglusRequisitionUtils'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
                                 COLUMN_SOURCES, localStorageFactory, dateUtils, $filter, TEMPLATE_COLUMNS,
                                 authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService,
-                                siglusRequisitionUtils, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES,
-                                SIGLUS_SERVICE_TYPES, siglusColumnUtils) {
+                                siglusRequisitionUtils) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             // SIGLUS-REFACTOR: starts here
@@ -174,34 +172,11 @@
                 generateIdempotencyKey(this);
             }
             // SIGLUS-REFACTOR: starts here
-            addTotalLineItemForRegimen(this);
             clearErrors(this);
             // SIGLUS-REFACTOR: ends here
         }
 
         // SIGLUS-REFACTOR: starts here
-        function addTotalLineItemForRegimen(requisition) {
-            if (siglusRequisitionUtils.hasRegimen(requisition) && !hasTotalLineItem(requisition.regimenLineItems) &&
-                !hasTotalLineItem(requisition.regimenDispatchLineItems)) {
-                var regimenSection = siglusTemplateConfigureService
-                    .getSectionByName(requisition.usageTemplate.regimen, SIGLUS_SECTION_TYPES.REGIMEN);
-                requisition.regimenLineItems.push({
-                    name: SIGLUS_SERVICE_TYPES.TOTAL,
-                    columns: siglusRequisitionUtils.getInputColumnsMap(regimenSection.columns)
-                });
-                var summarySection = siglusTemplateConfigureService
-                    .getSectionByName(requisition.usageTemplate.regimen, SIGLUS_SECTION_TYPES.SUMMARY);
-                requisition.regimenDispatchLineItems.push({
-                    name: SIGLUS_SERVICE_TYPES.TOTAL,
-                    columns: siglusRequisitionUtils.getInputColumnsMap(summarySection.columns)
-                });
-            }
-        }
-
-        function hasTotalLineItem(lineItems) {
-            return _.find(lineItems, siglusColumnUtils.isTotal);
-        }
-
         function clearErrors(requisition) {
             requisition.$error = undefined;
             angular.forEach(requisition.kitUsageLineItems, function(lineItem) {
@@ -220,7 +195,7 @@
             removeBasicLineItemsError(requisition.patientLineItems);
             removeBasicLineItemsError(requisition.consultationNumberLineItems);
             removeBasicLineItemsError(requisition.regimenLineItems);
-            removeBasicLineItemsError(requisition.regimenDispatchLineItems);
+            removeBasicLineItemsError(requisition.regimenSummaryLineItems);
         }
 
         function removeBasicLineItemsError(lineItems) {

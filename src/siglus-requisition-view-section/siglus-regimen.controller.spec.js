@@ -49,6 +49,28 @@ describe('SiglusRegimentController', function() {
             tag: null,
             source: 'USER_INPUT',
             id: '30d4e767-a206-4eb1-bea0-1ff3a48da633'
+        }, {
+            name: 'total',
+            label: 'Community pharmacy',
+            indicator: 'RE',
+            displayOrder: 1,
+            isDisplayed: true,
+            option: null,
+            definition: 'record the number of patients in community pharmacy',
+            tag: null,
+            source: 'USER_INPUT',
+            id: '30d4e767-a206-4eb1-bea0-1ff3a48da633'
+        }, {
+            name: '1stLinhas',
+            label: '1st linhas',
+            indicator: 'RE',
+            displayOrder: 1,
+            isDisplayed: true,
+            option: null,
+            definition: 'record the number of patients in community pharmacy',
+            tag: null,
+            source: 'USER_INPUT',
+            id: '30d4e767-a206-4eb1-bea0-1ff3a48da633'
         }];
         sections = [{
             name: 'regimen',
@@ -69,21 +91,35 @@ describe('SiglusRegimentController', function() {
             },
             regimen: {
                 fullProductName: 'AZT+3TC+EFV (2FDC+EFV 200)',
-                regimenDispatchLine: {
-                    name: 'Outros'
+                regimenCategory: {
+                    name: 'Paediatrics'
                 }
             }
-        }];
-        vm.regimenDispatchLineItems = [{
+        }, {
             columns: {
-                patients: {
+                community: {
+                    id: '1',
+                    value: undefined
+                }
+            },
+            name: 'total'
+        }];
+        vm.regimenSummaryLineItems = [{
+            columns: {
+                community: {
                     id: '2',
                     value: undefined
                 }
             },
-            regimenDispatchLine: {
-                name: 'Outros'
-            }
+            name: 'total'
+        }, {
+            columns: {
+                community: {
+                    id: '2',
+                    value: undefined
+                }
+            },
+            name: '1stLinhas'
         }];
         vm.$onInit();
     });
@@ -122,33 +158,99 @@ describe('SiglusRegimentController', function() {
                 },
                 regimen: {
                     fullProductName: 'AZT+3TC+EFV (2FDC+EFV 200)',
-                    regimenDispatchLine: {
-                        name: 'Outros'
+                    regimenCategory: {
+                        name: 'Paediatrics'
                     }
                 }
-            }]);
-        });
-
-        it('should enhance regimenDispatchLineItems with regimen config date', function() {
-            expect(vm.regimenDispatchLineItems).toEqual([{
+            }, {
                 columns: {
-                    patients: {
-                        id: '2',
+                    community: {
+                        id: '1',
                         value: undefined,
-                        name: 'patients',
-                        label: 'Total patients',
+                        name: 'community',
+                        label: 'Community pharmacy',
                         indicator: 'RE',
-                        displayOrder: 0,
+                        displayOrder: 1,
                         isDisplayed: true,
                         option: null,
-                        definition: 'record the number of patients',
+                        definition: 'record the number of patients in community pharmacy',
                         tag: null,
                         source: 'USER_INPUT'
                     }
                 },
-                regimenDispatchLine: {
-                    name: 'Outros'
-                }
+                column: {
+                    name: 'total',
+                    label: 'Community pharmacy',
+                    indicator: 'RE',
+                    displayOrder: 1,
+                    isDisplayed: true,
+                    option: null,
+                    definition: 'record the number of patients in community pharmacy',
+                    tag: null,
+                    source: 'USER_INPUT',
+                    id: '30d4e767-a206-4eb1-bea0-1ff3a48da633'
+                },
+                name: 'total'
+            }]);
+        });
+
+        it('should enhance regimenSummaryLineItems with regimen config date', function() {
+            expect(vm.regimenSummaryLineItems).toEqual([{
+                columns: {
+                    community: {
+                        name: 'community',
+                        label: 'Community pharmacy',
+                        indicator: 'RE',
+                        displayOrder: 1,
+                        isDisplayed: true,
+                        option: null,
+                        definition: 'record the number of patients in community pharmacy',
+                        tag: null,
+                        source: 'USER_INPUT',
+                        id: '2'
+                    }
+                },
+                column: {
+                    name: 'total',
+                    label: 'Community pharmacy',
+                    indicator: 'RE',
+                    displayOrder: 1,
+                    isDisplayed: true,
+                    option: null,
+                    definition: 'record the number of patients in community pharmacy',
+                    tag: null,
+                    source: 'USER_INPUT',
+                    id: '30d4e767-a206-4eb1-bea0-1ff3a48da633'
+                },
+                name: 'total'
+            }, {
+                columns: {
+                    community: {
+                        name: 'community',
+                        label: 'Community pharmacy',
+                        indicator: 'RE',
+                        displayOrder: 1,
+                        isDisplayed: true,
+                        option: null,
+                        definition: 'record the number of patients in community pharmacy',
+                        tag: null,
+                        source: 'USER_INPUT',
+                        id: '2'
+                    }
+                },
+                column: {
+                    name: '1stLinhas',
+                    label: '1st linhas',
+                    indicator: 'RE',
+                    displayOrder: 1,
+                    isDisplayed: true,
+                    option: null,
+                    definition: 'record the number of patients in community pharmacy',
+                    tag: null,
+                    source: 'USER_INPUT',
+                    id: '30d4e767-a206-4eb1-bea0-1ff3a48da633'
+                },
+                name: '1stLinhas'
             }]);
         });
     });
@@ -188,39 +290,17 @@ describe('SiglusRegimentController', function() {
             spyOn(selectProductsModalService, 'show').andReturn($q.resolve([vm.customRegimens[0]]));
             vm.addRegimen('Adults');
             $rootScope.$apply();
+            columnsDefination.forEach(function(column) {
+                column.id = null;
+            });
 
             expect(selectProductsModalService.show).toHaveBeenCalledWith({
                 products: [vm.customRegimens[0]],
                 state: '.addRegimens'
             });
 
-            expect(vm.regimenLineItems[1]).toEqual({
-                columns: {
-                    patients: {
-                        name: 'patients',
-                        label: 'Total patients',
-                        indicator: 'RE',
-                        displayOrder: 0,
-                        isDisplayed: true,
-                        option: null,
-                        definition: 'record the number of patients',
-                        tag: null,
-                        source: 'USER_INPUT',
-                        id: null
-                    },
-                    community: {
-                        name: 'community',
-                        label: 'Community pharmacy',
-                        indicator: 'RE',
-                        displayOrder: 1,
-                        isDisplayed: true,
-                        option: null,
-                        definition: 'record the number of patients in community pharmacy',
-                        tag: null,
-                        source: 'USER_INPUT',
-                        id: null
-                    }
-                },
+            expect(vm.regimenLineItems[2]).toEqual({
+                columns: _.indexBy(columnsDefination, 'name'),
                 regimen: vm.customRegimens[0]
             });
         });
@@ -265,7 +345,7 @@ describe('SiglusRegimentController', function() {
         it('should remove the regimen', function() {
             vm.removeRegimen(vm.regimenLineItems[0]);
 
-            expect(vm.regimenLineItems.length).toBe(0);
+            expect(vm.regimenLineItems.length).toBe(1);
         });
     });
 

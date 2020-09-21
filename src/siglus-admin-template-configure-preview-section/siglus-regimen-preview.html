@@ -29,8 +29,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="summaryColumn in vm.summaryColumns | orderBy: 'displayOrder'">
-                    <td colspan="{{vm.colspan}}">{{summaryColumn.label}}</td>
-                    <td ng-repeat="regimenColumn in vm.regimenColumns" class="col-source" ng-class="{'user-input': vm.isUserInput(summaryColumn)}" ng-if="vm.isUserInput(regimenColumn)">
+                    <td colspan="{{vm.colspan}}" ng-class="{'grey-background': vm.isTotal(summaryColumn)}">{{summaryColumn.label}}</td>
+                    <td ng-repeat="regimenColumn in vm.regimenColumns" class="col-source"
+                        ng-class="{'user-input': vm.isUserInput(summaryColumn)}"
+                        ng-if="vm.isUserInput(regimenColumn)">
                         <span ng-if="vm.isTotal(summaryColumn)">{{vm.columnDisplayName(vm.total)}}</span>
                         <span ng-if="!vm.isTotal(summaryColumn)">{{vm.columnDisplayName(regimenColumn)}}</span>
                     </td>

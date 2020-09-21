@@ -23,7 +23,7 @@
             bindings: {
                 sections: '<',
                 regimenLineItems: '<',
-                regimenDispatchLineItems: '<',
+                regimenSummaryLineItems: '<',
                 customRegimens: '<',
                 canEdit: '<'
             },

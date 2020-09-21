@@ -373,20 +373,26 @@ describe('requisitionValidator', function() {
                     patients: {
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
 
             expect(validator.siglusValidRequisition(requisition)).toBe(false);
         });
 
-        it('should return false if regimenDispatchLineItems is invalid', function() {
+        it('should return false if regimenSummaryLineItems is invalid', function() {
             requisition.template.extension.enableRegimen = true;
             requisition.regimenLineItems = [{
                 columns: {
@@ -394,13 +400,19 @@ describe('requisitionValidator', function() {
                         value: 1,
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
 
@@ -415,14 +427,20 @@ describe('requisitionValidator', function() {
                         value: 2147483648,
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         value: 1,
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
 
@@ -437,21 +455,27 @@ describe('requisitionValidator', function() {
                         value: 1,
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         value: 2147483648,
                         name: 'patients'
                     }
+                },
+                column: {
+                    name: 'patients'
                 }
             }];
 
             expect(validator.siglusValidRequisition(requisition)).toBe(false);
         });
 
-        it('should return true if regimenLineItems and regimenDispatchLineItems are valid', function() {
+        it('should return true if regimenLineItems and regimenSummaryLineItems are valid', function() {
             requisition.template.extension.enableRegimen = true;
             requisition.regimenLineItems = [{
                 columns: {
@@ -460,14 +484,36 @@ describe('requisitionValidator', function() {
                         name: 'patients'
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                },
+                column: {
+                    name: 'total'
+                },
+                name: 'total'
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         value: 1,
                         name: 'patients'
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 1,
+                        name: 'patients'
+                    }
+                },
+                column: {
+                    name: 'total'
+                },
+                name: 'total'
             }];
 
             expect(validator.siglusValidRequisition(requisition)).toBe(true);
@@ -525,13 +571,36 @@ describe('requisitionValidator', function() {
                         value: 11
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    }
+                },
+                column: {
+                    name: 'total'
+                },
+                name: 'total'
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         value: 10
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 10
+                    }
+                },
+                column: {
+                    name: 'total'
+                },
+                name: 'total'
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
@@ -548,13 +617,38 @@ describe('requisitionValidator', function() {
                         value: 11
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     community: {
                         value: 11
                     }
                 }
+            }, {
+                columns: {
+                    community: {
+                        value: 11
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
@@ -574,8 +668,25 @@ describe('requisitionValidator', function() {
                         value: 12
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    },
+                    new: {
+                        value: 12
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         value: 10
@@ -584,6 +695,20 @@ describe('requisitionValidator', function() {
                         value: 11
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 10
+                    },
+                    community: {
+                        value: 11
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
@@ -597,13 +722,35 @@ describe('requisitionValidator', function() {
                         value: 10
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 10
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     patients: {
                         value: 11
                     }
                 }
+            }, {
+                columns: {
+                    patients: {
+                        value: 11
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
@@ -619,13 +766,77 @@ describe('requisitionValidator', function() {
                         value: 10
                     }
                 }
+            }, {
+                columns: {
+                    community: {
+                        value: 10
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     community: {
                         value: 11
                     }
                 }
+            }, {
+                columns: {
+                    community: {
+                        value: 11
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.CALCULATED
+                },
+                name: 'total'
+            }];
+
+            expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
+        });
+
+        it('should return false when total community is not equal when total is user input', function() {
+            requisition.template.extension.enableRegimen = true;
+            requisition.regimenLineItems = [{
+                columns: {
+                    community: {
+                        value: 10
+                    }
+                }
+            }, {
+                columns: {
+                    community: {
+                        value: 1
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.USER_INPUT
+                },
+                name: 'total'
+            }];
+            requisition.regimenSummaryLineItems = [{
+                columns: {
+                    community: {
+                        value: 11
+                    }
+                }
+            }, {
+                columns: {
+                    community: {
+                        value: 22
+                    }
+                },
+                column: {
+                    name: 'total',
+                    source: COLUMN_SOURCES.USER_INPUT
+                },
+                name: 'total'
             }];
 
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(false);
@@ -644,7 +855,7 @@ describe('requisitionValidator', function() {
             expect(validator.validateTotalEqualOfRegimen(requisition)).toBe(true);
         });
 
-        it('Should return true if regimenDispatchLineItems filed is invalid', function() {
+        it('Should return true if regimenSummaryLineItems filed is invalid', function() {
             requisition.template.extension.enableRegimen = true;
             requisition.regimenLineItems = [{
                 columns: {
@@ -653,7 +864,7 @@ describe('requisitionValidator', function() {
                     }
                 }
             }];
-            requisition.regimenDispatchLineItems = [{
+            requisition.regimenSummaryLineItems = [{
                 columns: {
                     community: {
                         value: null
