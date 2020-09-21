@@ -97,7 +97,7 @@
             var valid = true;
             if (siglusRequisitionUtils.hasRegimen(requisition)) {
                 valid = validateBasicLineItems(requisition.regimenLineItems) && valid;
-                valid = validateBasicLineItems(requisition.regimenDispatchLineItems) && valid;
+                valid = validateBasicLineItems(requisition.regimenSummaryLineItems) && valid;
             }
             return valid;
         }
@@ -358,7 +358,7 @@
             var isValid = true;
             if (noCommentWhenEnableRegimen(requisition) &&
                 validateBasicLineItems(requisition.regimenLineItems) &&
-                validateBasicLineItems(requisition.regimenDispatchLineItems)) {
+                validateBasicLineItems(requisition.regimenSummaryLineItems)) {
                 isValid = isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.PATIENTS) &&
                     isRegimenColumnEqual(requisition, SIGLUS_SERVICE_TYPES.COMMUNITY);
             }
@@ -371,20 +371,26 @@
 
         function isRegimenColumnEqual(requisition, columnName) {
             if (_.first(requisition.regimenLineItems).columns[columnName] &&
-                _.first(requisition.regimenDispatchLineItems).columns[columnName]) {
-                var regimenTotal = siglusRequisitionUtils.getRegimenLineItemsTotal(
-                    requisition.regimenLineItems, {
-                        name: columnName
-                    }
-                );
-                var summaryTotal = siglusRequisitionUtils.getRegimenLineItemsTotal(
-                    requisition.regimenDispatchLineItems, {
-                        name: columnName
-                    }
-                );
+                _.first(requisition.regimenSummaryLineItems).columns[columnName]) {
+                var regimenTotal = getRegimenTotal(requisition.regimenLineItems, columnName);
+                var summaryTotal = getRegimenTotal(requisition.regimenSummaryLineItems, columnName);
                 return regimenTotal === summaryTotal;
             }
             return true;
+        }
+
+        function getRegimenTotal(lineItems, columnName) {
+            var totalItem = _.find(lineItems, function(item) {
+                return item.column && siglusColumnUtils.isTotal(item.column);
+            });
+            if (siglusColumnUtils.isCalculated(totalItem.column)) {
+                return siglusRequisitionUtils.getRegimenLineItemsTotal(
+                    lineItems, {
+                        name: columnName
+                    }
+                );
+            }
+            return totalItem.columns[columnName].value;
         }
 
         function noCommentWhenEnableRegimen(requisition) {

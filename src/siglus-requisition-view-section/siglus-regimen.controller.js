@@ -31,25 +31,51 @@
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.categories = undefined;
         vm.regimenSection = undefined;
         vm.summarySection = undefined;
+        vm.hasCode = false;
         vm.regimenTotal = undefined;
-        vm.summaryTotal = undefined;
         vm.groupedLineItems = undefined;
         vm.getTotal = getTotal;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isCalculated = siglusColumnUtils.isCalculated;
         vm.isTotal = siglusColumnUtils.isTotal;
         vm.addRegimen = addRegimen;
         vm.removeRegimen = removeRegimen;
 
         function onInit() {
+            vm.categories = getCategories();
             vm.regimenSection =
                 siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.REGIMEN);
             vm.summarySection =
                 siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SUMMARY);
+            vm.hasCode = !!_.find(vm.regimenSection.columns, siglusColumnUtils.isCode);
             vm.regimenTotal = _.find(vm.regimenLineItems, siglusColumnUtils.isTotal);
-            vm.summaryTotal = _.find(vm.regimenDispatchLineItems, siglusColumnUtils.isTotal);
-            enhanceLineItems(vm.regimenLineItems, vm.regimenSection);
-            enhanceLineItems(vm.regimenDispatchLineItems, vm.summarySection);
+            enhanceColumns(vm.regimenLineItems, vm.regimenSection);
+            enhanceColumns(vm.regimenSummaryLineItems, vm.regimenSection);
+            enhanceLineItems([vm.regimenTotal], vm.summarySection);
+            enhanceLineItems(vm.regimenSummaryLineItems, vm.summarySection);
+        }
+
+        function getCategories() {
+            var categoryMap = {};
+            _.forEach(vm.regimenLineItems, function(item) {
+                if (item.regimen) {
+                    categoryMap[item.regimen.regimenCategory.name] = item.regimen.regimenCategory;
+                }
+            });
+            return _.values(categoryMap);
+        }
+
+        function enhanceColumns(lineItems, section) {
+            var columnsMap = siglusTemplateConfigureService.getSectionColumnsMap(section);
+            angular.forEach(lineItems, function(lineItem) {
+                angular.forEach(Object.keys(lineItem.columns), function(columnName) {
+                    lineItem.columns[columnName] = angular.merge({},
+                        columnsMap[columnName], lineItem.columns[columnName]);
+                });
+            });
         }
 
         function enhanceLineItems(lineItems, section) {
@@ -59,6 +85,7 @@
                     lineItem.columns[columnName] = angular.merge({},
                         columnsMap[columnName], lineItem.columns[columnName]);
                 });
+                lineItem.column = columnsMap[lineItem.name];
             });
         }
 

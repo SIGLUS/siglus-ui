@@ -30,6 +30,7 @@
         vm.$onInit = onInit;
         vm.columnDisplayName = columnDisplayName;
         vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isTotal = siglusColumnUtils.isTotal;
 
         function onInit() {
             vm.items = [{
