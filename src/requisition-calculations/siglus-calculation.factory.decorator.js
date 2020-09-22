@@ -41,12 +41,14 @@
             B = TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
             C = TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
             E = TEMPLATE_COLUMNS.STOCK_ON_HAND,
-            SQ = TEMPLATE_COLUMNS.SUGGESTED_QUANTITY;
+            SQ = TEMPLATE_COLUMNS.SUGGESTED_QUANTITY,
+            EX = TEMPLATE_COLUMNS.EXPIRATION_DATE;
 
         $delegate.theoreticalQuantityToRequest = calculateTheoreticalQuantityToRequest;
         $delegate.theoreticalStockAtEndofPeriod = calculateTheoreticalStockAtEndOfPeriod;
         $delegate.difference = calculateDifference;
         $delegate.suggestedQuantity = calculateSuggestedQuantity;
+        $delegate.expirationDate = calculateExpirationDate;
 
         return $delegate;
 
@@ -112,6 +114,23 @@
          */
         function calculateSuggestedQuantity(lineItem) {
             return getItem(lineItem, SQ);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf requisition-calculations.calculationFactory
+         * @name calculateExpiration
+         *
+         * @description
+         * Calculates the value of the expiration.
+         * The expiration is calculated by the back end,
+         * but it's source is calculated, so return it directly.
+         *
+         * @param  {Object}  lineItem     the line item object
+         * @return {String}               the expiration
+         */
+        function calculateExpirationDate(lineItem) {
+            return lineItem[EX] === undefined ? null : lineItem[EX];
         }
 
         function getItem(lineItem, name) {

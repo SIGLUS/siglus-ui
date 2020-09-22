@@ -913,7 +913,8 @@
         function transformLineItem(lineItem, columns) {
             angular.forEach(columns, function(column) {
                 if (!column.$display || (column.source === COLUMN_SOURCES.CALCULATED
-                    && column.name !== TEMPLATE_COLUMNS.SUGGESTED_QUANTITY)) {
+                    && column.name !== TEMPLATE_COLUMNS.SUGGESTED_QUANTITY
+                    && column.name !== TEMPLATE_COLUMNS.EXPIRATION_DATE)) {
                     lineItem[column.name] = null;
                 }
             });
