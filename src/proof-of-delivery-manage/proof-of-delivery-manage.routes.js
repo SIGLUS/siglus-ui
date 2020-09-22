@@ -53,18 +53,18 @@
                         FULFILLMENT_RIGHTS.PODS_VIEW
                     ]);
                 },
-                pods: function(paginationService, orderRepository, $stateParams, programs, requestingFacilities,
-                    supplyingFacilities) {
+                // #579: the "Supplying facility" field is automatically fille
+                pods: function(paginationService, orderRepository, $stateParams, programs) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (programs.length === 1 && !stateParams.programId) {
                             stateParams.programId = programs[0].id;
                         }
-                        if (requestingFacilities.length === 1 && !stateParams.requestingFacilityId) {
-                            stateParams.requestingFacilityId = requestingFacilities[0].id;
-                        }
-                        if (supplyingFacilities.length === 1 && !stateParams.supplyingFacilityId) {
-                            stateParams.supplyingFacilityId = supplyingFacilities[0].id;
-                        }
+                        // if (requestingFacilities.length === 1 && !stateParams.requestingFacilityId) {
+                        //     stateParams.requestingFacilityId = requestingFacilities[0].id;
+                        // }
+                        // if (supplyingFacilities.length === 1 && !stateParams.supplyingFacilityId) {
+                        //     stateParams.supplyingFacilityId = supplyingFacilities[0].id;
+                        // }
                         // #370: sort the pod with status and created date
                         stateParams.sort = 'status,createdDate';
                         // #370: ends here
@@ -75,6 +75,7 @@
                         return undefined;
                     });
                 }
+                // #579: ends here
             }
         });
     }
