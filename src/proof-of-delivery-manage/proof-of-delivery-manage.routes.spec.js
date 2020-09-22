@@ -60,27 +60,36 @@ describe('openlmis.orders.podManage state', function() {
         });
     });
 
-    it('should resolve pods with default selection when lists have 1 element', function() {
+    // it('should resolve pods with default selection when lists have 1 element', function() {
+    //     programService.getUserPrograms.andReturn($q.when([programs[0]]));
+    //     requestingFacilities = [requestingFacilities[0]];
+    //     supplyingFacilities = [supplyingFacilities[0]];
+    //
+    //     goToUrl('/orders/manage?page=0&size=10');
+    //
+    //     expect(getResolvedValue('pods')).toEqual({
+    //         content: pods
+    //     });
+    //
+    //     expect(orderRepository.searchOrdersForManagePod).toHaveBeenCalledWith({
+    //         page: '0',
+    //         size: '10',
+    //         programId: programs[0].id,
+    //         requestingFacilityId: requestingFacilities[0].id,
+    //         supplyingFacilityId: supplyingFacilities[0].id
+    //     });
+    // });
+
+    it('should resolve undefined without default selection when lists have 1 element', function() {
         programService.getUserPrograms.andReturn($q.when([programs[0]]));
         requestingFacilities = [requestingFacilities[0]];
         supplyingFacilities = [supplyingFacilities[0]];
 
         goToUrl('/orders/manage?page=0&size=10');
 
-        expect(getResolvedValue('pods')).toEqual({
-            content: pods
-        });
+        expect(getResolvedValue('pods')).toBeUndefined();
 
-        // #370: sort the pod with status and created date
-        expect(orderRepository.searchOrdersForManagePod).toHaveBeenCalledWith({
-            page: '0',
-            size: '10',
-            programId: programs[0].id,
-            requestingFacilityId: requestingFacilities[0].id,
-            supplyingFacilityId: supplyingFacilities[0].id,
-            sort: 'status,createdDate'
-        });
-        // #370: ends here
+        expect(orderRepository.searchOrdersForManagePod).not.toHaveBeenCalled();
     });
 
     it('should use template', function() {
