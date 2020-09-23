@@ -163,7 +163,9 @@
 
             this.requisitionLineItems = [];
             source.requisitionLineItems.forEach(function(lineItem) {
-                requisition.requisitionLineItems.push(new LineItem(lineItem, requisition));
+                var newLineItem = new LineItem(lineItem, requisition);
+                setDefaultApprovedQuantity(requisition, newLineItem);
+                requisition.requisitionLineItems.push(newLineItem);
             });
 
             this.$isEditable = isEditable(this);
@@ -177,6 +179,25 @@
         }
 
         // SIGLUS-REFACTOR: starts here
+        function setDefaultApprovedQuantity(requisition, lineItem) {
+            if (canApprove(requisition) && requisition.isExternalApproval) {
+                if (!(lineItem.skipped) && _.isUndefined(lineItem.approvedQuantity)) {
+                    if (requisition.template.getColumn(TEMPLATE_COLUMNS.SUGGESTED_QUANTITY).isDisplayed) {
+                        lineItem.approvedQuantity = lineItem.suggestedQuantity;
+                    } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY).isDisplayed) {
+                        lineItem.approvedQuantity = lineItem.authorizedQuantity;
+                    } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.THEORETICAL_QUANTITY_TO_REQUEST)
+                        .isDisplayed) {
+                        lineItem.approvedQuantity = lineItem.theoreticalQuantityToRequest;
+                    } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.REQUESTED_QUANTITY).isDisplayed) {
+                        lineItem.approvedQuantity = lineItem.requestedQuantity;
+                    } else {
+                        lineItem.approvedQuantity = null;
+                    }
+                }
+            }
+        }
+
         function clearErrors(requisition) {
             requisition.$error = undefined;
             angular.forEach(requisition.kitUsageLineItems, function(lineItem) {
@@ -647,6 +668,7 @@
                 pricePerPack: orderableProgram.pricePerPack,
                 $deletable: true
             }), this);
+            setDefaultApprovedQuantity(this, newLineItem);
             this.requisitionLineItems.push(newLineItem);
             return newLineItem;
         }
