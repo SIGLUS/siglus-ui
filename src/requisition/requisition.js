@@ -164,7 +164,9 @@
             this.requisitionLineItems = [];
             source.requisitionLineItems.forEach(function(lineItem) {
                 var newLineItem = new LineItem(lineItem, requisition);
-                setDefaultApprovedQuantity(requisition, newLineItem);
+                if (!requisition.extraData.isSaved) {
+                    setDefaultApprovedQuantity(requisition, newLineItem);
+                }
                 requisition.requisitionLineItems.push(newLineItem);
             });
 
