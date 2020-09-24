@@ -470,13 +470,13 @@
             return lineItem.$errors.quantityInvalid;
         };
 
-        vm.validateLotCode = function(lineItem, lots) {
+        vm.validateLotCode = function(lineItem) {
             if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
                     lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
                 } else if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
-                } else if (hasDuplicateLotCode(lineItem, lots)) {
+                } else if (hasDuplicateLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid = messageService
                         .get('stockPhysicalInventoryDraft.lotCodeDuplicate');
                 } else {
@@ -524,8 +524,8 @@
             return item.lot && item.lot.lotCode;
         }
 
-        function hasDuplicateLotCode(lineItem, lots) {
-            var allLots = lots ? lots : getAllLotCode();
+        function hasDuplicateLotCode(lineItem) {
+            var allLots = getAllLotCode(lineItem.orderable.id);
             var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function(lot) {
                 return lot === lineItem.lot.lotCode.toUpperCase();
             }) : [];
@@ -534,11 +534,10 @@
 
         function validate() {
             var anyError = false;
-            var lots = getAllLotCode();
             _.chain(vm.draft.lineItems).flatten()
                 .each(function(item) {
                     if (!(item.orderable && item.orderable.isKit)) {
-                        anyError = vm.validateLotCode(item, lots) || anyError;
+                        anyError = vm.validateLotCode(item) || anyError;
                         anyError = vm.validExpirationDate(item) || anyError;
                     }
                     anyError = vm.validateReasonFreeText(item) || anyError;
@@ -547,14 +546,14 @@
             return anyError;
         }
 
-        function getAllLotCode() {
+        function getAllLotCode(orderableId) {
             var draftLots = [];
             _.each(draft.lineItems, function(item) {
-                if (item.lot && item.lot.lotCode && !item.lot.id) {
+                if (item.orderable.id === orderableId && item.lot && item.lot.lotCode) {
                     draftLots.push(item.lot.lotCode.toUpperCase());
                 }
             });
-            return draftLots.concat(vm.existLotCode);
+            return draftLots;
         }
         // SIGLUS-REFACTOR: ends here
 
