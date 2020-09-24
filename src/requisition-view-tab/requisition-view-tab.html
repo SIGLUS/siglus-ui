@@ -36,6 +36,7 @@
     <div class="openlmis-table-container requisition-product" ng-if="vm.requisition.template.extension.enableProduct">
 <!-- SIGLUS-REFACTOR: ends here -->
         <table>
+            <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
             <thead>
             <tr>
                 <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
