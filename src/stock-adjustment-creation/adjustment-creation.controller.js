@@ -187,7 +187,7 @@
         });
 
         function hasInvalidLotCode(lineItem) {
-            var allLots = getAllLotsOfOtherProductsAndNewAdded(lineItem.orderableId);
+            var allLots = getAllLotsSelectedProduct(lineItem.orderableId);
             var duplicatedLots = hasLot(lineItem) ? _.filter(allLots, function(lot) {
                 return lot.lotCode.toUpperCase() === lineItem.lot.lotCode.toUpperCase();
             }) : [];
@@ -198,19 +198,10 @@
             return lineItem.lot && lineItem.lot.lotCode;
         }
 
-        function getAllLotsOfOtherProductsAndNewAdded(orderableId) {
-            var ids = siglusOrderableLotMapping.findAllOrderableIds();
+        function getAllLotsSelectedProduct(orderableId) {
             var lots = [];
-            ids.forEach(function(id) {
-                if (id !== orderableId) {
-                    var selectedOrderableGroup =
-                        siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(id);
-                    var selectedLots = orderableGroupService.lotsOf(selectedOrderableGroup);
-                    lots = lots.concat(selectedLots);
-                }
-            });
             _.each(vm.addedLineItems, function(item) {
-                if (item.lot && item.lot.lotCode && !item.lot.id) {
+                if (item.orderableId === orderableId && item.lot && item.lot.lotCode && !item.lot.id) {
                     lots.push(item.lot);
                 }
             });
