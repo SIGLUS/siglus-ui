@@ -22,7 +22,6 @@
                ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
     <div class="openlmis-table-container" ng-if="vm.requisition.template.extension.enableProduct">
         <table>
-            <caption ng-if="!vm.items.length">{{vm.noProductsMessage | message}}</caption>
             <thead>
             <tr>
                 <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
