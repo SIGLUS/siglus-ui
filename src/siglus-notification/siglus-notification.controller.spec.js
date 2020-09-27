@@ -16,7 +16,8 @@
 describe('SiglusNotificationController', function() {
 
     var vm, $q, $controller, $rootScope, $state, loadingModalService, siglusNotificationService,
-        alertService, messageService, mockNotification, NotificationItem;
+        alertService, messageService, mockNotification, NotificationItem, currentUserService,
+        authorizationService, confirmService;
 
     beforeEach(function() {
         module('siglus-notification');
@@ -31,6 +32,9 @@ describe('SiglusNotificationController', function() {
             alertService = $injector.get('alertService');
             messageService = $injector.get('messageService');
             NotificationItem = $injector.get('NotificationItem');
+            currentUserService = $injector.get('currentUserService');
+            authorizationService = $injector.get('authorizationService');
+            confirmService = $injector.get('confirmService');
         });
 
         mockNotification = {
@@ -49,8 +53,14 @@ describe('SiglusNotificationController', function() {
         spyOn(siglusNotificationService, 'getNotifications').andReturn($q.resolve([mockNotification]));
         spyOn(siglusNotificationService, 'viewNotification').andReturn($q.resolve());
         spyOn($state, 'go').andReturn($q.resolve());
+        spyOn($state, 'get').andReturn({
+            accessRights: []
+        });
         spyOn(NotificationItem.prototype, 'navigate');
         spyOn(alertService, 'error');
+        spyOn(currentUserService, 'getUserInfo').andReturn($q.resolve({}));
+        spyOn(authorizationService, 'hasRights').andReturn(false);
+        spyOn(confirmService, 'confirm').andReturn($q.resolve());
 
         vm = $controller('SiglusNotificationController');
     });
@@ -114,6 +124,31 @@ describe('SiglusNotificationController', function() {
             $rootScope.$apply();
 
             expect(alertService.error).toHaveBeenCalledWith('notification.processed');
+        });
+
+        it('should popup confirm when canInitialInventory is true and do not have right', function() {
+            currentUserService.getUserInfo.andReturn($q.resolve({
+                canInitialInventory: true
+            }));
+            vm.viewNotification({});
+            $rootScope.$apply();
+
+            expect(confirmService.confirm).toHaveBeenCalledWith('stockInitialDiscard.initialInventory',
+                'stockInitialInventory.initialInventory');
+
+            expect(alertService.error).toHaveBeenCalledWith('openlmisAuth.authorization.error',
+                'stockInitialInventory.authorization.message');
+        });
+
+        it('should route to initial inventory when canInitialInventory is true and has right', function() {
+            currentUserService.getUserInfo.andReturn($q.resolve({
+                canInitialInventory: true
+            }));
+            authorizationService.hasRights.andReturn(true);
+            vm.viewNotification({});
+            $rootScope.$apply();
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.initialInventory');
         });
     });
 });
