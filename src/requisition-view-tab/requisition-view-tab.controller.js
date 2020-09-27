@@ -240,7 +240,11 @@
          */
         function cacheRequisition() {
             requisitionCacheService.cacheRequisition(vm.requisition);
-            return $q.resolve();
+            // #546: "Back to preview" are affected by the pagination of requisition
+            return $q.resolve({
+                location: 'replace'
+            });
+            // #546: ends here
         }
 
         /**

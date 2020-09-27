@@ -142,9 +142,11 @@
                 stateParams[paginationService.getPageParamName(pagination.paginationId)] = newPage;
 
                 if (pagination.onPageChange instanceof Function) {
-                    return pagination.onPageChange().then(function() {
-                        $state.go($state.current.name, stateParams);
+                    // #546: "Back to preview" are affected by the pagination of requisition
+                    return pagination.onPageChange().then(function(options) {
+                        $state.go($state.current.name, stateParams, options);
                     });
+                    // #546: ends here
                 }
 
                 $state.go($state.current.name, stateParams);
