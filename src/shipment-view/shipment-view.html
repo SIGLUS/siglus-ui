@@ -73,7 +73,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="tableLineItem in vm.tableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="9">
+            <tr ng-repeat="tableLineItem in vm.tableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="10">
                 <!-- #287: Warehouse clerk can skip some products in order-->
                 <td>
                     <input type="checkbox" ng-if="tableLineItem.isMainGroup" ng-model="tableLineItem.skipped" ng-change="vm.changeSkipStatus(tableLineItem)" ng-disabled="!vm.canSkip(tableLineItem)" />
