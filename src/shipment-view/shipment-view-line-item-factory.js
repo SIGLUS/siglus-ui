@@ -69,7 +69,7 @@
                             undefined
                         );
 
-                    if (isForGenericOrderable(summary) && shipmentLineItem) {
+                    if (isForGenericOrderable(summary) && shipmentLineItem && !summary.orderable.isKit) {
                         return new ShipmentViewLineItem({
                             productCode: orderLineItem.orderable.productCode,
                             productName: orderLineItem.orderable.fullProductName,
@@ -135,7 +135,7 @@
                         skipped: skipped
                         // #287: ends here
                     }));
-                } else if (lotLineItems.length) {
+                } else if (lotLineItems.length || summary.orderable.isKit) {
                     tradeItemLineItems.push(new ShipmentViewLineItem({
                         productCode: orderable.productCode,
                         productName: orderable.fullProductName,
@@ -144,6 +144,7 @@
                         shipmentLineItem: lotLineItems[0].shipmentLineItem,
                         netContent: orderable.netContent,
                         // #287: Warehouse clerk can skip some products in order
+                        isKit: summary.orderable.isKit,
                         skipped: skipped
                         // #287: ends here
                     }));
