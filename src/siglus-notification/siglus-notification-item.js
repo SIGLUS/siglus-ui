@@ -41,6 +41,12 @@
                     content: 'notification.update.requisition.approved.message',
                     date: 'notification.update.requisition.approved.date'
                 },
+                RELEASED_WITHOUT_ORDER: {
+                    class: 'requisition',
+                    label: 'notification.requisition',
+                    content: 'notification.update.requisition.approved.message',
+                    date: 'notification.update.requisition.approved.date'
+                },
                 SHIPPED: {
                     class: 'order',
                     label: 'notification.order',
@@ -135,7 +141,8 @@
         }
 
         function updateNavigate(notificationItem) {
-            if (notificationItem.status === REQUISITION_STATUS.APPROVED) {
+            if (notificationItem.status === REQUISITION_STATUS.APPROVED ||
+            notificationItem.status === REQUISITION_STATUS.RELEASED_WITHOUT_ORDER) {
                 goToHistory(notificationItem);
             } else {
                 goToPOD(notificationItem);

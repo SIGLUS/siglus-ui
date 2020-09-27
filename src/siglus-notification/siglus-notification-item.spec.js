@@ -114,5 +114,16 @@ describe('NotificationItem', function() {
             });
         });
 
+        it('Should route to requisition when notification type is update and status is RELEASED_WITHOUT_ORDER',
+            function() {
+                this.notification.status = 'RELEASED_WITHOUT_ORDER';
+                this.notification.type = 'UPDATE';
+                this.notification.navigate();
+
+                expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.history', {
+                    rnr: 'f433700a-1182-41a9-8dda-30cb1c1681c2'
+                });
+            });
+
     });
 });
