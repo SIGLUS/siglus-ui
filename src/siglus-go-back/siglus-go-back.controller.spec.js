@@ -15,26 +15,27 @@
 
 describe('SiglusGoBackController', function() {
 
-    var vm, $controller, stateTrackerService;
+    var vm, $controller, $window;
 
     beforeEach(function() {
         module('siglus-go-back');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            stateTrackerService = $injector.get('stateTrackerService');
+            $window = $injector.get('$window');
         });
 
         vm = $controller('SiglusGoBackController');
-        spyOn(stateTrackerService, 'goToPreviousState');
+        spyOn($window.history, 'back');
     });
 
     describe('backToPrevious', function() {
 
-        it('should call the goToPreviousState method and set the default previous state', function() {
+        it('should call the back method of the history object and set the listener', function() {
             vm.backToPrevious();
 
-            expect(stateTrackerService.goToPreviousState).toHaveBeenCalledWith('openlmis.home');
+            expect($window.history.back).toHaveBeenCalled();
+            expect($window.onpopstate).not.toBeUndefined();
         });
     });
 });

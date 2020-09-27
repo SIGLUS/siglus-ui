@@ -17,6 +17,6 @@
     'use strict';
 
     angular.module('siglus-go-back', [
-        'openlmis-state-tracker'
+        'ui.router'
     ]);
 })();
