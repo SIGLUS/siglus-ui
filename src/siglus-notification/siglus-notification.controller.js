@@ -22,10 +22,10 @@
         .controller('SiglusNotificationController', controller);
 
     controller.$inject = ['$state', 'loadingModalService', 'alertService', 'siglusNotificationService',
-        'NotificationItem', 'NOTIFICATION_TYPE'];
+        'NotificationItem', 'NOTIFICATION_TYPE', 'currentUserService', 'confirmService', 'authorizationService'];
 
     function controller($state, loadingModalService, alertService, siglusNotificationService, NotificationItem,
-                        NOTIFICATION_TYPE) {
+                        NOTIFICATION_TYPE, currentUserService, confirmService, authorizationService) {
         var vm = this;
 
         vm.showDropdown = false;
@@ -70,6 +70,34 @@
         }
 
         function viewNotification(notificationItem) {
+            checkInitialInventoryStatus().then(function(canInitialInventory) {
+                if (canInitialInventory) {
+                    propopConfirm();
+                } else {
+                    handleViewNotification(notificationItem);
+                }
+            });
+        }
+
+        function propopConfirm() {
+            confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialInventory.initialInventory')
+                .then(function() {
+                    if (cannotViewState()) {
+                        alertService.error('openlmisAuth.authorization.error',
+                            'stockInitialInventory.authorization.message');
+                    } else {
+                        $state.go('openlmis.stockmanagement.initialInventory');
+                    }
+                });
+        }
+
+        function cannotViewState() {
+            var toState = $state.get('openlmis.stockmanagement.initialInventory');
+            return toState.accessRights &&
+                !authorizationService.hasRights(toState.accessRights, toState.areAllRightsRequired);
+        }
+
+        function handleViewNotification(notificationItem) {
             siglusNotificationService.viewNotification(notificationItem.id)
                 .then(function() {
                     notificationItem.navigate();
@@ -79,6 +107,12 @@
                         alertService.error('notification.processed');
                     }
                 });
+        }
+
+        function checkInitialInventoryStatus() {
+            return currentUserService.getUserInfo().then(function(user) {
+                return user.canInitialInventory;
+            });
         }
     }
 
