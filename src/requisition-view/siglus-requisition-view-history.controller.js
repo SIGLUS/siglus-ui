@@ -29,16 +29,21 @@
         .controller('SiglusHistoryViewTabController', Controller);
 
     Controller.$inject = ['requisition', 'columns', 'lineItems', 'program', 'processingPeriod', 'facility',
-        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS', 'messageService'];
+        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS', 'messageService', '$q'];
 
     function Controller(requisition, columns, lineItems, program, processingPeriod, facility, requisitionUrlFactory,
-                        $window, accessTokenFactory, TEMPLATE_COLUMNS, messageService) {
+                        $window, accessTokenFactory, TEMPLATE_COLUMNS, messageService, $q) {
         var vm = this;
         vm.program = undefined;
         vm.processingPeriod = undefined;
         vm.facility = undefined;
         vm.$onInit = onInit;
         vm.print = print;
+        vm.replaceLocation = function() {
+            return $q.resolve({
+                location: 'replace'
+            });
+        };
 
         /**
          * @ngdoc property
