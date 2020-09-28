@@ -163,12 +163,11 @@
 
             this.requisitionLineItems = [];
             source.requisitionLineItems.forEach(function(lineItem) {
-                // SIGLUS-REFACTOR: starts here
+                var newLineItem = new LineItem(lineItem, requisition);
                 if (!requisition.extraData.isSaved) {
-                    setDefaultApprovedQuantity(requisition, lineItem);
+                    setDefaultApprovedQuantity(requisition, newLineItem);
                 }
-                // SIGLUS-REFACTOR: ends here
-                requisition.requisitionLineItems.push(new LineItem(lineItem, requisition));
+                requisition.requisitionLineItems.push(newLineItem);
             });
 
             this.$isEditable = isEditable(this);
@@ -667,11 +666,11 @@
         // SIGLUS-REFACTOR: add new method addProductLineItem
         function addProductLineItem(lineItem) {
             var orderableProgram = _.first(lineItem.orderable.programs);
-            setDefaultApprovedQuantity(this, lineItem);
             var newLineItem = new LineItem(_.extend(lineItem, {
                 pricePerPack: orderableProgram.pricePerPack,
                 $deletable: true
             }), this);
+            setDefaultApprovedQuantity(this, newLineItem);
             this.requisitionLineItems.push(newLineItem);
             return newLineItem;
         }
