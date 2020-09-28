@@ -30,10 +30,11 @@
 
     // SIGLUS-REFACTOR: add user, drafts
     controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
-        'stockAdjustmentService'];
+        'stockAdjustmentService', 'stockAdjustmentFactory'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller(facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService) {
+    function controller(facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService,
+                        stockAdjustmentFactory) {
         var vm = this;
 
         /**
@@ -64,26 +65,28 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.proceed = function(program) {
-            var draft = program.draft;
-            if (_.isUndefined(draft)) {
-                stockAdjustmentService.createDraft(user.user_id, program.id, facility.id, adjustmentType.state)
-                    .then(function(draft) {
-                        $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
-                            programId: program.id,
-                            program: program,
-                            facility: facility,
-                            draft: draft,
-                            draftId: draft && draft.id
-                        });
+            stockAdjustmentFactory.getDraft(user.user_id, program.id, facility.id, adjustmentType.state)
+                .then(function(draft) {
+                    if (_.isUndefined(draft)) {
+                        stockAdjustmentService.createDraft(user.user_id, program.id, facility.id, adjustmentType.state)
+                            .then(function(draft) {
+                                $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
+                                    programId: program.id,
+                                    program: program,
+                                    facility: facility,
+                                    draft: draft,
+                                    draftId: draft && draft.id
+                                });
+                            });
+                    }
+                    $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
+                        programId: program.id,
+                        program: program,
+                        facility: facility,
+                        draft: draft,
+                        draftId: draft && draft.id
                     });
-            }
-            $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
-                programId: program.id,
-                program: program,
-                facility: facility,
-                draft: draft,
-                draftId: draft && draft.id
-            });
+                });
         };
 
         vm.$onInit = function() {
