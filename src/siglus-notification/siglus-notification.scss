@@ -1,7 +1,7 @@
 //z-index of openlmis-header is the parent of siglus notification popup, make it
 //bigger so that siglus notification popup can not be covered by other z-index.
 .openlmis-header {
-    z-index: 1000;
+    z-index: 11;
 }
 .siglus-notification {
     line-height: 20px;
