@@ -31,10 +31,10 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
                 };
             });
 
-            $provide.factory('OrderableResource', function() {
+            $provide.factory('SiglusOrderableResource', function() {
                 return function() {
                     orderableResourceMock = jasmine.createSpyObj(
-                        'OrderableResource', ['query']
+                        'SiglusOrderableResource', ['query']
                     );
                     return orderableResourceMock;
                 };

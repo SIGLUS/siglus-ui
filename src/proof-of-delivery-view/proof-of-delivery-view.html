@@ -102,7 +102,8 @@
                 <td></td>
                 <!-- #400: ends here -->
                 <td>{{fulfillingLineItem.quantityShipped}}</td>
-                <td>{{fulfillingLineItem.lot | lotCode}}</td>
+                <td ng-if="fulfillingLineItem.orderable.isKit"></td>
+                <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot | lotCode}}</td>
                 <td ng-if="vm.canEdit">
                     <input positive-integer
                            ng-model="fulfillingLineItem.quantityAccepted"
