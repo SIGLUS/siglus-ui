@@ -30,10 +30,14 @@
         .factory('ProofOfDeliveryRepositoryImpl', ProofOfDeliveryRepositoryImpl);
 
     ProofOfDeliveryRepositoryImpl.$inject = [
-        '$q', '$resource', 'fulfillmentUrlFactory', 'LotRepositoryImpl', 'OrderableResource'
+        '$q', '$resource', 'fulfillmentUrlFactory', 'LotRepositoryImpl',
+        // SIGLUS-REFACTOR: starts here
+        'SiglusOrderableResource'
+        // SIGLUS-REFACTOR: ends here
     ];
 
-    function ProofOfDeliveryRepositoryImpl($q, $resource, fulfillmentUrlFactory, LotRepositoryImpl, OrderableResource) {
+    function ProofOfDeliveryRepositoryImpl($q, $resource, fulfillmentUrlFactory, LotRepositoryImpl,
+                                           SiglusOrderableResource) {
 
         ProofOfDeliveryRepositoryImpl.prototype.get = get;
         ProofOfDeliveryRepositoryImpl.prototype.update = update;
@@ -51,11 +55,11 @@
          */
         function ProofOfDeliveryRepositoryImpl() {
             this.lotRepositoryImpl = new LotRepositoryImpl();
-            this.orderableResource = new OrderableResource();
+            // SIGLUS-REFACTOR: starts here
+            this.orderableResource = new SiglusOrderableResource();
 
-            // #400: Facility user partially fulfill an order and create sub-order for an requisition
             this.resource = $resource(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id'), {}, {
-                // #400: ends here
+                // SIGLUS-REFACTOR: ends here
                 update: {
                     method: 'PUT'
                 }
