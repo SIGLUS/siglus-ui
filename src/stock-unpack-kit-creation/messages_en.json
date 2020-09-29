@@ -15,6 +15,5 @@
   "stockUnpackKitCreation.unpackInvalid": "Unpack kit has invalid input",
   "stockUnpackKitCreation.noKitAvailable": "There are no kits for this facility. Please contact the Admin.",
   "stockUnpackKitCreation.signature": "Signature",
-  "stockPhysicalInventoryDraft.submitted": "Physical Inventory has successfully been submitted",
   "stockUnpackKitCreation.saveFailed": "Save has failed"
 }
