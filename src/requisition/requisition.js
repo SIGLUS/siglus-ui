@@ -670,7 +670,6 @@
                 pricePerPack: orderableProgram.pricePerPack,
                 $deletable: true
             }), this);
-            setDefaultApprovedQuantity(this, newLineItem);
             this.requisitionLineItems.push(newLineItem);
             return newLineItem;
         }
