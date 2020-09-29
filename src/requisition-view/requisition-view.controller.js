@@ -263,6 +263,11 @@
             // SIGLUS-REFACTOR: ends here
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
+            // SIGLUS-REFACTOR: starts here
+            if (!canSync) {
+                watcher.disableWatcher();
+            }
+            // SIGLUS-REFACTOR: ends here
         }
 
         function setTypeAndClass() {
