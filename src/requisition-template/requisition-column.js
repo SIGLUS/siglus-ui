@@ -254,8 +254,11 @@
         }
 
         function showInExternalApprove(requisition) {
-            if (requisition.$isAuthorized() || requisition.$isInApproval()) {
+            if (requisition.$isAuthorized()) {
                 return requisition.isExternalApproval;
+            } else if (requisition.$isInApproval()) {
+                return !requisition.isApprovedByInternal ||
+                    requisition.isApprovedByInternal && requisition.isExternalApproval;
             } else if (requisition.$isApproved() || requisition.$isReleased()) {
                 return true;
             }
