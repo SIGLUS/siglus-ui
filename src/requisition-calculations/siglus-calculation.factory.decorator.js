@@ -42,13 +42,18 @@
             C = TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
             E = TEMPLATE_COLUMNS.STOCK_ON_HAND,
             SQ = TEMPLATE_COLUMNS.SUGGESTED_QUANTITY,
-            EX = TEMPLATE_COLUMNS.EXPIRATION_DATE;
+            EX = TEMPLATE_COLUMNS.EXPIRATION_DATE,
+            J = TEMPLATE_COLUMNS.REQUESTED_QUANTITY,
+            M = TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY,
+            S = TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY_ISA,
+            K = TEMPLATE_COLUMNS.APPROVED_QUANTITY;
 
         $delegate.theoreticalQuantityToRequest = calculateTheoreticalQuantityToRequest;
         $delegate.theoreticalStockAtEndofPeriod = calculateTheoreticalStockAtEndOfPeriod;
         $delegate.difference = calculateDifference;
         $delegate.suggestedQuantity = calculateSuggestedQuantity;
         $delegate.expirationDate = calculateExpirationDate;
+        $delegate.packsToShip = calculatePacksToShip;
 
         return $delegate;
 
@@ -135,6 +140,66 @@
 
         function getItem(lineItem, name) {
             return lineItem[name] === undefined ? 0 : lineItem[name];
+        }
+
+        function calculatePacksToShip(lineItem, requisition) {
+            var orderQuantity = getOrderQuantity(lineItem, requisition),
+                netContent = lineItem.orderable.netContent;
+
+            if (!orderQuantity || !netContent) {
+                return 0;
+            }
+            var remainderQuantity = orderQuantity % netContent,
+                packsToShip = (orderQuantity - remainderQuantity) / netContent;
+
+            if (remainderQuantity > 0 && remainderQuantity > lineItem.orderable.packRoundingThreshold) {
+                packsToShip += 1;
+            }
+
+            if (packsToShip === 0 && !lineItem.orderable.roundToZero) {
+                packsToShip = 1;
+            }
+
+            return packsToShip;
+
+        }
+
+        function getOrderQuantity(lineItem, requisition) {
+            var orderQuantity = null;
+            var kColumn = requisition.template.getColumn(K);
+
+            if (requisition.$isAfterAuthorize() && kColumn && kColumn.$display) {
+                orderQuantity = lineItem[K];
+            } else {
+                var jColumn = requisition.template.getColumn(J),
+                    mColumn = requisition.template.getColumn(M),
+                    sColumn = requisition.template.getColumn(S);
+
+                if (shouldReturnRequestedQuantity(lineItem, jColumn, requisition)) {
+                    orderQuantity = lineItem[J];
+                } else if (mColumn && mColumn.isDisplayed) {
+                    orderQuantity = $delegate.calculatedOrderQuantity(lineItem, requisition);
+                } else if (sColumn) {
+                    orderQuantity = $delegate.calculatedOrderQuantityIsa(lineItem, requisition);
+                }
+            }
+
+            return orderQuantity;
+        }
+
+        function shouldReturnRequestedQuantity(lineItem, jColumn, requisition) {
+            return lineItem.isNonFullSupply() ||
+                (isDisplayed(jColumn) && isFilled(lineItem[J])) ||
+                requisition.emergency;
+        }
+
+        function isFilled(value) {
+            //We want to treat 0 as a valid value thus not using return value
+            return value !== null && value !== undefined;
+        }
+
+        function isDisplayed(column) {
+            return column && column.$display;
         }
     }
 })();

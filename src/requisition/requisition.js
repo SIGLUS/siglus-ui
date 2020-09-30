@@ -33,14 +33,14 @@
         'COLUMN_SOURCES', 'localStorageFactory', 'dateUtils', '$filter', 'TEMPLATE_COLUMNS', 'authorizationService',
         'REQUISITION_RIGHTS', 'UuidGenerator', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
-        'siglusRequisitionUtils'
+        'siglusRequisitionUtils', 'calculationFactory'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function requisitionFactory($q, $resource, requisitionUrlFactory, RequisitionTemplate, LineItem, REQUISITION_STATUS,
                                 COLUMN_SOURCES, localStorageFactory, dateUtils, $filter, TEMPLATE_COLUMNS,
                                 authorizationService, REQUISITION_RIGHTS, UuidGenerator, requisitionCacheService,
-                                siglusRequisitionUtils) {
+                                siglusRequisitionUtils, calculationFactory) {
 
         var offlineRequisitions = localStorageFactory('requisitions'),
             // SIGLUS-REFACTOR: starts here
@@ -164,8 +164,9 @@
             this.requisitionLineItems = [];
             source.requisitionLineItems.forEach(function(lineItem) {
                 var newLineItem = new LineItem(lineItem, requisition);
-                if (!requisition.extraData.isSaved) {
-                    setDefaultApprovedQuantity(requisition, newLineItem);
+                if (shouldPopulateApprovedQuantity(requisition)) {
+                    setDefaultApprovedQuantity(newLineItem, requisition);
+                    reCaculatePacksToShip(newLineItem, requisition);
                 }
                 requisition.requisitionLineItems.push(newLineItem);
             });
@@ -181,23 +182,29 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function setDefaultApprovedQuantity(requisition, lineItem) {
-            if (canApprove(requisition) && requisition.isExternalApproval) {
-                if (!(lineItem.skipped) && _.isUndefined(lineItem.approvedQuantity)) {
-                    if (requisition.template.getColumn(TEMPLATE_COLUMNS.SUGGESTED_QUANTITY).isDisplayed) {
-                        lineItem.approvedQuantity = lineItem.suggestedQuantity;
-                    } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY).isDisplayed) {
-                        lineItem.approvedQuantity = lineItem.authorizedQuantity;
-                    } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.THEORETICAL_QUANTITY_TO_REQUEST)
-                        .isDisplayed) {
-                        lineItem.approvedQuantity = lineItem.theoreticalQuantityToRequest;
-                    } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.REQUESTED_QUANTITY).isDisplayed) {
-                        lineItem.approvedQuantity = lineItem.requestedQuantity;
-                    } else {
-                        lineItem.approvedQuantity = null;
-                    }
+        function shouldPopulateApprovedQuantity(requisition) {
+            return !requisition.extraData.isSaved && canApprove(requisition) && requisition.isExternalApproval;
+        }
+
+        function setDefaultApprovedQuantity(lineItem, requisition) {
+            if (!(lineItem.skipped) && _.isUndefined(lineItem.approvedQuantity)) {
+                if (requisition.template.getColumn(TEMPLATE_COLUMNS.SUGGESTED_QUANTITY).isDisplayed) {
+                    lineItem.approvedQuantity = lineItem.suggestedQuantity;
+                } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY).isDisplayed) {
+                    lineItem.approvedQuantity = lineItem.authorizedQuantity;
+                } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.THEORETICAL_QUANTITY_TO_REQUEST)
+                    .isDisplayed) {
+                    lineItem.approvedQuantity = lineItem.theoreticalQuantityToRequest;
+                } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.REQUESTED_QUANTITY).isDisplayed) {
+                    lineItem.approvedQuantity = lineItem.requestedQuantity;
+                } else {
+                    lineItem.approvedQuantity = null;
                 }
             }
+        }
+
+        function reCaculatePacksToShip(lineItem, requisition) {
+            lineItem.packsToShip = calculationFactory.packsToShip(lineItem, requisition);
         }
 
         function clearErrors(requisition) {
