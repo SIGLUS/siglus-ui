@@ -12,7 +12,6 @@
   "adminTemplateAdd.addTemplate": "Add Template",
   "adminTemplateAdd.confirm": "Confirm",
   "adminTemplateAdd.createTemplate.confirm": "Do you want to create a new template for the ${program} program?",
-  "adminProgramTemplate.shouldDisplayRequestedQuantity": "Se ${calculatedOrderQuantity} não for apresentado, ${requestedQuantity} devem ser apresentados",
   "adminProgramTemplate.template.invalidSections": "You must select at least one section",
   "adminProgramTemplate.suggestedQuantityCalculationBasedOn": "Calculation based on:",
   "adminTemplateConfigureSettings.confirm": "Confirm",
