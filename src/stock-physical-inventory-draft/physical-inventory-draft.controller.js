@@ -56,7 +56,7 @@
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         // SIGLUS-REFACTOR: starts here
-        vm.letCodeChanged = letCodeChanged;
+        vm.lotCodeChanged = lotCodeChanged;
         vm.expirationDateChanged = expirationDateChanged;
         vm.reasonChanged = reasonChanged;
         vm.reasonTextChanged = reasonTextChanged;
@@ -557,11 +557,8 @@
         }
         // SIGLUS-REFACTOR: ends here
 
-        var watchItems = [];
-
         function resetWatchItems() {
             $scope.needToConfirm = false;
-            watchItems = angular.copy(vm.displayLineItemsGroup);
         }
 
         function onInit() {
@@ -584,15 +581,10 @@
             initiateLineItems();
             refreshLotOptions();
             vm.hasLot = vm.existLotCode.length > 0;
+            $scope.needToConfirm = $stateParams.isAddProduct;
             // SIGLUS-REFACTOR: starts here
 
             vm.updateProgress();
-            resetWatchItems();
-            $scope.$watch(function() {
-                return vm.displayLineItemsGroup;
-            }, function(newValue) {
-                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, watchItems));
-            }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
@@ -606,6 +598,10 @@
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 // SIGLUS-REFACTOR: ends here
             }, true);
+        }
+
+        function onChange() {
+            $scope.needToConfirm = true;
         }
 
         // SIGLUS-REFACTOR: starts here
@@ -711,28 +707,33 @@
                 vm.checkUnaccountedStockAdjustments(lineItem);
             }
             vm.updateProgress();
+            onChange();
         }
 
-        function letCodeChanged(lineItem) {
+        function lotCodeChanged(lineItem) {
             if (lineItem.lot && lineItem.lot.lotCode) {
                 lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
             }
             vm.updateProgress();
+            onChange();
         }
 
         function expirationDateChanged(lineItem) {
             vm.updateProgress();
             vm.validExpirationDate(lineItem);
+            onChange();
         }
 
         function reasonChanged(lineItem) {
             vm.checkUnaccountedStockAdjustments(lineItem);
             vm.updateProgress();
+            onChange();
         }
 
         function reasonTextChanged(lineItem) {
             vm.validateReasonFreeText(lineItem);
             vm.updateProgress();
+            onChange();
         }
 
         function addStockAdjustments(lineItem) {
