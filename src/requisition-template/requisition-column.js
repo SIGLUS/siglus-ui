@@ -259,7 +259,8 @@
             } else if (requisition.$isInApproval()) {
                 return !requisition.isApprovedByInternal ||
                     requisition.isApprovedByInternal && requisition.isExternalApproval;
-            } else if (requisition.$isApproved() || requisition.$isReleased()) {
+            } else if (requisition.$isApproved() || requisition.$isReleased() ||
+                requisition.$isReleasedWithoutOrder()) {
                 return true;
             }
             return false;

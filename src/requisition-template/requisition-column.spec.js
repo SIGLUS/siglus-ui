@@ -56,6 +56,9 @@ describe('RequisitionColumn', function() {
             },
             $isReleased: function() {
                 return false;
+            },
+            $isReleasedWithoutOrder: function() {
+                return false;
             }
         };
     });

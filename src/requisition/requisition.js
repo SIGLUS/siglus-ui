@@ -137,6 +137,7 @@
         Requisition.prototype.addProductLineItem = addProductLineItem;
         Requisition.prototype.getSkippedProducts = getSkippedProducts;
         Requisition.prototype.$isAfterApprove = isAfterApprove;
+        Requisition.prototype.$isReleasedWithoutOrder = isReleasedWithoutOrder;
         // SIGLUS-REFACTOR: ends here
 
         return Requisition;
@@ -527,12 +528,18 @@
          */
         function isAfterAuthorize() {
             return [REQUISITION_STATUS.AUTHORIZED, REQUISITION_STATUS.IN_APPROVAL,
-                REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED].indexOf(this.status) !== -1;
+                REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED,
+                REQUISITION_STATUS.RELEASED_WITHOUT_ORDER].indexOf(this.status) !== -1;
         }
 
         function isAfterApprove() {
             return [REQUISITION_STATUS.IN_APPROVAL,
-                REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED].indexOf(this.status) !== -1;
+                REQUISITION_STATUS.APPROVED, REQUISITION_STATUS.RELEASED,
+                REQUISITION_STATUS.RELEASED_WITHOUT_ORDER].indexOf(this.status) !== -1;
+        }
+
+        function isReleasedWithoutOrder() {
+            return this.status === REQUISITION_STATUS.RELEASED_WITHOUT_ORDER;
         }
 
         /**
