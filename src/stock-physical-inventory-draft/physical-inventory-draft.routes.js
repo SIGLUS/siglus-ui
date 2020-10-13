@@ -46,18 +46,31 @@
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
-                draft: function($stateParams, physicalInventoryFactory) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getPhysicalInventory($stateParams.id);
+                draft: function($stateParams, physicalInventoryFactory, physicalInventoryDataService, $q) {
+                    var deferred = $q.defer();
+                    if ($stateParams.draft) {
+                        physicalInventoryDataService.setDraft($stateParams.draft);
                     }
-                    return $stateParams.draft;
+                    $stateParams.draft = undefined;
+                    if (_.isUndefined(physicalInventoryDataService.getDraft())) {
+                        physicalInventoryFactory.getPhysicalInventory($stateParams.id)
+                            .then(function(draft) {
+                                physicalInventoryDataService.setDraft(draft);
+                                deferred.resolve();
+                            });
+                    } else {
+                        deferred.resolve();
+                    }
+                    return deferred.promise;
                 },
-                program: function($stateParams, programService, draft) {
+                /*eslint-disable */
+                program: function($stateParams, programService, physicalInventoryDataService, draft) {
                     if (_.isUndefined($stateParams.program)) {
-                        return programService.get(draft.programId);
+                        return programService.get(physicalInventoryDataService.getDraft().programId);
                     }
                     return $stateParams.program;
                 },
+                /*eslint-enable */
                 facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
                         return facilityFactory.getUserHomeFacility();
@@ -65,7 +78,7 @@
                     return $stateParams.facility;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    draft, orderableGroupService) {
+                    orderableGroupService, physicalInventoryDataService, draft) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {
@@ -77,9 +90,12 @@
                             })
                             .value();
                     };
-
-                    return paginationService.registerList(validator, $stateParams, function() {
-                        var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
+                    draft = physicalInventoryDataService.getDraft();
+                    var stateParamsCopy = _.clone($stateParams);
+                    stateParamsCopy.draft = draft;
+                    return paginationService.registerList(validator, stateParamsCopy, function() {
+                        var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
+                            stateParamsCopy.draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
                         // SIGLUS-REFACTOR: starts here
@@ -94,11 +110,15 @@
                                 orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
+
                         return groups;
-                    });
+                    })
+                        .then(function(items) {
+                            physicalInventoryDataService.setDisplayLineItemsGroup(items);
+                        });
                 },
-                reasons: function($stateParams, facility, program, stockReasonsFactory) {
-                    if (_.isUndefined($stateParams.reasons)) {
+                reasons: function(facility, program, stockReasonsFactory, physicalInventoryDataService) {
+                    if (_.isUndefined(physicalInventoryDataService.getReasons())) {
                         return stockReasonsFactory.getReasons(
                             program.id ? program.id : program,
                             facility.type ? facility.type.id : facility
@@ -109,9 +129,11 @@
                             })
                                 .groupBy('programId')
                                 .value();
-                        });
+                        })
+                            .then(function(reasons) {
+                                physicalInventoryDataService.setReasons(reasons);
+                            });
                     }
-                    return $stateParams.reasons;
                     // SIGLUS-REFACTOR: ends here
                 }
             }
