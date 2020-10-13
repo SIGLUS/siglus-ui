@@ -77,6 +77,7 @@
                     }
                     return $stateParams.facility;
                 },
+                /*eslint-disable */
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
@@ -90,9 +91,8 @@
                             })
                             .value();
                     };
-                    draft = physicalInventoryDataService.getDraft();
                     var stateParamsCopy = _.clone($stateParams);
-                    stateParamsCopy.draft = draft;
+                    stateParamsCopy.draft = physicalInventoryDataService.getDraft();
                     return paginationService.registerList(validator, stateParamsCopy, function() {
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
                             stateParamsCopy.draft.lineItems);
@@ -117,6 +117,7 @@
                             physicalInventoryDataService.setDisplayLineItemsGroup(items);
                         });
                 },
+                /*eslint-enable */
                 reasons: function(facility, program, stockReasonsFactory, physicalInventoryDataService) {
                     if (_.isUndefined(physicalInventoryDataService.getReasons())) {
                         return stockReasonsFactory.getReasons(
