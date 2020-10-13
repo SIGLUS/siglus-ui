@@ -19,7 +19,8 @@ describe('PhysicalInventoryDraftController', function() {
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
-        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder;
+        ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
+        physicalInventoryDataService;
 
     beforeEach(function() {
 
@@ -59,6 +60,7 @@ describe('PhysicalInventoryDraftController', function() {
             accessTokenFactory = jasmine.createSpyObj('accessTokenFactory', ['addAccessToken']);
             confirmService = jasmine.createSpyObj('confirmService', ['confirm', 'confirmDestroy']);
 
+            physicalInventoryDataService = $injector.get('physicalInventoryDataService');
             program = {
                 name: 'HIV',
                 id: '1'
@@ -136,6 +138,13 @@ describe('PhysicalInventoryDraftController', function() {
                 new ReasonDataBuilder().buildDebitReason()
             ];
 
+            physicalInventoryDataService.setReasons(reasons);
+            physicalInventoryDataService.setDraft(draft);
+            physicalInventoryDataService.setDisplayLineItemsGroup([
+                [lineItem1],
+                [lineItem3]
+            ]);
+
             vm = initController();
 
             vm.$onInit();
@@ -193,12 +202,8 @@ describe('PhysicalInventoryDraftController', function() {
             page: 0,
             keyword: '200',
             id: draft.id,
-            draft: draft,
             program: program,
-            facility: facility,
-            // SIGLUS-REFACTOR: starts here
-            reasons: reasons
-            // SIGLUS-REFACTOR: ends here
+            facility: facility
         };
 
         expect(state.go).toHaveBeenCalledWith('/a/b', params, {
@@ -521,14 +526,9 @@ describe('PhysicalInventoryDraftController', function() {
             $state: state,
             $scope: scope,
             $stateParams: stateParams,
-            displayLineItemsGroup: [
-                [lineItem1],
-                [lineItem3]
-            ],
-            draft: draft,
+            physicalInventoryDataService: physicalInventoryDataService,
             addProductsModalService: addProductsModalService,
             chooseDateModalService: chooseDateModalService,
-            reasons: reasons,
             physicalInventoryService: physicalInventoryService,
             stockmanagementUrlFactory: stockmanagementUrlFactory,
             accessTokenFactory: accessTokenFactory,

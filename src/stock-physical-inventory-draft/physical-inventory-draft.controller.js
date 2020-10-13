@@ -31,24 +31,24 @@
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'addProductsModalService',
         'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
-        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility', 'draft',
-        'displayLineItemsGroup', 'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
-        'VVM_STATUS', 'reasons', 'stockReasonsCalculations', 'loadingModalService', '$window',
+        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility',
+        'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
+        'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
-        'siglusArchivedProductService', 'siglusOrderableLotMapping'
+        'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
                         physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
-                        chooseDateModalService, program, facility, draft, displayLineItemsGroup,
+                        chooseDateModalService, program, facility,
                         confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
-                        reasons, stockReasonsCalculations, loadingModalService, $window,
+                        stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
-                        siglusArchivedProductService, siglusOrderableLotMapping) {
+                        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -64,6 +64,9 @@
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
+        var draft = physicalInventoryDataService.getDraft();
+        var reasons = physicalInventoryDataService.getReasons();
+        var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup();
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
         // SIGLUS-REFACTOR: ends here
 
@@ -280,6 +283,7 @@
          * It searches from the total line items with given keyword. If keyword is empty then all line
          * items will be shown.
          */
+
         vm.search = function() {
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
@@ -300,8 +304,6 @@
         function reload(reload) {
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
-            $stateParams.draft = draft;
-            $stateParams.reasons = vm.reasons;
             $state.go($state.current.name, $stateParams, {
                 reload: reload
             });
@@ -575,7 +577,6 @@
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
-            $stateParams.draft = draft;
 
             // SIGLUS-REFACTOR: starts here
             initiateLineItems();
