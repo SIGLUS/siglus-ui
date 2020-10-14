@@ -28,7 +28,7 @@
 
     function time() {
         return {
-            LOADING_TIME: 1000,
+            LOADING_TIME: 500,
             THROTTLE_TIME: 3000
         };
     }

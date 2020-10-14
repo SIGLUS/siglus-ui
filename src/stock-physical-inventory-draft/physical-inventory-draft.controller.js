@@ -305,7 +305,7 @@
         // SIGLUS-REFACTOR: starts here
         function reload(reload) {
             loadingModalService.open();
-            return delayPromise().then(function() {
+            return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 return $state.go($state.current.name, $stateParams, {
@@ -366,7 +366,7 @@
         vm.saveOnPageChange = function() {
             // only this works!
             loadingModalService.open();
-            return delayPromise().then(function() {
+            return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 var params = {};
                 params.draft = draft;
                 return $q.resolve(params);
@@ -869,11 +869,11 @@
             vm.search();
         }
 
-        function delayPromise() {
+        function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {
                 deferred.resolve();
-            });
+            }, delay);
             return deferred.promise;
         }
         // SIGLUS-REFACTOR: ends here
