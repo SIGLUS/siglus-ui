@@ -302,10 +302,13 @@
 
         // SIGLUS-REFACTOR: starts here
         function reload(reload) {
-            $stateParams.program = vm.program;
-            $stateParams.facility = vm.facility;
-            $state.go($state.current.name, $stateParams, {
-                reload: reload
+            loadingModalService.open();
+            delayPromise().then(function() {
+                $stateParams.program = vm.program;
+                $stateParams.facility = vm.facility;
+                $state.go($state.current.name, $stateParams, {
+                    reload: reload
+                });
             });
         }
         // SIGLUS-REFACTOR: ends here
@@ -354,11 +357,17 @@
          * @description
          * Save physical inventory draft on page change.
          */
+        // SIGLUS-REFACTOR: starts here: for open loading when reload page
         vm.saveOnPageChange = function() {
-            var params = {};
-            params.draft = draft;
-            return $q.resolve(params);
+            // only this works!
+            loadingModalService.open();
+            return delayPromise().then(function() {
+                var params = {};
+                params.draft = draft;
+                return $q.resolve(params);
+            });
         };
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -849,6 +858,14 @@
             reorderItems();
             vm.keyword = null;
             vm.search();
+        }
+
+        function delayPromise() {
+            var deferred = $q.defer();
+            setTimeout(function() {
+                deferred.resolve();
+            });
+            return deferred.promise;
         }
         // SIGLUS-REFACTOR: ends here
     }
