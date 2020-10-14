@@ -296,17 +296,17 @@
             // $state.go($state.current.name, $stateParams, {
             //     reload: $state.current.name
             // });
-            reload($state.current.name);
+            return reload($state.current.name);
             // SIGLUS-REFACTOR: ends here
         };
 
         // SIGLUS-REFACTOR: starts here
         function reload(reload) {
             loadingModalService.open();
-            delayPromise().then(function() {
+            return delayPromise().then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
-                $state.go($state.current.name, $stateParams, {
+                return $state.go($state.current.name, $stateParams, {
                     reload: reload
                 });
             });
