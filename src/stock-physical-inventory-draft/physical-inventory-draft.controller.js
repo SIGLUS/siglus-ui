@@ -37,7 +37,8 @@
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
-        'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService'
+        'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
+        'SIGLUS_TIME'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -48,7 +49,8 @@
                         stockReasonsCalculations, loadingModalService, $window,
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
-                        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService) {
+                        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
+                        SIGLUS_TIME) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -322,7 +324,7 @@
          * Save physical inventory draft.
          */
         // SIGLUS-REFACTOR: starts here
-        vm.saveDraft = function() {
+        var saveDraft = function() {
             if ($stateParams.keyword) {
                 cancelFilter();
             }
@@ -347,6 +349,9 @@
                 alertService.error('stockPhysicalInventoryDraft.saveFailed');
             });
         };
+        vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -377,7 +382,7 @@
          * @description
          * Delete physical inventory draft.
          */
-        vm.delete = function() {
+        var deleteDraft = function() {
             confirmService.confirmDestroy(
                 'stockPhysicalInventoryDraft.deleteDraft',
                 'stockPhysicalInventoryDraft.delete'
@@ -397,7 +402,9 @@
                     });
             });
         };
-
+        vm.delete = _.throttle(deleteDraft, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
@@ -406,7 +413,7 @@
          * @description
          * Submit physical inventory.
          */
-        vm.submit = function() {
+        var submit = function() {
             if (validate()) {
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
@@ -458,7 +465,9 @@
                 });
             }
         };
-
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
