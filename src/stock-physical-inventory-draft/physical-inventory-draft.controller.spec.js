@@ -196,8 +196,6 @@ describe('PhysicalInventoryDraftController', function() {
 
     it('should reload with page and keyword when search', function() {
         vm.keyword = '200';
-        vm.search();
-
         var params = {
             page: 0,
             keyword: '200',
@@ -206,8 +204,10 @@ describe('PhysicalInventoryDraftController', function() {
             facility: facility
         };
 
-        expect(state.go).toHaveBeenCalledWith('/a/b', params, {
-            reload: '/a/b'
+        return vm.search().then(function() {
+            expect(state.go).toHaveBeenCalledWith('/a/b', params, {
+                reload: '/a/b'
+            });
         });
     });
 
