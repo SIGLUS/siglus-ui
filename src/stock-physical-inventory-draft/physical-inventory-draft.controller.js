@@ -326,7 +326,7 @@
         // SIGLUS-REFACTOR: starts here
         var saveDraft = function() {
             if ($stateParams.keyword) {
-                cancelFilter();
+                $stateParams.keyword = null;
             }
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
@@ -417,7 +417,7 @@
             if (validate()) {
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
-                    cancelFilter();
+                    $stateParams.keyword = null;
                 }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
@@ -842,6 +842,7 @@
             return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
         }*/
 
+        /*
         function reorderItems() {
             var sorted = $filter('orderBy')(vm.draft.lineItems, ['orderable.productCode', '-occurredDate']);
             var groups = _.chain(sorted).groupBy(function(item) {
@@ -862,13 +863,7 @@
             });
             vm.displayLineItemsGroup = groups;
         }
-
-        function cancelFilter() {
-            reorderItems();
-            vm.keyword = null;
-            vm.search();
-        }
-
+        */
         function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {
