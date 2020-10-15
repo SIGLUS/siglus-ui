@@ -16,11 +16,11 @@
 
     angular
         .module('stock-physical-inventory')
-        .service('physicalInventoryDataService', service);
+        .service('physicalInventoryDataService', physicalInventoryDataService);
 
-    service.$inject = [];
+    physicalInventoryDataService.$inject = [];
 
-    function service() {
+    function physicalInventoryDataService() {
         this.displayLineItemsGroup = undefined;
         this.draft = undefined;
         this.reasons = undefined;
