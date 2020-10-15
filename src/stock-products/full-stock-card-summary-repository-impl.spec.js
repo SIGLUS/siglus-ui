@@ -18,7 +18,10 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotResourceMock, $q, $rootScope,
         orderableResourceMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
         StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder,
-        ObjectReferenceDataBuilder;
+        ObjectReferenceDataBuilder,
+        // SIGLUS-REFACTOR: starts here
+        siglusArchivedProductService;
+    // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
         module('stock-card-summary');
@@ -32,13 +35,13 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             });
 
             // SIGLUS-REFACTOR: starts here
-            orderableResourceMock = jasmine.createSpyObj('SiglusOrderableResource', ['query']);
-            $provide.factory('SiglusOrderableResource', function() {
+            orderableResourceMock = jasmine.createSpyObj('OrderableResource', ['getByVersionIdentities']);
+            // SIGLUS-REFACTOR: ends here
+            $provide.factory('OrderableResource', function() {
                 return function() {
                     return orderableResourceMock;
                 };
             });
-            // SIGLUS-REFACTOR: ends here
 
             orderableFulfillsResourceMock = jasmine.createSpyObj('orderableFulfillsResource', ['query']);
             $provide.factory('OrderableFulfillsResource', function() {
@@ -67,6 +70,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             ObjectReferenceDataBuilder = $injector.get('ObjectReferenceDataBuilder');
             $rootScope = $injector.get('$rootScope');
             $q = $injector.get('$q');
+            // SIGLUS-REFACTOR: starts here
+            siglusArchivedProductService = $injector.get('siglusArchivedProductService');
+            // SIGLUS-REFACTOR: ends here
         });
 
         stockCardSummaryResourceMock.query.andReturn($q.resolve(
@@ -125,36 +131,36 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
                 canFulfillForMe: ['id-six']
             }
         }));
-        orderableResourceMock.query.andReturn($q.resolve(
-            new PageDataBuilder()
-                .withContent([
-                    new OrderableDataBuilder().withId('id-one')
-                        .build(),
-                    new OrderableDataBuilder().withId('id-two')
-                        .withIdentifiers({
-                            tradeItem: 'trade-item-2'
-                        })
-                        .build(),
-                    new OrderableDataBuilder().withId('id-three')
-                        .withIdentifiers({
-                            tradeItem: 'trade-item-3'
-                        })
-                        .build(),
-                    new OrderableDataBuilder().withId('id-four')
-                        .withIdentifiers({
-                            tradeItem: 'trade-item-4'
-                        })
-                        .build(),
-                    new OrderableDataBuilder().withId('id-five')
-                        .build(),
-                    new OrderableDataBuilder().withId('id-six')
-                        .withIdentifiers({
-                            tradeItem: 'trade-item-6'
-                        })
-                        .build()
-                ])
-                .build()
+        // SIGLUS-REFACTOR: starts here
+        orderableResourceMock.getByVersionIdentities.andReturn($q.resolve(
+            [
+                new OrderableDataBuilder().withId('id-one')
+                    .build(),
+                new OrderableDataBuilder().withId('id-two')
+                    .withIdentifiers({
+                        tradeItem: 'trade-item-2'
+                    })
+                    .build(),
+                new OrderableDataBuilder().withId('id-three')
+                    .withIdentifiers({
+                        tradeItem: 'trade-item-3'
+                    })
+                    .build(),
+                new OrderableDataBuilder().withId('id-four')
+                    .withIdentifiers({
+                        tradeItem: 'trade-item-4'
+                    })
+                    .build(),
+                new OrderableDataBuilder().withId('id-five')
+                    .build(),
+                new OrderableDataBuilder().withId('id-six')
+                    .withIdentifiers({
+                        tradeItem: 'trade-item-6'
+                    })
+                    .build()
+            ]
         ));
+        // SIGLUS-REFACTOR: ends here
         lotResourceMock.query.andReturn($q.resolve(
             new PageDataBuilder()
                 .withContent([
@@ -210,7 +216,10 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             orderableFulfillsResourceMock.query.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            // SIGLUS-REFACTOR: starts here
+            fullStockCardSummaryRepositoryImpl.query({
+                facilityId: 'facilityId'
+            })
                 .catch(function() {
                     rejected = true;
                 });
@@ -222,10 +231,12 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
         });
 
         it('should reject if orderable download fails', function() {
-            orderableResourceMock.query.andReturn($q.reject());
+            orderableResourceMock.getByVersionIdentities.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query({
+                facilityId: 'facilityId'
+            })
                 .catch(function() {
                     rejected = true;
                 });
@@ -234,14 +245,16 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-            expect(orderableResourceMock.query).toHaveBeenCalled();
+            expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
         });
 
         it('should reject if lot download fails', function() {
             lotResourceMock.query.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query({
+                facilityId: 'facilityId'
+            })
                 .catch(function() {
                     rejected = true;
                 });
@@ -250,13 +263,16 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-            expect(orderableResourceMock.query).toHaveBeenCalled();
+            expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             expect(lotResourceMock.query).toHaveBeenCalled();
         });
 
         it('should build proper response', function() {
+            spyOn(siglusArchivedProductService, 'getArchivedOrderables').andReturn($q.resolve([]));
             var result;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query({
+                facilityId: 'facilityId'
+            })
                 .then(function(response) {
                     result = response;
                 });
@@ -264,7 +280,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
-            expect(orderableResourceMock.query).toHaveBeenCalled();
+            expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
+            // SIGLUS-REFACTOR: ends here
             expect(lotResourceMock.query).toHaveBeenCalled();
             expect(result).not.toBeUndefined();
         });
