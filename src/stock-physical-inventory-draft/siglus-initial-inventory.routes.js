@@ -64,31 +64,46 @@
                     }
                     return $stateParams.program;
                 },
-                draft: function($stateParams, physicalInventoryFactory, program, facility) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return physicalInventoryFactory.getInitialInventory(program.id, facility.id)
-                            .then(function(draft) {
-                                return draft;
-                            });
+                // SIGLUS-REFACTOR: starts here
+                draft: function($stateParams, physicalInventoryFactory, program, facility,
+                    physicalInventoryDataService, $q) {
+                    var deferred = $q.defer();
+                    if ($stateParams.draft) {
+                        physicalInventoryDataService.setDraft($stateParams.draft);
                     }
-                    return $stateParams.draft;
+                    $stateParams.draft = undefined;
+                    if (_.isUndefined(physicalInventoryDataService.getDraft())) {
+                        physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                            .then(function(draft) {
+                                physicalInventoryDataService.setDraft(draft);
+                                deferred.resolve();
+                            });
+                    } else {
+                        deferred.resolve();
+                    }
+                    return deferred.promise;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    draft, orderableGroupService) {
+                    draft, orderableGroupService, physicalInventoryDataService) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
+                                // SIGLUS-REFACTOR: starts here
                                 return !!item.$errors.quantityInvalid === false;
+                                // SIGLUS-REFACTOR: ends here
                             })
                             .value();
                     };
-
-                    return paginationService.registerList(validator, $stateParams, function() {
-                        var searchResult = physicalInventoryService.search($stateParams.keyword, draft.lineItems);
+                    var stateParamsCopy = _.clone($stateParams);
+                    stateParamsCopy.draft = physicalInventoryDataService.getDraft();
+                    return paginationService.registerList(validator, stateParamsCopy, function() {
+                        var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
+                            stateParamsCopy.draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
 
+                        // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {
                                 return lineItem.orderable.id;
@@ -100,11 +115,16 @@
                                 orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
+
                         return groups;
-                    });
+                    })
+                        .then(function(items) {
+                            physicalInventoryDataService.setDisplayLineItemsGroup(items);
+                        });
                 },
-                reasons: function($stateParams, facility, program, stockReasonsFactory) {
-                    if (_.isUndefined($stateParams.reasons)) {
+                reasons: function($stateParams, facility, program, stockReasonsFactory,
+                    physicalInventoryDataService) {
+                    if (_.isUndefined(physicalInventoryDataService.getReasons())) {
                         return stockReasonsFactory.getReasons(
                             program.id ? program.id : program,
                             facility.type ? facility.type.id : facility
@@ -115,9 +135,11 @@
                             })
                                 .groupBy('programId')
                                 .value();
-                        });
+                        })
+                            .then(function(reasons) {
+                                physicalInventoryDataService.setReasons(reasons);
+                            });
                     }
-                    return $stateParams.reasons;
                 }
             }
         });
