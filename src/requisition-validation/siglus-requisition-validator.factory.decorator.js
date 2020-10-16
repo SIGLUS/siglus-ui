@@ -75,6 +75,7 @@
             }
             isValid = isValid && !areAllLineItemsSkipped(requisition);
             isValid = isValid && validateTotalEqualOfRegimen(requisition);
+            isValid = isValid && !isUsageInformationEmpty(requisition);
             isValid = isValid && !isTestConsumptionEmpty(requisition);
             isValid = isValid && !isOnlyAPESFilled(requisition);
             isValid = isValid && !isTotalWithoutServices(requisition);
@@ -263,6 +264,17 @@
                 isValid = validateSiglusLineItemField(apesField) && isValid;
             }
             return isValid;
+        }
+
+        function isUsageInformationEmpty(requisition) {
+            if (!requisition.template.extension.enableUsageInformation || requisition.emergency) {
+                return false;
+            }
+            if (requisition.usageInformationLineItems.length === 0) {
+                requisition.$error = requisition.$error
+                    || messageService.get('requisitionValidation.emptyUsageInformation');
+                return true;
+            }
         }
 
         function isTestConsumptionEmpty(requisition) {

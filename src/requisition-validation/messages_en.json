@@ -4,5 +4,6 @@
   "requisitionValidation.emptyTestConsumption": "Test consumption cannot be empty",
   "requisitionValidation.apeOnly": "Test consumption cannot be APE only",
   "requisitionValidation.totalWithoutServices": "You cannot submit requisition with “total” quantity only, Please record the test result data for services",
-  "requisitionValidation.totalNotEqual": "The total patients number of regimens is not equal, Please explain the justification for the difference in \"Comments\"."
+  "requisitionValidation.totalNotEqual": "The total patients number of regimens is not equal, Please explain the justification for the difference in \"Comments\".",
+  "requisitionValidation.emptyUsageInformation": "No products found. Please contact the admin."
 }
