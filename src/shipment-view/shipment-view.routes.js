@@ -42,27 +42,22 @@
                 order: function(orderRepository, $stateParams) {
                     return orderRepository.get($stateParams.id);
                 },
-                // #264: warehouse clerk can add product to orders
-                programs: function(programService) {
-                    return programService.getAllProductsProgram();
-                },
-                stockCardSummaries: function(StockCardSummaryRepositoryImpl, order, programs,
-                    STOCKMANAGEMENT_RIGHTS) {
+                stockCardSummaries: function(StockCardSummaryRepositoryImpl, order) {
+                    // #264: warehouse clerk can add product to orders
                     var orderableIds = order.availableProducts.map(function(orderable) {
                         return orderable.id;
                     });
+                    // #264: ends here
 
                     return new StockCardSummaryRepositoryImpl().queryWithStockCards({
-                        programId: programs[0].id,
+                        programId: order.program.id,
                         facilityId: order.supplyingFacility.id,
-                        orderableId: orderableIds,
-                        rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
+                        orderableId: orderableIds
                     })
                         .then(function(page) {
                             return page.content;
                         });
                 },
-                // #264: ends here
                 // #372: Improving Fulfilling Order performance
                 shipment: function(shipmentViewService, order, stockCardSummaries) {
                     var orderWithoutAvailableProducts = angular.copy(order);
