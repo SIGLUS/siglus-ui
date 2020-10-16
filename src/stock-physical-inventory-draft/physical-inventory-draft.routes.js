@@ -86,7 +86,8 @@
                         return _.chain(items).flatten()
                             .every(function(item) {
                                 // SIGLUS-REFACTOR: starts here
-                                return !!item.$errors.quantityInvalid === false;
+                                return !!item.$errors.quantityInvalid === false &&
+                                    !!item.$errors.reasonFreeTextInvalid === false;
                                 // SIGLUS-REFACTOR: ends here
                             })
                             .value();
