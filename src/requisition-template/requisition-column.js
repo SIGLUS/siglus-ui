@@ -229,23 +229,12 @@
 
         function displayQuantityAuthorized(column, requisition) {
             return column.isDisplayed && (hasAuthorizeRight(requisition) ||
-                (requisition.$isAfterAuthorize() && hasApproveRight(requisition))
-            );
+                requisition.$isAfterAuthorize());
         }
 
         function hasAuthorizeRight(requisition) {
             return authorizationService.hasRight(
                 REQUISITION_RIGHTS.REQUISITION_AUTHORIZE,
-                {
-                    programId: requisition.program.id,
-                    facilityId: requisition.facility.id
-                }
-            );
-        }
-
-        function hasApproveRight(requisition) {
-            return authorizationService.hasRight(
-                REQUISITION_RIGHTS.REQUISITION_APPROVE,
                 {
                     programId: requisition.program.id,
                     facilityId: requisition.facility.id
