@@ -36,7 +36,18 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCard: function($stateParams, stockCardService, paginationService, StockCard) {
+                stockCard: function($stateParams, stockCardService, paginationService, StockCard,
+                    stockCardDataService) {
+                    var savedStockCard = stockCardDataService.getStockCard($stateParams);
+                    if (savedStockCard) {
+                        paginationService.registerList(null, $stateParams, function() {
+                            return savedStockCard.lineItems;
+                        }, {
+                            paginationId: 'stockCard'
+                        });
+                        return savedStockCard;
+                    }
+
                     var stockCardResource;
 
                     if ($stateParams.isViewProductCard) {
@@ -58,6 +69,7 @@
                             if ($stateParams.isViewProductCard) {
                                 delete stockCard.lot;
                             }
+                            stockCardDataService.setStockCard($stateParams, stockCard);
                             return stockCard;
                         });
                 }
