@@ -44,6 +44,9 @@
             return result ? this.stockCardHolder.stockCard : undefined;
 
         };
+        this.clear = function() {
+            this.stockCardHolder = {};
+        };
     }
 
 })();
