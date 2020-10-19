@@ -69,13 +69,13 @@
                     physicalInventoryDataService, $q) {
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
-                        physicalInventoryDataService.setDraft($stateParams.draft);
+                        physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
-                    if (_.isUndefined(physicalInventoryDataService.getDraft())) {
+                    if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
                         physicalInventoryFactory.getInitialInventory(program.id, facility.id)
                             .then(function(draft) {
-                                physicalInventoryDataService.setDraft(draft);
+                                physicalInventoryDataService.setDraft(facility.id, draft);
                                 deferred.resolve();
                             });
                     } else {
@@ -84,7 +84,7 @@
                     return deferred.promise;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    draft, orderableGroupService, physicalInventoryDataService) {
+                    facility, draft, orderableGroupService, physicalInventoryDataService) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {
@@ -97,7 +97,7 @@
                             .value();
                     };
                     var stateParamsCopy = _.clone($stateParams);
-                    stateParamsCopy.draft = physicalInventoryDataService.getDraft();
+                    stateParamsCopy.draft = physicalInventoryDataService.getDraft(facility.id);
                     return paginationService.registerList(validator, stateParamsCopy, function() {
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
                             stateParamsCopy.draft.lineItems);
@@ -119,12 +119,12 @@
                         return groups;
                     })
                         .then(function(items) {
-                            physicalInventoryDataService.setDisplayLineItemsGroup(items);
+                            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, items);
                         });
                 },
                 reasons: function($stateParams, facility, program, stockReasonsFactory,
                     physicalInventoryDataService) {
-                    if (_.isUndefined(physicalInventoryDataService.getReasons())) {
+                    if (_.isUndefined(physicalInventoryDataService.getReasons(facility.id))) {
                         return stockReasonsFactory.getReasons(
                             program.id ? program.id : program,
                             facility.type ? facility.type.id : facility
@@ -137,7 +137,7 @@
                                 .value();
                         })
                             .then(function(reasons) {
-                                physicalInventoryDataService.setReasons(reasons);
+                                physicalInventoryDataService.setReasons(facility.id, reasons);
                             });
                     }
                 }

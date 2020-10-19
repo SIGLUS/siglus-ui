@@ -138,9 +138,9 @@ describe('PhysicalInventoryDraftController', function() {
                 new ReasonDataBuilder().buildDebitReason()
             ];
 
-            physicalInventoryDataService.setReasons(reasons);
-            physicalInventoryDataService.setDraft(draft);
-            physicalInventoryDataService.setDisplayLineItemsGroup([
+            physicalInventoryDataService.setReasons(facility.id, reasons);
+            physicalInventoryDataService.setDraft(facility.id, draft);
+            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, [
                 [lineItem1],
                 [lineItem3]
             ]);

@@ -66,9 +66,9 @@
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
-        var draft = physicalInventoryDataService.getDraft();
-        var reasons = physicalInventoryDataService.getReasons();
-        var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup();
+        var draft = physicalInventoryDataService.getDraft(facility.id);
+        var reasons = physicalInventoryDataService.getReasons(facility.id);
+        var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
         // SIGLUS-REFACTOR: ends here
 
@@ -871,6 +871,13 @@
             }, delay);
             return deferred.promise;
         }
+
+        $scope.$on('$stateChangeStart', function(event, toState) {
+            if (toState.name !== 'openlmis.stockmanagement.initialInventory'
+                && toState.name !== 'openlmis.stockmanagement.physicalInventory.draft') {
+                physicalInventoryDataService.clear();
+            }
+        });
         // SIGLUS-REFACTOR: ends here
     }
 })();

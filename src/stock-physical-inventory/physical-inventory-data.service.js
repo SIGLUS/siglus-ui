@@ -24,25 +24,36 @@
         this.displayLineItemsGroup = undefined;
         this.draft = undefined;
         this.reasons = undefined;
-        this.setDisplayLineItemsGroup = function(displayLineItemsGroup) {
+        this.facilityId = undefined;
+        this.setDisplayLineItemsGroup = function(facilityId, displayLineItemsGroup) {
+            this.facilityId = facilityId;
             this.displayLineItemsGroup = displayLineItemsGroup;
         };
-        this.getDisplayLineItemsGroup = function() {
-            return this.displayLineItemsGroup;
+        this.getDisplayLineItemsGroup = function(facilityId) {
+            return this.facilityId === facilityId ? this.displayLineItemsGroup : undefined;
         };
 
-        this.setDraft = function(draft) {
+        this.setDraft = function(facilityId, draft) {
+            this.facilityId = facilityId;
             this.draft = draft;
         };
-        this.getDraft = function() {
-            return this.draft;
+        this.getDraft = function(facilityId) {
+            return this.facilityId === facilityId ? this.draft : undefined;
         };
 
-        this.getReasons = function() {
-            return this.reasons;
+        this.getReasons = function(facilityId) {
+            return this.facilityId === facilityId ? this.reasons : undefined;
         };
-        this.setReasons = function(reasons) {
+        this.setReasons = function(facilityId, reasons) {
+            this.facilityId = facilityId;
             this.reasons = reasons;
+        };
+
+        this.clear = function() {
+            this.displayLineItemsGroup = undefined;
+            this.draft = undefined;
+            this.reasons = undefined;
+            this.facilityId = undefined;
         };
     }
 

@@ -31,13 +31,14 @@
     controller.$inject = [
         'stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
         // SIGLUS-REFACTOR: starts here
-        'Reason', 'alertService', '$scope', 'confirmService', 'notificationService', 'loadingModalService'
+        'Reason', 'alertService', '$scope', 'confirmService', 'notificationService', 'loadingModalService',
+        'stockCardDataService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService,
                         Reason, alertService, $scope, confirmService, notificationService,
-                        loadingModalService) {
+                        loadingModalService, stockCardDataService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -176,6 +177,12 @@
         $scope.$on('$viewContentLoaded', function() {
             if ($state.params.isViewProductCard && !vm.isSOHCorrect) {
                 alertService.error('stockCard.viewProductStockCard.failure');
+            }
+        });
+
+        $scope.$on('$stateChangeStart', function(event, toState) {
+            if (toState.name !== 'openlmis.stockmanagement.stockCardSummaries.singleCard') {
+                stockCardDataService.clear();
             }
         });
         // SIGLUS-REFACTOR: ends here
