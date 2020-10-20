@@ -50,7 +50,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
 
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
         expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
-            page: '0',
+            page: 0,
             size: 2147483647,
             facilityId: 'facility-id',
             programId: 'program-id',
