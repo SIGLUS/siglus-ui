@@ -55,7 +55,7 @@
                 },
                 // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS) {
+                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, stockCardDataService) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -68,6 +68,12 @@
                             // #103: ends here
                             // #225: cant view detail page when not have stock view right
                             paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
+                            var savedSummary = stockCardDataService.getSummary(paramsCopy);
+                            if (savedSummary) {
+                                return savedSummary;
+                            }
+                            paramsCopy.page = 0;
+                            paramsCopy.size = 2147483647;
                             // #225: ends here
 
                             delete paramsCopy.facility;
@@ -75,7 +81,11 @@
                             delete paramsCopy.supervised;
 
                             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                                .query(paramsCopy);
+                                .query(paramsCopy)
+                                .then(function(summary) {
+                                    stockCardDataService.setSummary(paramsCopy, summary);
+                                    return stockCardDataService.getDisplaySummary(stateParams);
+                                });
                         }
                         // SIGLUS-REFACTOR: starts here
                         return [];

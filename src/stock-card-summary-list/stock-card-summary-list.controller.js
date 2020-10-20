@@ -31,12 +31,12 @@
     // SIGLUS-REFACTOR: add 'user', 'facility', 'programs'
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'user', 'facility', 'programs'
+        'user', 'facility', 'programs', '$scope', 'stockCardDataService'
     ];
     // SIGLUS-REFACTOR: ends here
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        user, facility, programs) {
+                        user, facility, programs, $scope, stockCardDataService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -153,6 +153,12 @@
                 }
             );
         }
+
+        $scope.$on('$stateChangeStart', function(event, toState) {
+            if (toState.name !== 'openlmis.stockmanagement.stockCardSummaries') {
+                stockCardDataService.clear();
+            }
+        });
         // SIGLUS-REFACTOR: ends here
     }
 })();

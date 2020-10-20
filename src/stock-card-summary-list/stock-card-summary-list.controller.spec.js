@@ -16,11 +16,11 @@
 describe('StockCardSummaryListController', function() {
     // SIGLUS-REFACTOR: add programs, facility
     var $controller, $state, implMock, StockCardSummaryDataBuilder, vm, stockCardSummaries, stateParams,
-        programs, facility;
+        programs, facility, stockCardDataService, $scope, $rootScope;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
-
+        module('stock-card');
         module('stock-card-summary-list', function($provide) {
             implMock = jasmine.createSpyObj('impl', ['print']);
 
@@ -34,7 +34,10 @@ describe('StockCardSummaryListController', function() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $state = $injector.get('$state');
+            $rootScope = $injector.get('$rootScope');
+            $scope = $rootScope.$new();
             StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            stockCardDataService = $injector.get('stockCardDataService');
         });
 
         stockCardSummaries = [
@@ -61,7 +64,9 @@ describe('StockCardSummaryListController', function() {
             $stateParams: stateParams,
             user: {},
             programs: programs,
-            facility: facility
+            facility: facility,
+            stockCardDataService: stockCardDataService,
+            $scope: $scope
             // SIGLUS-REFACTOR: ends here
         });
         vm.$onInit();

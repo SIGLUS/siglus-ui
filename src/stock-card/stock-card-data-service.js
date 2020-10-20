@@ -23,6 +23,7 @@
     function stockCardDataService() {
         // only save one stock card
         this.stockCardHolder = {};
+        this.summariesHolder = {};
         this.setStockCard = function(stateParams, stockCard) {
             this.stockCardHolder = {
                 isViewProductCard: stateParams.isViewProductCard,
@@ -42,10 +43,44 @@
             });
 
             return result ? this.stockCardHolder.stockCard : undefined;
+        };
+
+        this.setSummary = function(stateParams, summary) {
+            this.summariesHolder = {
+                facilityId: stateParams.facilityId,
+                programId: stateParams.programId,
+                summary: summary
+            };
 
         };
+        this.getSummary = function(stateParams) {
+            var result = _.isMatch(this.summariesHolder, {
+                facilityId: stateParams.facilityId,
+                programId: stateParams.programId
+            });
+
+            if (result) {
+                return this.getDisplaySummary(stateParams);
+            }
+            return undefined;
+        };
+        this.getDisplaySummary = function(stateParams) {
+            var page = parseInt(stateParams.page);
+            var size = parseInt(stateParams.size);
+            var totalElements = this.summariesHolder.summary.totalElements;
+            var totalPages = Math.ceil(totalElements / size);
+            return {
+                size: size,
+                number: page,
+                content: this.summariesHolder.summary.content.slice(page * size, (page + 1) * size),
+                totalElements: totalElements,
+                totalPages: totalPages
+            };
+        };
+
         this.clear = function() {
             this.stockCardHolder = {};
+            this.summariesHolder = {};
         };
     }
 
