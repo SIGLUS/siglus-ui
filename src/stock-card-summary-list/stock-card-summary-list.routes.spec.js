@@ -14,12 +14,14 @@
  */
 
 describe('openlmis.stockmanagement.stockCardSummaries state', function() {
-
+    /*eslint-disable */
     // SIGLUS-REFACTOR: add facilityFactory, MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
         stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries, facilityFactory,
-        MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user, programService, stockProgramUtilService;
+        MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user, programService, stockProgramUtilService,
+        stockCardDataService;
     // SIGLUS-REFACTOR: ends here
+    /*eslint-enable */
 
     beforeEach(function() {
         loadModules();
@@ -49,7 +51,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
         expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
             page: '0',
-            size: '10',
+            size: 2147483647,
             facilityId: 'facility-id',
             programId: 'program-id',
             nonEmptyOnly: true,
@@ -85,6 +87,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         });
         // SIGLUS-REFACTOR: starts here
         module('stock-program-util');
+        module('stock-card');
         // SIGLUS-REFACTOR: ends here
     }
 
@@ -104,6 +107,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             UserDataBuilder = $injector.get('UserDataBuilder');
             programService = $injector.get('programService');
             stockProgramUtilService = $injector.get('stockProgramUtilService');
+            stockCardDataService = $injector.get('stockCardDataService');
             // SIGLUS-REFACTOR: ends here
         });
     }
