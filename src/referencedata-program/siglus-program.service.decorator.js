@@ -33,8 +33,10 @@
         $provide.decorator('programService', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource', '$q', 'localStorageFactory'];
-    function decorator($delegate, openlmisUrlFactory, $resource, $q, localStorageFactory) {
+    decorator.$inject = ['$delegate', 'openlmisUrlFactory', '$resource', '$q', 'localStorageFactory',
+        'loginService'];
+    function decorator($delegate, openlmisUrlFactory, $resource, $q, localStorageFactory,
+                       loginService) {
         var resource = $resource(openlmisUrlFactory('/api/siglusapi/programs'), {}, {
                 getAllProductsProgram: {
                     method: 'GET',
@@ -49,6 +51,11 @@
                 }
             }),
             programsCache = localStorageFactory('programs');
+        var allProductProgramHolder = undefined;
+
+        loginService.registerPostLoginAction(function() {
+            return getAllProductsProgram();
+        });
 
         $delegate.getAllProductsProgram = getAllProductsProgram;
         $delegate.get = get;
@@ -64,8 +71,14 @@
          * Get all products program.
          */
         function getAllProductsProgram() {
+            if (allProductProgramHolder) {
+                return $q.resolve(allProductProgramHolder);
+            }
             return resource.getAllProductsProgram()
-                .$promise;
+                .$promise.then(function(program) {
+                    allProductProgramHolder = program;
+                    return program;
+                });
         }
 
         /**

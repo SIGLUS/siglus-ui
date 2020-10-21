@@ -85,7 +85,9 @@
                             .every(function(item) {
                                 // SIGLUS-REFACTOR: starts here
                                 return !!item.$errors.quantityInvalid === false &&
-                                    !!item.$errors.reasonFreeTextInvalid === false;
+                                    !!item.$errors.reasonFreeTextInvalid === false &&
+                                    !!item.$errors.lotCodeInvalid === false &&
+                                    !!item.$errors.lotDateInvalid === false;
                                 // SIGLUS-REFACTOR: ends here
                             })
                             .value();
