@@ -33,14 +33,13 @@
     // programService, STOCKMANAGEMENT_RIGHTS
     ShipmentRepositoryImpl.$inject = [
         'ShipmentResource', 'ShipmentDraftResource', 'OrderResource', 'StockCardSummaryRepositoryImpl',
-        'SiglusShipmentResource', 'SiglusShipmentDraftResource', 'SiglusOrderResource', 'programService',
-        'STOCKMANAGEMENT_RIGHTS'
+        'SiglusShipmentResource', 'SiglusShipmentDraftResource', 'SiglusOrderResource'
     ];
     // #287: ends here
 
     function ShipmentRepositoryImpl(ShipmentResource, ShipmentDraftResource, OrderResource,
                                     StockCardSummaryRepositoryImpl, SiglusShipmentResource, SiglusShipmentDraftResource,
-                                    SiglusOrderResource, programService, STOCKMANAGEMENT_RIGHTS) {
+                                    SiglusOrderResource) {
 
         ShipmentRepositoryImpl.prototype.create = create;
         ShipmentRepositoryImpl.prototype.createDraft = createDraft;
@@ -203,17 +202,11 @@
                     });
                     // #374: ends here
 
-                    // #332: save shipment draft
-                    return programService.getAllProductsProgram()
-                        .then(function(programs) {
-                            return stockCardSummaryRepositoryImpl.query({
-                                programId: programs[0].id,
-                                facilityId: orderJson.order.supplyingFacility.id,
-                                orderableId: orderableIds,
-                                rightName: STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW
-                            });
-                        })
-                    // #332: ends here
+                    return stockCardSummaryRepositoryImpl.query({
+                        programId: orderJson.order.program.id,
+                        facilityId: orderJson.order.supplyingFacility.id,
+                        orderableId: orderableIds
+                    })
                         .then(function(page) {
                             return page.content;
                         })
