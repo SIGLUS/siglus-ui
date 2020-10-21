@@ -20,7 +20,7 @@ describe('ShipmentRepositoryImpl', function() {
         shipment, shipmentResourceMock, orderResourceMock, $q, $rootScope, order,
         stockCardSummaryRepositoryImplMock, StockCardSummaryDataBuilder, ShipmentLineItemDataBuilder,
         CanFulfillForMeEntryDataBuilder, stockCardSummaries, shipmentDraftResourceMock, siglusShipmentDraftResourceMock,
-        siglusShipmentResourceMock, rightName, programId, programServiceMock;
+        siglusShipmentResourceMock, programServiceMock;
     // #287: ends here
 
     beforeEach(function() {
@@ -76,8 +76,6 @@ describe('ShipmentRepositoryImpl', function() {
             $provide.factory('programService', function() {
                 return programServiceMock;
             });
-            rightName = 'STOCK_CARDS_VIEW';
-            programId = 'id';
             // #332: ends here
 
             orderResourceMock = jasmine.createSpyObj('orderResource', [
@@ -194,9 +192,6 @@ describe('ShipmentRepositoryImpl', function() {
             siglusShipmentResourceMock.create.andReturn($q.resolve(shipment));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
-            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
-                id: programId
-            }]));
 
             var rejected;
             shipmentRepositoryImpl.create(shipment)
@@ -211,13 +206,12 @@ describe('ShipmentRepositoryImpl', function() {
             expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: programId,
+                programId: order.program.id,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ],
-                rightName: rightName
+                ]
             });
         });
 
@@ -227,9 +221,6 @@ describe('ShipmentRepositoryImpl', function() {
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
-            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
-                id: programId
-            }]));
 
             var result;
             shipmentRepositoryImpl.create(shipment)
@@ -250,13 +241,12 @@ describe('ShipmentRepositoryImpl', function() {
             expect(siglusShipmentResourceMock.create).toHaveBeenCalledWith(shipment);
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: programId,
+                programId: order.program.id,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ],
-                rightName: rightName
+                ]
             });
 
         });
@@ -446,9 +436,6 @@ describe('ShipmentRepositoryImpl', function() {
             }));
             orderResourceMock.get.andReturn($q.resolve(order));
             stockCardSummaryRepositoryImplMock.query.andReturn($q.reject());
-            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
-                id: programId
-            }]));
 
             var rejected;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -466,13 +453,12 @@ describe('ShipmentRepositoryImpl', function() {
 
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: programId,
+                programId: order.program.id,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ],
-                rightName: rightName
+                ]
             });
         });
 
@@ -484,9 +470,6 @@ describe('ShipmentRepositoryImpl', function() {
             stockCardSummaryRepositoryImplMock.query.andReturn($q.resolve({
                 content: stockCardSummaries
             }));
-            programServiceMock.getAllProductsProgram.andReturn($q.resolve([{
-                id: programId
-            }]));
 
             var result;
             shipmentRepositoryImpl.getByOrderId(shipment.order.id)
@@ -510,13 +493,12 @@ describe('ShipmentRepositoryImpl', function() {
 
             expect(orderResourceMock.get).toHaveBeenCalledWith(shipment.order.id);
             expect(stockCardSummaryRepositoryImplMock.query).toHaveBeenCalledWith({
-                programId: programId,
+                programId: order.program.id,
                 facilityId: order.supplyingFacility.id,
                 orderableId: [
                     order.orderLineItems[0].orderable.id,
                     order.orderLineItems[1].orderable.id
-                ],
-                rightName: rightName
+                ]
             });
 
         });
