@@ -45,7 +45,7 @@
                 },
                 programs: function(programService) {
                     // SIGLUS-REFACTOR: get all products
-                    return programService.getAllProductsProgram();
+                    return angular.copy(programService.getAllProductsProgram());
                     // SIGLUS-REFACTOR: ends here
                 },
                 adjustmentType: function() {
