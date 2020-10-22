@@ -227,7 +227,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
+            // expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
         });
 
         it('should reject if orderable download fails', function() {
@@ -244,7 +244,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
+            // expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
         });
 
@@ -262,7 +262,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             expect(rejected).toBe(true);
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
+            // expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             expect(lotResourceMock.query).toHaveBeenCalled();
         });
@@ -279,7 +279,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             $rootScope.$apply();
 
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
-            expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
+            // expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
             expect(lotResourceMock.query).toHaveBeenCalled();
