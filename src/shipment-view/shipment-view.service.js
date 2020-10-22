@@ -124,6 +124,7 @@
                 } else if (!haveFulfilledLineItem(shipment, unskippedLineItems)) {
                     return alertService.error('shipmentView.allLineItemsNotFulfilled');
                 }
+                loadingModalService.open();
                 // #287: ends here
                 // #400: Facility user partially fulfill an order and create sub-order for an requisition
                 return orderService.getStatus(this.order.id).then(function(result) {
@@ -138,7 +139,6 @@
                             }), 'shipmentView.confirmPartialFulfilled.createSuborder'
                         )
                             .then(function() {
-                                loadingModalService.open();
                                 return shipment.createSuborder()
                                     .then(function() {
                                         notificationService.success('shipmentView.suborderHasBeenConfirmed');
@@ -156,8 +156,6 @@
                         'shipmentView.confirmShipment'
                     )
                         .then(function() {
-                            loadingModalService.open();
-
                             return originalConfirm.apply(shipment)
                                 .then(function() {
                                     notificationService.success('shipmentView.shipmentHasBeenConfirmed');
@@ -168,7 +166,8 @@
                                     loadingModalService.close();
                                 });
                         });
-                });
+                })
+                    .finally(loadingModalService.close);
             };
         }
 
