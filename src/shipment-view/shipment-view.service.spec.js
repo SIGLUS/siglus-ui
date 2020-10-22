@@ -436,12 +436,14 @@ describe('shipmentViewService', function() {
                 'shipmentView.confirmShipment'
             );
 
-            expect(loadingModalService.open).not.toHaveBeenCalled();
+            // SIGLUS-REFACTOR: starts here
+            expect(loadingModalService.open).toHaveBeenCalled();
             expect(originalConfirm).not.toHaveBeenCalled();
             expect(notificationService.success).not.toHaveBeenCalled();
             expect(stateTrackerService.goToPreviousState).not.toHaveBeenCalled();
             expect(notificationService.error).not.toHaveBeenCalled();
-            expect(loadingModalService.close).not.toHaveBeenCalled();
+            expect(loadingModalService.close).toHaveBeenCalled();
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should open loading modal after confirmation', function() {
@@ -461,7 +463,9 @@ describe('shipmentViewService', function() {
             expect(notificationService.success).not.toHaveBeenCalled();
             expect(stateTrackerService.goToPreviousState).not.toHaveBeenCalled();
             expect(notificationService.error).not.toHaveBeenCalled();
-            expect(loadingModalService.close).not.toHaveBeenCalled();
+            // SIGLUS-REFACTOR: starts here
+            expect(loadingModalService.close).toHaveBeenCalled();
+            // SIGLUS-REFACTOR: ends here
         });
 
         it('should show error on failure', function() {
@@ -508,7 +512,9 @@ describe('shipmentViewService', function() {
                 toHaveBeenCalledWith('openlmis.orders.view');
 
             expect(notificationService.error).not.toHaveBeenCalled();
-            expect(loadingModalService.close).not.toHaveBeenCalled();
+            // SIGLUS-REFACTOR: starts here
+            expect(loadingModalService.close).toHaveBeenCalled();
+            // SIGLUS-REFACTOR: ends here
         });
 
         // #400: Facility user partially fulfill an order and create sub-order for an requisition
