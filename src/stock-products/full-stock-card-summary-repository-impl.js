@@ -31,13 +31,12 @@
 
     // SIGLUS-REFACTOR: starts here
     FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotResource',
-        'OrderableResource', '$q', 'OrderableFulfillsResource', 'SiglusStockCardSummaryResource',
-        'siglusArchivedProductService'];
+        'OrderableResource', '$q', 'SiglusStockCardSummaryResource', 'siglusArchivedProductService'];
     // SIGLUS-REFACTOR: ends here
 
     function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource,
-                                                OrderableResource, $q, OrderableFulfillsResource,
-                                                SiglusStockCardSummaryResource, siglusArchivedProductService) {
+                                                OrderableResource, $q, SiglusStockCardSummaryResource,
+                                                siglusArchivedProductService) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -55,11 +54,10 @@
         function FullStockCardSummaryRepositoryImpl() {
             this.LotResource = new LotResource();
             this.OrderableResource = new OrderableResource();
-            this.orderableFulfillsResource = new OrderableFulfillsResource();
-
             // SIGLUS-REFACTOR: starts here
+            // this.orderableFulfillsResource = new OrderableFulfillsResource();
+
             this.resource = new SiglusStockCardSummaryResource();
-            // SIGLUS-REFACTOR: ends here
         }
 
         /**
@@ -77,104 +75,78 @@
          */
         function query(params) {
             var LotResource = this.LotResource,
-                OrderableResource = this.OrderableResource,
-                orderableFulfillsResource = this.orderableFulfillsResource;
+                OrderableResource = this.OrderableResource;
+                // orderableFulfillsResource = this.orderableFulfillsResource;
 
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
-                    return addMissingStocklessProducts(stockCardSummariesPage, orderableFulfillsResource,
-                        // SIGLUS-REFACTOR: starts here
+                    return addMissingStocklessProducts(stockCardSummariesPage,
                         LotResource, OrderableResource, params.facilityId);
-                    // SIGLUS-REFACTOR: ends here
                 });
         }
 
-        function addMissingStocklessProducts(summaries, orderableFulfillsResource, LotResource,
+        function addMissingStocklessProducts(summaries, LotResource,
                                              OrderableResource, facilityId) {
-            var commodityTypeIds = summaries.content.map(function(summary) {
-                return summary.orderable.id;
-            });
+            // var commodityTypeIds = summaries.content.map(function(summary) {
+            //     return summary.orderable.id;
+            // });
 
-            // SIGLUS-REFACTOR: starts here
             var identities = summaries.content.map(function(summary) {
                 return summary.orderable;
             });
-            // SIGLUS-REFACTOR: ends here
 
-            return orderableFulfillsResource.query({
-                id: commodityTypeIds
-            })
-                .then(function(orderableFulfills) {
+            return OrderableResource.getByVersionIdentities(identities)
+                .then(function(orderablePage) {
+                    var tradeItemIds = getTradeItemIdsSet(orderablePage);
 
-                    addGenericOrderables(orderableFulfills, summaries);
-                    // SIGLUS-REFACTOR: starts here
-                    // var orderableIds = reduceToOrderableIds(orderableFulfills);
-
-                    return OrderableResource.getByVersionIdentities(identities)
-                        .then(function(orderablePage) {
-                            var tradeItemIds = getTradeItemIdsSet(orderablePage);
-
-                            return LotResource.query({
-                                tradeItemId: tradeItemIds
-                            })
-                                .then(function(lotPage) {
-                                    return siglusArchivedProductService.getArchivedOrderables(facilityId)
-                                        .then(function(archivedOrderables) {
-                                            var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
-                                            var orderableMap = mapOrderablesById(orderablePage, archivedOrderables);
-                                            prapareSummaries(lotMap, orderableMap, summaries, lotPage,
-                                                orderableFulfills);
-                                            // SIGLUS-REFACTOR: ends here
-
-                                            return summaries;
+                    return LotResource.query({
+                        tradeItemId: tradeItemIds
+                    })
+                        .then(function(lotPage) {
+                            return siglusArchivedProductService.getArchivedOrderables(facilityId)
+                                .then(function(archivedOrderables) {
+                                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
+                                    var orderableMap = mapOrderablesById(orderablePage, archivedOrderables);
+                                    summaries.content.forEach(function(summary) {
+                                        addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+                                        var orderableId = summary.orderable.id;
+                                        lotMap[orderableId].forEach(function(lot) {
+                                            if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
+                                                summary.canFulfillForMe.push(createCanFulfillForMeEntry(
+                                                    orderableMap[orderableId], lot
+                                                ));
+                                            }
                                         });
+
+                                        if (!hasOrderableWithLot(summary, orderableId, null)) {
+                                            summary.canFulfillForMe.push(
+                                                createCanFulfillForMeEntry(orderableMap[orderableId], null)
+                                            );
+                                        }
+                                    });
+
+                                    return summaries;
                                 });
                         });
                 });
         }
 
-        function prapareSummaries(lotMap, orderableMap, summaries, lotPage, orderableFulfills) {
-            summaries.content.forEach(function(summary) {
-                addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+        // function addGenericOrderables(orderableFulfills, summaries) {
+        //     summaries.content.forEach(function(summary) {
+        //         if (!orderableFulfills[summary.orderable.id]) {
+        //             orderableFulfills[summary.orderable.id] = {
+        //                 canFulfillForMe: []
+        //             };
+        //         }
+        //     });
+        //
+        //     Object.keys(orderableFulfills).forEach(function(commodityTypeId) {
+        //         if (orderableFulfills[commodityTypeId].canFulfillForMe) {
+        //             orderableFulfills[commodityTypeId].canFulfillForMe.push(commodityTypeId);
+        //         }
+        //     });
+        // }
 
-                if (orderableFulfills[summary.orderable.id].canFulfillForMe) {
-                    orderableFulfills[summary.orderable.id].canFulfillForMe
-                        .forEach(function(orderableId) {
-                            lotMap[orderableId].forEach(function(lot) {
-                                if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
-                                    summary.canFulfillForMe.push(createCanFulfillForMeEntry(
-                                        orderableMap[orderableId], lot
-                                    ));
-                                }
-                            });
-
-                            if (!hasOrderableWithLot(summary, orderableId, null)) {
-                                summary.canFulfillForMe.push(
-                                    createCanFulfillForMeEntry(orderableMap[orderableId], null)
-                                );
-                            }
-                        });
-                }
-            });
-        }
-
-        function addGenericOrderables(orderableFulfills, summaries) {
-            summaries.content.forEach(function(summary) {
-                if (!orderableFulfills[summary.orderable.id]) {
-                    orderableFulfills[summary.orderable.id] = {
-                        canFulfillForMe: []
-                    };
-                }
-            });
-
-            Object.keys(orderableFulfills).forEach(function(commodityTypeId) {
-                if (orderableFulfills[commodityTypeId].canFulfillForMe) {
-                    orderableFulfills[commodityTypeId].canFulfillForMe.push(commodityTypeId);
-                }
-            });
-        }
-
-        // SIGLUS-REFACTOR: starts here
         // function reduceToOrderableIds(orderableFulfills) {
         //     return Object.keys(orderableFulfills).reduce(function(ids, commodityTypeId) {
         //         if (orderableFulfills[commodityTypeId].canFulfillForMe) {
