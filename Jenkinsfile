@@ -25,6 +25,10 @@ pipeline {
                         docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
                         docker-compose down --volumes
                         docker build -t ${IMAGE_NAME} .
+                        if [ "$GIT_BRANCH" == "release-1.2" ]; then
+                          echo "set latest tag for release image"
+                          docker build -t ${IMAGE_REPO}:latest .
+                        fi
                     '''
                 }
             }
@@ -67,6 +71,10 @@ pipeline {
                         set +x
                         docker login -u $USER -p $PASS
                         docker push ${IMAGE_NAME}
+                        if [[ "$GIT_BRANCH" == *"release-"* ]]; then
+                          echo "push latest tag for release image"
+                          docker push ${IMAGE_REPO}:latest
+                        fi
                     '''
                 }
             }
