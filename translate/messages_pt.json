@@ -705,7 +705,7 @@
   "requisitionSearch.endDate": "Data final",
   "proofOfDeliveryManage.endDate": "Data final",
   "orderView.endDate": "Data final",
-  "locale.label": "Inglês",
+  "locale.label": "Português",
   "cceEditInventoryItem.source.description": "Introduza o Ministério ou organização que forneceu este dispositivo.",
   "cceEditInventoryItem.referenceName.description": "Introduza o nome que é utilizado para se referir a este dispositivo (por ex., \"Frigorífico 2\").",
   "requisitionView.approve.confirmWithSignature": "Insira as suas iniciais e de seguida aprove a Requisição",
