@@ -13,28 +13,23 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                withCredentials([file(credentialsId: 'setting_env', variable: 'ENV_FILE')]) {
+                println "gradle: build"
+                withCredentials([file(credentialsId: 'settings.qa.env', variable: 'ENV_FILE')]) {
                     sh '''
-                        rm -rf .env node_modules build .tmp lcov.info
+                        sudo rm -rf .env node_modules build .tmp lcov.info
                         cp $ENV_FILE .env
-                        if [ "$GIT_BRANCH" != "master" ]; then
-                            sed -i '' -e "s#^TRANSIFEX_PUSH=.*#TRANSIFEX_PUSH=false#" .env  2>/dev/null || true
-                        fi
                         docker-compose pull
                         docker-compose down --volumes
                         docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
                         docker-compose down --volumes
                         docker build -t ${IMAGE_NAME} .
-                        if [ "$GIT_BRANCH" = "release-1.2" ]; then
+                        if [ "$GIT_BRANCH" = "release" ]; then
                           echo "set latest tag for release image"
                           docker build -t ${IMAGE_REPO}:latest .
                         fi
                     '''
                 }
-            }
-        }
-        stage('Check Test Coverage') {
-            steps {
+                println "test converage: check"
                 sh '''
                     coverage_threshold=82
                     coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -1`;
@@ -48,44 +43,28 @@ pipeline {
                       echo "Congratulations! Test coverage is more than $coverage_threshold%."
                     fi;
                 '''
-            }
-        }
-        stage('SonarQube Analysis') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONARQUBE_TOKEN')]) {
+                println "sonarqube: analysis"
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONARQUBE_TOKEN')]) {
                     sh '''
-                        cp -r .tmp/javascript/src/ .
-                        sed 's|SF:/app/.tmp/javascript/|SF:|g' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov.info > lcov.info
-                        /ebs2/sonar/sonar-scanner-4.3.0.2102-linux/bin/sonar-scanner -Dsonar.projectKey=siglus-ui -Dsonar.sources=. -Dsonar.host.url=http://13.234.176.65:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.javascript.lcov.reportPaths=lcov.info
+                        if [ "$GIT_BRANCH" = "master" ]; then
+                            cp -r .tmp/javascript/src/ .
+                            sed 's|SF:/app/.tmp/javascript/|SF:|g' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov.info > lcov.info
+                            /home/ec2-user/sonar/sonar-scanner-4.6.0.2311-linux/bin/sonar-scanner -Dsonar.projectKey=siglus-ui -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.91:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.javascript.lcov.reportPaths=lcov.info
+                        fi
                     '''
                 }
-            }
-        }
-        stage('Push image') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: "cad2f741-7b1e-4ddd-b5ca-2959d40f62c2", usernameVariable: "USER", passwordVariable: "PASS")]) {
+                println "docker: push image"
+                withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
                     sh '''
                         set +x
                         docker login -u $USER -p $PASS
                         docker push ${IMAGE_NAME}
-                        if [ "$GIT_BRANCH" = "release-1.2" ]; then
+                        if [ "$GIT_BRANCH" = "release" ]; then
                           echo "push latest tag for release image"
                           docker push ${IMAGE_REPO}:latest
                         fi
                     '''
                 }
-            }
-        }
-        stage('Notify to build reference-ui dev') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
-                build job: '../siglus-reference-ui/dev', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
             }
         }
         stage('Notify to build reference-ui master') {
@@ -99,11 +78,11 @@ pipeline {
         }
         stage('Notify to build reference-ui release') {
             when {
-                branch 'release-1.2'
+                branch 'release'
             }
             steps {
                 sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
-                build job: '../siglus-reference-ui/release-1.2', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
+                build job: '../siglus-reference-ui/release', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
             }
         }
     }
