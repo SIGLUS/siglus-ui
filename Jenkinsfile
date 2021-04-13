@@ -49,7 +49,11 @@ pipeline {
                         if [ "$GIT_BRANCH" = "master" ]; then
                             cp -r .tmp/javascript/src/ .
                             sed 's|SF:/app/.tmp/javascript/|SF:|g' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov.info > lcov.info
-                            /home/ec2-user/sonar/sonar-scanner-4.6.0.2311-linux/bin/sonar-scanner -Dsonar.projectKey=siglus-ui -Dsonar.sources=. -Dsonar.host.url=http://10.0.0.91:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.javascript.lcov.reportPaths=lcov.info
+                            /home/ec2-user/sonar/sonar-scanner-4.6.0.2311-linux/bin/sonar-scanner -Dsonar.projectKey=siglus-ui \
+                            -Dsonar.sources=src -Dsonar.tests=src \
+                            -Dsonar.inclusions=src/siglus-**/*.js,src/**/siglus-*.js \
+                            -Dsonar.test.inclusions=src/siglus-**/*.spec.js,src/**/siglus-*.spec.js \
+                            -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.javascript.lcov.reportPaths=lcov.info
                         fi
                     '''
                 }
