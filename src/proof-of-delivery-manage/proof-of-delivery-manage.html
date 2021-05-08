@@ -54,7 +54,9 @@
         <tbody>
             <tr ng-repeat="order in vm.pods">
                 <td>{{order.orderCode}}</td>
-                <td>{{order.status}}</td>
+                <!-- SIGLUS-REFACTOR: starts here -->
+                <td>{{order.status | orderStatus}}</td>
+                <!-- SIGLUS-REFACTOR: ends here -->
                 <td>{{order.requestingFacility.name}}</td>
                 <td>{{order.supplyingFacility.name}}</td>
                 <td>{{order.program.name}}</td>

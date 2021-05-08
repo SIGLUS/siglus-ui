@@ -18,27 +18,26 @@
     'use strict';
 
     /**
-     * @module shipment-view
+     * @module proof-of-delivery-view
      *
-     * Provides Shipment Draft view state and controller.
+     * @description
+     * Responsible for view POD screen.
      */
-    angular.module('shipment-view', [
-        'fulfillment',
-        'openlmis-auth',
+    angular.module('proof-of-delivery-view', [
         'openlmis-i18n',
-        'openlmis-table',
+        'fulfillment',
+        'proof-of-delivery',
         'openlmis-date',
-        'stock-card-summary',
-        'stock-constants',
-        'shipment',
+        'openlmis-pagination',
         'order',
         'ui.router',
+        'shipment',
+        'stock-constants',
+        'stock-valid-reason',
+        'stock-reasons-modal',
         'openlmis-state-tracker',
-        'stock-card',
         // SIGLUS-REFACTOR: starts here
-        'select-products-modal',
         'siglus-order-status-messages'
         // SIGLUS-REFACTOR: starts here
     ]);
-
 })();

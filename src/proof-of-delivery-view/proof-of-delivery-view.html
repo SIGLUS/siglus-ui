@@ -16,7 +16,9 @@
         </li>
         <li>
             <strong>{{'proofOfDeliveryView.orderStatus' | message}}</strong>
-            {{vm.order.status}}
+            <!-- SIGLUS-REFACTOR: starts here -->
+            {{vm.order.status| orderStatus}}
+            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <li>
             <strong>{{'proofOfDeliveryView.orderingFacility' | message}}</strong>
