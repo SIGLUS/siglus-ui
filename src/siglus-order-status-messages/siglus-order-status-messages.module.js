@@ -18,27 +18,15 @@
     'use strict';
 
     /**
-     * @module shipment-view
+     * @module order-initiate
      *
-     * Provides Shipment Draft view state and controller.
+     * @description
+     * Responsible for initiate order screen.
      */
-    angular.module('shipment-view', [
-        'fulfillment',
-        'openlmis-auth',
+    angular.module('siglus-order-status-messages', [
+        'openlmis-form',
         'openlmis-i18n',
-        'openlmis-table',
-        'openlmis-date',
-        'stock-card-summary',
-        'stock-constants',
-        'shipment',
-        'order',
-        'ui.router',
-        'openlmis-state-tracker',
-        'stock-card',
-        // SIGLUS-REFACTOR: starts here
-        'select-products-modal',
-        'siglus-order-status-messages'
-        // SIGLUS-REFACTOR: starts here
+        'order'
     ]);
 
 })();

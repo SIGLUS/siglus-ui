@@ -42,9 +42,41 @@
             PARTIALLY_FULFILLED: 'PARTIALLY_FULFILLED',
             // #400: ends here
             // #401: limitation of creating sub-order
-            CLOSED: 'CLOSED'
+            CLOSED: 'CLOSED',
+            $getDisplayName: getDisplayName
             // #401: ends here
         };
     }
+
+    // SIGLUS-REFACTOR: starts here
+    /**
+     * @ngdoc method
+     * @methodOf requisition-constants.REQUISITION_STATUS
+     * @name getDisplayName
+     *
+     * @description
+     * Retrieves display name for the given requisition status.
+     */
+    function getDisplayName(status) {
+        if (status === this.ORDERED) {
+            return 'orderStatus.ORDERED';
+        } else if (status === this.FULFILLING) {
+            return 'orderStatus.FULFILLING';
+        } else if (status === this.SHIPPED) {
+            return 'orderStatus.SHIPPED';
+        } else if (status === this.RECEIVED) {
+            return 'orderStatus.RECEIVED';
+        } else if (status === this.TRANSFER_FAILED) {
+            return 'orderStatus.TRANSFER_FAILED';
+        } else if (status === this.READY_TO_PACK) {
+            return 'orderStatus.READY_TO_PACK';
+        } else if (status === this.PARTIALLY_FULFILLED) {
+            return 'orderStatus.PARTIALLY_FULFILLED';
+        } else if (status === this.CLOSED) {
+            return 'orderStatus.CLOSED';
+        }
+        return status;
+    }
+    // SIGLUS-REFACTOR: ends here
 
 })();

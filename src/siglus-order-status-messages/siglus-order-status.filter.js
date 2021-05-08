@@ -14,31 +14,31 @@
  */
 
 (function() {
-
-    'use strict';
-
     /**
-     * @module shipment-view
-     *
-     * Provides Shipment Draft view state and controller.
-     */
-    angular.module('shipment-view', [
-        'fulfillment',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-table',
-        'openlmis-date',
-        'stock-card-summary',
-        'stock-constants',
-        'shipment',
-        'order',
-        'ui.router',
-        'openlmis-state-tracker',
-        'stock-card',
-        // SIGLUS-REFACTOR: starts here
-        'select-products-modal',
-        'siglus-order-status-messages'
-        // SIGLUS-REFACTOR: starts here
-    ]);
+    * @ngdoc filter
+    * @name order-status-messages.orderStatus
+    *
+    * @description Change text to start with upperCase letter.
+    *
+    * @param {Object} status Status to be formatted
+    *
+    * @example
+    * We want to display a status inside of a table
+    * ```
+    * <td>{{someStatus | orderStatus}}</td>
+    * ```
+    */
+    angular
+        .module('siglus-order-status-messages')
+        .filter('orderStatus', filter);
 
+    filter.$inject = ['ORDER_STATUS', 'messageService'];
+
+    function filter(ORDER_STATUS, messageService) {
+        return statusFilter;
+
+        function statusFilter(status) {
+            return messageService.get(ORDER_STATUS.$getDisplayName(status));
+        }
+    }
 })();

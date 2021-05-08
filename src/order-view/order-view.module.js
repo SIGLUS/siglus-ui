@@ -18,27 +18,21 @@
     'use strict';
 
     /**
-     * @module shipment-view
+     * @module order-view
      *
-     * Provides Shipment Draft view state and controller.
+     * Provides View Orders pages.
      */
-    angular.module('shipment-view', [
-        'fulfillment',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-table',
+    angular.module('order-view', [
         'openlmis-date',
-        'stock-card-summary',
-        'stock-constants',
-        'shipment',
+        'openlmis-i18n',
+        'openlmis-pagination',
+        'openlmis-table',
         'order',
         'ui.router',
-        'openlmis-state-tracker',
-        'stock-card',
         // SIGLUS-REFACTOR: starts here
-        'select-products-modal',
         'siglus-order-status-messages'
         // SIGLUS-REFACTOR: starts here
+
     ]);
 
 })();

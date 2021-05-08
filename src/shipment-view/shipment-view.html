@@ -6,7 +6,9 @@
     <ul>
         <li>
             <strong>{{'shipmentView.status' | message}}</strong>
-            {{vm.order.status}}
+            <!-- SIGLUS-REFACTOR: starts here -->
+            {{vm.order.status | orderStatus}}
+            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
         <!-- #365: add requisition number-->
         <li ng-if="vm.order.requisitionNumber">
