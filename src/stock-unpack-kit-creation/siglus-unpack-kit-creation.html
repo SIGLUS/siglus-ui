@@ -79,7 +79,7 @@
                 <td>{{products.length > 1 ? '' : product.productCode}}</td>
                 <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
-                    <siglus-stock-input-select line-items="products" line-item="product"></siglus-stock-input-select>
+                    <siglus-stock-input-select line-items="products" line-item="product" enable-input="true"></siglus-stock-input-select>
                 </td>
                 <td openlmis-invalid="{{product.$errors.lotDateInvalid}}">
                     <input type="date" ng-model="product.lot.expirationDate"
