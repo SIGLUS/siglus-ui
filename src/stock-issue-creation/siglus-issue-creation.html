@@ -25,7 +25,7 @@
                 <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
                     <select id="lotSelect" ng-model="vm.selectedLot"
-                            ng-options="lot.lotCode for lot in vm.lots | orderBy :'expirationDate'" required>
+                            ng-options="lot as vm.selectedLotLabel(lot) for lot in vm.lots | orderBy :'expirationDate'" required>
                     </select>
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
