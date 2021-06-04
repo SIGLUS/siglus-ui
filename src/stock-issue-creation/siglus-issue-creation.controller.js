@@ -33,14 +33,15 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'stockAdjustmentService', 'draft'
+        'siglusSignatureModalService', 'stockAdjustmentService', 'draft', 'openlmisDateFilter'
     ];
 
     function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft) {
+                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft,
+                        openlmisDateFilter) {
         var vm = this,
             previousAdded = {};
 
@@ -373,6 +374,11 @@
                     $stateParams.isAddProduct = false;
                     vm.search(true);
                 });
+        };
+
+        vm.selectedLotLabel = function(lot) {
+            var expirationDate = lot.expirationDate ? openlmisDateFilter(lot.expirationDate) : '';
+            return lot.lotCode + '(' + expirationDate + ')';
         };
 
         function isEmpty(value) {
