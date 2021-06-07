@@ -104,6 +104,10 @@
          * Add a product for stock adjustment.
          */
         vm.addProduct = function() {
+            if (isDateBeforeToday(vm.selectedLot.expirationDate)) {
+                alertService.error('stockIssueCreation.issueExpiredLot');
+                return;
+            }
             var selectedItem = orderableGroupService
                 .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
@@ -380,6 +384,24 @@
             var expirationDate = lot.expirationDate ? openlmisDateFilter(lot.expirationDate) : '';
             return lot.lotCode + '(' + expirationDate + ')';
         };
+
+        function isDateBeforeToday(date) {
+            var currentDate = new Date();
+            return date.getFullYear() < currentDate.getUTCFullYear()
+                || isMonthInYearBeforeCurrentUTCMonth(date, currentDate)
+                || isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate);
+        }
+
+        function isMonthInYearBeforeCurrentUTCMonth(date, currentDate) {
+            return date.getFullYear() === currentDate.getUTCFullYear()
+                && date.getMonth() < currentDate.getUTCMonth();
+        }
+
+        function isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate) {
+            return date.getFullYear() === currentDate.getUTCFullYear()
+                && date.getMonth() === currentDate.getUTCMonth()
+                && date.getDate() < currentDate.getUTCDate();
+        }
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value);
