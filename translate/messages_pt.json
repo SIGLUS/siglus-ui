@@ -1899,6 +1899,7 @@
   "stockIssueCreation.delete": "Apagar",
   "stockIssueCreation.deleted": "A eliminação foi bem sucedida",
   "stockIssueCreation.deleteDraft": "Têm a certeza que pretende apagar este rascunho?",
+  "stockIssueCreation.issueExpiredLot": "Lote expirado. Não pode ser aviado",
   "stockIssueCreation.documentationNo": "Número da documentação",
   "stockIssueCreation.expiryDate": "Data de validade",
   "stockIssueCreation.keyword": "Palavras-chave",
