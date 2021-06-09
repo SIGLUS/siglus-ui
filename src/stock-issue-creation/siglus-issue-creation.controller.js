@@ -104,7 +104,7 @@
          * Add a product for stock adjustment.
          */
         vm.addProduct = function() {
-            if (isDateBeforeToday(vm.selectedLot.expirationDate)) {
+            if (vm.selectedLot && isDateBeforeToday(vm.selectedLot.expirationDate)) {
                 alertService.error('stockIssueCreation.issueExpiredLot');
                 return;
             }
