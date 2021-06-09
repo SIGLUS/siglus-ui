@@ -46,13 +46,15 @@
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
-                <td>
+                <td ng-if="!lineItem.isKit">
                     <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
                 </td>
-                <td openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
+                <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                     <input  ng-if="!lineItem.isKit" id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
                             ng-required="lineItem.isExpirationDateRequired" ng-disabled="lineItem.lot.id"/>
                 </td>
+                <td ng-if="lineItem.isKit"></td>
+                <td ng-if="lineItem.isKit"></td>
                 <td class="text-align-right">{{lineItem.$previewSOH}}</td>
                 <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
                     <select ng-model="lineItem.assignment"
