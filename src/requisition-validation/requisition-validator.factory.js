@@ -24,9 +24,7 @@
      * @description
      * Responsible for validating requisitions, lineItems and their fields.
      */
-    angular
-    .module('requisition-validation')
-    .factory('requisitionValidator', requisitionValidator);
+    angular.module('requisition-validation').factory('requisitionValidator', requisitionValidator);
 
     requisitionValidator.$inject = [
         'validationFactory', 'calculationFactory', 'TEMPLATE_COLUMNS', 'COLUMN_SOURCES', 'COLUMN_TYPES',
@@ -34,7 +32,7 @@
     ];
 
     function requisitionValidator(validationFactory, calculationFactory, TEMPLATE_COLUMNS, COLUMN_SOURCES, COLUMN_TYPES,
-        messageService, $filter, MAX_INTEGER_VALUE) {
+                                  messageService, $filter, MAX_INTEGER_VALUE) {
 
         var counterparts = {
             stockOnHand: TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
@@ -197,6 +195,11 @@
         }
 
         function shouldValidateCalculation(lineItem, column, template) {
+            // #93: not validate if template is not populateStockOnHandFromStockCards
+            if (!template.populateStockOnHandFromStockCards) {
+                return false;
+            }
+            // #93: end
             var counterpart = template.columnsMap[counterparts[column.name]];
             if (template.populateStockOnHandFromStockCards &&
                 TEMPLATE_COLUMNS.getStockBasedColumns().includes(column.name)) {

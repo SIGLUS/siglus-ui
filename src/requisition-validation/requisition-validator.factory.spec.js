@@ -1052,7 +1052,7 @@ describe('requisitionValidator', function() {
             expect(lineItem.$errors[TEMPLATE_COLUMNS.STOCK_ON_HAND]).toBe('negative');
         });
 
-        it('should return false if calculation validation fails', function() {
+        it('should return true if template is user input', function() {
             var name = TEMPLATE_COLUMNS.STOCK_ON_HAND;
 
             column.source = COLUMN_SOURCES.USER_INPUT;
@@ -1069,7 +1069,7 @@ describe('requisitionValidator', function() {
 
             var result = validator.validateLineItemField(lineItem, column, requisition);
 
-            expect(result).toBe(false);
+            expect(result).toBe(true);
         });
 
         it('should skip calculation validation if counterpart is calculated', function() {
