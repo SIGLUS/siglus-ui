@@ -303,6 +303,15 @@
         };
 
         // SIGLUS-REFACTOR: starts here
+        vm.cancelFilter = function() {
+            if ($stateParams.keyword) {
+                $stateParams.keyword = null;
+                reload($state.current.name);
+            }
+        };
+        // SIGLUS-REFACTOR: ends here
+
+        // SIGLUS-REFACTOR: starts here
         function reload(reload) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
@@ -418,6 +427,7 @@
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
                     $stateParams.keyword = null;
+                    reload($state.current.name);
                 }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
