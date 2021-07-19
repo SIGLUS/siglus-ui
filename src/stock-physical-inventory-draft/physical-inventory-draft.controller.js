@@ -438,7 +438,7 @@
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
                     $stateParams.keyword = null;
-                    reload($state.current.name);
+                    // reload($state.current.name);
                 }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
