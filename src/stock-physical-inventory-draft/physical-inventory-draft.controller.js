@@ -312,6 +312,17 @@
         // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
+        $scope.$watch(function() {
+            return vm.keyword;
+        }, function(newValue, oldValue) {
+            if (oldValue && !newValue && $stateParams.keyword) {
+                $stateParams.keyword = null;
+                reload($state.current.name);
+            }
+        });
+        // SIGLUS-REFACTOR: ends here
+
+        // SIGLUS-REFACTOR: starts here
         function reload(reload) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {

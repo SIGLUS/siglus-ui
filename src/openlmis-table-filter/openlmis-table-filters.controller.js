@@ -190,6 +190,13 @@
                 submitButton = undefined;
             }
 
+            // SIGLUS-REFACTOR: starts here
+            if (cancelButton) {
+                cancelButton.remove();
+                cancelButton = undefined;
+            }
+            // SIGLUS-REFACTOR: end here
+
             if (form) {
                 form.remove();
                 form = undefined;
