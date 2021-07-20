@@ -10,6 +10,9 @@
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
             </fieldset>
 
+            <!-- SIGLUS-REFACTOR: starts here -->
+            <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.cancelFilter()"/>
+            <!-- SIGLUS-REFACTOR: ends here -->
             <input type="submit" value="{{vm.key('search') | message}}"/>
         </form>
         <!-- SIGLUS-REFACTOR: starts here -->

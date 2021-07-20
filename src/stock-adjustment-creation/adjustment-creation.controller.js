@@ -531,6 +531,23 @@
                 });
         };
 
+        // SIGLUS-REFACTOR: starts here
+        vm.cancelFilter = function() {
+            if ($stateParams.keyword) {
+                $stateParams.keyword = null;
+                cancelFilter();
+            }
+        };
+
+        $scope.$watch(function() {
+            return vm.keyword;
+        }, function(newValue, oldValue) {
+            if (oldValue && !newValue && $stateParams.keyword) {
+                cancelFilter();
+            }
+        });
+        // SIGLUS-REFACTOR: ends here
+
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value) || value === '';
         }
