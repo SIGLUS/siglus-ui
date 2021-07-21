@@ -406,9 +406,8 @@
         };
 
         // SIGLUS-REFACTOR: starts here
-        vm.cancelFilter = function() {
+        vm.doCancelFilter = function() {
             if ($stateParams.keyword) {
-                $stateParams.keyword = null;
                 cancelFilter();
             }
         };
