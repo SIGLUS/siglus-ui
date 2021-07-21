@@ -68,14 +68,18 @@
                 initializeElements(container);
             }
             replaceSubmitButtonIfElementContainsSubmitButton(element);
+            // SIGLUS-REFACTOR: starts here
             replaceCancelButtonIfElementContainsCancelButton(element);
+            // SIGLUS-REFACTOR: ends here
 
             if (element.is('form')) {
                 registerForm(element);
             } else if (element.is(SUBMIT_ELEMENT)) {
                 submitButton.replaceWith(element);
+                // SIGLUS-REFACTOR: starts here
             } else if (element.is(CANCEL_ELEMENT)) {
                 cancelButton.replaceWith(element);
+                // SIGLUS-REFACTOR: ends here
             } else {
                 form.prepend(element);
             }
@@ -124,7 +128,9 @@
 
             filterButton = compileFilterButton(container);
             submitButton = form.find(SUBMIT_ELEMENT);
+            // SIGLUS-REFACTOR: starts here
             cancelButton = form.find(CANCEL_ELEMENT);
+            // SIGLUS-REFACTOR: ends here
 
             openPopoverIfFormIsInvalidAndPristine();
         }
