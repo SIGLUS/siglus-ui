@@ -73,10 +73,14 @@
                             ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.orderable.programs) track by reason.id" autofocus>
                     </select>
                 </td>
+                <!-- SIGLUS-REFACTOR: starts here -->
                 <td openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
                     <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-change="vm.validateReasonFreeText(lineItem)"
-                           ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100" />
+                           ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100"
+                           ng-class="{'error': lineItem.$errors.reasonFreeTextInvalid}"
+                           ng-blur="vm.validateReasonFreeText(lineItem)"/>
                 </td>
+                <!-- SIGLUS-REFACTOR: ends here -->
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
