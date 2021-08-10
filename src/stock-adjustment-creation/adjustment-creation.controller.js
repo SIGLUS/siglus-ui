@@ -355,7 +355,9 @@
          */
         vm.validateReasonFreeText = function(lineItem) {
             if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
-                lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
+                if (_.contains(vm.mandatoryReasons, lineItem.reason.name)) {
+                    lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
+                }
             }
             return lineItem;
         };
@@ -657,6 +659,15 @@
                 program: program.name
             });
 
+            // SIGLUS-REFACTOR: starts here
+            vm.mandatoryReasons = ['Emprestimo Enviado pela US',
+                'Devoluções de clientes (US e Enfermarias Dependentes)',
+                'Doação para o Deposito', 'Emprestimo Recebido pela US',
+                'Correção Negativa', 'Correção Positiva'];
+            vm.wrongReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
+                'Stock Inicial Insuficiente', 'Devolução para o DDM'];
+            // SIGLUS-REFACTOR: ends here
+
             initViewModel();
             initStateParams();
 
@@ -679,7 +690,7 @@
 
             vm.program = program;
             vm.facility = facility;
-            vm.reasons = reasons;
+            vm.reasons = filterReasons(reasons);
             // SIGLUS-REFACTOR: starts here
             // vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
             // SIGLUS-REFACTOR: ends here
@@ -701,7 +712,7 @@
             $stateParams.page = getPageNumber();
             $stateParams.program = program;
             $stateParams.facility = facility;
-            $stateParams.reasons = reasons;
+            $stateParams.reasons = filterReasons(reasons);
             $stateParams.srcDstAssignments = srcDstAssignments;
             $stateParams.orderableGroups = orderableGroups;
         }
@@ -724,6 +735,14 @@
             $stateParams.page = 0;
             $stateParams.draft = vm.draft;
             $state.go($state.current.name, $stateParams);
+        }
+        // SIGLUS-REFACTOR: ends here
+
+        // SIGLUS-REFACTOR: starts here
+        function filterReasons(items) {
+            return _.filter(items, function(item) {
+                return !_.contains(vm.wrongReasons, item.name);
+            });
         }
         // SIGLUS-REFACTOR: ends here
 
