@@ -25,7 +25,9 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.stockCardSummaries', {
-            url: '/stockCardSummaries?facility&program&supervised&stockCardListPage&stockCardListSize',
+            // SIGLUS-REFACTOR: starts here
+            url: '/stockCardSummaries?facility&program&supervised&stockCardListPage&stockCardListSize&keyword',
+            // SIGLUS-REFACTOR: ends here
             label: 'stockCardSummaryList.stockOnHand',
             priority: 1,
             showInNavigation: true,

@@ -28,15 +28,15 @@
         .module('stock-card-summary-list')
         .controller('StockCardSummaryListController', controller);
 
-    // SIGLUS-REFACTOR: add 'user', 'facility', 'programs'
+    // SIGLUS-REFACTOR: add 'user', 'facility', 'programs', 'SIGLUS_TIME', '$q'
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'user', 'facility', 'programs', '$scope', 'stockCardDataService'
+        'user', 'facility', 'programs', '$scope', 'stockCardDataService', 'SIGLUS_TIME', '$q'
     ];
     // SIGLUS-REFACTOR: ends here
 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        user, facility, programs, $scope, stockCardDataService) {
+                        user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -72,6 +72,9 @@
          * Initialization method for StockCardSummaryListController.
          */
         function onInit() {
+            // SIGLUS-REFACTOR: starts here
+            vm.keyword = $stateParams.keyword;
+            // SIGLUS-REFACTOR: ends here
             vm.stockCardSummaries = stockCardSummaries;
             vm.programs = programs;
             vm.program = _.find(programs, function(p) {
@@ -159,6 +162,57 @@
                 stockCardDataService.clear();
             }
         });
+        // SIGLUS-REFACTOR: ends here
+
+        // SIGLUS-REFACTOR: starts here
+        vm.search = function() {
+            $stateParams.keyword = vm.keyword;
+            return reload();
+        };
+
+        vm.doCancelFilter = function() {
+            if (vm.keyword) {
+                vm.keyword = null;
+                reload();
+            }
+        };
+
+        $scope.$watch(function() {
+            return vm.keyword;
+        }, function(newValue, oldValue) {
+            if (oldValue && !newValue && $stateParams.keyword) {
+                $stateParams.keyword = null;
+                reload();
+            }
+        });
+
+        function reload() {
+            loadingModalService.open();
+            return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
+                var stateParams = angular.copy($stateParams);
+
+                stateParams.facility = vm.facility && vm.facility.id;
+                stateParams.program = vm.program && vm.program.id;
+                stateParams.supervised = vm.isSupervised;
+                stateParams.keyword = vm.keyword;
+
+                $state.go(
+                    'openlmis.stockmanagement.stockCardSummaries',
+                    stateParams,
+                    {
+                        reload: true
+                    }
+                );
+            });
+        }
+
+        function delayPromise(delay) {
+            var deferred = $q.defer();
+            setTimeout(function() {
+                deferred.resolve();
+            }, delay);
+            return deferred.promise;
+        }
         // SIGLUS-REFACTOR: ends here
     }
 })();
