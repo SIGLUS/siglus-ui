@@ -18,9 +18,9 @@
         .module('stock-card')
         .service('stockCardDataService', stockCardDataService);
 
-    stockCardDataService.$inject = [];
+    stockCardDataService.$inject = ['openlmisDateFilter'];
 
-    function stockCardDataService() {
+    function stockCardDataService(openlmisDateFilter) {
         // only save one stock card
         this.stockCardHolder = {};
         this.summariesHolder = {};
@@ -67,21 +67,68 @@
         this.getDisplaySummary = function(stateParams) {
             var page = parseInt(stateParams.page);
             var size = parseInt(stateParams.size);
+            var content = this.summariesHolder.summary.content.slice(page * size, (page + 1) * size);
             var totalElements = this.summariesHolder.summary.totalElements;
+            if (stateParams.keyword) {
+                stateParams.keyword =  stateParams.keyword.trim();
+                var filterContent = this.filterSummaryByKeyword(this.summariesHolder.summary.content,
+                    stateParams.keyword);
+                totalElements = filterContent.length;
+                if ((page + 1) > Math.ceil(totalElements / size)) {
+                    page = 0;
+                }
+                content = filterContent.slice(page * size, (page + 1) * size);
+            }
             var totalPages = Math.ceil(totalElements / size);
             return {
                 size: size,
                 number: page,
-                content: this.summariesHolder.summary.content.slice(page * size, (page + 1) * size),
+                content: content,
                 totalElements: totalElements,
                 totalPages: totalPages
             };
+        };
+        this.filterSummaryByKeyword = function(stockCardSummarys, keyword) {
+            var filterResult = [];
+            _.forEach(stockCardSummarys, function(stockCardSummary) {
+                var searchableFields = [
+                    stockCardSummary.orderable.productCode,
+                    stockCardSummary.orderable.fullProductName,
+                    stockCardSummary.stockOnHand ? stockCardSummary.stockOnHand.toString() : ''
+                ];
+                var search = _.any(searchableFields, function(field) {
+                    return field.toLowerCase().contains(keyword.toLowerCase());
+                });
+                if (search === true) {
+                    filterResult.push(stockCardSummary);
+                } else {
+                    var fulfills = filterFulfill(stockCardSummary.canFulfillForMe, keyword);
+                    if (fulfills && fulfills.length > 0) {
+                        stockCardSummary.canFulfillForMe = fulfills;
+                        filterResult.push(stockCardSummary);
+                    }
+                }
+            });
+            return filterResult;
         };
 
         this.clear = function() {
             this.stockCardHolder = {};
             this.summariesHolder = {};
         };
+
+        function filterFulfill(fulfills, keyword) {
+            return _.filter(fulfills, function(fulfill) {
+                var fulfillSearchableFields = [
+                    fulfill.lot && fulfill.lot.expirationDate ? openlmisDateFilter(fulfill.lot.expirationDate) : '',
+                    fulfill.lot && fulfill.lot.lotCode ? fulfill.lot.lotCode : '',
+                    fulfill.lot && fulfill.lot.stockOnHand ? fulfill.lot.stockOnHand.toString() : ''
+                ];
+                return _.any(fulfillSearchableFields, function(field) {
+                    return field.toLowerCase().contains(keyword.toLowerCase());
+                });
+            });
+        }
     }
 
 })();

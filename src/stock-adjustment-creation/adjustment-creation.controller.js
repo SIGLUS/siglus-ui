@@ -663,7 +663,7 @@
                 'Devoluções de clientes (US e Enfermarias Dependentes)',
                 'Doação para o Deposito', 'Emprestimo Recebido pela US',
                 'Correção Negativa', 'Correção Positiva'];
-            vm.wrongReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
+            vm.ignoreReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
                 'Stock Inicial Insuficiente', 'Devolução para o DDM'];
             // SIGLUS-REFACTOR: ends here
 
@@ -740,7 +740,7 @@
         // SIGLUS-REFACTOR: starts here
         function filterReasons(items) {
             return _.filter(items, function(item) {
-                return !_.contains(vm.wrongReasons, item.name);
+                return !_.contains(vm.ignoreReasons, item.name);
             });
         }
         // SIGLUS-REFACTOR: ends here
