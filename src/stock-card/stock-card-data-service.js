@@ -104,8 +104,9 @@
                 } else {
                     var fulfills = filterFulfill(stockCardSummary.canFulfillForMe, keyword);
                     if (fulfills && fulfills.length > 0) {
-                        stockCardSummary.canFulfillForMe = fulfills;
-                        filterResult.push(stockCardSummary);
+                        var copyStockCardSummary = angular.copy(stockCardSummary);
+                        copyStockCardSummary.canFulfillForMe = fulfills;
+                        filterResult.push(copyStockCardSummary);
                     }
                 }
             });
@@ -122,7 +123,7 @@
                 var fulfillSearchableFields = [
                     fulfill.lot && fulfill.lot.expirationDate ? openlmisDateFilter(fulfill.lot.expirationDate) : '',
                     fulfill.lot && fulfill.lot.lotCode ? fulfill.lot.lotCode : '',
-                    fulfill.lot && fulfill.lot.stockOnHand ? fulfill.lot.stockOnHand.toString() : ''
+                    fulfill.lot && fulfill.stockOnHand ? fulfill.stockOnHand.toString() : ''
                 ];
                 return _.any(fulfillSearchableFields, function(field) {
                     return field.toLowerCase().contains(keyword.toLowerCase());
