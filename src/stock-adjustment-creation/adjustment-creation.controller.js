@@ -662,7 +662,8 @@
             vm.mandatoryReasons = ['Emprestimo Enviado pela US',
                 'Devoluções de clientes (US e Enfermarias Dependentes)',
                 'Doação para o Deposito', 'Emprestimo Recebido pela US',
-                'Correção Negativa', 'Correção Positiva'];
+                'Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)',
+                'Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)'];
             vm.ignoreReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
                 'Stock Inicial Insuficiente'];
             // SIGLUS-REFACTOR: ends here
