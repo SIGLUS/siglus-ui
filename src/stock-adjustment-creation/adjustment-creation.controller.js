@@ -664,7 +664,7 @@
                 'Doação para o Deposito', 'Emprestimo Recebido pela US',
                 'Correção Negativa', 'Correção Positiva'];
             vm.ignoreReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
-                'Stock Inicial Insuficiente', 'Devolução para o DDM'];
+                'Stock Inicial Insuficiente'];
             // SIGLUS-REFACTOR: ends here
 
             initViewModel();
