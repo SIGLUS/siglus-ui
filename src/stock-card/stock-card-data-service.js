@@ -99,7 +99,7 @@
                 var search = _.any(searchableFields, function(field) {
                     return field.toLowerCase().contains(keyword.toLowerCase());
                 });
-                if (search === true) {
+                if (search) {
                     filterResult.push(stockCardSummary);
                 } else {
                     var fulfills = filterFulfill(stockCardSummary.canFulfillForMe, keyword);

@@ -35,10 +35,10 @@
 
     <!-- SIGLUS-REFACTOR: starts here -->
     <form ng-submit="vm.search()" ng-show="!vm.isArchivedProducts">
-        <label for="searchFor">{{'stockPhysicalInventoryDraft.keyword' | message}}</label>
+        <label for="searchFor">{{'stockCardSummaryList.keyword' | message}}</label>
         <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
         <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.doCancelFilter()"/>
-        <input type="submit" value="{{'stockPhysicalInventoryDraft.search' | message}}"/>
+        <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
     </form>
     <!-- SIGLUS-REFACTOR: ends here  -->
 
