@@ -2099,5 +2099,6 @@
   "stockUnpackKitCreation.vvmStatus": "Estado de VVM",
   "summary": "Sumário",
   "user.validation.email": "O endereço de e-mail indicado é inválido",
-  "requisitionValidation.emptyUsageInformation": "Nenhum produto encontrado. Entre em contato com o administrador."
+  "requisitionValidation.emptyUsageInformation": "Nenhum produto encontrado. Entre em contato com o administrador.",
+  "stockCardSummaryList.keyword": "Palavras-chave"
 }
