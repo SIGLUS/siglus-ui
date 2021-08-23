@@ -99,8 +99,15 @@
          * Add the currently selected product into the table beneath it for users to do further actions.
          */
         vm.addOneProduct = function() {
-            var selectedItem = orderableGroupService
-                .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+            <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
+            // var selectedItem = orderableGroupService
+            //     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
+            if (vm.selectedOrderableGroup === null || vm.selectedOrderableGroup === undefined) {
+                return undefined;
+            }
+            var selectedItem = vm.selectedOrderableGroup[0];
+            selectedItem.lot = undefined;
+            <!-- SIGLUS-REFACTOR: ends here -->
 
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
             if (notAlreadyAdded) {
