@@ -18,9 +18,9 @@
         .module('stock-card')
         .service('stockCardDataService', stockCardDataService);
 
-    stockCardDataService.$inject = ['openlmisDateFilter'];
+    stockCardDataService.$inject = ['openlmisDateFilter', 'REASON_TYPES'];
 
-    function stockCardDataService(openlmisDateFilter) {
+    function stockCardDataService(openlmisDateFilter, REASON_TYPES) {
         // only save one stock card
         this.stockCardHolder = {};
         this.summariesHolder = {};
@@ -130,6 +130,17 @@
                 });
             });
         }
+
+        this.addPrefixForAdjustmentReason = function(reason) {
+            var negativePrefix = '[Ajustes Negativos] ';
+            var positivePrefix = '[Ajustes Positivos] ';
+            if (reason.reasonType === REASON_TYPES.DEBIT && !reason.name.contains(negativePrefix)) {
+                reason.name = negativePrefix + reason.name;
+            } else if (reason.reasonType === REASON_TYPES.CREDIT && !reason.name.contains(positivePrefix)) {
+                reason.name = positivePrefix + reason.name;
+            }
+            return reason;
+        };
     }
 
 })();

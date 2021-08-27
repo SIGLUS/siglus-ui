@@ -150,6 +150,7 @@
 
         }
 
+        // SIGLUS-REFACTOR: starts here
         /**
          * @ngdoc method
          * @methodOf stock-card.controller:StockCardController
@@ -164,16 +165,15 @@
         function getReason(lineItem) {
             if (lineItem.reasonFreeText) {
                 return messageService.get('stockCard.reasonAndFreeText', {
-                    name: lineItem.reason.name,
+                    name: stockCardDataService.addPrefixForAdjustmentReason(lineItem.reason).name,
                     freeText: lineItem.reasonFreeText
                 });
             }
             return lineItem.reason.isPhysicalReason()
                 ? messageService.get('stockCard.physicalInventory')
-                : lineItem.reason.name;
+                : stockCardDataService.addPrefixForAdjustmentReason(lineItem.reason).name;
         }
 
-        // SIGLUS-REFACTOR: starts here
         $scope.$on('$viewContentLoaded', function() {
             if ($state.params.isViewProductCard && !vm.isSOHCorrect) {
                 alertService.error('stockCard.viewProductStockCard.failure');

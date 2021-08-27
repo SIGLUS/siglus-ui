@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
         'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE'
+        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
                         siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
-                        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE) {
+                        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService) {
         var vm = this,
             previousAdded = {};
 
@@ -740,9 +740,14 @@
 
         // SIGLUS-REFACTOR: starts here
         function filterReasons(items) {
-            return _.filter(items, function(item) {
-                return !_.contains(vm.ignoreReasons, item.name);
-            });
+            return _.chain(items)
+                .filter(function(reason) {
+                    return !_.contains(vm.ignoreReasons, reason.name);
+                })
+                .map(function(reason) {
+                    return stockCardDataService.addPrefixForAdjustmentReason(reason);
+                })
+                .value();
         }
         // SIGLUS-REFACTOR: ends here
 
