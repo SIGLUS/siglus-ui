@@ -339,6 +339,21 @@
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
+            if (lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
+                var hasStockLotCodes = _.chain(vm.selectedOrderableGroup)
+                    .filter(function(item) {
+                        return item.lot && item.stockOnHand > 0;
+                    })
+                    .map(function(item) {
+                        return item.lot.lotCode;
+                    })
+                    .value();
+                lineItem.lotOptions = _.filter(lineItem.lotOptions, function(item) {
+                    return item === null || _.contains(hasStockLotCodes, item.lotCode);
+                });
+            } else {
+                lineItem.lotOptions = angular.copy(vm.lots);
+            }
             return lineItem;
         };
 
@@ -555,7 +570,6 @@
 
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
-                // vm.validateQuantity(item);
                 vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
@@ -624,32 +638,6 @@
                     alertService.error(errorResponse.data.message);
                 });
         }
-
-        // SIGLUS-REFACTOR: starts here
-        // function generateKitConstituentLineItem(addedLineItems) {
-        //     if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-        //         return;
-        //     }
-        //
-        //     //CREDIT reason ID
-        //     var creditReason = {
-        //         id: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID
-        //     };
-        //
-        //     var constituentLineItems = [];
-        //
-        //     addedLineItems.forEach(function(lineItem) {
-        //         lineItem.orderable.children.forEach(function(constituent) {
-        //             constituent.reason = creditReason;
-        //             constituent.occurredDate = lineItem.occurredDate;
-        //             constituent.quantity = lineItem.quantity * constituent.quantity;
-        //             constituentLineItems.push(constituent);
-        //         });
-        //     });
-        //
-        //     addedLineItems.push.apply(addedLineItems, constituentLineItems);
-        // }
-        // SIGLUS-REFACTOR: ends here
 
         function onInit() {
             $state.current.label = messageService.get(vm.key('title'), {
