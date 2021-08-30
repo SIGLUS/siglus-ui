@@ -19,7 +19,7 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, siglusSignatureModalService;
+        orderableGroups, LotDataBuilder, siglusSignatureModalService, stockCardDataService;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -53,6 +53,7 @@ describe('StockAdjustmentCreationController', function() {
 
             // SIGLUS-REFACTOR: starts here
             siglusSignatureModalService = jasmine.createSpyObj('siglusSignatureModalService', ['confirm']);
+            stockCardDataService = jasmine.createSpyObj('stockCardDataService', ['addPrefixForAdjustmentReason']);
 
             var deferred = q.defer();
             deferred.resolve();
@@ -545,7 +546,8 @@ describe('StockAdjustmentCreationController', function() {
             orderableGroups: orderableGroups,
             displayItems: [],
             siglusSignatureModalService: siglusSignatureModalService,
-            draft: {}
+            draft: {},
+            stockCardDataService: stockCardDataService
             // SIGLUS-REFACTOR: ends here
         });
     }
