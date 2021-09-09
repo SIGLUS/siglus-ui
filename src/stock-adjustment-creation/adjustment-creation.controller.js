@@ -157,7 +157,8 @@
                 selectedItem, copyDefaultValue()
             );
 
-            item.isKit = !!(item.orderable && item.orderable.isKit);
+            item.isKit = !!(item.orderable && item.orderable.isKit)
+                || _.contains(['26A02', '26B02'], item.orderable.productCode);
             if (item.isKit) {
                 var selectedOrderableGroup =
                     siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(item.orderableId);
