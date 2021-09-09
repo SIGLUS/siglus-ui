@@ -184,7 +184,8 @@
             return orderables.reduce(function(map, orderable) {
                 // SIGLUS-REFACTOR: starts here
                 orderable.archived = archivedOrderables.includes(orderable.id);
-                orderable.isKit = orderable.children.length > 0;
+                orderable.isKit = orderable.children.length > 0
+                    || _.contains(['26A02', '26B02'], orderable.productCode);
                 // SIGLUS-REFACTOR: ends here
                 map[orderable.id] = orderable;
                 return map;
