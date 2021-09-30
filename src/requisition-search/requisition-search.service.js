@@ -29,18 +29,38 @@
         .module('requisition-search')
         .service('requisitionSearchService', requisitionSearchService);
 
-    requisitionSearchService.$inject = [
-        'facilityFactory', 'authorizationService', 'currentUserService', 'SupervisoryNodeResource', 'RoleResource',
-        'RequisitionGroupResource', '$q', 'OpenlmisArrayDecorator', 'REQUISITION_RIGHTS', 'localStorageService'
-    ];
+    // #407: Role3 account should only view self facility's requisition
+    // requisitionSearchService.$inject = [
+    //     'facilityFactory', 'authorizationService',
+    //     'currentUserService', 'SupervisoryNodeResource', 'RoleResource',
+    //     'RequisitionGroupResource', '$q', 'OpenlmisArrayDecorator', 'REQUISITION_RIGHTS', 'localStorageService'
+    // ];
 
-    function requisitionSearchService(facilityFactory, authorizationService, currentUserService,
-                                      SupervisoryNodeResource, RoleResource, RequisitionGroupResource, $q,
-                                      OpenlmisArrayDecorator, REQUISITION_RIGHTS, localStorageService) {
+    requisitionSearchService.$inject = [
+        'currentUserService', 'SupervisoryNodeResource', 'RoleResource', 'RequisitionGroupResource',
+        '$q', 'OpenlmisArrayDecorator', 'REQUISITION_RIGHTS', 'localStorageService', '$resource',
+        'requisitionUrlFactory'
+    ];
+    // #407: ends here
+
+    // #407: Role3 account should only view self facility's requisition
+    // function requisitionSearchService(facilityFactory, authorizationService, currentUserService,
+    //                                   SupervisoryNodeResource, RoleResource, RequisitionGroupResource, $q,
+    //                                   OpenlmisArrayDecorator, REQUISITION_RIGHTS, localStorageService) {
+    function requisitionSearchService(currentUserService, SupervisoryNodeResource, RoleResource,
+                                      RequisitionGroupResource, $q, OpenlmisArrayDecorator,
+                                      REQUISITION_RIGHTS, localStorageService, $resource, requisitionUrlFactory) {
+
+        var resource = $resource(requisitionUrlFactory('/api/siglusapi/requisitions/facilitiesForView'), {}, {
+            get: {
+                method: 'GET',
+                isArray: true
+            }
+        });
+        // #407: ends here
 
         var promise,
-            REQUISITION_SEARCH_FACILITIES = 'requisitionSearchFacilities',
-            ROLE3_SN = '51efb02e-c740-11ea-a17f-4c32759554d9';
+            REQUISITION_SEARCH_FACILITIES = 'requisitionSearchFacilities';
 
         this.getFacilities = getFacilities;
         this.clearCachedFacilities = clearCachedFacilities;
@@ -61,7 +81,9 @@
                 return promise;
             }
 
-            var user = authorizationService.getUser();
+            // #407: Role3 account should only view self facility's requisition
+            // var user = authorizationService.getUser();
+            // #407: ends here
 
             var cachedFacilities = localStorageService.get(REQUISITION_SEARCH_FACILITIES);
             if (cachedFacilities) {
@@ -69,51 +91,24 @@
             } else {
                 promise = $q
                     .all([
-                        facilityFactory.getAllUserFacilities(user.user_id),
+                        // #407: Role3 account should only view self facility's requisition
+                        getFacilitiesForView(),
+                        //facilityFactory.getAllUserFacilities(user.user_id),
+                        // #407: ends here
                         getFacilitiesBasedOnPartnerNodes()
                     ])
                     .then(mergeFacilityLists)
-                    // SIGLUS-REFACTOR: starts here
-                    .then(getFacilitiesByIsRole3Sn)
-                    // SIGLUS-REFACTOR: ends here
                     .then(getUniqueSortedByName)
                     .then(cacheFacilities);
             }
             return promise;
         }
 
-        // SIGLUS-REFACTOR: starts here
-        function getFacilitiesByIsRole3Sn(facilities) {
-            return $q
-                .all([
-                    currentUserService.getUserInfo(),
-                    facilities
-                ])
-                .then(filterFacilitiesByRole3Sn);
+        // #407: Role3 account should only view self facility's requisition
+        function getFacilitiesForView() {
+            return resource.get().$promise;
         }
-
-        function filterFacilitiesByRole3Sn(responses) {
-            var userInfo = responses[0];
-            var facilities = responses[1];
-            if (isRole3Sn(userInfo)) {
-                return facilities.filter(function(facility) {
-                    if (facility.id === userInfo.homeFacilityId) {
-                        var homeFacilities = [];
-                        homeFacilities.push(facility);
-                        return homeFacilities;
-                    }
-                });
-            }
-            return facilities;
-        }
-
-        function isRole3Sn(userInfo) {
-            return userInfo.roleAssignments
-                .filter(function(roleAssignment) {
-                    return roleAssignment.roleId === ROLE3_SN;
-                }).length > 0;
-        }
-        // SIGLUS-REFACTOR: ends here
+        // #407: ends here
 
         function clearCachedFacilities() {
             promise = undefined;
@@ -255,9 +250,12 @@
         }
 
         function outByUndefinedProperty(propertyName) {
-            // SIGLUS-REFACTOR: starts here
+            // #407: Role3 account should only view self facility's requisition
+            // return function(item) {
+            //     return item[propertyName];
+            // };
             return toProperty(propertyName);
-            // SIGLUS-REFACTOR: ends here
+            // #407: ends here
         }
 
         function toProperty(propertyName) {

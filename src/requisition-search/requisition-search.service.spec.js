@@ -27,9 +27,6 @@ describe('RequisitionSearchService', function() {
         this.prepareUser = prepareUser;
         this.prepareUserWithoutHomeFacility = prepareUserWithoutHomeFacility;
         this.prepareUserWithoutPartnerNodes = prepareUserWithoutPartnerNodes;
-        // SIGLUS-REFACTOR: starts here
-        this.prepareRole3SnUser = prepareRole3SnUser;
-        // SIGLUS-REFACTOR: ends here
 
         inject(function($injector) {
             this.SupervisoryNodeDataBuilder = $injector.get('SupervisoryNodeDataBuilder');
@@ -42,15 +39,21 @@ describe('RequisitionSearchService', function() {
             this.PageDataBuilder = $injector.get('PageDataBuilder');
             this.currentUserService = $injector.get('currentUserService');
             this.SupervisoryNodeResource = $injector.get('SupervisoryNodeResource');
-            this.facilityFactory = $injector.get('facilityFactory');
+            // #407: Role3 account should only view self facility's requisition
+            // this.facilityFactory = $injector.get('facilityFactory');
+            // this.authorizationService = $injector.get('authorizationService');
+            // #407: ends here
             this.RequisitionGroupResource = $injector.get('RequisitionGroupResource');
-            this.authorizationService = $injector.get('authorizationService');
             this.REQUISITION_RIGHTS = $injector.get('REQUISITION_RIGHTS');
             this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
             this.requisitionSearchService = $injector.get('requisitionSearchService');
             this.RoleResource = $injector.get('RoleResource');
             this.localStorageService = $injector.get('localStorageService');
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend = $injector.get('$httpBackend');
+            this.openlmisUrlFactory = $injector.get('openlmisUrlFactory');
+            // #407: ends here
         });
 
         this.prepareFacilities();
@@ -68,7 +71,9 @@ describe('RequisitionSearchService', function() {
             this.requisitionGroupB,
             this.requisitionGroupC
         ]));
-        spyOn(this.facilityFactory, 'getAllUserFacilities').andReturn(this.$q.resolve([]));
+        // #407: Role3 account should only view self facility's requisition
+        //spyOn(this.$httpBackend, 'getAllUserFacilities').andReturn(this.$q.resolve([]));
+        // #407: ends here
         spyOn(this.localStorageService, 'get');
         spyOn(this.localStorageService, 'add');
         spyOn(this.localStorageService, 'remove');
@@ -87,8 +92,21 @@ describe('RequisitionSearchService', function() {
     });
 
     describe('getFacilities', function() {
+        // #407: Role3 account should only view self facility's requisition
+        beforeEach(function() {
+            var facilities = [];
+            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/requisitions/facilitiesForView'))
+                .respond(200, facilities);
+        });
+        // #407: ends here
 
         it('should handle null requisition group', function() {
+            // #407: Role3 account should only view self facility's requisition
+            var facilities = [];
+            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/requisitions/facilitiesForView'))
+                .respond(200, facilities);
+            // #407: ends here
+
             this.supervisoryNodeA.requisitionGroup = undefined;
 
             var result;
@@ -97,6 +115,10 @@ describe('RequisitionSearchService', function() {
                 .then(function(facilities) {
                     result = facilities;
                 });
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(result).toEqual([
@@ -106,10 +128,15 @@ describe('RequisitionSearchService', function() {
         });
 
         it('should not return duplicated facilities', function() {
+            // #407: Role3 account should only view self facility's requisition
             //this facility comes from both permission strings and role assignments
-            this.facilityFactory.getAllUserFacilities.andReturn([
-                this.facilityF
-            ]);
+            // this.facilityFactory.getAllUserFacilities.andReturn([
+            //     this.facilityF
+            // ]);
+            var facilityList = [this.facilityF];
+            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/requisitions/facilitiesForView'))
+                .respond(200, facilityList);
+            // #407: ends here
 
             var result;
             this.requisitionSearchService
@@ -117,6 +144,10 @@ describe('RequisitionSearchService', function() {
                 .then(function(facilities) {
                     result = facilities;
                 });
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(result.indexOf(this.facilityF)).toEqual(result.lastIndexOf(this.facilityF));
@@ -129,6 +160,10 @@ describe('RequisitionSearchService', function() {
                 .then(function(facilities) {
                     result = facilities;
                 });
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(result).toEqual([
@@ -139,19 +174,22 @@ describe('RequisitionSearchService', function() {
             ]);
         });
 
-        it('should reject if preparing partner facilities fails', function() {
-            this.facilityFactory.getAllUserFacilities.andReturn(this.$q.reject());
-
-            var rejected;
-            this.requisitionSearchService
-                .getFacilities()
-                .catch(function() {
-                    rejected = true;
-                });
-            this.$rootScope.$apply();
-
-            expect(rejected).toBe(true);
-        });
+        // #407: Role3 account should only view self facility's requisition
+        // it('should reject if preparing partner facilities fails', function() {
+        //     this.facilityFactory.getAllUserFacilities.andReturn(this.$q.reject());
+        //
+        //     var rejected;
+        //     this.requisitionSearchService
+        //         .getFacilities()
+        //         .catch(function() {
+        //             rejected = true;
+        //         });
+        //     this.$httpBackend.flush();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(rejected).toBe(true);
+        // });
+        // #407: ends here
 
         it('should reject if fetching requisition groups fails', function() {
             this.RequisitionGroupResource.prototype.query.andReturn(this.$q.reject());
@@ -162,6 +200,10 @@ describe('RequisitionSearchService', function() {
                 .catch(function() {
                     rejected = true;
                 });
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -176,6 +218,10 @@ describe('RequisitionSearchService', function() {
                 .catch(function() {
                     rejected = true;
                 });
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -190,6 +236,10 @@ describe('RequisitionSearchService', function() {
                 .catch(function() {
                     rejected = true;
                 });
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(rejected).toBe(true);
@@ -199,12 +249,17 @@ describe('RequisitionSearchService', function() {
             this.requisitionSearchService.getFacilities();
             this.requisitionSearchService.getFacilities();
 
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
-            // SIGLUS-REFACTOR: starts here
-            expect(this.currentUserService.getUserInfo.callCount).toEqual(2);
-            // SIGLUS-REFACTOR: ends here
-            expect(this.facilityFactory.getAllUserFacilities.callCount).toEqual(1);
+            // #407: Role3 account should only view self facility's requisition
+            //expect(this.currentUserService.getUserInfo.callCount).toEqual(1);
+            //expect(this.facilityFactory.getAllUserFacilities.callCount).toEqual(1);
+            // #407: ends here
+
             expect(this.RequisitionGroupResource.prototype.query.callCount).toEqual(1);
             expect(this.RoleResource.prototype.query.callCount).toEqual(1);
             expect(this.SupervisoryNodeResource.prototype.query.callCount).toEqual(2);
@@ -240,7 +295,10 @@ describe('RequisitionSearchService', function() {
             this.$rootScope.$apply();
 
             expect(this.currentUserService.getUserInfo).not.toHaveBeenCalled();
-            expect(this.facilityFactory.getAllUserFacilities).not.toHaveBeenCalled();
+            // #407: Role3 account should only view self facility's requisition
+            //expect(this.facilityFactory.getAllUserFacilities).not.toHaveBeenCalled();
+            // #407: ends here
+
             expect(this.RequisitionGroupResource.prototype.query).not.toHaveBeenCalled();
             expect(this.RoleResource.prototype.query).not.toHaveBeenCalled();
             expect(this.SupervisoryNodeResource.prototype.query).not.toHaveBeenCalled();
@@ -251,6 +309,10 @@ describe('RequisitionSearchService', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user));
 
             this.requisitionSearchService.getFacilities();
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(this.SupervisoryNodeResource.prototype.query).not.toHaveBeenCalled();
@@ -261,6 +323,10 @@ describe('RequisitionSearchService', function() {
             this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user));
 
             this.requisitionSearchService.getFacilities();
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(this.SupervisoryNodeResource.prototype.query.callCount).toEqual(1);
@@ -271,6 +337,10 @@ describe('RequisitionSearchService', function() {
 
         it('should cache facilities in the local storage', function() {
             this.requisitionSearchService.getFacilities();
+            // #407: Role3 account should only view self facility's requisition
+            this.$httpBackend.flush();
+            // #407: ends here
+
             this.$rootScope.$apply();
 
             expect(this.localStorageService.add).toHaveBeenCalledWith('requisitionSearchFacilities', angular.toJson([
@@ -281,7 +351,29 @@ describe('RequisitionSearchService', function() {
             ]));
         });
 
+        // #407: Role3 account should only view self facility's requisition
+        it('should call /api/siglusapi/requisitions/facilitiesForView', function() {
+            var facilities = [this.facilityA, this.facilityB];
+            this.$httpBackend.when('GET', this.openlmisUrlFactory('/api/siglusapi/requisitions/facilitiesForView'))
+                .respond(200, facilities);
+
+            var result = [];
+            this.requisitionSearchService.getFacilities().then(function(response) {
+                result = response;
+            });
+
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(result.length).toEqual(4);
+        });
     });
+
+    afterEach(function() {
+        this.$httpBackend.verifyNoOutstandingExpectation();
+        this.$httpBackend.verifyNoOutstandingRequest();
+    });
+    // #407: ends here
 
     describe('clearCachedFacilities', function() {
 
@@ -289,10 +381,10 @@ describe('RequisitionSearchService', function() {
             this.requisitionSearchService.getFacilities();
             this.$rootScope.$apply();
 
-            // SIGLUS-REFACTOR: starts here
-            expect(this.currentUserService.getUserInfo.callCount).toEqual(2);
-            // SIGLUS-REFACTOR: ends here
-            expect(this.facilityFactory.getAllUserFacilities.callCount).toEqual(1);
+            // #407: Role3 account should only view self facility's requisition
+            expect(this.currentUserService.getUserInfo.callCount).toEqual(1);
+            //expect(this.facilityFactory.getAllUserFacilities.callCount).toEqual(1);
+            // #407: ends here
             expect(this.RequisitionGroupResource.prototype.query.callCount).toEqual(1);
             expect(this.RoleResource.prototype.query.callCount).toEqual(1);
             expect(this.SupervisoryNodeResource.prototype.query.callCount).toEqual(2);
@@ -303,35 +395,16 @@ describe('RequisitionSearchService', function() {
 
             this.requisitionSearchService.getFacilities();
             this.$rootScope.$apply();
-
-            // SIGLUS-REFACTOR: starts here
-            expect(this.currentUserService.getUserInfo.callCount).toEqual(4);
-            // SIGLUS-REFACTOR: ends here
-            expect(this.facilityFactory.getAllUserFacilities.callCount).toEqual(2);
+            // #407: Role3 account should only view self facility's requisition
+            expect(this.currentUserService.getUserInfo.callCount).toEqual(2);
+            //expect(this.facilityFactory.getAllUserFacilities.callCount).toEqual(2);
+            // #407: ends here
             expect(this.RequisitionGroupResource.prototype.query.callCount).toEqual(2);
             expect(this.RoleResource.prototype.query.callCount).toEqual(2);
             expect(this.SupervisoryNodeResource.prototype.query.callCount).toEqual(4);
         });
 
     });
-
-    // SIGLUS-REFACTOR: starts here
-    it('should return home facility when role is role3 and sn', function() {
-        this.prepareRole3SnUser();
-        this.currentUserService.getUserInfo.andReturn(this.$q.resolve(this.user));
-        var result;
-        this.requisitionSearchService
-            .getFacilities()
-            .then(function(facilities) {
-                result = facilities;
-            });
-        this.$rootScope.$apply();
-
-        expect(result).toEqual([
-            this.facilityF
-        ]);
-    });
-    // SIGLUS-REFACTOR: ends here
 
     function prepareFacilities() {
         this.facilityA = new this.FacilityDataBuilder()
@@ -444,18 +517,10 @@ describe('RequisitionSearchService', function() {
             .withRight(this.rightB)
             .build();
 
-        // SIGLUS-REFACTOR: starts here
-        this.roleC = new this.RoleDataBuilder()
-            .withRight(this.rightA)
-            .withId('51efb02e-c740-11ea-a17f-4c32759554d9')
-            .build();
-
         this.roles = [
             this.roleB,
-            this.roleA,
-            this.roleC
+            this.roleA
         ];
-        // SIGLUS-REFACTOR: ends here
     }
 
     function prepareUser() {
@@ -469,22 +534,6 @@ describe('RequisitionSearchService', function() {
             .withSupervisionRoleAssignment(this.roleA.id, null, this.programId)
             .buildReferenceDataUserJson();
     }
-
-    // SIGLUS-REFACTOR: starts here
-    function prepareRole3SnUser() {
-        this.programId = 'program-id';
-
-        this.user = new this.UserDataBuilder()
-            .withSupervisionRoleAssignment(this.roleA.id, this.partnerNodeA.id, this.programId)
-            .withSupervisionRoleAssignment(this.roleA.id, this.partnerNodeB.id, this.programId)
-            .withSupervisionRoleAssignment(this.roleB.id, this.partnerNodeC.id, this.programId)
-            .withSupervisionRoleAssignment(this.roleA.id, this.supervisoryNodeC.id, this.programId)
-            .withSupervisionRoleAssignment(this.roleA.id, null, this.programId)
-            .withSupervisionRoleAssignment(this.roleC.id, this.supervisoryNodeC.id, this.programId)
-            .withHomeFacilityId(this.facilityF.id)
-            .buildReferenceDataUserJson();
-    }
-    // SIGLUS-REFACTOR: ends here
 
     function prepareUserWithoutHomeFacility() {
         this.programId = 'program-id';
