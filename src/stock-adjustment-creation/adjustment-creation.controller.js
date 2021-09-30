@@ -654,7 +654,7 @@
                 'Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)',
                 'Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)'];
             vm.ignoreReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
-                'Stock Inicial Insuficiente'];
+                'Stock Inicial Insuficiente', 'Devolução para o DDM'];
             // SIGLUS-REFACTOR: ends here
 
             initViewModel();
