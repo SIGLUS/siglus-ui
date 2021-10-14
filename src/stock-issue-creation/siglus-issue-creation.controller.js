@@ -129,7 +129,7 @@
         // if reason Contains correction then show input
         vm.isReasonCorrection = function(lineItem) {
             if (lineItem.reason && lineItem.reason.name) {
-                lineItem.reason.isFreeTextAllowed = lineItem.reason.name.toLowerCase().indexOf('correção') >= 0;
+                lineItem.reason.isFreeTextAllowed = lineItem.reason.name.toLowerCase().indexOf('correcção') >= 0;
             }
         };
 
