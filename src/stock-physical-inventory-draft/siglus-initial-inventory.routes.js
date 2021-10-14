@@ -131,7 +131,7 @@
                         ).then(function(reasons) {
                             return _.chain(reasons).filter(function(reason) {
                                 return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT &&
-                                    reason.name.toLowerCase().indexOf('correção') > -1;
+                                    reason.name.toLowerCase().indexOf('correcção') > -1;
                             })
                                 .groupBy('programId')
                                 .value();

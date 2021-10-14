@@ -648,13 +648,23 @@
             });
 
             // SIGLUS-REFACTOR: starts here
-            vm.mandatoryReasons = ['Emprestimo Enviado pela US',
-                'Devoluções de clientes (US e Enfermarias Dependentes)',
-                'Doação para o Deposito', 'Emprestimo Recebido pela US',
-                'Correção do Inventário, no caso de excesso de stock (stock é superior ao existente na ficha)',
-                'Correção do Inventário, no caso de stock em falta (stock é inferior ao existente na ficha)'];
-            vm.ignoreReasons = ['Consumido', 'Recebido', 'Stock Inicial Excessivo',
-                'Stock Inicial Insuficiente', 'Devolução para o DDM'];
+            vm.mandatoryReasons = [
+                'Empréstimos (para todos níveis) que dão saída do depósito',
+                'Devolução dos clientes (US e Depósitos Beneficiários)',
+                'Doações ao Depósito',
+                'Empréstimos (de todos os níveis) que dão entrada no depósito',
+                //eslint-disable-next-line
+                'Correcção de inventário, no caso do stock em excesso (stock é superior ao existente na ficha de stock)',
+                //eslint-disable-next-line
+                'Correcção de inventário, no caso do stock em falta (stock é inferior ao existente na ficha de stock)'
+            ];
+            vm.ignoreReasons = [
+                'Consumido',
+                'Recebido',
+                'Stock Inicial Excessivo',
+                'Stock Inicial Insuficiente',
+                'Devolução para o DDM'
+            ];
             // SIGLUS-REFACTOR: ends here
 
             initViewModel();
