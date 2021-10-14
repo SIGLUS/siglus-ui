@@ -371,7 +371,8 @@
          */
         vm.validateReasonFreeText = function(lineItem) {
             if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
-                if (_.contains(vm.mandatoryReasons, lineItem.reason.name)) {
+                var reasonName = lineItem.reason.name;
+                if (_.contains(vm.mandatoryReasons, reasonName.substr(reasonName.indexOf('] ') + 1).trim())) {
                     lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
                 }
             }
