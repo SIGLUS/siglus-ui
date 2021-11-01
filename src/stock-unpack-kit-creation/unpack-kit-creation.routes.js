@@ -22,13 +22,13 @@
 
     // SIGLUS-REFACTOR: removed parameter SEARCH_OPTIONS, ADJUSTMENT_TYPE
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
-    //SIGLUS-REFACTOR: ends here
+    // SIGLUS-REFACTOR: ends here
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.kitunpack.creation', {
-            //SIGLUS-REFACTOR: replaced url: '/:programId/create?page&size&keyword',
+            // SIGLUS-REFACTOR: replaced url: '/:programId/create?page&size&keyword',
             url: '/:orderableId/create?page&size&keyword',
-            //SIGLUS-REFACTOR: ends here
+            // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
                     // SIGLUS-REFACTOR:  replaced controller and templateUrl
@@ -37,7 +37,7 @@
                     controller: 'SiglusUnpackKitCreationController',
                     templateUrl: 'stock-unpack-kit-creation/siglus-unpack-kit-creation.html',
                     controllerAs: 'vm'
-                    //SIGLUS-REFACTOR: ends here
+                    // SIGLUS-REFACTOR: ends here
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -46,7 +46,7 @@
                 // and added kit
                 facility: undefined,
                 kit: undefined
-                //SIGLUS-REFACTOR: ends here
+                // SIGLUS-REFACTOR: ends here
             },
             resolve: {
                 facility: function(facilityFactory, $stateParams) {
@@ -101,7 +101,7 @@
                     }
                     return $stateParams.kit;
                 }
-                //SIGLUS-REFACTOR: ends here
+                // SIGLUS-REFACTOR: ends here
             }
         });
     }

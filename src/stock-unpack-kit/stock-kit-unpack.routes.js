@@ -22,7 +22,7 @@
 
     // SIGLUS-REFACTOR: removed parameter ADJUSTMENT_TYPE
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
-    //SIGLUS-REFACTOR: ends here
+    // SIGLUS-REFACTOR: ends here
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.kitunpack', {
@@ -38,7 +38,7 @@
                     controller: 'SiglusKitUnpackController',
                     controllerAs: 'vm',
                     templateUrl: 'stock-unpack-kit/siglus-stock-kit-unpack.html'
-                    //SIGLUS-REFACTOR: ends here
+                    // SIGLUS-REFACTOR: ends here
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
