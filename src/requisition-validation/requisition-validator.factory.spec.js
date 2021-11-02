@@ -270,15 +270,15 @@ describe('requisitionValidator', function() {
             expect(requisition.$error).toBe('requisitionView.rnrHasErrors');
         });
 
-        it('should return false if just apes filled', function() {
+        it('should return true if just apes filled', function() {
             requisition.template.extension.enableRapidTestConsumption = true;
             requisition.testConsumptionLineItems[2].projects = angular.copy(testProject);
             testProject.hivDetermine.outcomes.consumo.value = null;
             testProject.hivDetermine.outcomes.positive.value = null;
             testProject.hivDetermine.outcomes.unjustified.value = null;
 
-            expect(validator.siglusValidRequisition(requisition)).toBe(false);
-            expect(requisition.$error).toBe('requisitionValidation.apeOnly');
+            expect(validator.siglusValidRequisition(requisition)).toBe(true);
+            expect(requisition.$error).toBe(undefined);
         });
         // #375: ends here
 
