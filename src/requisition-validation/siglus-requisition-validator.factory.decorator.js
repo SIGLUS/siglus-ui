@@ -77,7 +77,6 @@
             isValid = isValid && validateTotalEqualOfRegimen(requisition);
             isValid = isValid && !isUsageInformationEmpty(requisition);
             isValid = isValid && !isTestConsumptionEmpty(requisition);
-            isValid = isValid && !isOnlyAPESFilled(requisition);
             isValid = isValid && !isTotalWithoutServices(requisition);
             return isValid;
         }
@@ -294,33 +293,6 @@
                     || messageService.get('requisitionValidation.emptyTestConsumption');
             }
             return isEmpty;
-        }
-
-        function isOnlyAPESFilled(requisition) {
-            if (!requisition.template.extension.enableRapidTestConsumption || requisition.emergency) {
-                return false;
-            }
-            var flag = false;
-            var totalLineItem = requisition.testConsumptionLineItems.find(siglusColumnUtils.isTotal);
-            var apesLineItem = requisition.testConsumptionLineItems.find(siglusColumnUtils.isAPES);
-            if (_.isUndefined(apesLineItem)) {
-                return flag;
-            }
-            angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
-                angular.forEach(_.values(lineItem.projects), function(project) {
-                    angular.forEach(_.values(project.outcomes), function(outcome) {
-                        if (isNotEmpty(getTestConsumptionFieldValue(apesLineItem, project, outcome))
-                            && !isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))) {
-                            flag =  true;
-                        }
-                    });
-                });
-            });
-            if (flag) {
-                requisition.$error = requisition.$error
-                    || messageService.get('requisitionValidation.apeOnly');
-            }
-            return flag;
         }
 
         function isTotalWithoutServices(requisition) {
