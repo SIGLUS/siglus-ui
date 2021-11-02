@@ -1,7 +1,7 @@
 version: "2"
 services:
   siglus-ui:
-    image: openlmis/dev-ui:9.0.1
+    image: siglusdevops/dev-ui:9.0.2
     ports:
       - "9000:9000"
       - "9876:9876"
