@@ -3,13 +3,9 @@
 * Docker Compose 1.6+
 
 ## Quick Start
-1. Fork/clone this repository from GitHub.
-
- ```shell
- git clone https://github.com/SIGLUS/siglus-ui.git
- ```
-2. Develop w/ Docker by running `docker-compose run --service-ports siglus-ui`.
-3. You should now be in an interactive shell inside the newly created development environment, build the project with: `npm install && grunt bower` and then you can build and start it with `grunt build --serve`.
+1. Develop in docker container `docker-compose run --service-ports siglus-ui`.
+2. You should now be in an interactive shell inside the newly created development environment, build the project with: `npm install` and then run `grunt`.
+3. Run `grunt build --openlmisServerURL=https://qa.siglus.us --noTest --noStyleguide --noDocs --serve` to start
 4. Go to `http://localhost:9000/webapp/` to see the login page.
 
 *Note:* To change the location of where the OpenLMIS-UI attemps to access OpenLMIS, use the command `grunt build --openlmisServerUrl=<openlmis server url> --serve`.
@@ -42,6 +38,9 @@ See the [OpenLMIS/dev-ui project](https://github.com/OpenLMIS/dev-ui) for more i
 
 // Install dependencies 
 $ npm install
+
+// Run grunt
+$ grunt
 
 // Build and run the UI against a OpenLMIS server
 $ grunt build --openlmisServerUrl=<openlmis server url> --serve
