@@ -340,6 +340,10 @@
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
+            vm.selectedOrderableGroup =
+                siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(lineItem.orderableId);
+            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
+            lineItem.lotOptions = angular.copy(vm.lots);
             if (lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 var hasStockLotCodes = _.chain(vm.selectedOrderableGroup)
                     .filter(function(item) {
@@ -352,8 +356,6 @@
                 lineItem.lotOptions = _.filter(lineItem.lotOptions, function(item) {
                     return item === null || _.contains(hasStockLotCodes, item.lotCode);
                 });
-            } else {
-                lineItem.lotOptions = angular.copy(vm.lots);
             }
             return lineItem;
         };
