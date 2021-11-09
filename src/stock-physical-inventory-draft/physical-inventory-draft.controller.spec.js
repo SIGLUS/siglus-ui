@@ -17,7 +17,7 @@ describe('PhysicalInventoryDraftController', function() {
 
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
-        lineItem4, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
+        lineItem4, lineItem5, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
         ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
         physicalInventoryDataService;
@@ -114,6 +114,12 @@ describe('PhysicalInventoryDraftController', function() {
                     .build())
                 .withLot(new LotDataBuilder()
                     .build())
+                .build();
+
+            lineItem5 = new PhysicalInventoryLineItemDataBuilder()
+                .withQuantity(10)
+                .withStockOnHand(10)
+                .withStockAdjustments([])
                 .build();
 
             lineItem = new PhysicalInventoryLineItemDataBuilder()
@@ -440,9 +446,9 @@ describe('PhysicalInventoryDraftController', function() {
             spyOn(vm, 'updateProgress');
 
             // SIGLUS-REFACTOR: starts here
-            lineItem.$errors = {};
+            lineItem5.$errors = {};
             // SIGLUS-REFACTOR: ends here
-            vm.quantityChanged(lineItem);
+            vm.quantityChanged(lineItem5);
 
             expect(vm.updateProgress).toHaveBeenCalled();
         });
@@ -451,11 +457,11 @@ describe('PhysicalInventoryDraftController', function() {
             spyOn(vm, 'validateQuantity');
 
             // SIGLUS-REFACTOR: starts here
-            lineItem.$errors = {};
+            lineItem5.$errors = {};
             // SIGLUS-REFACTOR: ends here
-            vm.quantityChanged(lineItem);
+            vm.quantityChanged(lineItem5);
 
-            expect(vm.validateQuantity).toHaveBeenCalledWith(lineItem);
+            expect(vm.validateQuantity).toHaveBeenCalledWith(lineItem5);
         });
 
         it('should check unaccounted stock adjustments', function() {
