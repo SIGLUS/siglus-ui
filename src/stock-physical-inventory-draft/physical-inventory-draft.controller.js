@@ -777,30 +777,28 @@
         }
 
         function addStockAdjustments(lineItem) {
-            var unaccountedQuantity = stockReasonsCalculations.calculateUnaccounted(lineItem,
-                lineItem.stockAdjustments);
-            if (unaccountedQuantity === lineItem.unaccountedQuantity || isEmpty(lineItem.stockOnHand)) {
+            // SIGLUS-REFACTOR: starts here
+            var diff = stockReasonsCalculations.calculateDifference(lineItem);
+            if (diff === 0) {
+                lineItem.stockAdjustments = [];
                 return;
             }
             var reason;
-            if (!_.isEmpty(lineItem.stockAdjustments)) {
-                lineItem.shouldOpenImmediately = true;
-            } else if (unaccountedQuantity > 0) {
+            if (diff > 0) {
                 reason = _.find(vm.reasons[lineItem.programId], function(reason) {
                     return reason.reasonType === REASON_TYPES.CREDIT;
                 });
-            } else if (unaccountedQuantity < 0) {
+            } else {
                 reason = _.find(vm.reasons[lineItem.programId], function(reason) {
                     return reason.reasonType === REASON_TYPES.DEBIT;
                 });
             }
-            if (reason) {
-                var adjustment = {
-                    reason: reason,
-                    quantity: Math.abs(unaccountedQuantity)
-                };
-                lineItem.stockAdjustments = [adjustment];
-            }
+            var adjustment = {
+                reason: reason,
+                quantity: Math.abs(diff)
+            };
+            lineItem.stockAdjustments = [adjustment];
+            // SIGLUS-REFACTOR: ends here
         }
 
         function addLot(lineItem) {
