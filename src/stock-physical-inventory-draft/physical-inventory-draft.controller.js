@@ -779,7 +779,7 @@
         function addStockAdjustments(lineItem) {
             // SIGLUS-REFACTOR: starts here
             var diff = stockReasonsCalculations.calculateDifference(lineItem);
-            if (diff === 0) {
+            if (vm.isInitialInventory || diff === 0) {
                 lineItem.stockAdjustments = [];
                 return;
             }
