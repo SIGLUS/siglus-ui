@@ -45,7 +45,8 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                isAddProduct: undefined
+                isAddProduct: undefined,
+                hasLoadOrderableGroups: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -66,7 +67,7 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
-                    if (!$stateParams.orderableGroups) {
+                    if (!$stateParams.hasLoadOrderableGroups) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
                             program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
                         );
