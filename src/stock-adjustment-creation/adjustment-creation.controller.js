@@ -739,7 +739,10 @@
             $stateParams.displayItems = vm.displayItems;
             $stateParams.page = 0;
             $stateParams.draft = vm.draft;
-            $state.go($state.current.name, $stateParams);
+            $state.go($state.current.name, $stateParams, {
+                reload: $state.current.name,
+                notify: false
+            });
         }
         // SIGLUS-REFACTOR: ends here
 
