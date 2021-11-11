@@ -540,7 +540,10 @@
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
-            $stateParams.orderableGroups = orderableGroups;
+            // SIGLUS-REFACTOR: starts here
+            // $stateParams.orderableGroups = orderableGroups;
+            $stateParams.hasLoadOrderableGroups = true;
+            // SIGLUS-REFACTOR: ends here
         }
 
         function getPageNumber() {

@@ -48,7 +48,8 @@
                 draft: undefined,
                 orderableGroups: undefined,
                 srcDstAssignments: undefined,
-                isAddProduct: undefined
+                isAddProduct: undefined,
+                hasLoadOrderableGroups: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -67,16 +68,16 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
+                // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {
-                    if (!$stateParams.orderableGroups) {
-                        // #225: cant view detail page when not have stock view right
+                    if (!$stateParams.hasLoadOrderableGroups) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
                             program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
                         );
-                        // #225: ends here
                     }
                     return $stateParams.orderableGroups;
                 },
+                // SIGLUS-REFACTOR: ends here
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
