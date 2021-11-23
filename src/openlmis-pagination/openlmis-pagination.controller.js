@@ -137,19 +137,15 @@
             if (newPage >= 0 && newPage < getTotalPages()) {
                 // SIGLUS-REFACTOR: starts here
                 var stateParams = JSON.parse(JSON.stringify($state.params));
-                // SIGLUS-REFACTOR: ends here
-
                 stateParams[paginationService.getPageParamName(pagination.paginationId)] = newPage;
-
                 if (pagination.onPageChange instanceof Function) {
-                    // #546: "Back to preview" are affected by the pagination of requisition
                     return pagination.onPageChange().then(function(options) {
                         $state.go($state.current.name, stateParams, options);
                     });
-                    // #546: ends here
                 }
-
+                stateParams.hasLoadOrderableGroups = false;
                 $state.go($state.current.name, stateParams);
+                // SIGLUS-REFACTOR: ends here
             }
         }
 
