@@ -165,12 +165,14 @@
         function search() {
             var stateParams = angular.copy($stateParams);
 
-            // #368: The approver can filter the requisitions by facility
+            // SIGLUS-REFACTOR: starts here
             stateParams.facility = vm.selectedFacility ? vm.selectedFacility.id : null;
-            // #368: ends here
+            // SIGLUS-REFACTOR: ends here
             stateParams.program = vm.selectedProgram ? vm.selectedProgram.id : null;
             stateParams.offline = vm.offline;
-
+            // SIGLUS-REFACTOR: starts here
+            stateParams.page = 0;
+            // SIGLUS-REFACTOR: ends here
             $state.go('openlmis.requisitions.approvalList', stateParams, {
                 reload: true
             });

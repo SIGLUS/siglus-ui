@@ -152,7 +152,9 @@
             stateParams.status = vm.orderStatus ? vm.orderStatus : null;
             stateParams.requestingFacilityId = vm.orderingFacility ? vm.orderingFacility.id : null;
             stateParams.programId = vm.program ? vm.program.id : null;
-
+            // SIGLUS-REFACTOR: starts here
+            stateParams.page = 0;
+            // SIGLUS-REFACTOR: ends here
             $state.go('openlmis.orders.fulfillment', stateParams, {
                 reload: true
             });

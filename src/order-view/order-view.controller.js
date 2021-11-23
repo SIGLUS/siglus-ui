@@ -219,7 +219,9 @@
             stateParams.periodStartDate = vm.periodStartDate ? $filter('isoDate')(vm.periodStartDate) : null;
             stateParams.periodEndDate = vm.periodEndDate ? $filter('isoDate')(vm.periodEndDate) : null;
             stateParams.sort = 'createdDate,desc';
-
+            // SIGLUS-REFACTOR: starts here
+            stateParams.page = 0;
+            // SIGLUS-REFACTOR: ends here
             $state.go('openlmis.orders.view', stateParams, {
                 reload: true
             });

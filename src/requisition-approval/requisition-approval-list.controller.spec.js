@@ -179,6 +179,7 @@ describe('RequisitionApprovalListController', function() {
             expect($state.go).toHaveBeenCalledWith('openlmis.requisitions.approvalList', {
                 facility: vm.selectedFacility.id,
                 program: vm.selectedProgram.id,
+                page: 0,
                 offline: false
             }, {
                 reload: true
@@ -195,6 +196,7 @@ describe('RequisitionApprovalListController', function() {
             expect($state.go).toHaveBeenCalledWith('openlmis.requisitions.approvalList', {
                 facility: vm.selectedFacility.id,
                 program: vm.selectedProgram.id,
+                page: 0,
                 offline: true
             }, {
                 reload: true
