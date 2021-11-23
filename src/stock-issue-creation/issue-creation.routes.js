@@ -49,7 +49,8 @@
                 orderableGroups: undefined,
                 srcDstAssignments: undefined,
                 isAddProduct: undefined,
-                hasLoadOrderableGroups: undefined
+                hasLoadOrderableGroups: undefined,
+                size: '50'
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
