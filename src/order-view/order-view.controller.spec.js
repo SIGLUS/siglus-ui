@@ -209,6 +209,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: null,
+                page: 0,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -229,6 +230,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: null,
+                page: 0,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -249,6 +251,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: null,
+                page: 0,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -267,6 +270,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: '2017-01-31',
                 periodEndDate: null,
+                page: 0,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -285,6 +289,7 @@ describe('OrderViewController', function() {
                 status: null,
                 periodStartDate: null,
                 periodEndDate: '2017-01-31',
+                page: 0,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
@@ -303,6 +308,7 @@ describe('OrderViewController', function() {
                 status: this.vm.orderStatuses[1].value,
                 periodStartDate: null,
                 periodEndDate: null,
+                page: 0,
                 sort: 'createdDate,desc'
             }, {
                 reload: true
