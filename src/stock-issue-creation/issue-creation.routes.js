@@ -135,11 +135,14 @@
         orderableGroups.forEach(function(group) {
             orderableIds.push(group[0].orderable.id);
         });
-        draft.lineItems.forEach(function(lineItem) {
-            if (orderableIds.includes(lineItem.orderableId)) {
-                filteredLineItems.push(lineItem);
-            }
-        });
+        if (draft !== null && draft.lineItems !== null) {
+            draft.lineItems.forEach(function(lineItem) {
+                if (orderableIds.includes(lineItem.orderableId)) {
+                    filteredLineItems.push(lineItem);
+                }
+            });
+        }
+
         return filteredLineItems;
     }
     // SIGLUS-REFACTOR: ends here
