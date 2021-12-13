@@ -107,6 +107,7 @@
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
+                        draft.lineItems = filterOutOrderable(draft, orderableGroups);
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
                                 srcDstAssignments, reasons);
@@ -126,4 +127,21 @@
             }
         });
     }
+
+    // SIGLUS-REFACTOR: starts here
+    function filterOutOrderable(draft, orderableGroups) {
+        var orderableIds = [];
+        var filteredLineItems = [];
+        orderableGroups.forEach(function(group) {
+            orderableIds.push(group[0].orderable.id);
+        });
+        draft.lineItems.forEach(function(lineItem) {
+            if (orderableIds.includes(lineItem.orderableId)) {
+                filteredLineItems.push(lineItem);
+            }
+        });
+        return filteredLineItems;
+    }
+    // SIGLUS-REFACTOR: ends here
+
 })();
