@@ -661,6 +661,11 @@
                     item.$errors = {};
                 }
             });
+            _.forEach(draft.lineItems, function(item) {
+                if (!item.$diffMessage) {
+                    item.$diffMessage = {};
+                }
+            });
             _.forEach(draft.summaries, function(summary) {
                 if (!summary.$errors) {
                     summary.$errors = {};
@@ -776,9 +781,32 @@
             onChange();
         }
 
+        // SIGLUS_REFACTOR: starts here
+        function buildMovementPopoverMessage(lineItem, diff) {
+            if (diff > 0) {
+                lineItem.$diffMessage.movementPopoverMessage = messageService.get(
+                    'stockPhysicalInventoryDraft.PositiveAdjustment', {
+                        diff: diff
+                    }
+                );
+            } else if (diff < 0) {
+                lineItem.$diffMessage.movementPopoverMessage = messageService.get(
+                    'stockPhysicalInventoryDraft.NegativeAdjustment', {
+                        diff: -diff
+                    }
+                );
+            } else {
+                lineItem.$diffMessage.movementPopoverMessage = '';
+            }
+        }
+        // SIGLUS_REFACTOR: ends here
+
         function addStockAdjustments(lineItem) {
             // SIGLUS-REFACTOR: starts here
             var diff = stockReasonsCalculations.calculateDifference(lineItem);
+            if (!vm.isInitialInventory) {
+                buildMovementPopoverMessage(lineItem, diff);
+            }
             if (vm.isInitialInventory || diff === 0) {
                 lineItem.stockAdjustments = [];
                 return;
