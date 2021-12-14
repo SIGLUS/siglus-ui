@@ -447,6 +447,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             // SIGLUS-REFACTOR: starts here
             lineItem5.$errors = {};
+            lineItem5.$diffMessage = {};
             // SIGLUS-REFACTOR: ends here
             vm.quantityChanged(lineItem5);
 
@@ -458,6 +459,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             // SIGLUS-REFACTOR: starts here
             lineItem5.$errors = {};
+            lineItem5.$diffMessage = {};
             // SIGLUS-REFACTOR: ends here
             vm.quantityChanged(lineItem5);
 
@@ -469,6 +471,7 @@ describe('PhysicalInventoryDraftController', function() {
 
             // SIGLUS-REFACTOR: starts here
             lineItem.$errors = {};
+            lineItem.$diffMessage = {};
             // SIGLUS-REFACTOR: ends here
             vm.quantityChanged(lineItem);
 
