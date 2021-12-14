@@ -130,19 +130,26 @@
 
     // SIGLUS-REFACTOR: starts here
     function filterOutOrderable(draft, orderableGroups) {
+        var lotIds = [];
         var orderableIds = [];
         var filteredLineItems = [];
         orderableGroups.forEach(function(group) {
-            orderableIds.push(group[0].orderable.id);
+            if (group[0].orderable.isKit) {
+                orderableIds.push(group[0].orderable.id);
+            } else {
+                group.forEach(function(lotItem) {
+                    lotIds.push(lotItem.lot.id);
+                });
+            }
+
         });
         if (draft !== null && draft.lineItems !== null) {
             draft.lineItems.forEach(function(lineItem) {
-                if (orderableIds.includes(lineItem.orderableId)) {
+                if (orderableIds.includes(lineItem.orderableId) || lotIds.includes(lineItem.lotId)) {
                     filteredLineItems.push(lineItem);
                 }
             });
         }
-
         return filteredLineItems;
     }
     // SIGLUS-REFACTOR: ends here
