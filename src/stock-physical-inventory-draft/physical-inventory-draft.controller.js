@@ -674,6 +674,13 @@
                     vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
                 }
             });
+            _.forEach(draft.lineItems, function(item) {
+                if (!vm.isInitialInventory && item.quantity !== null) {
+                    var diff = stockReasonsCalculations.calculateDifference(item);
+                    buildMovementMessage(item, diff);
+                }
+
+            });
         }
 
         function getLotOptions() {
@@ -782,7 +789,7 @@
         }
 
         // SIGLUS_REFACTOR: starts here
-        function buildMovementPopoverMessage(lineItem, diff) {
+        function buildMovementMessage(lineItem, diff) {
             if (diff > 0) {
                 lineItem.$diffMessage.movementPopoverMessage = messageService.get(
                     'stockPhysicalInventoryDraft.PositiveAdjustment', {
@@ -805,7 +812,7 @@
             // SIGLUS-REFACTOR: starts here
             var diff = stockReasonsCalculations.calculateDifference(lineItem);
             if (!vm.isInitialInventory) {
-                buildMovementPopoverMessage(lineItem, diff);
+                buildMovementMessage(lineItem, diff);
             }
             if (vm.isInitialInventory || diff === 0) {
                 lineItem.stockAdjustments = [];
