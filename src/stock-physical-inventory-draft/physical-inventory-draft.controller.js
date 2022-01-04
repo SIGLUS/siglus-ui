@@ -661,6 +661,11 @@
                     item.$errors = {};
                 }
             });
+            _.forEach(draft.lineItems, function(item) {
+                if (!item.$diffMessage) {
+                    item.$diffMessage = {};
+                }
+            });
             _.forEach(draft.summaries, function(summary) {
                 if (!summary.$errors) {
                     summary.$errors = {};
@@ -668,6 +673,13 @@
                 if (summary.lot && summary.lot.id) {
                     vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
                 }
+            });
+            _.forEach(draft.lineItems, function(item) {
+                if (!vm.isInitialInventory && item.quantity !== null) {
+                    var diff = stockReasonsCalculations.calculateDifference(item);
+                    buildMovementMessage(item, diff);
+                }
+
             });
         }
 
@@ -776,9 +788,32 @@
             onChange();
         }
 
+        // SIGLUS_REFACTOR: starts here
+        function buildMovementMessage(lineItem, diff) {
+            if (diff > 0) {
+                lineItem.$diffMessage.movementPopoverMessage = messageService.get(
+                    'stockPhysicalInventoryDraft.PositiveAdjustment', {
+                        diff: diff
+                    }
+                );
+            } else if (diff < 0) {
+                lineItem.$diffMessage.movementPopoverMessage = messageService.get(
+                    'stockPhysicalInventoryDraft.NegativeAdjustment', {
+                        diff: -diff
+                    }
+                );
+            } else {
+                lineItem.$diffMessage.movementPopoverMessage = '';
+            }
+        }
+        // SIGLUS_REFACTOR: ends here
+
         function addStockAdjustments(lineItem) {
             // SIGLUS-REFACTOR: starts here
             var diff = stockReasonsCalculations.calculateDifference(lineItem);
+            if (!vm.isInitialInventory) {
+                buildMovementMessage(lineItem, diff);
+            }
             if (vm.isInitialInventory || diff === 0) {
                 lineItem.stockAdjustments = [];
                 return;
