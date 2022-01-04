@@ -115,7 +115,8 @@
                         reasons="vm.reasons[lineItem.programId] || []"
                         ng-change="vm.reasonChanged(lineItem)"
                 /> -->
-                {{ lineItem.stockAdjustments[0].reason.name }}
+                <p>{{ lineItem.stockAdjustments[0].reason.name }}</p>
+                <p ng-style="{'color' : 'red'}">{{lineItem.$diffMessage.movementPopoverMessage}}</p>
                 <!-- SIGLUS-REFACTOR: ends here -->
             </td>
             <td ng-if="!vm.isInitialInventory && vm.isFreeTextAllowed(lineItem)" openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">

@@ -2100,5 +2100,7 @@
   "summary": "Sumário",
   "user.validation.email": "O endereço de e-mail indicado é inválido",
   "requisitionValidation.emptyUsageInformation": "Nenhum produto encontrado. Entre em contato com o administrador.",
-  "stockCardSummaryList.keyword": "Palavras-chave"
+  "stockCardSummaryList.keyword": "Palavras-chave",
+  "stockPhysicalInventoryDraft.PositiveAdjustment": "Ajuste positivo de ${diff} será feito",
+  "stockPhysicalInventoryDraft.NegativeAdjustment": "Ajuste negativo de ${diff} será feito"
 }
