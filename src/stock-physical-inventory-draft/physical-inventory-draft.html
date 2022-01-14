@@ -65,7 +65,7 @@
             </td>
             <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
         </tr>
-        <tr ng-repeat="lineItem in lineItems" ng-repeat-end>
+        <tr ng-click="vm.focusedRowChanged(lineItem)" ng-repeat="lineItem in lineItems" ng-repeat-end>
             <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
             <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
