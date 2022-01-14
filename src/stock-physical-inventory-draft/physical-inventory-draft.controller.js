@@ -63,6 +63,7 @@
         vm.reasonChanged = reasonChanged;
         vm.reasonTextChanged = reasonTextChanged;
         vm.addStockAdjustments = addStockAdjustments;
+        vm.focusedRowChanged = focusedRowChanged;
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
@@ -622,6 +623,7 @@
             refreshLotOptions();
             vm.hasLot = vm.existLotCode.length > 0;
             $scope.needToConfirm = $stateParams.isAddProduct;
+            $scope.focusedRow = undefined;
             // SIGLUS-REFACTOR: starts here
 
             vm.updateProgress();
@@ -678,6 +680,7 @@
                 if (!vm.isInitialInventory && item.quantity !== null) {
                     var diff = stockReasonsCalculations.calculateDifference(item);
                     buildMovementMessage(item, diff);
+                    vm.validateReasonFreeText(item);
                 }
 
             });
@@ -786,6 +789,14 @@
             vm.validateReasonFreeText(lineItem);
             vm.updateProgress();
             onChange();
+        }
+
+        function focusedRowChanged(lineItem) {
+            if ($scope.focusedRow !== undefined && $scope.focusedRow !== lineItem) {
+                vm.validateReasonFreeText($scope.focusedRow);
+                onChange();
+            }
+            $scope.focusedRow = lineItem;
         }
 
         // SIGLUS_REFACTOR: starts here
