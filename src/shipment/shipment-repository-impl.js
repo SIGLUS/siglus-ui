@@ -188,7 +188,13 @@
                 orderId: order.id
             })
                 .then(function(page) {
-                    return combineResponses(page.content[0], order, mapCanFulfillForMe(stockCardSummaries));
+                    var shipment = page.content[0];
+                    var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+                    var orderableIds = Object.keys(canFulfillForMeMap);
+                    shipment.lineItems = shipment.lineItems.filter(function(lineItem) {
+                        return orderableIds.includes(lineItem.orderable.id);
+                    });
+                    return combineResponses(shipment, order, canFulfillForMeMap);
                 });
         }
         // #372: ends here
