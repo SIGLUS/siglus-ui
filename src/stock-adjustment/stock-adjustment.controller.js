@@ -100,6 +100,11 @@
                     });
                     return program;
                 });
+            } else {
+                vm.programs = _.map(programs, function(program) {
+                    program.draft = false;
+                    return program;
+                });
             }
         };
         // SIGLUS-REFACTOR: ends here
