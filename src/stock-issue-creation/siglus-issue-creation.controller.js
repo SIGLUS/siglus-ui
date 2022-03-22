@@ -133,9 +133,9 @@
             }
         };
 
-        vm.filterByProgram = function(items, programs) {
+        vm.filterByProgram = function(items, orderable) {
             var programIds = [];
-            programs.forEach(function(program) {
+            orderable.programs.forEach(function(program) {
                 programIds.push(program.programId);
             });
             var updatedItems = [];
@@ -144,7 +144,14 @@
                     updatedItems.push(item);
                 }
             });
-            return updatedItems;
+            if (orderable.isKit && orderable.children.length === 0) {
+                return _.filter(updatedItems, function(item) {
+                    return item.name === 'APE';
+                });
+            }
+            return _.filter(updatedItems, function(item) {
+                return item.name !== 'APE';
+            });
         };
 
         function copyDefaultValue() {
