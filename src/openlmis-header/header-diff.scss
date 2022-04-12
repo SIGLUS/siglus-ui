@@ -31,12 +31,11 @@ body > header {
 
   > .logo {
     display: block;
-    text-indent: -30000em;
     overflow: hidden;
     background-repeat: no-repeat;
     background-size: auto $font-size-openlmis-header-title;
     flex-grow: 1;
-    font-size: $font-size-openlmis-header-title;
+    font-size: 22px;
     height: $font-size-openlmis-header-title;
     @media screen and (max-width: $res-sm) {
       background-size: auto 24px;
