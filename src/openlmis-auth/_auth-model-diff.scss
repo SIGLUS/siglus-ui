@@ -58,7 +58,7 @@ $res-sm: 576px;
 
   button {
     margin: 0px 1em;
-    min-width: 92px;
+    min-width: 100px;
     max-height: 40px;
     @media screen and (max-width: $res-xs) {
       display: flex;
