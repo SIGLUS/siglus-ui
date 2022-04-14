@@ -1104,7 +1104,7 @@
   "openlmisForm.selectNoResults": "Sem opções para seleccionar",
   "openlmisForm.showingNumberOfResults": "A mostrar o ${num}  ${total} de resultados",
   "openlmisForm.tooManyCharacters": "Demasiados caracteres",
-  "openlmisHeader.appHeader": "Sistema de Informação de Gestão Logística",
+  "openlmisHeader.appHeader": "SIMAM - Sistema de Informação de Medicamentos e Artigos Médicos",
   "openlmisHeader.checkConnection": "Verificar a conexão",
   "openlmisHeader.help": "Ajuda",
   "openlmisHeader.loggedAs": "Sessão iniciada como",
@@ -1112,7 +1112,7 @@
   "openlmisHome.home": "Início",
   "openlmisHome.welcome": "Bem Vindo ao OpenLMIS Moçambique",
   "openlmisLocale.errorChangingLanguage": "Erro ao alterar o idioma",
-  "openlmisLogin.appHeader": "Sistema de Informação de Gestão Logística",
+  "openlmisLogin.appHeader": "SIMAM - Sistema de Informação de Medicamentos e Artigos Médicos",
   "openlmisLogin.cannotConnectToServer": "Não foi possível conectar ao servidor. Deve estar online para efetuar login. Por favor, tente novamente.",
   "openlmisLogin.forgotPassword": "Esqueceu-se da palavra-passe?",
   "openlmisLogin.invalidCredentials": "O nome de utilizador ou palavra-passe introduzido não está correcto. Tente novamente.",
@@ -2102,5 +2102,6 @@
   "requisitionValidation.emptyUsageInformation": "Nenhum produto encontrado. Entre em contato com o administrador.",
   "stockCardSummaryList.keyword": "Palavras-chave",
   "stockPhysicalInventoryDraft.PositiveAdjustment": "Ajuste positivo de ${diff} será feito",
-  "stockPhysicalInventoryDraft.NegativeAdjustment": "Ajuste negativo de ${diff} será feito"
+  "stockPhysicalInventoryDraft.NegativeAdjustment": "Ajuste negativo de ${diff} será feito",
+  "openlmisHome.power": "Powered by OpenLMIS"
 }
