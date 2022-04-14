@@ -8,12 +8,23 @@
     }
 
     .bg {
-        background-image: url("openlmis-home/home-background.png");
+        background-image: url("openlmis-home/CMAM-logo.png");
         background-repeat: no-repeat;
         background-position: left 45% bottom 50%;
         background-size: 100% 100%;
         width: 695px;
-        height: 409px;
+        height: 269px;
+    }
+
+    .usaid{
+        background-image: url("openlmis-home/usaid-logo.png");
+        background-repeat: no-repeat;
+        position: absolute;
+        background-size: 100% 100%;
+        right: 40px;
+        bottom: 40px;
+        width: 170px;
+        height: 100px;
     }
 
     .power {

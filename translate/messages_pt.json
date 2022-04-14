@@ -1104,7 +1104,7 @@
   "openlmisForm.selectNoResults": "Sem opções para seleccionar",
   "openlmisForm.showingNumberOfResults": "A mostrar o ${num}  ${total} de resultados",
   "openlmisForm.tooManyCharacters": "Demasiados caracteres",
-  "openlmisHeader.appHeader": "SIMAM - Sistema de Informação de Gestão de Medicamentos e Artigos Médicos",
+  "openlmisHeader.appHeader": "SIMAM - Sistema de Informação de Medicamentos e Artigos Médicos",
   "openlmisHeader.checkConnection": "Verificar a conexão",
   "openlmisHeader.help": "Ajuda",
   "openlmisHeader.loggedAs": "Sessão iniciada como",
