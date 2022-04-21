@@ -1,68 +1,99 @@
 $res-xs: 320px;
 $res-sm: 576px;
 
-.modal-body {
-  background-image: url("openlmis-auth/CMAM-logo.png");
-  background-size: 40% auto;
-  background-position: 2em 45%;
-  background-repeat: no-repeat;
-  @media screen and (max-width: $res-sm) {
-    background-size: 30% auto;
+.auth-modal {
+  background-color: $dark-gray;
+
+  .modal-content {
+    background-image: linear-gradient(to bottom, $white 0%, $white 48%, $light-gray 100%);
   }
 
-  padding: 1em 1em 1em 50% !important;
-
-  & > .form-desc,
-  & > form > fieldset {
-    width: 100%;
+  .modal-dialog {
+    margin-top: 15%;
+    @media screen and (min-width: $res-md) {
+      width: 700px;
+    }
+    @media screen and (max-width: $res-md) {
+      margin-right: 3%;
+      margin-left: 3%;
+    }
+    max-width: 700px;
   }
 
-  & > form > .alert {
-    flex: initial;
+  .modal-header {
+    align-items: center;
+    background-image: linear-gradient(to bottom, $white 30%, $light-gray 100%);
+    border-bottom: 1px solid $light-gray;
+    border-radius: $border-radius $border-radius 0 0;
+    display: flex;
+    padding: 0.5em 1em !important;
+    overflow: hidden;
+
+    & > h1 {
+      margin-right: auto;
+      word-break: normal !important;
+    }
+
+    button {
+      margin: 0px 1em;
+      min-width: 110px;
+      max-height: 40px;
+      @media screen and (max-width: $res-xs) {
+        display: flex;
+        min-width: 12px;
+      }
+    }
   }
-  & > form > .input-control{
-    width: 100%;
-  }
-  .form-group .input-control{
+
+  .modal-body {
+    background-image: url("openlmis-auth/CMAM-logo.png");
+    background-size: 40% auto;
+    background-position: 2em 45%;
+    background-repeat: no-repeat;
     @media screen and (max-width: $res-sm) {
+      background-size: 30% auto;
+    }
+
+    padding: 1em 1em 1em 50% !important;
+
+    & > .form-desc,
+    & > form > fieldset {
       width: 100%;
     }
+
+    & > form > .alert {
+      flex: initial;
+    }
+    & > form > .input-control{
+      width: 100%;
+    }
+    .form-group .input-control{
+      @media screen and (max-width: $res-sm) {
+        width: 100%;
+      }
+    }
+
+    .button-group {
+      @media screen and (max-width: $res-sm) {
+        overflow: hidden;
+        display: grid;
+      }
+      @media screen and (max-width: $res-xs) {
+        position: relative;
+        right: 0px;
+        bottom: 0px;
+      }
+    }
   }
 
-  .button-group {
-    @media screen and (max-width: $res-sm) {
-      overflow: hidden;
-      display: grid;
-    }
-    @media screen and (max-width: $res-xs) {
-      position: relative;
-      right: 0px;
-      bottom: 0px;
-    }
-  }
-}
+  .modal-footer {
+    border-top: none;
+    text-align: right;
+    padding: 0 !important;
+    margin: 0;
+    display: flex;
+    justify-content: flex-end;
 
-.modal-header {
-  align-items: center;
-  background-image: linear-gradient(to bottom, $white 30%, $light-gray 100%);
-  border-bottom: 1px solid $light-gray;
-  border-radius: $border-radius $border-radius 0 0;
-  display: flex;
-  padding: 0.5em 1em !important;
-  overflow: hidden;
-
-  & > h1 {
-    margin-right: auto;
-    word-break: normal !important;
-  }
-
-  button {
-    margin: 0px 1em;
-    min-width: 110px;
-    max-height: 40px;
-    @media screen and (max-width: $res-xs) {
-      display: flex;
-      min-width: 12px;
-    }
+    color: $gray;
   }
 }
