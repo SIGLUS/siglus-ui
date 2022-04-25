@@ -5,7 +5,7 @@
                 <h1>{{'openlmisLogin.appHeader' | message}}</h1>
                 <openlmis-locale class="locale-container"/>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="login-form">
                 <form ng-submit="vm.doLogin()">
                     <div id="loginError" class="alert is-error" ng-if="vm.loginError">
                         {{vm.loginError | message}}
