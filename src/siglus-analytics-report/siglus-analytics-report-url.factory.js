@@ -19,10 +19,10 @@
 
     /**
      * @ngdoc service
-     * @name report.analyticsReportUrlFactory
+     * @name siglus-analytics-report.analyticsReportUrlFactory
      *
      * @description
-     * Supplies application with report URL.
+     * Supplies application with siglus-analytics-report URL.
      */
     angular
         .module('siglus-analytics-report')
