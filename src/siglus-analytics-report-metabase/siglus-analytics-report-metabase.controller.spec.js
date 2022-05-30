@@ -36,8 +36,8 @@ describe('siglusAnalyticsReportMetabaseController', function() {
     });
 
     describe('onInit', function() {
-        it('should expose stockCardSummaries', function() {
-            expect(vm.analyticsReportMetabase).toEqual(analyticsReportMetabase);
+        it('should expose analyticsReportMetabase', function() {
+            expect(angular.toJson(vm.analyticsReportMetabase)).toEqual(angular.toJson(analyticsReportMetabase));
         });
     });
 
