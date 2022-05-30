@@ -19,7 +19,7 @@ describe('siglusAnalyticsReportMetabaseController', function() {
 
     beforeEach(function() {
         module('siglus-analytics-report');
-        module('siglus-analytics-report-metabae');
+        module('siglus-analytics-report-metabase');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
