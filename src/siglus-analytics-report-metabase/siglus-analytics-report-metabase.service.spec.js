@@ -41,14 +41,14 @@ describe('analyticsReportMetabaseService', function() {
                 .respond(200, analyticsReportMetabase);
         });
 
-        it('should call /api/siglusapi/dashboard dashboardName', function() {
-            $httpBackend
-                .expectGET(analyticsReportUrlFactory('/api/siglusapi/dashboard?dashboardName=system_version_report'));
+        // it('should call /api/siglusapi/dashboard dashboardName', function() {
+        //     $httpBackend
+        //       .expectGET(analyticsReportUrlFactory('/api/siglusapi/dashboard?dashboardName=system_version_report'));
 
-            analyticsReportMetabaseService.getMetabaseUrl();
+        //     analyticsReportMetabaseService.getMetabaseUrl();
 
-            $httpBackend.flush();
-        });
+        //     $httpBackend.flush();
+        // });
 
         it('should return response', function() {
             var  expectAnalyticsReportMetabase = {
