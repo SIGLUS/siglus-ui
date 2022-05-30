@@ -22,7 +22,7 @@
      * @name siglus-analytics-report-metabase.controller:siglusAnalyticsReportMetabaseController
      *
      * @description
-     * Show Syetem Version Report From Metabase.
+     * Show Analytics Reports From Metabase.
      */
     angular
         .module('siglus-analytics-report-metabase')

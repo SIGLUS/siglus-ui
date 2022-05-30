@@ -18,7 +18,7 @@
     'use strict';
 
     /**
-    * @module
+    * @module siglus-analytics-report
     *
     * @description
     * Main siglus-analytics-report module.
