@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('StockCardSummaryListController', function() {
+describe('siglusAnalyticsReportMetabaseController', function() {
 
     var $controller, AnalyticsReportMetabaseDataBuilder, analyticsReportMetabase, vm;
 
@@ -28,7 +28,7 @@ describe('StockCardSummaryListController', function() {
 
         analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder.build();
 
-        vm = $controller('StockCardSummaryListController', {
+        vm = $controller('siglusAnalyticsReportMetabaseController', {
             analyticsReportMetabase: analyticsReportMetabase
 
         });
