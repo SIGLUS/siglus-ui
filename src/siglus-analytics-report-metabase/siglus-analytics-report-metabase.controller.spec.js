@@ -26,7 +26,7 @@ describe('siglusAnalyticsReportMetabaseController', function() {
             AnalyticsReportMetabaseDataBuilder = $injector.get('AnalyticsReportMetabaseDataBuilder');
         });
 
-        analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder.build();
+        analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
 
         vm = $controller('siglusAnalyticsReportMetabaseController', {
             analyticsReportMetabase: analyticsReportMetabase
