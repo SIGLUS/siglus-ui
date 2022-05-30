@@ -35,7 +35,7 @@ describe('analyticsReportMetabaseService', function() {
         var analyticsReportMetabase;
         beforeEach(function() {
             analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
-            this.$httpBackend
+            $httpBackend
                 // eslint-disable-next-line max-len
                 .whenGET(analyticsReportUrlFactory('/api/siglusapi/dashboard?dashboardName=system_version_report'))
                 .respond(200, analyticsReportMetabase);
