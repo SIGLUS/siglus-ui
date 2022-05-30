@@ -29,14 +29,13 @@ describe('siglusAnalyticsReportMetabaseController', function() {
                 analyticsReportMetabase: analyticsReportMetabase
 
             });
+            vm.$onInit();
         });
 
     });
 
     describe('onInit', function() {
         it('should expose analyticsReportMetabase', function() {
-            vm.$onInit();
-
             expect(angular.toJson(vm.analyticsReportMetabase)).toEqual(angular.toJson(analyticsReportMetabase));
         });
     });
