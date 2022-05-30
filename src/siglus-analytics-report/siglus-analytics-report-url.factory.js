@@ -40,7 +40,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf siglusReport.analyticsReportUrlFactory
+         * @methodOf siglus-analytics-report.analyticsReportUrlFactory
          * @name analyticsReportUrlFactory
          *
          * @description
