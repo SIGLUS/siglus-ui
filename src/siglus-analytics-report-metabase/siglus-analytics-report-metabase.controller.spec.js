@@ -24,19 +24,19 @@ describe('siglusAnalyticsReportMetabaseController', function() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             AnalyticsReportMetabaseDataBuilder = $injector.get('AnalyticsReportMetabaseDataBuilder');
+            analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
+            vm = $controller('siglusAnalyticsReportMetabaseController', {
+                analyticsReportMetabase: analyticsReportMetabase
+
+            });
         });
 
-        analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
-
-        vm = $controller('siglusAnalyticsReportMetabaseController', {
-            analyticsReportMetabase: analyticsReportMetabase
-
-        });
-        vm.$onInit();
     });
 
     describe('onInit', function() {
         it('should expose analyticsReportMetabase', function() {
+            vm.$onInit();
+
             expect(angular.toJson(vm.analyticsReportMetabase)).toEqual(angular.toJson(analyticsReportMetabase));
         });
     });

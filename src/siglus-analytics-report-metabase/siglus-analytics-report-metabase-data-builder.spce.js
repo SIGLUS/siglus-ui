@@ -30,7 +30,6 @@
         return AnalyticsReportMetabaseDataBuilder;
 
         function AnalyticsReportMetabaseDataBuilder() {
-            AnalyticsReportMetabaseDataBuilder.apply(this, arguments);
             this.iframeUrl = 'https://qa-metabase.siglus.us/**';
         }
 

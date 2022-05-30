@@ -14,53 +14,60 @@
  */
 
 describe('analyticsReportMetabaseService', function() {
-
+    var $rootScope, $httpBackend, analyticsReportMetabaseService,
+        analyticsReportUrlFactory, AnalyticsReportMetabaseDataBuilder, analyticsReportMetabase;
     beforeEach(function() {
         module('siglus-analytics-report');
         module('siglus-analytics-report-metabase');
 
         inject(function($injector) {
-            this.$rootScope = $injector.get('$rootScope');
-            this.$httpBackend = $injector.get('$httpBackend');
-            this.analyticsReportMetabaseService = $injector.get('analyticsReportMetabaseService');
-            this.analyticsReportUrlFactory = $injector.get('analyticsReportUrlFactory');
-            this.AnalyticsReportMetabaseDataBuilder = $injector.get('AnalyticsReportMetabaseDataBuilder');
+            $rootScope = $injector.get('$rootScope');
+            $httpBackend = $injector.get('$httpBackend');
+            analyticsReportMetabaseService = $injector.get('analyticsReportMetabaseService');
+            analyticsReportUrlFactory = $injector.get('analyticsReportUrlFactory');
+            AnalyticsReportMetabaseDataBuilder = $injector.get('AnalyticsReportMetabaseDataBuilder');
         });
 
-        this.analyticsReportMetabase = new this.AnalyticsReportMetabaseDataBuilder().build();
     });
 
     describe('getMetabaseUrl', function() {
 
+        var analyticsReportMetabase;
         beforeEach(function() {
+            analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
             this.$httpBackend
                 // eslint-disable-next-line max-len
-                .whenGET(this.analyticsReportMetabaseService('/api/siglusapi/dashboard?dashboardName=system_version_report'))
-                .respond(200, this.analyticsReportMetabase);
+                .whenGET(analyticsReportUrlFactory('/api/siglusapi/dashboard?dashboardName=system_version_report'))
+                .respond(200, analyticsReportMetabase);
         });
 
-        it('should return promise', function() {
-            var result = this.analyticsReportMetabaseService.getMetabaseUrl('system_version_report');
-            this.$httpBackend.flush();
+        it('should call /api/siglusapi/dashboard dashboardName', function() {
+            $httpBackend
+                .expectGET(analyticsReportUrlFactory('/api/siglusapi/dashboard?dashboardName=system_version_report'));
 
-            expect(result.then).not.toBeUndefined();
+            analyticsReportMetabaseService.getMetabaseUrl();
+
+            $httpBackend.flush();
         });
 
-        it('should resolve to analyticsReportMetabase', function() {
+        it('should return response', function() {
+            var  expectAnalyticsReportMetabase = {
+                iframeUrl: 'https://qa-metabase.siglus.us/**'
+            };
             var result;
-            this.analyticsReportMetabaseService.getMetabaseUrl('system_version_report').then(function(data) {
+            analyticsReportMetabaseService.getMetabaseUrl('system_version_report').then(function(data) {
                 result = data;
             });
-            this.$httpBackend.flush();
-            this.$rootScope.$apply();
+            $httpBackend.flush();
+            $rootScope.$apply();
 
-            expect(angular.toJson(result)).toEqual(angular.toJson(this.analyticsReportMetabase));
+            expect(angular.toJson(result)).toEqual(angular.toJson(expectAnalyticsReportMetabase));
         });
     });
 
     afterEach(function() {
-        this.$httpBackend.verifyNoOutstandingRequest();
-        this.$httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+        $httpBackend.verifyNoOutstandingExpectation();
     });
 
 });
