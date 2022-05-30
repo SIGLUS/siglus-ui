@@ -15,7 +15,7 @@
 
 describe('analyticsReportMetabaseService', function() {
     var $rootScope, $httpBackend, analyticsReportMetabaseService,
-        analyticsReportUrlFactory, AnalyticsReportMetabaseDataBuilder, analyticsReportMetabase;
+        analyticsReportUrlFactory, AnalyticsReportMetabaseDataBuilder;
     beforeEach(function() {
         module('siglus-analytics-report');
         module('siglus-analytics-report-metabase');
