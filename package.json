@@ -1,9 +1,15 @@
 {
   "devDependencies": {
-    "dev-ui": "file:///dev-ui"
+    "dev-ui": "file:///dev-ui",
+    "path-to-regexp": "^6.2.1"
   },
   "scripts": {
-    "postinstall": "cp -nr node_modules/dev-ui/node_modules ."
+    "start:qa:watch": "npm run override-dev-ui && npm run grunt:watch:qa",
+    "start:qa": "npm run override-dev-ui && npm run grunt:build:qa:serve",
+    "grunt:build:qa:serve": "grunt build --openlmisServerURL=https://qa.siglus.us --noTest --noStyleguide --noDocs --serve",
+    "grunt:watch:qa": "grunt build:app watch --openlmisServerURL=https://qa.siglus.us --noTest --noStyleguide --noDocs --serve",
+    "override-dev-ui": "rsync -a dev-ui-extension/ node_modules/dev-ui",
+    "postinstall": "cp -nr node_modules/dev-ui/node_modules . && cp ../dev-ui/.*lintrc ."
   },
   "dependencies": {}
 }
