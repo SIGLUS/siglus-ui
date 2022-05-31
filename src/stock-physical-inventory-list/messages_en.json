@@ -1,0 +1,16 @@
+{
+  "stockPhysicalInventory.stockManagement": "Stock Management",
+  "stockPhysicalInventory.physicalInventory": "Physical inventory",
+  "stockPhysicalInventory.title": "Physical inventory for ${facility} - ${program}",
+  "stockPhysicalInventory.noPhysicalInventoryFound": "No physical inventory found.",
+  "stockPhysicalInventory.program": "Program",
+  "stockPhysicalInventory.status": "Status",
+  "stockPhysicalInventory.actions": "Actions",
+  "stockPhysicalInventory.start": "Start",
+  "stockPhysicalInventory.continue": "Continue",
+  "stockPhysicalInventory.notStarted": "Not yet started",
+  "stockPhysicalInventory.draft": "Draft",
+  "stockPhysicalInventory.search": "Search",
+  "stockPhysicalInventory.selectProgram": "Select Program",
+  "stockPhysicalInventory.selectFirst": "Please select the program to start physical inventory."
+}

@@ -37,17 +37,21 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             resolve: {
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
-                // SIGLUS-REFACTOR
-                // user: function(authorizationService) {
-                //     return authorizationService.getUser();
-                // },
-                programs: function(programService) {
-                    // return stockProgramUtilService.getPrograms(user.user_id,
-                    //     STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
-                    return programService.getAllProductsProgram();
+                // SIGLUS-REFACTOR: starts here
+                programs: function(user, $q, programService, stockProgramUtilService) {
+                    return $q.all([
+                        programService.getAllProductsProgram(),
+                        stockProgramUtilService.getPrograms(user.user_id,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
+                    ]).then(function(responses) {
+                        return responses[0].concat(responses[1]);
+                    });
                 },
                 // SIGLUS-REFACTOR: ends here
                 drafts: function(physicalInventoryFactory, programs, facility) {
