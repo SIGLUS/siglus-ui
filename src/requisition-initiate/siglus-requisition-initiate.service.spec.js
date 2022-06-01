@@ -27,6 +27,7 @@ describe('siglusRequisitionInitiateService', function() {
         });
 
         this.facility = new this.FacilityDataBuilder().build();
+        this.program = new this.FacilityDataBuilder().build();
     });
 
     it('should get latest physicalInventory by facility id', function() {
@@ -50,13 +51,15 @@ describe('siglusRequisitionInitiateService', function() {
     it('should get physicalInventory dates', function() {
 
         this.$httpBackend
-            .expectGET(this.requisitionUrlFactory('/api/siglusapi/physicalInventories/dates?facilityId=' +
-                this.facility.id + '&startDate=2020-02-10&endDate=2020-02-20'))
+            .expectGET(this.requisitionUrlFactory('/api/siglusapi/physicalInventories/dates?'
+                + 'facilityId=' + this.facility.id
+                + '&programId=' + this.program.id
+                + '&startDate=2020-02-10&endDate=2020-02-20'))
             .respond(200, []);
 
         var result;
         this.siglusRequisitionInitiateService
-            .getPhysicalInventoryDates(this.facility.id, '2020-02-10', '2020-02-20')
+            .getPhysicalInventoryDates(this.program.id, this.facility.id, '2020-02-10', '2020-02-20')
             .then(function(response) {
                 result = response;
             });
