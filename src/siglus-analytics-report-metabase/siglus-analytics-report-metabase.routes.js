@@ -25,7 +25,7 @@
 
     function routes($stateProvider, SIGLUS_METABASE_DASHBOARD_NAME) {
         $stateProvider.state('openlmis.analyticsReport.systemVersion', {
-            url: '/metabase',
+            url: '/systemVersion',
             showInNavigation: true,
             label: 'analyticsReportMetabase.systemVersion.title',
             priority: 1,
