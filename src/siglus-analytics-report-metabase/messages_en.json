@@ -1,4 +1,5 @@
 {
   "analyticsReportMetabase.systemVersion.title": "System Version Report",
-  "analyticsReportMetabase.stockOnHand.title": "Stock On Hand Report"
+  "analyticsReportMetabase.stockOnHand.title": "Stock On Hand Report",
+  "analyticsReportMetabase.expiringProducts.title": "Expiring Products Report"
 }
