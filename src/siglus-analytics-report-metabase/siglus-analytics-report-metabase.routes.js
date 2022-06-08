@@ -48,27 +48,6 @@
             }
         });
 
-        // $stateProvider.state('openlmis.report.stockOnHand', {
-        //     url: '/metabase',
-        //     showInNavigation: true,
-        //     label: 'analyticsReportMetabase.stockOnHand.title',
-        //     priority: 1,
-        //     views: {
-        //         '@openlmis': {
-        //             controller: 'siglusAnalyticsReportMetabaseController',
-        //             controllerAs: 'vm',
-        //             templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-        //         }
-        //     },
-        //     resolve: {
-        //         analyticsReportMetabase: function() {
-        //             var param = {};
-        //             // eslint-disable-next-line max-len
-        //             return param;
-        //         }
-        //     }
-        // });
-
         $stateProvider.state('openlmis.analyticsReport.expiringProducts', {
             url: '/expiringProducts',
             showInNavigation: true,
@@ -86,6 +65,30 @@
                     var analyticsReportMetabaseResource;
                     analyticsReportMetabaseResource = analyticsReportMetabaseService
                         .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
+                }
+            }
+        });
+
+        $stateProvider.state('openlmis.analyticsReport.systemUpdate', {
+            url: '/systemUpdate',
+            showInNavigation: true,
+            label: 'analyticsReportMetabase.systemUpdate.title',
+            priority: 1,
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportMetabaseController',
+                    controllerAs: 'vm',
+                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT);
                     return analyticsReportMetabaseResource.then(function(data) {
                         return data;
                     });
