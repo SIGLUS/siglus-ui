@@ -85,7 +85,7 @@
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
                     var analyticsReportMetabaseResource;
                     analyticsReportMetabaseResource = analyticsReportMetabaseService
-                    .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT);
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT);
                     return analyticsReportMetabaseResource.then(function(data) {
                         return data;
                     });
