@@ -29,7 +29,8 @@
     function dashboardname() {
         return {
             SYSTEM_VERSION_REPORT: 'system_version_report',
-            EXPIRING_PRODUCTS_REPORT: 'expiring_products_report'
+            EXPIRING_PRODUCTS_REPORT: 'expiring_products_report',
+            SYSTEM_UPDATE_REPORT: 'system_update_report'
         };
     }
 
