@@ -14,7 +14,7 @@ pipeline {
         stage('Build') {
             steps {
                 println "gradle: build"
-                withCredentials([file(credentialsId: 'settings.qa.env', variable: 'ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'settings.dev.env', variable: 'ENV_FILE')]) {
                     sh '''
                         sudo rm -rf .env node_modules build .tmp lcov.info
                         cp $ENV_FILE .env
