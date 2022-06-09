@@ -15,7 +15,8 @@
 
 describe('siglusAnalyticsReportMetabaseController', function() {
 
-    var $controller, AnalyticsReportMetabaseDataBuilder, analyticsReportMetabase, vm;
+    var $controller, AnalyticsReportMetabaseDataBuilder, analyticsReportMetabase,
+        vm, loadingModalService, $scope, $rootScope;
 
     beforeEach(function() {
         module('siglus-analytics-report');
@@ -23,19 +24,31 @@ describe('siglusAnalyticsReportMetabaseController', function() {
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
+            loadingModalService = $injector.get('loadingModalService');
             AnalyticsReportMetabaseDataBuilder = $injector.get('AnalyticsReportMetabaseDataBuilder');
             analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
+            $rootScope = $injector.get('$rootScope');
+            $scope = $rootScope.$new();
             vm = $controller('siglusAnalyticsReportMetabaseController', {
-                analyticsReportMetabase: analyticsReportMetabase
-
+                analyticsReportMetabase: analyticsReportMetabase,
+                $scope: $scope
             });
-            vm.$onInit();
         });
-
+        vm.$onInit();
     });
 
     describe('onInit', function() {
+
+        beforeEach(function() {
+            spyOn(loadingModalService, 'open');
+        });
+
+        // it('should open loading modal', function() {
+        //     expect(loadingModalService.open).toHaveBeenCalled();
+        // });
+
         it('should expose analyticsReportMetabase', function() {
+            //expect(loadingModalService.open).toHaveBeenCalled();
             expect(angular.toJson(vm.analyticsReportMetabase)).toEqual(angular.toJson(analyticsReportMetabase));
         });
     });

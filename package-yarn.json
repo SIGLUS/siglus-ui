@@ -1,9 +1,7 @@
 {
   "dependencies": {
     "@bower_components/perfect-scrollbar": "noraesae/perfect-scrollbar-bower#0.6.12",
-    "@bower_components/iframe-resizer": "davidjbradshaw/iframe-resizer#^4.3.2",
-    "@bower_components/html2canvas":"niklasvh/html2canvas#^0.5.0-beta4",
-    "@bower_components/jsPDF":"parallax/jsPDF#^1.5.3"
+    "@bower_components/bower-iframe-resizer": "davidjbradshaw/iframe-resizer#^4.3.2"
   },
   "engines": {
     "yarn": ">= 1.0.0"
@@ -13,11 +11,6 @@
       "main": [
         "src/perfect-scrollbar.css",
         "src/perfect-scrollbar.js"
-      ]
-    },
-    "@bower_components/html2canvas":{
-      "main": [
-        "dist/html2canvas.js"
       ]
     }
   }
