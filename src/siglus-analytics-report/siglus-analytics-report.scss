@@ -1,3 +1,18 @@
+.page, .flex-page, .batch-requisition-pane{
+  display: flex;
+  flex-direction: column;
+}
+
+.page>div.ng-scope{
+  display: block;
+  flex:1 0 auto;
+}
+
+#metabase-iframe{
+  width: 1;
+  min-width: 100%;
+}
+
 .view-table {
     align-items: top;
     font-family: Verdana, Arial, sans-serif;
