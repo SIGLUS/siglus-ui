@@ -1,8 +1,11 @@
 <!--SIGLUS-REFACTOR: starts here-->
 <h2 ng-if="vm.facility && vm.program">
-  {{'stockPhysicalInventory.title' | message: {'facility': vm.facility.name, 'program': vm.program.name} }}
+  {{'stockPhysicalInventory.title' | message: {
+  'facility': vm.facility.name, 'program': vm.program.name
+} }}
 </h2>
-<h2 ng-hide="vm.facility && vm.program">{{'stockPhysicalInventory.physicalInventory' | message}}</h2>
+<h2 ng-hide="vm.facility && vm.program">{{'stockPhysicalInventory.physicalInventory'
+| message}}</h2>
 
 <form ng-submit="vm.searchProgram()" class="sidebar" id="physical-inventory-list-program-sidebar">
   <label for="selectProgram">{{'stockPhysicalInventory.program' | message}}</label>

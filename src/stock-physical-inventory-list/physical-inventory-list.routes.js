@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory', {
-            url: '/physicalInventory',
+            url: '/physicalInventory?programId',
             label: 'stockPhysicalInventory.physicalInventory',
             priority: 3,
             showInNavigation: true,
@@ -52,6 +52,12 @@
                     ]).then(function(responses) {
                         return responses[0].concat(responses[1]);
                     });
+                },
+                programId: function($stateParams) {
+                    if ($stateParams.programId) {
+                        return $stateParams.programId;
+                    }
+                    return undefined;
                 },
                 // SIGLUS-REFACTOR: ends here
                 drafts: function(physicalInventoryFactory, programs, facility) {

@@ -27,11 +27,13 @@
     angular
         .module('stock-physical-inventory-list')
         .controller('PhysicalInventoryListController', controller);
-    controller.$inject = ['facility', 'programs', 'drafts', 'messageService',
+    controller.$inject = ['facility', 'programs', 'programId', 'drafts',
+        'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
         'FunctionDecorator'];
 
-    function controller(facility, programs, drafts, messageService, $state,
+    function controller(facility, programs, programId, drafts, messageService,
+                        $state,
                         physicalInventoryService, physicalInventoryFactory, FunctionDecorator) {
         var vm = this;
 
@@ -45,7 +47,7 @@
      * Holds user's home facility.
      */
         vm.facility = facility;
-
+        vm.$onInit = onInit;
         /**
      * @ngdoc property
      * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
@@ -91,8 +93,16 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.searchProgram = function searchProgram() {
-            vm.drafts = _.filter(drafts, function(draft) {
-                return draft.programId === vm.program.id;
+            // vm.drafts = _.filter(drafts, function(draft) {
+            //     return draft.programId === vm.program.id;
+            // });
+
+            //var stateParams = angular.copy($stateParams);
+
+            $state.go('openlmis.stockmanagement.physicalInventory', {
+                programId: vm.program.id
+            }, {
+                reload: true
             });
         };
         // SIGLUS-REFACTOR: ends here
@@ -114,6 +124,18 @@
             return messageService.get('stockPhysicalInventory.draft');
 
         };
+
+        function onInit() {
+            if (programId) {
+                vm.drafts = _.filter(drafts, function(draft) {
+                    return draft.programId === programId;
+                });
+
+                vm.program = _.find(programs, function(program) {
+                    return program.id === programId;
+                });
+            }
+        }
 
         /**
      * @ngdoc method
