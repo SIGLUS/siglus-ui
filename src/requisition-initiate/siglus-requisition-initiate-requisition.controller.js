@@ -18,29 +18,35 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name requisition-initiate.controller:RequisitionInitiateController
-     *
-     * @description
-     * Controller responsible for actions connected with displaying available periods and
-     * initiating or navigating to an existing requisition.
-     */
+   * @ngdoc controller
+   * @name requisition-initiate.controller:RequisitionInitiateController
+   *
+   * @description
+   * Controller responsible for actions connected with displaying available periods and
+   * initiating or navigating to an existing requisition.
+   */
     angular
         .module('requisition-initiate')
         .controller('SiglusRequisitionInitiateRequisitionController', Controller);
 
     Controller.$inject = [
-        'requisitionService', '$state', 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
-        'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator',
+        'requisitionService', '$state', 'loadingModalService',
+        'notificationService', 'REQUISITION_RIGHTS',
+        'permissionService', 'authorizationService', '$stateParams', 'periods',
+        'canInitiateRnr', 'UuidGenerator',
         'confirmService', 'siglusRequisitionInitiateService', 'REQUISITION_STATUS',
-        'siglusRequisitionDatePickerService', 'alertService', 'dateUtils', 'moment', 'inventoryDates', 'program',
+        'siglusRequisitionDatePickerService', 'alertService', 'dateUtils', 'moment',
+        'inventoryDates', 'program',
         'hasAuthorizeRight'
     ];
 
-    function Controller(requisitionService, $state, loadingModalService, notificationService, REQUISITION_RIGHTS,
-                        permissionService, authorizationService, $stateParams, periods, canInitiateRnr, UuidGenerator,
+    function Controller(requisitionService, $state, loadingModalService,
+                        notificationService, REQUISITION_RIGHTS,
+                        permissionService, authorizationService, $stateParams, periods,
+                        canInitiateRnr, UuidGenerator,
                         confirmService, siglusRequisitionInitiateService, REQUISITION_STATUS,
-                        siglusRequisitionDatePickerService, alertService, dateUtils, moment, inventoryDates, program,
+                        siglusRequisitionDatePickerService, alertService, dateUtils, moment,
+                        inventoryDates, program,
                         hasAuthorizeRight) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
@@ -54,36 +60,36 @@
         vm.checkProceedButton = checkProceedButton;
 
         /**
-         * @ngdoc property
-         * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-         * @name emergency
-         * @type {Boolean}
-         *
-         * @description
-         * Holds a boolean indicating if the currently selected requisition type is standard or emergency
-         */
+     * @ngdoc property
+     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+     * @name emergency
+     * @type {Boolean}
+     *
+     * @description
+     * Holds a boolean indicating if the currently selected requisition type is standard or emergency
+     */
         vm.emergency = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-         * @name periods
-         * @type {List}
-         *
-         * @description
-         * The list of all periods displayed in the table.
-         */
+     * @ngdoc property
+     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+     * @name periods
+     * @type {List}
+     *
+     * @description
+     * The list of all periods displayed in the table.
+     */
         vm.periods = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-         * @name canInitiateRnr
-         * @type {boolean}
-         *
-         * @description
-         * True if user has permission to initiate requisition.
-         */
+     * @ngdoc property
+     * @propertyOf requisition-initiate.controller:RequisitionInitiateController
+     * @name canInitiateRnr
+     * @type {boolean}
+     *
+     * @description
+     * True if user has permission to initiate requisition.
+     */
         vm.canInitiateRnr = undefined;
 
         vm.hasAuthorizeRight = undefined;
@@ -91,13 +97,13 @@
         vm.program = undefined;
 
         /**
-         * @ngdoc method
-         * @methodOf requisition-initiate.controller:RequisitionInitiateController
-         * @name $onInit
-         *
-         * @description
-         * Initialization method of the RequisitionInitiateController controller.
-         */
+     * @ngdoc method
+     * @methodOf requisition-initiate.controller:RequisitionInitiateController
+     * @name $onInit
+     *
+     * @description
+     * Initialization method of the RequisitionInitiateController controller.
+     */
         function onInit() {
             vm.emergency = $stateParams.emergency === 'true';
             vm.periods = periods;
@@ -110,7 +116,7 @@
         function isCurrentSubmitDuration(period) {
             var today = moment();
             var isInRange = today.isSameOrAfter(period.submitStartDate, 'day')
-                && today.isSameOrBefore(period.submitEndDate, 'day');
+          && today.isSameOrBefore(period.submitEndDate, 'day');
             return isInRange;
         }
 
@@ -149,34 +155,40 @@
                     goToInitiatedRequisition(requisition);
                 })
                 .catch(function() {
-                    notificationService.error('requisitionInitiate.couldNotInitiateRequisition');
+                    notificationService.error(
+                        'requisitionInitiate.couldNotInitiateRequisition'
+                    );
                     loadingModalService.close();
                     key = uuidGenerator.generate();
                 });
         }
 
         /**
-         * @ngdoc method
-         * @methodOf requisition-initiate.controller:RequisitionInitiateController
-         * @name initRnr
-         *
-         * @description
-         * Responsible for initiating a requisition for a specified period. If
-         * creating the requisition is successful, then the user is sent to the
-         * requisition view page. Otherwise an error message is shown.
-         *
-         * @param {Object} selectedPeriod a period to initiate or proceed with the requisition for
-         */
+     * @ngdoc method
+     * @methodOf requisition-initiate.controller:RequisitionInitiateController
+     * @name initRnr
+     *
+     * @description
+     * Responsible for initiating a requisition for a specified period. If
+     * creating the requisition is successful, then the user is sent to the
+     * requisition view page. Otherwise an error message is shown.
+     *
+     * @param {Object} selectedPeriod a period to initiate or proceed with the requisition for
+     */
         function initRnr(selectedPeriod) {
             vm.error = '';
 
             if (!vm.canInitiateRnr) {
-                notificationService.error('requisitionInitiate.noPermissionToInitiateRequisition');
+                notificationService.error(
+                    'requisitionInitiate.noPermissionToInitiateRequisition'
+                );
                 return;
             }
             if (isCurrentSubmitDuration(selectedPeriod) || vm.emergency) {
                 loadingModalService.open();
-                siglusRequisitionInitiateService.getLatestPhysicalInventory($stateParams.facility)
+                siglusRequisitionInitiateService.getLatestPhysicalInventory(
+                    $stateParams.facility
+                )
                     .then(function(result) {
                         var today = dateUtils.toStringDate(new Date());
                         if (result.occurredDate === today) {
@@ -200,16 +212,16 @@
         }
 
         /**
-         * @ngdoc method
-         * @methodOf requisition-initiate.controller:RequisitionInitiateController
-         * @name periodHasRequisition
-         *
-         * @description
-         * Checks a period object to make sure no requisition is associated with
-         * the period.
-         *
-         * @param {Object} period a period to check if it has a requisition
-         */
+     * @ngdoc method
+     * @methodOf requisition-initiate.controller:RequisitionInitiateController
+     * @name periodHasRequisition
+     *
+     * @description
+     * Checks a period object to make sure no requisition is associated with
+     * the period.
+     *
+     * @param {Object} period a period to check if it has a requisition
+     */
         function periodHasRequisition(period) {
             if (period.rnrId) {
                 return true;
@@ -232,7 +244,9 @@
         }
 
         function goToPhysicalInventory() {
-            $state.go('openlmis.stockmanagement.physicalInventory');
+            $state.go('openlmis.stockmanagement.physicalInventory', {
+                programId: vm.program.id
+            });
         }
 
         function checkProceedButton(period, idx) {
