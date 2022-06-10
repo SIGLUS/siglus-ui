@@ -28,8 +28,10 @@
         'ui.router',
         'openlmis-i18n',
         'openlmis-urls',
-        'openlmis-auth'
-
+        'openlmis-auth',
+        'openlmis-i18n',
+        'openlmis-modal',
+        'openlmis-offline'
     ]);
 
 })();
