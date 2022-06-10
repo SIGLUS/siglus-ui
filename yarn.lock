@@ -91,6 +91,10 @@
   version "3.3.7"
   resolved "https://codeload.github.com/twbs/bootstrap-sass/tar.gz/5d6b2ebba0c2a5885ce2f0e01e9218db3d3b5e47"
 
+"@bower_components/bower-iframe-resizer@davidjbradshaw/iframe-resizer#^4.3.2":
+  version "4.3.2"
+  resolved "https://codeload.github.com/davidjbradshaw/iframe-resizer/tar.gz/ef663ecfb638ceca526300f265db6785f8d243fc"
+
 "@bower_components/eonasdan/bootstrap-datetimepicker@eonasdan/bootstrap-datetimepicker#^4.17.47":
   version "4.17.47"
   resolved "https://codeload.github.com/eonasdan/bootstrap-datetimepicker/tar.gz/25c11d79e614bc6463a87c3dd9cbf8280422e006"

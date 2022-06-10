@@ -18,35 +18,30 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name siglus-analytics-report-metabase.controller:siglusAnalyticsReportMetabaseController
+     * @ngdoc directive
+     * 
+     * @name siglus-analytics-report-metabase.directive:loadIframe
      *
      * @description
-     * Show Analytics Reports From Metabase.
+     *
+     * @example
      */
     angular
         .module('siglus-analytics-report-metabase')
-        .controller('siglusAnalyticsReportMetabaseController', controller);
+        .directive('iframeOnload', directive);
 
-    controller.$inject = [ '$state', '$scope', 'analyticsReportMetabase', 'loadingModalService'];
-
-    function controller($state, $scope, analyticsReportMetabase, loadingModalService) {
-        var vm = this;
-
-        vm.$onInit = onInit;
-        $scope.iframeLoadedCallBack = iframeLoadedCallBack;
-        vm.analyticsReportMetabase = {};
-
-        function onInit() {
-            vm.analyticsReportMetabase = analyticsReportMetabase;
-            loadingModalService.open();
-        }
-
-        function iframeLoadedCallBack() {
-            // eslint-disable-next-line no-undef
-            iFrameResize({}, '#metabase-iframe');
-            loadingModalService.close();
-        }
+    function directive() {
+        var directive = {
+            scope: {
+                callBack: '&iframeOnload'
+            },
+            link: function(scope, element) {
+                element.on('load', function() {
+                    return scope.callBack();
+                });
+            }
+        };
+        return directive;
     }
 
 })();

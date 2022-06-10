@@ -95,6 +95,30 @@
                 }
             }
         });
+
+        $stateProvider.state('openlmis.analyticsReport.expiredProducts', {
+            url: '/expiredProducts',
+            showInNavigation: true,
+            label: 'analyticsReportMetabase.expiredProducts.title',
+            priority: 1,
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportMetabaseController',
+                    controllerAs: 'vm',
+                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_PRODUCTS_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
+                }
+            }
+        });
     }
 
 })();
