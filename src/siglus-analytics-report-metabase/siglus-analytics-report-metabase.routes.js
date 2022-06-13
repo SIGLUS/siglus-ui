@@ -119,6 +119,30 @@
                 }
             }
         });
+
+        $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly', {
+            url: '/requsitionAndMonthly',
+            showInNavigation: true,
+            label: 'analyticsReportMetabase.requisitionAndMonthly.title',
+            priority: 1,
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportMetabaseController',
+                    controllerAs: 'vm',
+                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_MONTHLY_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
+                }
+            }
+        });
     }
 
 })();

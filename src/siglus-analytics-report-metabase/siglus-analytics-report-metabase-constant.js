@@ -31,7 +31,8 @@
             SYSTEM_VERSION_REPORT: 'system_version_report',
             EXPIRING_PRODUCTS_REPORT: 'expiring_products_report',
             SYSTEM_UPDATE_REPORT: 'system_update_report',
-            EXPIRED_PRODUCTS_REPORT: 'expired_products_report'
+            EXPIRED_PRODUCTS_REPORT: 'expired_products_report',
+            REQUISITION_MONTHLY_REPORT: 'requisition_monthly_report'
         };
     }
 
