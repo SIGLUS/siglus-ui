@@ -32,7 +32,8 @@
             EXPIRING_PRODUCTS_REPORT: 'expiring_products_report',
             SYSTEM_UPDATE_REPORT: 'system_update_report',
             EXPIRED_PRODUCTS_REPORT: 'expired_products_report',
-            REQUISITION_MONTHLY_REPORT: 'requisition_monthly_report'
+            REQUISITION_MONTHLY_REPORT: 'requisition_monthly_report',
+            SOH_REPORT_BY_PRODUCT: 'soh_report_by_product'
         };
     }
 
