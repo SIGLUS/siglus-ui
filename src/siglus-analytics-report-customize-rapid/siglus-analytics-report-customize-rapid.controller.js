@@ -28,16 +28,109 @@
         .module('siglus-analytics-report-customize-rapid')
         .controller('siglusAnalyticsReportCustomizeRapidController', controller);
 
-    controller.$inject = ['$state', 'SIGLUS_ANALYTICS_REPORT_CUSTOMIZE_RAPID_CONSTANT', 'facility'];
+    controller.$inject = [
+        'facility',
+        'requisition',
+        'openlmisDateFilter',
+        'siglusTemplateConfigureService',
+        'SIGLUS_SECTION_TYPES'
+    ];
 
-    function controller($state, SIGLUS_ANALYTICS_REPORT_CUSTOMIZE_RAPID_CONSTANT, facility) {
+    function controller(
+        facility,
+        requisition,
+        openlmisDateFilter,
+        siglusTemplateConfigureService,
+        SIGLUS_SECTION_TYPES
+    ) {
+        // console.log('#### rapid', requisition);
         var vm = this;
         vm.facility = undefined;
+        vm.columns = undefined;
+        vm.services = undefined;
+        vm.comments = undefined;
+        vm.signaure = {};
         vm.$onInit = onInit;
-        vm.constantMsg = SIGLUS_ANALYTICS_REPORT_CUSTOMIZE_RAPID_CONSTANT;
+        vm.creationDate = undefined;
+        vm.getCreationDate = getCreationDate;
+        vm.getMonth = getMonth;
+        vm.getPdfName = getPdfName;
+        vm.requisition = {};
         function onInit() {
-            console.log(facility);
+            vm.facility = facility;
+            vm.requisition = requisition;
+            vm.columns = requisition.requisitionLineItems;
+            vm.services = requisition.testConsumptionLineItems;
+            vm.comments = requisition.draftStatusMessage;
+            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
+            vm.signaure =  requisition.extraData.signaure;
+            vm.creationDate = getCreationDate(requisition.createdDate);
+            vm.month = getMonth(requisition.processingPeriod.endDate);
+            vm.service = siglusTemplateConfigureService.getSectionByName(requisition.usageTemplate.rapidTestConsumption, SIGLUS_SECTION_TYPES.SERVICE);
+            vm.testProject = siglusTemplateConfigureService.getSectionByName(requisition.usageTemplate.rapidTestConsumption, SIGLUS_SECTION_TYPES.PROJECT);
+            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(requisition.usageTemplate.rapidTestConsumption, SIGLUS_SECTION_TYPES.OUTCOME);
+            extendLineItems();
+            // console.log('vm --->>>', vm);
         }
+        function getCreationDate(date) {
+            return openlmisDateFilter(date, 'MMM')
+                + ' '
+                + openlmisDateFilter(date, 'yyyy');
+        }
+        function getPdfName(date, facilityName, id) {
+            return (
+                'Requi' + id
+                + '_' + facilityName + '_'
+                + openlmisDateFilter(date, 'MMM') + ' '
+                + openlmisDateFilter(date, 'dd') + '_'
+                + openlmisDateFilter(date, 'yyyy')
+                + '_MMIT.pdf'
+            );
+        }
+        function extendLineItems() {
+            var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.service);
+            // console.log('#### serviceColumnsMap', serviceColumnsMap);
+            var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
+            var testOutcomeColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testOutcome);
+            angular.forEach(vm.services, function(lineItem) {
+                _.extend(lineItem, serviceColumnsMap[lineItem.service]);
+                angular.forEach(Object.keys(lineItem.projects), function(project) {
+                    lineItem.projects[project] = angular.merge({},
+                        testProjectColumnsMap[project], lineItem.projects[project]);
+                    angular.forEach(Object.keys(lineItem.projects[project].outcomes), function(outcome) {
+                        lineItem.projects[project].outcomes[outcome] = angular.merge({},
+                            testOutcomeColumnsMap[outcome],
+                            lineItem.projects[project].outcomes[outcome]);
+                    });
+                });
+            });
+        }
+        function getMonth(date) {
+            return openlmisDateFilter(date, 'MMMM');
+        }
+        vm.downloadPdf = function() {
+            var node = document.getElementById('test_repaid_wrap');
+            var contentWidth = node.offsetWidth;
+            var contentHeight = node.offsetHeight;
+            var rate = contentWidth / 595.28;
+            var imgY = contentHeight / rate;
+            // eslint-disable-next-line no-undef
+            domtoimage.toPng(node).then(function(data) {
+                var pageData = data;
+                // eslint-disable-next-line no-undef
+                var PDF = new jsPDF(pageData, 'pt', 'a4');
+                // 595×842 a4纸
+                // px * (3/4) = pt
+                PDF.addImage(pageData, 'JPEG', 35, 45, 525, imgY - 90);
+                PDF.save(
+                    getPdfName(
+                        requisition.processingPeriod.endDate,
+                        facility.name,
+                        requisition.id.substring(0, 6)
+                    )
+                );
+            });
+        };
     }
 
 })();

@@ -55,6 +55,7 @@
         }
 
         function getSectionColumnsMap(section) {
+            // console.log('#### section', section);
             return _.reduce(section.columns, function(columnMap, column) {
                 columnMap[column.name] = column;
                 return columnMap;

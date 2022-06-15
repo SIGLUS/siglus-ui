@@ -27,7 +27,20 @@
         'ui.router',
         'openlmis-i18n',
         'siglus-analytics-report',
-        'requisition'
+        'requisition',
+        'openlmis-auth',
+        'openlmis-form',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'openlmis-templates',
+        'openlmis-urls',
+        'requisition-validation',
+        'requisition-product-grid',
+        'openlmis-array-decorator',
+        'ui.router',
+        'select-products-modal',
+        // #105: activate archived product
+        'siglus-stock-archived-product'
+        // #105: ends here
     ]);
-
 })();

@@ -21,12 +21,12 @@
         .module('siglus-analytics-report-customize-rapid')
         .config(routes);
 
-    routes.$inject = ['$stateProvider'];
+    routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS'];
 
     function routes($stateProvider) {
 
-        $stateProvider.state('openlmis.analyticsReport.rapid', {
-            url: '/rapid',
+        $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.rapid', {
+            url: '/MMIT/:rnr',
             showInNavigation: false,
             label: 'rapid.title',
             priority: 9,
@@ -37,12 +37,17 @@
                     // eslint-disable-next-line max-len
                     templateUrl: 'siglus-analytics-report-customize-rapid/siglus-analytics-report-customize-rapid.html'
                 }
+            },
+            resolve: {
+                requisition: function($stateParams, requisitionService) {
+                    var result = requisitionService.get($stateParams.rnr);
+                    console.log('#### result', result);
+                    return result;
+                },
+                facility: function(facilityService, requisition) {
+                    return facilityService.get(requisition.facility.id);
+                }
             }
-            // resolve: {
-            //     facility: function(facilityService, requisition) {
-            //         return facilityService.get(requisition.facility.id);
-            //     }
-            // }
         });
     }
 
