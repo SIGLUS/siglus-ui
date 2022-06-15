@@ -66,9 +66,18 @@
             vm.signaure =  requisition.extraData.signaure;
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.endDate);
-            vm.service = siglusTemplateConfigureService.getSectionByName(requisition.usageTemplate.rapidTestConsumption, SIGLUS_SECTION_TYPES.SERVICE);
-            vm.testProject = siglusTemplateConfigureService.getSectionByName(requisition.usageTemplate.rapidTestConsumption, SIGLUS_SECTION_TYPES.PROJECT);
-            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(requisition.usageTemplate.rapidTestConsumption, SIGLUS_SECTION_TYPES.OUTCOME);
+            vm.service = siglusTemplateConfigureService.getSectionByName(
+                requisition.usageTemplate.rapidTestConsumption,
+                SIGLUS_SECTION_TYPES.SERVICE
+            );
+            vm.testProject = siglusTemplateConfigureService.getSectionByName(
+                requisition.usageTemplate.rapidTestConsumption,
+                SIGLUS_SECTION_TYPES.PROJECT
+            );
+            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(
+                requisition.usageTemplate.rapidTestConsumption,
+                SIGLUS_SECTION_TYPES.OUTCOME
+            );
             extendLineItems();
             // console.log('vm --->>>', vm);
         }
