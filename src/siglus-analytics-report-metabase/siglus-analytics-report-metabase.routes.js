@@ -121,7 +121,7 @@
         });
 
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly', {
-            url: '/requsitionAndMonthly',
+            url: '/requisitionAndMonthly',
             showInNavigation: true,
             label: 'analyticsReportMetabase.requisitionAndMonthly.title',
             priority: 1,
