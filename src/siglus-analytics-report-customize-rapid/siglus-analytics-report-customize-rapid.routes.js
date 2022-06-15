@@ -41,7 +41,6 @@
             resolve: {
                 requisition: function($stateParams, requisitionService) {
                     var result = requisitionService.get($stateParams.rnr);
-                    console.log('#### result', result);
                     return result;
                 },
                 facility: function(facilityService, requisition) {
