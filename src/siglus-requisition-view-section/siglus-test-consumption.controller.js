@@ -47,6 +47,7 @@
             vm.testProjectColspan = getTestProjectColspan();
             vm.programColspan = getProgramColspan();
             extendLineItems();
+            // console.log('#### test', vm.service);
         }
 
         function getTotal(project, outcome) {

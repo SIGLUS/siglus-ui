@@ -47,7 +47,6 @@
                                program, $scope, notificationService, offlineService, canSync) {
 
         var vm = this;
-
         vm.$onInit = onInit;
         vm.deleteLineItem = deleteLineItem;
         vm.addFullSupplyProducts = addFullSupplyProducts;
