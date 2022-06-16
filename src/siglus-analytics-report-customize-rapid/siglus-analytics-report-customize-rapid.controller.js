@@ -78,8 +78,8 @@
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.OUTCOME
             );
+            // console.log('#### vm', JSON.stringify(vm.requisition.usageTemplate));
             extendLineItems();
-            // console.log('vm --->>>', vm);
         }
         function getCreationDate(date) {
             return openlmisDateFilter(date, 'MMM')
