@@ -1,10 +1,11 @@
 .rapid-test-form {
   display: block;
-  width: 1250px;
+  width: 1300px;
   margin: 0 auto;
-  .rapid-test-pdf-container {
-    // padding: 60px 90px 0 90px;
-  }
+  // .rapid-test-pdf-container {
+  //   // padding: 60px 90px 0 90px;
+    
+  // }
   .black-width {
     width: 20px;
     max-width: 20px;
@@ -12,6 +13,7 @@
 
   table {
     width: 100%;
+    // background: #FFFFFF;
     tr {
       height: 30px;
       text-align: center;
@@ -20,7 +22,12 @@
     td {
       border: 1px solid black;
       word-wrap: break-word;
-      word-break: break-all
+      word-break: break-all;
+      font-size: 16px;
+    }
+
+    span {
+      font-size: 16px;
     }
 
     .width-700 {
@@ -42,9 +49,15 @@
     .black-tr {
       height: 10px;
     }
-
+    .logo--center {
+      position: relative;
+    }
+    .text__padding {
+      padding: 0 6px;
+    }
     .text__left {
       text-align: left !important;
+      padding: 0 6px;
     }
 
     .font-bold {
@@ -94,6 +107,6 @@
   }
 
   .report--footer-section {
-    padding-left: 20px;
+    // padding-left: 20px;
   }
 }
