@@ -24,38 +24,39 @@
         </td>
         <td>
           <span openlmis-message="view.rnr.month">
-            {{ 'rapid.month' | message }}
+            {{ 'rapid.month' | message }}:
           </span>
-          <span>: {{ vm.month }}</span>
+          <span>{{ vm.month }}</span>
         </td>
       </tr>
 
       <tr>
         <td colspan="3" class="text__left">
           <span openlmis-message="view.rnr.healthFacility">
-            {{ 'rapid.health_facility' | message }}
-          </span>:
-          <span>{{ vm.facility.name }}</span>
+            {{'rapid.health_facility'|message}}:
+          </span>
+          <span>{{vm.facility.name}}</span>
         </td>
         <td rowspan="2">
           <span openlmis-message="view.rnr.year">
-            {{ 'rapid.year' | message }}
+            {{ 'rapid.year'|message }}:
           </span>
-          <span>: {{ vm.year }}</span>
+          <span>{{ vm.year }}</span>
         </td>
       </tr>
 
       <tr class="text__left">
         <td class="text__padding">
           <span openlmis-message="view.rnr.district">
-            {{ 'rapid.district' | message }}
-          </span>:
+            {{ 'rapid.district' | message }}:
+          </span>
         </td>
         <td class="text__padding">{{ vm.facility.geographicZone.name }}</td>
         <td class="text__padding">
           <span openlmis-message="view.rnr.province">
-            {{ 'rapid.province' | message }}
-          </span>:{{ vm.facility.geographicZone.parent.name }}
+            {{ 'rapid.province' | message }}:
+          </span>
+          {{ vm.facility.geographicZone.parent.name }}
         </td>
       </tr>
     </table>

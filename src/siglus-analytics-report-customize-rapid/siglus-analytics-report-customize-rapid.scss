@@ -1,6 +1,6 @@
 .rapid-test-form {
   display: block;
-  width: 1300px;
+  width: 1250px;
   margin: 0 auto;
   // .rapid-test-pdf-container {
   //   // padding: 60px 90px 0 90px;
@@ -23,12 +23,11 @@
       border: 1px solid black;
       word-wrap: break-word;
       word-break: break-all;
-      font-size: 16px;
     }
 
-    span {
-      font-size: 16px;
-    }
+    // span {
+    //   font-size: 16px;
+    // }
 
     .width-700 {
       width: 700px !important;
