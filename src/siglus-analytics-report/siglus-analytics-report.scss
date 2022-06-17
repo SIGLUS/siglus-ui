@@ -66,6 +66,8 @@
   
   .border-all-thin {
     border: 1px solid #000000;
+    box-sizing: content-box;
+    padding: 1px;
   }
   
   .text-nowrap {
@@ -124,6 +126,8 @@
     position: relative;
     margin-left: 12px;
     margin-right: 12px;
+    display: unset;
+    padding-left: 18px;
   }
   
   .checkbox label {
@@ -153,10 +157,6 @@
     -o-transform: rotate(-45deg);
     -ms-transform: rotate(-45deg);
     transform: rotate(-45deg);
-  }
-  
-  .checkbox label:hover::after {
-    opacity: 0.3;
   }
   
   .checkbox input[type=checkbox]:checked + label:after {
@@ -204,6 +204,7 @@
   
   .col11_span {
     padding-top: 34px;
+    display: table-cell;
   }
   
   .fnm_div {
@@ -234,5 +235,4 @@
     margin-right: 4%;
     margin-top: 1%;
   }
-  
   
