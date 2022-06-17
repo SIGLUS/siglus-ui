@@ -25,8 +25,8 @@
     */
     angular.module('siglus-analytics-report-customize-malaria', [
         'ui.router',
-        'openlmis-i18n',
-        'siglus-analytics-report'
+        'siglus-analytics-report',
+        'requisition-view'
     ]);
 
 })();

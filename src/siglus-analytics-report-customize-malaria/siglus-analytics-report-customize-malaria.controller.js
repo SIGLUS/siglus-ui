@@ -28,16 +28,133 @@
         .module('siglus-analytics-report-customize-malaria')
         .controller('siglusAnalyticsReportCustomizeMalariaController', controller);
 
-    controller.$inject = ['$state'];
+    controller.$inject = [ 'requisition', 'facility', 'siglusColumnUtils',
+        'siglusTemplateConfigureService',
+        'requisitionValidator', 'SIGLUS_SECTION_TYPES', 'openlmisDateFilter'];
 
-    function controller() {
+    function controller(requisition, facility, siglusColumnUtils, siglusTemplateConfigureService,
+                        requisitionValidator, SIGLUS_SECTION_TYPES, openlmisDateFilter) {
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.downloadPdf = downloadPdf;
+        vm.requisition = undefined;
+        vm.facility = undefined;
+        vm.isTotal = siglusColumnUtils.isTotal;
+        vm.getTotal = getTotal;
+        vm.getOrderNumber = getOrderNumber;
+        vm.isUserInput = siglusColumnUtils.isUserInput;
+        vm.isCalculated = siglusColumnUtils.isCalculated;
+        vm.firstService = undefined;
+        vm.informationColspan = 0;
+        vm.lineItems = undefined;
+        vm.sections = undefined;
+        vm.addedProducts = undefined;
+        vm.availableProducts = undefined;
+        vm.completedBy = undefined;
+        vm.approvedBy = undefined;
+        vm.date = undefined;
+        vm.yearAndMonth = undefined;
+        vm.processingPeriodEndDate = undefined;
+        vm.submitDate = undefined;
 
         function onInit() {
+            vm.requisition = requisition;
+            vm.facility = facility;
+            vm.completedBy = vm.requisition.extraData.signaure.submit ? vm.requisition.extraData.signaure.submit : '';
+            vm.approvedBy = vm.requisition.extraData.signaure.approve && vm.requisition.extraData.signaure.approve[0] ?
+                vm.requisition.extraData.signaure.approve[0] : '';
+            vm.sections = vm.requisition.usageTemplate.usageInformation;
+            vm.lineItems = vm.requisition.usageInformationLineItems;
+            vm.availableProducts = vm.requisition.availableFullSupplyProducts;
+            vm.addedProducts = vm.requisition.requisitionLineItems;
+            vm.processingPeriodEndDate = vm.requisition.processingPeriod.endDate;
+            vm.submitDate = vm.requisition.statusChanges.SUBMITTED.changeDate ?
+                vm.requisition.statusChanges.SUBMITTED.changeDate : '';
+            extendLineItems();
+            vm.firstService = _.first(vm.lineItems);
+            angular.forEach(Object.keys(vm.firstService.informations), function(information) {
+                vm.informationColspan = Object.keys(vm.firstService.informations[information].orderables).length;
+            });
+        }
+
+        function getOrderNumber(index, last) {
+            if (last) {
+                return '';
+            }
+            return (index + 1);
+        }
+
+        function getTotal(informationName, orderableId) {
+            var totalLineItem = _.first(vm.lineItems.filter(vm.isTotal));
+            var totalField = totalLineItem.informations[informationName].orderables[orderableId];
+            totalField.value = _.reduce(vm.lineItems, function(total, lineItem) {
+                var value = lineItem.informations[informationName].orderables[orderableId].value;
+                if (!vm.isTotal(lineItem) && _.isNumber(value)) {
+                    return (total || 0) + value;
+                }
+                return total;
+            }, undefined);
+            requisitionValidator.validateTotalColumn(totalField);
+            return totalField.value;
+        }
+
+        function extendLineItems() {
+            var information =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.INFORMATION);
+            var informationColumnsMap =
+                siglusTemplateConfigureService.getSectionColumnsMap(information);
+            var service =
+                siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
+            var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(service);
+            var productsMap = getProductsMap();
+            angular.forEach(vm.lineItems, function(lineItem) {
+                _.extend(lineItem, serviceColumnsMap[lineItem.service]);
+                angular.forEach(Object.keys(lineItem.informations), function(information) {
+                    lineItem.informations[information] = angular.merge({},
+                        informationColumnsMap[information], lineItem.informations[information]);
+                    angular.forEach(Object.keys(lineItem.informations[information].orderables), function(orderableId) {
+                        lineItem.informations[information].orderables[orderableId] = angular.merge({},
+                            productsMap[orderableId],
+                            lineItem.informations[information].orderables[orderableId]);
+                    });
+                });
+            });
 
         }
+
+        function getProductsMap() {
+            var products = angular.copy(vm.availableProducts);
+            angular.forEach(vm.addedProducts, function(addedProduct) {
+                products = products.concat(addedProduct.orderable);
+            });
+            return _.reduce(products, function(productMap, product) {
+                productMap[product.id] = product;
+                return productMap;
+            }, {});
+        }
+
+        function downloadPdf() {
+            var dom = document.getElementById('malaria-form-outer');
+            // eslint-disable-next-line no-undef
+            domtoimage.toPng(dom)
+                .then(function(dataUrl) {
+                    var contentWidth = dom.offsetWidth;
+                    var contentHeight = dom.offsetHeight;
+                    var imgWidth = 505.28;
+                    var imgHeight = (505.28 / contentWidth) * contentHeight;
+                    var pageData = dataUrl;
+                    // eslint-disable-next-line no-undef
+                    var PDF = new jsPDF('', 'pt', 'a4');
+                    PDF.addImage(pageData, 'PNG', 45, 45, imgWidth, imgHeight);
+                    PDF.save('Requi'
+                    + vm.requisition.id.substr(0, 6) + '_'
+                    + vm.facility.name
+                    + '_' + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MMM dd-yyyy')
+                    + '_Malaria' + '.pdf');
+                });
+        }
+
     }
 
 })();

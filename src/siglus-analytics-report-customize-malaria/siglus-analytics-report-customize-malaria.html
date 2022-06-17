@@ -1,115 +1,98 @@
 <div class="malaria-form">
-    <table cellpadding="0" cellspacing="0">
+  <div id="malaria-form-outer">
+    <table id="malaria-form-table" cellpadding="0" cellspacing="0">
       <tr>
         <td rowspan="3" class="background-black banner-text black-width" style="padding-bottom: 30px">
           <div class="banner-text text-nowrap">CMAM - TDR</div>
         </td>
         <td style="width: 100px"><span style="float: left" class="view-table-logo"></span></td>
         <td colspan="8" class="text__left">
-          <h6 ></h6>
-          <h6 ></h6>
-          <h6 ></h6>
+          <h6>{{'analyticsReport.requisitionAndMonthly.malaria.republic.of.mozambique'|message}}</h6>
+          <h6>{{'analyticsReport.requisitionAndMonthly.malaria.ministry.of.health'|message}}</h6>
+          <h6>{{'analyticsReport.requisitionAndMonthly.malaria.central.medicines.and.medical.arricles'|message}}</h6>
         </td>
       </tr>
-  
+
       <tr>
         <td colspan="9" class="text__center">
-          <span ></span>:
-          <span class="font-bold"></span>
+          <span>{{'analyticsReport.requisitionAndMonthly.malaria.healthFacility'|message}}</span>:
+          <span class="font-bold">{{vm.facility.name}}</span>
         </td>
       </tr>
       <tr>
         <td colspan="9" style="border: 0; border-right: 1px solid black"></td>
       </tr>
-  
+
       <tr>
         <td rowspan="4" class="background-black black-width"></td>
-        <td colspan="3" style="border: 0;">
-          &nbsp;
-          <span ></span>
-          <span> : </span> 
+        <td  class="empty-line" colspan={{3}} style="border: 0;">
+          {{'analyticsReport.requisitionAndMonthly.malaria.month' | message}}{{": "}}
+          <span >{{vm.requisition.processingPeriod.endDate |
+            openlmisDate:'MMMM'}}</span>
         </td>
-        <td colspan="7" class="empty-line">
-          &nbsp;
-          <span ></span>
-          <span> : </span> 
+        <td  class="empty-line" colspan={{7}}>
+          {{'analyticsReport.requisitionAndMonthly.malaria.year' | message}}{{": "}}
+          <span >{{vm.requisition.processingPeriod.endDate |
+            openlmisDate:'yyyy'}}</span>
         </td>
       </tr>
       <tr>
         <td rowspan="3">
-          <span ></span> /
-          <span ></span>
+          <span>{{vm.requisition.usageInformationLineItems[2].label}}</span>
+            /
+          <span>{{vm.requisition.usageInformationLineItems[1].label}}</span>
         </td>
-        <td colspan="8" class="report--title height-50">
-          <span class="report--title-font" ></span>
+        <td colspan="8" class="report--title height-50"><span class="report--title-font">{{'analyticsReport.requisitionAndMonthly.malaria.al'|message}}</span></td>
+      </tr>
+      <tr>
+        <td class="font-bold" ng-repeat="information in vm.firstService.informations | orderObjectBy : 'displayOrder'"
+          colspan={{vm.informationColspan}} popover="{{information.definition}}" popover-trigger-area="element">
+          {{information.label}}</td>
+      </tr>
+      <tr>
+        <td class="font-bold"
+          ng-repeat-start="information in vm.firstService.informations | orderObjectBy : 'displayOrder'" ng-if="false">
         </td>
+        <td class="font-bold" ng-repeat-end
+          ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'">
+          {{orderable.fullProductName}}</td>
       </tr>
-      <tr class="font-bold">
-        <td colspan="4"></td>
-        <td colspan="4"></td>
-      </tr>
-      <tr class="font-bold">
-        <td><span ></span></td>
-        <td><span ></span></td>
-        <td><span ></span></td>
-        <td><span ></span></td>
-        <td><span ></span></td>
-        <td><span ></span></td>
-        <td><span ></span></td>
-        <td><span ></span></td>
-      </tr>
-      <tr>
-        <td class="background-black black-width">1</td>
-        <td><span ></span></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-  
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td class="background-black black-width">2</td>
-        <td><span ></span></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-  
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td class="background-black black-width"></td>
-        <td><span ></span></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-  
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+      <tr ng-repeat="lineItem in vm.requisition.usageInformationLineItems | orderBy : 'displayOrder'">
+        <td class="background-black black-width">{{vm.getOrderNumber($index,$last)}}</td>
+        <td popover="{{lineItem.definition}}" popover-trigger-area="element">{{lineItem.label}}</td>
+        <td ng-repeat-start="information in lineItem.informations | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+        <td ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
+          openlmis-invalid="{{orderable.$error}}">
+          <!-- <div ng-if="vm.canEdit && vm.isCalculated(lineItem)">{{vm.getTotal(information.name, orderable.id)}}</div> -->
+          <div>{{orderable.value}}</div>
+        </td>
+        <td ng-repeat-end ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
+          ng-if="vm.canEdit && vm.isUserInput(lineItem)" siglus-requisition-grid-cell line-item-field="orderable" />
       </tr>
       <tr>
         <td rowspan="2" class="background-black black-width"></td>
-        <td colspan="4" class="text__left" style="padding-left: 10px; border: 0"><span >&nbsp;</span></td>
-        <td colspan="5" class="text__left empty-line"><span >&nbsp;</span></td>
+        <td colspan="4" class="text__left" style="padding-left: 10px; border: 0">
+          <span>{{'analyticsReport.requisitionAndMonthly.malaria.completed'|message}}</span>
+          :
+          <span class="font-bold">&nbsp;{{vm.requisition.extraData.signaure.submit}}</span>
+        </td>
+        <td colspan="5" class="text__left empty-line">
+          <span>{{'analyticsReport.requisitionAndMonthly.malaria.date'|message}}</span>
+          :
+          <span class="font-bold">&nbsp;{{vm.requisition.statusChanges.SUBMITTED.changeDate | openlmisDate:'MMM yyyy'}}</span>
+        </td>
       </tr>
       <tr>
-        <td colspan="9" class="text__left empty-line" style="border-bottom: 1px solid black"><span >&nbsp;</span></td>
+        <td colspan="9" class="text__left empty-line" style="border-bottom: 1px solid black">
+          <span>{{'analyticsReport.requisitionAndMonthly.malaria.approved'|message}}</span>
+          :
+          <span class="font-bold">&nbsp;{{vm.requisition.extraData.signaure.approve[0]}}</span>
+        </td>
       </tr>
     </table>
-  
-    <div class="align-right">
-      <button class="btn btn-primary btn-download btn-download-pdf" ng-click="downloadPdf()" ></button>
-    </div>
   </div>
-  
-  
+  <div class="align-right">
+    <button class="btn btn-primary btn-download btn-download-pdf"
+      ng-click="vm.downloadPdf()">{{'analyticsReport.requisitionAndMonthly.malaria.download.button'|message}}</button>
+  </div>
+</div>
