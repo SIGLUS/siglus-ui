@@ -7,15 +7,15 @@
         </td>
         <td style="width: 100px"><span style="float: left" class="view-table-logo"></span></td>
         <td colspan="8" class="text__left">
-          <h6>{{'analyticsReport.requisitionAndMonthly.malaria.republic.of.mozambique'|message}}</h6>
-          <h6>{{'analyticsReport.requisitionAndMonthly.malaria.ministry.of.health'|message}}</h6>
-          <h6>{{'analyticsReport.requisitionAndMonthly.malaria.central.medicines.and.medical.arricles'|message}}</h6>
+          <h6>{{'malaria.republic.of.mozambique'|message}}</h6>
+          <h6>{{'malaria.ministry.of.health'|message}}</h6>
+          <h6>{{'malaria.central.medicines.and.medical.arricles'|message}}</h6>
         </td>
       </tr>
 
       <tr>
         <td colspan="9" class="text__center">
-          <span>{{'analyticsReport.requisitionAndMonthly.malaria.healthFacility'|message}}</span>:
+          <span>{{'malaria.healthFacility'|message}}</span>:
           <span class="font-bold">{{vm.facility.name}}</span>
         </td>
       </tr>
@@ -26,12 +26,12 @@
       <tr>
         <td rowspan="4" class="background-black black-width"></td>
         <td  class="empty-line" colspan={{3}} style="border: 0;">
-          {{'analyticsReport.requisitionAndMonthly.malaria.month' | message}}{{": "}}
+          {{'malaria.month' | message}}{{": "}}
           <span >{{vm.requisition.processingPeriod.endDate |
             openlmisDate:'MMMM'}}</span>
         </td>
         <td  class="empty-line" colspan={{7}}>
-          {{'analyticsReport.requisitionAndMonthly.malaria.year' | message}}{{": "}}
+          {{'malaria.year' | message}}{{": "}}
           <span >{{vm.requisition.processingPeriod.endDate |
             openlmisDate:'yyyy'}}</span>
         </td>
@@ -42,7 +42,7 @@
             /
           <span>{{vm.requisition.usageInformationLineItems[1].label}}</span>
         </td>
-        <td colspan="8" class="report--title height-50"><span class="report--title-font">{{'analyticsReport.requisitionAndMonthly.malaria.al'|message}}</span></td>
+        <td colspan="8" class="report--title height-50"><span class="report--title-font">{{'malaria.al'|message}}</span></td>
       </tr>
       <tr>
         <td class="font-bold" ng-repeat="information in vm.firstService.informations | orderObjectBy : 'displayOrder'"
@@ -72,19 +72,19 @@
       <tr>
         <td rowspan="2" class="background-black black-width"></td>
         <td colspan="4" class="text__left" style="padding-left: 10px; border: 0">
-          <span>{{'analyticsReport.requisitionAndMonthly.malaria.completed'|message}}</span>
+          <span>{{'malaria.completed'|message}}</span>
           :
           <span class="font-bold">&nbsp;{{vm.requisition.extraData.signaure.submit}}</span>
         </td>
         <td colspan="5" class="text__left empty-line">
-          <span>{{'analyticsReport.requisitionAndMonthly.malaria.date'|message}}</span>
+          <span>{{'malaria.date'|message}}</span>
           :
           <span class="font-bold">&nbsp;{{vm.requisition.statusChanges.SUBMITTED.changeDate | openlmisDate:'MMM yyyy'}}</span>
         </td>
       </tr>
       <tr>
         <td colspan="9" class="text__left empty-line" style="border-bottom: 1px solid black">
-          <span>{{'analyticsReport.requisitionAndMonthly.malaria.approved'|message}}</span>
+          <span>{{'malaria.approved'|message}}</span>
           :
           <span class="font-bold">&nbsp;{{vm.requisition.extraData.signaure.approve[0]}}</span>
         </td>
@@ -93,6 +93,6 @@
   </div>
   <div class="align-right">
     <button class="btn btn-primary btn-download btn-download-pdf"
-      ng-click="vm.downloadPdf()">{{'analyticsReport.requisitionAndMonthly.malaria.download.button'|message}}</button>
+      ng-click="vm.downloadPdf()">{{'malaria.download.button'|message}}</button>
   </div>
 </div>
