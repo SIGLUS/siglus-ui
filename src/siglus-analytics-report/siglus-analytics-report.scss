@@ -38,14 +38,7 @@
   }
   
   .view-table-logo {
-    // display: inline-block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    right: 0;
-    bottom: 0;
-    margin-top: -30px;
-    margin-left: -30px;
+    display: inline-block;
     height: 60px;
     width: 60px;
     background: url("siglus-analytics-report/table-logo-moz.png") no-repeat left top;
@@ -128,6 +121,7 @@
     margin-right: 12px;
     display: unset;
     padding-left: 18px;
+    margin-top: 0px;
   }
   
   .checkbox label {
@@ -138,16 +132,21 @@
     top: 0;
     left: 0;
     border: 2px solid #000;
+    margin-top: 0px;
+    display: block;
+    box-sizing: content-box;
+    padding-left: 0px;
+    min-height: 15px;
   }
   
   .checkbox label:after {
     opacity: 0;
     content: '';
     position: absolute;
-    width: 8px;
-    height: 4px;
+    width: 10px;
+    height: 6px;
     background: transparent;
-    top: 2px;
+    top: 3px;
     left: 3px;
     border: 3px solid #000;
     border-top: none;
