@@ -5,7 +5,7 @@
         <td rowspan="3" class="background-black banner-text black-width">
           <div class="banner-text text-nowrap">CMAM - TDR</div>
         </td>
-        <td><span style="float: left" class="view-table-logo"></span></td>
+        <td  class="logo--center"><span class="view-table-logo"></span></td>
         <td class="text__left">
           <h6 openlmis-message="view.rnr.republic.of.mozambique">
             {{ 'rapid.republic_of_mozambique' | message }}
@@ -46,13 +46,13 @@
       </tr>
 
       <tr class="text__left">
-        <td>
+        <td class="text__padding">
           <span openlmis-message="view.rnr.district">
             {{ 'rapid.district' | message }}
           </span>:
         </td>
-        <td>{{ vm.facility.geographicZone.name }}</td>
-        <td>
+        <td class="text__padding">{{ vm.facility.geographicZone.name }}</td>
+        <td class="text__padding">
           <span openlmis-message="view.rnr.province">
             {{ 'rapid.province' | message }}
           </span>:{{ vm.facility.geographicZone.parent.name }}
@@ -281,24 +281,24 @@
     <div class="report--footer-section">
       <table>
         <tr class="height-50">
-          <td class="font-bold text__left">
+          <td style="padding-left: 20px" class="font-bold text__left">
             <span openlmis-message="view.rnr.mmia.comments">{{ 'rapid.observations' | message }}</span>:
           </td>
         </tr>
-        <tr class="height-30 text__left"><td>{{vm.comments}}</td></tr>
+        <tr  class="height-30 text__left"><td style="padding-left: 20px">{{vm.comments}}</td></tr>
       </table>
     </div>
 
     <div class="report--footer-section">
       <table>
         <tr class="height-50">
-          <td style="vertical-align: baseline" class="font-bold text__left">
+          <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
             <span openlmis-message="view.rnr.mmia.createBy">{{ 'rapid.completedBy' | message }}</span>: {{vm.signaure.submit}}
           </td>
-          <td style="vertical-align: baseline" class="font-bold text__left">
+          <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
             <span openlmis-message="view.rnr.mmia.vistor">{{ 'rapid.approvedBy' | message }}</span>: {{vm.signaure.approve[0]}}
           </td>
-          <td style="vertical-align: baseline" class="font-bold text__left">
+          <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
             <span openlmis-message="view.rnr.mmia.dateOfCreate">{{ 'rapid.dateOfCreate' | message }}</span>: {{vm.creationDate}}
           </td>
         </tr>
