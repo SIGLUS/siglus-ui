@@ -43,14 +43,18 @@
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
-                // SIGLUS-REFACTOR: starts here
+                // // SIGLUS-REFACTOR: starts here
                 programs: function(user, $q, programService, stockProgramUtilService) {
                     return $q.all([
                         programService.getAllProductsProgram(),
                         stockProgramUtilService.getPrograms(user.user_id,
                             STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
                     ]).then(function(responses) {
-                        return responses[0].concat(responses[1]);
+                        return responses[0].concat(
+                            _.filter(responses[1], function(item) {
+                                return item.code !== 'ML';
+                            })
+                        );
                     });
                 },
                 programId: function($stateParams) {

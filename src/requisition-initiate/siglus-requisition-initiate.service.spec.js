@@ -33,12 +33,12 @@ describe('siglusRequisitionInitiateService', function() {
     it('should get latest physicalInventory by facility id', function() {
         this.$httpBackend
             .expectGET(this.requisitionUrlFactory('/api/siglusapi/physicalInventories/latest?facilityId='
-                + this.facility.id))
+                + this.facility.id + '&programId=dce17f2e-af3e-40ad-8e00-3496adef44c3'))
             .respond(200, {});
 
         var result;
         this.siglusRequisitionInitiateService
-            .getLatestPhysicalInventory(this.facility.id)
+            .getLatestPhysicalInventory(this.facility.id, 'dce17f2e-af3e-40ad-8e00-3496adef44c3')
             .then(function(response) {
                 result = response;
             });

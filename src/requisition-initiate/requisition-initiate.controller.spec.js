@@ -28,6 +28,7 @@ describe('RequisitionInitiateController', function() {
 
             this.$rootScope = $injector.get('$rootScope');
             this.$state = $injector.get('$state');
+            this.$scope = this.$rootScope.$new();
             this.requisitionService = $injector.get('requisitionService');
             this.authorizationService = $injector.get('authorizationService');
             this.$q = $injector.get('$q');
@@ -85,11 +86,14 @@ describe('RequisitionInitiateController', function() {
             this.vm = $injector.get('$controller')('RequisitionInitiateController', {
                 periods: this.periods,
                 $stateParams: this.$stateParams,
+                $scope: this.$scope,
                 canInitiateRnr: this.canInitiateRnr,
                 // SIGLUS-REFACTOR: starts here
                 inventoryDates: []
                 // SIGLUS-REFACTOR: ends here
             });
+
+            spyOn(this.$scope, '$on');
 
             // SIGLUS-REFACTOR: starts here
             spyOn(this.siglusRequisitionInitiateService, 'getLatestPhysicalInventory')
@@ -266,4 +270,58 @@ describe('RequisitionInitiateController', function() {
         expect(this.vm.isRequisition()).toBe(true);
     });
     // SIGLUS-REFACTOR: ends here
+
+    describe('test getMLProgramParam methods', function() {
+        it('should return result contains replaceId attribute when current selected program is Malaria', function() {
+            this.vm.program = {
+                name: 'Malaria',
+                code: 'ML',
+                id: 'ad8c9a54-cc66-4395-a353-1849caec87da'
+            };
+            this.vm.programs = [
+                {
+                    name: 'Malaria',
+                    code: 'ML',
+                    id: 'ad8c9a54-cc66-4395-a353-1849caec87da'
+                },
+                {
+                    name: 'Via Clássica',
+                    code: 'VC',
+                    id: 'dce17f2e-af3e-40ad-8e00-3496adef44c3'
+                }
+            ];
+
+            expect(this.vm.getMLProgramParam({})).toEqual({
+                replaceId: 'dce17f2e-af3e-40ad-8e00-3496adef44c3'
+            });
+        });
+
+        it('should return result not contains replaceId attribute when current selected program is not Malaria',
+            function() {
+                this.vm.program = {
+                    name: 'Testes Rápidos Diag.',
+                    code: 'TR',
+                    id: 'ad8c9a54-cc66-4395-a353-1849caec87da'
+                };
+                this.vm.programs = [
+                    {
+                        name: 'Testes Rápidos Diag.',
+                        code: 'TR',
+                        id: 'ad8c9a54-cc66-4395-a353-1849caec87da'
+                    },
+                    {
+                        name: 'Malaria',
+                        code: 'ML',
+                        id: 'ad8c9a54-cc66-4395-a353-1849caec87da'
+                    },
+                    {
+                        name: 'Via Clássica',
+                        code: 'VC',
+                        id: 'dce17f2e-af3e-40ad-8e00-3496adef44c3'
+                    }
+                ];
+
+                expect(this.vm.getMLProgramParam({})).toEqual({});
+            });
+    });
 });

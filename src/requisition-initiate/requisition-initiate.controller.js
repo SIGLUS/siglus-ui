@@ -30,14 +30,14 @@
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
     RequisitionInitiateController.$inject = [
-        'requisitionService', '$state'
+        'requisitionService', '$state', '$scope'
         // SIGLUS-REFACTOR: starts here
         // 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         // 'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator'
         // SIGLUS-REFACTOR: ends here
     ];
 
-    function RequisitionInitiateController(requisitionService, $state) {
+    function RequisitionInitiateController(requisitionService, $state, $scope) {
         var vm = this;
         // SIGLUS-REFACTOR: starts here
         // uuidGenerator = new UuidGenerator(),
@@ -62,6 +62,8 @@
          * Holds a boolean indicating if the currently selected requisition type is standard or emergency
          */
         vm.emergency = undefined;
+
+        vm.programs = undefined;
 
         // SIGLUS-REFACTOR: starts here
         // /**
@@ -101,6 +103,10 @@
         }
         // SIGLUS-REFACTOR: ends here
 
+        $scope.$on('$programListChange', function(event, programs) {
+            vm.programs = programs;
+        });
+
         /**
          * @ngdoc method
          * @methodOf requisition-initiate.controller:RequisitionInitiateController
@@ -115,13 +121,14 @@
          */
         function loadPeriods() {
             // SIGLUS-REFACTOR: starts here
-            $state.go($state.current.name, {
+            $state.go($state.current.name, vm.getMLProgramParam({
             // SIGLUS-REFACTOR: ends here
                 supervised: vm.isSupervised,
                 program: vm.program.id,
                 facility: vm.facility.id,
                 emergency: vm.emergency
-            }, {
+
+            }), {
                 // SIGLUS-REFACTOR: starts here
                 reload: $state.current.name
                 // SIGLUS-REFACTOR: ends here
@@ -222,12 +229,22 @@
         };
 
         vm.goToRequsition = function() {
-            $state.go('openlmis.requisitions.initRnr.requisition', $state.params);
+            $state.go('openlmis.requisitions.initRnr.requisition', vm.getMLProgramParam($state.params));
         };
 
         vm.isRequisition = function() {
             return $state.current.name === 'openlmis.requisitions.initRnr.requisition';
         };
-        // SIGLUS-REFACTOR: ends here
+
+        vm.getMLProgramParam = function(stateParams) {
+            var viaOption = _.find(vm.programs, function(item) {
+                return item.code === 'VC';
+            });
+            var params = (vm.programs && vm.program.code === 'ML') ?
+                {
+                    replaceId: viaOption.id
+                } : {};
+            return Object.assign({}, stateParams, params);
+        };
     }
 })();
