@@ -54,6 +54,15 @@
         $delegate.suggestedQuantity = calculateSuggestedQuantity;
         $delegate.expirationDate = calculateExpirationDate;
         $delegate.packsToShip = calculatePacksToShip;
+        var helper = {
+            isDisplayed: isDisplayed,
+            isFilled: isFilled,
+            getOrderQuantity: getOrderQuantity,
+            getItem: getItem,
+            shouldReturnRequestedQuantity: shouldReturnRequestedQuantity,
+            getOrderQuantityFromColumnJMS: getOrderQuantityFromColumnJMS
+        };
+        $delegate.__ = helper;
 
         return $delegate;
 
@@ -70,7 +79,7 @@
          */
         function calculateTheoreticalQuantityToRequest(lineItem) {
             var result = 2 * getItem(lineItem, C) - getItem(lineItem, E);
-            return result >= 0 ? result : 0;
+            return _.max([result, 0]);
         }
 
         /**
@@ -86,7 +95,7 @@
          */
         function calculateTheoreticalStockAtEndOfPeriod(lineItem) {
             var result = getItem(lineItem, A) + getItem(lineItem, B) - getItem(lineItem, C);
-            return result >= 0 ? result : 0;
+            return _.max([result, 0]);
         }
 
         /**
@@ -135,15 +144,15 @@
          * @return {String}               the expiration
          */
         function calculateExpirationDate(lineItem) {
-            return lineItem[EX] === undefined ? null : lineItem[EX];
+            return _.get(lineItem, EX, null);
         }
 
         function getItem(lineItem, name) {
-            return lineItem[name] === undefined ? 0 : lineItem[name];
+            return _.get(lineItem, name, 0);
         }
 
         function calculatePacksToShip(lineItem, requisition) {
-            var orderQuantity = getOrderQuantity(lineItem, requisition),
+            var orderQuantity = helper.getOrderQuantity(lineItem, requisition),
                 netContent = lineItem.orderable.netContent;
 
             if (!orderQuantity || !netContent) {
@@ -164,33 +173,43 @@
 
         }
 
+        function getOrderQuantityFromColumnJMS(requisition, lineItem, orderQuantity) {
+            var jColumn = requisition.template.getColumn(J),
+                mColumn = requisition.template.getColumn(M),
+                sColumn = requisition.template.getColumn(S);
+
+            if (helper.shouldReturnRequestedQuantity(lineItem, jColumn, requisition)) {
+                orderQuantity = lineItem[J];
+            } else if (helper.isDisplayed(mColumn)) {
+                orderQuantity = $delegate.calculatedOrderQuantity(lineItem, requisition);
+            } else if (sColumn) {
+                orderQuantity = $delegate.calculatedOrderQuantityIsa(lineItem, requisition);
+            }
+            return orderQuantity;
+        }
+
         function getOrderQuantity(lineItem, requisition) {
             var orderQuantity = null;
             var kColumn = requisition.template.getColumn(K);
 
-            if (requisition.$isAfterAuthorize() && kColumn && kColumn.$display) {
+            if (requisition.$isAfterAuthorize() && helper.isDisplayed(kColumn)) {
                 orderQuantity = lineItem[K];
             } else {
-                var jColumn = requisition.template.getColumn(J),
-                    mColumn = requisition.template.getColumn(M),
-                    sColumn = requisition.template.getColumn(S);
-
-                if (shouldReturnRequestedQuantity(lineItem, jColumn, requisition)) {
-                    orderQuantity = lineItem[J];
-                } else if (mColumn && mColumn.isDisplayed) {
-                    orderQuantity = $delegate.calculatedOrderQuantity(lineItem, requisition);
-                } else if (sColumn) {
-                    orderQuantity = $delegate.calculatedOrderQuantityIsa(lineItem, requisition);
-                }
+                orderQuantity = helper.getOrderQuantityFromColumnJMS(requisition, lineItem, orderQuantity);
             }
 
             return orderQuantity;
         }
 
         function shouldReturnRequestedQuantity(lineItem, jColumn, requisition) {
-            return lineItem.isNonFullSupply() ||
-                (isDisplayed(jColumn) && isFilled(lineItem[J])) ||
-                requisition.emergency;
+            return _.any([
+                lineItem.isNonFullSupply(),
+                _.all([
+                    helper.isDisplayed(jColumn),
+                    helper.isFilled(lineItem[J])
+                ]),
+                requisition.emergency
+            ]);
         }
 
         function isFilled(value) {
@@ -199,7 +218,7 @@
         }
 
         function isDisplayed(column) {
-            return column && column.$display;
+            return !!(column && column.$display);
         }
     }
 })();
