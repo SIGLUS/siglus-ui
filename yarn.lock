@@ -188,9 +188,9 @@
   version "4.0.13"
   resolved "https://codeload.github.com/ivaynberg/select2/tar.gz/45f2b83ceed5231afa7b3d5b12b58ad335edd82e"
 
-"@bower_components/underscore@jashkenas/underscore#*":
-  version "1.9.1"
-  resolved "https://codeload.github.com/jashkenas/underscore/tar.gz/ae037f7c41323807ae6f1533c45512e6d31a1574"
+"@bower_components/underscore@jashkenas/underscore#^1.13.4":
+  version "1.13.4"
+  resolved "https://codeload.github.com/jashkenas/underscore/tar.gz/a15d1afc708ec23894880b2ec4c1eb309447a906"
 
 abab@^1.0.0:
   version "1.0.4"
