@@ -155,17 +155,17 @@
             var orderQuantity = helper.getOrderQuantity(lineItem, requisition),
                 netContent = lineItem.orderable.netContent;
 
-            if (!orderQuantity || !netContent) {
+            if (_.any([!orderQuantity, !netContent])) {
                 return 0;
             }
             var remainderQuantity = orderQuantity % netContent,
                 packsToShip = (orderQuantity - remainderQuantity) / netContent;
 
-            if (remainderQuantity > 0 && remainderQuantity > lineItem.orderable.packRoundingThreshold) {
+            if (_.all([remainderQuantity > 0, remainderQuantity > lineItem.orderable.packRoundingThreshold])) {
                 packsToShip += 1;
             }
 
-            if (packsToShip === 0 && !lineItem.orderable.roundToZero) {
+            if (_.all([packsToShip === 0, !lineItem.orderable.roundToZero])) {
                 packsToShip = 1;
             }
 
@@ -192,7 +192,7 @@
             var orderQuantity = null;
             var kColumn = requisition.template.getColumn(K);
 
-            if (requisition.$isAfterAuthorize() && helper.isDisplayed(kColumn)) {
+            if (_.all([requisition.$isAfterAuthorize(), helper.isDisplayed(kColumn)])) {
                 orderQuantity = lineItem[K];
             } else {
                 orderQuantity = helper.getOrderQuantityFromColumnJMS(requisition, lineItem, orderQuantity);
@@ -214,11 +214,11 @@
 
         function isFilled(value) {
             //We want to treat 0 as a valid value thus not using return value
-            return value !== null && value !== undefined;
+            return _.all([value !== null, value !== undefined]);
         }
 
         function isDisplayed(column) {
-            return !!(column && column.$display);
+            return _.get(column, '$display', false);
         }
     }
 })();
