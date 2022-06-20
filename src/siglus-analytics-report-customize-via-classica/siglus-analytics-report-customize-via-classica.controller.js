@@ -85,26 +85,17 @@
             var viaTableHeaderHeight = viaTableHeader.offsetHeight;
             var viaSignaureHeight = viaSignaure.offsetHeight;
 
-            // eslint-disable-next-line no-undef
-            var viaHeaderUrl = domtoimage.toPng(viaHeader)
-                .then(function(dataUrl) {
+            var tableDomList = [viaHeader, viaTableHeader, viaSignaure];
+            var tableImagePromiseList = [];
+
+            angular.forEach(tableDomList, function(item) {
+                // eslint-disable-next-line no-undef
+                tableImagePromiseList.push(domtoimage.toPng(item).then(function(dataUrl) {
                     return dataUrl;
-                });
+                }));
+            });
 
-            // eslint-disable-next-line no-undef
-            var viaTableHeaderUrl = domtoimage.toPng(viaTableHeader)
-                .then(function(dataUrl) {
-                    return dataUrl;
-                });
-
-            // eslint-disable-next-line no-undef
-            var viaSignaureUrl = domtoimage.toPng(viaSignaure)
-                .then(function(dataUrl) {
-                    return dataUrl;
-                });
-
-            $q.all([viaHeaderUrl, viaTableHeaderUrl, viaSignaureUrl]).then(function(result) {
-
+            $q.all(tableImagePromiseList).then(function(result) {
                 var promiseList = [];
                 angular.forEach(viaTableBodys, function(item) {
                     // eslint-disable-next-line no-undef
