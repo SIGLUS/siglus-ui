@@ -4,17 +4,17 @@
       <div class="width-28">
         <div class="text-nowrap checkbox-group">
           <span>{{'via.triplicate' | message}}</span>
-          <span class="checkbox">
+          <span class="analytics-report-checkbox">
             <input type="checkbox" value="1" disabled id="checkboxInput1" name="" />
             <label for="checkboxInput1"></label>
           </span>
           <span>{{'via.double' | message}}</span>
-          <span class="checkbox">
+          <span class="analytics-report-checkbox">
             <input type="checkbox" value="2" disabled id="checkboxInput2" name="" />
             <label for="checkboxInput2"></label>
           </span>
           <span>{{'via.original' | message}}</span>
-          <span class="checkbox">
+          <span class="analytics-report-checkbox">
             <input type="checkbox" value="3" disabled id="checkboxInput3" checked="checked" name="" />
             <label for="checkboxInput3"></label>
           </span>
@@ -49,7 +49,7 @@
             <ul>
               <li class="type-checkbox">
                 <span>{{'via.normal' | message}}</span>
-                <span class="checkbox">
+                <span class="analytics-report-checkbox">
                   <input type="checkbox" ng-if="!vm.requisition.emergency" value="4" id="checkboxInput4" disabled checked="true"  />
                   <input type="checkbox" ng-if="vm.requisition.emergency" value="4" id="checkboxInput4" disabled/>
                   <label for="checkboxInput4"></label>
@@ -58,7 +58,7 @@
 
               <li class="type-checkbox">
                 <span>{{'via.special' | message}}</span>
-                <span class="checkbox">
+                <span class="analytics-report-checkbox">
                   <input type="checkbox" value="5" ng-if="!vm.requisition.emergency" id="checkboxInput5" disabled   />
                   <input type="checkbox" value="5" ng-if="vm.requisition.emergency" id="checkboxInput5" disabled checked />
                   <label for="checkboxInput5"></label>
@@ -66,7 +66,7 @@
               </li>
               <li class="type-checkbox">
                 <span>{{'via.via' | message}}</span>
-                <span class="checkbox">
+                <span class="analytics-report-checkbox">
                   <input type="checkbox" value="6" disabled id="checkboxInput6"  />
                   <label for="checkboxInput6"></label>
                 </span>
