@@ -228,7 +228,8 @@ describe('RequisitionInitiateController', function() {
             supervised: false,
             emergency: false,
             program: this.vm.program.id,
-            facility: this.vm.facility.id
+            facility: this.vm.facility.id,
+            replaceId: ''
         }, {
             reload: 'openlmis.requisitions.initRnr.requisition'
         });
@@ -259,7 +260,9 @@ describe('RequisitionInitiateController', function() {
 
         this.vm.goToRequsition();
 
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {});
+        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
+            replaceId: ''
+        });
     });
     // SIGLUS-REFACTOR: ends here
 
@@ -321,7 +324,9 @@ describe('RequisitionInitiateController', function() {
                     }
                 ];
 
-                expect(this.vm.getMLProgramParam({})).toEqual({});
+                expect(this.vm.getMLProgramParam({})).toEqual({
+                    replaceId: ''
+                });
             });
     });
 });
