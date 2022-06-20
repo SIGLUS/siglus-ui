@@ -28,7 +28,7 @@
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.malaria', {
             url: '/Malaria/:rnr',
             showInNavigation: false,
-            label: 'analyticsReport.requisitionAndMonthly.malaria.title',
+            label: 'malaria.title',
             priority: 9,
             views: {
                 '@openlmis': {
