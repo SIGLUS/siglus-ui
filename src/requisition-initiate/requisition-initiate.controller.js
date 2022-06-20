@@ -243,7 +243,9 @@
             var params = (_.get(vm.program, 'code') === 'ML') ?
                 {
                     replaceId: viaOption.id
-                } : {};
+                } : {
+                    replaceId: ''
+                };
             return Object.assign({}, stateParams, params);
         };
     }
