@@ -81,6 +81,10 @@
                     angular.forEach(lineItemsOrigin, function(item, index) {
                         if (index % 15 !== 14 && index !== lineItemsOrigin.length - 1) {
                             lineItemsSubList.push(item);
+                        } else if (lineItemsOrigin.length === 1) {
+                            lineItemsSubList.push(item);
+                            lineItemsRefactor.push(lineItemsSubList);
+                            lineItemsSubList = [];
                         } else if (index === lineItemsOrigin.length - 1) {
                             lineItemsRefactor.push(lineItemsSubList);
                             lineItemsSubList = [];
