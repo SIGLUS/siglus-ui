@@ -240,7 +240,7 @@
             var viaOption = _.find(vm.programs, function(item) {
                 return item.code === 'VC';
             });
-            var params = (vm.programs && vm.program.code === 'ML') ?
+            var params = (_.get(vm.program, 'code') === 'ML') ?
                 {
                     replaceId: viaOption.id
                 } : {};
