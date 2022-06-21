@@ -1,0 +1,32 @@
+<h2 ng-if="vm.facility && vm.program">
+  {{'PhysicalInventoryDraftList.title' | message: {
+  'facility': vm.facility.name, 'program': vm.program.name
+} }}
+</h2>
+<h2 ng-hide="vm.facility && vm.program">{{'PhysicalInventoryDraftList.physicalInventory'
+| message}}</h2>
+
+<section class="openlmis-table-container">
+  <table>
+    <thead>
+    <tr>
+      <th>{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
+      <th>{{'PhysicalInventoryDraftList.status' | message}}</th>
+      <th>{{'PhysicalInventoryDraftList.operator' | message}}</th>
+      <th class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="draftList in vm.draftList">
+      <td>{{vm.getDraftNumber(draftList.groupNum)}}</td>
+      <td>{{vm.getDraftStatus(draftList.status) | message:{Draft} }}</td>
+      <td>{{vm.getDraftSaver(draftList.saver)}}</td>
+      <td>
+        <input id="proceedButton" type="button" ng-click="vm.editSubDraft(subDraftId)"
+               value="{{(draftList.status ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue ') | message}}"
+               class="primary"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>

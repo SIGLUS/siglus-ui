@@ -1,0 +1,23 @@
+.modal .modal-header {
+  min-height: 30px;
+}
+
+#validateInputValue {
+  background: transparent;
+  position: relative;
+  padding: 0em;
+  padding-left: 0.5em;
+  border-left: #a94442 0.25em solid;
+  border-radius: 0px;
+  color: #a94442;
+  font-weight: bold;
+  font-size: 14px;
+  content: 'Please enter an integer between 1 and 10.'
+}
+
+.inputNecessary {
+  color: #a94442;
+  content: '*';
+  margin-left: 0.25em;
+  white-space: nowrap;
+}
