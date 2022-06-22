@@ -1,0 +1,35 @@
+<div class="modal add-product-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #A94442;">
+                <h4 style="color: #fff !important;">{{'stockRemainingProductsModal.title' | message}}</h4>
+            </div>
+            <div class="modal-body">
+                <section class="openlmis-table-container">
+                    <table>
+                      <thead>
+                      <tr>
+                        <th>{{'stockRemainingProductsModal.productCode' | message}}</th>
+                        <th>{{'stockRemainingProductsModal.product' | message}}</th>
+                        <th>{{'stockRemainingProductsModal.currentStock' | message}}</th>
+                        <th>{{ 'stockRemainingProductsModal.conflictWith' | message }}</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr ng-repeat="item in vm.conflictItems">
+                        <td>{{item.orderable.productCode}}</td>
+                        <td>{{item.orderable.fullProductName}}</td>
+                        <td>{{item.currentStock}}</td>
+                        <td>{{item.conflictWith}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                </section>
+            </div>
+            <div class="modal-footer">
+                    <button id="cancel" ng-click="$hide()">cancel</button>
+                    <button class="primary" ng-click="vm.confirm()">confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
