@@ -1,7 +1,5 @@
 <h2 ng-if="vm.facility && vm.program">
-  {{'PhysicalInventoryDraftList.title' | message: {
-  'facility': vm.facility.name, 'program': vm.program.name
-} }}
+  {{'PhysicalInventoryDraftList.title' | message: {'facility': vm.facility.name, 'program': vm.program.name} }}
 </h2>
 <h2 ng-hide="vm.facility && vm.program">{{'PhysicalInventoryDraftList.physicalInventory'
 | message}}</h2>
@@ -10,23 +8,25 @@
   <table>
     <thead>
     <tr>
-      <th>{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
-      <th>{{'PhysicalInventoryDraftList.status' | message}}</th>
-      <th>{{'PhysicalInventoryDraftList.operator' | message}}</th>
-      <th class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' | message}}</th>
+      <th style="width: 228px;">{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
+      <th style="width: 202px;">{{'PhysicalInventoryDraftList.status' | message}}</th>
+      <th style="width: 202px;">{{'PhysicalInventoryDraftList.operator' | message}}</th>
+      <th style="width: 130px;" class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' | message}}</th>
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="draftList in vm.draftList">
-      <td>{{vm.getDraftNumber(draftList.groupNum)}}</td>
-      <td>{{vm.getDraftStatus(draftList.status) | message:{Draft} }}</td>
-      <td>{{vm.getDraftSaver(draftList.saver)}}</td>
+    <tr ng-repeat="item in vm.draftList">
+      <td>{{item.groupNum}}</td>
+      <td>{{ vm.getStatus(item.status) }}</td>
+      <td>{{ item.saver }}</td>
       <td>
-        <input id="proceedButton" type="button" ng-click="vm.editSubDraft(subDraftId)"
-               value="{{(draftList.status ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue ') | message}}"
+        <input style="width: 113px;" id="proceedButton" type="button" ng-click="vm.editSubDraft(subDraftId)"
+               value="{{(item.status ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue ') | message}}"
                class="primary"/>
       </td>
     </tr>
     </tbody>
   </table>
 </section>
+
+<ng-include src="'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list-toolbar.html'"></ng-include>
