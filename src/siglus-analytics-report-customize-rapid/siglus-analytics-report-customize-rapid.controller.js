@@ -159,7 +159,7 @@
                 // PDF.addImage(pageData, 'JPEG', 35, 45, 525, imgY - 90);
                 PDF.save(
                     getPdfName(
-                        requisition.processingPeriod.endDate,
+                        requisition.processingPeriod.startDate,
                         facility.name,
                         requisition.id.substring(0, 6)
                     )
