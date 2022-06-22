@@ -27,12 +27,12 @@
         <td rowspan="4" class="background-black black-width"></td>
         <td  class="empty-line" colspan={{3}} style="border: 0;">
           {{'malaria.month' | message}}{{": "}}
-          <span >{{vm.requisition.processingPeriod.endDate |
+          <span >{{vm.requisition.processingPeriod.startDate |
             openlmisDate:'MMMM'}}</span>
         </td>
         <td  class="empty-line" colspan={{7}}>
           {{'malaria.year' | message}}{{": "}}
-          <span >{{vm.requisition.processingPeriod.endDate |
+          <span >{{vm.requisition.processingPeriod.startDate |
             openlmisDate:'yyyy'}}</span>
         </td>
       </tr>
