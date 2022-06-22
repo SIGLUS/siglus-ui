@@ -42,24 +42,30 @@
                      productNameFilter, stockEventFactory, siglusStockEventService) {
     // SIGLUS-REFACTOR: starts here
         var resource = $resource(
-            stockmanagementUrlFactory('/api/siglusapi/draftList'), {},
+            stockmanagementUrlFactory('/api/siglusapi/physicalInventories/draftList'), {},
             {
                 get: {
                     method: 'GET',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/draftList/:id'
+                        '/api/siglusapi/physicalInventories/draftList/:id'
                     )
                 },
                 update: {
                     method: 'PUT',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/draftList/:id'
+                        '/api/siglusapi/physicalInventories/raftList/:id'
                     )
                 },
                 delete: {
                     method: 'DELETE',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/draftList/:id'
+                        '/api/siglusapi/physicalInventories/draftList/:id'
+                    )
+                },
+                submit: {
+                    method: 'POST',
+                    url: stockmanagementUrlFactory(
+                        '/api/siglusapi/physicalInventories/draftList/:id'
                     )
                 }
             }
@@ -67,7 +73,7 @@
 
         this.getDraft = getDraft;
         this.getDraftList = getDraftList;
-        // this.createDraft = createDraft;
+        this.createDraftList = createDraftList;
         // this.getPhysicalInventory = getPhysicalInventory;
         // this.search = search;
         // this.saveDraft = saveDraft;
@@ -104,18 +110,28 @@
      */
 
         // eslint-disable-next-line no-unused-vars
-        function getDraftList(program, facility, isDraft, groupNum) {
+        function getDraftList(facility, isDraft, program, groupNum) {
+            // console.log('123', program);
             return resource.query({
-                groupNum: this.groupNum,
-                saver: this.saver,
-                status: this.status,
-                subDraftId: this.subDraftId
-            })
-                .$promise
-                .then(function(response) {
-                    siglusStockEventService.formatResponse(response[0]);
-                    return response;
-                });
+                facility: facility,
+                isDraft: isDraft,
+                program: program,
+                groupNum: groupNum
+            }).$promise.then(function(response) {
+                siglusStockEventService.formatResponse(response[0]);
+                return response;
+            });
+        }
+
+        function createDraftList(splitNum, facilityId, programId) {
+            return resource.submit({
+                id: splitNum,
+                facilityId: facilityId,
+                programId: programId
+            }).$promise.then(function(response) {
+                siglusStockEventService.formatResponse(response[0]);
+                return response;
+            });
         }
 
         // SIGLUS-REFACTOR: ends here
