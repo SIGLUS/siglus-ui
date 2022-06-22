@@ -61,13 +61,6 @@
                             }
                         };
                     var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
-
-                    // console.log($filter('orderBy')(fullSupplyLineItems, [
-                    //     '$program.orderableCategoryDisplayOrder',
-                    //     '$program.orderableCategoryDisplayName',
-                    //     '$program.displayOrder',
-                    //     'orderable.fullProductName'
-                    // ]));
                     var lineItemsOrigin = $filter('orderBy')(fullSupplyLineItems, [
                         '$program.orderableCategoryDisplayOrder',
                         '$program.orderableCategoryDisplayName',
@@ -91,11 +84,13 @@
 
                 },
                 columns: function(requisition) {
-                    // SIGLUS-REFACTOR: starts here
-                    return requisition.template.getColumns().sort(function(a, b) {
-                        return a.displayOrder - b.displayOrder;
-                    });
-                    // SIGLUS-REFACTOR: ends here
+                    var columnsList = ['orderable.productCode', 'orderable.fullProductName',
+                        'beginningBalance', 'totalReceivedQuantity', 'totalConsumedQuantity',
+                        'theoreticalStockAtEndofPeriod', 'stockOnHand', 'difference',
+                        'theoreticalQuantityToRequest', 'requestedQuantity', 'authorizedQuantity'];
+                    return  _.sortBy(_.filter(requisition.template.getColumns(), function(item) {
+                        return _.include(columnsList, item.name);
+                    }), 'displayOrder');
                 }
             }
         });
