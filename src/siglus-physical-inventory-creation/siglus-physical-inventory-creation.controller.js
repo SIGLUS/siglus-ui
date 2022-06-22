@@ -29,16 +29,25 @@
         .controller('SiglusPhysicalInventoryCreationController', controller);
 
     controller.$inject = ['draft', 'loadingModalService', 'modalDeferred',
-        '$state', 'physicalInventoryDraftListService'];
+        '$state', 'physicalInventoryDraftListService', 'facilityFactory', '$stateParams'];
 
-    function controller(draft, loadingModalService, modalDeferred,
-                        $state, physicalInventoryDraftListService) {
+    function controller(
+        draft,
+        loadingModalService,
+        modalDeferred,
+        $state,
+        physicalInventoryDraftListService,
+        facilityFactory,
+        $stateParams
+    ) {
         var vm = this;
         vm.input = '';
         vm.drafts = [];
         vm.confirm = confirm;
         vm.draft = draft;
-
+        facilityFactory.getUserHomeFacility().then(function(res) {
+            vm.facility = res;
+        });
         vm.inputValue = function() {
             modalDeferred.resolve(vm.input);
         };
@@ -49,15 +58,19 @@
 
         vm.confirm = function() {
             if (vm.validate()) {
-
-                loadingModalService.open();
-                physicalInventoryDraftListService.getDraftList(draft.programId,
-                    draft.facilityId, draft.isDraft, vm.input).then(function() {
-                    loadingModalService.close();
-                    $state.go(
-                        'openlmis.stockmanagement.physicalInventory.draftList'
-                    );
+                console.log('输入', vm.input, vm.facility, $stateParams);
+                physicalInventoryDraftListService.createDraftList(vm.input, vm.facility.id, $stateParams.programId).then(function(res) {
+                    console.log('返回值', res);
                 });
+                // console.log(physicalInventoryDraftListService);
+                // loadingModalService.open();
+                // physicalInventoryDraftListService.getDraftList(draft.programId,
+                //     draft.facilityId, draft.isDraft, vm.input).then(function() {
+                //     loadingModalService.close();
+                //     $state.go(
+                //         'openlmis.stockmanagement.physicalInventory.draftList'
+                //     );
+                // });
             }
         };
     }

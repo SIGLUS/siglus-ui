@@ -61,6 +61,7 @@
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
                         physicalInventoryFactory.getPhysicalInventory($stateParams.id)
                             .then(function(draft) {
+                                console.log('进来了', draft);
                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                 deferred.resolve();
                             });

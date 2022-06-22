@@ -58,20 +58,17 @@
                             facility.id);
                     },
                     draftList: function(physicalInventoryDraftListService, programs,
-                        facility) {
+                        facility, $stateParams) {
 
                         if (_.isUndefined(facility)) {
                             return [];
                         }
-
-                        var programId = _.map(programs, function(program) {
-                            return program.id;
-                        });
-
                         var isDraft = true;
-
-                        return physicalInventoryDraftListService.getDraftList(programId,
-                            facility.id, isDraft);
+                        return physicalInventoryDraftListService.getDraftList(
+                            facility.id,
+                            isDraft,
+                            $stateParams.programId
+                        );
                     }
                 }
             });

@@ -158,6 +158,7 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
+                    console.log('### physicalInventory', physicalInventory);
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {

@@ -17,7 +17,10 @@
     'use strict';
 
     angular.module('siglus-physical-inventory-creation', [
+        'ui.router',
         'openlmis-modal',
-        'siglus-physical-inventory-draft-list'
+        'siglus-physical-inventory-draft-list',
+        'referencedata-facility',
+        'requisition'
     ]);
 })();
