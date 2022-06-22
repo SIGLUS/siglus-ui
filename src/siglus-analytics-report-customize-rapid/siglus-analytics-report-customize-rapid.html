@@ -216,7 +216,7 @@
         <td>{{service['UNJUSTIFIED_MALARIA']}}</td> -->
       </tr>
       
-      <tr ng-if="service.name !== 'total' && service.name !== 'HF'" ng-repeat="service in vm.services">
+      <tr ng-if="service.name !== 'total' && service.name !== 'HF' && service.service !== 'APES'" ng-repeat="service in vm.services">
         <td class="background-black black-width"></td>
         <td>{{service.label}}</td>
         <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
@@ -259,7 +259,7 @@
       <tr class="black-tr"></tr>
 
       <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services">
-        <td class="background-black black-width"></td>
+        <td class="background-black black-width">a</td>
         <td class="table--subtitle-dark-gray">{{ 'rapid.APEs' | message }}</td>
         <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
         <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
