@@ -59,7 +59,11 @@
         vm.confirm = function() {
             if (vm.validate()) {
                 console.log('输入', vm.input, vm.facility, $stateParams);
-                physicalInventoryDraftListService.createDraftList(vm.input, vm.facility.id, $stateParams.programId).then(function(res) {
+                physicalInventoryDraftListService.createDraftList(
+                    vm.input,
+                    vm.facility.id,
+                    $stateParams.programId
+                ).then(function(res) {
                     console.log('返回值', res);
                 });
                 // console.log(physicalInventoryDraftListService);

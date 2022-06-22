@@ -244,6 +244,7 @@
             })
                 .$promise
                 .then(function(response) {
+                    console.log('getInitialDraft', response);
                     siglusStockEventService.formatResponse(response[0]);
                     return response;
                 });

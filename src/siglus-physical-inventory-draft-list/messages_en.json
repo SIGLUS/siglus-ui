@@ -12,5 +12,7 @@
   "PhysicalInventoryDraftList.View": "View",
   "PhysicalInventoryDraftList.notStarted": "Not yet started",
   "PhysicalInventoryDraftList.draft": "Draft",
-  "PhysicalInventoryDraftList.submitted": "Submitted"
+  "PhysicalInventoryDraftList.submitted": "Submitted",
+  "PhysicalInventoryDraftList.merge": "Finalize to merge",
+  "PhysicalInventoryDraftList.delete": "Delete"
 }
