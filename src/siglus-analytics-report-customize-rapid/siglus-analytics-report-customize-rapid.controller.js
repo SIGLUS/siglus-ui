@@ -57,15 +57,16 @@
         vm.getPdfName = getPdfName;
         vm.requisition = {};
         function onInit() {
+            console.log('requisition', requisition);
             vm.facility = facility;
             vm.requisition = requisition;
             vm.columns = requisition.requisitionLineItems;
             vm.services = requisition.testConsumptionLineItems;
             vm.comments = requisition.draftStatusMessage;
-            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
+            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
             vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.endDate);
+            vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
