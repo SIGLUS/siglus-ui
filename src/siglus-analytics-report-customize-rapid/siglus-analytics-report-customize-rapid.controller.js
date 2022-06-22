@@ -60,7 +60,9 @@
             console.log('requisition', requisition);
             vm.facility = facility;
             vm.requisition = requisition;
-            vm.columns = requisition.requisitionLineItems;
+            vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
+                item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
+            });
             vm.services = requisition.testConsumptionLineItems;
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
