@@ -38,7 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME'
+        'SIGLUS_TIME', 'remainingProductsModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,7 +50,7 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME) {
+                        SIGLUS_TIME, remainingProductsModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -345,11 +345,37 @@
          * Save physical inventory draft.
          */
         // SIGLUS-REFACTOR: starts here
+        var openRemainingModal = function(type) {
+            physicalInventoryService.getConflictDraft(99, 110)
+                .then(function(res) {
+                    // console.log('hello world');
+                    // console.log(type, res);
+                    if (res.data.length) {
+                        remainingProductsModalService.show(res.data).then(function() {
+                            saveOrSubmit(type);
+                        });
+                    } else {
+                        saveOrSubmit(type);
+                    }
+                });
+        };
+
+        var saveOrSubmit = function(type) {
+            if (type === 'save') {
+                saveDraft();
+            } else {
+                submit();
+            }
+        };
+
+        this.saveOrSubmit = saveOrSubmit;
+
         var saveDraft = function() {
             if ($stateParams.keyword) {
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
+            console.log('#### draft', draft);
             return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
                 summaries: []
             })).then(function() {
@@ -370,7 +396,7 @@
                 alertService.error('stockPhysicalInventoryDraft.saveFailed');
             });
         };
-        vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {
+        vm.openRemainingModal = _.throttle(openRemainingModal, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
         // SIGLUS-REFACTOR: ends here
@@ -487,9 +513,9 @@
                 });
             }
         };
-        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
-            trailing: false
-        });
+        // vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+        //     trailing: false
+        // });
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -649,11 +675,13 @@
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
             if (!vm.isInitialInventory) {
-                $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
+                var data = messageService.get('stockPhysicalInventoryDraft.title', {
                     facilityCode: facility.code,
                     facilityName: facility.name,
                     program: program.name
                 });
+                // console.log('label --->>>', data);
+                $state.current.label = data;
             }
         }
 

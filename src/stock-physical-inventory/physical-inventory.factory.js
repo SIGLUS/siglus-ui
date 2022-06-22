@@ -158,6 +158,7 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
+                    console.log('#### physicalInventory', physicalInventory);
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {
@@ -353,7 +354,8 @@
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
             }).then(function(summaries) {
-            // #225: ends here
+                console.log('#### summaries', summaries);
+                // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

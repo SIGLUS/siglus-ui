@@ -53,6 +53,7 @@
                     return $stateParams.facility;
                 },
                 draft: function(facility,  $stateParams, physicalInventoryFactory, physicalInventoryDataService, $q) {
+                    console.log('#### stateParams', $stateParams);
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);

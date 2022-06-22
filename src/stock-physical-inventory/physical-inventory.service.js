@@ -51,12 +51,17 @@
             delete: {
                 method: 'DELETE',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
+            },
+            query: {
+                method: 'GET',
+                url: '/api/get-conflict-draft'
             }
         });
         // SIGLUS-REFACTOR: ends here
 
         this.getDraft = getDraft;
         this.createDraft = createDraft;
+        this.getConflictDraft = getConflictDraft;
         this.getPhysicalInventory = getPhysicalInventory;
         this.search = search;
         this.saveDraft = saveDraft;
@@ -128,6 +133,13 @@
             return resource.save({
                 programId: program,
                 facilityId: facility
+            }).$promise;
+        }
+
+        function getConflictDraft(facilityId, programId) {
+            return resource.query({
+                programId: programId,
+                facilityId: facilityId
             }).$promise;
         }
 
