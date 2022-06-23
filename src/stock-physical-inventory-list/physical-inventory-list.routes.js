@@ -72,7 +72,9 @@
                         return program.id;
                     });
 
-                    return physicalInventoryFactory.getDrafts(programIds, facility.id);
+                    var result = physicalInventoryFactory.getDrafts(programIds, facility.id);
+                    // console.log('#### result', result);
+                    return result;
                 }
             }
         });
