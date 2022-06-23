@@ -25,7 +25,7 @@
 
     function routes($stateProvider, REQUISITION_RIGHTS) {
         $stateProvider.state('openlmis.requisitions.initRnr.requisition', {
-            url: '/requisition?supervised&program&facility&emergency',
+            url: '/requisition?supervised&program&facility&emergency&replaceId',
             controller: 'SiglusRequisitionInitiateRequisitionController',
             controllerAs: 'vm',
             templateUrl: 'requisition-initiate/siglus-requisition-initiate-requisition.html',
@@ -54,7 +54,7 @@
                         var endDate = dateUtils.toStringDate(periods[0].submitEndDate);
                         return siglusRequisitionInitiateService.getPhysicalInventoryDates(
                             <!-- SIGLUS-REFACTOR: starts here -->
-                            $stateParams.program,
+                            $stateParams.replaceId || $stateParams.program,
                             <!-- SIGLUS-REFACTOR: ends here -->
                             $stateParams.facility,
                             startDate,

@@ -1,0 +1,242 @@
+<table cellpadding="0" cellspacing="0" class="view-table" align="center">
+  <tr>
+    <td class="left-block width-28">
+      <div class="width-28">
+        <div class="text-nowrap checkbox-group">
+          <span>{{'via.triplicate' | message}}</span>
+          <span class="analytics-report-checkbox">
+            <input type="checkbox" value="1" disabled id="checkboxInput1" name="" />
+            <label for="checkboxInput1"></label>
+          </span>
+          <span>{{'via.double' | message}}</span>
+          <span class="analytics-report-checkbox">
+            <input type="checkbox" value="2" disabled id="checkboxInput2" name="" />
+            <label for="checkboxInput2"></label>
+          </span>
+          <span>{{'via.original' | message}}</span>
+          <span class="analytics-report-checkbox">
+            <input type="checkbox" value="3" disabled id="checkboxInput3" checked="checked" name="" />
+            <label for="checkboxInput3"></label>
+          </span>
+        </div>
+      </div>
+    </td>
+    <td>
+
+      <table id="via-header" class="border-all-bold">
+        <tr>
+          <td tag="col1" class="border-all-thin background-black" width="28px" rowspan="4">
+            <div class="width-28 banner-text">
+              <div class="text-nowrap">CMAM - Modelo 01</div>
+            </div>
+          <td tag="col2" class="border-all-thin" width="350px">
+            <div style="display:flex;justify-content: flex-start;align-items: center;overflow: hidden;">
+              <span style="float: left;box-sizing: content-box;display: block;margin: 4px;padding: 0px;" class="view-table-logo"></span>
+              <span style="font-size: 10px">
+                {{'via.republic.of.mozambique' | message}}<br>
+                {{'via.ministry.of.health' | message}}<br>
+                <strong>{{'via.central.medicines.and.medical.arricles' | message}}</strong><br>
+              </span>
+            </div>
+          </td>
+          <td tag="col3-10" class="border-all-thin text-align-center" colspan="8">
+            <h2>
+              <span>{{'via.header' | message}}</span>
+              {{vm.requisition.requisitionNumber}}
+            </h2>
+          </td>
+          <td tag="col11" class="border-all-thin" width="183px" rowspan="4">
+            <ul>
+              <li class="type-checkbox">
+                <span>{{'via.normal' | message}}</span>
+                <span class="analytics-report-checkbox">
+                  <input type="checkbox" ng-if="!vm.requisition.emergency" value="4" id="checkboxInput4" disabled checked="true"  />
+                  <input type="checkbox" ng-if="vm.requisition.emergency" value="4" id="checkboxInput4" disabled/>
+                  <label for="checkboxInput4"></label>
+                </span>
+              </li>
+
+              <li class="type-checkbox">
+                <span>{{'via.special' | message}}</span>
+                <span class="analytics-report-checkbox">
+                  <input type="checkbox" value="5" ng-if="!vm.requisition.emergency" id="checkboxInput5" disabled   />
+                  <input type="checkbox" value="5" ng-if="vm.requisition.emergency" id="checkboxInput5" disabled checked />
+                  <label for="checkboxInput5"></label>
+                </span>
+              </li>
+              <li class="type-checkbox">
+                <span>{{'via.via' | message}}</span>
+                <span class="analytics-report-checkbox">
+                  <input type="checkbox" value="6" disabled id="checkboxInput6"  />
+                  <label for="checkboxInput6"></label>
+                </span>
+              </li>
+            </ul>
+            <div class="type-checkbox"><span>{{'via.submittedTime' | message}}</span>: {{vm.requisition.statusChanges.SUBMITTED.changeDate | openlmisDate:'dd/MM/yyyy'}}</div>
+          </td>
+        </tr>
+        <tr>
+          <td tag="col2" class="border-all-thin">
+            <span>{{'via.healthFacility' | message}}</span>: {{vm.facility.name}}
+          </td>
+          <td tag="col3" class="border-all-thin" width="246px"><span>{{'via.province' |
+              message}}</span>: {{vm.facility.geographicZone.parent.name}} </td>
+          <td tag="col4" class="border-all-thin" width="90px"></td>
+          <td tag="col5-8" class="border-all-thin" colspan="4">
+            <span>{{'via.periodStart'|message}}</span>: {{vm.processingPeriod.startDate| openlmisDate:'dd/MM/yyyy'}}
+          </td>
+          <td tag="col9-10" class="border-all-thin" colspan="2">
+            <span>{{'via.periodEnd'|message}}</span>: {{vm.processingPeriod.endDate| openlmisDate:'dd/MM/yyyy'}}
+          </td>
+        </tr>
+        <tr>
+
+          <td tag="col2" class="border-all-thin"><span>{{'via.district'|message}}</span>: 
+            {{vm.facility.geographicZone.name}}</td>
+          <td tag="col3" class="border-all-thin"></td>
+          <td tag="col4" class="border-all-thin"></td>
+          <td tag="col5" class="border-all-thin" width="70px"><span>{{'via.2'|message}}</span></td>
+          <td tag="col6" class="border-all-thin" width="70px"><span>{{vm.requisition.kitUsageLineItems[0].services.HF.value + vm.requisition.kitUsageLineItems[0].services.CHW.value}}</span></td>
+          <td tag="col7" class="border-all-thin" width="25px"><span>{{'via.HF'|message}}</span></td>
+          <td tag="col8" class="border-all-thin" width="25px"><span>{{vm.requisition.kitUsageLineItems[0].services.HF.value}}</span></td>
+          <td tag="col9" class="border-all-thin" width="30px"><span style="padding:0 2px ;">{{'via.CHW'|message}}</span></td>
+          <td tag="col10" class="border-all-thin" width="70px"><span>{{vm.requisition.kitUsageLineItems[0].services.CHW.value}}</span></td>
+        </tr>
+        <tr>
+          <td class="border-all-thin"><span>{{'via.1'|message}}</span>: </td>
+          <td class="border-all-thin"><span>{{'via.consultation'|message}}</span>: </td>
+          <td class="border-all-thin"><span>{{vm.requisition.consultationNumberLineItems[0].columns.consultationNumber.value}}</span></td>
+          <td class="border-all-thin" width="70px"><span>{{'via.3'|message}}</span></td>
+          <td class="border-all-thin"><span>{{vm.requisition.kitUsageLineItems[1].services.HF.value + vm.requisition.kitUsageLineItems[1].services.CHW.value}}</span></td>
+          <td class="border-all-thin"><span>{{'via.HF'|message}}</span></td>
+          <td class="border-all-thin"><span>{{vm.requisition.kitUsageLineItems[1].services.HF.value}}</span></td>
+          <td class="border-all-thin"><span style="padding:0 2px ;">{{'via.CHW'|message}}</span></td>
+          <td class="border-all-thin"><span>{{vm.requisition.kitUsageLineItems[1].services.CHW.value}}</span></td>
+        </tr>
+      </table>
+      
+      <div class="view-table-spacing"></div>
+      
+      <table id="via-table-header" class="border-all-bold text-align-center">
+        <tr>
+          <td tag="col1" class="border-all-thin" width="60px" rowspan="4">  
+              <span>FNM</span>
+          </td>
+          <td tag="col2" class="border-all-thin phantomjs_compatible_style_right_td" width="318px" rowspan="4">
+            <table class="text-align-center" style="height: 130px" width="100%">
+              <tr>
+                <td colspan="3"><span>{{'via.product.designation'|message}}</span></td>
+              </tr>
+              <tr>
+                <td width="25%"><span>{{'via.product.name'|message}}</span></td>
+                <td width="30%"><span>{{'via.product.dosage'|message}}</span></td>
+                <td width="45%"><span>{{'via.product.pharmaceuticalForm'|message}}</span></td>
+              </tr>
+            </table>
+          </td>
+          <td tag="col3-10" class="border-all-thin" height="18px" colspan="8">
+            <strong><span>{{'via.product.table.title'|message}}</span></strong>
+          </td>
+          <td tag="col11" class="border-all-thin"  width="90px" rowspan="4">        
+              <span>{{'via.product.quantityRequested'|message}}</span>
+          </td>
+          <td tag="col12" class="border-all-thin phantomjs_compatible_style_right_td" width="90px" rowspan="4">
+            <span>{{'via.product.quantityApproved'|message}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td tag="col3-7" class="border-all-thin" colspan="5">
+            <strong><span>{{'via.product.stockMovements'|message}}</span></strong>
+          </td>
+          <td tag="col8-10" class="border-all-thin" colspan="3">
+            <strong><span>{{'via.product.inventory'|message}}</span></strong>
+          </td>
+        </tr>
+        <tr height="30px">
+
+          <td tag="col3" class="border-all-thin" width="80px">
+            <span>{{'via.product.initialAmount'|message}}</span>
+          </td>
+          <td tag="col4" class="border-all-thin" width="80px">
+            <span>{{'via.product.sumEntries'|message}}</span>
+          </td>
+          <td tag="col5" class="border-all-thin" width="80px">
+            <span>{{'via.product.sumIssues'|message}}</span>
+          </td>
+          <td tag="col6" class="border-all-thin" width="90px">
+            <span>{{'via.product.theoreticalSum'|message}}</span>
+          </td>
+          <td tag="col7" class="border-all-thin" width="70px">
+            <span>{{'via.product.totalRequested'|message}}</span>
+          </td>
+          <td tag="col8" class="border-all-thin" width="70px">
+            <span>{{'via.product.inventoryStock'|message}}</span>
+          </td>
+          <td tag="col9" class="border-all-thin" width="86px">
+            <span>{{'via.product.difference'|message}}</span>
+          </td>
+          <td tag="col10" class="border-all-thin" width="70px" rowspan="2">
+            <span>{{'via.product.theoreticalRequest'|message}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td tag="col3" class="border-all-thin" width="80px">SI</td>
+          <td tag="col4" class="border-all-thin" width="80px">E</td>
+          <td tag="col5" class="border-all-thin" width="80px">S</td>
+          <td tag="col6" class="border-all-thin" width="90px">SF=SI+E-S</td>
+          <td tag="col7" class="border-all-thin" width="70px">P</td>
+          <td tag="col8" class="border-all-thin" width="70px">I</td>
+          <td tag="col9" class="border-all-thin" width="86px">I-SF</td>
+        </tr>
+      </table>
+      <div class="view-table-spacing"></div>
+     
+
+      <div ng-repeat="lineItems in vm.lineItemsList">
+        <table  class="via-table-body border-all-bold view-table-cell-scrolling text-align-center">
+          <tr ng-repeat="lineItem in lineItems | orderBy: '$program.displayOrder'"
+            ng-class="{'skipped-line-item': lineItem.skipped}">
+            <!-- <td class="border-all-thin" width="60px" ng-repeat="(index,column) in vm.columns">
+              {{lineItem.getFieldValue(column.name)}}
+            </td> -->
+
+            <td tag="col1" class="border-all-thin" width="60px">{{lineItem.getFieldValue(vm.columns[0].name)}}</td>
+            <td tag="col2" class="border-all-thin" width="318px">{{lineItem.getFieldValue(vm.columns[1].name)}}</td>
+            <td tag="col3" class="border-all-thin" width="80px">{{lineItem.getFieldValue(vm.columns[2].name)}}</td>
+            <td tag="col4" class="border-all-thin" width="80px">{{lineItem.getFieldValue(vm.columns[3].name)}}</td>
+            <td tag="col5" class="border-all-thin" width="80px">{{lineItem.getFieldValue(vm.columns[4].name)}}</td>
+            <td tag="col5" class="border-all-thin" width="90px">{{lineItem.getFieldValue(vm.columns[5].name)}}</td>
+            <td tag="col7" class="border-all-thin" width="70px"><span> - </span></td>
+            <td tag="col8" class="border-all-thin" width="70px">{{lineItem.getFieldValue(vm.columns[6].name)}}</td>
+            <td tag="col9" class="border-all-thin" width="86px">{{lineItem.getFieldValue(vm.columns[7].name)}}</td>
+            <td tag="col10" class="border-all-thin" width="70px">{{lineItem.getFieldValue(vm.columns[8].name)}}</td>
+            <td tag="col11" class="border-all-thin" width="90px">{{lineItem.getFieldValue(vm.columns[9].name)}}</td>
+            <td tag="col12" class="border-all-thin" width="90px">{{lineItem.getFieldValue(vm.columns[10].name)}}</td>
+          </tr>
+        </table>
+        <div class="view-table-spacing"></div>
+      </div>
+
+      <table id="via-signaure" class="border-all-bold sign-box">
+        <tr>
+          <td class="border-signaure" width="50%">
+            <span>{{'via.createBy'|message}}</span>
+            <span>: {{vm.requisition.extraData.signaure.submit}}</span>
+          </td>
+          <td class="border-signaure" width="50%">
+            <span>{{'via.visa'|message}}</span>
+            <span>: {{vm.requisition.extraData.signaure.approve[0]}}</span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td class="text-align-right">
+      <div>
+        <button ng-click="vm.downloadPdf()" class="btn btn-primary btn-download btn-download-pdf">{{'via.download.button'|message}}</button>
+      </div>
+    </td>
+  </tr>
+</table>

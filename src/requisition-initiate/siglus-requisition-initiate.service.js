@@ -36,10 +36,11 @@
         this.getLatestPhysicalInventory = getLatestPhysicalInventory;
         this.getPhysicalInventoryDates = getPhysicalInventoryDates;
 
-        function getLatestPhysicalInventory(facilityId) {
+        function getLatestPhysicalInventory(facilityId, programId) {
             var resource = $resource(requisitionUrlFactory('/api/siglusapi/physicalInventories/latest'));
             return resource.get({
-                facilityId: facilityId
+                facilityId: facilityId,
+                programId: programId
             }).$promise;
         }
 

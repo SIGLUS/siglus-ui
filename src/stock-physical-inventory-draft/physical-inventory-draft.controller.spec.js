@@ -20,7 +20,7 @@ describe('PhysicalInventoryDraftController', function() {
         lineItem4, lineItem5, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
         ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
-        physicalInventoryDataService;
+        physicalInventoryDataService, remainingProductsModalService;
 
     beforeEach(function() {
 
@@ -45,7 +45,9 @@ describe('PhysicalInventoryDraftController', function() {
                 name: '/a/b'
             };
             addProductsModalService = $injector.get('addProductsModalService');
+            remainingProductsModalService = $injector.get('remainingProductsModalService');
             spyOn(addProductsModalService, 'show');
+            // spyOn(remainingProductsModalService, 'show');
             draftFactory = $injector.get('physicalInventoryFactory');
 
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
@@ -541,7 +543,8 @@ describe('PhysicalInventoryDraftController', function() {
             physicalInventoryService: physicalInventoryService,
             stockmanagementUrlFactory: stockmanagementUrlFactory,
             accessTokenFactory: accessTokenFactory,
-            confirmService: confirmService
+            confirmService: confirmService,
+            remainingProductsModalService: remainingProductsModalService
         });
     }
 
