@@ -27,7 +27,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-            url: '/:id?keyword&page&size',
+            url: '/:id?keyword&page&size&subDraftIds',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
@@ -53,19 +53,26 @@
                     return $stateParams.facility;
                 },
                 draft: function(facility,  $stateParams, physicalInventoryFactory, physicalInventoryDataService, $q) {
+                    console.log('params', $stateParams);
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        physicalInventoryFactory.getPhysicalInventory($stateParams.id)
+                        // console.log('进来了1');
+                        physicalInventoryFactory.getPhysicalInventorySubDraft(
+                            $stateParams.subDraftIds.length > 1
+                                ? $stateParams.subDraftIds.split(',')
+                                : [$stateParams.subDraftIds]
+                        )
                             .then(function(draft) {
-                                console.log('进来了', draft);
+                                console.log('进来了11111', draft);
                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                 deferred.resolve();
                             });
                     } else {
+                        // console.log('进来了2');
                         deferred.resolve();
                     }
                     return deferred.promise;

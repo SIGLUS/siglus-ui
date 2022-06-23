@@ -18,11 +18,11 @@
               positive-integer
               id="input"
               ng-model="vm.input"
-              ng-change="vm.validate(input)"
+              ng-change="vm.changeShowError()"
               maxlength="2"
           />
 
-          <span ng-show="vm.input > 10 || vm.input <= 0" id="validateInputValue">{{'physicalInventoryCreation.error'
+          <span ng-show="vm.showError" id="validateInputValue">{{'physicalInventoryCreation.error'
           | message}}</span>
           <span ng-hide="vm.input"></span>
         </fieldset>

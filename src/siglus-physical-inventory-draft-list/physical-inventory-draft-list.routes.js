@@ -46,6 +46,11 @@
                         return stockProgramUtilService.getPrograms(user.user_id,
                             STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
                     },
+                    programName: function(programs, $stateParams) {
+                        return _.find(programs, function(item) {
+                            return item.id === $stateParams.programId;
+                        }).name;
+                    },
                     drafts: function(physicalInventoryFactory, programs, facility) {
                         if (_.isUndefined(facility)) {
                             return [];
@@ -59,7 +64,7 @@
                     },
                     draftList: function(physicalInventoryDraftListService, programs,
                         facility, $stateParams) {
-
+                        console.log('physicalInventoryDraftListService', physicalInventoryDraftListService);
                         if (_.isUndefined(facility)) {
                             return [];
                         }

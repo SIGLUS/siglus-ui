@@ -45,6 +45,7 @@
         vm.drafts = [];
         vm.confirm = confirm;
         vm.draft = draft;
+        vm.showError = undefined;
         facilityFactory.getUserHomeFacility().then(function(res) {
             vm.facility = res;
         });
@@ -52,12 +53,19 @@
             modalDeferred.resolve(vm.input);
         };
 
+        vm.changeShowError = function() {
+            if (vm.validate(vm.input)) {
+                vm.showError = undefined;
+            }
+        };
+
         vm.validate = function(input) {
+            console.log('#### input', input, typeof input);
             return !(input > 10 || input <= 0);
         };
 
         vm.confirm = function() {
-            if (vm.validate()) {
+            if (vm.validate(vm.input)) {
                 console.log('输入', vm.input, vm.facility, $stateParams);
                 physicalInventoryDraftListService.createDraftList(
                     vm.input,
@@ -75,6 +83,8 @@
                 //         'openlmis.stockmanagement.physicalInventory.draftList'
                 //     );
                 // });
+            } else {
+                vm.showError = 1;
             }
         };
     }

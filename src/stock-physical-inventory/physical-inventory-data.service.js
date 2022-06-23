@@ -55,6 +55,10 @@
             this.reasons = undefined;
             this.facilityId = undefined;
         };
+
+        // this.getSubDraftData = function() {
+
+        // }
     }
 
 })();
