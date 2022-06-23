@@ -68,18 +68,32 @@
                         'orderable.fullProductName'
                     ]);
 
+                    function getLineHeight(str) {
+                        return (Math.ceil(str.length / 51) - 1) * 20 + 23;
+                    }
+
                     var lineItemsRefactor = [];
                     var lineItemsSubList = [];
 
+                    var tableHeight = 430;
+                    var overlayHeight = 0;
+
                     angular.forEach(lineItemsOrigin, function(item, index) {
-                        if (index % 15 !== 14 && index !== lineItemsOrigin.length - 1) {
+                        overlayHeight += getLineHeight(item.getFieldValue('orderable.fullProductName'));
+                        if (overlayHeight <= tableHeight && index !== lineItemsOrigin.length - 1) {
                             lineItemsSubList.push(item);
-                        }  else {
+                        } else if (index === lineItemsOrigin.length - 1) {
                             lineItemsSubList.push(item);
                             lineItemsRefactor.push(lineItemsSubList);
                             lineItemsSubList = [];
+                        } else {
+                            lineItemsRefactor.push(lineItemsSubList);
+                            lineItemsSubList = [];
+                            lineItemsSubList.push(item);
+                            overlayHeight = getLineHeight(item.getFieldValue('orderable.fullProductName'));
                         }
                     });
+
                     return lineItemsRefactor;
 
                 },
