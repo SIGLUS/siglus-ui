@@ -28,7 +28,15 @@
         .module('siglus-physical-inventory-draft-list')
         .controller('siglusPhysicalInventoryDraftListController', controller);
 
-    controller.$inject = ['draftList',  'messageService', '$state', '$stateParams', 'programName', 'facility', 'alertService'];
+    controller.$inject = [
+        'draftList',
+        'messageService',
+        '$state',
+        '$stateParams',
+        'programName',
+        'facility',
+        'alertService'
+    ];
 
     function controller(
         draftList,
