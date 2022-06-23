@@ -30,14 +30,14 @@
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
     RequisitionInitiateController.$inject = [
-        'requisitionService', '$state', '$scope'
+        'requisitionService', '$state', '$scope', 'PROGRAM_TYPE'
         // SIGLUS-REFACTOR: starts here
         // 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
         // 'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator'
         // SIGLUS-REFACTOR: ends here
     ];
 
-    function RequisitionInitiateController(requisitionService, $state, $scope) {
+    function RequisitionInitiateController(requisitionService, $state, $scope, PROGRAM_TYPE) {
         var vm = this;
         // SIGLUS-REFACTOR: starts here
         // uuidGenerator = new UuidGenerator(),
@@ -238,14 +238,11 @@
 
         vm.getMLProgramParam = function(stateParams) {
             var viaOption = _.find(vm.programs, function(item) {
-                return item.code === 'VC';
+                return item.code === PROGRAM_TYPE.VC;
             });
-            var params = (_.get(vm.program, 'code') === 'ML') ?
-                {
-                    replaceId: viaOption.id
-                } : {
-                    replaceId: ''
-                };
+            var params = {
+                replaceId: (_.get(vm.program, 'code') === PROGRAM_TYPE.ML) ? viaOption.id : ''
+            };
             return Object.assign({}, stateParams, params);
         };
     }
