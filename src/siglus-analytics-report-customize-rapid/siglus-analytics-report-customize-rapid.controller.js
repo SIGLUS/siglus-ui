@@ -63,7 +63,10 @@
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
-            vm.services = requisition.testConsumptionLineItems;
+            vm.services = _.chain(requisition.testConsumptionLineItems)
+                .sortBy('displayOrder')
+                .value();
+            console.log('### services', vm.services);
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
