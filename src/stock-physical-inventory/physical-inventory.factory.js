@@ -122,13 +122,12 @@
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
                 var summaries = responses[0],
-                    draft = responses[1],
+                    draft = responses[1].data,
                     draftToReturn = {
                         programId: programId,
                         facilityId: facilityId,
                         lineItems: []
                     };
-
                 // no saved draft
                 if (draft.length === 0) {
                     // SIGLUS-REFACTOR: starts here
@@ -139,7 +138,6 @@
                     prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }
-
                 return draftToReturn;
             });
         }
