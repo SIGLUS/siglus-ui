@@ -1,3 +1,14 @@
 {
-    "malaria.title": "Malaria"
+    "malaria.title": "Malaria",
+    "malaria.month":"Month",
+    "malaria.year":"Year",
+    "malaria.completed": "COMPLETED BY",
+    "malaria.approved": "APPROVED BY",
+    "malaria.date": "Date",
+    "malaria.healthFacility": "Health Facility",
+    "malaria.republic.of.mozambique": "REPUBLIC OF MOZAMBIQUE",
+    "malaria.ministry.of.health": "MINISTRY OF HEALTH",
+    "malaria.central.medicines.and.medical.arricles": "CENTRAL MEDICINES AND MEDICAL ARTICLES",
+    "malaria.download.button": "Download PDF",
+    "malaria.al":"ARTEMÉTER-LUMEFANTRINA (AL)"
 }

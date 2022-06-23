@@ -21,9 +21,9 @@
     * @module
     *
     * @description
-    * Main siglus-analytics-report-customize-malaria module.
+    * Main siglus-analytics-report-customize-via-classica module.
     */
-    angular.module('siglus-analytics-report-customize-malaria', [
+    angular.module('siglus-analytics-report-customize-via-classica', [
         'ui.router',
         'siglus-analytics-report',
         'requisition-view'

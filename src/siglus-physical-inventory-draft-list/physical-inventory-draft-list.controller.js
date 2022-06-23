@@ -28,9 +28,17 @@
         .module('siglus-physical-inventory-draft-list')
         .controller('siglusPhysicalInventoryDraftListController', controller);
 
-    controller.$inject = ['draftList',  'messageService', '$state', '$stateParams', 'programName', 'facility'];
+    controller.$inject = ['draftList',  'messageService', '$state', '$stateParams', 'programName', 'facility', 'alertService'];
 
-    function controller(draftList, messageService, $state, $stateParams, programName, facility) {
+    function controller(
+        draftList,
+        messageService,
+        $state,
+        $stateParams,
+        programName,
+        facility,
+        alertService
+    ) {
         // console.log('#### programName', programName);
         var vm = this;
         vm.$onInit = onInit;
@@ -50,6 +58,22 @@
             stateParams.subDraftIds = item.subDraftId.join(',');
             $state.go('openlmis.stockmanagement.physicalInventory.draft', stateParams);
         };
+
+        vm.mergeDrafts = function() {
+            if (isAllSubDraftsAreSubmmitted(vm.draftList)) {
+                alertService.error('PhysicalInventoryDraftList.mergeError');
+            } else {
+                console.log('to merge');
+            }
+        };
+
+        function isAllSubDraftsAreSubmmitted(draftList) {
+            return _.find(draftList, function(item) {
+                return item.status !== 'submitted';
+            });
+        }
+
+        // All drafts must be submitted before they can be merged.
         function onInit() {
             $state.current.label = programName;
             vm.draftList = draftList;

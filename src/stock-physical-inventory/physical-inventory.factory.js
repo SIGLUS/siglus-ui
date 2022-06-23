@@ -123,13 +123,12 @@
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
                 var summaries = responses[0],
-                    draft = responses[1],
+                    draft = responses[1].data,
                     draftToReturn = {
                         programId: programId,
                         facilityId: facilityId,
                         lineItems: []
                     };
-
                 // no saved draft
                 if (draft.length === 0) {
                     // SIGLUS-REFACTOR: starts here
@@ -140,7 +139,6 @@
                     prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }
-
                 return draftToReturn;
             });
         }
@@ -159,6 +157,7 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
+                    console.log('#### physicalInventory', physicalInventory);
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {
@@ -373,7 +372,8 @@
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
             }).then(function(summaries) {
-            // #225: ends here
+                console.log('#### summaries', summaries);
+                // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

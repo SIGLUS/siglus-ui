@@ -121,16 +121,41 @@
             var node = document.getElementById('test_repaid_wrap');
             var contentWidth = node.offsetWidth;
             var contentHeight = node.offsetHeight;
-            var rate = contentWidth / 595.28;
-            var imgY = contentHeight / rate;
+            var pageHeight = contentWidth / 592.28 * 841.89;
+            var leftHeight = contentHeight;
+            var position = 0;
+            var imgWidth = 595.28;
+            var imgHeight = 592.28 / contentWidth * contentHeight;
+            // var rate = contentWidth / 595.28;
+            // var imgY = contentHeight / rate;
             // eslint-disable-next-line no-undef
-            domtoimage.toPng(node).then(function(data) {
+            domtoimage.toPng(node, {
+                scale: 1,
+                width: contentWidth,
+                height: contentHeight
+            }).then(function(data) {
                 var pageData = data;
+                console.log('#### pageData', pageData);
                 // eslint-disable-next-line no-undef
-                var PDF = new jsPDF(pageData, 'pt', 'a4');
+                var PDF = new jsPDF('', 'pt', 'a4');
                 // 595×842 a4纸
                 // px * (3/4) = pt
-                PDF.addImage(pageData, 'JPEG', 35, 45, 525, imgY - 90);
+                if (leftHeight < pageHeight) {
+                    PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                } else {
+                    while (leftHeight > 0) {
+                        //arg3-->距離左邊距;arg4-->距離上邊距;arg5-->寬度;arg6-->高度
+                        PDF.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight);
+                        leftHeight -= pageHeight;
+                        position -= 841.89;
+                        //避免添加空白頁
+                        if (leftHeight > 0) {
+                            //注②
+                            PDF.addPage();
+                        }
+                    }
+                }
+                // PDF.addImage(pageData, 'JPEG', 35, 45, 525, imgY - 90);
                 PDF.save(
                     getPdfName(
                         requisition.processingPeriod.endDate,

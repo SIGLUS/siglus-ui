@@ -6,8 +6,8 @@
     </div>
     <div class="button-group primary">
         <!-- SIGLUS-REFACTOR: starts here -->
-        <button ng-disabled="!vm.draft.lineItems.length" ng-click="vm.saveDraft()">{{'stockPhysicalInventoryDraft.save' | message}}</button>
-        <button ng-disabled="!vm.draft.lineItems.length" class="primary" ng-click="vm.submit()">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
+        <button ng-disabled="!vm.draft.lineItems.length" ng-click="vm.openRemainingModal('save')">{{'stockPhysicalInventoryDraft.save' | message}}</button>
+        <button ng-disabled="!vm.draft.lineItems.length" class="primary" ng-click="vm.openRemainingModal('submit')">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
         <!-- SIGLUS-REFACTOR: ends here -->
     </div>
 </div>

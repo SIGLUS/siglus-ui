@@ -186,8 +186,9 @@
             }
             if (isCurrentSubmitDuration(selectedPeriod) || vm.emergency) {
                 loadingModalService.open();
+                var programId = $stateParams.replaceId ? $stateParams.replaceId : vm.program.id;
                 siglusRequisitionInitiateService.getLatestPhysicalInventory(
-                    $stateParams.facility
+                    $stateParams.facility, programId
                 )
                     .then(function(result) {
                         var today = dateUtils.toStringDate(new Date());
@@ -245,7 +246,7 @@
 
         function goToPhysicalInventory() {
             $state.go('openlmis.stockmanagement.physicalInventory', {
-                programId: vm.program.id
+                programId: $stateParams.replaceId ? $stateParams.replaceId : vm.program.id
             });
         }
 

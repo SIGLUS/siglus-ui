@@ -14,19 +14,11 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-    * @module
-    *
-    * @description
-    * Main siglus-analytics-report-customize-malaria module.
-    */
-    angular.module('siglus-analytics-report-customize-malaria', [
-        'ui.router',
-        'siglus-analytics-report',
-        'requisition-view'
+    angular.module('remaining-products-modal', [
+        'openlmis-modal',
+        'stock-orderable-group',
+        'stockmanagement'
     ]);
-
 })();

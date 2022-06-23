@@ -25,8 +25,8 @@
 
     function routes($stateProvider) {
 
-        $stateProvider.state('openlmis.analyticsReport.malaria', {
-            url: '/malaria',
+        $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.malaria', {
+            url: '/Malaria/:rnr',
             showInNavigation: false,
             label: 'malaria.title',
             priority: 9,
@@ -36,6 +36,14 @@
                     controllerAs: 'vm',
                     // eslint-disable-next-line max-len
                     templateUrl: 'siglus-analytics-report-customize-malaria/siglus-analytics-report-customize-malaria.html'
+                }
+            },
+            resolve: {
+                requisition: function($stateParams, requisitionService) {
+                    return requisitionService.get($stateParams.rnr);
+                },
+                facility: function(facilityService, requisition) {
+                    return facilityService.get(requisition.facility.id);
                 }
             }
         });

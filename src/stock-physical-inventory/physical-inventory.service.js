@@ -55,12 +55,17 @@
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
+            },
+            query: {
+                method: 'GET',
+                url: '/api/get-conflict-draft'
             }
         });
         // SIGLUS-REFACTOR: ends here
 
         this.getDraft = getDraft;
         this.createDraft = createDraft;
+        this.getConflictDraft = getConflictDraft;
         this.getPhysicalInventory = getPhysicalInventory;
         this.getPhysicalInventorySubDraft = getPhysicalInventorySubDraft;
         this.search = search;
@@ -143,6 +148,13 @@
             return resource.save({
                 programId: program,
                 facilityId: facility
+            }).$promise;
+        }
+
+        function getConflictDraft(facilityId, programId) {
+            return resource.query({
+                programId: programId,
+                facilityId: facilityId
             }).$promise;
         }
 

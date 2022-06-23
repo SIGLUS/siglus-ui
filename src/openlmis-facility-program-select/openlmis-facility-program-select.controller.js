@@ -29,9 +29,9 @@
         .module('openlmis-facility-program-select')
         .controller('OpenlmisFacilityProgramSelectController', controller);
 
-    controller.$inject = ['$q', '$stateParams', '$filter', 'facilityProgramCacheService'];
+    controller.$inject = ['$q', '$stateParams', '$filter', 'facilityProgramCacheService', '$scope'];
 
-    function controller($q, $stateParams, $filter, facilityProgramCacheService) {
+    function controller($q, $stateParams, $filter, facilityProgramCacheService, $scope) {
 
         var vm = this;
 
@@ -64,6 +64,7 @@
                             })[0];
                     }
                     vm.updateFacilities();
+                    $scope.$emit('$programListChange', vm.programs);
                 });
         }
 

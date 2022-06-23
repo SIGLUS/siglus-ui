@@ -95,9 +95,9 @@
   version "4.3.2"
   resolved "https://codeload.github.com/davidjbradshaw/iframe-resizer/tar.gz/ef663ecfb638ceca526300f265db6785f8d243fc"
 
-"@bower_components/dom-to-image@SIGLUS/siglus-dom2image.git#1.0.0":
-  version "1.0.0"
-  resolved "https://codeload.github.com/SIGLUS/siglus-dom2image/tar.gz/10e3ac6d49e9c09afd3b04f1b2c28aed5aae7214"
+"@bower_components/dom-to-image@SIGLUS/siglus-dom2image.git#^1.0.1":
+  version "1.0.1"
+  resolved "https://codeload.github.com/SIGLUS/siglus-dom2image/tar.gz/41bd55c5be39932b06ea532413af090bf241e4da"
   dependencies:
     bower "1.8.14"
 
@@ -188,9 +188,9 @@
   version "4.0.13"
   resolved "https://codeload.github.com/ivaynberg/select2/tar.gz/45f2b83ceed5231afa7b3d5b12b58ad335edd82e"
 
-"@bower_components/underscore@jashkenas/underscore#*":
-  version "1.9.1"
-  resolved "https://codeload.github.com/jashkenas/underscore/tar.gz/ae037f7c41323807ae6f1533c45512e6d31a1574"
+"@bower_components/underscore@jashkenas/underscore#^1.13.4":
+  version "1.13.4"
+  resolved "https://codeload.github.com/jashkenas/underscore/tar.gz/a15d1afc708ec23894880b2ec4c1eb309447a906"
 
 abab@^1.0.0:
   version "1.0.4"
