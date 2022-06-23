@@ -151,9 +151,12 @@
             var program = _.find(vm.programs, function(program) {
                 return program.id === draft.programId;
             });
+            console.log('进来了111');
             return physicalInventoryFactory.getDraft(draft.programId,
                 draft.facilityId).then(function(draft) {
-                if (draft.id) {
+                console.log('进来了 哈哈哈', draft);
+                if (draft) {
+                    console.log('进来了222');
                     $state.go('openlmis.stockmanagement.physicalInventory.draft', {
                         id: draft.id,
                         draft: draft,
@@ -161,6 +164,7 @@
                         facility: facility
                     });
                 } else {
+                    console.log('进来了333');
                     physicalInventoryService.createDraft(program.id, facility.id).then(
                         function(data) {
                             draft.id = data.id;
