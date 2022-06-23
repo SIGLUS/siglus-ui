@@ -73,7 +73,7 @@
                     });
 
                     var result = physicalInventoryFactory.getDrafts(programIds, facility.id);
-                    // console.log('#### result', result);
+                    console.log('#### result', result);
                     return result;
                 }
             }
