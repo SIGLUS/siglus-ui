@@ -46,6 +46,7 @@
             getDraft: getDraft,
             getDraftByProgramAndFacility: getDraftByProgramAndFacility,
             getPhysicalInventory: getPhysicalInventory,
+            getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
             saveDraft: saveDraft,
             // SIGLUS-REFACTOR: starts here
             getInitialInventory: getInitialInventory
@@ -158,7 +159,25 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
-                    console.log('### physicalInventory', physicalInventory);
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
+                        .then(function(summaries) {
+                            var draftToReturn = {
+                                programId: physicalInventory.programId,
+                                facilityId: physicalInventory.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            draftToReturn.id = physicalInventory.id;
+
+                            return draftToReturn;
+                        });
+                });
+        }
+
+        function getPhysicalInventorySubDraft(id) {
+            return physicalInventoryService.getPhysicalInventorySubDraft(id)
+                .then(function(physicalInventory) {
+                    console.log('#### physicalInventory', physicalInventory);
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {

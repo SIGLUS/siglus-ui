@@ -1,7 +1,7 @@
-<h2 ng-if="vm.facility && vm.program">
-  {{'PhysicalInventoryDraftList.title' | message: {'facility': vm.facility.name, 'program': vm.program.name} }}
+<h2 ng-if="vm.facility && vm.programName">
+  {{'PhysicalInventoryDraftList.title' | message: {'facility': vm.facility.name, 'program': vm.programName} }}
 </h2>
-<h2 ng-hide="vm.facility && vm.program">{{'PhysicalInventoryDraftList.physicalInventory'
+<h2 ng-hide="vm.facility && vm.programName">{{'PhysicalInventoryDraftList.physicalInventory'
 | message}}</h2>
 
 <section class="openlmis-table-container">
@@ -20,7 +20,7 @@
       <td>{{ vm.getStatus(item.status) }}</td>
       <td>{{ item.saver }}</td>
       <td>
-        <input style="width: 113px;" id="proceedButton" type="button" ng-click="vm.editSubDraft(subDraftId)"
+        <input style="width: 113px;" id="proceedButton" type="button" ng-click="vm.clickActions(item)"
                value="{{(item.status ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue ') | message}}"
                class="primary"/>
       </td>

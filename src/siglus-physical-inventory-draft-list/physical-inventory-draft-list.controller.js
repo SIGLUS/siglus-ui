@@ -28,13 +28,15 @@
         .module('siglus-physical-inventory-draft-list')
         .controller('siglusPhysicalInventoryDraftListController', controller);
 
-    controller.$inject = ['draftList', 'messageService'];
+    controller.$inject = ['draftList',  'messageService', '$state', '$stateParams', 'programName', 'facility'];
 
-    function controller(draftList, messageService) {
-        console.log('#### draftList', draftList);
+    function controller(draftList, messageService, $state, $stateParams, programName, facility) {
+        // console.log('#### programName', programName);
         var vm = this;
         vm.$onInit = onInit;
         vm.draftList = [];
+        vm.programName = programName;
+        vm.facility = facility;
         vm.getStatus = function(isStarter) {
             if (isStarter) {
                 return messageService.get('stockPhysicalInventory.notStarted');
@@ -42,7 +44,14 @@
             return messageService.get('stockPhysicalInventory.draft');
 
         };
+        vm.clickActions = function(item) {
+            // console.log(item);
+            var stateParams = angular.copy($stateParams);
+            stateParams.subDraftIds = item.subDraftId.join(',');
+            $state.go('openlmis.stockmanagement.physicalInventory.draft', stateParams);
+        };
         function onInit() {
+            $state.current.label = programName;
             vm.draftList = draftList;
         }
 

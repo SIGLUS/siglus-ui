@@ -51,6 +51,10 @@
             delete: {
                 method: 'DELETE',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
+            },
+            find: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
             }
         });
         // SIGLUS-REFACTOR: ends here
@@ -58,6 +62,7 @@
         this.getDraft = getDraft;
         this.createDraft = createDraft;
         this.getPhysicalInventory = getPhysicalInventory;
+        this.getPhysicalInventorySubDraft = getPhysicalInventorySubDraft;
         this.search = search;
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
@@ -105,6 +110,16 @@
         function getPhysicalInventory(id) {
             return resource.get({
                 id: id
+            })
+                .$promise
+                .then(function(response) {
+                    return siglusStockEventService.formatResponse(response);
+                });
+        }
+
+        function getPhysicalInventorySubDraft(id) {
+            return resource.find({
+                subDraftIds: id
             })
                 .$promise
                 .then(function(response) {
