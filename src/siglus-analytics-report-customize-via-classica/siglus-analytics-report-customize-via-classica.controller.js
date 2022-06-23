@@ -77,9 +77,9 @@
             var viaSignaure = document.getElementById('via-signaure');
             var viaTableBodys = document.getElementsByClassName('via-table-body');
 
-            var imgWidth = 701.89;
-            var leftOffsetConstant = 70;
-            var topOffsetConstant = 5;
+            var imgWidth = 781.89;
+            var leftOffsetConstant = 30;
+            var topOffsetConstant = 30;
             var contentWidth = viaHeader.offsetWidth;
             var viaHeaderHeight = viaHeader.offsetHeight;
             var viaTableHeaderHeight = viaTableHeader.offsetHeight;
