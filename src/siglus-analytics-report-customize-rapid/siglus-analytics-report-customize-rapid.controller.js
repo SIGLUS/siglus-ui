@@ -44,7 +44,7 @@
         SIGLUS_SECTION_TYPES
     ) {
         // console.log('#### rapid', requisition);
-        var vm = this;
+        var vm = this, services = [];
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
@@ -63,10 +63,7 @@
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
-            vm.services = _.chain(requisition.testConsumptionLineItems)
-                .sortBy('displayOrder')
-                .value();
-            console.log('### services', vm.services);
+            services = requisition.testConsumptionLineItems;
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
@@ -86,6 +83,10 @@
             );
             // console.log('#### vm', JSON.stringify(vm.requisition.usageTemplate));
             extendLineItems();
+            vm.services = _.chain(services)
+                .sortBy('displayOrder')
+                .value();
+            console.log('vm.services --->>>>', vm.services);
         }
         function getCreationDate(date) {
             return openlmisDateFilter(date, 'MMM')
@@ -107,7 +108,7 @@
             // console.log('#### serviceColumnsMap', serviceColumnsMap);
             var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
             var testOutcomeColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testOutcome);
-            angular.forEach(vm.services, function(lineItem) {
+            angular.forEach(services, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
                 angular.forEach(Object.keys(lineItem.projects), function(project) {
                     lineItem.projects[project] = angular.merge({},
