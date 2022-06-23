@@ -95,7 +95,7 @@
                             facilityId: facilityId,
                             lineItems: []
                         };
-
+                    console.log('#### draft0000', draft);
                     // no saved draft
                     if (draft.length === 0) {
                         draftToReturn.isStarter = true;

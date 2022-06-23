@@ -55,11 +55,11 @@
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
-            },
-            query: {
-                method: 'GET',
-                url: '/api/get-conflict-draft'
             }
+            // query: {
+            //     method: 'GET',
+            //     url: '/api/get-conflict-draft'
+            // }
         });
         // SIGLUS-REFACTOR: ends here
 
