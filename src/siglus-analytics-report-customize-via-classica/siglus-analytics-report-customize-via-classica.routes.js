@@ -40,7 +40,7 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService) {
-                    return requisitionService.get($stateParams.rnr);
+                    return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
@@ -82,10 +82,15 @@
                         overlayHeight += getLineHeight(item.getFieldValue('orderable.fullProductName'));
                         if (overlayHeight <= tableHeight && index !== lineItemsOrigin.length - 1) {
                             lineItemsSubList.push(item);
-                        } else if (index === lineItemsOrigin.length - 1) {
+                        } else if (overlayHeight <= tableHeight && index === lineItemsOrigin.length - 1) {
                             lineItemsSubList.push(item);
                             lineItemsRefactor.push(lineItemsSubList);
                             lineItemsSubList = [];
+                        } else if (index === lineItemsOrigin.length - 1) {
+                            lineItemsRefactor.push(lineItemsSubList);
+                            lineItemsSubList = [];
+                            lineItemsSubList.push(item);
+                            lineItemsRefactor.push(lineItemsSubList);
                         } else {
                             lineItemsRefactor.push(lineItemsSubList);
                             lineItemsSubList = [];

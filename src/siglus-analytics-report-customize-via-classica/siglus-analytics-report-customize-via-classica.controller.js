@@ -59,16 +59,14 @@
             var service = siglusTemplateConfigureService
                 .getSectionByName(vm.requisition.usageTemplate.kitUsage, SIGLUS_SECTION_TYPES.SERVICE);
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(service);
-            angular.forEach(vm.requisition.kitUsageLineItems, function(lineItem) {
+            _.sortBy(angular.forEach(vm.requisition.kitUsageLineItems, function(lineItem) {
                 _.extend(lineItem, collectionColumnsMap[lineItem.collection]);
                 angular.forEach(Object.keys(lineItem.services), function(serviceName) {
                     lineItem.services[serviceName] = angular.merge({},
                         serviceColumnsMap[serviceName],
                         lineItem.services[serviceName]);
                 });
-            }).sort(function(a, b) {
-                return a.displayOrder - b.displayOrder;
-            });
+            }), 'displayOrder');
         }
 
         function downloadPdf() {

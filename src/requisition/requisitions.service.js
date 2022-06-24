@@ -118,7 +118,8 @@
             releaseWithoutOrder: releaseWithoutOrder,
             removeOfflineRequisition: removeOfflineRequisition,
             // SIGLUS-REFACTOR: starts here
-            getOrderableLineItem: getOrderableLineItem
+            getOrderableLineItem: getOrderableLineItem,
+            getWithoutStatusMessages: getWithoutStatusMessages
             // SIGLUS-REFACTOR: ends here
         };
 
@@ -173,6 +174,26 @@
                 });
             });
         }
+
+        // SIGLUS-REFACTOR: starts here
+        /**
+         * @ngdoc method
+         * @methodOf requisition.requisitionService
+         * @name getWithoutStatusMessages
+         *
+         * @description
+         * Retrieves requisition by id without getStatusMessage.
+         *
+         * @param  {String}  id Requisition UUID
+         * @return {Promise}    requisition promise
+         */
+        function getWithoutStatusMessages(id) {
+            return getRequisition(id).then(function(requisition) {
+                filterRequisitionStockAdjustmentReasons(requisition);
+                return extendLineItemsWithOrderablesAndFtaps(requisition);
+            });
+        }
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
