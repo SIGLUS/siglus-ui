@@ -43,7 +43,6 @@
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES
     ) {
-        // console.log('#### rapid', requisition);
         var vm = this, services = [];
         vm.facility = undefined;
         vm.columns = undefined;
@@ -57,7 +56,6 @@
         vm.getPdfName = getPdfName;
         vm.requisition = {};
         function onInit() {
-            console.log('requisition', requisition);
             vm.facility = facility;
             vm.requisition = requisition;
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
@@ -81,12 +79,10 @@
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.OUTCOME
             );
-            // console.log('#### vm', JSON.stringify(vm.requisition.usageTemplate));
             extendLineItems();
             vm.services = _.chain(services)
                 .sortBy('displayOrder')
                 .value();
-            console.log('vm.services --->>>>', vm.services);
         }
         function getCreationDate(date) {
             return openlmisDateFilter(date, 'MMM')
@@ -105,7 +101,6 @@
         }
         function extendLineItems() {
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.service);
-            // console.log('#### serviceColumnsMap', serviceColumnsMap);
             var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
             var testOutcomeColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testOutcome);
             angular.forEach(services, function(lineItem) {
@@ -142,7 +137,6 @@
                 height: contentHeight
             }).then(function(data) {
                 var pageData = data;
-                console.log('#### pageData', pageData);
                 // eslint-disable-next-line no-undef
                 var PDF = new jsPDF('', 'pt', 'a4');
                 // 595×842 a4纸
