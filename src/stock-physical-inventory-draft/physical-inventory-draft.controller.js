@@ -429,6 +429,8 @@
          * @description
          * Delete physical inventory draft.
          */
+
+        // todo wait for #56
         var deleteDraft = function() {
             confirmService.confirmDestroy(
                 'stockPhysicalInventoryDraft.deleteDraft',
@@ -675,13 +677,13 @@
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
             if (!vm.isInitialInventory) {
-                var data = messageService.get('stockPhysicalInventoryDraft.title', {
-                    facilityCode: facility.code,
-                    facilityName: facility.name,
-                    program: program.name
-                });
-                // console.log('label --->>>', data);
-                $state.current.label = data;
+                // var data = messageService.get('stockPhysicalInventoryDraft.title', {
+                //     facilityCode: facility.code,
+                //     facilityName: facility.name,
+                //     program: program.name
+                // });
+                console.log('label --->>>', $stateParams);
+                $state.current.label = $stateParams.draftLabel;
             }
         }
 

@@ -30,11 +30,12 @@
     controller.$inject = ['facility', 'programs', 'programId', 'drafts',
         'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
-        'FunctionDecorator'];
+        'FunctionDecorator', 'SiglusPhysicalInventoryCreationService'];
 
     function controller(facility, programs, programId, drafts, messageService,
                         $state,
-                        physicalInventoryService, physicalInventoryFactory, FunctionDecorator) {
+                        physicalInventoryService, physicalInventoryFactory,
+                        FunctionDecorator, SiglusPhysicalInventoryCreationService) {
         var vm = this;
 
         /**
@@ -93,11 +94,6 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.searchProgram = function searchProgram() {
-            // vm.drafts = _.filter(drafts, function(draft) {
-            //     return draft.programId === vm.program.id;
-            // });
-
-            //var stateParams = angular.copy($stateParams);
 
             $state.go('openlmis.stockmanagement.physicalInventory', {
                 programId: vm.program.id
@@ -125,13 +121,21 @@
 
         };
 
+        /**
+     * @ngdoc method
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @name onInit
+     *
+     * @description
+     * Responsible for oninit physical inventory status.
+     *
+     */
+
         function onInit() {
             if (programId) {
                 vm.drafts = _.filter(drafts, function(draft) {
                     return draft.programId === programId;
                 });
-
-                console.log('drafts', vm.drafts);
 
                 vm.program = _.find(programs, function(program) {
                     return program.id === programId;
@@ -156,26 +160,56 @@
             return physicalInventoryFactory.getDraft(draft.programId,
                 draft.facilityId).then(function(draft) {
                 if (draft.id) {
-                    $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                        id: draft.id,
-                        draft: draft,
-                        program: program,
-                        facility: facility
-                    });
+                    $state.go(
+                        'openlmis.stockmanagement.physicalInventory.draft', {
+                            id: draft.id,
+                            draft: draft,
+                            program: program,
+                            facility: facility
+                        }
+                    );
                 } else {
-                    physicalInventoryService.createDraft(program.id, facility.id).then(
+                    physicalInventoryService.createDraft(program.id,
+                        facility.id).then(
                         function(data) {
                             draft.id = data.id;
-                            $state.go('openlmis.stockmanagement.physicalInventory.draft', {
-                                id: draft.id,
-                                draft: draft,
-                                program: program,
-                                facility: facility
-                            });
+                            $state.go(
+                                'openlmis.stockmanagement.physicalInventory.draft',
+                                {
+                                    id: draft.id,
+                                    draft: draft,
+                                    program: program,
+                                    facility: facility
+                                }
+                            );
                         }
                     );
                 }
             });
+
         }
+
+        /**
+     * @ngdoc method
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @name Validate Draft Status
+     *
+     * @description
+     * Validate Draft Status when status is starter return pop up page to create draft list
+     *
+     * @param {Object} draft Physical inventory draft status
+     */
+        vm.validateDraftStatus = function(draft) {
+            if (draft.isStarter) {
+                SiglusPhysicalInventoryCreationService.show(draft).then(function() {
+                });
+            } else {
+                $state.go(
+                    'openlmis.stockmanagement.physicalInventory.draftList'
+                );
+            }
+
+        };
+
     }
 })();
