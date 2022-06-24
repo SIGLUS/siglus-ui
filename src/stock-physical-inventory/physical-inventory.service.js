@@ -123,6 +123,7 @@
         }
 
         function getPhysicalInventorySubDraft(id) {
+            console.log('#### getPhysicalInventorySubDraft params', id);
             return resource.find({
                 subDraftIds: id
             })
@@ -144,8 +145,11 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function createDraft(program, facility) {
+        function createDraft(program, facility, splitNum) {
+            console.log(program, facility, splitNum);
             return resource.save({
+                splitNum: Number(splitNum)
+            }, {
                 programId: program,
                 facilityId: facility
             }).$promise;
@@ -232,6 +236,7 @@
          * @return {Promise}      Promise with response
          */
         function deleteDraft(id) {
+            console.log('### id', id);
             return resource.delete({
                 id: id
             }).$promise;

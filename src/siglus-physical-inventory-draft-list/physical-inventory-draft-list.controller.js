@@ -64,7 +64,8 @@
             // console.log(item);
             var stateParams = angular.copy($stateParams);
             stateParams.subDraftIds = item.subDraftId.join(',');
-            $state.go('openlmis.stockmanagement.physicalInventory.draft', stateParams);
+            stateParams.draftLabel = 'Draft ' + item.groupNum;
+            $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
 
         vm.mergeDrafts = function() {

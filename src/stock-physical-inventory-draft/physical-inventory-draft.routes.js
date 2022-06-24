@@ -26,8 +26,8 @@
     // SIGLUS-REFACTOR: ends here
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
-        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-            url: '/:id?keyword&page&size&subDraftIds',
+        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draftList.draft', {
+            url: '/:id?keyword&page&size&subDraftIds&draftLabel',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',

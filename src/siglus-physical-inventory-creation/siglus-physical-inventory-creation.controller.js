@@ -28,8 +28,16 @@
         .module('siglus-physical-inventory-creation')
         .controller('SiglusPhysicalInventoryCreationController', controller);
 
-    controller.$inject = ['draft', 'loadingModalService', 'modalDeferred',
-        '$state', 'physicalInventoryDraftListService', 'facilityFactory', '$stateParams'];
+    controller.$inject = [
+        'draft',
+        'loadingModalService',
+        'modalDeferred',
+        '$state',
+        'physicalInventoryDraftListService',
+        'facilityFactory',
+        '$stateParams',
+        'physicalInventoryService'
+    ];
 
     function controller(
         draft,
@@ -38,7 +46,8 @@
         $state,
         physicalInventoryDraftListService,
         facilityFactory,
-        $stateParams
+        $stateParams,
+        physicalInventoryService
     ) {
         var vm = this;
         vm.input = '';
@@ -66,14 +75,23 @@
 
         vm.confirm = function() {
             if (vm.validate(vm.input)) {
-                console.log('输入', vm.input, vm.facility, $stateParams);
-                physicalInventoryDraftListService.createDraftList(
-                    vm.input,
+                // console.log('输入', vm.input, vm.facility, $stateParams);
+                loadingModalService.open();
+                physicalInventoryService.createDraft(
+                    $stateParams.programId,
                     vm.facility.id,
-                    $stateParams.programId
-                ).then(function(res) {
-                    console.log('返回值', res);
-                });
+                    vm.input
+                ).then(function() {
+                    // console.log('返回值', res);
+                    modalDeferred.resolve();
+                    loadingModalService.close();
+                    $state.go(
+                        'openlmis.stockmanagement.physicalInventory.draftList'
+                    );
+                })
+                    .catch(function(err) {
+                        console.log('err --->>>', err);
+                    });
                 // console.log(physicalInventoryDraftListService);
                 // loadingModalService.open();
                 // physicalInventoryDraftListService.getDraftList(draft.programId,
