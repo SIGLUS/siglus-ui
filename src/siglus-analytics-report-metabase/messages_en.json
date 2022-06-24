@@ -5,5 +5,6 @@
   "analyticsReportMetabase.expiredProducts.title": "Expired Products Report",
   "analyticsReportMetabase.requisitionAndMonthly.title": "Requisitions & Monthly Report",
   "analyticsReportMetabase.sohReportByProduct.title": "SOH by Product Report",
-  "analyticsReportMetabase.sohByLotReport.title": "SOH by Lot Report"
+  "analyticsReportMetabase.sohByLot.title": "SOH by Lot Report",
+  "analyticsReportMetabase.stockStatus.title": "Stock Status Report"
 }
