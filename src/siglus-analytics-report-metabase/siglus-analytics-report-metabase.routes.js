@@ -168,10 +168,10 @@
             }
         });
 
-        $stateProvider.state('openlmis.analyticsReport.sohByLotReport', {
-            url: '/sohByLotReport',
+        $stateProvider.state('openlmis.analyticsReport.sohByLot', {
+            url: '/sohByLot',
             showInNavigation: true,
-            label: 'analyticsReportMetabase.sohByLotReport.title',
+            label: 'analyticsReportMetabase.sohByLot.title',
             priority: 1,
             views: {
                 '@openlmis': {
@@ -185,6 +185,30 @@
                     var analyticsReportMetabaseResource;
                     analyticsReportMetabaseResource = analyticsReportMetabaseService
                         .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
+                }
+            }
+        });
+
+        $stateProvider.state('openlmis.analyticsReport.stockStatus', {
+            url: '/stockStatus',
+            showInNavigation: true,
+            label: 'analyticsReportMetabase.stockStatus.title',
+            priority: 1,
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportMetabaseController',
+                    controllerAs: 'vm',
+                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT);
                     return analyticsReportMetabaseResource.then(function(data) {
                         return data;
                     });
