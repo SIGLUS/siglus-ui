@@ -320,6 +320,26 @@ describe('requisitionService', function() {
             expect(this.statusMessagesStorage.put).toHaveBeenCalled();
         });
 
+        // SIGLUS-REFACTOR: starts here
+        it('should get requisition by id without getStatusMessage', function() {
+            this.$httpBackend
+                .expectGET(this.requisitionUrlFactory(getRequisitionUrl))
+                .respond(200, this.requisition, headers);
+
+            var data = {};
+            this.requisitionService.getWithoutStatusMessages(this.requisition.id).then(function(response) {
+                data = response;
+            });
+
+            this.$httpBackend.flush();
+            this.$rootScope.$apply();
+
+            expect(data.id).toBe(this.requisition.id);
+            expect(this.requisitionCacheService.cacheRequisition).not.toHaveBeenCalled();
+            expect(this.statusMessagesStorage.put).not.toHaveBeenCalled();
+        });
+        // SIGLUS-REFACTOR: starts here
+
         it('should fetch FTAPs only for full supply orderables', function() {
             this.$httpBackend
                 .expectGET(this.requisitionUrlFactory(getRequisitionUrl))

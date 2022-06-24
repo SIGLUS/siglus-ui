@@ -40,7 +40,7 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService) {
-                    return requisitionService.get($stateParams.rnr);
+                    return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
