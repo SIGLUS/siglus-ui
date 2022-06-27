@@ -95,23 +95,36 @@
             {{vm.facility.geographicZone.name}}</td>
           <td tag="col3" class="border-all-thin"></td>
           <td tag="col4" class="border-all-thin"></td>
-          <td tag="col5" class="border-all-thin" width="70px"><span>{{'via.2'|message}}</span></td>
-          <td tag="col6" class="border-all-thin" width="70px"><span>{{vm.requisition.kitUsageLineItems[0].services.HF.value + vm.requisition.kitUsageLineItems[0].services.CHW.value}}</span></td>
-          <td tag="col7" class="border-all-thin" width="25px"><span>{{'via.HF'|message}}</span></td>
-          <td tag="col8" class="border-all-thin" width="25px"><span>{{vm.requisition.kitUsageLineItems[0].services.HF.value}}</span></td>
-          <td tag="col9" class="border-all-thin" width="30px"><span style="padding:0 2px ;">{{'via.CHW'|message}}</span></td>
-          <td tag="col10" class="border-all-thin" width="70px"><span>{{vm.requisition.kitUsageLineItems[0].services.CHW.value}}</span></td>
+          <td tag="col5" class="border-all-thin" width="83px"><span>{{'via.2'|message}}</span></td>
+          <td tag="col7" class="border-all-thin" width="55px"><span>{{'via.HF'|message}}</span></td>
+          <td tag="col8" class="border-all-thin" width="50px" colspan="2">
+            <span ng-if="!vm.requisition.emergency">{{vm.requisition.kitUsageLineItems[0].services.HF.value}}</span>
+            <span ng-if="vm.requisition.emergency"></span>
+          </td>
+          <td tag="col9" class="border-all-thin" width="55px"><span style="padding:0 2px ;">{{'via.CHW'|message}}</span></td>
+          <td tag="col10" class="border-all-thin" width="50px">
+            <span ng-if="!vm.requisition.emergency">{{vm.requisition.kitUsageLineItems[0].services.CHW.value}}</span>
+            <span ng-if="vm.requisition.emergency"></span>
+          </td>
         </tr>
         <tr>
           <td class="border-all-thin"><span>{{'via.1'|message}}</span>: </td>
           <td class="border-all-thin"><span>{{'via.consultation'|message}}</span>: </td>
-          <td class="border-all-thin"><span>{{vm.requisition.consultationNumberLineItems[0].columns.consultationNumber.value}}</span></td>
+          <td class="border-all-thin">
+            <span ng-if="!vm.requisition.emergency">{{vm.requisition.consultationNumberLineItems[0].columns.consultationNumber.value}}</span>
+            <span ng-if="vm.requisition.emergency"></span>
+          </td>
           <td class="border-all-thin" width="70px"><span>{{'via.3'|message}}</span></td>
-          <td class="border-all-thin"><span>{{vm.requisition.kitUsageLineItems[1].services.HF.value + vm.requisition.kitUsageLineItems[1].services.CHW.value}}</span></td>
           <td class="border-all-thin"><span>{{'via.HF'|message}}</span></td>
-          <td class="border-all-thin"><span>{{vm.requisition.kitUsageLineItems[1].services.HF.value}}</span></td>
+          <td class="border-all-thin" colspan="2">
+            <span ng-if="!vm.requisition.emergency">{{vm.requisition.kitUsageLineItems[1].services.HF.value}}</span>
+            <span ng-if="vm.requisition.emergency"></span>
+          </td>
           <td class="border-all-thin"><span style="padding:0 2px ;">{{'via.CHW'|message}}</span></td>
-          <td class="border-all-thin"><span>{{vm.requisition.kitUsageLineItems[1].services.CHW.value}}</span></td>
+          <td class="border-all-thin">
+            <span ng-if="!vm.requisition.emergency">{{vm.requisition.kitUsageLineItems[1].services.CHW.value}}</span>
+            <span ng-if="vm.requisition.emergency"></span>
+          </td>
         </tr>
       </table>
       
