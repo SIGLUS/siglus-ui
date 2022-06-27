@@ -29,12 +29,13 @@
         .controller('StockAdjustmentController', controller);
 
     // SIGLUS-REFACTOR: add user, drafts
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
-        'stockAdjustmentService', 'stockAdjustmentFactory'];
+    controller.$inject = ['$scope', 'facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
+        'stockAdjustmentService', 'stockAdjustmentFactory', 'siglusInitialIssueModalService',
+        'siglusStockIssueService'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller(facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService,
-                        stockAdjustmentFactory) {
+    function controller($scope, facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService,
+                        stockAdjustmentFactory, siglusInitialIssueModalService, siglusStockIssueService) {
         var vm = this;
 
         /**
@@ -58,6 +59,8 @@
          * Holds available programs for home facility.
          */
         vm.programs = programs;
+
+        vm.adjustmentType = adjustmentType;
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
@@ -87,17 +90,36 @@
                         draftId: draft && draft.id
                     });
                 });
+
         };
 
-        vm.$onInit = function() {
-            drafts = _.filter(drafts, function(draft) {
-                return draft;
+        vm.proceedForIssue = function() {
+            $state.go('openlmis.stockmanagement.issue.draft', {
+                issueTo: _.get(vm.issueTo, 'name'),
+                documentationNo: vm.documentationNo
+            }, {
+                reload: true
             });
-            if (drafts.length > 0) {
+        };
+
+        vm.start = function(program) {
+            siglusStockIssueService.baseParams = {
+                userId: user.user_id,
+                programId: program.id,
+                adjustmentTypeState: adjustmentType.state,
+                facilityId: facility.id
+            };
+            siglusInitialIssueModalService.show().then(function(data) {
+                vm.setDraftAttribute(data);
+            });
+        };
+
+        vm.setDraftAttribute = function(data) {
+            if (data.length > 0) {
                 vm.programs = _.map(programs, function(program) {
-                    program.draft = _.find(drafts, function(draft) {
+                    program.draft = _.isEmpty(_.find(data, function(draft) {
                         return draft.programId === program.id;
-                    });
+                    }));
                     return program;
                 });
             } else {
@@ -106,6 +128,13 @@
                     return program;
                 });
             }
+        };
+
+        vm.$onInit = function() {
+            drafts = _.filter(drafts, function(draft) {
+                return draft;
+            });
+            vm.setDraftAttribute(drafts);
         };
         // SIGLUS-REFACTOR: ends here
     }
