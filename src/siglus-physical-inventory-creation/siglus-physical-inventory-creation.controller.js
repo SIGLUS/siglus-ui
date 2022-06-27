@@ -16,14 +16,6 @@
 (function() {
 
     'use strict';
-
-    /**
-   * @ngdoc controller
-   * @name siglus-physical-inventory-creation.controller:SiglusPhysicalInventoryCreationController
-   *
-   * @description
-   * Manages physical inventory creation Modal.
-   */
     angular
         .module('siglus-physical-inventory-creation')
         .controller('SiglusPhysicalInventoryCreationController', controller);
@@ -51,27 +43,23 @@
     ) {
         var vm = this;
         vm.showConflictStatus = false;
-        vm.input = '';
+        vm.userInputSplitNum = '';
         vm.drafts = [];
         vm.confirm = confirm;
         vm.draft = draft;
-        vm.showError = undefined;
+        vm.showError = false;
         facilityFactory.getUserHomeFacility().then(function(res) {
             vm.facility = res;
         });
-        vm.inputValue = function() {
-            modalDeferred.resolve(vm.input);
-        };
 
         vm.changeShowError = function() {
-            if (vm.validate(vm.input)) {
+            if (vm.isValid(vm.userInputSplitNum)) {
                 vm.showError = undefined;
             }
         };
 
-        vm.validate = function(input) {
-            console.log('#### input', input, typeof input);
-            return !(input > 10 || input <= 0);
+        vm.isValid = function(val) {
+            return val > 0 && val <= 10;
         };
 
         vm.confirm = function() {
@@ -80,15 +68,13 @@
                 modalDeferred.reject();
                 return;
             }
-            if (vm.validate(vm.input)) {
-                // console.log('输入', vm.input, vm.facility, $stateParams);
+            if (vm.isValid(vm.userInputSplitNum)) {
                 loadingModalService.open();
                 physicalInventoryService.createDraft(
                     $stateParams.programId,
                     vm.facility.id,
-                    vm.input
+                    vm.userInputSplitNum
                 ).then(function() {
-                    // console.log('返回值', res);
                     modalDeferred.resolve();
                     loadingModalService.close();
                     $state.go(
@@ -96,23 +82,13 @@
                     );
                 })
                     .catch(function(err) {
-                        // console.log('err --->>>', err);
                         if (err.status === 400) {
                             loadingModalService.close();
                             vm.showConflictStatus = true;
                         }
                     });
-                // console.log(physicalInventoryDraftListService);
-                // loadingModalService.open();
-                // physicalInventoryDraftListService.getDraftList(draft.programId,
-                //     draft.facilityId, draft.isDraft, vm.input).then(function() {
-                //     loadingModalService.close();
-                //     $state.go(
-                //         'openlmis.stockmanagement.physicalInventory.draftList'
-                //     );
-                // });
             } else {
-                vm.showError = 1;
+                vm.showError = true;
             }
         };
     }

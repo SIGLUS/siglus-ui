@@ -135,7 +135,7 @@
                 height: contentHeight
             }).then(function(data) {
                 var pageData = data;
-                console.log('#### pageData', pageData);
+                // console.log('#### pageData', pageData);
                 // eslint-disable-next-line no-undef
                 var PDF = new jsPDF('', 'pt', 'a4');
                 // 595×842 a4纸

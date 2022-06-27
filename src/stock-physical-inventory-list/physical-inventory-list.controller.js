@@ -201,9 +201,7 @@
      */
         vm.validateDraftStatus = function(draft) {
             if (draft.isStarter) {
-                SiglusPhysicalInventoryCreationService.show(draft).then(function() {
-                    
-                });
+                SiglusPhysicalInventoryCreationService.show(draft).then(function() {});
             } else {
                 $state.go(
                     'openlmis.stockmanagement.physicalInventory.draftList'
