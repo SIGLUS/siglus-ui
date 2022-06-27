@@ -1,5 +1,5 @@
 {
-  "physicalInventoryCreation.input": "Please input the number of users doing the inventory",
+  "physicalInventoryCreation.label": "Please input the number of users doing the inventory",
   "physicalInventoryCreation.error": "Please enter an integer between 1 and 10.",
   "physicalInventoryCreation.cancel": "Cancel",
   "physicalInventoryCreation.confirm": "Confirm",

@@ -6,23 +6,21 @@
         <div class="header-conflict-tips" ng-show="vm.showConflictStatus">{{ 'physicalInventoryCreation.conflictTips' | message }}</div>
       </div>
 
-      <div class="modal-body" name="input">
-
+      <div class="modal-body">
         <fieldset>
-          <label for="input" name="validate">{{'physicalInventoryCreation.input' | message}}
+          <label>{{'physicalInventoryCreation.label' | message}}
             <span class="inputNecessary">*</span>
           </label>
           <input
               positive-integer
-              id="input"
-              ng-model="vm.input"
+              id="userInputSplitNum"
+              ng-model="vm.userInputSplitNum"
               ng-change="vm.changeShowError()"
               maxlength="2"
           />
 
           <span ng-show="vm.showError" id="validateInputValue">{{'physicalInventoryCreation.error'
           | message}}</span>
-          <span ng-hide="vm.input"></span>
         </fieldset>
 
       </div>

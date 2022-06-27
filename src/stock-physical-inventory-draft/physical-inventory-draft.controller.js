@@ -470,7 +470,7 @@
                 $scope.$broadcast('openlmis-form-submit');
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             } else {
-                chooseDateModalService.show().then(function(resolvedData) {
+                chooseDateModalService.show(new Date()).then(function(resolvedData) {
                     loadingModalService.open();
 
                     draft.occurredDate = resolvedData.occurredDate;
