@@ -38,12 +38,14 @@
             this.draft = draft;
         };
         this.getDraft = function(facilityId) {
+            // console.log(this.facilityId, facilityId);
             return this.facilityId === facilityId ? this.draft : undefined;
         };
 
         this.getReasons = function(facilityId) {
             return this.facilityId === facilityId ? this.reasons : undefined;
         };
+
         this.setReasons = function(facilityId, reasons) {
             this.facilityId = facilityId;
             this.reasons = reasons;
@@ -55,10 +57,6 @@
             this.reasons = undefined;
             this.facilityId = undefined;
         };
-
-        // this.getSubDraftData = function() {
-
-        // }
     }
 
 })();

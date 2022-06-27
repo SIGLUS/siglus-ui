@@ -1,5 +1,16 @@
-.modal .modal-header {
+.modal .modal-header .modal-header-warning{
   min-height: 30px;
+}
+
+.header-conflict-tips {
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.modal-header-warning {
+  background-color: #A94442;
+  padding: 7px 28px;
 }
 
 #validateInputValue {

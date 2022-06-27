@@ -50,6 +50,7 @@
         physicalInventoryService
     ) {
         var vm = this;
+        vm.showConflictStatus = false;
         vm.input = '';
         vm.drafts = [];
         vm.confirm = confirm;
@@ -74,6 +75,11 @@
         };
 
         vm.confirm = function() {
+            if (vm.showConflictStatus) {
+                $state.reload();
+                modalDeferred.reject();
+                return;
+            }
             if (vm.validate(vm.input)) {
                 // console.log('输入', vm.input, vm.facility, $stateParams);
                 loadingModalService.open();
@@ -90,7 +96,11 @@
                     );
                 })
                     .catch(function(err) {
-                        console.log('err --->>>', err);
+                        // console.log('err --->>>', err);
+                        if (err.status === 400) {
+                            loadingModalService.close();
+                            vm.showConflictStatus = true;
+                        }
                     });
                 // console.log(physicalInventoryDraftListService);
                 // loadingModalService.open();

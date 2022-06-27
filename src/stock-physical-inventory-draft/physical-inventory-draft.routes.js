@@ -52,37 +52,49 @@
                     }
                     return $stateParams.facility;
                 },
-                draft: function(facility,  $stateParams, physicalInventoryFactory, physicalInventoryDataService, $q) {
-                    console.log('params', $stateParams);
+                program: function($stateParams, programService) {
+                    if (_.isUndefined($stateParams.program)) {
+                        return programService.getAllProductsProgram().then(function(programs) {
+                            return programs[0];
+                        });
+                    }
+                    return $stateParams.program;
+                },
+                draft: function(
+                    facility,
+                    $stateParams,
+                    physicalInventoryFactory,
+                    physicalInventoryDataService,
+                    $q,
+                    program
+                ) {
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        // console.log('进来了1');
-                        physicalInventoryFactory.getPhysicalInventorySubDraft(
-                            $stateParams.subDraftIds.length > 1
-                                ? $stateParams.subDraftIds.split(',')
-                                : [$stateParams.subDraftIds]
-                        )
-                            .then(function(draft) {
-                                console.log('进来了11111', draft);
-                                physicalInventoryDataService.setDraft(facility.id, draft);
-                                deferred.resolve();
-                            });
+                        if ($stateParams.subDraftIds) {
+                            physicalInventoryFactory.getPhysicalInventorySubDraft(
+                                $stateParams.subDraftIds.length > 1
+                                    ? $stateParams.subDraftIds.split(',')
+                                    : [$stateParams.subDraftIds]
+                            )
+                                .then(function(draft) {
+                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                    deferred.resolve();
+                                });
+                        } else {
+                            physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                                .then(function(draft) {
+                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                    deferred.resolve();
+                                });
+                        }
                     } else {
-                        // console.log('进来了2');
                         deferred.resolve();
                     }
                     return deferred.promise;
-                },
-                /*eslint-disable */
-                program: function($stateParams, programService, physicalInventoryDataService, facility, draft) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get(physicalInventoryDataService.getDraft(facility.id).programId);
-                    }
-                    return $stateParams.program;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
@@ -123,7 +135,7 @@
                         return groups;
                     })
                         .then(function(items) {
-                            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id,items);
+                            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, items);
                         });
                 },
                 /*eslint-enable */

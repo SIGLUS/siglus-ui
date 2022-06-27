@@ -136,7 +136,7 @@
                 vm.drafts = _.filter(drafts, function(draft) {
                     return draft.programId === programId;
                 });
-
+                // console.log('#### drafts', drafts);
                 vm.program = _.find(programs, function(program) {
                     return program.id === programId;
                 });
@@ -202,6 +202,7 @@
         vm.validateDraftStatus = function(draft) {
             if (draft.isStarter) {
                 SiglusPhysicalInventoryCreationService.show(draft).then(function() {
+                    
                 });
             } else {
                 $state.go(

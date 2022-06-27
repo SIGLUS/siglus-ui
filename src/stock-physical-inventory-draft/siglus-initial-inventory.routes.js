@@ -67,7 +67,6 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: function($stateParams, physicalInventoryFactory, program, facility,
                     physicalInventoryDataService, $q) {
-                    // console.log('start!!!!');
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
