@@ -1,0 +1,11 @@
+{
+  "stockIssueInitialModal.title": "Please input the issue information",
+  "stockIssueInitialModal.issueTo": "Issue to",
+  "stockIssueInitialModal.documentationNo": "Documentation number",
+  "stockIssueInitialModal.destinationFacility": "Destination facility",
+  "stockIssueInitialModal.cancel": "Cancel",
+  "stockIssueInitialModal.confirm": "Confirm",
+  "stockIssueInitialModal.inputDestination": "Input the destination",
+  "stockIssueInitialModal.hasStartedError": "An issue process has already started, please finish it first."
+
+}

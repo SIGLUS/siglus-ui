@@ -1,0 +1,36 @@
+
+<h2>{{'issueDraft.issueToTitle' | message: {destination: vm.issueTo, document: vm.documentationNo} }}</h2>
+<section class="openlmis-table-container">
+    <button class="pull-right add" ng-click="vm.addDraft()">
+        {{'issueDraft.create' | message}}
+    </button>
+    <table>
+        <caption ng-if="vm.drafts.length===0">
+            {{'issueDraft.selectFirst' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th style="min-width:160px">{{'issueDraft.draftNumber' | message}}</th>
+            <th style="min-width:160px">{{'issueDraft.status' | message}}</th>
+            <th style="min-width:160px">{{'issueDraft.operator' | message}}</th>
+            <th style="min-width:206px" class="col-sticky sticky-right">{{'issueDraft.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts">
+            <td>{{draft.draftNumber}}</td>
+            <td>{{draft.status}}</td>
+            <td>{{draft.operator}}</td>
+            <td style="display: flex;">
+                <input id="issue-draft-continue" type="button" ng-click="vm.editDraft(draft)"
+                       value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
+                       class="primary"/>
+
+                <input id="issue-draft-remove" type="button" ng-click="vm.removeDraft(draft)"
+                       value="{{'issueDraft.remove' | message}}"
+                       class="primary issue-draft-remove"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
