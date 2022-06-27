@@ -348,8 +348,6 @@
         var openRemainingModal = function(type) {
             physicalInventoryService.getConflictDraft(99, 110)
                 .then(function(res) {
-                    // console.log('hello world');
-                    // console.log(type, res);
                     if (res.data.length) {
                         remainingProductsModalService.show(res.data).then(function() {
                             saveOrSubmit(type);
@@ -375,7 +373,6 @@
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
-            console.log('#### draft', draft);
             return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
                 summaries: []
             })).then(function() {
@@ -682,7 +679,6 @@
                 //     facilityName: facility.name,
                 //     program: program.name
                 // });
-                console.log('label --->>>', $stateParams);
                 $state.current.label = $stateParams.draftLabel;
             }
         }

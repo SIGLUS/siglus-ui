@@ -2,10 +2,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <button type="button" class="close" aria-label="Close" ng-click="$hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      <div ng-class="{'modal-header-warning': vm.showConflictStatus, 'modal-header': !vm.showConflictStatus }">
+        <div class="header-conflict-tips" ng-show="vm.showConflictStatus">{{ 'physicalInventoryCreation.conflictTips' | message }}</div>
       </div>
 
       <div class="modal-body" name="input">
@@ -30,7 +28,7 @@
       </div>
 
       <div class="modal-footer">
-        <button ng-click="$hide()">{{'physicalInventoryCreation.cancel' | message}}</button>
+        <button ng-show="!vm.showConflictStatus" ng-click="$hide()">{{'physicalInventoryCreation.cancel' | message}}</button>
         <button class="primary" ng-click="vm.confirm()">{{'physicalInventoryCreation.confirm'
         | message}}
         </button>

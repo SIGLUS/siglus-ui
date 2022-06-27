@@ -67,6 +67,12 @@
                     url: stockmanagementUrlFactory(
                         '/api/siglusapi/physicalInventories/draftList/:id'
                     )
+                },
+                query: {
+                    method: 'GET',
+                    url: stockmanagementUrlFactory(
+                        '/api/siglusapi/physicalInventories/draftList'
+                    )
                 }
             }
         );
@@ -118,7 +124,7 @@
                 program: program,
                 groupNum: groupNum
             }).$promise.then(function(response) {
-                siglusStockEventService.formatResponse(response[0]);
+                siglusStockEventService.formatResponse(response);
                 return response;
             });
         }

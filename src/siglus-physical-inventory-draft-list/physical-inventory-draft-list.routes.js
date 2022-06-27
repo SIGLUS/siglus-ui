@@ -47,7 +47,6 @@
                             STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
                     },
                     programName: function(programs, $stateParams) {
-                        console.log('programs', programs);
                         var result = 'Todos os produtos';
                         var program = _.find(programs, function(item) {
                             return item.id === $stateParams.programId;

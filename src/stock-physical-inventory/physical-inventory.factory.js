@@ -70,7 +70,7 @@
             angular.forEach(programIds, function(program) {
                 promises.push(getDraftByProgramAndFacility(program, facility));
             });
-
+            // console.log('#### promises', promises);
             return $q.all(promises);
         }
 
@@ -95,7 +95,6 @@
                             facilityId: facilityId,
                             lineItems: []
                         };
-                    console.log('#### draft0000', draft);
                     // no saved draft
                     if (draft.length === 0) {
                         draftToReturn.isStarter = true;
@@ -157,7 +156,6 @@
         function getPhysicalInventory(id) {
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
-                    console.log('#### physicalInventory', physicalInventory);
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {
@@ -176,7 +174,6 @@
         function getPhysicalInventorySubDraft(id) {
             return physicalInventoryService.getPhysicalInventorySubDraft(id)
                 .then(function(physicalInventory) {
-                    console.log('#### physicalInventory', physicalInventory);
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
                         .then(function(summaries) {
                             var draftToReturn = {
@@ -372,7 +369,6 @@
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
             }).then(function(summaries) {
-                console.log('#### summaries', summaries);
                 // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {

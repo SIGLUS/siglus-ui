@@ -55,11 +55,11 @@
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
+            },
+            getConflict: {
+                method: 'GET',
+                url: '/api/get-conflict-draft'
             }
-            // query: {
-            //     method: 'GET',
-            //     url: '/api/get-conflict-draft'
-            // }
         });
         // SIGLUS-REFACTOR: ends here
 
@@ -96,7 +96,7 @@
             })
                 .$promise
                 .then(function(response) {
-                    siglusStockEventService.formatResponse(response[0]);
+                    siglusStockEventService.formatResponse(response);
                     return response;
                 });
         }
@@ -123,7 +123,6 @@
         }
 
         function getPhysicalInventorySubDraft(id) {
-            console.log('#### getPhysicalInventorySubDraft params', id);
             return resource.find({
                 subDraftIds: id
             })
@@ -146,7 +145,6 @@
          * @return {Promise}          physical inventory promise
          */
         function createDraft(program, facility, splitNum) {
-            console.log(program, facility, splitNum);
             return resource.save({
                 splitNum: Number(splitNum)
             }, {
@@ -156,7 +154,7 @@
         }
 
         function getConflictDraft(facilityId, programId) {
-            return resource.query({
+            return resource.getConflict({
                 programId: programId,
                 facilityId: facilityId
             }).$promise;
@@ -236,7 +234,6 @@
          * @return {Promise}      Promise with response
          */
         function deleteDraft(id) {
-            console.log('### id', id);
             return resource.delete({
                 id: id
             }).$promise;
@@ -276,7 +273,6 @@
             })
                 .$promise
                 .then(function(response) {
-                    console.log('getInitialDraft', response);
                     siglusStockEventService.formatResponse(response[0]);
                     return response;
                 });

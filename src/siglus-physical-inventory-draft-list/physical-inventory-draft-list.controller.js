@@ -35,7 +35,11 @@
         '$stateParams',
         'programName',
         'facility',
-        'alertService'
+        'alertService',
+        'alertConfirmModalService',
+        'physicalInventoryService',
+        'loadingModalService',
+        'physicalInventoryDataService'
     ];
 
     function controller(
@@ -45,12 +49,15 @@
         $stateParams,
         programName,
         facility,
-        alertService
+        alertService,
+        alertConfirmModalService,
+        physicalInventoryService,
+        loadingModalService
     ) {
         // console.log('#### programName', programName);
         var vm = this;
         vm.$onInit = onInit;
-        vm.draftList = [];
+        vm.draftList = {};
         vm.programName = programName;
         vm.facility = facility;
         vm.getStatus = function(isStarter) {
@@ -68,17 +75,37 @@
             $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
 
+        vm.deleteDrafts = function() {
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.mergeError',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                physicalInventoryService.deleteDraft(draftList.physicalInventoryId).then(function() {
+                    $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
+        };
+
         vm.mergeDrafts = function() {
             if (isAllSubDraftsAreSubmmitted(vm.draftList)) {
                 alertService.error('PhysicalInventoryDraftList.mergeError');
             } else {
-                console.log('to merge');
+                var stateParams = angular.copy($stateParams);
+                stateParams.draftLabel = 'merge draft';
+                $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
             }
         };
 
         function isAllSubDraftsAreSubmmitted(draftList) {
             return _.find(draftList, function(item) {
-                return item.status !== 'submitted';
+                return item.status === 'submitted';
             });
         }
 
