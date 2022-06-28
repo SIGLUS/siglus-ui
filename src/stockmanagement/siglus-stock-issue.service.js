@@ -28,11 +28,10 @@
         .module('stockmanagement')
         .service('siglusStockIssueService', service);
 
-    service.$inject = [
-        '$resource', 'stockmanagementUrlFactory'
-    ];
+    service.$inject = ['$q',
+        '$resource', 'stockmanagementUrlFactory'];
 
-    function service($resource, stockmanagementUrlFactory) {
+    function service($q, $resource, stockmanagementUrlFactory) {
 
         var urlBasePath = '/api/siglusapi/drafts';
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {
@@ -48,9 +47,9 @@
 
         this.baseParams = {};
 
-        this.createDraft = createIssueDraft;
+        this.createIssueDraft = createIssueDraft;
         this.getIssueDrafts = getIssueDrafts;
-        this.deleteDraft = deleteIssueDraft;
+        this.removeIssueDraft = removeIssueDraft;
         this.initIssueDraft = initIssueDraft;
 
         function createIssueDraft(userId, programId, facilityId, adjustmentTypeState) {
@@ -77,7 +76,7 @@
 
         }
 
-        function deleteIssueDraft(draftId) {
+        function removeIssueDraft(draftId) {
             return resource.delete({
                 id: draftId
             }).$promise;

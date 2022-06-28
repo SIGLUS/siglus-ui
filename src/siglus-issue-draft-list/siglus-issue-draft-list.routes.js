@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft', {
-            url: '/draft?issueTo&documentationNo',
+            url: '/draft',
             label: 'Draft List',
             priority: 2,
             showInNavigation: false,
@@ -37,11 +37,8 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             resolve: {
-                issueTo: function($stateParams) {
-                    return $stateParams.issueTo;
-                },
-                documentationNo: function($stateParams) {
-                    return $stateParams.documentationNo;
+                draftInfo: function(siglusStockIssueService) {
+                    return siglusStockIssueService.getIssueDrafts();
                 }
             }
         });

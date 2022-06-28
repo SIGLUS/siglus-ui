@@ -25,7 +25,7 @@
                         </select>
                     </fieldset>
 
-                    <fieldset ng-if="vm.issueTo && vm.issueTo.value === 'Other'">
+                    <fieldset ng-if="vm.issueTo && vm.issueTo.name === 'Outros'">
                         <input type="text" placeholder="{{'stockIssueInitialModal.inputDestination' | message}}"
                                    ng-model="vm.destinationFacility" id="destinationFacility" required/>
                     </fieldset>

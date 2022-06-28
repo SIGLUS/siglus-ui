@@ -28,29 +28,45 @@
         .module('siglus-issue-draft-list')
         .controller('SiglusIssueDraftListController', controller);
 
-    controller.$inject = ['issueTo', 'documentationNo', 'alertService', 'confirmService'];
+    controller.$inject = ['drafts', 'alertService',
+        'confirmService', 'siglusStockIssueService'];
 
     var index = 0;
 
-    function controller(issueTo, documentationNo, alertService, confirmService) {
+    function controller(draftInfo, alertService, confirmService, siglusStockIssueService) {
         var vm = this;
 
-        vm.issueTo = issueTo;
+        vm.issueTo = _.get(draftInfo, 'issueTo', '');
 
-        vm.documentationNo = documentationNo;
+        vm.documentationNo =  _.get(draftInfo, 'documentationNo', '');
 
-        vm.drafts = [];
+        vm.drafts = _.get(draftInfo, 'drafts', []);
 
         vm.addDraft = function() {
             if (vm.drafts.length >= 10) {
                 alertService.error('issueDraft.exceedTenDraftHint');
             } else {
+                // todo remove mock data
                 vm.drafts.push({
                     draftNumber: '000000123123120' + index++,
                     status: 'Not Yet Start',
                     operator: ''
                 });
+                // todo set params
+                siglusStockIssueService.createIssueDraft().then(function() {
+                    vm.refreshDraftList();
+                })
+                    .catch(function() {
+                        alertService.error('issueDraft.exceedTenDraftHint');
+                    });
             }
+        };
+
+        vm.refreshDraftList = function() {
+            // todo set params
+            siglusStockIssueService.getIssueDrafts().then(function(data) {
+                vm.drafts = data;
+            });
         };
 
         vm.removeDraft = function(draft) {
@@ -61,6 +77,11 @@
                 vm.drafts = _.filter(vm.drafts, function(item) {
                     return draft.draftNumber !== item.draftNumber;
                 });
+                // todo set params
+                siglusStockIssueService.removeIssueDraft().then(function() {
+                    vm.refreshDraftList();
+                });
+
             });
         };
 

@@ -28,9 +28,11 @@
         .module('siglus-stock-issue-initial-modal')
         .controller('SiglusInitialIssueModalController', controller);
 
-    controller.$inject = ['$state', 'siglusInitialIssueModalService', 'modalDeferred', 'siglusStockIssueService'];
+    controller.$inject = ['$state', 'siglusInitialIssueModalService', 'modalDeferred',
+        'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
 
-    function controller($state, siglusInitialIssueModalService, modalDeferred, siglusStockIssueService) {
+    function controller($state, siglusInitialIssueModalService, modalDeferred,
+                        siglusStockIssueService, sourceDestinationService, loadingModalService) {
         var vm = this;
 
         vm.issueTo = undefined;
@@ -41,16 +43,7 @@
 
         vm.destinationFacility = '';
 
-        vm.issueToList = [
-            {
-                name: 'Facility EDMJKAHSDSAJHDKSAJ',
-                value: 'viahoa'
-            },
-            {
-                name: 'Other',
-                value: 'Other'
-            }
-        ];
+        vm.issueToList = [];
 
         vm.changeIssueTo = function() {
             if (_.get(vm.issueTo, 'value') === 'Other') {
@@ -81,16 +74,20 @@
                 })
                     .catch(function() {
                         vm.hasError = true;
-                        // modalDeferred.resolve();
-                        // $state.go('openlmis.stockmanagement.issue.draft', {
-                        //     issueTo: _.get(vm.issueTo, 'name'),
-                        //     documentationNo: vm.documentationNo
-                        // }, {
-                        //     reload: true
-                        // });
                     });
             }
 
+        };
+
+        vm.$onInit = function() {
+            loadingModalService.open();
+            sourceDestinationService.getDestinationAssignments(siglusInitialIssueModalService.programId,
+                siglusInitialIssueModalService.facilityId).then(function(data) {
+                vm.issueToList = data;
+            })
+                .finally(function() {
+                    loadingModalService.close();
+                });
         };
     }
 })();
