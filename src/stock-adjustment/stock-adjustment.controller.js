@@ -109,7 +109,7 @@
                 adjustmentTypeState: adjustmentType.state,
                 facilityId: facility.id
             };
-            siglusInitialIssueModalService.show().then(function(data) {
+            siglusInitialIssueModalService.show(program.id, facility.id).then(function(data) {
                 vm.setDraftAttribute(data);
             });
         };
