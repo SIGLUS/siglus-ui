@@ -29,12 +29,12 @@
         .controller('StockAdjustmentController', controller);
 
     // SIGLUS-REFACTOR: add user, drafts
-    controller.$inject = ['$scope', 'facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
         'stockAdjustmentService', 'stockAdjustmentFactory', 'siglusInitialIssueModalService',
         'siglusStockIssueService'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller($scope, facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService,
+    function controller(facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService,
                         stockAdjustmentFactory, siglusInitialIssueModalService, siglusStockIssueService) {
         var vm = this;
 
@@ -117,7 +117,7 @@
         vm.setDraftAttribute = function(data) {
             if (data.length > 0) {
                 vm.programs = _.map(programs, function(program) {
-                    program.draft = _.isEmpty(_.find(data, function(draft) {
+                    program.draft = !_.isEmpty(_.find(data, function(draft) {
                         return draft.programId === program.id;
                     }));
                     return program;
