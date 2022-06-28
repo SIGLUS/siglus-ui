@@ -24,196 +24,82 @@
     routes.$inject = ['$stateProvider', 'SIGLUS_METABASE_DASHBOARD_NAME'];
 
     function routes($stateProvider, SIGLUS_METABASE_DASHBOARD_NAME) {
-        $stateProvider.state('openlmis.analyticsReport.systemVersion', {
-            url: '/systemVersion',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.systemVersion.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_VERSION_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
 
-        $stateProvider.state('openlmis.analyticsReport.expiringProducts', {
-            url: '/expiringProducts',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.expiringProducts.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
+        var reportLists = [
+            {
+                name: 'openlmis.analyticsReport.systemVersion',
+                label: 'analyticsReportMetabase.systemVersion.title',
+                url: '/systemVersion',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_VERSION_REPORT
             },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
+            {
+                name: 'openlmis.analyticsReport.expiringProducts',
+                label: 'analyticsReportMetabase.expiringProducts.title',
+                url: '/expiringProducts',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.systemUpdate',
+                label: 'analyticsReportMetabase.systemUpdate.title',
+                url: '/systemUpdate',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.expiredProducts',
+                label: 'analyticsReportMetabase.expiredProducts.title',
+                url: '/expiredProducts',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_PRODUCTS_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.requisitionAndMonthly',
+                label: 'analyticsReportMetabase.requisitionAndMonthly.title',
+                url: '/requisitionAndMonthly',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_MONTHLY_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.sohReportByProduct',
+                label: 'analyticsReportMetabase.sohReportByProduct.title',
+                url: '/sohReportByProduct',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_REPORT_BY_PRODUCT
+            },
+            {
+                name: 'openlmis.analyticsReport.sohByLot',
+                label: 'analyticsReportMetabase.sohByLot.title',
+                url: '/sohByLot',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.stockStatus',
+                label: 'analyticsReportMetabase.stockStatus.title',
+                url: '/stockStatus',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT
             }
-        });
+        ];
 
-        $stateProvider.state('openlmis.analyticsReport.systemUpdate', {
-            url: '/systemUpdate',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.systemUpdate.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+        angular.forEach(reportLists, function(item, index) {
+            $stateProvider.state(item.name, {
+                url: item.url,
+                showInNavigation: true,
+                label: item.label,
+                priority: parseInt(100 - index),
+                views: {
+                    '@openlmis': {
+                        controller: 'siglusAnalyticsReportMetabaseController',
+                        controllerAs: 'vm',
+                        templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+                    }
+                },
+                resolve: {
+                    analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                        var analyticsReportMetabaseResource;
+                        analyticsReportMetabaseResource = analyticsReportMetabaseService
+                            .getMetabaseUrl(item.dashboardName);
+                        return analyticsReportMetabaseResource.then(function(data) {
+                            return data;
+                        });
+                    }
                 }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
-
-        $stateProvider.state('openlmis.analyticsReport.expiredProducts', {
-            url: '/expiredProducts',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.expiredProducts.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_PRODUCTS_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
-
-        $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly', {
-            url: '/requisitionAndMonthly',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.requisitionAndMonthly.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_MONTHLY_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
-
-        $stateProvider.state('openlmis.analyticsReport.sohReportByProduct', {
-            url: '/sohReportByProduct',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.sohReportByProduct.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.SOH_REPORT_BY_PRODUCT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
-
-        $stateProvider.state('openlmis.analyticsReport.sohByLot', {
-            url: '/sohByLot',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.sohByLot.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
-        });
-
-        $stateProvider.state('openlmis.analyticsReport.stockStatus', {
-            url: '/stockStatus',
-            showInNavigation: true,
-            label: 'analyticsReportMetabase.stockStatus.title',
-            priority: 1,
-            views: {
-                '@openlmis': {
-                    controller: 'siglusAnalyticsReportMetabaseController',
-                    controllerAs: 'vm',
-                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
-                }
-            },
-            resolve: {
-                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
-                }
-            }
+            });
         });
     }
 
