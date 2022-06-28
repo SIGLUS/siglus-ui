@@ -28,10 +28,9 @@
         .module('stockmanagement')
         .service('siglusStockIssueService', service);
 
-    service.$inject = ['$q',
-        '$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-    function service($q, $resource, stockmanagementUrlFactory) {
+    function service($resource, stockmanagementUrlFactory) {
 
         var urlBasePath = '/api/siglusapi/drafts';
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {

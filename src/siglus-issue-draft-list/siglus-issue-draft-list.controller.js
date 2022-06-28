@@ -28,7 +28,7 @@
         .module('siglus-issue-draft-list')
         .controller('SiglusIssueDraftListController', controller);
 
-    controller.$inject = ['drafts', 'alertService',
+    controller.$inject = ['draftInfo', 'alertService',
         'confirmService', 'siglusStockIssueService'];
 
     var index = 0;

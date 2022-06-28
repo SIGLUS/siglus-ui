@@ -46,7 +46,7 @@
         vm.issueToList = [];
 
         vm.changeIssueTo = function() {
-            if (_.get(vm.issueTo, 'value') === 'Other') {
+            if (!_.isEmpty(vm.destinationFacility)) {
                 vm.destinationFacility = '';
             }
         };
@@ -65,12 +65,7 @@
                     destinationFacility: vm.destinationFacility
                 })).then(function() {
                     modalDeferred.resolve();
-                    $state.go('openlmis.stockmanagement.issue.draft', {
-                        issueTo: _.get(vm.issueTo, 'name'),
-                        documentationNo: vm.documentationNo
-                    }, {
-                        reload: true
-                    });
+                    $state.go('openlmis.stockmanagement.issue.draft');
                 })
                     .catch(function() {
                         vm.hasError = true;

@@ -2192,7 +2192,7 @@
   "via.product.inventory":"Controlo de Inventário",
   "via.product.quantityRequested":"Quantidade requisitada",
   "via.createBy": "Elaborado por",
-  "via.visa": "Visto do Responsável Clínico", 
+  "via.visa": "Visto do Responsável Clínico",
   "via.download.button": "Baixar PDF",
   "stock.movement.title": "Relatório de Movimentos de Stock",
   "stock.movement.date":"Data do movimento",
@@ -2222,7 +2222,7 @@
   "stockRemainingProductsModal.productCode": "Código de produto",
   "stockRemainingProductsModal.product": "Produto",
   "stockRemainingProductsModal.currentStock": "Stock actual",
-  
+
   "stockRemainingProductsModal.title": "The products below have been added to other drafts, are you sure you want to remove these products from your draft?",
   "stockRemainingProductsModal.conflictWith": "Conflict with",
 
@@ -2253,5 +2253,23 @@
   "physicalInventoryCreation.label": "Insira o número de usuários que fazem o inventário",
   "physicalInventoryCreation.cancel": "Cancelar",
   "physicalInventoryCreation.confirm": "Confirme",
-  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first."
+  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first.",
+  "stockIssueInitialModal.title": "Insira informação do aviamento",
+  "stockIssueInitialModal.issueTo": "Aviar para",
+  "stockIssueInitialModal.documentationNo": "Número de documento",
+  "stockIssueInitialModal.cancel": "Cancelar",
+  "stockIssueInitialModal.confirm": "Confirme",
+  "stockIssueInitialModal.inputDestination": "Insira o destino",
+  "stockIssueInitialModal.hasStartedError": "An issue process has already started, please finish it first.",
+  "stockIssue.issueStart": "Começar",
+  "issueDraft.issueToTitle": "Aviar para ${destination} - ${document}",
+  "issueDraft.selectFirst": "Crie um rascunho para iniciar aviamento",
+  "issueDraft.draftNumber": "Número do rascunho",
+  "issueDraft.status": "Estado",
+  "issueDraft.operator": "Operador",
+  "issueDraft.actions": "Ações",
+  "issueDraft.remove": "Remover",
+  "issueDraft.create": "Criar rascunho",
+  "issueDraft.exceedTenDraftHint": "No máximo 10 rascunhos podem ser criados, você não pode adicionar mais rascunhos.",
+  "issueDraft.confirmRemove": "Deseja remover este rascunho?"
 }

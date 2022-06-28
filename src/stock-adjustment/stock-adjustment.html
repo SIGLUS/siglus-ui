@@ -16,7 +16,7 @@
             <td style="min-width: 160px;">{{program.name}}</td>
             <td style="min-width: 160px;" ng-if="vm.adjustmentType.state === 'issue'">{{vm.key(program.draft ? 'draft' : 'notStarted') | message}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
-            <td ng-if="program.draft">
+            <td ng-if="!program.draft">
 
                 <input
                         id="continueButton"
@@ -26,11 +26,11 @@
                         ng-click="vm.adjustmentType.state === 'issue' ? vm.proceedForIssue(program) : vm.proceed(program)"
                 />
             </td>
-            <td ng-if="!program.draft">
+            <td ng-if="program.draft">
                 <input
                         id="startButton"
                         type="button"
-                        value="{{vm.key('start') | message}}"
+                        value="{{vm.key(vm.adjustmentType.state === 'issue'  ? 'issueStart' : 'start') | message}}"
                         class="primary"
                         ng-click="vm.adjustmentType.state === 'issue' ? vm.start(program) : vm.proceed(program)"
                 />

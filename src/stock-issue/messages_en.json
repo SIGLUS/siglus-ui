@@ -1,7 +1,8 @@
 {
-  "stockIssue.start": "Start",
+  "stockIssue.start": "Make Issue",
   "stockIssue.continue": "Continue",
   "stockIssue.notStarted": "Not yet started",
   "stockIssue.draft": "Draft",
-  "stockIssue.status": "Status"
+  "stockIssue.status": "Status",
+  "stockIssue.issueStart": "Start"
 }
