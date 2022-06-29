@@ -13,7 +13,7 @@
             <th style="min-width:160px">{{'issueDraft.draftNumber' | message}}</th>
             <th style="min-width:160px">{{'issueDraft.status' | message}}</th>
             <th style="min-width:160px">{{'issueDraft.operator' | message}}</th>
-            <th style="min-width:206px" class="col-sticky sticky-right">{{'issueDraft.actions' | message}}</th>
+            <th style="min-width:229px" class="col-sticky sticky-right">{{'issueDraft.actions' | message}}</th>
         </tr>
         </thead>
         <tbody>
@@ -23,10 +23,12 @@
             <td>{{draft.operator}}</td>
             <td style="display: flex;">
                 <input id="issue-draft-continue" type="button" ng-click="vm.editDraft(draft)"
+                       style="min-width: 100px"
                        value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
                        class="primary"/>
 
                 <input id="issue-draft-remove" type="button" ng-click="vm.removeDraft(draft)"
+                       style="min-width: 100px"
                        value="{{'issueDraft.remove' | message}}"
                        class="primary issue-draft-remove"/>
             </td>

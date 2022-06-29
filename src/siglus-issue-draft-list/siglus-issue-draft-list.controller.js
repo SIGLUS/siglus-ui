@@ -36,7 +36,7 @@
     function controller(draftInfo, alertService, confirmService, siglusStockIssueService) {
         var vm = this;
 
-        vm.issueTo = _.get(draftInfo, 'issueTo', '');
+        vm.issueTo = '';
 
         vm.documentationNo =  _.get(draftInfo, 'documentationNo', '');
 
@@ -50,6 +50,7 @@
                 vm.drafts.push({
                     draftNumber: '000000123123120' + index++,
                     status: 'Not Yet Start',
+                    isStarter: false,
                     operator: ''
                 });
                 // todo set params
@@ -60,6 +61,12 @@
                         alertService.error('issueDraft.exceedTenDraftHint');
                     });
             }
+        };
+
+        vm.$onInit = function() {
+            var destinationFacility = _.get(draftInfo, 'destinationFacility', '');
+            var issueTo = _.get(draftInfo, 'issueTo', '');
+            vm.issueTo = issueTo === 'Outros' ? 'Outros: ' + destinationFacility : issueTo;
         };
 
         vm.refreshDraftList = function() {
