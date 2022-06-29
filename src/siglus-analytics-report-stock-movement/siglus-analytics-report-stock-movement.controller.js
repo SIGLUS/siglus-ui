@@ -63,11 +63,11 @@
                     break;
                 case 'ISSUE':
                     stockMovementItemArr = stockMovementItemArr
-                        .concat([null, null, null, item.movementQuantity]);
+                        .concat([null, null, null, Math.abs(item.movementQuantity)]);
                     break;
                 case 'RECEIVE':
                     stockMovementItemArr = stockMovementItemArr
-                        .concat([item.movementQuantity, null, null, null ]);
+                        .concat([Math.abs(item.movementQuantity), null, null, null ]);
                     break;
                 case 'ADJUSTMENT':
                     if (item.movementQuantity > 0) {
