@@ -38,7 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'remainingProductsModalService'
+        'SIGLUS_TIME', 'remainingProductsModalService', 'subDraftIds'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,11 +50,11 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, remainingProductsModalService) {
+                        SIGLUS_TIME, remainingProductsModalService, subDraftIds) {
         var vm = this;
 
         vm.$onInit = onInit;
-
+        // console.log('#### subDraftIds', subDraftIds);
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         // SIGLUS-REFACTOR: starts here
@@ -71,6 +71,7 @@
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
+        console.log('hello world', displayLineItemsGroup);
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -179,7 +180,7 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.existLotCode = [];
-
+        console.log('#### canInitialInventory', $stateParams.canInitialInventory);
         vm.isInitialInventory = $stateParams.canInitialInventory;
 
         vm.draft = draft;
@@ -214,6 +215,7 @@
             //     .difference(_.flatten(vm.displayLineItemsGroup))
             //     .value();
             // var addedLotsId = getAddedLots();
+            // console.log('isInitialInventory --->>>', vm.isInitialInventory);
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -224,8 +226,9 @@
                 });
                 return !isInAdded;
             });
-
+            console.log('notYetAddedItems --->>>', notYetAddedItems);
             addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function(addedItems) {
+                console.log('#### addedItems', addedItems);
                 draft.lineItems = draft.lineItems.concat(addedItems);
                 refreshLotOptions();
                 // $stateParams.program = vm.program;
@@ -329,6 +332,7 @@
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
+                $stateParams.draft = draft;
                 return $state.go($state.current.name, $stateParams, {
                     reload: reload
                 });
@@ -345,17 +349,11 @@
          * Save physical inventory draft.
          */
         // SIGLUS-REFACTOR: starts here
-        var openRemainingModal = function(type) {
-            physicalInventoryService.getConflictDraft(99, 110)
-                .then(function(res) {
-                    if (res.data.length) {
-                        remainingProductsModalService.show(res.data).then(function() {
-                            saveOrSubmit(type);
-                        });
-                    } else {
-                        saveOrSubmit(type);
-                    }
-                });
+        var openRemainingModal = function(type, data) {
+            console.log('#### openRemainingModal income data', data);
+            remainingProductsModalService.show(data).then(function() {
+                saveOrSubmit(type);
+            });
         };
 
         var saveOrSubmit = function(type) {
@@ -374,7 +372,8 @@
             }
             loadingModalService.open();
             return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
-                summaries: []
+                summaries: [],
+                subDraftIds: subDraftIds
             })).then(function() {
                 notificationService.success('stockPhysicalInventoryDraft.saved');
                 resetWatchItems();
@@ -388,12 +387,18 @@
                 //     reload: true
                 // });
                 reload(true);
-            }, function() {
-                loadingModalService.close();
-                alertService.error('stockPhysicalInventoryDraft.saveFailed');
-            });
+            })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    var data = error.data.businessErrorExtraData;
+                    openRemainingModal('save', data);
+                });
         };
-        vm.openRemainingModal = _.throttle(openRemainingModal, SIGLUS_TIME.THROTTLE_TIME, {
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+
+        vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
         // SIGLUS-REFACTOR: ends here
@@ -434,7 +439,7 @@
                 'stockPhysicalInventoryDraft.delete'
             ).then(function() {
                 loadingModalService.open();
-                physicalInventoryService.deleteDraft(draft.id).then(function() {
+                physicalInventoryService.deleteDraft(subDraftIds).then(function() {
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
                     vm.isInitialInventory ? $state.go('openlmis.home')
@@ -478,7 +483,8 @@
 
                     // SIGLUS-REFACTOR: starts here
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
-                        summaries: []
+                        summaries: [],
+                        subDraftIds: subDraftIds
                     }))
                         .then(function() {
                             if (vm.isInitialInventory) {

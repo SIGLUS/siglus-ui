@@ -60,8 +60,9 @@
         vm.draftList = {};
         vm.programName = programName;
         vm.facility = facility;
+        vm.isShowDeleteAndMerge = false;
         vm.getStatus = function(isStarter) {
-            if (isStarter) {
+            if (isStarter === 'NOT_YET_STARTED') {
                 return messageService.get('stockPhysicalInventory.notStarted');
             }
             return messageService.get('stockPhysicalInventory.draft');
@@ -82,7 +83,7 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                physicalInventoryService.deleteDraft(draftList.physicalInventoryId).then(function() {
+                physicalInventoryService.deleteDraftList(draftList.physicalInventoryId).then(function() {
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
@@ -94,18 +95,22 @@
         };
 
         vm.mergeDrafts = function() {
-            if (isAllSubDraftsAreSubmmitted(vm.draftList)) {
+            // console.log(vm.draftList);
+            if (isAllSubDraftsAreSubmmitted(vm.draftList.subDrafts)) {
                 alertService.error('PhysicalInventoryDraftList.mergeError');
             } else {
                 var stateParams = angular.copy($stateParams);
-                stateParams.draftLabel = 'merge draft';
+                stateParams.draftLabel = 'Merge Draft';
+                stateParams.subDraftIds = _.map(vm.draftList.subDrafts, function(item) {
+                    return item.subDraftId[0];
+                }).join(',');
                 $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
             }
         };
 
         function isAllSubDraftsAreSubmmitted(draftList) {
             return _.find(draftList, function(item) {
-                return item.status === 'submitted';
+                return item.status !== 'submitted';
             });
         }
 
@@ -113,6 +118,7 @@
         function onInit() {
             $state.current.label = programName;
             vm.draftList = draftList;
+            vm.isShowDeleteAndMerge = !draftList.mergePermission;
         }
 
     }

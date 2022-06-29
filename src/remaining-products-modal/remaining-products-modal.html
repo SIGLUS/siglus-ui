@@ -11,15 +11,13 @@
                       <tr>
                         <th>{{'stockRemainingProductsModal.productCode' | message}}</th>
                         <th>{{'stockRemainingProductsModal.product' | message}}</th>
-                        <th>{{'stockRemainingProductsModal.currentStock' | message}}</th>
                         <th>{{ 'stockRemainingProductsModal.conflictWith' | message }}</th>
                       </tr>
                       </thead>
                       <tbody>
                       <tr ng-repeat="item in vm.conflictItems">
-                        <td>{{item.orderable.productCode}}</td>
-                        <td>{{item.orderable.fullProductName}}</td>
-                        <td>{{item.currentStock}}</td>
+                        <td>{{item.productCode}}</td>
+                        <td>{{item.productName}}</td>
                         <td>{{item.conflictWith}}</td>
                       </tr>
                       </tbody>

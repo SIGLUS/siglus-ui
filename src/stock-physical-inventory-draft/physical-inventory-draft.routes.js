@@ -60,6 +60,11 @@
                     }
                     return $stateParams.program;
                 },
+                subDraftIds: function($stateParams) {
+                    return $stateParams.subDraftIds.indexOf(',')
+                        ? $stateParams.subDraftIds.split(',')
+                        : [$stateParams.subDraftIds];
+                },
                 draft: function(
                     facility,
                     $stateParams,
@@ -69,10 +74,11 @@
                     program
                 ) {
                     var deferred = $q.defer();
-                    if ($stateParams.draft) {
+                    if ($stateParams.isAddProduct) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
+                    // console.log('#### bl', _.isUndefined(physicalInventoryDataService.getDraft(facility.id)));
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
                         if ($stateParams.subDraftIds) {
                             physicalInventoryFactory.getPhysicalInventorySubDraft(

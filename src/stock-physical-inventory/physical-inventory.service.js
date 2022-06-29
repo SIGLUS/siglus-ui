@@ -46,11 +46,19 @@
             },
             update: {
                 method: 'PUT',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
+            },
+            deleteDraftList: {
+                method: 'DELETE',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             },
             delete: {
                 method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft'),
+                hasBody: true,
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
             },
             find: {
                 method: 'GET',
@@ -59,6 +67,10 @@
             getConflict: {
                 method: 'GET',
                 url: '/api/get-conflict-draft'
+            },
+            submit: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraftSubmit')
             }
         });
         // SIGLUS-REFACTOR: ends here
@@ -71,6 +83,7 @@
         this.search = search;
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
+        this.deleteDraftList = deleteDraftList;
         this.submitPhysicalInventory = submit;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
@@ -216,9 +229,11 @@
          */
         // SIGLUS-REFACTOR: starts here
         function saveDraft(draft) {
-            return resource.update({
-                id: draft.id
-            }, siglusStockEventService.formatPayload(draft)).$promise;
+            // console.log('#### draft', draft);
+            // var newDraft = _.omit(draft, ['subDraftIds']);
+            // var subDraftIds = _.pick(draft, ['subDraftIds']).subDraftIds;
+            // console.log('subDraftIds --->>>', subDraftIds);
+            return resource.update(siglusStockEventService.formatPayload(draft)).$promise;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -233,10 +248,17 @@
          * @param  {String}   id  Draft that will be removed
          * @return {Promise}      Promise with response
          */
-        function deleteDraft(id) {
-            return resource.delete({
+
+        function deleteDraftList(id) {
+            return resource.deleteDraftList({
                 id: id
             }).$promise;
+        }
+
+        function deleteDraft(ids) {
+            console.log('##### ids', ids);
+            // console.log('function --->>', resource.delete);
+            return resource.delete({}, ids).$promise;
         }
 
         /**
@@ -251,9 +273,11 @@
          * @return {Promise}                  Submitted Physical Inventory
          */
         function submit(physicalInventory) {
+            // console.log('#### physicalInventory', physicalInventory);
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
+            // return resource.submit()
             // SIGLUS-REFACTOR: starts here
-            return siglusStockEventService.submit(event);
+            return resource.submit(event.subDraftIds).$promise;
             // SIGLUS-REFACTOR: ends here
         }
 
