@@ -31,7 +31,7 @@
         .directive('iframeOnload', directive);
 
     function directive() {
-        var directive = {
+        return {
             scope: {
                 callBack: '&iframeOnload'
             },
@@ -41,7 +41,6 @@
                 });
             }
         };
-        return directive;
     }
 
 })();

@@ -64,8 +64,7 @@
 
         function transformResponse(data, headers, status) {
             if (status === 200) {
-                var result = angular.fromJson(data);
-                return result;
+                return angular.fromJson(data);
             }
             return data;
         }

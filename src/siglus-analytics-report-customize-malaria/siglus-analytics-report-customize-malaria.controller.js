@@ -73,8 +73,8 @@
                 vm.requisition.statusChanges.SUBMITTED.changeDate : '';
             extendLineItems();
             vm.firstService = _.first(vm.lineItems);
-            angular.forEach(Object.keys(vm.firstService.informations), function(information) {
-                vm.informationColspan = Object.keys(vm.firstService.informations[information].orderables).length;
+            angular.forEach(Object.keys(vm.firstService.informations), function(informationItem) {
+                vm.informationColspan = Object.keys(vm.firstService.informations[informationItem].orderables).length;
             });
         }
 

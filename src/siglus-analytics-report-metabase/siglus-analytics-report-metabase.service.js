@@ -60,8 +60,7 @@
 
         function transformResponse(data, headers, status) {
             if (status === 200) {
-                var siglusAnalyticsReportMetabase = angular.fromJson(data);
-                return siglusAnalyticsReportMetabase;
+                return angular.fromJson(data);
             }
             return data;
         }
