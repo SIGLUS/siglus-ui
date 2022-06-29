@@ -1,3 +1,13 @@
+/* lato-regular - latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Lato Regular"), local("Lato-Regular"),
+     url(siglus-analytics-report/65e877e527022735c1a1.woff2)
+      format("woff2")
+}
+
 .page,
 .flex-page,
 .batch-requisition-pane {

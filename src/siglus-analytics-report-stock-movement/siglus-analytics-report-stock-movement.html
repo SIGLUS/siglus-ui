@@ -1,0 +1,39 @@
+<div id="stock-movement">
+  
+  <h3  id="stock-movement-title">{{'stock.movement.title'|message}}</h3>
+  <div class="stock-movement-header">
+    <span class="product-info">{{vm.productCode}} {{vm.productName}}</span>
+    <div class="facility">
+      <span></span>
+      <span class="info">{{'stock.movement.province'|message}}: {{vm.province}}</span>
+      <span></span>
+      <span class="info">{{'stock.movement.district'|message}}: {{vm.district}}</span>
+      <span></span>
+      <span class="info">{{'stock.movement.health.facility'| message}}: {{vm.facilityName}}</span>
+    </div>
+  </div>
+
+  <div class="stock-movement-card">
+    <table id="stock-movement-table" class="table table-condensed">
+      <tr class="gradient-header">
+        <th>{{'stock.movement.date'|message}}</th>
+        <th>{{'stock.movement.reason' | message}}</th>
+        <th>{{'stock.movement.document.number' | message}}</th>
+        <th>{{'stock.movement.entries' | message}}</th>
+        <th>{{'stock.movement.negative.adjustment' | message}}</th>
+        <th>{{'stock.movement.positive.adjustment' | message}}</th>
+        <th>{{'stock.movement.issues' | message}}</th>
+        <th>{{'stock.movement.soh' | message}}</th>
+        <th>{{'stock.movement.requestedquantity' | message}}</th>
+        <th>{{'stock.movement.signature' | message}}</th>
+      </tr>
+      <tr  ng-repeat="stockMovement in vm.stockMovements">
+        <td ng-repeat="movement in  stockMovement track by $index">{{movement}}</td>
+      </tr> 
+    </table>
+  </div>
+  <div>
+    <button ng-click="vm.exportExcel()" class="btn btn-primary btn-download btn-download-pdf">{{'stock.movement.export.data' | message}}</button>
+  </div>
+
+</div>

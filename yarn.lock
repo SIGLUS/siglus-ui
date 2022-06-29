@@ -188,6 +188,10 @@
   version "4.0.13"
   resolved "https://codeload.github.com/ivaynberg/select2/tar.gz/45f2b83ceed5231afa7b3d5b12b58ad335edd82e"
 
+"@bower_components/sheetjs@SheetJS/sheetjs#^0.18.5":
+  version "0.18.6"
+  resolved "https://codeload.github.com/SheetJS/sheetjs/tar.gz/ed18acd63d7a5cd31527a36a9af54542cdfcfd30"
+
 "@bower_components/underscore@jashkenas/underscore#^1.13.4":
   version "1.13.4"
   resolved "https://codeload.github.com/jashkenas/underscore/tar.gz/a15d1afc708ec23894880b2ec4c1eb309447a906"
