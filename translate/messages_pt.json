@@ -2209,6 +2209,7 @@
   "stock.movement.district":"Distrito",
   "stock.movement.province":"Província",
   "stock.movement.export.data":"Exportar dados",
+  "analyticsReport.title": "Relatórios de análise",
   "analyticsReportMetabase.systemVersion.title": "Relatório da Versão da Sistema",
   "analyticsReportMetabase.expiringProducts.title": "Relatório de produtos prestes a expirar",
   "analyticsReportMetabase.systemUpdate.title":"Relatório de actualização do Sistema",
