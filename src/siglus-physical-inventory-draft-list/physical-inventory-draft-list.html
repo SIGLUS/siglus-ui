@@ -21,7 +21,7 @@
       <td>{{ item.saver }}</td>
       <td>
         <input style="width: 113px;" id="proceedButton" type="button" ng-click="vm.clickActions(item)"
-               value="{{(item.status ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue ') | message}}"
+               value="{{(item.status === 'NOT_YET_STARTED' ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue') | message}}"
                class="primary"/>
       </td>
     </tr>
@@ -29,4 +29,4 @@
   </table>
 </section>
 
-<ng-include src="'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list-toolbar.html'"></ng-include>
+<ng-include ng-if="vm.isShowDeleteAndMerge" src="'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list-toolbar.html'"></ng-include>

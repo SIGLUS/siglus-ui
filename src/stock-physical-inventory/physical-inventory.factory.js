@@ -265,7 +265,9 @@
                 quantities[identityOfLines(lineItem)] = lineItem.quantity;
                 extraData[identityOfLines(lineItem)] = lineItem.extraData;
             });*/
-
+            console.log('#### summaries', summaries);
+            console.log('#### physicalInventory', physicalInventory);
+            console.log('#### draftToReturn', draftToReturn);
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -369,6 +371,7 @@
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
             }).then(function(summaries) {
+                console.log('#### summaries', summaries);
                 // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
