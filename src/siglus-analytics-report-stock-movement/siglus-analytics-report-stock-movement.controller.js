@@ -50,59 +50,52 @@
         }
 
         function formatStockMovements(stockMovement) {
-            var arr = [];
+            var stockMovementArr = [];
             angular.forEach(stockMovement, function(item) {
-                var blankArr = [];
-                blankArr.push(item.dateOfMovement);
-                blankArr.push(item.reason);
-                blankArr.push(item.documentNumber);
+                var stockMovementItemArr = [];
+                stockMovementItemArr.push(item.dateOfMovement);
+                stockMovementItemArr.push(item.reason);
+                stockMovementItemArr.push(item.documentNumber);
                 switch (item.type) {
                 case 'PHYSICAL_INVENTORY':
-                    blankArr.push(null);
-                    blankArr.push(null);
-                    blankArr.push(null);
-                    blankArr.push(null);
+                    stockMovementItemArr = stockMovementItemArr
+                        .concat([null, null, null, null]);
                     break;
                 case 'ISSUE':
-                    blankArr.push(null);
-                    blankArr.push(null);
-                    blankArr.push(null);
-                    blankArr.push(item.movementQuantity);
+                    stockMovementItemArr = stockMovementItemArr
+                        .concat([null, null, null, item.movementQuantity]);
                     break;
                 case 'RECEIVE':
-                    blankArr.push(item.movementQuantity);
-                    blankArr.push(null);
-                    blankArr.push(null);
-                    blankArr.push(null);
+                    stockMovementItemArr = stockMovementItemArr
+                        .concat([item.movementQuantity, null, null, null ]);
                     break;
                 case 'ADJUSTMENT':
                     if (item.movementQuantity > 0) {
-                        blankArr.push(null);
-                        blankArr.push(null);
-                        blankArr.push(item.movementQuantity);
-                        blankArr.push(null);
-
+                        stockMovementItemArr = stockMovementItemArr
+                            .concat([null, null, Math.abs(item.movementQuantity), null ]);
                     } else {
-                        blankArr.push(null);
-                        blankArr.push(item.movementQuantity);
-                        blankArr.push(null);
-                        blankArr.push(null);
+                        stockMovementItemArr = stockMovementItemArr
+                            .concat([null, Math.abs(item.movementQuantity), null, null ]);
                     }
                     break;
                 }
-                blankArr.push(item.productSoh);
-                blankArr.push(item.requested);
-                blankArr.push(item.signature);
-                arr.push(blankArr);
+                stockMovementItemArr.push(item.productSoh);
+                stockMovementItemArr.push(item.requested);
+                stockMovementItemArr.push(item.signature);
+                stockMovementArr.push(stockMovementItemArr);
             });
-            return arr;
+            return stockMovementArr;
         }
         function exportExcel() {
             // eslint-disable-next-line no-undef
-            var filename = 'stock-movement-report_' +  moment().utc()
-                .format('YYYY-MM-DD_at_HH.mm.SSS') + '.xlsx';
+            var filename = 'stock_movements_report_information_' +  moment().utc()
+                .format('YYYY-MM-DDTHH_mm_SS.SSSSSS') + 'Z.xlsx';
             var header = [
-                [vm.productCode, vm.productName, vm.facilityName, vm.district, vm.province],
+                ['Código do Produto: ' + vm.productCode,
+                    'Nome do Produto: ' + vm.productName,
+                    'Nome da instalação: ' + vm.facilityName,
+                    'Distrito: ' + vm.district,
+                    'Província: ' + vm.province],
                 ['Data do movimento',
                     'Origem/destino do movimento',
                     'Número de Documento',
@@ -129,5 +122,4 @@
             XLSX.writeFile(wb, filename);
         }
     }
-
 })();
