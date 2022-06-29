@@ -115,9 +115,8 @@
 
         function isCurrentSubmitDuration(period) {
             var today = moment();
-            var isInRange = today.isSameOrAfter(period.submitStartDate, 'day')
-          && today.isSameOrBefore(period.submitEndDate, 'day');
-            return isInRange;
+            return (today.isSameOrAfter(period.submitStartDate, 'day')
+            && today.isSameOrBefore(period.submitEndDate, 'day'));
         }
 
         function getDiffDates(startDate, endDate, dates) {

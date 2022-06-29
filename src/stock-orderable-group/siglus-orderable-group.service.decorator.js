@@ -144,9 +144,8 @@
          * get lots without null
          */
         function lotsOfWithNull(orderableGroup) {
-            var lots = _.chain(orderableGroup).pluck('lot')
+            return  _.chain(orderableGroup).pluck('lot')
                 .value();
-            return lots;
         }
 
         /**
