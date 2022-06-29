@@ -93,12 +93,10 @@
 
         };
 
-        vm.proceedForIssue = function() {
+        vm.proceedForIssue = function(program) {
             $state.go('openlmis.stockmanagement.issue.draft', {
-                issueTo: _.get(vm.issueTo, 'name'),
-                documentationNo: vm.documentationNo
-            }, {
-                reload: true
+                facilityId: facility.id,
+                programId: program.id
             });
         };
 

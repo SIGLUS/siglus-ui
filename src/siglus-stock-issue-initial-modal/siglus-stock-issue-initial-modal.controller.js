@@ -65,7 +65,10 @@
                     destinationFacility: vm.destinationFacility
                 })).then(function() {
                     modalDeferred.resolve();
-                    $state.go('openlmis.stockmanagement.issue.draft');
+                    $state.go('openlmis.stockmanagement.issue.draft', {
+                        facilityId: params.facilityId,
+                        programId: params.programId
+                    });
                 })
                     .catch(function() {
                         vm.hasError = true;
