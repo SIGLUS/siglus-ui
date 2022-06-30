@@ -54,7 +54,7 @@
                 response.status >= 400 &&
                 response.status < 600 &&
                 response.status !== 401 &&
-                !response.isBusinessError
+                !response.data.isBusinessError
             ) {
                 $timeout(function() {
                     $injector.get('alertService').error(getTitle(response.statusText),

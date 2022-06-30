@@ -62,10 +62,21 @@
         vm.facility = facility;
         vm.isShowDeleteAndMerge = false;
         vm.getStatus = function(isStarter) {
-            if (isStarter === 'NOT_YET_STARTED') {
-                return messageService.get('stockPhysicalInventory.notStarted');
-            }
-            return messageService.get('stockPhysicalInventory.draft');
+            var statusMap = {
+                NOT_YET_STARTED: 'stockPhysicalInventory.notStarted',
+                DRAFT: 'stockPhysicalInventory.draft',
+                SUBMITTED: 'stockPhysicalInventory.submitted'
+            };
+            return messageService.get(statusMap[isStarter]);
+
+        };
+        vm.actionType = function(isStarter) {
+            var statusMap = {
+                NOT_YET_STARTED: 'stockPhysicalInventory.start',
+                DRAFT: 'stockPhysicalInventory.continue',
+                SUBMITTED: 'stockPhysicalInventory.view'
+            };
+            return messageService.get(statusMap[isStarter]);
 
         };
         vm.clickActions = function(item) {
@@ -110,13 +121,14 @@
 
         function isAllSubDraftsAreSubmmitted(draftList) {
             return _.find(draftList, function(item) {
-                return item.status !== 'submitted';
+                return item.status !== 'SUBMITTED';
             });
         }
 
         // All drafts must be submitted before they can be merged.
         function onInit() {
             $state.current.label = programName;
+            draftList.subDrafts = _.sortBy(draftList.subDrafts, 'groupNum');
             vm.draftList = draftList;
             vm.isShowDeleteAndMerge = !draftList.mergePermission;
         }

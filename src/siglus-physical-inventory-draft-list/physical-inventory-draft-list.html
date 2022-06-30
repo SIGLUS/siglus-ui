@@ -21,7 +21,7 @@
       <td>{{ item.saver }}</td>
       <td>
         <input style="width: 113px;" id="proceedButton" type="button" ng-click="vm.clickActions(item)"
-               value="{{(item.status === 'NOT_YET_STARTED' ? 'PhysicalInventoryDraftList.start' : 'PhysicalInventoryDraftList.continue') | message}}"
+               value="{{ vm.actionType(item.status) }}"
                class="primary"/>
       </td>
     </tr>

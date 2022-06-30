@@ -54,7 +54,6 @@
         var vm = this;
 
         vm.$onInit = onInit;
-        // console.log('#### subDraftIds', subDraftIds);
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
         // SIGLUS-REFACTOR: starts here
@@ -71,7 +70,6 @@
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
-        console.log('hello world', displayLineItemsGroup);
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -180,7 +178,6 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.existLotCode = [];
-        console.log('#### canInitialInventory', $stateParams.canInitialInventory);
         vm.isInitialInventory = $stateParams.canInitialInventory;
 
         vm.draft = draft;
@@ -215,7 +212,6 @@
             //     .difference(_.flatten(vm.displayLineItemsGroup))
             //     .value();
             // var addedLotsId = getAddedLots();
-            // console.log('isInitialInventory --->>>', vm.isInitialInventory);
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -226,9 +222,7 @@
                 });
                 return !isInAdded;
             });
-            console.log('notYetAddedItems --->>>', notYetAddedItems);
             addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function(addedItems) {
-                console.log('#### addedItems', addedItems);
                 draft.lineItems = draft.lineItems.concat(addedItems);
                 refreshLotOptions();
                 // $stateParams.program = vm.program;
@@ -328,6 +322,7 @@
 
         // SIGLUS-REFACTOR: starts here
         function reload(reload) {
+            console.log('#### $state.current.name', $state.current.name);
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
@@ -350,13 +345,19 @@
          */
         // SIGLUS-REFACTOR: starts here
         var openRemainingModal = function(type, data) {
-            console.log('#### openRemainingModal income data', data);
+            // var conflictData = data;
             remainingProductsModalService.show(data).then(function() {
-                saveOrSubmit(type);
+                saveOrSubmit(type, data);
             });
         };
 
-        var saveOrSubmit = function(type) {
+        var saveOrSubmit = function(type, data) {
+            var conflictIds = _.map(data, function(item) {
+                return item.orderableId;
+            });
+            draft.lineItems = _.filter(draft.lineItems, function(item) {
+                return !_.includes(conflictIds, item.orderable.id);
+            });
             if (type === 'save') {
                 saveDraft();
             } else {
@@ -394,10 +395,6 @@
                     openRemainingModal('save', data);
                 });
         };
-        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
-            trailing: false
-        });
-
         vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
@@ -480,8 +477,31 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
-
                     // SIGLUS-REFACTOR: starts here
+                    if ($stateParams.draftLabel === 'Merge Draft') {
+                        // SIGLUS-REFACTOR: starts here
+                        physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
+                            summaries: []
+                        }))
+                            .then(function() {
+                                if (vm.isInitialInventory) {
+                                    currentUserService.clearCache();
+                                    navigationStateService.clearStatesAvailability();
+                                }
+                                notificationService.success('stockPhysicalInventoryDraft.submitted');
+                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                    program: program.id,
+                                    facility: facility.id
+                                }, {
+                                    reload: true
+                                });
+                            }, function() {
+                                loadingModalService.close();
+                                alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                            });
+                        // SIGLUS-REFACTOR: ends here
+                        return;
+                    }
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                         summaries: [],
                         subDraftIds: subDraftIds
@@ -510,17 +530,21 @@
                                         facility: facility.id
                                     });
                                 });*/
-                        }, function() {
+                        })
+                        .catch(function(error) {
                             loadingModalService.close();
-                            alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                            var data = error.data.businessErrorExtraData;
+                            openRemainingModal('submit', data);
                         });
                     // SIGLUS-REFACTOR: ends here
                 });
             }
         };
-        // vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
-        //     trailing: false
-        // });
+
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
