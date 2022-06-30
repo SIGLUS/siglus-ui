@@ -85,6 +85,7 @@
         this.deleteDraft = deleteDraft;
         this.deleteDraftList = deleteDraftList;
         this.submitPhysicalInventory = submit;
+        this.submitSubPhysicalInventory = subSubmit;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
         // SIGLUS-REFACTOR: ends here
@@ -272,12 +273,19 @@
          * @param  {Object} physicalInventory Draft that will be saved
          * @return {Promise}                  Submitted Physical Inventory
          */
-        function submit(physicalInventory) {
+        function subSubmit(physicalInventory) {
             // console.log('#### physicalInventory', physicalInventory);
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
             // return resource.submit()
             // SIGLUS-REFACTOR: starts here
-            return resource.submit(event.subDraftIds).$promise;
+            return resource.submit(event).$promise;
+            // SIGLUS-REFACTOR: ends here
+        }
+
+        function submit(physicalInventory) {
+            var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
+            // SIGLUS-REFACTOR: starts here
+            return siglusStockEventService.submit(event);
             // SIGLUS-REFACTOR: ends here
         }
 

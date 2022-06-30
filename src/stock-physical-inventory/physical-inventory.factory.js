@@ -174,7 +174,7 @@
         function getPhysicalInventorySubDraft(id) {
             return physicalInventoryService.getPhysicalInventorySubDraft(id)
                 .then(function(physicalInventory) {
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -265,9 +265,9 @@
                 quantities[identityOfLines(lineItem)] = lineItem.quantity;
                 extraData[identityOfLines(lineItem)] = lineItem.extraData;
             });*/
-            console.log('#### summaries', summaries);
-            console.log('#### physicalInventory', physicalInventory);
-            console.log('#### draftToReturn', draftToReturn);
+            // console.log('#### summaries', summaries);
+            // console.log('#### physicalInventory', physicalInventory);
+            // console.log('#### draftToReturn', draftToReturn);
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -370,8 +370,10 @@
                 programId: programId,
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
+                // ,
+                // subDraftIds: subDraftIds
             }).then(function(summaries) {
-                console.log('#### summaries', summaries);
+                // console.log('#### getStockProducts summaries', summaries);
                 // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
