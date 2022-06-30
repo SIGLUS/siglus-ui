@@ -28,12 +28,13 @@
         .module('siglus-issue-draft-list')
         .controller('SiglusIssueDraftListController', controller);
 
-    controller.$inject = ['draftInfo', 'alertService',
-        'confirmService', 'siglusStockIssueService'];
+    controller.$inject = ['user', 'programId', 'facilityId', '$state', 'draftInfo', 'alertService',
+        'confirmService', 'siglusStockIssueService', 'stockAdjustmentFactory', 'stockAdjustmentService'];
 
     var index = 0;
 
-    function controller(draftInfo, alertService, confirmService, siglusStockIssueService) {
+    function controller(user, programId, facilityId, $state, draftInfo, alertService, confirmService,
+                        siglusStockIssueService, stockAdjustmentFactory, stockAdjustmentService) {
         var vm = this;
 
         vm.issueTo = '';
@@ -90,6 +91,25 @@
                 });
 
             });
+        };
+
+        vm.proceed = function() {
+            stockAdjustmentFactory.getDraft(user.user_id, programId, facilityId, 'issue')
+                .then(function(draft) {
+                    if (_.isEmpty(draft)) {
+                        stockAdjustmentService.createDraft(user.user_id, programId, facilityId, 'issue')
+                            .then(function(draft) {
+                                $state.go('openlmis.stockmanagement.issue.draft.creation', {
+                                    programId: programId,
+                                    draftId: _.get(draft, 'id', '')
+                                });
+                            });
+                    }
+                    $state.go('openlmis.stockmanagement.issue.draft.creation', {
+                        programId: programId,
+                        draftId: _.get(draft, 'id', '')
+                    });
+                });
         };
 
     }

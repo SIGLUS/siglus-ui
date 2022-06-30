@@ -23,7 +23,7 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
-        $stateProvider.state('openlmis.stockmanagement.issue.creation', {
+        $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
             url: '/:programId/create?page&size&keyword&draftId',
             // SIGLUS-REFACTOR: ends here

@@ -22,7 +22,7 @@
             <td>{{draft.status}}</td>
             <td>{{draft.operator}}</td>
             <td style="display: flex;">
-                <input id="issue-draft-continue" type="button" ng-click="vm.editDraft(draft)"
+                <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft)"
                        style="min-width: 100px"
                        value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
                        class="primary"/>

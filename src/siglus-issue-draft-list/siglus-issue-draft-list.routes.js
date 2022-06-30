@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft', {
-            url: '/draft',
+            url: '/draft?facilityId&programId',
             label: 'Draft List',
             priority: 2,
             showInNavigation: false,
@@ -37,8 +37,23 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             resolve: {
-                draftInfo: function(siglusStockIssueService) {
-                    return siglusStockIssueService.getIssueDrafts();
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
+                programId: function($stateParams) {
+                    return $stateParams.programId;
+                },
+                facilityId: function($stateParams) {
+                    return $stateParams.facilityId;
+                },
+                draftInfo: function() {
+                    return {
+                        documentationNo: 'test123123',
+                        issueTo: 'Outros',
+                        destinationFacility: 'Centro de Saude de Macucune',
+                        drafts: []
+                    };
+                    // return siglusStockIssueService.getIssueDrafts();
                 }
             }
         });
