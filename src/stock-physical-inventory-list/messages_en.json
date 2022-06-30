@@ -8,8 +8,10 @@
   "stockPhysicalInventory.actions": "Actions",
   "stockPhysicalInventory.start": "Start",
   "stockPhysicalInventory.continue": "Continue",
+  "stockPhysicalInventory.view": "View",
   "stockPhysicalInventory.notStarted": "Not yet started",
   "stockPhysicalInventory.draft": "Draft",
+  "stockPhysicalInventory.submitted": "Submitted",
   "stockPhysicalInventory.search": "Search",
   "stockPhysicalInventory.selectProgram": "Select Program",
   "stockPhysicalInventory.selectFirst": "Please select the program to start physical inventory."

@@ -43,7 +43,8 @@
       <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
       <td>
         <!--         SIGLUS-REFACTOR: starts here-->
-        <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"
+        <!--        <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"-->
+        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(draft)"
                value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
                class="primary fullwidth-primary-btn"/>
         <!--         SIGLUS-REFACTOR: ends here-->

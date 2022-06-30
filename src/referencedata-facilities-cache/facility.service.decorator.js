@@ -66,8 +66,8 @@
                     return minimalFacilitiesDatabase.getAll();
                 })
             // SIGLUS-REFACTOR: starts here
-                .catch(function(error) {
-                    console.log('getAllMinimal', error);
+                .catch(function() {
+                    // console.log('getAllMinimal', error);
                     return [];
                 });
             // SIGLUS-REFACTOR: ends here

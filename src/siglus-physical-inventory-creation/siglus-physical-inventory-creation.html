@@ -1,0 +1,37 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div ng-class="{'modal-header-warning': vm.showConflictStatus, 'modal-header': !vm.showConflictStatus }">
+        <div class="header-conflict-tips" ng-show="vm.showConflictStatus">{{ 'physicalInventoryCreation.conflictTips' | message }}</div>
+      </div>
+
+      <div class="modal-body">
+        <fieldset>
+          <label>{{'physicalInventoryCreation.label' | message}}
+            <span class="inputNecessary">*</span>
+          </label>
+          <input
+              positive-integer
+              id="userInputSplitNum"
+              ng-model="vm.userInputSplitNum"
+              ng-change="vm.changeShowError()"
+              maxlength="2"
+          />
+
+          <span ng-show="vm.showError" id="validateInputValue">{{'physicalInventoryCreation.error'
+          | message}}</span>
+        </fieldset>
+
+      </div>
+
+      <div class="modal-footer">
+        <button ng-show="!vm.showConflictStatus" ng-click="$hide()">{{'physicalInventoryCreation.cancel' | message}}</button>
+        <button class="primary" ng-click="vm.confirm()">{{'physicalInventoryCreation.confirm'
+        | message}}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

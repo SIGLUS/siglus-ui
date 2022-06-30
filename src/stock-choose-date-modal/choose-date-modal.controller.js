@@ -29,14 +29,16 @@
         .controller('ChooseDateModalController', controller);
 
     // SIGLUS-REFACTOR: add currentUserService
-    controller.$inject = ['$filter', 'modalDeferred', 'authorizationService', 'currentUserService'];
+    controller.$inject = ['$filter', 'modalDeferred', 'authorizationService', 'currentUserService', 'minDate'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller($filter, modalDeferred, authorizationService, currentUserService) {
+    function controller($filter, modalDeferred, authorizationService, currentUserService, minDate) {
         var vm = this;
 
         vm.maxDate = $filter('isoDate')(new Date());
+        // console.log('#### minDate', minDate);
         vm.occurredDate = vm.maxDate;
+        vm.minDate = $filter('isoDate')(minDate);
         vm.signature = '';
         vm.username = authorizationService.getUser().username;
         // SIGLUS-REFACTOR: starts here
