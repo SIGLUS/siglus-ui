@@ -25,8 +25,8 @@
      * This service will pop up a modal window for user to select occurred date and signature.
      */
     angular
-        .module('siglus-requisition-date-picker')
-        .service('siglusRequisitionDatePickerService', service);
+        .module('stock-choose-date-modal')
+        .service('chooseDateModalService', service);
 
     service.$inject = ['openlmisModalService'];
 
@@ -43,26 +43,20 @@
          *
          * @return {Promise} resolved with chosen date and signature.
          */
-        function show(startDate, endDate, datesDisabled) {
-            console.log('#### datesDisabled', datesDisabled);
-            return openlmisModalService.createDialog({
-                controller: 'SiglusRequisitionDatePickerController',
-                controllerAs: 'vm',
-                templateUrl: 'siglus-requisition-date-picker/siglus-requisition-date-picker-model.html',
-                show: true,
-                resolve: {
-                    startDate: function() {
-                        return startDate;
-                    },
-                    endDate: function() {
-                        return endDate;
-                    },
-                    datesDisabled: function() {
-                        return datesDisabled || [];
+        function show(minDate) {
+            return openlmisModalService.createDialog(
+                {
+                    controller: 'ChooseDateModalController',
+                    controllerAs: 'vm',
+                    templateUrl: 'stock-choose-date-modal/choose-date-modal.html',
+                    show: true,
+                    resolve: {
+                        minDate: function() {
+                            return minDate;
+                        }
                     }
                 }
-            }).promise;
-
+            ).promise;
         }
     }
 

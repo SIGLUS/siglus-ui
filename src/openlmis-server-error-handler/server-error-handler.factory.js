@@ -50,10 +50,12 @@
          * @return {Promise}          Rejected promise
          */
         function responseError(response) {
-            if (response.status >= 400 && response.status < 600 && response.status !== 401) {
-                if (response.isBusinessError) {
-                    return;
-                }
+            if (
+                response.status >= 400 &&
+                response.status < 600 &&
+                response.status !== 401 &&
+                !response.data.isBusinessError
+            ) {
                 $timeout(function() {
                     $injector.get('alertService').error(getTitle(response.statusText),
                         getMessage(response.data));

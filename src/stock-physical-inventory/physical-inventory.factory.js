@@ -46,6 +46,7 @@
             getDraft: getDraft,
             getDraftByProgramAndFacility: getDraftByProgramAndFacility,
             getPhysicalInventory: getPhysicalInventory,
+            getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
             saveDraft: saveDraft,
             // SIGLUS-REFACTOR: starts here
             getInitialInventory: getInitialInventory
@@ -69,7 +70,7 @@
             angular.forEach(programIds, function(program) {
                 promises.push(getDraftByProgramAndFacility(program, facility));
             });
-
+            // console.log('#### promises', promises);
             return $q.all(promises);
         }
 
@@ -94,7 +95,6 @@
                             facilityId: facilityId,
                             lineItems: []
                         };
-
                     // no saved draft
                     if (draft.length === 0) {
                         draftToReturn.isStarter = true;
@@ -122,13 +122,12 @@
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
                 var summaries = responses[0],
-                    draft = responses[1],
+                    draft = responses[1].data,
                     draftToReturn = {
                         programId: programId,
                         facilityId: facilityId,
                         lineItems: []
                     };
-
                 // no saved draft
                 if (draft.length === 0) {
                     // SIGLUS-REFACTOR: starts here
@@ -139,7 +138,6 @@
                     prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }
-
                 return draftToReturn;
             });
         }
@@ -159,6 +157,24 @@
             return physicalInventoryService.getPhysicalInventory(id)
                 .then(function(physicalInventory) {
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
+                        .then(function(summaries) {
+                            var draftToReturn = {
+                                programId: physicalInventory.programId,
+                                facilityId: physicalInventory.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            draftToReturn.id = physicalInventory.id;
+
+                            return draftToReturn;
+                        });
+                });
+        }
+
+        function getPhysicalInventorySubDraft(id) {
+            return physicalInventoryService.getPhysicalInventorySubDraft(id)
+                .then(function(physicalInventory) {
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -249,7 +265,9 @@
                 quantities[identityOfLines(lineItem)] = lineItem.quantity;
                 extraData[identityOfLines(lineItem)] = lineItem.extraData;
             });*/
-
+            // console.log('#### summaries', summaries);
+            // console.log('#### physicalInventory', physicalInventory);
+            // console.log('#### draftToReturn', draftToReturn);
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -352,8 +370,11 @@
                 programId: programId,
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
+                // ,
+                // subDraftIds: subDraftIds
             }).then(function(summaries) {
-            // #225: ends here
+                // console.log('#### getStockProducts summaries', summaries);
+                // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

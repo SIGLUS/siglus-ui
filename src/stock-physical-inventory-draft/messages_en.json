@@ -7,6 +7,7 @@
   "stockPhysicalInventoryDraft.lotCodeDuplicate": "The lot code has been used, please enter a new lot",
   "stockPhysicalInventoryDraft.PositiveAdjustment": "Positive adjustment of ${diff} will be made",
   "stockPhysicalInventoryDraft.NegativeAdjustment": "Negative adjustment of ${diff} will be made",
+  "stockPhysicalInventoryDraft.draftList": "Draft List",
   "stockInitialInventory.initialInventory": "Initial inventory",
   "stockInitialDiscard.initialInventory": "Your facility haven't initial inventory yet, Please initial the inventory first.",
   "stockInitialInventory.initialFailed": "Your facility have finished initial inventory.",

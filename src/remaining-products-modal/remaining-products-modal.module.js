@@ -12,29 +12,13 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
+
 (function() {
     'use strict';
 
-    /**
-     * @ngdoc filter
-     * @name stock-physical-inventory-draft.filter:siglusGroupByAllProductProgramProductCategory
-     *
-     * @description
-     * Groups nested array of physical inventory line item by 'orderableCategoryDisplayName'
-     *
-     * @param   {Array}  List of objects to be grouped
-     * @return  {Object} Grouped products - category name as key and array of products as value
-     */
-    angular
-        .module('stock-physical-inventory-draft')
-        .filter('siglusGroupByAllProductProgramProductCategory', filter);
-
-    function filter() {
-        return function(items) {
-            return _.groupBy(items, function(item) {
-                return _.findWhere(item[0].orderable.programs).orderableCategoryDisplayName;
-            });
-        };
-    }
-
+    angular.module('remaining-products-modal', [
+        'openlmis-modal',
+        'stock-orderable-group',
+        'stockmanagement'
+    ]);
 })();
