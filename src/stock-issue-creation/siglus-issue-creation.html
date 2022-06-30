@@ -1,5 +1,5 @@
 <h2>
-    {{vm.key('title') | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+    <h2>{{'issueDraft.issueToTitle' | message: {destination: vm.issueTo, document: vm.documentationNo} }}</h2>
 </h2>
 
 <div class="stock-adjustment-creation">
@@ -20,7 +20,7 @@
                 <div>
                     <label for="productSelect">{{vm.key('product') | message}}</label>
                     <select id="productSelect" ng-model="vm.selectedOrderableGroup"
-                            ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups"
+                            ng-options="orderableGroup[0].orderable.fullProductName for orderableGroup in vm.orderableGroups track by orderableGroup[0].orderable.fullProductName"
                             ng-change="vm.orderableSelectionChanged()"
                             required>
                     </select>
@@ -43,11 +43,9 @@
                 <th>{{vm.key('lotCode') | message}}</th>
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
-                <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                 <th>{{vm.key('date') | message}}</th>
-                <th>{{vm.key('documentationNo') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
             </thead>
@@ -58,12 +56,6 @@
                 <td>{{lineItem.lot.lotCode}}</td>
                 <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td class="text-align-right">{{lineItem.$previewSOH}}</td>
-                <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
-                    <select ng-model="lineItem.assignment"
-                            ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                            ng-options="assignment.name for assignment in vm.filterByProgram(vm.srcDstAssignments, lineItem.orderable) track by assignment.id" autofocus>
-                    </select>
-                </td>
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
@@ -79,9 +71,6 @@
                 <td class="date-cell">
                     <input id="lineItem.occurredDate" class="min-width-date-input" type="date" ng-model="lineItem.occurredDate"
                            ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
-                </td>
-                <td class="digit-cell">
-                    <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100"/>
                 </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>

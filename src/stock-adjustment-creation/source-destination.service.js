@@ -28,9 +28,9 @@
         .module('stock-adjustment-creation')
         .service('sourceDestinationService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$q', '$resource', 'stockmanagementUrlFactory'];
 
-    function service($resource, stockmanagementUrlFactory) {
+    function service($q, $resource, stockmanagementUrlFactory) {
         this.getSourceAssignments = getSourceAssignments;
         this.getDestinationAssignments = getDestinationAssignments;
 
@@ -45,15 +45,16 @@
             }).$promise;
         }
 
-        function getDestinationAssignments(programId, facilityId) {
+        function getDestinationAssignments() {
             // SIGLUS-REFACTOR: starts here
-            var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/validDestinations'));
+            // var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/validDestinations'));
             // SIGLUS-REFACTOR: ends here
+            return $q.resolve(null);
 
-            return resource.query({
-                programId: programId,
-                facilityId: facilityId
-            }).$promise;
+            // return resource.query({
+            //     programId: programId,
+            //     facilityId: facilityId
+            // }).$promise;
         }
     }
 })();

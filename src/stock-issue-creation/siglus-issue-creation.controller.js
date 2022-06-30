@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name stock-issue-creation.controller:SiglusStockIssueCreationController
-     *
-     * @description
-     * Controller for managing stock issue creation.
-     */
+   * @ngdoc controller
+   * @name stock-issue-creation.controller:SiglusStockIssueCreationController
+   *
+   * @description
+   * Controller for managing stock issue creation.
+   */
     angular
         .module('stock-issue-creation')
         .controller('SiglusStockIssueCreationController', controller);
@@ -45,28 +45,32 @@
         var vm = this,
             previousAdded = {};
 
+        vm.issueTo = '';
+
+        vm.documentationNo = '';
+
         vm.draft = draft;
 
         /**
-         * @ngdoc property
-         * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name vvmStatuses
-         * @type {Object}
-         *
-         * @description
-         * Holds list of VVM statuses.
-         */
+     * @ngdoc property
+     * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name vvmStatuses
+     * @type {Object}
+     *
+     * @description
+     * Holds list of VVM statuses.
+     */
         vm.vvmStatuses = VVM_STATUS;
 
         /**
-         * @ngdoc property
-         * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name showVVMStatusColumn
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if VVM Status column should be visible.
-         */
+     * @ngdoc property
+     * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name showVVMStatusColumn
+     * @type {boolean}
+     *
+     * @description
+     * Indicates if VVM Status column should be visible.
+     */
         vm.showVVMStatusColumn = false;
 
         vm.key = function(secondaryKey) {
@@ -74,14 +78,14 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name search
-         *
-         * @description
-         * It searches from the total line items with given keyword. If keyword is empty then all line
-         * items will be shown.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name search
+     *
+     * @description
+     * It searches from the total line items with given keyword. If keyword is empty then all line
+     * items will be shown.
+     */
         vm.search = function(reload) {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
@@ -95,14 +99,44 @@
             });
         };
 
+        vm.setProductGroups = function() {
+            var addedLotIds = _.chain(vm.addedLineItems)
+                .map(function(item) {
+                    return _.get(item, ['lot', 'id']);
+                })
+                .compact()
+                .value();
+            var existingKitProductId = _.chain(vm.addedLineItems)
+                .map(function(item) {
+                    return isEmpty(item.lot) ? item.orderable.id : '';
+                })
+                .compact()
+                .value();
+
+            vm.orderableGroups = _.chain(orderableGroups)
+                .map(function(group) {
+                    return _.filter(group, function(item) {
+                        return isEmpty(addedLotIds) || !_.include(addedLotIds, _.get(item, ['lot', 'id']));
+                    });
+                })
+                .filter(function(group) {
+                    var orderableId = _.get(group, [0, 'orderable', 'id']);
+                    return !_.include(existingKitProductId, orderableId);
+                })
+                .filter(function(item) {
+                    return !_.isEmpty(item);
+                })
+                .value();
+        };
+
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name addProduct
-         *
-         * @description
-         * Add a product for stock adjustment.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name addProduct
+     *
+     * @description
+     * Add a product for stock adjustment.
+     */
         vm.addProduct = function() {
             if (vm.selectedLot && isDateBeforeToday(vm.selectedLot.expirationDate)) {
                 alertService.error('stockIssueCreation.issueExpiredLot');
@@ -119,6 +153,19 @@
                 selectedItem, copyDefaultValue()
             );
             vm.addedLineItems.unshift(item);
+
+            if (_.get(vm.selectedLot, 'id')) {
+                vm.setProductGroups();
+                vm.selectedOrderableGroup = _.filter(vm.selectedOrderableGroup, function(item) {
+                    return _.get(item, ['lot', 'id']) !== vm.selectedLot.id;
+                });
+
+                vm.setLots();
+                vm.setLotSelectionStatus();
+            } else {
+                vm.setProductGroups();
+                vm.selectedOrderableGroup = [];
+            }
 
             previousAdded = vm.addedLineItems[0];
 
@@ -170,32 +217,60 @@
             };
         }
 
+        vm.setSelectedOrderableGroup = function(key, id) {
+            vm.selectedOrderableGroup = _.find(vm.orderableGroups, function(group) {
+                var lotId = _.map(group, function(item) {
+                    return _.get(item, [key, 'id']);
+                });
+                return _.include(lotId, id);
+            });
+        };
+
+        vm.setLots = function() {
+            var addedLotIds = _.chain(vm.addedLineItems).map(function(item) {
+                return _.get(item.lot, 'id');
+            })
+                .compact()
+                .value();
+            vm.lots = _.filter(orderableGroupService.lotsOf(vm.selectedOrderableGroup), function(item) {
+                return addedLotIds.length === 0 || !_.include(addedLotIds, item.id);
+            });
+        };
+
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name remove
-         *
-         * @description
-         * Remove a line item from added products.
-         *
-         * @param {Object} lineItem line item to be removed.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name remove
+     *
+     * @description
+     * Remove a line item from added products.
+     *
+     * @param {Object} lineItem line item to be removed.
+     */
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
+            vm.setProductGroups();
+            var productId = _.get(vm, ['selectedOrderableGroup', 0, 'orderable', 'id']);
+            var isRemoveItemInCurrentProduct = lineItem.orderable.id === productId;
+
+            if (isRemoveItemInCurrentProduct) {
+                vm.setSelectedOrderableGroup('lot', _.get(lineItem, ['lot', 'id']));
+                vm.setLots();
+            }
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name removeDisplayItems
-         *
-         * @description
-         * Remove all displayed line items.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name removeDisplayItems
+     *
+     * @description
+     * Remove all displayed line items.
+     */
         vm.removeDisplayItems = function() {
             confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
                 .then(function() {
@@ -214,15 +289,15 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateQuantity
-         *
-         * @description
-         * Validate line item quantity and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name validateQuantity
+     *
+     * @description
+     * Validate line item quantity and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
@@ -237,33 +312,33 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateAssignment
-         *
-         * @description
-         * Validate line item assignment and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name validateAssignment
+     *
+     * @description
+     * Validate line item assignment and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
         vm.validateAssignment = function(lineItem) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
-                adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
+        adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
             }
             return lineItem;
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateReason
-         *
-         * @description
-         * Validate line item reason and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name validateReason
+     *
+     * @description
+     * Validate line item reason and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
         vm.validateReason = function(lineItem) {
             if (adjustmentType.state === 'adjustment') {
                 lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
@@ -281,31 +356,31 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name validateDate
+     *
+     * @description
+     * Validate line item occurred date and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
         vm.validateDate = function(lineItem) {
             lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
             return lineItem;
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name clearFreeText
-         *
-         * @description
-         * remove free text from given object.
-         *
-         * @param {Object} obj      given target to be changed.
-         * @param {String} property given property to be cleared.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name clearFreeText
+     *
+     * @description
+     * remove free text from given object.
+     *
+     * @param {Object} obj      given target to be changed.
+     * @param {String} property given property to be cleared.
+     */
         vm.clearFreeText = function(obj, property) {
             obj[property] = null;
         };
@@ -392,14 +467,15 @@
         // SIGLUS-REFACTOR: ends here
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name orderableSelectionChanged
-         *
-         * @description
-         * Reset form status and change content inside lots drop down list.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name orderableSelectionChanged
+     *
+     * @description
+     * Reset form status and change content inside lots drop down list.
+     */
         vm.orderableSelectionChanged = function() {
+
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
@@ -408,22 +484,29 @@
 
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
-
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.setSelectedOrderableGroup('orderable', _.get(vm, ['selectedOrderableGroup', 0, 'orderable', 'id']));
+            vm.setLots();
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
+        vm.setLotSelectionStatus = function() {
+            vm.selectedOrderableHasLots = vm.lots.length > 0;
+            if (vm.lots.length === 0) {
+                vm.selectedOrderableGroup = [];
+            }
+        };
+
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name getStatusDisplay
-         *
-         * @description
-         * Returns VVM status display.
-         *
-         * @param  {String} status VVM status
-         * @return {String}        VVM status display name
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name getStatusDisplay
+     *
+     * @description
+     * Returns VVM status display.
+     *
+     * @param  {String} status VVM status
+     * @return {String}        VVM status display name
+     */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
@@ -453,19 +536,19 @@
         function isDateBeforeToday(date) {
             var currentDate = new Date();
             return date.getFullYear() < currentDate.getUTCFullYear()
-                || isMonthInYearBeforeCurrentUTCMonth(date, currentDate)
-                || isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate);
+        || isMonthInYearBeforeCurrentUTCMonth(date, currentDate)
+        || isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate);
         }
 
         function isMonthInYearBeforeCurrentUTCMonth(date, currentDate) {
             return date.getFullYear() === currentDate.getUTCFullYear()
-                && date.getMonth() < currentDate.getUTCMonth();
+        && date.getMonth() < currentDate.getUTCMonth();
         }
 
         function isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate) {
             return date.getFullYear() === currentDate.getUTCFullYear()
-                && date.getMonth() === currentDate.getUTCMonth()
-                && date.getDate() < currentDate.getUTCDate();
+        && date.getMonth() === currentDate.getUTCMonth()
+        && date.getDate() < currentDate.getUTCDate();
         }
 
         function isEmpty(value) {
@@ -540,11 +623,7 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
+            $state.current.label = messageService.get($stateParams.draftId);
 
             initViewModel();
             initStateParams();
@@ -574,8 +653,8 @@
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-
-            vm.orderableGroups = orderableGroups;
+            vm.orderableGroups = _.clone(orderableGroups);
+            vm.setProductGroups();
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
