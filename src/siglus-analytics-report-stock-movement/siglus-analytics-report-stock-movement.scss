@@ -6,6 +6,10 @@ $stock-movement-info:#949aab;
   font-family: $stock-movement-font-family;
   color:$stock-movement-color;
 
+  .stock-movement-card{
+    overflow-x: scroll;
+  }
+
 
   .stock-movement-header {
     display: flex;
@@ -26,6 +30,7 @@ $stock-movement-info:#949aab;
   .stock-movement-header .facility .info {
     margin-right: 100px;
     font-weight: bold;
+    display: inline-block;
   }
 
   #stock-movement-table{
