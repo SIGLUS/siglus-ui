@@ -38,7 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'remainingProductsModalService', 'subDraftIds'
+        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,7 +50,7 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, remainingProductsModalService, subDraftIds) {
+                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -346,7 +346,7 @@
         // SIGLUS-REFACTOR: starts here
         var openRemainingModal = function(type, data) {
             // var conflictData = data;
-            remainingProductsModalService.show(data).then(function() {
+            siglusRemainingProductsModalService.show(data).then(function() {
                 saveOrSubmit(type, data);
             });
         };

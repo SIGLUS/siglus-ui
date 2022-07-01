@@ -16,7 +16,7 @@
 (function() {
     'use strict';
 
-    angular.module('remaining-products-modal', [
+    angular.module('siglus-remaining-products-modal', [
         'openlmis-modal',
         'stock-orderable-group',
         'stockmanagement'

@@ -17,11 +17,11 @@
 
     'use strict';
     angular
-        .module('remaining-products-modal')
-        .controller('remainingProductsModalController', controller);
+        .module('siglus-remaining-products-modal')
+        .controller('siglusRemainingProductsModalController', controller);
 
     controller.$inject = [
-        '$state', 'remainingProductsModalService', 'modalDeferred', 'items'
+        '$state', 'siglusRemainingProductsModalService', 'modalDeferred', 'items'
     ];
 
     function controller($state, remainingProductsModalService, modalDeferred, items) {
