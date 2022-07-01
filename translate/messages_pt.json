@@ -2217,5 +2217,33 @@
   "analyticsReportMetabase.requisitionAndMonthly.title": "Requisições & Mapas Mensais",
   "analyticsReportMetabase.sohReportByProduct.title": "Relatório de stock existente por Produto",
   "analyticsReportMetabase.sohByLot.title": "Relatório de stock existente por Lote",
-  "analyticsReportMetabase.stockStatus.title": "Relatório do estado de stock"
+  "analyticsReportMetabase.stockStatus.title": "Relatório do estado de stock",
+
+  "stockRemainingProductsModal.productCode": "Código de produto",
+  "stockRemainingProductsModal.product": "Produto",
+  "stockRemainingProductsModal.currentStock": "Stock actual",
+  
+  "stockRemainingProductsModal.title": "The products below have been added to other drafts, are you sure you want to remove these products from your draft?",
+  "stockRemainingProductsModal.conflictWith": "Conflict with",
+
+  "PhysicalInventoryDraftList.stockManagement": "Gestão de stocks",
+  "PhysicalInventoryDraftList.physicalInventory": "Inventário físico",
+  "PhysicalInventoryDraftList.title": "Inventário físico para ${facility} - ${program}",
+  "PhysicalInventoryDraftList.draftNumber": "Número do rascunho",
+  "PhysicalInventoryDraftList.status": "Estado",
+  "PhysicalInventoryDraftList.operator": "Operador",
+  "PhysicalInventoryDraftList.actions": "Ações",
+  "PhysicalInventoryDraftList.start": "Começar",
+  "PhysicalInventoryDraftList.View": "Visualizar",
+  "PhysicalInventoryDraftList.notStarted": "Não iniciado",
+  "PhysicalInventoryDraftList.submitted": "Submetido",
+  "PhysicalInventoryDraftList.merge": "Finalizar para Mesclar",
+  "PhysicalInventoryDraftList.delete": "Excluir",
+  "PhysicalInventoryDraftList.mergeError": "Todos os rascunhos devem ser enviados antes de serem mesclados..",
+  "PhysicalInventoryDraftList.cancel": "Cancelar",
+  "PhysicalInventoryDraftList.confirm": "Confirme",
+
+  "PhysicalInventoryDraftList.draftList": "Draft List",
+  "PhysicalInventoryDraftList.continue": "Continue",
+  "PhysicalInventoryDraftList.draft": "Draft"
 }

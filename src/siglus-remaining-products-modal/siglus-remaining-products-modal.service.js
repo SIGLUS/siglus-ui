@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc service
-     * @name remaining-products-modal.remainingProductsModalService
+     * @name siglus-remaining-products-modal.siglusRemainingProductsModalService
      *
      * @description
      * Modal for selecting products.
      */
     angular
-        .module('remaining-products-modal')
-        .service('remainingProductsModalService', service);
+        .module('siglus-remaining-products-modal')
+        .service('siglusRemainingProductsModalService', service);
 
     service.$inject = ['$state', 'openlmisModalService'];
 
@@ -57,9 +57,9 @@
             // console.log('items --->>>', items);
             return openlmisModalService.createDialog(
                 {
-                    controller: 'remainingProductsModalController',
+                    controller: 'siglusRemainingProductsModalController',
                     controllerAs: 'vm',
-                    templateUrl: 'remaining-products-modal/remaining-products-modal.html',
+                    templateUrl: 'siglus-remaining-products-modal/siglus-remaining-products-modal.html',
                     show: true,
                     resolve: {
                         items: function() {
