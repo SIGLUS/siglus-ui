@@ -322,7 +322,6 @@
 
         // SIGLUS-REFACTOR: starts here
         function reload(reload) {
-            console.log('#### $state.current.name', $state.current.name);
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
