@@ -84,7 +84,10 @@
                 stockMovementItemArr.push(item.signature);
                 stockMovementArr.push(stockMovementItemArr);
             });
-            return stockMovementArr;
+
+            return  _.sortBy(stockMovementArr, function(item) {
+                return item[0];
+            }).reverse();
         }
         function exportExcel() {
             // eslint-disable-next-line no-undef
