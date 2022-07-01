@@ -230,10 +230,6 @@
          */
         // SIGLUS-REFACTOR: starts here
         function saveDraft(draft) {
-            // console.log('#### draft', draft);
-            // var newDraft = _.omit(draft, ['subDraftIds']);
-            // var subDraftIds = _.pick(draft, ['subDraftIds']).subDraftIds;
-            // console.log('subDraftIds --->>>', subDraftIds);
             return resource.update(siglusStockEventService.formatPayload(draft)).$promise;
         }
         // SIGLUS-REFACTOR: ends here
@@ -257,8 +253,6 @@
         }
 
         function deleteDraft(ids) {
-            console.log('##### ids', ids);
-            // console.log('function --->>', resource.delete);
             return resource.delete({}, ids).$promise;
         }
 

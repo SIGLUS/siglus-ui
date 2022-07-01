@@ -106,7 +106,6 @@
                 return undefined;
             }
             var selectedItem = vm.selectedOrderableGroup[0];
-            console.log('### selectedItem', selectedItem);
             selectedItem.lot = undefined;
             // SIGLUS-REFACTOR: ends here -->
 

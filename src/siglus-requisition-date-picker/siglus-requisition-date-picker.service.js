@@ -44,7 +44,6 @@
          * @return {Promise} resolved with chosen date and signature.
          */
         function show(startDate, endDate, datesDisabled) {
-            console.log('#### datesDisabled', datesDisabled);
             return openlmisModalService.createDialog({
                 controller: 'SiglusRequisitionDatePickerController',
                 controllerAs: 'vm',
