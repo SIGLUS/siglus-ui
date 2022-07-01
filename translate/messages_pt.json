@@ -2245,5 +2245,12 @@
 
   "PhysicalInventoryDraftList.draftList": "Draft List",
   "PhysicalInventoryDraftList.continue": "Continue",
-  "PhysicalInventoryDraftList.draft": "Draft"
+  "PhysicalInventoryDraftList.draft": "Draft",
+
+  "physicalInventoryCreation.error": "Please enter an integer between 1 and 10.",
+
+  "physicalInventoryCreation.label": "Insira o número de usuários que fazem o inventário",
+  "physicalInventoryCreation.cancel": "Cancelar",
+  "physicalInventoryCreation.confirm": "Confirme",
+  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first."
 }

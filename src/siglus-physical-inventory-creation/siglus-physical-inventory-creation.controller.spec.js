@@ -13,8 +13,8 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('SiglusPhysicalInventoryCeationController', function() {
-    var vm, $rootScope, $controller, $scope;
+describe('siglusPhysicalInventoryCeationController', function() {
+    var vm, $rootScope, $controller, $scope, $q, modalDeferred;
     beforeEach(function() {
         module('siglus-physical-inventory-creation');
         module('openlmis-modal');
@@ -23,19 +23,35 @@ describe('SiglusPhysicalInventoryCeationController', function() {
             $rootScope = $injector.get('$rootScope');
             $scope = $rootScope.$new();
             $controller = $injector.get('$controller');
-        });
+            $q = $injector.get('$q');
+            modalDeferred = $q.defer();
 
-        vm = $controller('SiglusPhysicalInventoryCeationController', {
-            $scope: $scope
-        });
-
-        vm.$onInit();
-
-        describe('onInit', function() {
-            console.log('vm --->>>', vm);
-            it('should get default columns', function() {
-                expect(2).toBe(2);
+            vm = $controller('SiglusPhysicalInventoryCreationController', {
+                $scope: $scope,
+                modalDeferred: modalDeferred
             });
+        });
+    });
+
+    describe('isValid funcition', function() {
+        it('should correspond this rules', function() {
+            var userInputSplitNum = 5;
+
+            expect(vm.isValid(userInputSplitNum)).toEqual(true);
+        });
+
+        it('should incompatible this rules', function() {
+            var userInputSplitNum = 15;
+
+            expect(vm.isValid(userInputSplitNum)).toEqual(false);
+        });
+    });
+
+    describe('changeShowError funcition', function() {
+        it('should correspond this rules', function() {
+            vm.changeShowError();
+
+            expect(vm.showError).toEqual(false);
         });
     });
 });

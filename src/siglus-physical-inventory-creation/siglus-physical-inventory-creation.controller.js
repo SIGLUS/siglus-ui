@@ -21,7 +21,6 @@
         .controller('SiglusPhysicalInventoryCreationController', controller);
 
     controller.$inject = [
-        'draft',
         'loadingModalService',
         'modalDeferred',
         '$state',
@@ -32,7 +31,6 @@
     ];
 
     function controller(
-        draft,
         loadingModalService,
         modalDeferred,
         $state,
@@ -44,9 +42,7 @@
         var vm = this;
         vm.showConflictStatus = false;
         vm.userInputSplitNum = '';
-        vm.drafts = [];
         vm.confirm = confirm;
-        vm.draft = draft;
         vm.showError = false;
         facilityFactory.getUserHomeFacility().then(function(res) {
             vm.facility = res;

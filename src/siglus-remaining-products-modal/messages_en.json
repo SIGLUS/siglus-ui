@@ -3,5 +3,7 @@
     "stockRemainingProductsModal.productCode": "productCode",
     "stockRemainingProductsModal.product": "product",
     "stockRemainingProductsModal.currentStock": "currentStock",
-    "stockRemainingProductsModal.conflictWith": "Conflict with"
+    "stockRemainingProductsModal.conflictWith": "Conflict with",
+    "stockRemainingProductsModal.confirm": "Confirm",
+    "stockRemainingProductsModal.cancel": "Cancel"
 }
