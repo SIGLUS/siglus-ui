@@ -17,8 +17,6 @@
     'use strict';
 
     angular.module('siglus-remaining-products-modal', [
-        'openlmis-modal',
-        'stock-orderable-group',
-        'stockmanagement'
+        'openlmis-modal'
     ]);
 })();
