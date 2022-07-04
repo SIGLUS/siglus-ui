@@ -171,10 +171,10 @@
                 });
         }
 
-        function getPhysicalInventorySubDraft(id) {
+        function getPhysicalInventorySubDraft(id, flag) {
             return physicalInventoryService.getPhysicalInventorySubDraft(id)
                 .then(function(physicalInventory) {
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id)
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -266,7 +266,7 @@
                 extraData[identityOfLines(lineItem)] = lineItem.extraData;
             });*/
             // console.log('#### summaries', summaries);
-            // console.log('#### physicalInventory', physicalInventory);
+            console.log('#### physicalInventory', physicalInventory);
             // console.log('#### draftToReturn', draftToReturn);
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
@@ -362,16 +362,19 @@
         }*/
         // SIGLUS-REFACTOR: ends here
 
-        function getStockProducts(programId, facilityId) {
+        function getStockProducts(programId, facilityId, subDraftIds, flag) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
 
             // #225: cant view detail page when not have stock view right
-            return repository.query({
+            return repository.query(flag ? {
                 programId: programId,
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
-                // ,
-                // subDraftIds: subDraftIds
+            } : {
+                programId: programId,
+                facilityId: facilityId,
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
+                subDraftIds: subDraftIds
             }).then(function(summaries) {
                 // console.log('#### getStockProducts summaries', summaries);
                 // #225: ends here

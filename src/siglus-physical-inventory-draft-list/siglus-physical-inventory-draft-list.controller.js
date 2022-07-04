@@ -83,13 +83,14 @@
             // console.log(item);
             var stateParams = angular.copy($stateParams);
             stateParams.subDraftIds = item.subDraftId.join(',');
+            stateParams.actionType =  vm.actionType(item.status);
             stateParams.draftLabel = 'Draft ' + item.groupNum;
             $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
 
         vm.deleteDrafts = function() {
             alertConfirmModalService.error(
-                'PhysicalInventoryDraftList.mergeError',
+                'PhysicalInventoryDraftList.deleteWarn',
                 '',
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
@@ -130,7 +131,7 @@
             $state.current.label = programName;
             draftList.subDrafts = _.sortBy(draftList.subDrafts, 'groupNum');
             vm.draftList = draftList;
-            vm.isShowDeleteAndMerge = !draftList.mergePermission;
+            vm.isShowDeleteAndMerge = draftList.canMergeOrDeleteDrafts;
         }
 
     }

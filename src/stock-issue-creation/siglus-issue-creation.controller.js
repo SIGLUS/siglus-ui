@@ -318,7 +318,49 @@
          * @description
          * Submit all added items.
          */
+        // function getPdfName(date, facilityName, id) {
+        //     return (
+        //         'Requi' + id
+        //         + '_' + facilityName + '_'
+        //         + openlmisDateFilter(date, 'MMM') + ' '
+        //         + openlmisDateFilter(date, 'dd') + '_'
+        //         + openlmisDateFilter(date, 'yyyy')
+        //         + '_MMIT.pdf'
+        //     );
+        // }
+        // function downloadPdf() {
+        //     var node = document.getElementById('waitDownload');
+        //     var contentWidth = node.offsetWidth;
+        //     var contentHeight = node.scrollHeight;
+        //     var imgWidth = 595.28;
+        //     var imgHeight = 592.28 / contentWidth * contentHeight;
+        //     // var rate = contentWidth / 595.28;
+        //     // var imgY = contentHeight / rate;
+        //     // eslint-disable-next-line no-undef
+        //     domtoimage.toPng(node, {
+        //         scale: 1,
+        //         width: contentWidth,
+        //         height: contentHeight
+        //     }).then(function(data) {
+        //         var pageData = data;
+        //         // eslint-disable-next-line no-undef
+        //         var PDF = new jsPDF('', 'pt', 'a4');
+        //         // 595×842 a4纸
+        //         PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+
+        //         PDF.save('test.pdf');
+        //         // PDF.save(
+        //         //     getPdfName(
+        //         //         requisition.processingPeriod.startDate,
+        //         //         facility.name,
+        //         //         requisition.id.substring(0, 6)
+        //         //     )
+        //         // );
+        //     });
+        // };
         vm.submit = function() {
+            // TODO after submit, download this pdf
+            // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
                 siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {

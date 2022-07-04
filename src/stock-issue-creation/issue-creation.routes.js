@@ -138,7 +138,7 @@
                 orderableIds.push(group[0].orderable.id);
             } else {
                 group.forEach(function(lotItem) {
-                    lotIds.push(lotItem.lot.id);
+                    lotIds.push(_.get(lotItem, ['lot', 'id']));
                 });
             }
 

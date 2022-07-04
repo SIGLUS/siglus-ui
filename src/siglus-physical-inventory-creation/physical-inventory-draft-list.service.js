@@ -26,7 +26,7 @@
    */
     angular
         .module('siglus-physical-inventory-creation')
-        .service('physicalInventoryDraftListService', service);
+        .service('siglusPhysicalInventoryDraftListService', service);
 
     service.$inject = [
         '$resource',

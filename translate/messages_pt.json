@@ -2239,7 +2239,8 @@
   "PhysicalInventoryDraftList.submitted": "Submetido",
   "PhysicalInventoryDraftList.merge": "Finalizar para Mesclar",
   "PhysicalInventoryDraftList.delete": "Excluir",
-  "PhysicalInventoryDraftList.mergeError": "Todos os rascunhos devem ser enviados antes de serem mesclados..",
+  "PhysicalInventoryDraftList.mergeError": "Todos os rascunhos devem ser enviados antes de serem mesclados.",
+  "PhysicalInventoryDraftList.deleteWarn": "Depois de excluir todos os rascunhos, o processo existente será perdido e não poderá ser recuperado.",
   "PhysicalInventoryDraftList.cancel": "Cancelar",
   "PhysicalInventoryDraftList.confirm": "Confirme",
 

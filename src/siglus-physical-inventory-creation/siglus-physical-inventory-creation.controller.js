@@ -24,7 +24,7 @@
         'loadingModalService',
         'modalDeferred',
         '$state',
-        'physicalInventoryDraftListService',
+        'siglusPhysicalInventoryDraftListService',
         'facilityFactory',
         '$stateParams',
         'physicalInventoryService'
@@ -34,7 +34,7 @@
         loadingModalService,
         modalDeferred,
         $state,
-        physicalInventoryDraftListService,
+        siglusPhysicalInventoryDraftListService,
         facilityFactory,
         $stateParams,
         physicalInventoryService

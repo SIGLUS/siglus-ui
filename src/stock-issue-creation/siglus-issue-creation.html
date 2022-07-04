@@ -93,4 +93,53 @@
     </section>
 </div>
 
+<div id="waitDownload" class="wait-for-download">
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+          <td rowspan="4" class="background-black banner-text black-width">
+            <div class="banner-text text-nowrap">CMAM - Modelo 02</div>
+          </td>
+          <td  class="logo--center"><span class="view-table-logo"></span></td>
+          <td class="text__left">
+            <h6 openlmis-message="view.rnr.republic.of.mozambique">
+              {{ 'rapid.republic_of_mozambique' | message }}
+            </h6>
+            <h6 openlmis-message="view.rnr.ministry.of.health">
+              {{ 'rapid.ministry_of_health' | message }}
+            </h6>
+            <h6 openlmis-message="view.rnr.central.medicines.and.medical.arricles">
+              {{ 'rapid.central_medicines_and_medical_articles' | message }}
+            </h6>
+          </td>
+          <td class="report--title width-348">
+            <span class="report--title-font">
+              Issue Voucher Nº
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="text__left">Supplier</td>
+          <td class="text__left">Client</td>
+          <td rowspan="2" class="text__left">Supply</td>
+        </tr>
+        <tr>
+          <td class="text__left">District</td>
+          <td class="text__left">Requisition Nr</td>
+        </tr>
+        <tr>
+          <td class="text__left"></td>
+          <td class="text__left">Total of volume</td>
+          <td rowspan="3" class="text__left">Returned</td>
+          <td rowspan="3" class="text__left">Expired Overstocked</td>
+        </tr>
+        <tr>
+          <td class="text__left"></td>
+          <td class="text__left">Requisition date</td>
+        </tr>
+        <tr>
+          <td class="text__left">Province</td>
+          <td class="text__left">Issue voucher date</td>
+        </tr>
+      </table>
+</div>
 <ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>
