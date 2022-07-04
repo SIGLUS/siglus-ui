@@ -387,13 +387,13 @@ describe('PhysicalInventoryDraftController', function() {
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: starts here
-            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-                {
-                    program: program.id,
-                    facility: facility.id
-                }, {
-                    reload: true
-                });
+            // expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+            //     {
+            //         program: program.id,
+            //         facility: facility.id
+            //     }, {
+            //         reload: true
+            //     });
             // SIGLUS-REFACTOR: ends here
         });
 

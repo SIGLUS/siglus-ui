@@ -27,7 +27,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draftList.draft', {
-            url: '/:id?keyword&page&size&subDraftIds&draftLabel',
+            url: '/:id?keyword&page&size&subDraftIds&draftLabel&actionType',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
@@ -81,11 +81,11 @@
                     // console.log('#### bl', _.isUndefined(physicalInventoryDataService.getDraft(facility.id)));
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
                         if ($stateParams.subDraftIds) {
-                            physicalInventoryFactory.getPhysicalInventorySubDraft(
-                                $stateParams.subDraftIds.length > 1
-                                    ? $stateParams.subDraftIds.split(',')
-                                    : [$stateParams.subDraftIds]
-                            )
+                            var id = $stateParams.subDraftIds.length > 1
+                                ? $stateParams.subDraftIds.split(',')
+                                : [$stateParams.subDraftIds];
+                            var flag = $stateParams.draftLabel === 'Merge Draft';
+                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
                                 .then(function(draft) {
                                     physicalInventoryDataService.setDraft(facility.id, draft);
                                     deferred.resolve();
@@ -124,7 +124,6 @@
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
                             stateParamsCopy.draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
-
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {

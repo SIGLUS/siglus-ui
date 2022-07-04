@@ -16,6 +16,7 @@
   "PhysicalInventoryDraftList.merge": "Finalize to merge",
   "PhysicalInventoryDraftList.delete": "Delete",
   "PhysicalInventoryDraftList.mergeError": "All drafts must be submitted before they can be merged.",
+  "PhysicalInventoryDraftList.deleteWarn": "Once delete all the drafts, the existing process will lose and cannot be recovered.",
   "PhysicalInventoryDraftList.cancel": "Cancel",
   "PhysicalInventoryDraftList.confirm": "Confirm"
 }

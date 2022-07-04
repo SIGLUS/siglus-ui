@@ -66,6 +66,8 @@
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
+        vm.actionType = $stateParams.actionType;
+        vm.isMergeDraft = $stateParams.draftLabel === 'Merge Draft';
         var draft = physicalInventoryDataService.getDraft(facility.id);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
@@ -82,7 +84,6 @@
          * Holds current display physical inventory draft line items grouped by orderable id.
          */
         vm.displayLineItemsGroup = displayLineItemsGroup;
-
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
@@ -430,6 +431,10 @@
 
         // todo wait for #56
         var deleteDraft = function() {
+            if (vm.isMergeDraft) {
+                $state.go('openlmis.stockmanagement.physicalInventory.draftList');
+                return;
+            }
             confirmService.confirmDestroy(
                 'stockPhysicalInventoryDraft.deleteDraft',
                 'stockPhysicalInventoryDraft.delete'
@@ -476,9 +481,10 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
-                    // SIGLUS-REFACTOR: starts here
-                    if ($stateParams.draftLabel === 'Merge Draft') {
-                        // SIGLUS-REFACTOR: starts here
+                    if (
+                        $stateParams.draftLabel === 'Merge Draft' ||
+                        $stateParams.program === '00000000-0000-0000-0000-000000000000'
+                    ) {
                         physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                             summaries: []
                         }))
@@ -498,44 +504,30 @@
                                 loadingModalService.close();
                                 alertService.error('stockPhysicalInventoryDraft.submitFailed');
                             });
-                        // SIGLUS-REFACTOR: ends here
-                        return;
-                    }
-                    physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
-                        summaries: [],
-                        subDraftIds: subDraftIds
-                    }))
-                        .then(function() {
-                            if (vm.isInitialInventory) {
-                                currentUserService.clearCache();
-                                navigationStateService.clearStatesAvailability();
-                            }
-                            notificationService.success('stockPhysicalInventoryDraft.submitted');
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                program: program.id,
-                                facility: facility.id
-                            }, {
-                                reload: true
+                    } else {
+                        physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
+                            summaries: [],
+                            subDraftIds: subDraftIds
+                        }))
+                            .then(function() {
+                                if (vm.isInitialInventory) {
+                                    currentUserService.clearCache();
+                                    navigationStateService.clearStatesAvailability();
+                                }
+                                notificationService.success('stockPhysicalInventoryDraft.submitted');
+                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                    program: program.id,
+                                    facility: facility.id
+                                }, {
+                                    reload: true
+                                });
+                            })
+                            .catch(function(error) {
+                                loadingModalService.close();
+                                var data = error.data.businessErrorExtraData;
+                                openRemainingModal('submit', data);
                             });
-                            /*confirmService.confirm('stockPhysicalInventoryDraft.printModal.label',
-                                'stockPhysicalInventoryDraft.printModal.yes',
-                                'stockPhysicalInventoryDraft.printModal.no')
-                                .then(function() {
-                                    $window.open(accessTokenFactory.addAccessToken(getPrintUrl(draft.id)), '_blank');
-                                })
-                                .finally(function() {
-                                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                        program: program.id,
-                                        facility: facility.id
-                                    });
-                                });*/
-                        })
-                        .catch(function(error) {
-                            loadingModalService.close();
-                            var data = error.data.businessErrorExtraData;
-                            openRemainingModal('submit', data);
-                        });
-                    // SIGLUS-REFACTOR: ends here
+                    }
                 });
             }
         };
@@ -691,6 +683,7 @@
             }, function(newList) {
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
+                // console.log('#### categories', categories);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 // SIGLUS-REFACTOR: ends here
             }, true);

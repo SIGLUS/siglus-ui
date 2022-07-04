@@ -29,7 +29,7 @@
                 showInNavigation: false,
                 views: {
                     '@openlmis': {
-                        templateUrl: 'siglus-physical-inventory-draft-list/physical-inventory-draft-list.html',
+                        templateUrl: 'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list.html',
                         controller: 'siglusPhysicalInventoryDraftListController',
                         controllerAs: 'vm'
                     }
@@ -67,14 +67,13 @@
                         return physicalInventoryFactory.getDrafts(programId,
                             facility.id);
                     },
-                    draftList: function(physicalInventoryDraftListService, programs,
+                    draftList: function(siglusPhysicalInventoryDraftListService, programs,
                         facility, $stateParams) {
-                        // console.log('physicalInventoryDraftListService', physicalInventoryDraftListService);
                         if (_.isUndefined(facility)) {
                             return [];
                         }
                         var isDraft = true;
-                        return physicalInventoryDraftListService.getDraftList(
+                        return siglusPhysicalInventoryDraftListService.getDraftList(
                             facility.id,
                             isDraft,
                             $stateParams.programId
