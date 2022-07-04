@@ -35,7 +35,8 @@
             REQUISITION_MONTHLY_REPORT: 'requisition_monthly_report',
             SOH_REPORT_BY_PRODUCT: 'soh_report_by_product',
             SOH_BY_LOT_REPORT: 'soh_by_lot_report',
-            STOCK_STATUS_REPORT: 'stock_status_report'
+            STOCK_STATUS_REPORT: 'stock_status_report',
+            MMIA_REGIMENS_REPORT: 'mmia_regimens_report'
         };
     }
 

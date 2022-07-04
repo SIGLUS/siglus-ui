@@ -73,6 +73,12 @@
                 label: 'analyticsReportMetabase.stockStatus.title',
                 url: '/stockStatus',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.mmiaRegimens',
+                label: 'analyticsReportMetabase.mmiaRegimens.title',
+                url: '/mmiaRegimens',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMIA_REGIMENS_REPORT
             }
         ];
 
