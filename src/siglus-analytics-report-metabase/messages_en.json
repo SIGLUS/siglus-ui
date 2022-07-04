@@ -6,5 +6,6 @@
   "analyticsReportMetabase.requisitionAndMonthly.title": "Requisitions & Monthly Report",
   "analyticsReportMetabase.sohReportByProduct.title": "SOH by Product Report",
   "analyticsReportMetabase.sohByLot.title": "SOH by Lot Report",
-  "analyticsReportMetabase.stockStatus.title": "Stock Status Report"
+  "analyticsReportMetabase.stockStatus.title": "Stock Status Report",
+  "analyticsReportMetabase.mmiaRegimens.title": "MMIA Regimens Report"
 }
