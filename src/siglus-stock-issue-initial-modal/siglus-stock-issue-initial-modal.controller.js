@@ -28,10 +28,10 @@
         .module('siglus-stock-issue-initial-modal')
         .controller('SiglusInitialIssueModalController', controller);
 
-    controller.$inject = ['$state', 'siglusInitialIssueModalService', 'modalDeferred',
+    controller.$inject = ['programId', 'facilityId', '$state', 'siglusInitialIssueModalService', 'modalDeferred',
         'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
 
-    function controller($state, siglusInitialIssueModalService, modalDeferred,
+    function controller(programId, facilityId, $state, siglusInitialIssueModalService, modalDeferred,
                         siglusStockIssueService, sourceDestinationService, loadingModalService) {
         var vm = this;
 
@@ -52,26 +52,29 @@
         };
 
         vm.submitForm = function() {
-            var params = siglusStockIssueService.baseParams;
             if (vm.hasError) {
-                siglusStockIssueService.getIssueDrafts(params.userId, params.programId,
-                    params.facilityId, params.adjustmentTypeState).then(function(data) {
-                    modalDeferred.resolve(data);
-                });
+                modalDeferred.resolve(true);
             } else {
-                siglusStockIssueService.initIssueDraft(Object.assign({}, params, {
-                    issueTo: vm.issueTo,
-                    documentationNo: vm.documentationNo,
-                    destinationFacility: vm.destinationFacility
-                })).then(function() {
+                siglusStockIssueService.initIssueDraft({
+                    programId: programId,
+                    facilityId: facilityId,
+                    destinationId: vm.issueTo.id,
+                    destinationName: vm.issueTo.name,
+                    documentNumber: vm.documentationNo,
+                    locationFreeText: vm.destinationFacility
+                }).then(function(issueToInfo) {
                     modalDeferred.resolve();
                     $state.go('openlmis.stockmanagement.issue.draft', {
-                        facilityId: params.facilityId,
-                        programId: params.programId
+                        facilityId: facilityId,
+                        programId: programId,
+                        issueToInfo: issueToInfo
                     });
                 })
-                    .catch(function() {
-                        vm.hasError = true;
+                    .catch(function(error) {
+                        if (error.data.isBusinessError
+                          && error.data.businessErrorExtraData === 'same initial draft exists') {
+                            vm.hasError = true;
+                        }
                     });
             }
 

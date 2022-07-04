@@ -26,9 +26,6 @@
     function service(openlmisModalService) {
         this.show = show;
 
-        this.programId = '';
-        this.facilityId = '';
-
         function show(programId, facilityId) {
             this.programId = programId;
             this.facilityId = facilityId;
@@ -38,7 +35,15 @@
                     controllerAs: 'vm',
                     templateUrl: 'siglus-stock-issue-initial-modal/siglus-stock-issue-initial-modal.html',
                     show: true,
-                    resolve: {}
+                    resolve: {
+                        programId: function() {
+                            return programId;
+                        },
+                        facilityId: function() {
+                            return facilityId;
+                        }
+                    }
+
                 }
             ).promise.finally(function() {
                 angular.element('.popover').popover('destroy');

@@ -14,13 +14,16 @@
  */
 
 describe('SiglusIssueDraftListController', function() {
-    var vm, $q, confirmDeferred, $rootScope, alertService, confirmService, siglusStockIssueService, $controller;
+    var vm, $q, confirmDeferred, $rootScope, alertService, confirmService, siglusStockIssueService,
+        stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE;
 
     function prepareInjector() {
         inject(function($injector) {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             siglusStockIssueService = $injector.get('siglusStockIssueService');
+            stockAdjustmentFactory = $injector.get('stockAdjustmentFactory');
+            ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
             alertService = $injector.get('alertService');
             confirmService = $injector.get('confirmService');
             $controller = $injector.get('$controller');
@@ -29,6 +32,7 @@ describe('SiglusIssueDraftListController', function() {
 
     function prepareSpies() {
         spyOn(siglusStockIssueService, 'removeIssueDraft').andReturn($q.resolve());
+        spyOn(stockAdjustmentFactory, 'getDraft').andReturn($q.resolve([]));
         spyOn(alertService, 'error');
         confirmDeferred = $q.defer();
         spyOn(confirmService, 'confirmDestroy').andReturn(confirmDeferred.promise);
@@ -38,6 +42,18 @@ describe('SiglusIssueDraftListController', function() {
     function prepareData() {
 
         vm = $controller('SiglusIssueDraftListController', {
+            user: {
+                // eslint-disable-next-line camelcase
+                user_id: 'C00001'
+            },
+            programId: '000000-000000-000000-0000000',
+            facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+            issueToInfo: {
+                documentNumber: 'number-1',
+                destinationId: '00001',
+                destinationName: 'aaaa'
+            },
+            adjustmentType: ADJUSTMENT_TYPE.ISSUE,
             draftInfo: {
                 documentationNo: 'abc',
                 issueTo: 'efc',
@@ -66,6 +82,8 @@ describe('SiglusIssueDraftListController', function() {
     beforeEach(function() {
         module('stockmanagement');
         module('siglus-issue-draft-list');
+        module('stock-adjustment');
+        module('stock-orderable-group');
 
         prepareInjector();
         prepareSpies();

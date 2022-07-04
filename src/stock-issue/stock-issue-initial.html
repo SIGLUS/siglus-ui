@@ -1,5 +1,4 @@
 <h2 ng-show="vm.facility">{{ vm.key('title') | message: {'facility': vm.facility.name} }}</h2>
-
 <section class="openlmis-table-container">
     <table>
         <caption ng-if="!vm.programs.length">{{vm.key('noProgramAvailable') | message}}
@@ -7,30 +6,32 @@
         <thead>
         <tr>
             <th style="min-width: 160px;">{{vm.key('program') | message}}</th>
+            <th style="min-width: 160px;" ng-if="vm.adjustmentType.state === 'issue'">{{vm.key('status') | message}}</th>
             <th>{{vm.key('action') | message}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="program in vm.programs">
             <td style="min-width: 160px;">{{program.name}}</td>
+            <td style="min-width: 160px;" >{{vm.key(vm.issueToInfo.destinationId ? 'draft' : 'notStarted') | message}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
-            <td ng-if="program.draft">
+            <td ng-if="vm.issueToInfo.destinationId">
 
                 <input
                         id="continueButton"
                         type="button"
                         value="{{(vm.key('continue')) | message}}"
                         class="primary"
-                        ng-click="vm.proceed(program)"
+                        ng-click="vm.proceedForIssue(program)"
                 />
             </td>
-            <td ng-if="!program.draft">
+            <td ng-if="!vm.issueToInfo.destinationId">
                 <input
                         id="startButton"
                         type="button"
-                        value="{{vm.key('start') | message}}"
+                        value="{{vm.key('issueStart') | message}}"
                         class="primary"
-                        ng-click="vm.proceed(program)"
+                        ng-click="vm.start(program)"
                 />
             <!-- SIGLUS-REFACTOR: ends here -->
             </td>

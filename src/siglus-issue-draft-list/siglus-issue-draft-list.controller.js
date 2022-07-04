@@ -28,20 +28,20 @@
         .module('siglus-issue-draft-list')
         .controller('SiglusIssueDraftListController', controller);
 
-    controller.$inject = ['user', 'programId', 'facilityId', '$state', 'draftInfo', 'alertService',
-        'confirmService', 'siglusStockIssueService', 'stockAdjustmentFactory', 'stockAdjustmentService'];
+    controller.$inject = ['$stateParams', 'adjustmentType', 'user', 'programId', 'facilityId', '$state',
+        'draftInfo', 'alertService', 'confirmService', 'siglusStockIssueService', 'stockAdjustmentFactory',
+        'stockAdjustmentService'];
 
     var index = 0;
 
-    function controller(user, programId, facilityId, $state, draftInfo, alertService, confirmService,
-                        siglusStockIssueService, stockAdjustmentFactory, stockAdjustmentService) {
+    function controller($stateParams, adjustmentType, user, programId, facilityId, $state, draftInfo,
+                        alertService, confirmService, siglusStockIssueService, stockAdjustmentFactory,
+                        stockAdjustmentService) {
         var vm = this;
 
-        vm.issueTo = '';
-
-        vm.documentationNo =  _.get(draftInfo, 'documentationNo', '');
-
         vm.drafts = _.get(draftInfo, 'drafts', []);
+
+        vm.issueToInfo = undefined;
 
         vm.addDraft = function() {
             if (vm.drafts.length >= 10) {
@@ -64,17 +64,21 @@
             }
         };
 
-        vm.$onInit = function() {
-            var destinationFacility = _.get(draftInfo, 'destinationFacility', '');
-            var issueTo = _.get(draftInfo, 'issueTo', '');
-            vm.issueTo = issueTo === 'Outros' ? 'Outros: ' + destinationFacility : issueTo;
-        };
-
         vm.refreshDraftList = function() {
             // todo set params
             siglusStockIssueService.getIssueDrafts().then(function(data) {
                 vm.drafts = data;
             });
+        };
+
+        vm.$onInit = function() {
+            if ($stateParams.issueToInfo) {
+                vm.issueToInfo = $stateParams.issueToInfo;
+            } else {
+                siglusStockIssueService.queryIssueToInfo(programId, adjustmentType.state).then(function(data) {
+                    vm.issueToInfo = data;
+                });
+            }
         };
 
         vm.removeDraft = function(draft) {
@@ -101,13 +105,15 @@
                             .then(function(draft) {
                                 $state.go('openlmis.stockmanagement.issue.draft.creation', {
                                     programId: programId,
-                                    draftId: _.get(draft, 'id', '')
+                                    draftId: _.get(draft, 'id', ''),
+                                    issueToInfo: vm.issueToInfo
                                 });
                             });
                     }
                     $state.go('openlmis.stockmanagement.issue.draft.creation', {
                         programId: programId,
-                        draftId: _.get(draft, 'id', '')
+                        draftId: _.get(draft, 'id', ''),
+                        issueToInfo: vm.issueToInfo
                     });
                 });
         };

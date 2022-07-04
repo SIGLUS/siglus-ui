@@ -30,9 +30,9 @@
             showInNavigation: true,
             views: {
                 '@openlmis': {
-                    controller: 'StockAdjustmentController',
+                    controller: 'StockIssueInitialController',
                     controllerAs: 'vm',
-                    templateUrl: 'stock-adjustment/stock-adjustment.html'
+                    templateUrl: 'stock-issue/stock-issue-initial.html'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -60,6 +60,9 @@
                         return program.id;
                     });
                     return stockAdjustmentFactory.getDrafts(user, programIds, facility, adjustmentType);
+                },
+                issueToInfo: function(programs, adjustmentType, siglusStockIssueService) {
+                    return siglusStockIssueService.queryIssueToInfo(_.get(programs, [0, 'id']), adjustmentType.state);
                 }
                 // SIGLUS-REFACTOR: starts here
             }

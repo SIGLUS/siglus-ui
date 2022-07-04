@@ -25,16 +25,18 @@
      * Controller for making adjustment.
      */
     angular
-        .module('stock-adjustment')
-        .controller('StockAdjustmentController', controller);
+        .module('stock-issue')
+        .controller('StockIssueInitialController', controller);
 
     // SIGLUS-REFACTOR: add user, drafts
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'user', 'drafts',
-        'stockAdjustmentService', 'stockAdjustmentFactory'];
+    controller.$inject = ['$stateParams', 'issueToInfo', 'facility', 'programs', 'adjustmentType',
+        '$state', 'user', 'drafts', 'stockAdjustmentFactory', 'siglusInitialIssueModalService',
+        'siglusStockIssueService', 'loadingModalService'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller(facility, programs, adjustmentType, $state, user, drafts, stockAdjustmentService,
-                        stockAdjustmentFactory) {
+    function controller($stateParams, issueToInfo, facility, programs, adjustmentType, $state, user, drafts,
+                        stockAdjustmentFactory, siglusInitialIssueModalService, siglusStockIssueService,
+                        loadingModalService) {
         var vm = this;
 
         /**
@@ -47,6 +49,8 @@
          * Holds user's home facility.
          */
         vm.facility = facility;
+
+        vm.issueToInfo = issueToInfo || {};
 
         /**
          * @ngdoc property
@@ -65,31 +69,27 @@
             return adjustmentType.prefix + '.' + secondaryKey;
         };
 
-        // SIGLUS-REFACTOR: starts here
-        vm.proceed = function(program) {
-            stockAdjustmentFactory.getDraft(user.user_id, program.id, facility.id, adjustmentType.state)
-                .then(function(draft) {
-                    if (_.isUndefined(draft)) {
-                        stockAdjustmentService.createDraft(user.user_id, program.id, facility.id, adjustmentType.state)
-                            .then(function(draft) {
-                                $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
-                                    programId: program.id,
-                                    program: program,
-                                    facility: facility,
-                                    draft: draft,
-                                    draftId: draft && draft.id
-                                });
-                            });
-                    }
-                    $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
-                        programId: program.id,
-                        program: program,
-                        facility: facility,
-                        draft: draft,
-                        draftId: draft && draft.id
-                    });
-                });
+        vm.proceedForIssue = function(program) {
+            $state.go('openlmis.stockmanagement.issue.draft', {
+                facilityId: facility.id,
+                programId: program.id,
+                issueToInfo: issueToInfo
+            });
+        };
 
+        vm.start = function(program) {
+            siglusInitialIssueModalService.show(program.id, facility.id).then(function(loadIssueToInfo) {
+                if (loadIssueToInfo) {
+                    loadingModalService.open();
+                    siglusStockIssueService.queryIssueToInfo(program.id, adjustmentType.state)
+                        .then(function(data) {
+                            vm.issueToInfo = data;
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
+                        });
+                }
+            });
         };
 
         vm.setDraftAttribute = function(data) {
