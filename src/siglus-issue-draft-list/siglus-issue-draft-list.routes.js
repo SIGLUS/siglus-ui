@@ -36,6 +36,9 @@
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
+            params: {
+                issueToInfo: undefined
+            },
             resolve: {
                 user: function(authorizationService) {
                     return authorizationService.getUser();
@@ -46,14 +49,11 @@
                 facilityId: function($stateParams) {
                     return $stateParams.facilityId;
                 },
-                draftInfo: function() {
-                    return {
-                        documentationNo: 'test123123',
-                        issueTo: 'Outros',
-                        destinationFacility: 'Centro de Saude de Macucune',
-                        drafts: []
-                    };
-                    // return siglusStockIssueService.getIssueDrafts();
+                adjustmentType: function(ADJUSTMENT_TYPE) {
+                    return ADJUSTMENT_TYPE.ISSUE;
+                },
+                draftInfo: function(siglusStockIssueService) {
+                    return siglusStockIssueService.getIssueDrafts();
                 }
             }
         });

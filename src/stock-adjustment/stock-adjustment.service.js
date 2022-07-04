@@ -37,7 +37,7 @@
         var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/drafts'), {}, {
             update: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+                url: stockmanagementUrlFactory('/api1/siglusapi/drafts/:id')
             },
             delete: {
                 method: 'DELETE',
@@ -73,12 +73,8 @@
             draft.lineItems = _.map(lineItems, function(item) {
                 var newLine = buildLine(item);
 
-                var nodeId = null;
                 // var name = null;
-                if (item.assignment) {
-                    nodeId = item.assignment.node && item.assignment.node.id;
-                    // name = item.assignment.name;
-                }
+                var nodeId = _.get(item.assignment, ['node', 'id'], null);
 
                 if (adjustmentType.state === 'receive') {
                     newLine.sourceId = nodeId;

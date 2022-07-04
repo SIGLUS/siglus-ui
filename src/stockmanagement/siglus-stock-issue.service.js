@@ -32,8 +32,12 @@
 
     function service($resource, stockmanagementUrlFactory) {
 
-        var urlBasePath = '/api/siglusapi/drafts';
+        var urlBasePath = '/api/siglusapi/drafts/initial';
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {
+            get: {
+                method: 'GET',
+                url: stockmanagementUrlFactory(urlBasePath)
+            },
             update: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory(urlBasePath + '/:id')
@@ -44,12 +48,11 @@
             }
         });
 
-        this.baseParams = {};
-
         this.createIssueDraft = createIssueDraft;
         this.getIssueDrafts = getIssueDrafts;
         this.removeIssueDraft = removeIssueDraft;
         this.initIssueDraft = initIssueDraft;
+        this.queryIssueToInfo = queryIssueToInfo;
 
         function createIssueDraft(userId, programId, facilityId, adjustmentTypeState) {
             return resource.save({
@@ -61,7 +64,7 @@
         }
 
         function getIssueDrafts(userId, programId, facilityId, adjustmentTypeState) {
-            return resource.query({
+            return resource.get({
                 program: programId,
                 facility: facilityId,
                 isDraft: true,
@@ -70,9 +73,16 @@
             }).$promise;
         }
 
+        function queryIssueToInfo(programId, facilityId, adjustmentTypeState) {
+            return resource.query({
+                programId: programId,
+                facility: facilityId,
+                draftType: adjustmentTypeState
+            }).$promise;
+        }
+
         function initIssueDraft(formData) {
             return resource.save(formData).$promise;
-
         }
 
         function removeIssueDraft(draftId) {

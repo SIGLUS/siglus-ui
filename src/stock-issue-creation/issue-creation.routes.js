@@ -50,7 +50,8 @@
                 srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
-                size: '50'
+                size: '50',
+                issueToInfo: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -68,6 +69,13 @@
                 },
                 user: function(authorizationService) {
                     return authorizationService.getUser();
+                },
+                issueToInfo: function($stateParams, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                    if ($stateParams.issueToInfo) {
+                        return $stateParams.issueToInfo;
+                    }
+                    return siglusStockIssueService.queryIssueToInfo($stateParams.programId,
+                        ADJUSTMENT_TYPE.ISSUE.state);
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {

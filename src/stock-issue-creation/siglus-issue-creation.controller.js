@@ -29,25 +29,24 @@
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
+        '$scope', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'stockAdjustmentService', 'draft', 'openlmisDateFilter'
+        'siglusSignatureModalService', 'stockAdjustmentService', 'draft', 'openlmisDateFilter',
+        'siglusRemainingProductsModalService'
     ];
 
-    function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
+    function controller($scope, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft,
-                        openlmisDateFilter) {
+                        openlmisDateFilter, siglusRemainingProductsModalService) {
         var vm = this,
             previousAdded = {};
 
-        vm.issueTo = '';
-
-        vm.documentationNo = '';
+        vm.issueToInfo = issueToInfo;
 
         vm.draft = draft;
 
@@ -107,10 +106,12 @@
                 .compact()
                 .value();
             var existingKitProductId = _.chain(vm.addedLineItems)
-                .map(function(item) {
-                    return isEmpty(item.lot) ? item.orderable.id : '';
+                .filter(function(item) {
+                    return item.orderable.isKit;
                 })
-                .compact()
+                .map(function(item) {
+                    return item.orderable.id;
+                })
                 .value();
 
             vm.orderableGroups = _.chain(orderableGroups)
@@ -525,6 +526,19 @@
                     $scope.needToConfirm = false;
                     $stateParams.isAddProduct = false;
                     vm.search(true);
+                })
+                .catch(function() {
+                    siglusRemainingProductsModalService.show().then(function(data) {
+                        _.forEach(vm.addedLineItems, function(lineItem) {
+                            var hasDuplicated = _.some(data, function(item) {
+                                return item.orderable.id === lineItem.orderable.id
+                                  && (_.isEmpty(item.lot) || item.lot.id === lineItem.lot.id);
+                            });
+                            if (hasDuplicated) {
+                                vm.remove(lineItem);
+                            }
+                        });
+                    });
                 });
         };
 

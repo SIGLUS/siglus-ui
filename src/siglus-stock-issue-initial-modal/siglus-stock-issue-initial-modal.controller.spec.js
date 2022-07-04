@@ -35,6 +35,7 @@ describe('SiglusInitialIssueModalController', function() {
         spyOn(loadingModalService, 'close');
         spyOn($state, 'go');
         modalDeferred = $q.defer();
+        spyOn(modalDeferred, 'resolve');
 
     }
 
@@ -42,7 +43,9 @@ describe('SiglusInitialIssueModalController', function() {
         siglusInitialIssueModalService.facilityId = '2ee6bbf4-cfcf-11e9-9535-0242ac130005';
         siglusInitialIssueModalService.programId = '00000000-0000-0000-0000-000000000000';
         vm = $controller('SiglusInitialIssueModalController', {
-            modalDeferred: modalDeferred
+            modalDeferred: modalDeferred,
+            programId: '00000000-0000-0000-0000-000000000000',
+            facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005'
         });
 
     }
@@ -86,21 +89,46 @@ describe('SiglusInitialIssueModalController', function() {
     });
 
     describe('submitForm method', function() {
+        beforeEach(function() {
+            vm.issueTo = {
+                id: 'afe8a536-b4ad-11eb-a394-acde48001122',
+                name: 'Banco de Socorro',
+                programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad'
+            };
+        });
+
         it('should go to draft list page when successfully saved form', function() {
             var deferred = $q.defer();
             spyOn(siglusStockIssueService, 'initIssueDraft').andReturn(deferred.promise);
+
             vm.submitForm();
-            deferred.resolve();
+            var data = {
+                destinationId: '00001',
+                destinationName: 'aaaa',
+                documentNumber: 'number-1'
+            };
+            deferred.resolve(data);
             $rootScope.$apply();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.issue.draft');
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.issue.draft', {
+                programId: '00000000-0000-0000-0000-000000000000',
+                facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
+                issueToInfo: data
+            });
         });
 
         it('should hasError flag set to true when saved form occur error', function() {
             var deferred = $q.defer();
             spyOn(siglusStockIssueService, 'initIssueDraft').andReturn(deferred.promise);
             vm.submitForm();
-            deferred.reject();
+            deferred.reject({
+                data: {
+                    title: 'Bad Request',
+                    status: 400,
+                    isBusinessError: true,
+                    businessErrorExtraData: 'same initial draft exists'
+                }
+            });
             $rootScope.$apply();
 
             expect(vm.hasError).toEqual(true);
@@ -111,14 +139,21 @@ describe('SiglusInitialIssueModalController', function() {
             spyOn(siglusStockIssueService, 'initIssueDraft').andReturn(deferred.promise);
             spyOn(siglusStockIssueService, 'getIssueDrafts').andReturn($q.resolve());
             vm.submitForm();
-            deferred.reject();
+            deferred.reject({
+                data: {
+                    title: 'Bad Request',
+                    status: 400,
+                    isBusinessError: true,
+                    businessErrorExtraData: 'same initial draft exists'
+                }
+            });
             $rootScope.$apply();
 
             expect(vm.hasError).toEqual(true);
 
             vm.submitForm();
 
-            expect(siglusStockIssueService.getIssueDrafts).toHaveBeenCalled();
+            expect(modalDeferred.resolve).toHaveBeenCalled();
         });
     });
 });
