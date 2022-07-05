@@ -27,7 +27,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory.draftList.draft', {
-            url: '/:id?keyword&page&size&subDraftIds&draftLabel&actionType',
+            url: '/:id?keyword&page&size&subDraftIds&draftNum&isMerged&actionType',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
@@ -53,9 +53,12 @@
                     return $stateParams.facility;
                 },
                 program: function($stateParams, programService) {
+                    // console.log('#### stateParams', $stateParams);
+                    // console.log('#### stateParams', $stateParams);
                     if (_.isUndefined($stateParams.program)) {
-                        return programService.getAllProductsProgram().then(function(programs) {
-                            return programs[0];
+                        return programService.get($stateParams.programId).then(function(programs) {
+                            // console.log('#### programs', programs);
+                            return programs;
                         });
                     }
                     return $stateParams.program;
@@ -78,13 +81,13 @@
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
-                    // console.log('#### bl', _.isUndefined(physicalInventoryDataService.getDraft(facility.id)));
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        if ($stateParams.subDraftIds) {
+                        if ($stateParams.subDraftIds && !$stateParams.isMerged) {
                             var id = $stateParams.subDraftIds.length > 1
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
-                            var flag = $stateParams.draftLabel === 'Merge Draft';
+                            // TODO  flag命名
+                            var flag = $stateParams.isMerged === 'true';
                             physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
                                 .then(function(draft) {
                                     physicalInventoryDataService.setDraft(facility.id, draft);

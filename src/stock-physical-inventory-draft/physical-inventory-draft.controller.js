@@ -67,7 +67,7 @@
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
         vm.actionType = $stateParams.actionType;
-        vm.isMergeDraft = $stateParams.draftLabel === 'Merge Draft';
+        vm.isMergeDraft = $stateParams.isMerged === 'true';
         var draft = physicalInventoryDataService.getDraft(facility.id);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
@@ -344,8 +344,8 @@
          * Save physical inventory draft.
          */
         // SIGLUS-REFACTOR: starts here
+        // TODO name
         var openRemainingModal = function(type, data) {
-            // var conflictData = data;
             siglusRemainingProductsModalService.show(data).then(function() {
                 saveOrSubmit(type, data);
             });
@@ -444,7 +444,7 @@
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
                     vm.isInitialInventory ? $state.go('openlmis.home')
-                        : $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
+                        : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
                     // SIGLUS-REFACTOR: ends here
@@ -481,14 +481,16 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
+                    // TODO merge \ subDraft Submit
                     if (
-                        $stateParams.draftLabel === 'Merge Draft' ||
+                        $stateParams.isMerged === 'true' ||
                         $stateParams.program === '00000000-0000-0000-0000-000000000000'
                     ) {
                         physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                             summaries: []
                         }))
                             .then(function() {
+                                // rep logic
                                 if (vm.isInitialInventory) {
                                     currentUserService.clearCache();
                                     navigationStateService.clearStatesAvailability();
@@ -701,7 +703,14 @@
                 //     facilityName: facility.name,
                 //     program: program.name
                 // });
-                $state.current.label = $stateParams.draftLabel;
+                if ($stateParams.isMerged === 'true') {
+                    $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
+                } else {
+                    $state.current.label =
+                        messageService.get('stockPhysicalInventoryDraft.draft')
+                        + ' '
+                        + $stateParams.draftNum;
+                }
             }
         }
 

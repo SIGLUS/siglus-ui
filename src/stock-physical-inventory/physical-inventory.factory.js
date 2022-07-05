@@ -258,16 +258,6 @@
 
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
-            /*var quantities = {},
-                extraData = {};
-
-            angular.forEach(physicalInventory.lineItems, function(lineItem) {
-                quantities[identityOfLines(lineItem)] = lineItem.quantity;
-                extraData[identityOfLines(lineItem)] = lineItem.extraData;
-            });*/
-            // console.log('#### summaries', summaries);
-            console.log('#### physicalInventory', physicalInventory);
-            // console.log('#### draftToReturn', draftToReturn);
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {

@@ -3,7 +3,7 @@
         <button ng-if="!vm.isMergeDraft" class="danger" ng-click="vm.delete()">
             {{'stockInitialInventory.delete' | message}}
         </button>
-        <button ng-else="!vm.isMergeDraft" class="defaul" ng-click="vm.delete()">
+        <button ng-if="vm.isMergeDraft" class="defaul" ng-click="vm.delete()">
             {{'stockInitialInventory.cancel' | message}}
         </button>
     </div>
