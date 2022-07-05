@@ -523,7 +523,7 @@ describe('PhysicalInventoryDraftController', function() {
             $rootScope.$apply();
 
             expect(state.go).toHaveBeenCalledWith(
-                'openlmis.stockmanagement.physicalInventory',
+                'openlmis.stockmanagement.physicalInventory.draftList',
                 stateParams, {
                     reload: true
                 }

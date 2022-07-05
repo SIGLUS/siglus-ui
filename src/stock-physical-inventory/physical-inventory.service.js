@@ -294,8 +294,7 @@
             return resource.query({
                 program: program,
                 facility: facility,
-                isDraft: true,
-                canInitialInventory: true
+                isDraft: true
             })
                 .$promise
                 .then(function(response) {

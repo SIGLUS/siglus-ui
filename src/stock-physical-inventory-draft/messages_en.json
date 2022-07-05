@@ -13,5 +13,7 @@
   "stockInitialInventory.initialFailed": "Your facility have finished initial inventory.",
   "stockInitialInventory.authorization.message": "You don't have permission STOCK_INVENTORIES_EDIT & STOCK_CARDS_VIEW for all the programs your facility support, please contact system admin.",
   "stockInitialInventory.delete": "Delete",
-  "stockInitialInventory.cancel": "Cancel"
+  "stockInitialInventory.cancel": "Cancel",
+  "stockPhysicalInventoryDraft.draft": "Draft",
+  "stockPhysicalInventoryDraft.mergeDraft": "Merged Draft"
 }

@@ -70,6 +70,7 @@
             return messageService.get(statusMap[isStarter]);
 
         };
+        // TODO constant
         vm.actionType = function(isStarter) {
             var statusMap = {
                 NOT_YET_STARTED: 'stockPhysicalInventory.start',
@@ -84,7 +85,7 @@
             var stateParams = angular.copy($stateParams);
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType =  vm.actionType(item.status);
-            stateParams.draftLabel = 'Draft ' + item.groupNum;
+            stateParams.draftNum = item.groupNum;
             $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
 
@@ -112,7 +113,8 @@
                 alertService.error('PhysicalInventoryDraftList.mergeError');
             } else {
                 var stateParams = angular.copy($stateParams);
-                stateParams.draftLabel = 'Merge Draft';
+                // TODO translate
+                stateParams.isMerged = true;
                 stateParams.subDraftIds = _.map(vm.draftList.subDrafts, function(item) {
                     return item.subDraftId[0];
                 }).join(',');
