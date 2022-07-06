@@ -74,7 +74,7 @@
                 facilityId: facility.id,
                 programId: program.id,
                 initialDraftId: vm.issueToInfo.id,
-                issueToInfo: issueToInfo
+                issueToInfo: vm.issueToInfo
             });
         };
 
