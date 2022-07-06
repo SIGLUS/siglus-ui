@@ -84,8 +84,7 @@
 
         vm.$onInit = function() {
             loadingModalService.open();
-            sourceDestinationService.getDestinationAssignments(siglusInitialIssueModalService.programId,
-                siglusInitialIssueModalService.facilityId).then(function(data) {
+            sourceDestinationService.getDestinationAssignments(programId, facilityId).then(function(data) {
                 vm.issueToList = data;
             })
                 .finally(function() {

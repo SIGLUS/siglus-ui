@@ -88,12 +88,30 @@ describe('SiglusIssueDraftListController', function() {
 
     describe('removeDraft method', function() {
         it('should call remove draft api when click confirm delete button', function() {
-            var draft = {};
+            var draft = {
+                id: '6f0e7285-e391-419c-831d-10076ade1931'
+            };
             vm.removeDraft(draft);
             confirmDeferred.resolve();
             $rootScope.$apply();
 
-            expect(siglusStockIssueService.removeIssueDraft).toHaveBeenCalled();
+            expect(siglusStockIssueService.removeIssueDraft)
+                .toHaveBeenCalledWith('6f0e7285-e391-419c-831d-10076ade1931');
+        });
+
+    });
+
+    describe('getDestinationName method', function() {
+        it('should return Outros destinationName when selected destinationName is Outros', function() {
+            var draft = {
+                id: '6f0e7285-e391-419c-831d-10076ade1931'
+            };
+            vm.removeDraft(draft);
+            confirmDeferred.resolve();
+            $rootScope.$apply();
+
+            expect(siglusStockIssueService.removeIssueDraft)
+                .toHaveBeenCalledWith('6f0e7285-e391-419c-831d-10076ade1931');
         });
 
     });
