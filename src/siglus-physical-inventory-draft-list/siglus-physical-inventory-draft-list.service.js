@@ -63,7 +63,7 @@
                 update: {
                     method: 'PUT',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/physicalInventories/raftList/:id'
+                        '/api/siglusapi/physicalInventories/draftList/:id'
                     )
                 },
                 delete: {
