@@ -465,6 +465,31 @@
          * @description
          * Submit physical inventory.
          */
+        var subDraftSubmit = function() {
+            loadingModalService.open();
+            physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
+                summaries: [],
+                subDraftIds: subDraftIds
+            }))
+                .then(function() {
+                    if (vm.isInitialInventory) {
+                        currentUserService.clearCache();
+                        navigationStateService.clearStatesAvailability();
+                    }
+                    notificationService.success('stockPhysicalInventoryDraft.submitted');
+                    $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
+                        program: program.id,
+                        facility: facility.id
+                    }, {
+                        reload: true
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    var data = error.data.businessErrorExtraData;
+                    openRemainingModal('submit', data);
+                });
+        };
         var submit = function() {
             if (validate()) {
                 // SIGLUS-REFACTOR: starts here
@@ -476,60 +501,38 @@
                 $scope.$broadcast('openlmis-form-submit');
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             } else {
+                if (
+                    $stateParams.draftNum
+                ) {
+                    subDraftSubmit();
+                    return;
+                }
                 chooseDateModalService.show(new Date()).then(function(resolvedData) {
                     loadingModalService.open();
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
                     // TODO merge \ subDraft Submit
-                    if (
-                        $stateParams.isMerged === 'true' ||
-                        $stateParams.program === '00000000-0000-0000-0000-000000000000'
-                    ) {
-                        physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
-                            summaries: []
-                        }))
-                            .then(function() {
-                                // rep logic
-                                if (vm.isInitialInventory) {
-                                    currentUserService.clearCache();
-                                    navigationStateService.clearStatesAvailability();
-                                }
-                                notificationService.success('stockPhysicalInventoryDraft.submitted');
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    program: program.id,
-                                    facility: facility.id
-                                }, {
-                                    reload: true
-                                });
-                            }, function() {
-                                loadingModalService.close();
-                                alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                    physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
+                        summaries: []
+                    }))
+                        .then(function() {
+                            // rep logic
+                            if (vm.isInitialInventory) {
+                                currentUserService.clearCache();
+                                navigationStateService.clearStatesAvailability();
+                            }
+                            notificationService.success('stockPhysicalInventoryDraft.submitted');
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                program: program.id,
+                                facility: facility.id
+                            }, {
+                                reload: true
                             });
-                    } else {
-                        physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
-                            summaries: [],
-                            subDraftIds: subDraftIds
-                        }))
-                            .then(function() {
-                                if (vm.isInitialInventory) {
-                                    currentUserService.clearCache();
-                                    navigationStateService.clearStatesAvailability();
-                                }
-                                notificationService.success('stockPhysicalInventoryDraft.submitted');
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    program: program.id,
-                                    facility: facility.id
-                                }, {
-                                    reload: true
-                                });
-                            })
-                            .catch(function(error) {
-                                loadingModalService.close();
-                                var data = error.data.businessErrorExtraData;
-                                openRemainingModal('submit', data);
-                            });
-                    }
+                        }, function() {
+                            loadingModalService.close();
+                            alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                        });
                 });
             }
         };
@@ -685,7 +688,6 @@
             }, function(newList) {
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
-                // console.log('#### categories', categories);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 // SIGLUS-REFACTOR: ends here
             }, true);

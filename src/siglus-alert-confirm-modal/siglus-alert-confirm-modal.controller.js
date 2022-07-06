@@ -34,7 +34,6 @@
         var vm = this;
 
         vm.$onInit = onInit;
-        // console.log('#### modalDeferred', modalDeferred);
         vm.close = function() {
             modalDeferred.reject();
         };

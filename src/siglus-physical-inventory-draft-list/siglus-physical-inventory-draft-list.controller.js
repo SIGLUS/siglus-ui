@@ -54,7 +54,6 @@
         physicalInventoryService,
         loadingModalService
     ) {
-        // console.log('#### programName', programName);
         var vm = this;
         vm.$onInit = onInit;
         vm.draftList = {};
@@ -81,7 +80,6 @@
 
         };
         vm.clickActions = function(item) {
-            // console.log(item);
             var stateParams = angular.copy($stateParams);
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType =  vm.actionType(item.status);
@@ -108,7 +106,6 @@
         };
 
         vm.mergeDrafts = function() {
-            // console.log(vm.draftList);
             if (isAllSubDraftsAreSubmmitted(vm.draftList.subDrafts)) {
                 alertService.error('PhysicalInventoryDraftList.mergeError');
             } else {

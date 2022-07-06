@@ -37,7 +37,6 @@
         function submitStockEvent(event) {
             var newDraft = _.omit(event, ['subDraftIds']);
             var subDraftIds = _.pick(event, ['subDraftIds']).subDraftIds;
-            // console.log('#### submitStockEvent', newDraft, subDraftIds);
             return resource.save({
                 subDraftIds: subDraftIds
             }, newDraft).$promise;

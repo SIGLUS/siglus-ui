@@ -36,7 +36,6 @@
         var vm = this;
 
         vm.maxDate = $filter('isoDate')(new Date());
-        // console.log('#### minDate', minDate);
         vm.occurredDate = vm.maxDate;
         vm.minDate = $filter('isoDate')(minDate);
         vm.signature = '';

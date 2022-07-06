@@ -54,7 +54,6 @@
          * @return {promise}          the promise resolving to a list of selected products
          */
         function show(items) {
-            // console.log('items --->>>', items);
             return openlmisModalService.createDialog(
                 {
                     controller: 'siglusRemainingProductsModalController',
@@ -63,12 +62,8 @@
                     show: true,
                     resolve: {
                         items: function() {
-                            // console.log('items', items);
                             return items;
                         }
-                        // hasLot: function() {
-                        //     return hasLot;
-                        // }
                     }
                 }
             ).promise.finally(function() {
