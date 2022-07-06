@@ -2262,6 +2262,7 @@
   "stockIssueInitialModal.inputDestination": "Insira o destino",
   "stockIssueInitialModal.hasStartedError": "Um processo de aviamento já foi iniciado, finalize primeiro.",
   "stockIssue.issueStart": "Começar",
+  "stockIssue.draftList": "Lista de rascunho",
   "issueDraft.issueToTitle": "Aviar selectFirstpara ${destination} - ${document}",
   "issueDraft.selectFirst": "Crie um rascunho para iniciar aviamento",
   "issueDraft.draftNumber": "Número do rascunho",
@@ -2269,7 +2270,6 @@
   "issueDraft.operator": "Operador",
   "issueDraft.actions": "Ações",
   "issueDraft.remove": "Remover",
-  "issueDraft.draftList": "Lista de rascunho",
   "issueDraft.create": "Criar rascunho",
   "issueDraft.exceedTenDraftHint": "No máximo 10 rascunhos podem ser criados, você não pode adicionar mais rascunhos.",
   "issueDraft.confirmRemove": "Deseja remover este rascunho?"
