@@ -83,7 +83,7 @@
                 .then(function(loadIssueToInfo) {
                     if (loadIssueToInfo) {
                         loadingModalService.open();
-                        siglusStockIssueService.queryIssueToInfo(program.id, adjustmentType.state)
+                        siglusStockIssueService.queryIssueToInfo(program.id, facility.id, adjustmentType.state)
                             .then(function(data) {
                                 vm.issueToInfo = data;
                             })
