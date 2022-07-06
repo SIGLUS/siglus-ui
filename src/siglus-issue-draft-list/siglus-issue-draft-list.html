@@ -12,7 +12,7 @@
         </caption>
         <thead>
         <tr>
-            <th style="width:80px;word-break: break-word;">{{'issueDraft.draftNumber' | message}}</th>
+            <th style="width:90px;word-break: break-word;">{{'issueDraft.draftNumber' | message}}</th>
             <th style="min-width:172px">{{'issueDraft.status' | message}}</th>
             <th style="min-width:125px">{{'issueDraft.operator' | message}}</th>
             <th style="min-width:250px" class="col-sticky sticky-right">{{'issueDraft.actions' | message}}</th>
@@ -21,7 +21,7 @@
         <tbody>
         <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts">
             <td>{{$index + 1}}</td>
-            <td>{{draft.status}}</td>
+            <td>{{vm.statusMapperMapper[draft.status] | message}}</td>
             <td>{{draft.operator}}</td>
             <td style="display: flex;">
                 <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft)"
@@ -30,7 +30,7 @@
                        class="primary"/>
 
                 <input id="issue-draft-remove" type="button" ng-click="vm.removeDraft(draft)"
-                       style="min-width: 113px"
+                       style="min-width: 113px;border: none;"
                        value="{{'issueDraft.remove' | message}}"
                        class="primary issue-draft-remove"/>
             </td>
