@@ -46,6 +46,11 @@
             DRAFT: 'stockPhysicalInventory.continue'
         };
 
+        vm.statusMapperMapper = {
+            NOT_YET_STARTED: 'stockIssue.notStarted',
+            DRAFT: 'stockIssue.draft'
+        };
+
         vm.addDraft = function() {
             if (vm.drafts.length >= 10) {
                 alertService.error('issueDraft.exceedTenDraftHint');
