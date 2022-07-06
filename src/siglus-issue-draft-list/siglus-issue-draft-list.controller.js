@@ -29,38 +29,33 @@
         .controller('SiglusIssueDraftListController', controller);
 
     controller.$inject = ['$scope', '$stateParams', 'adjustmentType', 'user', 'programId', 'facilityId', '$state',
-        'draftInfo', 'alertService', 'confirmService', 'siglusStockIssueService', 'stockAdjustmentFactory',
-        'stockAdjustmentService'];
+        'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
+        'stockAdjustmentFactory', 'stockAdjustmentService'];
 
-    var index = 0;
-
-    function controller($scope, $stateParams, adjustmentType, user, programId, facilityId, $state, draftInfo,
-                        alertService, confirmService, siglusStockIssueService, stockAdjustmentFactory,
-                        stockAdjustmentService) {
+    function controller($scope, $stateParams, adjustmentType, user, programId, facilityId, $state,
+                        alertService, confirmService, loadingModalService, siglusStockIssueService,
+                        stockAdjustmentFactory, stockAdjustmentService) {
         var vm = this;
 
-        vm.drafts = _.get(draftInfo, 'drafts', []);
+        vm.drafts = [];
 
         vm.issueToInfo = undefined;
+
+        vm.actionMapper = {
+            NOT_YET_STARTED: 'stockPhysicalInventory.start',
+            DRAFT: 'stockPhysicalInventory.continue'
+        };
 
         vm.addDraft = function() {
             if (vm.drafts.length >= 10) {
                 alertService.error('issueDraft.exceedTenDraftHint');
             } else {
-                // todo remove mock data
-                vm.drafts.push({
-                    draftNumber: '000000123123120' + index++,
-                    status: 'Not Yet Start',
-                    isStarter: false,
-                    operator: ''
-                });
                 var params = {
                     programId: programId,
                     facilityId: facilityId,
                     userId: user.user_id,
                     initialDraftId: _.get(vm.issueToInfo, 'id'),
-                    draftType: adjustmentType.state,
-                    operator: user.username
+                    draftType: adjustmentType.state
                 };
                 siglusStockIssueService.createIssueDraft(params).then(function() {
                     vm.refreshDraftList();
@@ -74,28 +69,38 @@
             }
         };
 
-        $scope.$watch(vm.issueToInfo, function() {
+        vm.getDestinationName = function() {
             var destinationName = _.get(vm.issueToInfo, 'destinationName');
-            vm.destinationName = destinationName === 'Outros'
+            return destinationName === 'Outros'
                 ? 'Outros: ' + _.get(vm.issueToInfo, 'locationFreeText')
                 : destinationName;
-        });
+        };
 
         vm.refreshDraftList = function() {
+            loadingModalService.open();
             siglusStockIssueService.getIssueDrafts({
                 initialDraftId: _.get(vm.issueToInfo, 'id')
             }).then(function(data) {
                 vm.drafts = data;
-            });
+            })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+        };
+
+        vm.updateIssueAndDraftList = function(issueToInfo) {
+            vm.issueToInfo = issueToInfo;
+            vm.destinationName = vm.getDestinationName();
+            vm.refreshDraftList();
         };
 
         vm.$onInit = function() {
             if ($stateParams.issueToInfo) {
-                vm.issueToInfo = $stateParams.issueToInfo;
+                vm.updateIssueAndDraftList($stateParams.issueToInfo);
             } else {
-                siglusStockIssueService.queryIssueToInfo(programId, adjustmentType.state)
-                    .then(function(data) {
-                        vm.issueToInfo = data;
+                siglusStockIssueService.queryIssueToInfo(programId, facilityId, adjustmentType.state)
+                    .then(function(issueToInfo) {
+                        vm.updateIssueAndDraftList(issueToInfo);
                     });
             }
         };
@@ -105,22 +110,23 @@
                 'issueDraft.confirmRemove',
                 'issueDraft.remove'
             ).then(function() {
-                vm.drafts = _.filter(vm.drafts, function(item) {
-                    return draft.draftNumber !== item.draftNumber;
-                });
-
+                loadingModalService.open();
                 siglusStockIssueService.removeIssueDraft(draft.id).then(function() {
+                    loadingModalService.close();
                     vm.refreshDraftList();
-                });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
 
             });
         };
 
         vm.proceed = function() {
-            stockAdjustmentFactory.getDraft(user.user_id, programId, facilityId, 'issue')
+            stockAdjustmentFactory.getDraft(user.user_id, programId, facilityId, adjustmentType.state)
                 .then(function(draft) {
                     if (_.isEmpty(draft)) {
-                        stockAdjustmentService.createDraft(user.user_id, programId, facilityId, 'issue')
+                        stockAdjustmentService.createDraft(user.user_id, programId, facilityId, adjustmentType.state)
                             .then(function(draft) {
                                 $state.go('openlmis.stockmanagement.issue.draft.creation', {
                                     programId: programId,

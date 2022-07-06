@@ -28,10 +28,10 @@
         .module('siglus-stock-issue-initial-modal')
         .controller('SiglusInitialIssueModalController', controller);
 
-    controller.$inject = ['programId', 'facilityId', '$state', 'siglusInitialIssueModalService', 'modalDeferred',
-        'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
+    controller.$inject = ['programId', 'facilityId', 'adjustmentType', '$state', 'siglusInitialIssueModalService',
+        'modalDeferred', 'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
 
-    function controller(programId, facilityId, $state, siglusInitialIssueModalService, modalDeferred,
+    function controller(programId, facilityId, adjustmentType, $state, siglusInitialIssueModalService, modalDeferred,
                         siglusStockIssueService, sourceDestinationService, loadingModalService) {
         var vm = this;
 
@@ -59,6 +59,7 @@
                     programId: programId,
                     facilityId: facilityId,
                     destinationId: vm.issueTo.id,
+                    draftType: adjustmentType.state,
                     destinationName: vm.issueTo.name,
                     documentNumber: vm.documentationNo,
                     locationFreeText: vm.destinationFacility
@@ -67,6 +68,7 @@
                     $state.go('openlmis.stockmanagement.issue.draft', {
                         facilityId: facilityId,
                         programId: programId,
+                        initialDraftId: issueToInfo.id,
                         issueToInfo: issueToInfo
                     });
                 })

@@ -73,23 +73,25 @@
             $state.go('openlmis.stockmanagement.issue.draft', {
                 facilityId: facility.id,
                 programId: program.id,
+                initialDraftId: vm.issueToInfo.id,
                 issueToInfo: issueToInfo
             });
         };
 
         vm.start = function(program) {
-            siglusInitialIssueModalService.show(program.id, facility.id).then(function(loadIssueToInfo) {
-                if (loadIssueToInfo) {
-                    loadingModalService.open();
-                    siglusStockIssueService.queryIssueToInfo(program.id, adjustmentType.state)
-                        .then(function(data) {
-                            vm.issueToInfo = data;
-                        })
-                        .finally(function() {
-                            loadingModalService.close();
-                        });
-                }
-            });
+            siglusInitialIssueModalService.show(program.id, facility.id, adjustmentType)
+                .then(function(loadIssueToInfo) {
+                    if (loadIssueToInfo) {
+                        loadingModalService.open();
+                        siglusStockIssueService.queryIssueToInfo(program.id, adjustmentType.state)
+                            .then(function(data) {
+                                vm.issueToInfo = data;
+                            })
+                            .finally(function() {
+                                loadingModalService.close();
+                            });
+                    }
+                });
         };
 
         vm.setDraftAttribute = function(data) {

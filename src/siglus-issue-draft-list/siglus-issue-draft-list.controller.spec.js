@@ -49,11 +49,6 @@ describe('SiglusIssueDraftListController', function() {
             $scope: $rootScope.$new(),
             programId: '000000-000000-000000-0000000',
             facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-            issueToInfo: {
-                documentNumber: 'number-1',
-                destinationId: '00001',
-                destinationName: 'aaaa'
-            },
             adjustmentType: ADJUSTMENT_TYPE.ISSUE,
             draftInfo: {
                 documentationNo: 'abc',
