@@ -53,11 +53,8 @@
                     return $stateParams.facility;
                 },
                 program: function($stateParams, programService) {
-                    // console.log('#### stateParams', $stateParams);
-                    // console.log('#### stateParams', $stateParams);
                     if (_.isUndefined($stateParams.program)) {
                         return programService.get($stateParams.programId).then(function(programs) {
-                            // console.log('#### programs', programs);
                             return programs;
                         });
                     }

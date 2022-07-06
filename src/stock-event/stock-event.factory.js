@@ -78,7 +78,6 @@
                         // SIGLUS-REFACTOR: ends here
                     );
                 });
-            // console.log('#### physicalInventoryCopy', physicalInventoryCopy);
             return _.extend(new StockEvent(physicalInventoryCopy), {
                 subDraftIds: physicalInventoryCopy.subDraftIds
             });

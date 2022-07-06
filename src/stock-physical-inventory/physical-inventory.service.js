@@ -268,7 +268,6 @@
          * @return {Promise}                  Submitted Physical Inventory
          */
         function subSubmit(physicalInventory) {
-            // console.log('#### physicalInventory', physicalInventory);
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
             // return resource.submit()
             // SIGLUS-REFACTOR: starts here

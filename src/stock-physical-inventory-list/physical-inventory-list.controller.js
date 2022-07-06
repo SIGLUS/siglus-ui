@@ -136,7 +136,6 @@
                 vm.drafts = _.filter(drafts, function(draft) {
                     return draft.programId === programId;
                 });
-                // console.log('#### drafts', drafts);
                 vm.program = _.find(programs, function(program) {
                     return program.id === programId;
                 });

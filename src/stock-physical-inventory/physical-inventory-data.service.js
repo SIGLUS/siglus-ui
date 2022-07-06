@@ -38,7 +38,6 @@
             this.draft = draft;
         };
         this.getDraft = function(facilityId) {
-            // console.log(this.facilityId, facilityId);
             return this.facilityId === facilityId ? this.draft : undefined;
         };
 

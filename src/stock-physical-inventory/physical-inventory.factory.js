@@ -70,7 +70,6 @@
             angular.forEach(programIds, function(program) {
                 promises.push(getDraftByProgramAndFacility(program, facility));
             });
-            // console.log('#### promises', promises);
             return $q.all(promises);
         }
 
@@ -366,7 +365,6 @@
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
                 subDraftIds: subDraftIds
             }).then(function(summaries) {
-                // console.log('#### getStockProducts summaries', summaries);
                 // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
