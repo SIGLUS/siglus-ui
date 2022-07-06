@@ -15,12 +15,13 @@
 
 describe('SiglusInitialIssueModalController', function() {
     var vm, $q, $state, $rootScope, modalDeferred, loadingModalService, sourceDestinationService,
-        siglusStockIssueService, siglusInitialIssueModalService, $controller;
+        siglusStockIssueService, ADJUSTMENT_TYPE, siglusInitialIssueModalService, $controller;
 
     function prepareInjector() {
         inject(function($injector) {
             $q = $injector.get('$q');
             siglusInitialIssueModalService = $injector.get('siglusInitialIssueModalService');
+            ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
             sourceDestinationService = $injector.get('sourceDestinationService');
             $rootScope = $injector.get('$rootScope');
             siglusStockIssueService = $injector.get('siglusStockIssueService');
@@ -45,7 +46,8 @@ describe('SiglusInitialIssueModalController', function() {
         vm = $controller('SiglusInitialIssueModalController', {
             modalDeferred: modalDeferred,
             programId: '00000000-0000-0000-0000-000000000000',
-            facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005'
+            facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
+            adjustmentType: ADJUSTMENT_TYPE
         });
 
     }

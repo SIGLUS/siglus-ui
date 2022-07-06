@@ -36,7 +36,13 @@
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {
             get: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/multi')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/multi'),
+                isArray: true
+            },
+            queryDraft: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/initial'),
+                isArray: false
             },
             post: {
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts'),
@@ -67,7 +73,7 @@
         }
 
         function queryIssueToInfo(programId, facilityId, adjustmentTypeState) {
-            return resource.query({
+            return resource.queryDraft({
                 programId: programId,
                 facility: facilityId,
                 draftType: adjustmentTypeState

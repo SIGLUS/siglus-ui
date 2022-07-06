@@ -61,8 +61,10 @@
                     });
                     return stockAdjustmentFactory.getDrafts(user, programIds, facility, adjustmentType);
                 },
-                issueToInfo: function(programs, adjustmentType, siglusStockIssueService) {
-                    return siglusStockIssueService.queryIssueToInfo(_.get(programs, [0, 'id']), adjustmentType.state);
+                issueToInfo: function(programs, facility, adjustmentType, siglusStockIssueService) {
+                    return siglusStockIssueService.queryIssueToInfo(
+                        _.get(programs, [0, 'id']), facility.id, adjustmentType.state
+                    );
                 }
                 // SIGLUS-REFACTOR: starts here
             }
