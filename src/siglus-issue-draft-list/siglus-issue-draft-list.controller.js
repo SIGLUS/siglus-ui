@@ -19,22 +19,22 @@
 
     /**
      * @ngdoc controller
-     * @name stock-adjustment.controller:StockAdjustmentController
+     * @name siglus-issue-draft-list.controller:SiglusIssueDraftListController
      *
      * @description
-     * Controller for making adjustment.
+     * Controller for siglus issue draft list.
      */
     angular
         .module('siglus-issue-draft-list')
         .controller('SiglusIssueDraftListController', controller);
 
-    controller.$inject = ['$stateParams', 'adjustmentType', 'user', 'programId', 'facilityId', '$state',
+    controller.$inject = ['$scope', '$stateParams', 'adjustmentType', 'user', 'programId', 'facilityId', '$state',
         'draftInfo', 'alertService', 'confirmService', 'siglusStockIssueService', 'stockAdjustmentFactory',
         'stockAdjustmentService'];
 
     var index = 0;
 
-    function controller($stateParams, adjustmentType, user, programId, facilityId, $state, draftInfo,
+    function controller($scope, $stateParams, adjustmentType, user, programId, facilityId, $state, draftInfo,
                         alertService, confirmService, siglusStockIssueService, stockAdjustmentFactory,
                         stockAdjustmentService) {
         var vm = this;
@@ -54,19 +54,37 @@
                     isStarter: false,
                     operator: ''
                 });
-                // todo set params
-                siglusStockIssueService.createIssueDraft().then(function() {
+                var params = {
+                    programId: programId,
+                    facilityId: facilityId,
+                    userId: user.user_id,
+                    initialDraftId: _.get(vm.issueToInfo, 'id'),
+                    draftType: adjustmentType.state,
+                    operator: user.username
+                };
+                siglusStockIssueService.createIssueDraft(params).then(function() {
                     vm.refreshDraftList();
                 })
-                    .catch(function() {
-                        alertService.error('issueDraft.exceedTenDraftHint');
+                    .catch(function(error) {
+                        if (error.data.isBusinessError
+                          && error.data.businessErrorExtraData === 'same drafts more than limitation') {
+                            alertService.error('issueDraft.exceedTenDraftHint');
+                        }
                     });
             }
         };
 
+        $scope.$watch(vm.issueToInfo, function() {
+            var destinationName = _.get(vm.issueToInfo, 'destinationName');
+            vm.destinationName = destinationName === 'Outros'
+                ? 'Outros: ' + _.get(vm.issueToInfo, 'locationFreeText')
+                : destinationName;
+        });
+
         vm.refreshDraftList = function() {
-            // todo set params
-            siglusStockIssueService.getIssueDrafts().then(function(data) {
+            siglusStockIssueService.getIssueDrafts({
+                initialDraftId: _.get(vm.issueToInfo, 'id')
+            }).then(function(data) {
                 vm.drafts = data;
             });
         };
@@ -75,9 +93,10 @@
             if ($stateParams.issueToInfo) {
                 vm.issueToInfo = $stateParams.issueToInfo;
             } else {
-                siglusStockIssueService.queryIssueToInfo(programId, adjustmentType.state).then(function(data) {
-                    vm.issueToInfo = data;
-                });
+                siglusStockIssueService.queryIssueToInfo(programId, adjustmentType.state)
+                    .then(function(data) {
+                        vm.issueToInfo = data;
+                    });
             }
         };
 
@@ -89,8 +108,8 @@
                 vm.drafts = _.filter(vm.drafts, function(item) {
                     return draft.draftNumber !== item.draftNumber;
                 });
-                // todo set params
-                siglusStockIssueService.removeIssueDraft().then(function() {
+
+                siglusStockIssueService.removeIssueDraft(draft.id).then(function() {
                     vm.refreshDraftList();
                 });
 

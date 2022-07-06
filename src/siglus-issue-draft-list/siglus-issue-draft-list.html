@@ -1,6 +1,6 @@
 
 <h2>{{'issueDraft.issueToTitle' | message: {
-    destination: vm.issueToInfo.destinationName === 'Outros' ? 'Outros: ' + vm.issueToInfo.locationFreeText : vm.issueToInfo.destinationName,
+    destination: vm.destinationName,
     document: vm.issueToInfo.documentNumber} }}</h2>
 <section class="openlmis-table-container">
     <button class="pull-right add" ng-click="vm.addDraft()">
@@ -20,7 +20,7 @@
         </thead>
         <tbody>
         <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts">
-            <td>{{draft.draftNumber}}</td>
+            <td>{{$index + 1}}</td>
             <td>{{draft.status}}</td>
             <td>{{draft.operator}}</td>
             <td style="display: flex;">

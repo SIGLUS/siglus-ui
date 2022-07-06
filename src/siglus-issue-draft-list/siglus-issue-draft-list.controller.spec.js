@@ -46,6 +46,7 @@ describe('SiglusIssueDraftListController', function() {
                 // eslint-disable-next-line camelcase
                 user_id: 'C00001'
             },
+            $scope: $rootScope.$new(),
             programId: '000000-000000-000000-0000000',
             facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
             issueToInfo: {

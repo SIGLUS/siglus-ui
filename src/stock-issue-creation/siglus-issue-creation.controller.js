@@ -48,6 +48,8 @@
 
         vm.issueToInfo = issueToInfo;
 
+        vm.destinationName = '';
+
         vm.draft = draft;
 
         /**
@@ -659,6 +661,10 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
+            var destinationName = _.get(vm.issueToInfo, 'destinationName');
+            vm.destinationName = destinationName === 'Outros'
+                ? 'Outros: ' + _.get(vm.issueToInfo, 'locationFreeText', '')
+                : destinationName;
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
