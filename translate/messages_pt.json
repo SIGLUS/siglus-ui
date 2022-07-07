@@ -2277,5 +2277,6 @@
   "issueDraft.confirmRemove": "Deseja remover este rascunho?",
   "stockPhysicalInventoryDraft.mergeDraft": "Rascunho compilado",
   "stockPhysicalInventoryDraft.draft": "Rascunho",
-  "stockPhysicalInventory.submitted": "Submetido"
+  "stockPhysicalInventory.submitted": "Submetido",
+  "stockInitialInventory.goBack": "Voltar ao anterior"
 }
