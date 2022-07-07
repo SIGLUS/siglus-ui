@@ -71,7 +71,6 @@
         var draft = physicalInventoryDataService.getDraft(facility.id);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
-        // console.log('#### displayLineItemsGroup', displayLineItemsGroup);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
         // SIGLUS-REFACTOR: ends here
 
@@ -395,9 +394,14 @@
                 // });
                 loadingModalService.close();
                 if (notReload) {
+                    var stateParams = angular.copy($stateParams);
+                    stateParams.actionType = 'DRAFT';
+                    $state.go($state.current.name, stateParams, {
+                        reload: true
+                    });
                     return;
                 }
-                reload(true);
+                reload($state.current.name);
             })
                 .catch(function(error) {
                     loadingModalService.close();
