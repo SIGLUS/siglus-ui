@@ -15,12 +15,13 @@
 
 describe('SiglusIssueDraftListController', function() {
     var vm, $q, confirmDeferred, $rootScope, alertService, confirmService, siglusStockIssueService,
-        stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE;
+        stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, $stateParams;
 
     function prepareInjector() {
         inject(function($injector) {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
+            $stateParams = $injector.get('$stateParams');
             siglusStockIssueService = $injector.get('siglusStockIssueService');
             stockAdjustmentFactory = $injector.get('stockAdjustmentFactory');
             ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
@@ -31,10 +32,13 @@ describe('SiglusIssueDraftListController', function() {
     }
 
     function prepareSpies() {
+        confirmDeferred = $q.defer();
         spyOn(siglusStockIssueService, 'removeIssueDraft').andReturn($q.resolve());
+        spyOn(siglusStockIssueService, 'queryIssueToInfo').andReturn($q.resolve());
+        spyOn(siglusStockIssueService, 'getIssueDrafts').andReturn($q.resolve());
+        spyOn(siglusStockIssueService, 'createIssueDraft').andReturn(confirmDeferred.promise);
         spyOn(stockAdjustmentFactory, 'getDraft').andReturn($q.resolve([]));
         spyOn(alertService, 'error');
-        confirmDeferred = $q.defer();
         spyOn(confirmService, 'confirmDestroy').andReturn(confirmDeferred.promise);
 
     }
@@ -47,6 +51,7 @@ describe('SiglusIssueDraftListController', function() {
                 user_id: 'C00001'
             },
             $scope: $rootScope.$new(),
+            $stateParams: $stateParams,
             programId: '000000-000000-000000-0000000',
             facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
             adjustmentType: ADJUSTMENT_TYPE.ISSUE,
@@ -103,16 +108,95 @@ describe('SiglusIssueDraftListController', function() {
 
     describe('getDestinationName method', function() {
         it('should return Outros destinationName when selected destinationName is Outros', function() {
-            var draft = {
-                id: '6f0e7285-e391-419c-831d-10076ade1931'
+            vm.issueToInfo = {
+                destinationId: '00001',
+                destinationName: 'Outros',
+                locationFreeText: 'test',
+                documentNumber: 'number-1'
             };
-            vm.removeDraft(draft);
+
+            expect(vm.getDestinationName()).toEqual('Outros: test');
+        });
+
+        it('should return destinationName when selected destinationName is not Outroså', function() {
+            vm.issueToInfo = {
+                destinationId: '00001',
+                destinationName: 'destination name',
+                locationFreeText: 'test',
+                documentNumber: 'number-1'
+            };
+
+            expect(vm.getDestinationName()).toEqual('destination name');
+        });
+    });
+
+    describe('$onInit method', function() {
+        it('should call api to get issueToInfo when issueToInfo not exist in $stateParams', function() {
+            vm.$onInit();
+
+            expect(siglusStockIssueService.queryIssueToInfo).toHaveBeenCalledWith('000000-000000-000000-0000000',
+                '004f4232-cfb8-11e9-9398-0242ac130008', 'issue');
+        });
+
+        it('should only call refresh list method when issueToInfo exist in $stateParams', function() {
+            $stateParams.issueToInfo = {
+                id: 'A000001',
+                destinationId: '00001',
+                destinationName: 'destination name',
+                locationFreeText: 'test',
+                documentNumber: 'number-1'
+            };
+            vm.$onInit();
+
+            expect(siglusStockIssueService.getIssueDrafts).toHaveBeenCalledWith({
+                initialDraftId: 'A000001'
+            });
+        });
+    });
+
+    describe('addDraft method', function() {
+        it('should alert error dialog when current drafts is over 10', function() {
+            vm.drafts = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+            vm.addDraft();
+
+            expect(alertService.error).toHaveBeenCalledWith('issueDraft.exceedTenDraftHint');
+        });
+
+        it('should create draft when current drafts is less than 11', function() {
+            vm.drafts = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
+            vm.issueToInfo = {
+                id: 'A000001'
+            };
+            vm.addDraft();
             confirmDeferred.resolve();
             $rootScope.$apply();
 
-            expect(siglusStockIssueService.removeIssueDraft)
-                .toHaveBeenCalledWith('6f0e7285-e391-419c-831d-10076ade1931');
+            expect(siglusStockIssueService.createIssueDraft).toHaveBeenCalledWith({
+                programId: '000000-000000-000000-0000000',
+                facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                userId: 'C00001',
+                initialDraftId: 'A000001',
+                draftType: 'issue'
+            });
         });
 
+        it('should alert error message from backend when current draft is over 10', function() {
+            vm.drafts = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
+            vm.issueToInfo = {
+                id: 'A000001'
+            };
+            vm.addDraft();
+            confirmDeferred.reject({
+                data: {
+                    title: 'Bad Request',
+                    status: 400,
+                    isBusinessError: true,
+                    businessErrorExtraData: 'same drafts more than limitation'
+                }
+            });
+            $rootScope.$apply();
+
+            expect(alertService.error).toHaveBeenCalledWith('issueDraft.exceedTenDraftHint');
+        });
     });
 });
