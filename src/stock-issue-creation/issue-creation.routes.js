@@ -70,11 +70,12 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                issueToInfo: function($stateParams, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                issueToInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
                     if ($stateParams.issueToInfo) {
                         return $stateParams.issueToInfo;
                     }
                     return siglusStockIssueService.queryIssueToInfo($stateParams.programId,
+                        facility.id,
                         ADJUSTMENT_TYPE.ISSUE.state);
                 },
                 // SIGLUS-REFACTOR: starts here
