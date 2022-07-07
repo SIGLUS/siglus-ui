@@ -16,5 +16,5 @@
   "stockInitialInventory.cancel": "Cancel",
   "stockPhysicalInventoryDraft.draft": "Draft",
   "stockPhysicalInventoryDraft.mergeDraft": "Merged Draft",
-  "stockInitialInventory.back": "Back to previouss"
+  "stockInitialInventory.goBack": "Back to previouss"
 }
