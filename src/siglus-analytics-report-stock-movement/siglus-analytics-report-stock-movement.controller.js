@@ -91,8 +91,8 @@
         }
         function exportExcel() {
             // eslint-disable-next-line no-undef
-            var filename = 'stock_movements_report_information_' +  moment().utc()
-                .format('YYYY-MM-DDTHH_mm_SS.SSSSSS') + 'Z.xlsx';
+            var filename = 'Stock Movements Report_' + vm.facilityName + '_' + moment().utc()
+                .format('YYYY-MM-DD') + '.xlsx';
             var header = [
                 ['Código do Produto: ' + vm.productCode,
                     'Nome do Produto: ' + vm.productName,

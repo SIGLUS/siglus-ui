@@ -1,7 +1,7 @@
 
 <h2>{{'issueDraft.issueToTitle' | message: {
-    destination: vm.destinationName,
-    document: vm.issueToInfo.documentNumber} }}</h2>
+    destination: vm.destinationName || '',
+    document: vm.issueToInfo.documentNumber || ''} }}</h2>
 <section class="openlmis-table-container">
     <button class="pull-right add" ng-click="vm.addDraft()">
         {{'issueDraft.create' | message}}
