@@ -37,7 +37,7 @@
         var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/drafts'), {}, {
             update: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api1/siglusapi/drafts/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             },
             delete: {
                 method: 'DELETE',
