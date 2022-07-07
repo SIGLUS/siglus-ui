@@ -353,12 +353,12 @@
 
         function getStockProducts(programId, facilityId, subDraftIds, flag) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
-
             // #225: cant view detail page when not have stock view right
             return repository.query(flag ? {
                 programId: programId,
                 facilityId: facilityId,
-                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
+                subDraftIds: subDraftIds
             } : {
                 programId: programId,
                 facilityId: facilityId,

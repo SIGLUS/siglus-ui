@@ -60,7 +60,7 @@
             <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
             <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
             <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right"></td> -->
-            <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+            <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit) && vm.actionType !== 'View'">
                 <button class="stock-actions add" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
             </td>
             <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
@@ -69,15 +69,15 @@
             <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
             <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                <span ng-if="!vm.isEmpty(lineItem.stockCardId)">{{lineItem.displayLotMessage}}</span>
-                <siglus-stock-input-select ng-if="vm.isEmpty(lineItem.stockCardId)"
+                <span ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'View'" style="padding: 8px;">{{lineItem.displayLotMessage}}</span>
+                <siglus-stock-input-select ng-if="vm.isEmpty(lineItem.stockCardId) && vm.actionType !== 'View'"
                                     line-item="lineItem"
                                     enable-input="true">
                 </siglus-stock-input-select>
             </td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                <span ng-if="!vm.isEmpty(lineItem.stockCardId)">{{lineItem.lot.expirationDate | openlmisDate}}</span>
-                <input ng-if="vm.isEmpty(lineItem.stockCardId)"
+                <span ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'View'" style="padding: 8px;">{{lineItem.lot.expirationDate | openlmisDate}}</span>
+                <input ng-if="vm.isEmpty(lineItem.stockCardId) && vm.actionType !== 'View'"
                        type="date"
                        class="min-width-date-input"
                        ng-blur="vm.validExpirationDate(lineItem)"
@@ -92,7 +92,9 @@
                 {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
             </td>
             <td class="digit-cell" >
+                <span ng-if="vm.actionType === 'View'" style="padding: 8px;">{{lineItem.quantity}}</span>
                 <input
+                        ng-if="vm.actionType !== 'View'"
                         class="form-control"
                         ng-model="lineItem.quantity"
                         ng-model-options="{ updateOn: 'blur' }"
@@ -138,4 +140,4 @@
     <openlmis-pagination list="vm.displayLineItemsGroup" paged-list="vm.pagedLineItems" on-page-change="vm.saveOnPageChange"></openlmis-pagination>
 </section>
 
-<ng-include ng-if="vm.actionType !== 'View'" src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
+<ng-include src="'stock-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
