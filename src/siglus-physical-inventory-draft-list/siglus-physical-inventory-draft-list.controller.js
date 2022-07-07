@@ -80,7 +80,6 @@
 
         };
         vm.clickActions = function(item) {
-            console.log(item);
             var stateParams = angular.copy($stateParams);
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType = item.status;
