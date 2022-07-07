@@ -33,11 +33,11 @@
 
     function SiglusOrderResource(OpenlmisResource, classExtender) {
 
-        classExtender.extend(SiglusOrderResource, OpenlmisResource);
+        classExtender.extend(Resource, OpenlmisResource);
 
-        return SiglusOrderResource;
+        return Resource;
 
-        function SiglusOrderResource() {
+        function Resource() {
             this.super('/api/siglusapi/orders');
         }
     }

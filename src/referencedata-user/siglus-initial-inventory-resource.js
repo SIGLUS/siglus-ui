@@ -33,11 +33,11 @@
 
     function SiglusInitialInventoryResource(openlmisUrlFactory, OpenlmisResource, classExtender) {
 
-        classExtender.extend(SiglusInitialInventoryResource, OpenlmisResource);
+        classExtender.extend(Resource, OpenlmisResource);
 
-        return SiglusInitialInventoryResource;
+        return Resource;
 
-        function SiglusInitialInventoryResource() {
+        function Resource() {
             this.super('/api/siglusapi/initialInventory');
         }
     }

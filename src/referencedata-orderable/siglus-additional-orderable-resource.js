@@ -25,11 +25,11 @@
 
     function OrderableResource(OpenlmisCachedResource, classExtender) {
 
-        classExtender.extend(OrderableResource, OpenlmisCachedResource);
+        classExtender.extend(Resource, OpenlmisCachedResource);
 
-        return OrderableResource;
+        return Resource;
 
-        function OrderableResource() {
+        function Resource() {
             this.super('/api/siglusapi/orderables/additionaltoadd', 'orderables', {
                 versioned: true,
                 offlineMessage: 'orderable.notCachedOfflineError'
