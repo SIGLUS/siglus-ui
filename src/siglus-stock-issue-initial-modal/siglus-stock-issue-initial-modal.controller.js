@@ -85,7 +85,9 @@
         vm.$onInit = function() {
             loadingModalService.open();
             sourceDestinationService.getDestinationAssignments(programId, facilityId).then(function(data) {
-                vm.issueToList = data;
+                vm.issueToList = _.uniq(data, false, function(item) {
+                    return item.name;
+                });
             })
                 .finally(function() {
                     loadingModalService.close();

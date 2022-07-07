@@ -4,5 +4,6 @@
   "stockIssue.notStarted": "Not yet started",
   "stockIssue.draft": "Draft",
   "stockIssue.status": "Status",
-  "stockIssue.issueStart": "Start"
+  "stockIssue.issueStart": "Start",
+  "stockIssue.draftList": "Draft List"
 }
