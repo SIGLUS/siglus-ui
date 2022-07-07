@@ -74,7 +74,7 @@
             var statusMap = {
                 NOT_YET_STARTED: 'stockPhysicalInventory.start',
                 DRAFT: 'stockPhysicalInventory.continue',
-                SUBMITTED: 'stockPhysicalInventory.view'
+                SUBMITTED: 'PhysicalInventoryDraftList.view'
             };
             return messageService.get(statusMap[isStarter]);
 

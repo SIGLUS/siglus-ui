@@ -1877,6 +1877,7 @@
   "stockInitialInventory.authorization.message": "Você não têm permissão STOCK_INVETÁRIO_Editar & VISUALIZAR_FICHA_DE_STOCK para todos os programos suportados pela Unidade Sanitária. Por favor, contacte o Administrador do sistema.",
   "stockInitialInventory.initialFailed": "Sua Unidade Sanitaria concluiu o inventário Inicial",
   "stockInitialInventory.initialInventory": "Inventário Inicial",
+  "stockInitialInventory.delete": "Excluir",
   "stockIssue.action": "Acção",
   "stockIssue.continue": "Continuar",
   "stockIssue.draft": "Rascunho",
@@ -2274,5 +2275,6 @@
   "issueDraft.exceedTenDraftHint": "No máximo 10 rascunhos podem ser criados, você não pode adicionar mais rascunhos.",
   "issueDraft.confirmRemove": "Deseja remover este rascunho?",
   "stockPhysicalInventoryDraft.mergeDraft": "Rascunho compilado",
-  "stockPhysicalInventoryDraft.draft": "Rascunho"
+  "stockPhysicalInventoryDraft.draft": "Rascunho",
+  "stockPhysicalInventory.submitted": "Submetido"
 }
