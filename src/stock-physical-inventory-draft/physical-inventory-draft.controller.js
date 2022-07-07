@@ -373,7 +373,7 @@
 
         this.saveOrSubmit = saveOrSubmit;
 
-        var saveDraft = function() {
+        var saveDraft = function(notReload) {
             if ($stateParams.keyword) {
                 $stateParams.keyword = null;
             }
@@ -393,6 +393,10 @@
                 // $state.go($state.current.name, $stateParams, {
                 //     reload: true
                 // });
+                loadingModalService.close();
+                if (notReload) {
+                    return;
+                }
                 reload(true);
             })
                 .catch(function(error) {
@@ -474,7 +478,6 @@
         var subDraftSubmit = function() {
             $scope.needToConfirm = false;
             loadingModalService.open();
-            console.log('#### subDraftSubmit', draft);
             physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
@@ -679,7 +682,6 @@
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
-
             // SIGLUS-REFACTOR: starts here
             initiateLineItems();
             refreshLotOptions();
@@ -693,7 +695,9 @@
 
             var orderableGroups = orderableGroupService.groupByOrderableId(draft.lineItems);
             vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(orderableGroups);
-
+            if ($stateParams.actionType === 'NOT_YET_STARTED') {
+                saveDraft(true);
+            }
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
