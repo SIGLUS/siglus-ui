@@ -32,6 +32,7 @@
         'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
         'stockAdjustmentFactory', 'stockAdjustmentService'];
 
+    //NOSONAR at the end of the line of the issue. This will suppress all issues - now and in the future
     function controller($scope, $stateParams, adjustmentType, user, programId, facilityId, $state,
                         alertService, confirmService, loadingModalService, siglusStockIssueService,
                         stockAdjustmentFactory, stockAdjustmentService) {
