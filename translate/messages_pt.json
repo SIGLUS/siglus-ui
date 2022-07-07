@@ -2248,6 +2248,7 @@
   "PhysicalInventoryDraftList.draftList": "Lista de rascunho",
   "PhysicalInventoryDraftList.continue": "Continuar",
   "PhysicalInventoryDraftList.draft": "Rascunho",
+  "PhysicalInventoryDraftList.view": "Ver",
 
   "physicalInventoryCreation.error": "Insira um número inteiro entre 1 e 10.",
 

@@ -80,9 +80,10 @@
 
         };
         vm.clickActions = function(item) {
+            console.log(item);
             var stateParams = angular.copy($stateParams);
             stateParams.subDraftIds = item.subDraftId.join(',');
-            stateParams.actionType =  vm.actionType(item.status);
+            stateParams.actionType = item.status;
             stateParams.draftNum = item.groupNum;
             $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
