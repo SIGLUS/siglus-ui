@@ -40,6 +40,7 @@
         'hasAuthorizeRight'
     ];
 
+    //NOSONAR
     function Controller(requisitionService, $state, loadingModalService,
                         notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods,
@@ -223,10 +224,7 @@
      * @param {Object} period a period to check if it has a requisition
      */
         function periodHasRequisition(period) {
-            if (period.rnrId) {
-                return true;
-            }
-            return false;
+            return !!period.rnrId;
         }
 
         function goToRequisition(id) {
@@ -251,13 +249,7 @@
 
         function checkProceedButton(period, idx) {
             if ($stateParams.program && $stateParams.facility) {
-                if (idx > 0) {
-                    return false;
-                }
-                if (Date.now() < period.startDate.getTime()) {
-                    return false;
-                }
-                if (!checkRnrStatus(period.rnrStatus)) {
+                if (idx > 0 || Date.now() < period.startDate.getTime() || !checkRnrStatus(period.rnrStatus)) {
                     return false;
                 }
             }
@@ -270,13 +262,9 @@
         }
 
         function checkRnrStatus(status) {
-            if (!$stateParams.program) {
+            if (!$stateParams.program || !$stateParams.facility) {
                 return false;
             }
-            if (!$stateParams.facility) {
-                return false;
-            }
-
             if (status === REQUISITION_STATUS.INITIATED && !vm.canInitiateRnr) {
                 return false;
             }
