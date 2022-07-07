@@ -71,6 +71,7 @@
         var draft = physicalInventoryDataService.getDraft(facility.id);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
+        // console.log('#### displayLineItemsGroup', displayLineItemsGroup);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
         // SIGLUS-REFACTOR: ends here
 
@@ -84,6 +85,11 @@
          * Holds current display physical inventory draft line items grouped by orderable id.
          */
         vm.displayLineItemsGroup = displayLineItemsGroup;
+        vm.back = function() {
+            $state.go('^', '', {
+                reload: true
+            });
+        };
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
@@ -466,7 +472,9 @@
          * Submit physical inventory.
          */
         var subDraftSubmit = function() {
+            $scope.needToConfirm = false;
             loadingModalService.open();
+            console.log('#### subDraftSubmit', draft);
             physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
@@ -477,12 +485,15 @@
                         navigationStateService.clearStatesAvailability();
                     }
                     notificationService.success('stockPhysicalInventoryDraft.submitted');
-                    $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
-                        program: program.id,
-                        facility: facility.id
-                    }, {
+                    $state.go('^', {}, {
                         reload: true
                     });
+                    // $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
+                    //     program: program.id,
+                    //     facility: facility.id
+                    // }, {
+                    //     reload: true
+                    // });
                 })
                 .catch(function(error) {
                     loadingModalService.close();
