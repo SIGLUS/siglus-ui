@@ -1945,6 +1945,8 @@
   "stockPhysicalInventory.status": "Estado",
   "stockPhysicalInventory.stockManagement": "Gestão de stocks",
   "stockPhysicalInventory.title": "Inventário físico de ${facility}",
+  "stockPhysicalInventory.selectProgram": "Selecionar o programa",
+  "stockPhysicalInventory.search": "Pesquisar",
   "stockPhysicalInventoryDraft.actions": "Acções",
   "stockPhysicalInventoryDraft.addLot": "Adicionar lote",
   "stockPhysicalInventoryDraft.addProduct": "Adicionar produto",
@@ -2278,5 +2280,7 @@
   "stockPhysicalInventoryDraft.mergeDraft": "Rascunho compilado",
   "stockPhysicalInventoryDraft.draft": "Rascunho",
   "stockPhysicalInventory.submitted": "Submetido",
-  "stockInitialInventory.goBack": "Voltar ao anterior"
+  "stockInitialInventory.goBack": "Voltar ao anterior",
+  "stockPhysicalInventory.selectFirst": "Selecione o programa para iniciar o inventário físico.",
+
 }
