@@ -45,7 +45,6 @@
         this.findByLotInOrderableGroup = findByLotInOrderableGroup;
         this.areOrderablesUseVvm = areOrderablesUseVvm;
         this.getKitOnlyOrderablegroup = getKitOnlyOrderablegroup;
-        this.addItemWithNewLot = addItemWithNewLot;
 
         /**
          * @ngdoc method
@@ -59,60 +58,25 @@
          * @param {Object} orderableGroup   orderable group
          * @return {Array}                  array with lots
          */
-        function lotsOf(orderableGroup, addMissingLotAllowed) {
-            var addMissingLot = {
-                    lotCode: messageService.get('orderableGroupService.addMissingLot')
-                },
-                lots;
+        function lotsOf(orderableGroup) {
+            var lots = _.chain(orderableGroup).pluck('lot')
+                .compact()
+                .value();
 
-            if (orderableGroup && orderableGroup.length > 0 && orderableGroup[0].$allLotsAdded) {
-                lots = [];
-            } else {
-                lots = _.chain(orderableGroup).pluck('lot')
-                    .compact()
-                    .value();
+            lots.forEach(function(lot) {
+                lot.expirationDate = dateUtils.toDate(lot.expirationDate);
+            });
 
-                lots.forEach(function(lot) {
-                    lot.expirationDate = dateUtils.toDate(lot.expirationDate);
-                });
+            var someHasLot = lots.length > 0;
+            var someHasNoLot = _.any(orderableGroup, function(item) {
+                return !item.lot;
+            });
 
-                var someHasLot = lots.length > 0,
-                    someHasNoLot = _.any(orderableGroup, function(item) {
-                        return !item.lot;
-                    });
-
-                if ((addMissingLotAllowed || someHasLot) && someHasNoLot) {
-                    lots.unshift(noLotDefined);
-                }
-                sortByFieldName(lots, 'expirationDate');
-            }
-
-            if (addMissingLotAllowed) {
-                lots.unshift(addMissingLot);
+            if (someHasLot && someHasNoLot) {
+                //add no lot defined as an option
+                lots.unshift(noLotDefined);
             }
             return lots;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-orderable-group.orderableGroupService
-         * @name sortByFieldName
-         *
-         * @description
-         * Sorts array by field name
-         *
-         * @param {Object} array         array to sort
-         * @param {Object} fieldName     name of the field by which the array is sorted
-         */
-        function sortByFieldName(array, fieldName) {
-            array.sort(function(a, b) {
-                if (a[fieldName] < b[fieldName]) {
-                    return -1;
-                } else if (a[fieldName] > b[fieldName]) {
-                    return 1;
-                }
-                return 0;
-            });
         }
 
         /**
@@ -127,12 +91,11 @@
          * @param {Object} selectedItem     product with lot property. Property displayLotMessage
          *                                  will be assigned to id.
          */
-        function determineLotMessage(selectedItem, orderableGroup, addMissingLotAllowed) {
+        function determineLotMessage(selectedItem, orderableGroup) {
             if (selectedItem.lot) {
                 selectedItem.displayLotMessage = selectedItem.lot.lotCode;
             } else {
-                var messageKey = lotsOf(orderableGroup, addMissingLotAllowed).length > 0
-                    ? 'noLotDefined' : 'productHasNoLots';
+                var messageKey = lotsOf(orderableGroup).length > 0 ? 'noLotDefined' : 'productHasNoLots';
                 selectedItem.displayLotMessage = messageService.get('orderableGroupService.' + messageKey);
             }
         }
@@ -149,13 +112,12 @@
          * @return {Array}                  items grouped by orderable id.
          */
         function groupByOrderableId(items) {
-            var values = _.chain(items)
+            return _.chain(items)
                 .groupBy(function(item) {
                     return item.orderable.id;
                 })
                 .values()
                 .value();
-            return values;
         }
 
         /**
@@ -167,8 +129,8 @@
          * Finds available Stock Products by facility and program, then groups product items
          * by orderable id.
          */
-        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts,
-                                                               rightName, initialDraftId) {
+        function findAvailableProductsAndCreateOrderableGroups(programId, facilityId,
+                                                               includeApprovedProducts, initialDraftId) {
             var repository;
             if (includeApprovedProducts) {
                 repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
@@ -180,7 +142,6 @@
                 programId: programId,
                 facilityId: facilityId,
                 initialDraftId: initialDraftId
-
             }).then(function(summaries) {
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
@@ -203,51 +164,19 @@
          * @param {Object} selectedLot      selected lot
          * @return {Object}                 found product
          */
-        function findByLotInOrderableGroup(orderableGroup, selectedLot, isNewLot) {
+        function findByLotInOrderableGroup(orderableGroup, selectedLot) {
             var selectedItem = _.chain(orderableGroup)
                 .find(function(groupItem) {
                     var selectedNoLot = !groupItem.lot && (!selectedLot || selectedLot === noLotDefined);
                     var lotMatch = groupItem.lot && groupItem.lot === selectedLot;
-                    return selectedNoLot || lotMatch || isNewLot;
+                    return selectedNoLot || lotMatch;
                 })
                 .value();
-
-            if (isNewLot) {
-                var copiedSelectedItem = angular.copy(selectedItem);
-                copiedSelectedItem.lot = selectedLot;
-                copiedSelectedItem.stockOnHand = 0;
-                determineLotMessage(copiedSelectedItem, orderableGroup);
-                return copiedSelectedItem;
-            }
 
             if (selectedItem) {
                 determineLotMessage(selectedItem, orderableGroup);
             }
             return selectedItem;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-orderable-group.orderableGroupService
-         * @name addItemWithNewLot
-         *
-         * @description
-         * Creates new item from similar orderable + lot item and newly created lot.
-         *
-         * @param  {Object} newLot      newly created lot
-         * @param  {Object} similarItem object with orderable field to be used
-         * @return {Object}             item created from passed parameters
-         */
-        function addItemWithNewLot(newLot, similarItem) {
-            var newItem = angular.copy(similarItem);
-
-            newItem.id = undefined;
-            newItem.lot = angular.copy(newLot);
-            newItem.stockOnHand = 0;
-            newItem.$isNewItem = true;
-            determineLotMessage(newItem);
-
-            return newItem;
         }
 
         /**
