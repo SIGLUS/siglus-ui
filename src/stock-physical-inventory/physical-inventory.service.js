@@ -268,8 +268,27 @@
          * @return {Promise}                  Submitted Physical Inventory
          */
         function subSubmit(physicalInventory) {
-            var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
-            // return resource.submit()
+            var draft = angular.copy(physicalInventory);
+
+            // SIGLUS-REFACTOR: Filter not added items
+            draft.lineItems = _.map(physicalInventory.lineItems, function(item) {
+                return {
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    lotCode: item.lot ? item.lot.lotCode : null,
+                    expirationDate: item.lot ? item.lot.expirationDate : null,
+                    quantity: item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    stockAdjustments: item.stockAdjustments,
+                    reasonFreeText: item.reasonFreeText,
+                    stockCardId: item.stockCardId,
+                    programId: item.programId
+                };
+            });
+            // SIGLUS-REFACTOR: ends here
+            var event = siglusStockEventService.formatPayload(draft);
             // SIGLUS-REFACTOR: starts here
             return resource.submit(event).$promise;
             // SIGLUS-REFACTOR: ends here
