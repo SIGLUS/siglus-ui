@@ -2226,8 +2226,10 @@
   "stockRemainingProductsModal.product": "Produto",
   "stockRemainingProductsModal.currentStock": "Stock actual",
 
-  "stockRemainingProductsModal.title": "The products below have been added to other drafts, are you sure you want to remove these products from your draft?",
-  "stockRemainingProductsModal.conflictWith": "Conflict with",
+  "stockRemainingProductsModal.title": "Os produtos abaixo foram adicionados a outros rascunhos. Tem certeza de que deseja remover esses produtos do seu rascunho?",
+  "stockRemainingProductsModal.conflictWith": "Conflito com",
+  "stockRemainingProductsModal.cancel": "Cancelar",
+  "stockRemainingProductsModal.confirm": "Confirme",
 
   "PhysicalInventoryDraftList.stockManagement": "Gestão de stocks",
   "PhysicalInventoryDraftList.physicalInventory": "Inventário físico",
