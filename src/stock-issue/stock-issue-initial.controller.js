@@ -71,7 +71,7 @@
 
         vm.proceedForIssue = function(program) {
             $state.go('openlmis.stockmanagement.issue.draft', {
-                facilityId: facility.id,
+                facility: facility,
                 programId: program.id,
                 initialDraftId: vm.issueToInfo.id,
                 issueToInfo: vm.issueToInfo
