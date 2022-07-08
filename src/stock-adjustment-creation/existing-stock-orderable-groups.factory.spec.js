@@ -64,7 +64,7 @@ describe('existingStockOrderableGroupsFactory', function() {
         expect(items).toEqual(orderableGroups);
         // #225: cant view detail page when not have stock view right
         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .toHaveBeenCalledWith(program.id, facility.id, false, rightName);
+            .toHaveBeenCalledWith(program.id, facility.id, false, rightName, undefined);
         // #225: ends here
     });
 
@@ -88,7 +88,7 @@ describe('existingStockOrderableGroupsFactory', function() {
         expect(items).toEqual([]);
         // #225: cant view detail page when not have stock view right
         expect(orderableGroupService.findAvailableProductsAndCreateOrderableGroups)
-            .toHaveBeenCalledWith(program.id, facility.id, false, rightName);
+            .toHaveBeenCalledWith(program.id, facility.id, false, rightName, undefined);
         // #225: ends here
     });
 
