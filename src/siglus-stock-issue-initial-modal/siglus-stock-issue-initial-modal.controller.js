@@ -66,7 +66,6 @@
                 }).then(function(issueToInfo) {
                     modalDeferred.resolve();
                     $state.go('openlmis.stockmanagement.issue.draft', {
-                        facilityId: facilityId,
                         programId: programId,
                         initialDraftId: issueToInfo.id,
                         issueToInfo: issueToInfo

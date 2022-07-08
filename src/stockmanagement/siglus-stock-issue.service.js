@@ -55,6 +55,10 @@
             delete: {
                 method: 'DELETE',
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+            },
+            saveDraft: {
+                method: 'PUT',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             }
         });
 
@@ -64,6 +68,8 @@
         this.initIssueDraft = initIssueDraft;
         this.queryIssueToInfo = queryIssueToInfo;
         this.updateDraftStatus = updateDraftStatus;
+
+        this.saveDraft = saveDraft;
 
         function createIssueDraft(data) {
             return resource.post(data).$promise;
@@ -95,6 +101,14 @@
             return resource.update({
                 id: draftId,
                 operator: operator
+            }).$promise;
+        }
+
+        function saveDraft(draftId, lineItems) {
+            return resource.saveDraft({
+                id: draftId,
+                signature: null,
+                lineItems: lineItems
             }).$promise;
         }
     }

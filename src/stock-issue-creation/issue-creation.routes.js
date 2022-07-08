@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:programId/create?page&size&keyword&draftId',
+            url: '/:draftId/create?page&size&keyword&index',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
