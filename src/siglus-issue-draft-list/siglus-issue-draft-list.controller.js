@@ -34,8 +34,7 @@
 
     //NOSONAR at the end of the line of the issue. This will suppress all issues - now and in the future
     function controller($scope, $stateParams, adjustmentType, user, programId, facilityId, $state,
-                        alertService, confirmService, loadingModalService, siglusStockIssueService,
-                        stockAdjustmentFactory, stockAdjustmentService) {
+                        alertService, confirmService, loadingModalService, siglusStockIssueService)  {
         var vm = this;
 
         vm.drafts = [];
@@ -128,25 +127,16 @@
             });
         };
 
-        vm.proceed = function() {
-            stockAdjustmentFactory.getDraft(user.user_id, programId, facilityId, adjustmentType.state)
-                .then(function(draft) {
-                    if (_.isEmpty(draft)) {
-                        stockAdjustmentService.createDraft(user.user_id, programId, facilityId, adjustmentType.state)
-                            .then(function(draft) {
-                                $state.go('openlmis.stockmanagement.issue.draft.creation', {
-                                    programId: programId,
-                                    draftId: _.get(draft, 'id', ''),
-                                    issueToInfo: vm.issueToInfo
-                                });
-                            });
-                    }
-                    $state.go('openlmis.stockmanagement.issue.draft.creation', {
-                        programId: programId,
-                        draftId: _.get(draft, 'id', ''),
-                        issueToInfo: vm.issueToInfo
-                    });
-                });
+        vm.proceed = function(draft) {
+            if (draft.status === 'NOT_YET_STARTED') {
+                siglusStockIssueService.updateDraftStatus(draft.id, user.username);
+            }
+
+            $state.go('openlmis.stockmanagement.issue.draft.creation', {
+                programId: programId,
+                draftId: _.get(draft, 'id', ''),
+                issueToInfo: vm.issueToInfo
+            });
         };
 
     }
