@@ -124,7 +124,8 @@
                 <!-- SIGLUS-REFACTOR: ends here -->
             </td>
             <td ng-if="!vm.isInitialInventory && vm.isFreeTextAllowed(lineItem)" openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
-                <input type="text" maxlength="100"
+                <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.reasonFreeText}}</span>
+                <input ng-if="vm.actionType !== 'SUBMITTED'" type="text" maxlength="100"
                        ng-change="vm.reasonTextChanged(lineItem)"
                        ng-blur="vm.validateReasonFreeText(lineItem)"
                        ng-model="lineItem.reasonFreeText" rows="1" cols="15" />
