@@ -2,11 +2,11 @@
     <div class="table-container-scroll-x">
         <table class="openlmis-table">
             <thead>
-            <tr>
-                <th ng-repeat="regimenColumn in vm.regimenColumns | orderBy : 'displayOrder'">
-                    {{regimenColumn.label}}
-                </th>
-            </tr>
+                <tr>
+                    <th ng-repeat="regimenColumn in vm.regimenColumns | orderBy : 'displayOrder'">
+                        {{regimenColumn.label}}
+                    </th>
+                </tr>
             </thead>
             <tbody ng-repeat="category in vm.categories" tbody-title="{{category}}" ng-init="cIndex = $index">
                 <tr ng-repeat="i in [0, 1]">

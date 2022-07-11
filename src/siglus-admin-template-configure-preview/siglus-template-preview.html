@@ -41,6 +41,13 @@
         <a ng-show="vm.template.extension.enableRapidTestConsumption" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.testConsumption">{{'adminProgramTemplate.setting' | message}}</a>
     </div>
     <siglus-test-consumption-preview sections="vm.template.testConsumption" ng-show="vm.template.extension.enableRapidTestConsumption"/>
+    
+    <div class="requisition-template-module-container">
+        <input type="checkbox" ng-model="vm.template.extension.enableAgeGroup"/>{{'adminProgramTemplate.ageGroup' | message}}
+        <a ng-show="vm.template.extension.enableAgeGroup" ui-sref="openlmis.administration.requisitionTemplates.configure.columnSetting.ageGroup">{{'adminProgramTemplate.setting' | message}}</a>
+    </div>
+    <siglus-age-group-preview sections="vm.template.ageGroup" ng-show="vm.template.extension.enableAgeGroup"/>
+
 </div>
 <div class="openlmis-toolbar">
     <input type="button" ng-click="vm.saveTemplate()" class="primary" value="{{'adminProgramTemplate.confirm' | message}}"/>

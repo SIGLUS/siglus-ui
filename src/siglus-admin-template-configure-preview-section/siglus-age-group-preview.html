@@ -1,0 +1,24 @@
+<div class="age-group-preview table-container-scroll-x template-preview-section">
+    <table class="openlmis-table">
+        <thead>
+            <tr>
+                <th>Faixas Etarias</td>
+                <th ng-repeat="groupColumn in vm.group.columns | orderBy : 'displayOrder'">{{
+                    groupColumn.label}}</td>
+            </tr>
+        </thead>
+        <tbody>
+          
+        <tr ng-repeat="serviceColumn in vm.service.columns | orderBy : 'displayOrder'" ng-if="serviceColumn.isDisplayed">
+            <td >{{serviceColumn.label}}</td>
+            <td ng-repeat="groupColumn in vm.group.columns | orderBy : 'displayOrder'"
+                ng-if="groupColumn.isDisplayed"
+                ng-class="{'user-input': vm.isUserInput(groupColumn)}"
+            >
+            <span>{{vm.columnDisplayName(groupColumn)}}</span>
+            </td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
