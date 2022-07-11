@@ -92,7 +92,6 @@
             var LotResource = this.LotResource,
                 orderableResource = this.orderableResource;
 
-            console.log(params);
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
                     var lotIds = getLotIds(stockCardSummariesPage.content),
@@ -101,7 +100,7 @@
                     return $q.all([
                         orderableResource.query({
                             id: orderableIds,
-                            initialDraftId: params.initialDraftId
+                            draftId: params.draftId
                         }),
                         LotResource.query({
                             id: lotIds
