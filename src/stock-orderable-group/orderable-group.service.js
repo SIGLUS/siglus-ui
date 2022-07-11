@@ -130,7 +130,7 @@
          * by orderable id.
          */
         function findAvailableProductsAndCreateOrderableGroups(programId, facilityId,
-                                                               includeApprovedProducts, initialDraftId) {
+                                                               includeApprovedProducts, draftId) {
             var repository;
             if (includeApprovedProducts) {
                 repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
@@ -141,7 +141,7 @@
             return repository.query({
                 programId: programId,
                 facilityId: facilityId,
-                initialDraftId: initialDraftId
+                draftId: draftId
             }).then(function(summaries) {
                 return groupByOrderableId(summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {

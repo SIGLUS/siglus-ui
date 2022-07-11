@@ -84,7 +84,7 @@
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return existingStockOrderableGroupsFactory
                             .getGroupsWithoutStock($stateParams, program, facility,
-                                STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, issueToInfo.id);
+                                STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
                     }
                     return $stateParams.orderableGroups;
                 },
@@ -107,12 +107,8 @@
                     return $stateParams.srcDstAssignments;
                 },
                 // SIGLUS-REFACTOR: starts here
-                draft: function($stateParams, stockAdjustmentFactory, user, program, facility, adjustmentType) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return stockAdjustmentFactory.getDraftById(user.user_id, program.id, facility.id,
-                            adjustmentType.state, $stateParams.draftId);
-                    }
-                    return $stateParams.draft;
+                draft: function($stateParams, siglusStockIssueService) {
+                    return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {

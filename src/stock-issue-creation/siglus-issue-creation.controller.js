@@ -107,7 +107,7 @@
                 .value();
             var existingKitProductId = _.chain(vm.addedLineItems)
                 .filter(function(item) {
-                    return item.orderable.isKit;
+                    return item.orderable.isKit || isEmpty(item.lot);
                 })
                 .map(function(item) {
                     return item.orderable.id;
@@ -276,7 +276,7 @@
             confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
                 .then(function() {
                     loadingModalService.open();
-                    stockAdjustmentService.deleteDraft($state.draftId).then(function() {
+                    siglusStockIssueService.resetDraft($state.draftId).then(function() {
                         $scope.needToConfirm = false;
                         notificationService.success(vm.key('deleted'));
                         $state.go('openlmis.stockmanagement.issue', $stateParams, {
