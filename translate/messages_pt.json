@@ -1888,7 +1888,7 @@
   "stockIssue.program": "Programa",
   "stockIssue.start": "Efectuar saida",
   "stockIssue.status": "Estados",
-  "stockIssue.title": "Saída para ${facility}",
+  "stockIssue.title": "Aviamento para ${facility}",
   "stockIssueCreation.actions": "Acções",
   "stockIssueCreation.add": "Adicionar",
   "stockIssueCreation.clear": "Limpar",
