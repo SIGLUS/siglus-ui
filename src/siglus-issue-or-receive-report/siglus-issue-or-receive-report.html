@@ -1,0 +1,197 @@
+<div id="waitDownload" class="wait-for-download">
+    <section class="section-first">
+      <table cellpadding="0" cellspacing="0">
+        <tr class="hide-tr">
+          <td></td>
+          <td></td>
+          <td style="width: 190px;"></td>
+          <td></td>
+          <td></td>
+          <td style="width: 120px;"></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td rowspan="6" class="background-black banner-text black-width">
+            <div class="banner-text text-nowrap">
+              {{ 'siglusIssueOrRecieveReport.modelo' | message }}
+            </div>
+          </td>
+          <td style="width: 80px; height: 90px;" class="logo--center"><span class="view-table-logo"></span></td>
+          <td colspan="3" class="text__left">
+            <h6 openlmis-message="view.rnr.republic.of.mozambique">
+              {{ 'siglusIssueOrRecieveReport.republic_of_mozambique' | message }}
+            </h6>
+            <h6 openlmis-message="view.rnr.ministry.of.health">
+              {{ 'siglusIssueOrRecieveReport.ministry_of_health' | message }}
+            </h6>
+            <h6 openlmis-message="view.rnr.central.medicines.and.medical.arricles">
+              {{ 'siglusIssueOrRecieveReport.central_medicines_and_medical_articles' | message }}
+            </h6>
+          </td>
+          <td colspan="3" class="report--title">
+            <!-- TODO the Documentation No. input by the user -->
+            <span class="report--title-font">
+              Issue Voucher Nº
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="text__left" colspan="2">
+            Supplier：{{ vm.facility.name }}
+          </td>
+          <td class="text__left" colspan="3">Client</td>
+          <td class="text__left" style="vertical-align: baseline;" colspan="2" rowspan="2">
+            <div class="label-checkbox">
+              <label for="Supply">Supply</label>
+              <input id="Supply" type="checkbox" checked disabled label />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="text__left" colspan="2">District：{{ vm.facility.geographicZone.name }}</td>
+          <td class="text__left" colspan="3">Requisition Nr</td>
+        </tr>
+        <tr>
+          <td class="text__left" colspan="2"></td>
+          <td class="text__left" colspan="2">Total of volume</td>
+          <td colspan="1" rowspan="3">Returned</td>
+          <td class="text__left" style="vertical-align: baseline;" colspan="2" rowspan="3">
+            <div class="label-checkbox">
+              <label for="Expired">Expired</label>
+              <input id="Expired" type="checkbox" disabled label />
+            </div>
+            <div class="label-checkbox">
+              <label for="Overstocked">Overstocked</label>
+              <input id="Overstocked" type="checkbox" disabled label />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="text__left" colspan="2"></td>
+          <td class="text__left" colspan="2">Requisition date</td>
+        </tr>
+        <tr>
+          <td class="text__left" colspan="2">Province：{{ vm.facility.geographicZone.parent.name }}</td>
+          <td class="text__left" colspan="2">Issue voucher date</td>
+        </tr>
+      </table>
+      <table style="width: 198px; margin-left: 14px;" cellpadding="0" cellspacing="0">
+        <tr class="hide-tr">
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="report--title-font" style="height: 90px; display: block; line-height: 90px;">
+              POD
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="text__left report--title-font" style="height: 120px; vertical-align: top; display: flex; padding: 8px 4px;">
+            Nº
+            <div class="N-input"></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="text__left">Reception date</td>
+        </tr>
+      </table>
+    </section>
+  
+    <section class="section-second">
+      <table cellpadding="0" cellspacing="0">
+        <tr class="hide-tr">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td rowspan="3" class="background-black black-width"></td>
+          <td class="text__left" colspan="10">Filled in by the supplier</td>
+        </tr>
+        <tr>
+          <!-- TODO product code -->
+          <td style="width: 102px; height: 90px;" class="report--subtitle" rowspan="2">FNM</td>
+          <td style="width: 372px; height: 60px;" class="report--subtitle" colspan="3">Destination of product
+          </td>
+          <td style="width: 73px;" class="report--main-font">Lot Nr
+          </td>
+          <td style="width: 73px;" class="report--main-font">Expiring Date
+          </td>
+          <td style="width: 73px;" class="report--main-font">Quantity Ordered
+          </td>
+          <td style="width: 73px;" class="report--main-font">Supplied Quantity
+          </td>
+          <td class="report--main-font">Price</td>
+          <td class="report--main-font">Value</td>
+        </tr>
+        <tr>
+          <td class="report--main-font">Product name</td>
+          <td class="report--main-font">Dosage</td>
+          <td class="report--main-font">Designation</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>QF</td>
+          <td>PU</td>
+          <td>QF x PU</td>
+        </tr>
+        <tr ng-repeat="item in vm.watiToPrintArray">
+          <td class="background-black black-width" style="font-size: 14px;">{{ item }}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+      <table style="width: 198px; margin-left: 14px;" cellpadding="0" cellspacing="0">
+        <tr class="hide-tr">
+          <td style="width: 84px;"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Filled in by the client
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 0 6px; height: 60px; font-weight: 700;
+          font-size: 14px;">Received quantity</td>
+          <td style="padding: 0 4px; height: 60px; font-weight: 700;
+          font-size: 14px;">Difference</td>
+        </tr>
+        <tr>
+          <td>QR</td>
+          <td>QR - QF</td>
+        </tr>
+        <tr ng-repeat="item in vm.watiToPrintArray">
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+    </section>
+    <section class="section-third">
+      <div>Total value  of the issue voucher:</div>
+      <div class="issue-voucher"></div>
+    </section>
+    <section class="section-fouth">
+      <div class="fouth-prepare">Prepared by:</div>
+      <div class="fouth-conferred">Conferred by:</div>
+      <div class="fouth-received">Received by:</div>
+    </section>
+  </div>
