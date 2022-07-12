@@ -84,6 +84,10 @@
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType = item.status;
             stateParams.draftNum = item.groupNum;
+            if (isInitialInventory()) {
+                return  $state.go('openlmis.stockmanagement.initialInventory.draft', stateParams);
+            }
+
             $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
 
@@ -95,6 +99,9 @@
             ).then(function() {
                 loadingModalService.open();
                 physicalInventoryService.deleteDraftList(draftList.physicalInventoryId).then(function() {
+                    if (isInitialInventory()) {
+                        return  $state.go('openlmis.home');
+                    }
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
@@ -115,6 +122,9 @@
                 stateParams.subDraftIds = _.map(vm.draftList.subDrafts, function(item) {
                     return item.subDraftId[0];
                 }).join(',');
+                if (isInitialInventory()) {
+                    return $state.go('openlmis.stockmanagement.initialInventory.draft', stateParams);
+                }
                 $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
             }
         };
@@ -127,10 +137,17 @@
 
         // All drafts must be submitted before they can be merged.
         function onInit() {
-            $state.current.label = programName;
+            if (!isInitialInventory()) {
+                $state.current.label = programName;
+            }
+
             draftList.subDrafts = _.sortBy(draftList.subDrafts, 'groupNum');
             vm.draftList = draftList;
             vm.isShowDeleteAndMerge = draftList.canMergeOrDeleteDrafts;
+        }
+
+        function isInitialInventory() {
+            return $state.current.name.contains('initialInventory');
         }
 
     }

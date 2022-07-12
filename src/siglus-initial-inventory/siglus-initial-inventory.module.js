@@ -18,32 +18,13 @@
     'use strict';
 
     /**
-     * @module stock-physical-inventory-draft
+     * @module siglus-initial-inventory
      *
      * @description
-     * Responsible for initiate requisition screen.
+     * Responsible for initiate inventory .
      */
-    angular.module('stock-physical-inventory-draft', [
-        'angular.filter',
-        'ngResource',
-        'requisition',
-        'requisition-constants',
-        'openlmis-i18n',
-        'openlmis-auth',
-        'openlmis-permissions',
-        'openlmis-date',
-        'openlmis-facility-program-select',
-        'openlmis-uuid',
-        'referencedata-facility',
-        'referencedata-period',
-        'openlmis-form',
-        'openlmis-modal',
-        'referencedata-program',
-        'ui.router',
-        // SIGLUS-REFACTOR: starts here
-        'siglus-requisition-date-picker',
-        'siglus-physical-inventory-creation'
-        // SIGLUS-REFACTOR: ends here
+    angular.module('siglus-initial-inventory', [
+        'stock-physical-inventory-draft'
     ]);
 
 })();
