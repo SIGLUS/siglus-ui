@@ -397,7 +397,7 @@
                     var stateParams = angular.copy($stateParams);
                     stateParams.actionType = 'DRAFT';
                     $state.go($state.current.name, stateParams, {
-                        reload: true
+                        location: 'replace'
                     });
                     return;
                 }
@@ -446,7 +446,10 @@
         // todo wait for #56
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
-                $state.go('openlmis.stockmanagement.physicalInventory.draftList');
+                // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
+                //$state.go('openlmis.stockmanagement.physicalInventory.draftList');
+                $state.go('^');
+                // SIGLUS-REFACTOR: ends here
                 return;
             }
             confirmService.confirmDestroy(
@@ -1016,7 +1019,7 @@
         }
 
         $scope.$on('$stateChangeStart', function(event, toState) {
-            if (toState.name !== 'openlmis.stockmanagement.initialInventory'
+            if (toState.name !== 'openlmis.stockmanagement.initialInventory.draft'
                 && toState.name !== 'openlmis.stockmanagement.physicalInventory.draftList.draft') {
                 physicalInventoryDataService.clear();
             }

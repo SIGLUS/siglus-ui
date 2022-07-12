@@ -158,13 +158,23 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function createDraft(program, facility, splitNum) {
+        function createDraft(program, facility, splitNum, isInitialInventory) {
+            if (isInitialInventory) {
+                return resource.save({
+                    splitNum: Number(splitNum),
+                    initialPhysicalInventory: true
+                }, {
+                    programId: program,
+                    facilityId: facility
+                }).$promise;
+            }
             return resource.save({
                 splitNum: Number(splitNum)
             }, {
                 programId: program,
                 facilityId: facility
             }).$promise;
+
         }
 
         function getConflictDraft(facilityId, programId) {

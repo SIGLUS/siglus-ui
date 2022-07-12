@@ -26,7 +26,8 @@
         '$state',
         'facilityFactory',
         '$stateParams',
-        'physicalInventoryService'
+        'physicalInventoryService',
+        'programId'
     ];
 
     function controller(
@@ -35,7 +36,8 @@
         $state,
         facilityFactory,
         $stateParams,
-        physicalInventoryService
+        physicalInventoryService,
+        programId
     ) {
         var vm = this;
         vm.showConflictStatus = false;
@@ -65,15 +67,24 @@
             if (vm.isValid(vm.userInputSplitNum)) {
                 loadingModalService.open();
                 physicalInventoryService.createDraft(
-                    $stateParams.programId,
+                    $stateParams.programId ? $stateParams.programId : programId,
                     vm.facility.id,
-                    vm.userInputSplitNum
+                    vm.userInputSplitNum,
+                    !!programId
                 ).then(function() {
                     modalDeferred.resolve();
                     loadingModalService.close();
-                    $state.go(
-                        'openlmis.stockmanagement.physicalInventory.draftList'
-                    );
+                    if (programId) {
+                        $state.go(
+                            'openlmis.stockmanagement.initialInventory', {
+                                programId: programId
+                            }
+                        );
+                    } else {
+                        $state.go(
+                            'openlmis.stockmanagement.physicalInventory.draftList'
+                        );
+                    }
                 })
                     .catch(function(err) {
                         if (err.status === 400) {
