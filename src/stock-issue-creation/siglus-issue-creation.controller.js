@@ -276,10 +276,10 @@
             confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
                 .then(function() {
                     loadingModalService.open();
-                    siglusStockIssueService.resetDraft($state.draftId).then(function() {
+                    siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
                         $scope.needToConfirm = false;
                         notificationService.success(vm.key('deleted'));
-                        $state.go('openlmis.stockmanagement.issue', $stateParams, {
+                        $state.go('openlmis.stockmanagement.issue.draft', $stateParams, {
                             reload: true
                         });
                     })
@@ -512,12 +512,28 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
+        function productDuplicatedHanler(data) {
+            siglusRemainingProductsModalService.show().then(function() {
+                _.forEach(vm.addedLineItems, function(lineItem) {
+                    var hasDuplicated = _.some(data, function(item) {
+                        return item.orderable.id === lineItem.orderable.id;
+                    });
+                    if (hasDuplicated) {
+                        vm.remove(lineItem);
+                    }
+                });
+            });
+        }
+
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             if ($stateParams.keyword) {
                 cancelFilter();
             }
+            _.forEach(vm.addedLineItems, function(lineItem) {
+                lineItem.orderable.displayProductName = $filter('productName')(lineItem.orderable);
+            });
 
             siglusStockIssueService
                 .saveDraft($stateParams.draftId, addedLineItems)
@@ -527,18 +543,10 @@
                     $stateParams.isAddProduct = false;
                     vm.search(true);
                 })
-                .catch(function() {
-                    siglusRemainingProductsModalService.show().then(function(data) {
-                        _.forEach(vm.addedLineItems, function(lineItem) {
-                            var hasDuplicated = _.some(data, function(item) {
-                                return item.orderable.id === lineItem.orderable.id
-                                  && (_.isEmpty(item.lot) || item.lot.id === lineItem.lot.id);
-                            });
-                            if (hasDuplicated) {
-                                vm.remove(lineItem);
-                            }
-                        });
-                    });
+                .catch(function(error) {
+                    if (error.data.isBusinessError) {
+                        productDuplicatedHanler(error.data.businessErrorExtraData);
+                    }
                 });
         };
 
@@ -637,7 +645,7 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get('stockIssue.draft') + $stateParams.index;
+            $state.current.label = messageService.get('stockIssue.draft') + ' ' + $stateParams.index;
 
             initViewModel();
             initStateParams();

@@ -57,8 +57,8 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             },
             resetDraft: {
-                method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+                method: 'PUT',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/info')
             },
             getDraftById: {
                 method: 'GET',
@@ -149,7 +149,9 @@
                 },
                 occurredDate: item.occurredDate,
                 reasonId: _.get(item.reason, 'id', null),
-                reasonFreeText: _.get(item, 'reasonFreeText', null)
+                reasonFreeText: _.get(item, 'reasonFreeText', null),
+                productCode: item.orderable.productCode,
+                productName: item.orderable.displayProductName
             };
         }
     }

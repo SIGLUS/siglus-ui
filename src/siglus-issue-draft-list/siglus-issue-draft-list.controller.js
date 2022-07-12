@@ -103,9 +103,13 @@
             if ($stateParams.issueToInfo) {
                 vm.updateIssueAndDraftList($stateParams.issueToInfo);
             } else {
+                loadingModalService.open();
                 siglusStockIssueService.queryIssueToInfo(programId, facility.id, adjustmentType.state)
                     .then(function(issueToInfo) {
                         vm.updateIssueAndDraftList(issueToInfo);
+                    })
+                    .catch(function() {
+                        loadingModalService.close();
                     });
             }
         };
