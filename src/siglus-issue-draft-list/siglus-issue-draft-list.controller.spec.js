@@ -15,7 +15,7 @@
 
 describe('SiglusIssueDraftListController', function() {
     var vm, $q, confirmDeferred, $rootScope, alertService, confirmService, siglusStockIssueService,
-        stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, $stateParams;
+        $controller, ADJUSTMENT_TYPE, $stateParams;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -23,7 +23,6 @@ describe('SiglusIssueDraftListController', function() {
             $rootScope = $injector.get('$rootScope');
             $stateParams = $injector.get('$stateParams');
             siglusStockIssueService = $injector.get('siglusStockIssueService');
-            stockAdjustmentFactory = $injector.get('stockAdjustmentFactory');
             ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
             alertService = $injector.get('alertService');
             confirmService = $injector.get('confirmService');
@@ -37,7 +36,6 @@ describe('SiglusIssueDraftListController', function() {
         spyOn(siglusStockIssueService, 'queryIssueToInfo').andReturn($q.resolve());
         spyOn(siglusStockIssueService, 'getIssueDrafts').andReturn($q.resolve());
         spyOn(siglusStockIssueService, 'createIssueDraft').andReturn(confirmDeferred.promise);
-        spyOn(stockAdjustmentFactory, 'getDraft').andReturn($q.resolve([]));
         spyOn(alertService, 'error');
         spyOn(confirmService, 'confirmDestroy').andReturn(confirmDeferred.promise);
 
@@ -53,7 +51,9 @@ describe('SiglusIssueDraftListController', function() {
             $scope: $rootScope.$new(),
             $stateParams: $stateParams,
             programId: '000000-000000-000000-0000000',
-            facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+            facility: {
+                id: '004f4232-cfb8-11e9-9398-0242ac130008'
+            },
             adjustmentType: ADJUSTMENT_TYPE.ISSUE,
             draftInfo: {
                 documentationNo: 'abc',

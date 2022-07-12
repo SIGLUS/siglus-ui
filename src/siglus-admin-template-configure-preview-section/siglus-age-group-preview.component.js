@@ -17,22 +17,15 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name admin-template.SIGLUS_TEMPLATE_SECTIONS
-     *
-     * @description
-     * This is constant template sections.
-     */
     angular
-        .module('admin-template')
-        .constant('SIGLUS_TEMPLATE_SECTIONS', [
-            'kitUsage',
-            'usageInformation',
-            'testConsumption',
-            'patient',
-            'regimen',
-            'consultationNumber',
-            'ageGroup'
-        ]);
+        .module('siglus-admin-template-configure-preview-section')
+        .component('siglusAgeGroupPreview', {
+            bindings: {
+                sections: '<'
+            },
+            controller: 'SiglusAgeGroupPreviewController',
+            controllerAs: 'vm',
+            templateUrl: 'siglus-admin-template-configure-preview-section/siglus-age-group-preview.html'
+        });
+
 })();

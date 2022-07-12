@@ -37,7 +37,8 @@
             OUTCOME: 'outcome',
             REGIMEN: 'regimen',
             SUMMARY: 'summary',
-            NUMBER: 'number'
+            NUMBER: 'number',
+            GROUP: 'group'
         };
     }
 })();

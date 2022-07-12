@@ -33,24 +33,22 @@
         'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'stockAdjustmentService', 'draft', 'openlmisDateFilter',
-        'siglusRemainingProductsModalService'
+        'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
+        'siglusRemainingProductsModalService', 'siglusStockIssueService'
     ];
 
     function controller($scope, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft,
-                        openlmisDateFilter, siglusRemainingProductsModalService) {
+                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
+                        openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService) {
         var vm = this,
             previousAdded = {};
 
         vm.issueToInfo = issueToInfo;
 
         vm.destinationName = '';
-
-        vm.draft = draft;
 
         /**
      * @ngdoc property
@@ -109,7 +107,7 @@
                 .value();
             var existingKitProductId = _.chain(vm.addedLineItems)
                 .filter(function(item) {
-                    return item.orderable.isKit;
+                    return item.orderable.isKit || isEmpty(item.lot);
                 })
                 .map(function(item) {
                     return item.orderable.id;
@@ -278,7 +276,7 @@
             confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
                 .then(function() {
                     loadingModalService.open();
-                    stockAdjustmentService.deleteDraft(draft.id).then(function() {
+                    siglusStockIssueService.resetDraft($state.draftId).then(function() {
                         $scope.needToConfirm = false;
                         notificationService.success(vm.key('deleted'));
                         $state.go('openlmis.stockmanagement.issue', $stateParams, {
@@ -522,8 +520,8 @@
                 cancelFilter();
             }
 
-            stockAdjustmentService
-                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+            siglusStockIssueService
+                .saveDraft($stateParams.draftId, addedLineItems)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
@@ -640,7 +638,7 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get($stateParams.draftId);
+            $state.current.label = messageService.get('stockIssue.draft') + $stateParams.index;
 
             initViewModel();
             initStateParams();

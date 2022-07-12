@@ -28,14 +28,13 @@
         .module('siglus-issue-draft-list')
         .controller('SiglusIssueDraftListController', controller);
 
-    controller.$inject = ['$scope', '$stateParams', 'adjustmentType', 'user', 'programId', 'facilityId', '$state',
+    controller.$inject = ['$scope', '$stateParams', 'adjustmentType', 'user', 'programId', 'facility', '$state',
         'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
         'stockAdjustmentFactory', 'stockAdjustmentService'];
 
     //NOSONAR at the end of the line of the issue. This will suppress all issues - now and in the future
-    function controller($scope, $stateParams, adjustmentType, user, programId, facilityId, $state,
-                        alertService, confirmService, loadingModalService, siglusStockIssueService,
-                        stockAdjustmentFactory, stockAdjustmentService) {
+    function controller($scope, $stateParams, adjustmentType, user, programId, facility, $state,
+                        alertService, confirmService, loadingModalService, siglusStockIssueService)  {
         var vm = this;
 
         vm.drafts = [];
@@ -58,7 +57,7 @@
             } else {
                 var params = {
                     programId: programId,
-                    facilityId: facilityId,
+                    facilityId: facility.id,
                     userId: user.user_id,
                     initialDraftId: _.get(vm.issueToInfo, 'id'),
                     draftType: adjustmentType.state
@@ -104,7 +103,7 @@
             if ($stateParams.issueToInfo) {
                 vm.updateIssueAndDraftList($stateParams.issueToInfo);
             } else {
-                siglusStockIssueService.queryIssueToInfo(programId, facilityId, adjustmentType.state)
+                siglusStockIssueService.queryIssueToInfo(programId, facility.id, adjustmentType.state)
                     .then(function(issueToInfo) {
                         vm.updateIssueAndDraftList(issueToInfo);
                     });
@@ -128,25 +127,18 @@
             });
         };
 
-        vm.proceed = function() {
-            stockAdjustmentFactory.getDraft(user.user_id, programId, facilityId, adjustmentType.state)
-                .then(function(draft) {
-                    if (_.isEmpty(draft)) {
-                        stockAdjustmentService.createDraft(user.user_id, programId, facilityId, adjustmentType.state)
-                            .then(function(draft) {
-                                $state.go('openlmis.stockmanagement.issue.draft.creation', {
-                                    programId: programId,
-                                    draftId: _.get(draft, 'id', ''),
-                                    issueToInfo: vm.issueToInfo
-                                });
-                            });
-                    }
-                    $state.go('openlmis.stockmanagement.issue.draft.creation', {
-                        programId: programId,
-                        draftId: _.get(draft, 'id', ''),
-                        issueToInfo: vm.issueToInfo
-                    });
-                });
+        vm.proceed = function(draft, index) {
+            if (draft.status === 'NOT_YET_STARTED') {
+                siglusStockIssueService.updateDraftStatus(draft.id, user.username);
+            }
+
+            $state.go('openlmis.stockmanagement.issue.draft.creation', {
+                programId: programId,
+                draftId: _.get(draft, 'id', ''),
+                issueToInfo: vm.issueToInfo,
+                index: index,
+                facility: facility
+            });
         };
 
     }

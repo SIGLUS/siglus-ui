@@ -66,7 +66,6 @@
                 }).then(function(issueToInfo) {
                     modalDeferred.resolve();
                     $state.go('openlmis.stockmanagement.issue.draft', {
-                        facilityId: facilityId,
                         programId: programId,
                         initialDraftId: issueToInfo.id,
                         issueToInfo: issueToInfo
@@ -85,9 +84,9 @@
         vm.$onInit = function() {
             loadingModalService.open();
             sourceDestinationService.getDestinationAssignments(programId, facilityId).then(function(data) {
-                vm.issueToList = _.uniq(data, false, function(item) {
+                vm.issueToList = _.sortBy(_.uniq(data, false, function(item) {
                     return item.name;
-                });
+                }), 'name');
             })
                 .finally(function() {
                     loadingModalService.close();

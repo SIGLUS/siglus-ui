@@ -50,10 +50,23 @@
             },
             update: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory(urlBasePath + '/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/update')
             },
             delete: {
                 method: 'DELETE',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+            },
+            resetDraft: {
+                method: 'DELETE',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+            },
+            getDraftById: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id'),
+                isArray: false
+            },
+            saveDraft: {
+                method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             }
         });
@@ -63,6 +76,11 @@
         this.removeIssueDraft = removeIssueDraft;
         this.initIssueDraft = initIssueDraft;
         this.queryIssueToInfo = queryIssueToInfo;
+        this.updateDraftStatus = updateDraftStatus;
+        this.getDraftById = getDraftById;
+        this.resetDraft = resetDraft;
+
+        this.saveDraft = saveDraft;
 
         function createIssueDraft(data) {
             return resource.post(data).$promise;
@@ -88,6 +106,51 @@
             return resource.delete({
                 id: draftId
             }).$promise;
+        }
+
+        function resetDraft(draftId) {
+            return resource.resetDraft({
+                id: draftId
+            }).$promise;
+        }
+
+        function updateDraftStatus(draftId, operator) {
+            return resource.update({
+                id: draftId,
+                operator: operator
+            }).$promise;
+        }
+
+        function saveDraft(draftId, lineItems) {
+            var drafts = _.map(lineItems, buildLine);
+            return resource.saveDraft({
+                id: draftId
+            }, {
+                id: draftId,
+                lineItems: drafts
+            }).$promise;
+        }
+
+        function getDraftById(draftId) {
+            return resource.getDraftById({
+                id: draftId
+            }).$promise;
+        }
+
+        function buildLine(item) {
+            return {
+                orderableId: item.orderable.id,
+                lotId: _.get(item.lot, 'id', null),
+                lotCode: _.get(item.lot, 'lotCode', null),
+                expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
+                quantity: item.quantity,
+                extraData: {
+                    vvmStatus: item.vvmStatus
+                },
+                occurredDate: item.occurredDate,
+                reasonId: _.get(item.reason, 'id', null),
+                reasonFreeText: _.get(item, 'reasonFreeText', null)
+            };
         }
     }
 })();

@@ -67,7 +67,9 @@
                     'enableRapidTestConsumption',
                 'openlmis.administration.requisitionTemplates.configure.columnSetting.regimen': 'enableRegimen',
                 'openlmis.administration.requisitionTemplates.configure.columnSetting.consultationNumber':
-                    'enableConsultationNumber'
+                    'enableConsultationNumber',
+                'openlmis.administration.requisitionTemplates.configure.columnSetting.ageGroup':
+                    'enableAgeGroup'
             };
             template.extension[routerMap[$state.current.name]] = true;
         }

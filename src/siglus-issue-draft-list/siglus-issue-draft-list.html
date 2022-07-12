@@ -24,7 +24,7 @@
             <td>{{vm.statusMapperMapper[draft.status] | message}}</td>
             <td>{{draft.operator}}</td>
             <td style="display: flex;">
-                <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft)"
+                <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft, $index + 1)"
                        style="min-width: 113px"
                        value="{{vm.actionMapper[draft.status] | message}}"
                        class="primary"/>
