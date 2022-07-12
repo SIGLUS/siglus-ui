@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft', {
-            url: '/draft?facilityId&programId&initialDraftId',
+            url: '/draft/:programId?initialDraftId',
             label: 'stockIssue.draftList',
             priority: 2,
             showInNavigation: false,
@@ -37,7 +37,8 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             params: {
-                issueToInfo: undefined
+                issueToInfo: undefined,
+                facility: undefined
             },
             resolve: {
                 user: function(authorizationService) {
@@ -46,8 +47,11 @@
                 programId: function($stateParams) {
                     return $stateParams.programId;
                 },
-                facilityId: function($stateParams) {
-                    return $stateParams.facilityId;
+                facility: function($stateParams, facilityFactory) {
+                    if (_.isEmpty($stateParams.facility)) {
+                        return facilityFactory.getUserHomeFacility();
+                    }
+                    return $stateParams.facility;
                 },
                 adjustmentType: function(ADJUSTMENT_TYPE) {
                     return ADJUSTMENT_TYPE.ISSUE;

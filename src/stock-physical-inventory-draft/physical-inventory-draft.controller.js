@@ -1017,7 +1017,7 @@
 
         $scope.$on('$stateChangeStart', function(event, toState) {
             if (toState.name !== 'openlmis.stockmanagement.initialInventory'
-                && toState.name !== 'openlmis.stockmanagement.physicalInventory.draft') {
+                && toState.name !== 'openlmis.stockmanagement.physicalInventory.draftList.draft') {
                 physicalInventoryDataService.clear();
             }
         });

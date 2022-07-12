@@ -105,6 +105,7 @@ describe('SiglusInitialIssueModalController', function() {
 
             vm.submitForm();
             var data = {
+                id: 'A0000002',
                 destinationId: '00001',
                 destinationName: 'aaaa',
                 documentNumber: 'number-1'
@@ -114,7 +115,7 @@ describe('SiglusInitialIssueModalController', function() {
 
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.issue.draft', {
                 programId: '00000000-0000-0000-0000-000000000000',
-                facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
+                initialDraftId: 'A0000002',
                 issueToInfo: data
             });
         });
