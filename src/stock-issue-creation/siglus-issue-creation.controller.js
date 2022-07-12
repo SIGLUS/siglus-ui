@@ -406,6 +406,7 @@
         //         + '_MMIT.pdf'
         //     );
         // }
+        vm.watiToPrintArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
         // function downloadPdf() {
         //     var node = document.getElementById('waitDownload');
         //     var contentWidth = node.offsetWidth;
@@ -667,6 +668,7 @@
                 : destinationName;
             vm.program = program;
             vm.facility = facility;
+            console.log('facility --->>>', vm.facility);
             vm.reasons = reasons;
             vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
