@@ -404,9 +404,11 @@
                 reload($state.current.name);
             })
                 .catch(function(error) {
-                    loadingModalService.close();
-                    var data = error.data.businessErrorExtraData;
-                    openRemainingModal('save', data);
+                    if (error.isBusinessError) {
+                        loadingModalService.close();
+                        var data = error.data.businessErrorExtraData;
+                        openRemainingModal('save', data);
+                    }
                 });
         };
         vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {

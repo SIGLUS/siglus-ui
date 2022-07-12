@@ -87,7 +87,7 @@
                     }
                 })
                     .catch(function(err) {
-                        if (err.status === 400) {
+                        if (err.status === 400 && err.isBusinessError) {
                             loadingModalService.close();
                             vm.showConflictStatus = true;
                         }
