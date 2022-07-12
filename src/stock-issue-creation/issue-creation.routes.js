@@ -79,8 +79,7 @@
                         ADJUSTMENT_TYPE.ISSUE.state);
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, issueToInfo,
-                    facility, existingStockOrderableGroupsFactory) {
+                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return existingStockOrderableGroupsFactory
                             .getGroupsWithoutStock($stateParams, program, facility,
