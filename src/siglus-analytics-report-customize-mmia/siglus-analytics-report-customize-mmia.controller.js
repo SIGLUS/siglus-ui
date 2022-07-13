@@ -33,7 +33,7 @@
         'requisition',
         'openlmisDateFilter',
         'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES',
+        'SIGLUS_SECTION_TYPES'
     ];
 
     function controller(
