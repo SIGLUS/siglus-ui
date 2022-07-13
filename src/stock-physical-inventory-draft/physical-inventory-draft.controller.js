@@ -404,8 +404,8 @@
                 reload($state.current.name);
             })
                 .catch(function(error) {
+                    loadingModalService.close();
                     if (error.data.isBusinessError) {
-                        loadingModalService.close();
                         var data = error.data.businessErrorExtraData;
                         openRemainingModal('save', data);
                     }
