@@ -74,7 +74,7 @@
                     program
                 ) {
                     var deferred = $q.defer();
-                    if ($stateParams.isAddProduct) {
+                    if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
