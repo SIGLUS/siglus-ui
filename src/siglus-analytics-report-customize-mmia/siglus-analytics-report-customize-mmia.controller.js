@@ -83,7 +83,7 @@
             vm.services = _.chain(services)
                 .sortBy('displayOrder')
                 .value();
-            console.log(vm);
+            // console.log(vm);
             vm.regimens = requisition.regimenLineItems;
         }
         function getCreationDate(date) {
