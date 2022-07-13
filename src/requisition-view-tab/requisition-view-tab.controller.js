@@ -159,6 +159,7 @@
             vm.lineItems = lineItems;
             vm.items = items;
             vm.requisition = requisition;
+            console.log('columns ---->>>>', columns);
             vm.columns = columns;
             vm.userCanEdit = canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();

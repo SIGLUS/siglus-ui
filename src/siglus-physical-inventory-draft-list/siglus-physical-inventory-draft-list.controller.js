@@ -112,8 +112,12 @@
             });
         };
 
+        vm.isAllowedClick = function(drafts) {
+            return drafts.subDrafts.length > 0;
+        };
+
         vm.mergeDrafts = function() {
-            if (isAllSubDraftsAreSubmmitted(vm.draftList.subDrafts)) {
+            if (isAllSubDraftsSubmit(vm.draftList.subDrafts)) {
                 alertService.error('PhysicalInventoryDraftList.mergeError');
             } else {
                 var stateParams = angular.copy($stateParams);
@@ -129,10 +133,10 @@
             }
         };
 
-        function isAllSubDraftsAreSubmmitted(draftList) {
-            return _.find(draftList, function(item) {
+        function isAllSubDraftsSubmit(draftList) {
+            return Boolean(_.find(draftList, function(item) {
                 return item.status !== 'SUBMITTED';
-            });
+            }));
         }
 
         // All drafts must be submitted before they can be merged.

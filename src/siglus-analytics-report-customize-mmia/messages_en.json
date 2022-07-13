@@ -1,0 +1,23 @@
+{
+    "mmia.title": "MMIA",
+    "mmia.republic_of_mozambique": "REPUBLIC OF MOZAMBIQUE",
+    "mmia.ministry_of_health": "MINISTRY OF HEALTH",
+    "mmia.central_medicines_and_medical_articles": "CENTRAL MEDICINES AND MEDICAL ARTICLES",
+    "mmia.mmia_test_title": "MMIT - MONTHLY INFORMATION MAP OF mmia TEST",
+    "mmia.month": "Month",
+    "mmia.health_facility": "Health Facility",
+    "mmia.year": "Year",
+    "mmia.district": "District",
+    "mmia.province": "Province",
+    "mmia.fnm": "FNM",
+    "mmia.medicine": "Medicine",
+    "mmia.issuedUnit": "Issued Unit",
+    "mmia.initialAmount": "Initial Amount",
+    "mmia.entries": "Entries",
+    "mmia.issues": "Issues",
+    "mmia.adjustments": "Adjustments",
+    "mmia.inventory": "Inventory",
+    "mmia.validate": "Validate",
+    "mmia.downloadPdf": "Download PDF",
+    "mmia.downloadSimam": "Download SIMAM"
+}

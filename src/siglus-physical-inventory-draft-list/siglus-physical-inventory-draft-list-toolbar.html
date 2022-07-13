@@ -6,7 +6,7 @@
     </div>
     <div class="button-group primary" ng-click="vm.mergeDrafts()">
         <!-- SIGLUS-REFACTOR: starts here -->
-        <button ng-disabled="!vm.draftList.subDrafts.length" class="primary">{{'PhysicalInventoryDraftList.merge' | message}}</button>
+        <button ng-disabled="vm.isAllowedClick(vm.drafts)" class="primary">{{'PhysicalInventoryDraftList.merge' | message}}</button>
         <!-- SIGLUS-REFACTOR: ends here -->
     </div>
 </div>
