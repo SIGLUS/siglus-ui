@@ -498,7 +498,7 @@
         };
 
         function productDuplicatedHanler(data) {
-            siglusRemainingProductsModalService.show().then(function() {
+            siglusRemainingProductsModalService.show(data).then(function() {
                 _.forEach(vm.addedLineItems, function(lineItem) {
                     var hasDuplicated = _.some(data, function(item) {
                         return item.orderable.id === lineItem.orderable.id;
