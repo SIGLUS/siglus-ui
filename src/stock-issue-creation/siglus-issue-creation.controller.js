@@ -29,15 +29,16 @@
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
+        '$scope', 'draft', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
+        'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService',
+        'adjustmentType', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService'
     ];
 
-    function controller($scope, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
+    function controller($scope, draft, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
@@ -128,6 +129,8 @@
                     return !_.isEmpty(item);
                 })
                 .value();
+
+            $stateParams.orderableGroups = vm.orderableGroups;
         };
 
         /**
@@ -308,24 +311,6 @@
                 lineItem.$errors.quantityInvalid = false;
             } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
-            }
-            return lineItem;
-        };
-
-        /**
-     * @ngdoc method
-     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name validateAssignment
-     *
-     * @description
-     * Validate line item assignment and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
-        vm.validateAssignment = function(lineItem) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
-        adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
             }
             return lineItem;
         };
@@ -581,7 +566,6 @@
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
                 vm.validateDate(item);
-                vm.validateAssignment(item);
                 vm.validateReason(item);
             });
             return _.chain(vm.addedLineItems)
@@ -645,7 +629,7 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get('stockIssue.draft') + ' ' + $stateParams.index;
+            $state.current.label = messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();
@@ -695,7 +679,7 @@
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
             // SIGLUS-REFACTOR: starts here
-            // $stateParams.orderableGroups = orderableGroups;
+            $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;
             // SIGLUS-REFACTOR: ends here
         }

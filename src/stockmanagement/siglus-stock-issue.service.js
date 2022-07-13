@@ -45,7 +45,7 @@
                 isArray: false
             },
             post: {
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts'),
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/multi'),
                 method: 'POST'
             },
             update: {

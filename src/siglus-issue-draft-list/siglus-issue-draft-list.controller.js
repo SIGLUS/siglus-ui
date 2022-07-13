@@ -48,7 +48,8 @@
 
         vm.statusMapperMapper = {
             NOT_YET_STARTED: 'stockIssue.notStarted',
-            DRAFT: 'stockIssue.draft'
+            DRAFT: 'stockIssue.draft',
+            SUBMITTED: 'stockIssue.view'
         };
 
         vm.addDraft = function() {
@@ -131,7 +132,7 @@
             });
         };
 
-        vm.proceed = function(draft, index) {
+        vm.proceed = function(draft) {
             if (draft.status === 'NOT_YET_STARTED') {
                 siglusStockIssueService.updateDraftStatus(draft.id, user.username);
             }
@@ -140,7 +141,6 @@
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 issueToInfo: vm.issueToInfo,
-                index: index,
                 facility: facility
             });
         };

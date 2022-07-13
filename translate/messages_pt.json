@@ -2276,6 +2276,7 @@
   "issueDraft.operator": "Operador",
   "issueDraft.actions": "Ações",
   "issueDraft.remove": "Remover",
+  "stockIssue.view": "Visualizar",
   "issueDraft.create": "Criar rascunho",
   "issueDraft.exceedTenDraftHint": "No máximo 10 rascunhos podem ser criados, você não pode adicionar mais rascunhos.",
   "issueDraft.confirmRemove": "Deseja remover este rascunho?",
