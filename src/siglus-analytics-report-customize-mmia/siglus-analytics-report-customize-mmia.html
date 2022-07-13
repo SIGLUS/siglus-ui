@@ -1,0 +1,294 @@
+<div class="mmia-form">
+  <table class="border-all-bold head-section" cellpadding="0" cellspacing="0">
+      <tr>
+          <td rowspan="3" class="background-black banner-text">
+              <div class="width-28 banner-text">
+                  <div class="text-nowrap">CMAM - Modelo 01</div>
+              </div>
+          </td>
+          <td class=" col-1">
+              <span style="float: left" class="view-table-logo"></span>
+
+          </td>
+          <td class="col-4">
+              <h6>REPUBLICA DE MOCAMBIQUE</h6>
+              <h6>MINISTERIO DA SAUDE</h6>
+              <h6>CENTRAL DE MEDICAMENTOS E ARTIGOS MEDICOS</h6>
+          </td>
+          <td class=" col-5 align-center">
+              <h5>MMIA</h5>
+              <h5>MAPA MENSAL DE INFORMACAO ARV</h5>
+          </td>
+          <td class=" col-2">
+              &nbsp;
+              <span openlmis-message="view.rnr.mmia.month">{{ 'mmia.month' | message }}</span>
+              <span> : </span> {{vm.month}}
+          </td>
+      </tr>
+
+      <tr>
+          <td colspan="3">
+              <span openlmis-message="view.rnr.healthFacility">{{ 'mmia.health_facility' | message }}</span>
+              <span>: {{vm.facility.name}}</span>
+          </td>
+          <td rowspan="2">
+              &nbsp;
+              <span openlmis-message="view.rnr.mmia.year">{{ 'mmia.year' | message }}</span>
+              <span>: {{vm.year}}</span>
+          </td>
+      </tr>
+
+      <tr class="">
+          <td colspan="2"><span openlmis-message="view.rnr.district">{{ 'mmia.district' | message }}</span>: {{rnr.facility.geographicZone.name}}</td>
+          <td><span openlmis-message="view.rnr.province">{{ 'mmia.province' | message }}</span>:{{rnr.facility.geographicZone.parent.name}}</td>
+      </tr>
+  </table>
+  <div class="separate"></div>
+  <table class="second-section">
+      <thead>
+      <tr>
+          <th class="banner-text"></th>
+          <th class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
+          <th class="col-4" openlmis-message="view.rnr.mmia.medicine">{{ 'mmia.medicine' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.initialAmount">{{ 'mmia.initialAmount' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.entries">{{ 'mmia.entries' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.issues">{{ 'mmia.issues' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.adjustments">{{ 'mmia.adjustments' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.inventory' | message }}</th>
+          <th openlmis-message="view.rnr.mmia.validate">{{ 'mmia.validate' | message }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="item in vm.columns">
+          <td class="banner-text">{{$index+1}}</td>
+          <td class="{{params[item.categoryName]['barcode']}}">{{item.orderable.productCode===undefined? '': '*'+item.orderable.productCode+'*'}}</td>
+          <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
+          <td>{{item.orderable.dispensable.displayUnit}}</td>
+          <td>{{item.beginningBalance}}</td>
+          <td>{{item.totalReceivedQuantity}}</td>
+          <td>{{item.totalConsumedQuantity}}</td>
+          <td>{{item.totalLossesAndAdjustments}}</td>
+          <td>{{item.stockOnHand}}</td>
+          <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
+      </tr>
+
+      </tbody>
+  </table>
+  <div class="separate"></div>
+  <div class="page-break"></div>
+  <div class="middle-section">
+      <table class="regime-form">
+          <col width="3"><col width="10"><col width="500"><col width="10"><col width="10">
+          <thead>
+              <tr>
+                  <th class="banner-text"></th>
+                  <th class="col-4">Regime Code</th>
+                  <!-- <th ng-if="rnr.reportType === 'old'" class="col-4" openlmis-message="view.rnr.mmia.regime.therapeutic.old" ></th> -->
+                  <!-- <th ng-if="rnr.reportType === 'new'" class="col-4" openlmis-message="view.rnr.mmia.regime.therapeutic" colspan="2"></th> -->
+                  <th>Regime Total</th>
+                  <!-- <th ng-if="rnr.reportType === 'new'" openlmis-message="view.rnr.mmia.regime.total.new"></th> -->
+                  <th>Regime Pharmacy</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-if="rnr.reportType === 'old'" ng-repeat="item in vm.regimens">
+                  <td class="banner-text">{{$index+1}}</td>
+                  <td class="{{params[item.categoryName]['barcode']}}"></td>
+                  <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.name}}</td>
+                  <td>{{item.patientsOnTreatment}}</td>
+              </tr>
+              <tr ng-repeat-start="(key, val) in regimens" width="30px" height="30px">
+                  <td class="banner-text">{{1}}</td>
+                  <td class="{{params[key]['headerclass']}}" style="max-width: 30px; width: 10px" rowspan="{{val.length}}">
+                      <div class="text-nowrap"><span>{{params[key]['headername']}}</span></div>
+                  </td>
+                  <td class="{{params[key]['productPrimaryName']}}" >{{val[0].name}}</td>
+                  <td>{{val[0].patientsOnTreatment}}</td>
+                  <td>{{val[0].comunitaryPharmacy === undefined ? "N/A" : val[0].comunitaryPharmacy}}</td>
+              </tr>
+              <tr ng-if="rnr.reportType === 'new'" ng-repeat-end ng-repeat="value in val.slice(1)">
+                  <td class="banner-text">{{$index+2}}</td>
+                  <td class="{{params[value.categoryName]['productPrimaryName']}}" >{{value.name}} </td>
+                  <td>{{value.patientsOnTreatment}}</td>
+                  <td>{{value.comunitaryPharmacy === undefined && value.patientsOnTreatment != undefined ? "N/A" : value.comunitaryPharmacy}}</td>
+              </tr>
+              <tr>
+                  <td class="banner-text blank-cell no-border"></td>
+                  <td class="no-border"></td>
+                  <td class="col-2 bg-color-darkgray">
+                      <span openlmis-message="view.rnr.mmia.regime.total"></span>
+                      <span> :</span>
+                  </td>
+                  <td>{{regimeTotalPatients}}</td>
+                  <td ng-if="rnr.reportType === 'new'">{{regimeTotalComunitaryPharmacy}}</td>
+              </tr>
+              <tr ng-if="rnr.reportType === 'new'" class="therapeutic-lines">
+                  <td class="banner-text"></td>
+                  <td></td>
+                  <td openlmis-message="view.rnr.mmia.regime.therapeutic.line"></td>
+                  <td></td>
+                  <td></td>
+              </tr>
+              <tr ng-repeat="item in therapeuticLines">
+                  <td class="banner-text">{{$index+1}}</td>
+                  <td class="no-border therapeutic-item"></td>
+                  <td class="no-border therapeutic-item" openlmis-message="{{item.code}}"></td>
+                  <td>{{item.patientsOnTreatment}}</td>
+                  <td>{{item.comunitaryPharmacy}}</td>
+              </tr>
+              <tr ng-if="rnr.reportType === 'new'">
+                  <td class="banner-text blank-cell no-border"></td>
+                  <td class="no-border"></td>
+                  <td class="col-2 bg-color-darkgray">
+                      <span openlmis-message="view.rnr.mmia.regime.total"></span>
+                      <span> :</span>
+                  </td>
+                  <td>{{therapeuticLinesTotalPatients}}</td>
+                  <td>{{therapeuticLinesTotalComunitaryPharmacy}}</td>
+              </tr>
+              </tbody>
+      </table>
+      <div class="patient-section">
+
+          <table ng-if="rnr.reportType === 'new'" ng-repeat="type in patientsCategory" class="patient-form">
+              <thead>
+                  <tr><th colspan="2" class="background-black" openlmis-message="view.rnr.mmia.patient.header.{{type}}"></th></tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="item in rnr.patientQuantifications['view.rnr.mmia.patient.header.'+ type ]">
+                  <td openlmis-message={{item.messageName}}></td>
+                  <td>{{item.total}}</td>
+              </tr>
+              </tbody>
+          </table>
+          <table ng-if="rnr.reportType === 'new'" class="patient-form-dispensed">
+          <tr><th colspan="5" class="background-black" openlmis-message="view.rnr.mmia.patient.header.md"></th></tr>
+          <tr width="30px" height="30px">
+              <td class="lefttop"></td>
+              <td class="bg-color-darkgray">DS</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+              <td style="border: none" openlmis-message="view.rnr.mmia.patient.md.adjustment"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.5m"></td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_ds5",typeOfDispensed)}}</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+              <td class="bg-color-gray">{{isBetweenWebUpgradeAndMobileUpgrade ? "N/A" :formatAdjustMent(totalTypeOfDispensedDS + totalTypeOfDispensedDT + totalTypeOfDispensedDM, totalTypeOfDispensedWithInTotal)}}</td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.4m"></td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_ds4",typeOfDispensed)}}</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.3m"></td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_ds3",typeOfDispensed)}}</td>
+              <td class="bg-color-darkgray">DT</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.2m"></td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_ds2",typeOfDispensed)}}</td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_dt2",typeOfDispensed)}}</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.1m"></td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_ds1",typeOfDispensed)}}</td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_dt1",typeOfDispensed)}}</td>
+              <td class="bg-color-darkgray">Dispensed for Month</td>
+              <td style="border: none">Total</td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.withm"></td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_ds",typeOfDispensed)}}</td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_dt",typeOfDispensed)}}</td>
+              <td class="bg-color-gray">{{getDataByKey("dispensed_dm",typeOfDispensed)}}</td>
+              <td class="bg-color-gray">{{totalTypeOfDispensedWithInTotal}}</td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td openlmis-message="view.rnr.mmia.patient.md.total"></td>
+              <td class="bg-color-darkgray">{{totalTypeOfDispensedDS}}</td>
+              <td class="bg-color-darkgray">{{totalTypeOfDispensedDT}}</td>
+              <td class="bg-color-darkgray">{{totalTypeOfDispensedDM}}</td>
+              <td class="bg-color-darkgray">{{isBetweenWebUpgradeAndMobileUpgrade ? "N/A" : totalTypeOfDispensedDS + totalTypeOfDispensedDT + totalTypeOfDispensedDM}}</td>
+          </tr>
+          </table>
+          <table ng-if="rnr.reportType === 'old'" class="patient-form">
+              <thread>
+                  <tr>
+                      <th colspan="2" class="background-black" openlmis-message="view.rnr.mmia.patient.header"></th>
+                  </tr>
+                  <tr>
+                      <td class="col-2" style="background-color: #d0d0d0; text-align:center; font-weight: bolder" openlmis-message="view.rnr.mmia.patient.type"></td>
+                      <td class="col-3" style="background-color: #d0d0d0; text-align:center; font-weight: bolder" openlmis-message="view.rnr.mmia.patient.title.total"></td>
+                  </tr>
+              </thread>
+              <tbody>
+                  <tr ng-repeat="item in rnr.patientQuantifications">
+                      <td style="text-align: center" openlmis-message={{item.category}}></td>
+                      <td>{{item.total}}</td>
+                  </tr>
+              </tbody>
+
+          </table>
+
+          <div class="comment-wrapper">
+              <table class="background class=col-5 ">
+                  <tr >
+                      <td></td>
+                  </tr>
+                  <tr>
+                      <td class="col-5"></td>
+                  </tr>
+                  <tr>
+                      <td></td>
+                  </tr>
+              </table>
+              <div class="comment">
+                  <span openlmis-message="view.rnr.mmia.comments"></span>
+                  <span> : </span>
+                  {{rnr.clientSubmittedNotes}}
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- <div class="bottom-section">
+      <table>
+          <tr>
+              <td>
+                  <span openlmis-message="view.rnr.mmia.createBy"></span>
+                  <span> : {{submitterSignature}}</span>
+              </td>
+              <td>
+                  <span openlmis-message="view.rnr.mmia.vistor"></span>
+                  <span> : {{approverSignature}}</span>
+              </td>
+              <td>
+                  <span openlmis-message="view.rnr.mmia.dateOfCreate"></span>
+                  <span> : </span>
+              </td>
+          </tr>
+      </table>
+
+      <div>Nota: Mapa de Preenchimento Obrigatório Mensal HdD em Conjunto com a Farmácia da Unidade Sanitária/ ou DPM
+      </div>
+      <div ng-if="rnr.reportType === 'new'">Versão nº 9 21 Fev2020 TLD90 DS</div>
+      <div ng-if="rnr.reportType === 'old'">Versão no 5 14Nov 2012</div>
+  </div> -->
+
+  <div class="align-right">
+      <button class="btn btn-primary btn-download btn-download-pdf" ng-click="downloadPdf()">
+          {{ 'mmia.downloadPdf' | message }}
+      </button>
+  </div>
+</div>
+
