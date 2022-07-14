@@ -5,7 +5,7 @@
                 <h4 style="color: #fff !important;">{{'stockRemainingProductsModal.title' | message}}</h4>
             </div>
             <div class="modal-body">
-                <section class="openlmis-table-container">
+                <section class="openlmis-table-container" style="height: 420px;overflow-y: scroll; overflow-x: hidden;">
                     <table>
                       <thead>
                       <tr>
@@ -25,8 +25,9 @@
                 </section>
             </div>
             <div class="modal-footer">
-                    <button id="cancel" ng-click="$hide()">{{ 'stockRemainingProductsModal.cancel' | message }}</button>
-                    <button class="primary" ng-click="vm.confirm()">{{ 'stockRemainingProductsModal.confirm' | message }}</button>
+                <button id="cancel" ng-click="$hide()">{{ 'stockRemainingProductsModal.cancel' | message }}</button>
+                <button class="primary" ng-click="vm.confirm()">{{ 'stockRemainingProductsModal.confirm' | message }}
+                </button>
             </div>
         </div>
     </div>

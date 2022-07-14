@@ -30,12 +30,12 @@
 
     // SIGLUS-REFACTOR: add user, drafts
     controller.$inject = ['$stateParams', 'issueToInfo', 'facility', 'programs', 'adjustmentType',
-        '$state', 'user', 'drafts', 'stockAdjustmentFactory', 'siglusInitialIssueModalService',
+        '$state', 'user', 'siglusInitialIssueModalService',
         'siglusStockIssueService', 'loadingModalService'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller($stateParams, issueToInfo, facility, programs, adjustmentType, $state, user, drafts,
-                        stockAdjustmentFactory, siglusInitialIssueModalService, siglusStockIssueService,
+    function controller($stateParams, issueToInfo, facility, programs, adjustmentType, $state, user,
+                        siglusInitialIssueModalService, siglusStockIssueService,
                         loadingModalService) {
         var vm = this;
 
@@ -93,29 +93,5 @@
                     }
                 });
         };
-
-        vm.setDraftAttribute = function(data) {
-            if (data.length > 0) {
-                vm.programs = _.map(programs, function(program) {
-                    program.draft = !_.isEmpty(_.find(data, function(draft) {
-                        return draft.programId === program.id;
-                    }));
-                    return program;
-                });
-            } else {
-                vm.programs = _.map(programs, function(program) {
-                    program.draft = false;
-                    return program;
-                });
-            }
-        };
-
-        vm.$onInit = function() {
-            drafts = _.filter(drafts, function(draft) {
-                return draft;
-            });
-            vm.setDraftAttribute(drafts);
-        };
-        // SIGLUS-REFACTOR: ends here
     }
 })();

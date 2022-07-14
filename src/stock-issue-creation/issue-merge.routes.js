@@ -23,9 +23,9 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
-        $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
+        $stateProvider.state('openlmis.stockmanagement.issue.draft.merge', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:draftId/create?page&size&keyword',
+            url: '/merge?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -56,7 +56,7 @@
             },
             resolve: {
                 isMerge: function() {
-                    return false;
+                    return true;
                 },
                 program: function($stateParams, programService) {
                     if (_.isUndefined($stateParams.program)) {
@@ -110,7 +110,7 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 draft: function($stateParams, siglusStockIssueService) {
-                    return siglusStockIssueService.getDraftById($stateParams.draftId);
+                    return siglusStockIssueService.getDraftById('8858d6bb-ae08-4dc5-8760-547acf5f6ffe');
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {

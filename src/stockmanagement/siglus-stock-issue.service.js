@@ -68,6 +68,14 @@
             saveDraft: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+            },
+            deleteAllDraft: {
+                method: 'DELETE',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts1/:id')
+            },
+            mergeAllDraft: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts1/:id')
             }
         });
 
@@ -79,6 +87,8 @@
         this.updateDraftStatus = updateDraftStatus;
         this.getDraftById = getDraftById;
         this.resetDraft = resetDraft;
+        this.deleteAllDraft = deleteAllDraft;
+        this.mergeAllDraft = mergeAllDraft;
 
         this.saveDraft = saveDraft;
 
@@ -106,6 +116,14 @@
             return resource.delete({
                 id: draftId
             }).$promise;
+        }
+
+        function deleteAllDraft() {
+            return resource.deleteAllDraft().$promise;
+        }
+
+        function mergeAllDraft() {
+            return resource.mergeAllDraft().$promise;
         }
 
         function resetDraft(draftId) {

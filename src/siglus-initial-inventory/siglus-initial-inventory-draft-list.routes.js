@@ -40,6 +40,10 @@
                         return user.canInitialInventory;
                     });
                 },
+                params: {
+                    canInitialInventory: true
+                },
+
                 resolve: {
                     facility: function(facilityFactory) {
                         return facilityFactory.getUserHomeFacility();
