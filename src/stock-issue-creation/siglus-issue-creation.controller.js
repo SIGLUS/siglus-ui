@@ -626,7 +626,7 @@
                 addedLineItems)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
-
+                    $scope.needToConfirm = false;
                     vm.returnBack();
                 })
                 .catch(function(error) {
