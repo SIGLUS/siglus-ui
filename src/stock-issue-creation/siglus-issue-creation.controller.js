@@ -526,8 +526,8 @@
                 lineItem.orderable.displayProductName = $filter('productName')(lineItem.orderable);
             });
 
-            siglusStockIssueService
-                .saveDraft($stateParams.draftId, addedLineItems)
+            loadingModalService.open();
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
@@ -538,9 +538,13 @@
                     if (error.data.isBusinessError) {
                         var data = _.map(error.data.businessErrorExtraData, function(item) {
                             item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                            return item;
                         });
                         productDuplicatedHandler(data);
                     }
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         };
 
