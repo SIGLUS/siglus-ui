@@ -1941,7 +1941,7 @@
   "stockPhysicalInventory.notStarted": "Ainda não iniciado",
   "stockPhysicalInventory.physicalInventory": "Inventário físico",
   "stockPhysicalInventory.program": "Programa",
-  "stockPhysicalInventory.start": "Iniciar",
+  "stockPhysicalInventory.start": "Começar",
   "stockPhysicalInventory.status": "Estado",
   "stockPhysicalInventory.stockManagement": "Gestão de stocks",
   "stockPhysicalInventory.title": "Inventário físico de ${facility}",
@@ -1961,7 +1961,7 @@
   "stockPhysicalInventoryDraft.lotCodeTooLong": "O código do lote Deve ter no máximo 30 caracteres",
   "stockPhysicalInventoryDraft.noLineItems": "Nenhum item do inventário físico foi encontrado.",
   "stockPhysicalInventoryDraft.noSearchResults": "Não existem resultados da pesquisa",
-  "stockPhysicalInventoryDraft.numberOfProductsComplete": "${num} de ${total} products completed",
+  "stockPhysicalInventoryDraft.numberOfProductsComplete": "${num} ${total}de produtos concluídos",
   "stockPhysicalInventoryDraft.physicalInventory": "Inventário físico",
   "stockPhysicalInventoryDraft.printModal.label": "Imprimir este inventário físico?",
   "stockPhysicalInventoryDraft.printModal.no": "Não",
@@ -2242,10 +2242,10 @@
   "PhysicalInventoryDraftList.View": "Visualizar",
   "PhysicalInventoryDraftList.notStarted": "Não iniciado",
   "PhysicalInventoryDraftList.submitted": "Submetido",
-  "PhysicalInventoryDraftList.merge": "Finalizar para Mesclar",
+  "PhysicalInventoryDraftList.merge": "Finalizar para mesclar",
   "PhysicalInventoryDraftList.delete": "Excluir",
   "PhysicalInventoryDraftList.mergeError": "Todos os rascunhos devem ser enviados antes de serem mesclados.",
-  "PhysicalInventoryDraftList.deleteWarn": "Depois de excluir todos os rascunhos, o processo existente será perdido e não poderá ser recuperado.",
+  "PhysicalInventoryDraftList.deleteWarn": "Depois de eliminar todos os rascunhos, o processo existente será perdido e não poderá ser removido.",
   "PhysicalInventoryDraftList.cancel": "Cancelar",
   "PhysicalInventoryDraftList.confirm": "Confirme",
 
@@ -2259,7 +2259,7 @@
   "physicalInventoryCreation.label": "Insira o número de usuários que fazem o inventário",
   "physicalInventoryCreation.cancel": "Cancelar",
   "physicalInventoryCreation.confirm": "Confirme",
-  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first.",
+  "physicalInventoryCreation.conflictTips": "Um processo de inventário já foi iniciado, termine-o primeiro.",
   "stockIssueInitialModal.title": "Insira informação do aviamento",
   "stockIssueInitialModal.issueTo": "Aviar para",
   "stockIssueInitialModal.documentationNo": "Número de documento",
@@ -2284,5 +2284,6 @@
   "stockPhysicalInventoryDraft.draft": "Rascunho",
   "stockPhysicalInventory.submitted": "Submetido",
   "stockInitialInventory.goBack": "Voltar ao anterior",
-  "stockPhysicalInventory.selectFirst": "Selecione o programa para iniciar o inventário físico."
+  "stockPhysicalInventory.selectFirst": "Selecione o programa para iniciar o inventário físico.",
+  "stockInitialInventory.cancel": "Cancelar"
 }
