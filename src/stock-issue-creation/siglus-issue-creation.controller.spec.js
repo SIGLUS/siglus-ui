@@ -16,7 +16,8 @@
 describe('SiglusStockIssueCreationController', function() {
     var vm, $q, confirmDeferred, $rootScope, confirmDiscardService, alertService,
         confirmService, siglusStockIssueService, $state,
-        stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, siglusRemainingProductsModalService;
+        stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, siglusRemainingProductsModalService,
+        alertConfirmModalService;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -28,6 +29,7 @@ describe('SiglusStockIssueCreationController', function() {
             ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
             stockAdjustmentFactory = $injector.get('stockAdjustmentFactory');
             confirmDiscardService = $injector.get('confirmDiscardService');
+            alertConfirmModalService = $injector.get('alertConfirmModalService');
             alertService = $injector.get('alertService');
             confirmService = $injector.get('confirmService');
             $controller = $injector.get('$controller');
@@ -39,6 +41,7 @@ describe('SiglusStockIssueCreationController', function() {
         spyOn(siglusRemainingProductsModalService, 'show');
         spyOn(stockAdjustmentFactory, 'getDraft').andReturn($q.resolve([]));
         spyOn(confirmDiscardService, 'register');
+        spyOn(alertConfirmModalService, 'error');
         spyOn(alertService, 'error');
         spyOn($state, 'go');
         confirmDeferred = $q.defer();
@@ -142,6 +145,7 @@ describe('SiglusStockIssueCreationController', function() {
 
     beforeEach(function() {
         module('stock-issue-creation');
+        module('siglus-alert-confirm-modal');
         module('siglus-remaining-products-modal');
 
         prepareInjector();
