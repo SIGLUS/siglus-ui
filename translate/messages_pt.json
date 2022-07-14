@@ -2288,5 +2288,6 @@
   "stockPhysicalInventory.selectFirst": "Selecione o programa para iniciar o inventário físico.",
   "stockInitialInventory.cancel": "Cancelar",
   "stockIssueCreation.mergedDraft": "Rascunho compilado",
-  "stockIssue.cancel": "Cancelar"
+  "stockIssue.cancel": "Cancelar",
+  "stockIssue.submitted": "Submetido"
 }

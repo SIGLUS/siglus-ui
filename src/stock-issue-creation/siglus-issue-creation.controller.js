@@ -507,17 +507,23 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
-        function productDuplicatedHandler(data) {
-            siglusRemainingProductsModalService.show(data).then(function() {
-                _.forEach(vm.addedLineItems, function(lineItem) {
-                    var hasDuplicated = _.some(data, function(item) {
-                        return item.orderableId === lineItem.orderable.id;
-                    });
-                    if (hasDuplicated) {
-                        vm.remove(lineItem);
-                    }
+        function productDuplicatedHandler(error) {
+            if (_.get(error, ['data', 'isBusinessError'])) {
+                var data = _.map(_.get(error, ['data', 'businessErrorExtraData']), function(item) {
+                    item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                    return item;
                 });
-            });
+                siglusRemainingProductsModalService.show(data).then(function() {
+                    _.forEach(vm.addedLineItems, function(lineItem) {
+                        var hasDuplicated = _.some(data, function(item) {
+                            return item.orderableId === lineItem.orderable.id;
+                        });
+                        if (hasDuplicated) {
+                            vm.remove(lineItem);
+                        }
+                    });
+                });
+            }
         }
 
         vm.save = function() {
@@ -539,13 +545,7 @@
                     vm.search(true);
                 })
                 .catch(function(error) {
-                    if (error.data.isBusinessError) {
-                        var data = _.map(error.data.businessErrorExtraData, function(item) {
-                            item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
-                            return item;
-                        });
-                        productDuplicatedHandler(data);
-                    }
+                    productDuplicatedHandler(error);
                 })
                 .finally(function() {
                     loadingModalService.close();
@@ -620,28 +620,20 @@
 
         function confirmSubmit(signature) {
             loadingModalService.open();
-
             var addedLineItems = angular.copy(vm.addedLineItems);
 
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = _.first(lineItem.orderable.programs).programId;
-                lineItem.reason = _.find(reasons, {
-                    name: 'Issue'
-                });
-            });
-
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signature)
+            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                addedLineItems)
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
 
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
-                }, function(errorResponse) {
+                    vm.returnBack();
+                })
+                .catch(function(error) {
+                    productDuplicatedHandler(error);
+                })
+                .finally(function() {
                     loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
                 });
         }
 
