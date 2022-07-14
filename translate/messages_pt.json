@@ -2284,5 +2284,7 @@
   "stockPhysicalInventoryDraft.draft": "Rascunho",
   "stockPhysicalInventory.submitted": "Submetido",
   "stockInitialInventory.goBack": "Voltar ao anterior",
-  "stockPhysicalInventory.selectFirst": "Selecione o programa para iniciar o inventário físico."
+  "stockPhysicalInventory.selectFirst": "Selecione o programa para iniciar o inventário físico.",
+  "stockIssueCreation.mergedDraft": "Rascunho compilado",
+  "stockIssue.cancel": "Cancelar"
 }

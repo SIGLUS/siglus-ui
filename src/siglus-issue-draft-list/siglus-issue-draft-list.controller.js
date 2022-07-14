@@ -29,15 +29,17 @@
         .controller('SiglusIssueDraftListController', controller);
 
     controller.$inject = ['$scope', '$stateParams', 'adjustmentType', 'user', 'programId', 'facility', '$state',
-        'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
-        'stockAdjustmentFactory', 'stockAdjustmentService'];
+        'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService', 'alertConfirmModalService'];
 
     //NOSONAR at the end of the line of the issue. This will suppress all issues - now and in the future
     function controller($scope, $stateParams, adjustmentType, user, programId, facility, $state,
-                        alertService, confirmService, loadingModalService, siglusStockIssueService)  {
+                        alertService, confirmService, loadingModalService, siglusStockIssueService,
+                        alertConfirmModalService)  {
         var vm = this;
 
         vm.drafts = [];
+
+        vm.showToolBar = false;
 
         vm.issueToInfo = undefined;
 
@@ -88,16 +90,57 @@
                 initialDraftId: _.get(vm.issueToInfo, 'id')
             }).then(function(data) {
                 vm.drafts = data;
+                vm.showToolBar = true;
             })
                 .finally(function() {
                     loadingModalService.close();
                 });
         };
 
+        function isAllDraftSubmitted() {
+            return _.size(_.filter(vm.drafts, function(item) {
+                return item.status !== 'SUBMITTED';
+            })) === 0;
+        }
+
+        vm.mergeDrafts = function() {
+            if (isAllDraftSubmitted()) {
+                $state.go('openlmis.stockmanagement.issue.draft.merge', {
+                    programId: programId,
+                    draftId: '',
+                    issueToInfo: vm.issueToInfo,
+                    facility: facility
+                });
+            } else {
+                alertService.error('PhysicalInventoryDraftList.mergeError');
+            }
+        };
+
+        vm.deleteDrafts = function() {
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                siglusStockIssueService.deleteAllDraft()
+                    .then(function() {
+                        $state.go('openlmis.stockmanagement.issue');
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
+                    });
+            });
+        };
+
         vm.updateIssueAndDraftList = function(issueToInfo) {
             vm.issueToInfo = issueToInfo;
             vm.destinationName = vm.getDestinationName();
             vm.refreshDraftList();
+        };
+
+        vm.isAllowedClick = function(drafts) {
+            return drafts.length === 0;
         };
 
         vm.$onInit = function() {
