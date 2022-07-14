@@ -30,12 +30,12 @@
 
     // SIGLUS-REFACTOR: add user, drafts
     controller.$inject = ['$stateParams', 'issueToInfo', 'facility', 'programs', 'adjustmentType',
-        '$state', 'user', 'stockAdjustmentFactory', 'siglusInitialIssueModalService',
+        '$state', 'user', 'siglusInitialIssueModalService',
         'siglusStockIssueService', 'loadingModalService'];
     // SIGLUS-REFACTOR: ends here
 
     function controller($stateParams, issueToInfo, facility, programs, adjustmentType, $state, user,
-                        stockAdjustmentFactory, siglusInitialIssueModalService, siglusStockIssueService,
+                        siglusInitialIssueModalService, siglusStockIssueService,
                         loadingModalService) {
         var vm = this;
 
