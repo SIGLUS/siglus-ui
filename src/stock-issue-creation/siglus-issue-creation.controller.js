@@ -35,7 +35,7 @@
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
-        'siglusRemainingProductsModalService', 'siglusStockIssueService'
+        'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService'
     ];
 
     function controller($scope, draft, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
@@ -43,7 +43,8 @@
                         srcDstAssignments, isMerge, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
-                        openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService) {
+                        openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService,
+                        alertConfirmModalService) {
         var vm = this,
             previousAdded = {};
 
@@ -282,20 +283,23 @@
      * Remove all displayed line items.
      */
         vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
-                .then(function() {
-                    loadingModalService.open();
-                    siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
-                        $scope.needToConfirm = false;
-                        notificationService.success(vm.key('deleted'));
-                        $state.go('openlmis.stockmanagement.issue.draft', $stateParams, {
-                            reload: true
-                        });
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                });
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
+                    $scope.needToConfirm = false;
+                    notificationService.success(vm.key('deleted'));
+                    $state.go('openlmis.stockmanagement.issue.draft', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
         };
 
         /**
