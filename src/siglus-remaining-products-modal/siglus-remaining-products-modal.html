@@ -18,7 +18,7 @@
                       <tr ng-repeat="item in vm.conflictItems">
                         <td>{{item.productCode}}</td>
                         <td>{{item.productName}}</td>
-                        <td>{{item.conflictWith}}</td>
+                        <td>{{vm.translateConflictDraftName(item.conflictWith)}}</td>
                       </tr>
                       </tbody>
                     </table>
