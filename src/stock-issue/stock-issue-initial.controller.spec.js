@@ -16,7 +16,7 @@
 describe('StockIssueInitialController', function() {
 
     // SIGLUS-REFACTOR: add user, drafts
-    var vm, state, facility, programs, user, drafts, $controller, ADJUSTMENT_TYPE, siglusInitialIssueModalService;
+    var vm, state, facility, programs, user, $controller, ADJUSTMENT_TYPE, siglusInitialIssueModalService;
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
@@ -45,17 +45,13 @@ describe('StockIssueInitialController', function() {
             name: 'National Warehouse',
             supportedPrograms: programs
         };
-        drafts = [];
         user = {};
         vm = $controller('StockAdjustmentController', {
             facility: facility,
             programs: programs,
             adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
             $state: state,
-            // SIGLUS-REFACTOR: starts here
-            drafts: drafts,
             user: user
-            // SIGLUS-REFACTOR: ends here
         });
     }
 
