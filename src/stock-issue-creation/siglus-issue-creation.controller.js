@@ -31,7 +31,7 @@
     controller.$inject = [
         '$scope', 'draft', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
         'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService',
-        'adjustmentType', 'srcDstAssignments',
+        'adjustmentType', 'srcDstAssignments', 'isMerge',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
@@ -40,9 +40,9 @@
 
     function controller($scope, draft, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
-                        MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
+                        srcDstAssignments, isMerge, stockAdjustmentCreationService, notificationService,
+                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
+                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
                         openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService) {
         var vm = this,
             previousAdded = {};
@@ -50,6 +50,8 @@
         vm.issueToInfo = issueToInfo;
 
         vm.destinationName = '';
+
+        vm.isMerge = isMerge;
 
         /**
      * @ngdoc property
@@ -97,6 +99,10 @@
                 reload: reload || $state.current.name,
                 notify: false
             });
+        };
+
+        vm.returnBack = function() {
+            $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
         };
 
         vm.setProductGroups = function() {
@@ -629,7 +635,10 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
+
+            $state.current.label = isMerge
+                ? messageService.get('stockIssueCreation.mergedDraft')
+                : messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();
