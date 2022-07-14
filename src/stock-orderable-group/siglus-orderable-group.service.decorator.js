@@ -95,9 +95,9 @@
          * @param {Object} selectedItem     product with lot property. Property displayLotMessage
          *                                  will be assigned to id.
          */
-        function determineLotMessage(selectedItem, orderableGroup) {
+        function determineLotMessage(selectedItem, orderableGroup, isInitialInventory) {
             // SIGLUS-REFACTOR: starts here
-            if (selectedItem.lot && selectedItem.lot.id) {
+            if ((selectedItem.lot && selectedItem.lot.id) || (selectedItem.lot && isInitialInventory)) {
             // SIGLUS-REFACTOR: ends here
                 selectedItem.displayLotMessage = selectedItem.lot.lotCode;
             } else {

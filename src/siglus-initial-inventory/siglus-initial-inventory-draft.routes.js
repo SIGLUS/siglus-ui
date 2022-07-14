@@ -134,7 +134,8 @@
                             .value();
                         groups.forEach(function(group) {
                             group.forEach(function(lineItem) {
-                                orderableGroupService.determineLotMessage(lineItem, group);
+                                orderableGroupService
+                                    .determineLotMessage(lineItem, group, $stateParams.canInitialInventory);
                             });
                         });
 
