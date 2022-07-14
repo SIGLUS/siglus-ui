@@ -117,6 +117,7 @@ describe('SiglusStockIssueCreationController', function() {
             adjustmentType: ADJUSTMENT_TYPE.ISSUE,
             reasons: [],
             srcDstAssignments: [],
+            isMerge: false,
             issueToInfo: {
                 destinationId: '000001',
                 destinationName: 'Outros',

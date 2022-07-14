@@ -503,7 +503,7 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
-        function productDuplicatedHanler(data) {
+        function productDuplicatedHandler(data) {
             siglusRemainingProductsModalService.show(data).then(function() {
                 _.forEach(vm.addedLineItems, function(lineItem) {
                     var hasDuplicated = _.some(data, function(item) {
@@ -536,7 +536,7 @@
                 })
                 .catch(function(error) {
                     if (error.data.isBusinessError) {
-                        productDuplicatedHanler(error.data.businessErrorExtraData);
+                        productDuplicatedHandler(error.data.businessErrorExtraData);
                     }
                 });
         };
