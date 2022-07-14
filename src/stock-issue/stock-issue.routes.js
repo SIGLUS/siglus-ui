@@ -51,16 +51,6 @@
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ISSUE;
                 },
-                // SIGLUS-REFACTOR: starts here
-                drafts: function(user, programs, facility, adjustmentType, stockAdjustmentFactory) {
-                    if (_.isUndefined(facility)) {
-                        return [];
-                    }
-                    var programIds = _.map(programs, function(program) {
-                        return program.id;
-                    });
-                    return stockAdjustmentFactory.getDrafts(user, programIds, facility, adjustmentType);
-                },
                 issueToInfo: function(programs, facility, adjustmentType, siglusStockIssueService) {
                     return siglusStockIssueService.queryIssueToInfo(
                         _.get(programs, [0, 'id']), facility.id, adjustmentType.state

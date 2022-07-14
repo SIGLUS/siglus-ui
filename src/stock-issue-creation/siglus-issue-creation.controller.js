@@ -31,7 +31,7 @@
     controller.$inject = [
         '$scope', 'draft', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
         'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService',
-        'adjustmentType', 'srcDstAssignments',
+        'adjustmentType', 'srcDstAssignments', 'isMerge',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
@@ -40,9 +40,9 @@
 
     function controller($scope, draft, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
-                        MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
+                        srcDstAssignments, isMerge, stockAdjustmentCreationService, notificationService,
+                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
+                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
                         openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService) {
         var vm = this,
             previousAdded = {};
@@ -50,6 +50,8 @@
         vm.issueToInfo = issueToInfo;
 
         vm.destinationName = '';
+
+        vm.isMerge = isMerge;
 
         /**
      * @ngdoc property
@@ -97,6 +99,10 @@
                 reload: reload || $state.current.name,
                 notify: false
             });
+        };
+
+        vm.returnBack = function() {
+            $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
         };
 
         vm.setProductGroups = function() {
@@ -497,11 +503,11 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
-        function productDuplicatedHanler(data) {
-            siglusRemainingProductsModalService.show().then(function() {
+        function productDuplicatedHandler(data) {
+            siglusRemainingProductsModalService.show(data).then(function() {
                 _.forEach(vm.addedLineItems, function(lineItem) {
                     var hasDuplicated = _.some(data, function(item) {
-                        return item.orderable.id === lineItem.orderable.id;
+                        return item.orderableId === lineItem.orderable.id;
                     });
                     if (hasDuplicated) {
                         vm.remove(lineItem);
@@ -520,8 +526,8 @@
                 lineItem.orderable.displayProductName = $filter('productName')(lineItem.orderable);
             });
 
-            siglusStockIssueService
-                .saveDraft($stateParams.draftId, addedLineItems)
+            loadingModalService.open();
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
@@ -530,8 +536,15 @@
                 })
                 .catch(function(error) {
                     if (error.data.isBusinessError) {
-                        productDuplicatedHanler(error.data.businessErrorExtraData);
+                        var data = _.map(error.data.businessErrorExtraData, function(item) {
+                            item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                            return item;
+                        });
+                        productDuplicatedHandler(data);
                     }
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         };
 
@@ -629,7 +642,10 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
+
+            $state.current.label = isMerge
+                ? messageService.get('stockIssueCreation.mergedDraft')
+                : messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();

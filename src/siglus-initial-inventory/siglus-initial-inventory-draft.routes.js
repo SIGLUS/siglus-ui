@@ -42,7 +42,8 @@
                 draft: undefined,
                 // SIGLUS-REFACTOR: add reasons, isAddProduct
                 reasons: undefined,
-                isAddProduct: undefined
+                isAddProduct: undefined,
+                canInitialInventory: true
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
