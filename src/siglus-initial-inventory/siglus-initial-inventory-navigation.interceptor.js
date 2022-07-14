@@ -37,7 +37,7 @@
                                                          facilityFactory, physicalInventoryFactory,
                                                          currentUserService, authorizationService, alertService,
                                                          SiglusPhysicalInventoryCreationService) {
-        $rootScope.$on('$stateChangeStart', function(event, toState) {
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
             if (checkInitialInventoryStatus() && !toState.name.contains('initialInventory')
                 && toState.showInNavigation && toState.url !== '/home') {
                 event.preventDefault();
@@ -45,6 +45,13 @@
                     checkDraftIsStarter();
                 } else {
                     $state.go('openlmis.home');
+                }
+            } else if (checkInitialInventoryStatus()
+            && toState.name === 'openlmis.stockmanagement.initialInventory'
+            && toState.showInNavigation) {
+                if (_.isUndefined(toParams.programId)) {
+                    event.preventDefault();
+                    checkDraftIsStarter();
                 }
             }
         });

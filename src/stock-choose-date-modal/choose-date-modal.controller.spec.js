@@ -38,7 +38,10 @@ describe('ChooseDateModalController', function() {
 
         vm = $controller('ChooseDateModalController', {
             modalDeferred: modalDeferred,
-            minDate: minDate
+            minDate: minDate,
+            // SIGLUS-REFACTOR: starts here
+            disabledChoose: false
+            // SIGLUS-REFACTOR: ends here
         });
     });
 
