@@ -38,7 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds'
+        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,7 +50,7 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds) {
+                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -454,9 +454,11 @@
                 // SIGLUS-REFACTOR: ends here
                 return;
             }
-            confirmService.confirmDestroy(
-                'stockPhysicalInventoryDraft.deleteDraft',
-                'stockPhysicalInventoryDraft.delete'
+
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
                 physicalInventoryService.deleteDraft(subDraftIds).then(function() {
@@ -530,7 +532,7 @@
                     subDraftSubmit();
                     return;
                 }
-                chooseDateModalService.show(new Date()).then(function(resolvedData) {
+                chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
                     loadingModalService.open();
 
                     draft.occurredDate = resolvedData.occurredDate;
@@ -723,21 +725,21 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
-            if (!vm.isInitialInventory) {
-                // var data = messageService.get('stockPhysicalInventoryDraft.title', {
-                //     facilityCode: facility.code,
-                //     facilityName: facility.name,
-                //     program: program.name
-                // });
-                if ($stateParams.isMerged === 'true') {
-                    $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
-                } else {
-                    $state.current.label =
+            // if (!vm.isInitialInventory) {
+            // var data = messageService.get('stockPhysicalInventoryDraft.title', {
+            //     facilityCode: facility.code,
+            //     facilityName: facility.name,
+            //     program: program.name
+            // });
+            if ($stateParams.isMerged === 'true') {
+                $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
+            } else {
+                $state.current.label =
                         messageService.get('stockPhysicalInventoryDraft.draft')
                         + ' '
                         + $stateParams.draftNum;
-                }
             }
+            // }
         }
 
         function initiateLineItems() {

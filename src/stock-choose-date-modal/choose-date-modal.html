@@ -16,7 +16,7 @@
                     <fieldset>
                         <label for="date" class="required">{{'stockChooseDateModal.date' | message}}</label>
                         <!-- SIGLUS-REFACTOR: starts here-->
-                        <input id="date" type="date" ng-model="vm.occurredDate" min-date="vm.minDate" max-date="vm.maxDate" ng-disabled="vm.isInitialInventory" required/>
+                        <input id="date" type="date" ng-model="vm.occurredDate" min-date="vm.minDate" max-date="vm.maxDate" ng-disabled="vm.isInitialInventory||vm.disabledChoose" required/>
                         <!-- SIGLUS-REFACTOR: ends here-->
                     </fieldset>
 

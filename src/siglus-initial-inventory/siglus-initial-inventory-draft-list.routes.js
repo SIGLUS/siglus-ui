@@ -41,7 +41,8 @@
                     });
                 },
                 params: {
-                    canInitialInventory: true
+                    canInitialInventory: true,
+                    programId: undefined
                 },
 
                 resolve: {
