@@ -507,7 +507,7 @@
             siglusRemainingProductsModalService.show(data).then(function() {
                 _.forEach(vm.addedLineItems, function(lineItem) {
                     var hasDuplicated = _.some(data, function(item) {
-                        return item.orderable.id === lineItem.orderable.id;
+                        return item.orderableId === lineItem.orderable.id;
                     });
                     if (hasDuplicated) {
                         vm.remove(lineItem);

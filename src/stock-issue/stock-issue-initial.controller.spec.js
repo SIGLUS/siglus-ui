@@ -16,20 +16,26 @@
 describe('StockIssueInitialController', function() {
 
     // SIGLUS-REFACTOR: add user, drafts
-    var vm, state, facility, programs, user, $controller, ADJUSTMENT_TYPE, siglusInitialIssueModalService;
+    var vm, state, facility, programs, user, $controller, ADJUSTMENT_TYPE, siglusInitialIssueModalService,
+        siglusStockIssueService, $q, deferred, $rootScope;
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
+            $rootScope = $injector.get('$rootScope');
+            $q = $injector.get('$q');
             siglusInitialIssueModalService = $injector.get('siglusInitialIssueModalService');
+            siglusStockIssueService = $injector.get('siglusStockIssueService');
         });
     }
 
     function prepareSpies() {
+        deferred = $q.defer();
         state = jasmine.createSpyObj('$state', ['go']);
-        spyOn(siglusInitialIssueModalService, 'show');
+        spyOn(siglusInitialIssueModalService, 'show').andReturn(deferred.promise);
+        spyOn(siglusStockIssueService, 'queryIssueToInfo').andReturn($q.resolve({}));
     }
 
     function prepareData() {
@@ -46,17 +52,18 @@ describe('StockIssueInitialController', function() {
             supportedPrograms: programs
         };
         user = {};
-        vm = $controller('StockAdjustmentController', {
+        vm = $controller('StockIssueInitialController', {
             facility: facility,
             programs: programs,
             adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
             $state: state,
+            issueToInfo: {},
             user: user
         });
     }
 
     beforeEach(function() {
-        module('stock-adjustment');
+        module('stock-issue');
         module('stock-orderable-group');
         module('siglus-stock-issue-initial-modal');
         prepareInjector();
@@ -65,44 +72,16 @@ describe('StockIssueInitialController', function() {
     });
 
     describe('setDraftAttribute method', function() {
-        it('should return result contains draft equal to true when input data is not empty', function() {
-            var data = [{
-                draftType: 'issue',
-                id: '0aeb0d2a-6b05-42c4-a38b-0e7d53014678',
-                isDraft: true,
-                programId: '1'
-            }];
+        it('should reload issue to info when confirm return value is true', function() {
+            vm.start({
+                program: {
+                    id: '123123'
+                }
+            });
+            deferred.resolve(true);
+            $rootScope.$apply();
 
-            var result = [{
-                name: 'HIV',
-                draft: true,
-                id: '1'
-            }, {
-                name: 'TB',
-                draft: false,
-                id: '2'
-            }];
-            vm.setDraftAttribute(data);
-
-            expect(vm.programs).toEqual(result);
+            expect(siglusStockIssueService.queryIssueToInfo).toHaveBeenCalled();
         });
-
-        it('should return result all contains true when input data is empty array', function() {
-            var data = [];
-
-            var result = [{
-                name: 'HIV',
-                draft: false,
-                id: '1'
-            }, {
-                name: 'TB',
-                draft: false,
-                id: '2'
-            }];
-            vm.setDraftAttribute(data);
-
-            expect(vm.programs).toEqual(result);
-        });
-
     });
 });
