@@ -45,13 +45,14 @@
 
         vm.actionMapper = {
             NOT_YET_STARTED: 'stockPhysicalInventory.start',
-            DRAFT: 'stockPhysicalInventory.continue'
+            DRAFT: 'stockPhysicalInventory.continue',
+            SUBMITTED: 'stockIssue.view'
         };
 
         vm.statusMapperMapper = {
             NOT_YET_STARTED: 'stockIssue.notStarted',
             DRAFT: 'stockIssue.draft',
-            SUBMITTED: 'stockIssue.view'
+            SUBMITTED: 'stockIssue.submitted'
         };
 
         vm.addDraft = function() {
