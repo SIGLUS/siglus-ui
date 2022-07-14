@@ -536,7 +536,10 @@
                 })
                 .catch(function(error) {
                     if (error.data.isBusinessError) {
-                        productDuplicatedHandler(error.data.businessErrorExtraData);
+                        var data = _.map(error.data.businessErrorExtraData, function(item) {
+                            item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                        });
+                        productDuplicatedHandler(data);
                     }
                 });
         };
