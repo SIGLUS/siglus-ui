@@ -79,6 +79,12 @@
                 label: 'analyticsReportMetabase.mmiaRegimens.title',
                 url: '/mmiaRegimens',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMIA_REGIMENS_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.fulfillment',
+                label: 'analyticsReportMetabase.fulfillment.title',
+                url: '/fulfillment',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.FULFILLMENT_REPORT
             }
         ];
 
