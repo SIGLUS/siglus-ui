@@ -114,7 +114,7 @@
         };
 
         vm.isAllowedClick = function(drafts) {
-            return _.get(drafts, 'subDrafts', []) > 0;
+            return _.size(_.get(drafts, 'subDrafts', [])) > 0;
         };
 
         vm.mergeDrafts = function() {
