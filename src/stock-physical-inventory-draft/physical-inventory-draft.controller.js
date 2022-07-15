@@ -85,7 +85,7 @@
          */
         vm.displayLineItemsGroup = displayLineItemsGroup;
         vm.back = function() {
-            $state.go('^', '', {
+            $state.go('^', {}, {
                 reload: true
             });
         };
@@ -450,7 +450,9 @@
             if (vm.isMergeDraft) {
                 // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
                 //$state.go('openlmis.stockmanagement.physicalInventory.draftList');
-                $state.go('^');
+                $state.go('^', {}, {
+                    reload: true
+                });
                 // SIGLUS-REFACTOR: ends here
                 return;
             }
@@ -464,8 +466,10 @@
                 physicalInventoryService.deleteDraft(subDraftIds).then(function() {
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
-                    vm.isInitialInventory ? $state.go('openlmis.home')
-                        : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
+                    vm.isInitialInventory ?
+                        $state.go('^', {}, {
+                            reload: true
+                        }) : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
                     // SIGLUS-REFACTOR: ends here
@@ -494,10 +498,6 @@
                 subDraftIds: subDraftIds
             }))
                 .then(function() {
-                    if (vm.isInitialInventory) {
-                        currentUserService.clearCache();
-                        navigationStateService.clearStatesAvailability();
-                    }
                     notificationService.success('stockPhysicalInventoryDraft.submitted');
                     $state.go('^', {}, {
                         reload: true
