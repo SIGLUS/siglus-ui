@@ -262,7 +262,12 @@
             }).$promise;
         }
 
-        function deleteDraft(ids) {
+        function deleteDraft(ids, isInitialInventory) {
+            if (isInitialInventory) {
+                return resource.delete({
+                    initialPhysicalInventory: true
+                }, ids).$promise;
+            }
             return resource.delete({}, ids).$promise;
         }
 

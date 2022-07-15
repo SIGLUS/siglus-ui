@@ -463,7 +463,7 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                physicalInventoryService.deleteDraft(subDraftIds).then(function() {
+                physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
                     vm.isInitialInventory ?
