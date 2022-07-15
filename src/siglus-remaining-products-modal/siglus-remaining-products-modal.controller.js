@@ -40,7 +40,7 @@
 
         vm.translateConflictDraftName = function(name) {
             var num = name.split(' ')[1];
-            return messageService.get('stockPhysicalInventoryDraft.draft') + num;
+            return messageService.get('stockPhysicalInventoryDraft.draft') + ' ' + num;
         };
     }
 
