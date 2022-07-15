@@ -430,6 +430,9 @@
         //     });
         // };
         vm.submit = function() {
+            if (_.size(vm.addedLineItems) === 0) {
+                return;
+            }
             // TODO after submit, download this pdf
             // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
@@ -528,7 +531,7 @@
         }
 
         vm.save = function() {
-            if (_.size(vm.addedLineItems) > 0) {
+            if (_.size(vm.addedLineItems) === 0) {
                 return;
             }
             var addedLineItems = angular.copy(vm.addedLineItems);
