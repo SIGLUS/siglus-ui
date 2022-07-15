@@ -284,7 +284,7 @@
      */
         vm.removeDisplayItems = function() {
             alertConfirmModalService.error(
-                'PhysicalInventoryDraftList.deleteWarn',
+                'PhysicalInventoryDraftList.deleteDraftWarn',
                 '',
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
@@ -528,6 +528,9 @@
         }
 
         vm.save = function() {
+            if (_.size(vm.addedLineItems) > 0) {
+                return;
+            }
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             if ($stateParams.keyword) {

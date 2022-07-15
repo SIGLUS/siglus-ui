@@ -9,10 +9,10 @@
         </button>
     </div>
     <div class="button-group primary">
-        <button ng-if="!vm.isMerge" ng-click="vm.save()">
+        <button ng-if="!vm.isMerge" disabled ng-class="{ 'siglus-btn-disable':  vm.addedLineItems.length === 0}" ng-click="vm.save()">
             {{vm.key('save') | message}}
         </button>
-        <button class="primary" ng-click="vm.submit()">
+        <button class="primary" ng-class="{'siglus-btn-disable':  vm.addedLineItems.length === 0}"  ng-click="vm.submit()">
             {{vm.key('submit') | message}}
         </button>
     </div>
