@@ -134,6 +134,13 @@
             }
         };
 
+        vm.getTitle = function() {
+            if (vm.isInitialInventory) {
+                return messageService.get('stockPhysicalInventory.initialTitle');
+            }
+            return messageService.get('stockPhysicalInventory.title');
+        };
+
         function isAllSubDraftsSubmit(draftList) {
             return Boolean(_.find(draftList, function(item) {
                 return item.status !== 'SUBMITTED';
