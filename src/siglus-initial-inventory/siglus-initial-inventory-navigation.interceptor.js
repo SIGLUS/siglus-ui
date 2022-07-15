@@ -49,7 +49,7 @@
             } else if (checkInitialInventoryStatus()
             && toState.name === 'openlmis.stockmanagement.initialInventory'
             && toState.showInNavigation) {
-                if (_.isUndefined(toParams.programId)) {
+                if (_.isEmpty(toParams.programId)) {
                     event.preventDefault();
                     checkDraftIsStarter();
                 }
