@@ -514,7 +514,8 @@
                     return item;
                 });
                 siglusRemainingProductsModalService.show(data).then(function() {
-                    _.forEach(vm.addedLineItems, function(lineItem) {
+                    var lineItems = _.clone(vm.addedLineItems);
+                    _.forEach(lineItems, function(lineItem) {
                         var hasDuplicated = _.some(data, function(item) {
                             return item.orderableId === lineItem.orderable.id;
                         });
