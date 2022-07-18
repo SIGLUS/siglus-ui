@@ -23,7 +23,7 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.issue.draft', {
+        $stateProvider.state('openlmis.stockmanagement.receive.draft', {
             url: '/draft/:programId?initialDraftId&draftType',
             label: 'stockIssue.draftList',
             priority: 2,

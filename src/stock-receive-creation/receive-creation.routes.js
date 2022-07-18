@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive.creation', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:programId/create?page&size&keyword&draftId',
+            url: '/:draftId/create?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -50,10 +50,14 @@
                 srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
-                size: '50'
+                size: '50',
+                initialDraftInfo: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
+                isMerge: function() {
+                    return false;
+                },
                 program: function($stateParams, programService) {
                     if (!$stateParams.program) {
                         return programService.get($stateParams.programId);
@@ -68,6 +72,14 @@
                 },
                 user: function(authorizationService) {
                     return authorizationService.getUser();
+                },
+                initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                    if ($stateParams.issueToInfo) {
+                        return $stateParams.issueToInfo;
+                    }
+                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
+                        facility.id,
+                        ADJUSTMENT_TYPE.RECEIVE.state);
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, program, facility, orderableGroupService) {

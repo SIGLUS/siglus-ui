@@ -2268,6 +2268,7 @@
   "stockIssueInitialModal.confirm": "Confirme",
   "stockIssueInitialModal.inputDestination": "Insira o destino",
   "stockIssueInitialModal.hasStartedError": "Um processo de aviamento já foi iniciado, finalize primeiro.",
+  "stockIssueInitialModal.receiveFrom": "Receber de",
   "stockIssue.issueStart": "Começar",
   "stockIssue.draftList": "Lista de rascunho",
   "issueDraft.issueToTitle": "Aviar para ${destination} - ${document}",
@@ -2277,6 +2278,7 @@
   "issueDraft.operator": "Operador",
   "issueDraft.actions": "Ações",
   "issueDraft.remove": "Remover",
+  "issueDraft.receiveFromTitle": "Receber de ${destination} - ${document}",
   "stockIssue.view": "Visualizar",
   "issueDraft.create": "Criar rascunho",
   "issueDraft.exceedTenDraftHint": "No máximo 10 rascunhos podem ser criados, você não pode adicionar mais rascunhos.",
@@ -2292,5 +2294,7 @@
   "stockIssue.submitted": "Submetido",
   "adminProgramTemplate.ageGroup": "Age group section",
   "analyticsReportMetabase.fulfillment.title":"Relatório de grau de satisfação",
-  "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}"
+  "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}",
+  "issueDraft.selectFirstForReceive": "Please create a draft to start the receive",
+  "stockIssueInitialModal.titleForReceive": "Please input the receive information"
 }

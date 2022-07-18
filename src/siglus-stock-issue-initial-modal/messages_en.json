@@ -1,6 +1,8 @@
 {
   "stockIssueInitialModal.title": "Please input the issue information",
+  "stockIssueInitialModal.titleForReceive": "Please input the receive information",
   "stockIssueInitialModal.issueTo": "Issue to",
+  "stockIssueInitialModal.receiveFrom": "Receive from",
   "stockIssueInitialModal.documentationNo": "Documentation number",
   "stockIssueInitialModal.cancel": "Cancel",
   "stockIssueInitialModal.confirm": "Confirm",

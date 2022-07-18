@@ -50,11 +50,6 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ISSUE;
-                },
-                issueToInfo: function(programs, facility, adjustmentType, siglusStockIssueService) {
-                    return siglusStockIssueService.queryIssueToInfo(
-                        _.get(programs, [0, 'id']), facility.id, adjustmentType.state
-                    );
                 }
                 // SIGLUS-REFACTOR: starts here
             }

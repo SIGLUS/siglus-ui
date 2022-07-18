@@ -29,7 +29,7 @@
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'draft', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
+        '$scope', 'draft', 'initialDraftInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
         'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService',
         'adjustmentType', 'srcDstAssignments', 'isMerge',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
@@ -38,7 +38,7 @@
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService'
     ];
 
-    function controller($scope, draft, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
+    function controller($scope, draft, initialDraftInfo, $state, $stateParams, $filter, confirmDiscardService, program,
                         facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, isMerge, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
@@ -48,7 +48,7 @@
         var vm = this,
             previousAdded = {};
 
-        vm.issueToInfo = issueToInfo;
+        vm.initialDraftInfo = initialDraftInfo;
 
         vm.destinationName = '';
 
@@ -632,15 +632,14 @@
             siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
                 addedLineItems)
                 .then(function() {
+                    loadingModalService.close();
                     notificationService.success(vm.key('submitted'));
                     $scope.needToConfirm = false;
                     vm.returnBack();
                 })
                 .catch(function(error) {
-                    productDuplicatedHandler(error);
-                })
-                .finally(function() {
                     loadingModalService.close();
+                    productDuplicatedHandler(error);
                 });
         }
 
@@ -670,9 +669,9 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            var destinationName = _.get(vm.issueToInfo, 'destinationName');
+            var destinationName = _.get(vm.initialDraftInfo, 'destinationName');
             vm.destinationName = destinationName === 'Outros'
-                ? 'Outros: ' + _.get(vm.issueToInfo, 'locationFreeText', '')
+                ? 'Outros: ' + _.get(vm.initialDraftInfo, 'locationFreeText', '')
                 : destinationName;
             vm.program = program;
             vm.facility = facility;

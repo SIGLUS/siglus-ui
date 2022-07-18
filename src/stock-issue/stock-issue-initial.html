@@ -6,30 +6,30 @@
         <thead>
         <tr>
             <th style="min-width: 160px;">{{vm.key('program') | message}}</th>
-            <th style="min-width: 160px;" ng-if="vm.adjustmentType.state === 'issue'">{{vm.key('status') | message}}</th>
+            <th style="min-width: 160px;">{{vm.key('status') | message}}</th>
             <th>{{vm.key('action') | message}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="program in vm.programs">
             <td style="min-width: 160px;">{{program.name}}</td>
-            <td style="min-width: 160px;" >{{vm.key(vm.issueToInfo.destinationId ? 'draft' : 'notStarted') | message}}</td>
+            <td style="min-width: 160px;" >{{vm.key(vm.initialDraftInfo.destinationId ? 'draft' : 'notStarted') | message}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
-            <td ng-if="vm.issueToInfo.destinationId">
+            <td ng-if="vm.initialDraftInfo.destinationId">
 
                 <input
                         id="continueButton"
                         type="button"
-                        value="{{(vm.key('continue')) | message}}"
+                        value="{{'stockIssue.continue' | message}}"
                         class="primary"
                         ng-click="vm.proceedForIssue(program)"
                 />
             </td>
-            <td ng-if="!vm.issueToInfo.destinationId">
+            <td ng-if="!vm.initialDraftInfo.destinationId">
                 <input
                         id="startButton"
                         type="button"
-                        value="{{vm.key('issueStart') | message}}"
+                        value="{{'stockIssue.issueStart' | message}}"
                         class="primary"
                         ng-click="vm.start(program)"
                 />

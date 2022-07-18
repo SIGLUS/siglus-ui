@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title">
-                    {{'stockIssueInitialModal.title' | message}}
+                    {{vm.titleMapper[vm.adjustmentType.state] | message}}
                 </h4>
             </div>
 
@@ -18,7 +18,7 @@
             <div class="modal-body">
                 <form hide-message-dialog="true" id="initial-issue-form" ng-submit="vm.submitForm()">
                     <fieldset>
-                        <label for="issueTo">{{'stockIssueInitialModal.issueTo' | message}}</label>
+                        <label for="issueTo">{{vm.typeLabelMapper[vm.adjustmentType.state] | message}}</label>
                         <select id="issueTo"
                                 ng-options="data as data.name for data in vm.issueToList"
                                 ng-model="vm.issueTo" ng-change="vm.changeIssueTo()" required>

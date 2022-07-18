@@ -51,7 +51,7 @@
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
-                issueToInfo: undefined
+                initialDraftInfo: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -73,11 +73,11 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                issueToInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
-                    if ($stateParams.issueToInfo) {
-                        return $stateParams.issueToInfo;
+                initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                    if ($stateParams.initialDraftInfo) {
+                        return $stateParams.initialDraftInfo;
                     }
-                    return siglusStockIssueService.queryIssueToInfo($stateParams.programId,
+                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
                         facility.id,
                         ADJUSTMENT_TYPE.ISSUE.state);
                 },

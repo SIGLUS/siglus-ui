@@ -83,11 +83,11 @@
             }
         });
 
-        this.createIssueDraft = createIssueDraft;
-        this.getIssueDrafts = getIssueDrafts;
+        this.createDraft = createDraft;
+        this.getDrafts = getDrafts;
         this.removeIssueDraft = removeIssueDraft;
-        this.initIssueDraft = initIssueDraft;
-        this.queryIssueToInfo = queryIssueToInfo;
+        this.initDraft = initDraft;
+        this.queryInitialDraftInfo = queryInitialDraftInfo;
         this.updateDraftStatus = updateDraftStatus;
         this.getDraftById = getDraftById;
         this.resetDraft = resetDraft;
@@ -97,15 +97,15 @@
 
         this.saveDraft = saveDraft;
 
-        function createIssueDraft(data) {
+        function createDraft(data) {
             return resource.post(data).$promise;
         }
 
-        function getIssueDrafts(data) {
+        function getDrafts(data) {
             return resource.get(data).$promise;
         }
 
-        function queryIssueToInfo(programId, facilityId, adjustmentTypeState) {
+        function queryInitialDraftInfo(programId, facilityId, adjustmentTypeState) {
             return resource.queryDraft({
                 programId: programId,
                 facility: facilityId,
@@ -113,7 +113,7 @@
             }).$promise;
         }
 
-        function initIssueDraft(formData) {
+        function initDraft(formData) {
             return resource.save(formData).$promise;
         }
 
