@@ -17,29 +17,17 @@
 
     'use strict';
 
-    /**
-     * @ngdoc object
-     * @name siglus-admin-template-configure-preview-section.SIGLUS_SECTION_TYPES
-     *
-     * @description
-     * This is constant for section types.
-     */
     angular
-        .module('siglus-admin-template-configure-preview-section')
-        .constant('SIGLUS_SECTION_TYPES', type());
+        .module('siglus-requisition-view-section')
+        .component('siglusAgeGroup', {
+            bindings: {
+                sections: '<',
+                lineItems: '<',
+                canEdit: '<'
+            },
+            controller: 'SiglusAgeGroupController',
+            controllerAs: 'vm',
+            templateUrl: 'siglus-requisition-view-section/siglus-age-group.html'
+        });
 
-    function type() {
-        return {
-            SERVICE: 'service',
-            COLLECTION: 'collection',
-            INFORMATION: 'information',
-            PROJECT: 'project',
-            OUTCOME: 'outcome',
-            REGIMEN: 'regimen',
-            SUMMARY: 'summary',
-            NUMBER: 'number',
-            GROUP: 'group',
-            COLUMNS: 'columns'
-        };
-    }
 })();
