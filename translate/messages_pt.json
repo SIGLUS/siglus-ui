@@ -2291,6 +2291,6 @@
   "stockIssue.cancel": "Cancelar",
   "stockIssue.submitted": "Submetido",
   "adminProgramTemplate.ageGroup": "Age group section",
-  "analyticsReportMetabase.fulfillment.title":"Fulfillment Report",
+  "analyticsReportMetabase.fulfillment.title":"Relatório de grau de satisfação",
   "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}"
 }

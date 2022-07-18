@@ -68,8 +68,10 @@
                                 isConfirmQuit = true;
                                 isConfirmModalOpening = false;
                                 window.onbeforeunload = null;
-                                // #510: leave confirmation pop-up affects notification jump
-                                $state.go(toState.name, toParams);
+                                // #510: leave confirmation pop-up affects notification jump and reload toState page
+                                $state.go(toState.name, toParams, {
+                                    reload: true
+                                });
                                 // #510: ends here
                             }, function() {
                                 isConfirmModalOpening = false;
