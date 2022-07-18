@@ -1945,7 +1945,6 @@
   "stockPhysicalInventory.status": "Estado",
   "stockPhysicalInventory.stockManagement": "Gestão de stocks",
   "stockPhysicalInventory.title": "Inventário físico de ${facility} - ${program}",
-  "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}",
   "stockPhysicalInventory.selectProgram": "Selecionar o programa",
   "stockPhysicalInventory.search": "Pesquisar",
   "stockPhysicalInventoryDraft.actions": "Acções",
@@ -2290,5 +2289,8 @@
   "stockInitialInventory.cancel": "Cancelar",
   "stockIssueCreation.mergedDraft": "Rascunho compilado",
   "stockIssue.cancel": "Cancelar",
-  "stockIssue.submitted": "Submetido"
+  "stockIssue.submitted": "Submetido",
+  "adminProgramTemplate.ageGroup": "Age group section",
+  "analyticsReportMetabase.fulfillment.title":"Fulfillment Report",
+  "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}"
 }
