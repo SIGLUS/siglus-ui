@@ -1,6 +1,8 @@
 {
   "issueDraft.issueToTitle": "Issue to ${destination} - ${document}",
+  "issueDraft.receiveFromTitle": "Receive from ${destination} - ${document}",
   "issueDraft.selectFirst": "Please create a draft to start the issue",
+  "issueDraft.selectFirstForReceive": "Please create a draft to start the receive",
   "issueDraft.draftNumber": "Draft Number",
   "issueDraft.status": "Status",
   "issueDraft.operator": "Operator",

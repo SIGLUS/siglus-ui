@@ -47,7 +47,7 @@ describe('SiglusInitialIssueModalController', function() {
             modalDeferred: modalDeferred,
             programId: '00000000-0000-0000-0000-000000000000',
             facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
-            adjustmentType: ADJUSTMENT_TYPE
+            adjustmentType: ADJUSTMENT_TYPE.ISSUE
         });
 
     }
@@ -101,7 +101,7 @@ describe('SiglusInitialIssueModalController', function() {
 
         it('should go to draft list page when successfully saved form', function() {
             var deferred = $q.defer();
-            spyOn(siglusStockIssueService, 'initIssueDraft').andReturn(deferred.promise);
+            spyOn(siglusStockIssueService, 'initDraft').andReturn(deferred.promise);
 
             vm.submitForm();
             var data = {
@@ -116,13 +116,14 @@ describe('SiglusInitialIssueModalController', function() {
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.issue.draft', {
                 programId: '00000000-0000-0000-0000-000000000000',
                 initialDraftId: 'A0000002',
-                issueToInfo: data
+                initialDraftInfo: data,
+                draftType: 'issue'
             });
         });
 
         it('should hasError flag set to true when saved form occur error', function() {
             var deferred = $q.defer();
-            spyOn(siglusStockIssueService, 'initIssueDraft').andReturn(deferred.promise);
+            spyOn(siglusStockIssueService, 'initDraft').andReturn(deferred.promise);
             vm.submitForm();
             deferred.reject({
                 data: {
@@ -139,8 +140,8 @@ describe('SiglusInitialIssueModalController', function() {
 
         it('should refresh issue page status when saved form occur error and click continue button', function() {
             var deferred = $q.defer();
-            spyOn(siglusStockIssueService, 'initIssueDraft').andReturn(deferred.promise);
-            spyOn(siglusStockIssueService, 'getIssueDrafts').andReturn($q.resolve());
+            spyOn(siglusStockIssueService, 'initDraft').andReturn(deferred.promise);
+            spyOn(siglusStockIssueService, 'getDrafts').andReturn($q.resolve());
             vm.submitForm();
             deferred.reject({
                 data: {

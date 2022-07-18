@@ -29,22 +29,28 @@
         .controller('SiglusStockReceiveCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
-        'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
-        'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService'
+        '$scope', 'initialDraftInfo', 'isMerge', '$state', '$stateParams', '$filter', 'confirmDiscardService',
+        'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
+        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
+        'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
+        'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
+        'draft', 'siglusArchivedProductService'
     ];
 
-    function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
+    function controller($scope, initialDraftInfo, isMerge, $state, $stateParams, $filter, confirmDiscardService,
+                        program, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
                         draft, siglusArchivedProductService) {
         var vm = this,
             previousAdded = {};
+
+        vm.initialDraftInfo = initialDraftInfo;
+
+        vm.destinationName = '';
+
+        vm.isMerge = isMerge;
 
         vm.draft = draft;
 

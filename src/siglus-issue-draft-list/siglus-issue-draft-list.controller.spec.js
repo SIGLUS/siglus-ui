@@ -33,9 +33,9 @@ describe('SiglusIssueDraftListController', function() {
     function prepareSpies() {
         confirmDeferred = $q.defer();
         spyOn(siglusStockIssueService, 'removeIssueDraft').andReturn($q.resolve());
-        spyOn(siglusStockIssueService, 'queryIssueToInfo').andReturn($q.resolve());
-        spyOn(siglusStockIssueService, 'getIssueDrafts').andReturn($q.resolve());
-        spyOn(siglusStockIssueService, 'createIssueDraft').andReturn(confirmDeferred.promise);
+        spyOn(siglusStockIssueService, 'queryInitialDraftInfo').andReturn($q.resolve());
+        spyOn(siglusStockIssueService, 'getDrafts').andReturn($q.resolve());
+        spyOn(siglusStockIssueService, 'createDraft').andReturn(confirmDeferred.promise);
         spyOn(alertService, 'error');
         spyOn(confirmService, 'confirmDestroy').andReturn(confirmDeferred.promise);
 
@@ -77,6 +77,7 @@ describe('SiglusIssueDraftListController', function() {
                 ]
             }
         });
+        vm.draftType = 'issue';
 
     }
 
@@ -108,7 +109,7 @@ describe('SiglusIssueDraftListController', function() {
 
     describe('getDestinationName method', function() {
         it('should return Outros destinationName when selected destinationName is Outros', function() {
-            vm.issueToInfo = {
+            vm.initialDraftInfo = {
                 destinationId: '00001',
                 destinationName: 'Outros',
                 locationFreeText: 'test',
@@ -119,7 +120,7 @@ describe('SiglusIssueDraftListController', function() {
         });
 
         it('should return destinationName when selected destinationName is not Outroså', function() {
-            vm.issueToInfo = {
+            vm.initialDraftInfo = {
                 destinationId: '00001',
                 destinationName: 'destination name',
                 locationFreeText: 'test',
@@ -131,15 +132,15 @@ describe('SiglusIssueDraftListController', function() {
     });
 
     describe('$onInit method', function() {
-        it('should call api to get issueToInfo when issueToInfo not exist in $stateParams', function() {
+        it('should call api to get initialDraftInfo when initialDraftInfo not exist in $stateParams', function() {
             vm.$onInit();
 
-            expect(siglusStockIssueService.queryIssueToInfo).toHaveBeenCalledWith('000000-000000-000000-0000000',
+            expect(siglusStockIssueService.queryInitialDraftInfo).toHaveBeenCalledWith('000000-000000-000000-0000000',
                 '004f4232-cfb8-11e9-9398-0242ac130008', 'issue');
         });
 
-        it('should only call refresh list method when issueToInfo exist in $stateParams', function() {
-            $stateParams.issueToInfo = {
+        it('should only call refresh list method when initialDraftInfo exist in $stateParams', function() {
+            $stateParams.initialDraftInfo = {
                 id: 'A000001',
                 destinationId: '00001',
                 destinationName: 'destination name',
@@ -148,7 +149,7 @@ describe('SiglusIssueDraftListController', function() {
             };
             vm.$onInit();
 
-            expect(siglusStockIssueService.getIssueDrafts).toHaveBeenCalledWith({
+            expect(siglusStockIssueService.getDrafts).toHaveBeenCalledWith({
                 initialDraftId: 'A000001'
             });
         });
@@ -164,14 +165,14 @@ describe('SiglusIssueDraftListController', function() {
 
         it('should create draft when current drafts is less than 11', function() {
             vm.drafts = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
-            vm.issueToInfo = {
+            vm.initialDraftInfo = {
                 id: 'A000001'
             };
             vm.addDraft();
             confirmDeferred.resolve();
             $rootScope.$apply();
 
-            expect(siglusStockIssueService.createIssueDraft).toHaveBeenCalledWith({
+            expect(siglusStockIssueService.createDraft).toHaveBeenCalledWith({
                 programId: '000000-000000-000000-0000000',
                 facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
                 userId: 'C00001',
@@ -182,7 +183,7 @@ describe('SiglusIssueDraftListController', function() {
 
         it('should alert error message from backend when current draft is over 10', function() {
             vm.drafts = [{}, {}, {}, {}, {}, {}, {}, {}, {}];
-            vm.issueToInfo = {
+            vm.initialDraftInfo = {
                 id: 'A000001'
             };
             vm.addDraft();

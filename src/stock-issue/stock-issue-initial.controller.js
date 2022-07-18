@@ -29,12 +29,12 @@
         .controller('StockIssueInitialController', controller);
 
     // SIGLUS-REFACTOR: add user, drafts
-    controller.$inject = ['$stateParams', 'issueToInfo', 'facility', 'programs', 'adjustmentType',
+    controller.$inject = ['$stateParams', 'facility', 'programs', 'adjustmentType',
         '$state', 'user', 'siglusInitialIssueModalService',
         'siglusStockIssueService', 'loadingModalService'];
     // SIGLUS-REFACTOR: ends here
 
-    function controller($stateParams, issueToInfo, facility, programs, adjustmentType, $state, user,
+    function controller($stateParams, facility, programs, adjustmentType, $state, user,
                         siglusInitialIssueModalService, siglusStockIssueService,
                         loadingModalService) {
         var vm = this;
@@ -50,7 +50,7 @@
          */
         vm.facility = facility;
 
-        vm.issueToInfo = issueToInfo || {};
+        vm.initialDraftInfo = {};
 
         /**
          * @ngdoc property
@@ -70,11 +70,12 @@
         };
 
         vm.proceedForIssue = function(program) {
-            $state.go('openlmis.stockmanagement.issue.draft', {
+            $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.draft', {
                 facility: facility,
                 programId: program.id,
-                initialDraftId: vm.issueToInfo.id,
-                issueToInfo: vm.issueToInfo
+                initialDraftId: vm.initialDraftInfo.id,
+                initialDraftInfo: vm.initialDraftInfo,
+                draftType: adjustmentType.state
             });
         };
 
@@ -83,14 +84,26 @@
                 .then(function(loadIssueToInfo) {
                     if (loadIssueToInfo) {
                         loadingModalService.open();
-                        siglusStockIssueService.queryIssueToInfo(program.id, facility.id, adjustmentType.state)
+                        siglusStockIssueService.queryInitialDraftInfo(program.id, facility.id, adjustmentType.state)
                             .then(function(data) {
-                                vm.issueToInfo = data;
+                                vm.initialDraftInfo = data;
                             })
                             .finally(function() {
                                 loadingModalService.close();
                             });
                     }
+                });
+        };
+
+        vm.$onInit = function() {
+            loadingModalService.open();
+            siglusStockIssueService.queryInitialDraftInfo(
+                _.get(programs, [0, 'id']), facility.id, adjustmentType.state
+            ).then(function(data) {
+                vm.initialDraftInfo = data;
+            })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         };
     }

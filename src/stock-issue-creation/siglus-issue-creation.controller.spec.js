@@ -121,7 +121,7 @@ describe('SiglusStockIssueCreationController', function() {
             reasons: [],
             srcDstAssignments: [],
             isMerge: false,
-            issueToInfo: {
+            initialDraftInfo: {
                 destinationId: '000001',
                 destinationName: 'Outros',
                 documentNumber: 'Number1',

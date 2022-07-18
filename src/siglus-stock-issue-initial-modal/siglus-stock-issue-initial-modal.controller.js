@@ -45,30 +45,52 @@
 
         vm.issueToList = [];
 
+        vm.adjustmentType = adjustmentType;
+
         vm.changeIssueTo = function() {
             if (!_.isEmpty(vm.destinationFacility)) {
                 vm.destinationFacility = '';
             }
         };
 
+        vm.titleMapper = {
+            issue: 'stockIssueInitialModal.title',
+            receive: 'stockIssueInitialModal.titleForReceive'
+        };
+
+        vm.typeLabelMapper = {
+            issue: 'stockIssueInitialModal.issueTo',
+            receive: 'stockIssueInitialModal.receiveFrom'
+        };
+
         vm.submitForm = function() {
             if (vm.hasError) {
                 modalDeferred.resolve(true);
             } else {
-                siglusStockIssueService.initIssueDraft({
+                var formInfo = {
+                    issue: {
+                        destinationId: vm.issueTo.id,
+                        destinationName: vm.issueTo.name
+                    },
+                    receive: {
+                        sourceId: vm.issueTo.id,
+                        sourceName: vm.issueTo.name
+                    }
+                };
+                loadingModalService.open();
+                siglusStockIssueService.initDraft(_.extend({
                     programId: programId,
                     facilityId: facilityId,
-                    destinationId: vm.issueTo.id,
                     draftType: adjustmentType.state,
-                    destinationName: vm.issueTo.name,
                     documentNumber: vm.documentationNo,
                     locationFreeText: vm.destinationFacility
-                }).then(function(issueToInfo) {
+                }, formInfo[adjustmentType.state])).then(function(initialDraftInfo) {
                     modalDeferred.resolve();
-                    $state.go('openlmis.stockmanagement.issue.draft', {
+                    $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.draft', {
                         programId: programId,
-                        initialDraftId: issueToInfo.id,
-                        issueToInfo: issueToInfo
+                        initialDraftId: initialDraftInfo.id,
+                        initialDraftInfo: initialDraftInfo,
+                        draftType: adjustmentType.state
                     });
                 })
                     .catch(function(error) {
@@ -76,6 +98,9 @@
                           && error.data.businessErrorExtraData === 'same initial draft exists') {
                             vm.hasError = true;
                         }
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
                     });
             }
 

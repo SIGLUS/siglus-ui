@@ -35,7 +35,7 @@ describe('StockIssueInitialController', function() {
         deferred = $q.defer();
         state = jasmine.createSpyObj('$state', ['go']);
         spyOn(siglusInitialIssueModalService, 'show').andReturn(deferred.promise);
-        spyOn(siglusStockIssueService, 'queryIssueToInfo').andReturn($q.resolve({}));
+        spyOn(siglusStockIssueService, 'queryInitialDraftInfo').andReturn($q.resolve({}));
     }
 
     function prepareData() {
@@ -57,7 +57,7 @@ describe('StockIssueInitialController', function() {
             programs: programs,
             adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
             $state: state,
-            issueToInfo: {},
+            initialDraftInfo: {},
             user: user
         });
     }
@@ -81,7 +81,7 @@ describe('StockIssueInitialController', function() {
             deferred.resolve(true);
             $rootScope.$apply();
 
-            expect(siglusStockIssueService.queryIssueToInfo).toHaveBeenCalled();
+            expect(siglusStockIssueService.queryInitialDraftInfo).toHaveBeenCalled();
         });
     });
 });
