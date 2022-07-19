@@ -40,7 +40,7 @@
                 displayItems: undefined,
                 addedLineItems: undefined,
                 draft: undefined,
-                size: '3',
+                size: '50',
                 page: '0',
                 initialDraftInfo: undefined
             },
