@@ -2297,5 +2297,6 @@
   "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}",
   "issueDraft.selectFirstForReceive": "Please create a draft to start the receive",
   "stockIssueInitialModal.titleForReceive": "Please input the receive information",
-  "analyticsReportMetabase.historicalData.title":"Relatório de dados históricos"
+  "analyticsReportMetabase.historicalData.title":"Relatório de dados históricos",
+  "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro."
 }
