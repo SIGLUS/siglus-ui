@@ -95,22 +95,6 @@
                             return programs[0];
                         });
                 },
-                // SIGLUS-REFACTOR: starts here
-                reasons: function($stateParams, facility, stockReasonsFactory, kit) {
-                    if (!$stateParams.reasons) {
-                        return stockReasonsFactory.getIssueReasons(kit.parentProgramId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
-                },
-                srcDstAssignments: function($stateParams, facility, allProductsProgram, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getDestinationAssignments(
-                            allProductsProgram.id, facility.id
-                        );
-                    }
-                    return $stateParams.srcDstAssignments;
-                },
-                // SIGLUS-REFACTOR: ends here
                 kit: function($stateParams, facility, siglusStockKitUnpackService) {
                     if (_.isUndefined($stateParams.kit)) {
                         return siglusStockKitUnpackService.getUnpackKit(facility.id, $stateParams.orderableId);
