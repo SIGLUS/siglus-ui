@@ -65,6 +65,11 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id'),
                 isArray: false
             },
+            getMergedDraft: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:initialDraftId/subDraft/merge'),
+                isArray: true
+            },
             saveDraft: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
@@ -97,8 +102,16 @@
 
         this.saveDraft = saveDraft;
 
+        this.getMergedDraft = getMergedDraft;
+
         function createDraft(data) {
             return resource.post(data).$promise;
+        }
+
+        function getMergedDraft(initialDraftId) {
+            return resource.getMergedDraft({
+                initialDraftId: initialDraftId
+            }).$promise;
         }
 
         function getDrafts(data) {
