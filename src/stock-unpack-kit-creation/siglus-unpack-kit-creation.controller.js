@@ -29,16 +29,16 @@
         .controller('SiglusUnpackKitCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'kit', 'messageService',
-        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'siglusStockKitUnpackService',
-        'alertService', 'kitCreationService', 'siglusSignatureModalService', 'notificationService', 'dateUtils',
-        'UNPACK_REASONS'
+        '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'reasons', 'srcDstAssignments', 'kit',
+        'messageService', 'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService',
+        'siglusStockKitUnpackService', 'alertService', 'kitCreationService', 'siglusSignatureModalService',
+        'notificationService', 'dateUtils', 'UNPACK_REASONS'
     ];
 
-    function controller($scope, $state, $stateParams, facility, allProductsProgram, kit, messageService,
-                        MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService, siglusStockKitUnpackService,
-                        alertService, kitCreationService, siglusSignatureModalService, notificationService, dateUtils,
-                        UNPACK_REASONS) {
+    function controller($scope, $state, $stateParams, facility, allProductsProgram, reasons, srcDstAssignments, kit,
+                        messageService, MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService,
+                        siglusStockKitUnpackService, alertService, kitCreationService, siglusSignatureModalService,
+                        notificationService, dateUtils, UNPACK_REASONS) {
         var vm = this;
 
         vm.showProducts = false;
@@ -238,13 +238,24 @@
             } else {
                 siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
+                    // TODO move name to Constant when master data is ready
+                    var isssueReason = _.find(reasons, {
+                        name: 'Issue'
+                    });
+                    var unpackDestination =  _.find(srcDstAssignments, {
+                        name: 'Unpack Kit',
+                        programId: vm.kit.programId
+                    });
                     var kitItem = {
                         orderableId: vm.kit.id,
                         quantity: vm.kit.unpackQuantity,
                         occurredDate: dateUtils.toStringDate(new Date()),
                         documentationNo: vm.kit.documentationNo,
                         programId: vm.kit.programId,
-                        reasonId: UNPACK_REASONS.KIT_UNPACK_REASON_ID,
+                        // SIGLUS-REFACTOR: starts here
+                        reasonId: isssueReason.id,
+                        destinationId: unpackDestination.node.id,
+                        // SIGLUS-REFACTOR: ends here
                         extraData: {}
                     };
                     var lineItems = _.map(vm.products, function(product) {
