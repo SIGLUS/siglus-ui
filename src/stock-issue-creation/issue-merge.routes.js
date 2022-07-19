@@ -109,8 +109,13 @@
                     return $stateParams.srcDstAssignments;
                 },
                 // SIGLUS-REFACTOR: starts here
-                draft: function($stateParams, siglusStockIssueService) {
-                    return siglusStockIssueService.getDraftById('8858d6bb-ae08-4dc5-8760-547acf5f6ffe');
+                mergedItems: function($stateParams, siglusStockIssueService) {
+                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId);
+                },
+                draft: function(mergedItems) {
+                    return {
+                        lineItems: mergedItems
+                    };
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {
