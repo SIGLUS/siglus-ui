@@ -196,5 +196,14 @@
             });
         };
 
+        vm.view = function(draft) {
+            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft.view', {
+                programId: programId,
+                draftId: _.get(draft, 'id', ''),
+                initialDraftInfo: vm.initialDraftInfo,
+                facility: facility
+            });
+        };
+
     }
 })();

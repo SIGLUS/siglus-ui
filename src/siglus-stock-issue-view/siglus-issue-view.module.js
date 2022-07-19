@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-   * @module siglus-issue-draft-list
-   *
-   * @description
-   * Provides stock issue state and controller.
-   */
-    angular.module('siglus-issue-draft-list', ['siglus-alert-confirm-modal', 'siglus-stock-issue-view']);
+     * @module stock-issue
+     *
+     * @description
+     * Provides stock issue state and controller.
+     */
+    angular.module('siglus-stock-issue-view', ['stock-adjustment']);
 
 })();
 

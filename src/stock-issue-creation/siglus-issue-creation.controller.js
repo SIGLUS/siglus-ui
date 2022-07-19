@@ -539,9 +539,6 @@
             if ($stateParams.keyword) {
                 cancelFilter();
             }
-            _.forEach(vm.addedLineItems, function(lineItem) {
-                lineItem.orderable.displayProductName = $filter('productName')(lineItem.orderable);
-            });
 
             loadingModalService.open();
             siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems)
