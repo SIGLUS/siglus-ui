@@ -24,7 +24,7 @@
             <td>{{vm.statusMapperMapper[draft.status] | message}}</td>
             <td>{{draft.operator}}</td>
             <td style="display: flex;" ng-if="draft.status === 'SUBMITTED'">
-                <input id="issue-draft-view" type="button" ng-click="vm.proceed(draft)"
+                <input id="issue-draft-view" type="button" ng-click="vm.view(draft)"
                        style="min-width: 113px"
                        value="{{vm.actionMapper[draft.status] | message}}"
                        class="primary"/>

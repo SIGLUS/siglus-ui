@@ -28,9 +28,9 @@
         .module('stockmanagement')
         .service('siglusStockIssueService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter'];
 
-    function service($resource, stockmanagementUrlFactory) {
+    function service($resource, stockmanagementUrlFactory, $filter) {
 
         var urlBasePath = '/api/siglusapi/drafts/initial';
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {
@@ -182,11 +182,12 @@
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
+                stockOnHand: item.stockOnHand,
                 occurredDate: item.occurredDate,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText', null),
                 productCode: item.orderable.productCode,
-                productName: item.orderable.displayProductName
+                productName: $filter('productName')(item.orderable)
             };
         }
     }
