@@ -85,6 +85,12 @@
                 label: 'analyticsReportMetabase.fulfillment.title',
                 url: '/fulfillment',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.FULFILLMENT_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.historicalData',
+                label: 'analyticsReportMetabase.historicalData.title',
+                url: '/historicalData',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.HISTORICAL_DATA_REPORT
             }
         ];
 

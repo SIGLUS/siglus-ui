@@ -2296,5 +2296,6 @@
   "analyticsReportMetabase.fulfillment.title":"Relatório de grau de satisfação",
   "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}",
   "issueDraft.selectFirstForReceive": "Please create a draft to start the receive",
-  "stockIssueInitialModal.titleForReceive": "Please input the receive information"
+  "stockIssueInitialModal.titleForReceive": "Please input the receive information",
+  "analyticsReportMetabase.historicalData.title":"Relatório de dados históricos"
 }
