@@ -290,7 +290,7 @@
                                 loadingModalService.close();
                                 alertService.error('stockUnpackKitCreation.saveFailed');
                             });
-                    })
+                    });
                 });
             }
         };
