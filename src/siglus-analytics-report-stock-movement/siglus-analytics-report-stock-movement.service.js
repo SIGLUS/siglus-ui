@@ -32,7 +32,7 @@
 
     function service($resource, analyticsReportUrlFactory) {
         var resource = $resource(
-            analyticsReportUrlFactory('/api/siglusapi/stockMovement/getMovement'), {}, {
+            analyticsReportUrlFactory('/api/siglusapi/stockMovement/:id'), {}, {
                 get: {
                     method: 'GET',
                     transformResponse: transformResponse
@@ -57,7 +57,7 @@
          */
         function getStockMovement(facilityId, orderableId) {
             return resource.query({
-                facilityId: facilityId,
+                id: facilityId,
                 orderableId: orderableId
             }).$promise;
         }
