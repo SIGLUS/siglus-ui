@@ -51,7 +51,7 @@
             && toState.showInNavigation) {
                 if (_.isEmpty(toParams.programId)) {
                     event.preventDefault();
-                    checkDraftIsStarter();
+                    checkDraftIsStarter(true);
                 }
             }
         });
@@ -75,7 +75,7 @@
             return user.canInitialInventory;
         }
 
-        function checkDraftIsStarter() {
+        function checkDraftIsStarter(shouldNotPopComfirm) {
             loadingModalService.open();
             $q.all([
                 programService.getAllProductsProgram(),
@@ -88,7 +88,14 @@
                             .show(response[0], '', responses[0][0].id).then(function() {});
                     } else {
                         loadingModalService.close();
-                        propopConfirm(responses[0][0].id);
+                        if (shouldNotPopComfirm) {
+                            $state.go('openlmis.stockmanagement.initialInventory', {
+                                programId: responses[0][0].id
+                            });
+                        } else {
+                            propopConfirm(responses[0][0].id);
+                        }
+
                     }
                 })
                     .catch(function() {

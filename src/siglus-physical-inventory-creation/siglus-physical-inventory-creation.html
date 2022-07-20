@@ -8,7 +8,10 @@
 
       <div class="modal-body">
         <fieldset>
-          <label>{{'physicalInventoryCreation.label' | message}}
+          <label ng-if="vm.isInitialInventory">{{'physicalInventoryCreation.initialLabel' | message}}
+            <span class="inputNecessary">*</span>
+          </label>
+          <label ng-if="!vm.isInitialInventory">{{'physicalInventoryCreation.label' | message}}
             <span class="inputNecessary">*</span>
           </label>
           <input

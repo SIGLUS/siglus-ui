@@ -54,6 +54,8 @@
             }
         };
 
+        vm.isInitialInventory = !!programId;
+
         vm.isValid = function(val) {
             return val > 0 && val <= 10;
         };
