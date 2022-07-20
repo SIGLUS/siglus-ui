@@ -24,7 +24,6 @@
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
-                <th ng-if="lineItem.extraData && lineItem.extraData.vvmStatus">{{vm.key('vvmStatus') | message}}</th>
                 <th>{{vm.key('date') | message}}</th>
             </tr>
             </thead>
@@ -36,9 +35,6 @@
                 <td>{{lineItem.expirationDate}}</td>
                 <td>{{lineItem.stockOnHand}}</td>
                 <td>{{lineItem.quantity}}</td>
-                <td ng-if="lineItem.extraData && lineItem.extraData.vvmStatus">
-                    {{lineItem.extraData.vvmStatus}}
-                </td>
                 <td>{{lineItem.occurredDate}}</td>
             </tr>
             </tbody>

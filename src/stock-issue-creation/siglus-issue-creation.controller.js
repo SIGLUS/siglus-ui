@@ -54,28 +54,6 @@
 
         vm.isMerge = isMerge;
 
-        /**
-     * @ngdoc property
-     * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name vvmStatuses
-     * @type {Object}
-     *
-     * @description
-     * Holds list of VVM statuses.
-     */
-        vm.vvmStatuses = VVM_STATUS;
-
-        /**
-     * @ngdoc property
-     * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name showVVMStatusColumn
-     * @type {boolean}
-     *
-     * @description
-     * Indicates if VVM Status column should be visible.
-     */
-        vm.showVVMStatusColumn = false;
-
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
@@ -684,7 +662,6 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
         }
 
         function initStateParams() {
