@@ -22,7 +22,7 @@
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
             url: '/:draftId/create?page&size&keyword',
@@ -70,16 +70,13 @@
                     }
                     return $stateParams.facility;
                 },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
-                initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                initialDraftInfo: function($stateParams, facility, siglusStockIssueService) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
                     }
                     return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
                         facility.id,
-                        ADJUSTMENT_TYPE.ISSUE.state);
+                        $stateParams.draftType);
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
@@ -96,9 +93,6 @@
                         return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
-                },
-                adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.ISSUE;
                 },
                 srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
                     if (_.isUndefined($stateParams.srcDstAssignments)) {

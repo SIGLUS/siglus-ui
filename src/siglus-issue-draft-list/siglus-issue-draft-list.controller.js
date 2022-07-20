@@ -29,12 +29,13 @@
         .controller('SiglusIssueDraftListController', controller);
 
     controller.$inject = ['$scope', '$stateParams', 'user', 'programId', 'facility', '$state',
-        'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService', 'alertConfirmModalService'];
+        'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
+        'alertConfirmModalService', 'siglusStockUtilsService'];
 
     //NOSONAR at the end of the line of the issue. This will suppress all issues - now and in the future
     function controller($scope, $stateParams, user, programId, facility, $state,
                         alertService, confirmService, loadingModalService, siglusStockIssueService,
-                        alertConfirmModalService)  {
+                        alertConfirmModalService, siglusStockUtilsService)  {
         var vm = this;
 
         vm.drafts = [];
@@ -83,13 +84,6 @@
                         }
                     });
             }
-        };
-
-        vm.getDestinationName = function() {
-            var destinationName = _.get(vm.initialDraftInfo, 'destinationName');
-            return destinationName === 'Outros'
-                ? 'Outros: ' + _.get(vm.initialDraftInfo, 'locationFreeText')
-                : destinationName;
         };
 
         vm.refreshDraftList = function() {
@@ -141,9 +135,9 @@
             });
         };
 
-        vm.updateIssueAndDraftList = function(initialDraftInfo) {
+        vm.updateDraftList = function(initialDraftInfo) {
             vm.initialDraftInfo = initialDraftInfo;
-            vm.destinationName = vm.getDestinationName();
+            vm.initialDraftName = siglusStockUtilsService.getInitialDraftName(initialDraftInfo, vm.draftType);
             vm.refreshDraftList();
         };
 
@@ -153,12 +147,12 @@
 
         vm.$onInit = function() {
             if ($stateParams.initialDraftInfo) {
-                vm.updateIssueAndDraftList($stateParams.initialDraftInfo);
+                vm.updateDraftList($stateParams.initialDraftInfo);
             } else {
                 loadingModalService.open();
                 siglusStockIssueService.queryInitialDraftInfo(programId, facility.id, vm.draftType)
                     .then(function(initialDraftInfo) {
-                        vm.updateIssueAndDraftList(initialDraftInfo);
+                        vm.updateDraftList(initialDraftInfo);
                     })
                     .catch(function() {
                         loadingModalService.close();

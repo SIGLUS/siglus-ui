@@ -1,6 +1,6 @@
 
 <h2>{{vm.titleMapper[vm.draftType] | message: {
-    destination: vm.destinationName || '',
+    destination: vm.initialDraftName || '',
     document: vm.initialDraftInfo.documentNumber || ''} }}</h2>
 <section class="openlmis-table-container">
     <button class="pull-right add" ng-click="vm.addDraft()">

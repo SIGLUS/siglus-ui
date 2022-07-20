@@ -34,7 +34,7 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
         'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
-        'draft', 'siglusArchivedProductService'
+        'draft', 'siglusArchivedProductService', 'siglusStockUtilsService'
     ];
 
     function controller($scope, initialDraftInfo, isMerge, $state, $stateParams, $filter, confirmDiscardService,
@@ -42,41 +42,19 @@
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
-                        draft, siglusArchivedProductService) {
+                        draft, siglusArchivedProductService, siglusStockUtilsService) {
         var vm = this,
             previousAdded = {};
 
         vm.initialDraftInfo = initialDraftInfo;
 
-        vm.destinationName = '';
+        vm.initialDraftName = '';
 
         vm.isMerge = isMerge;
 
         vm.draft = draft;
 
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name vvmStatuses
-         * @type {Object}
-         *
-         * @description
-         * Holds list of VVM statuses.
-         */
-        vm.vvmStatuses = VVM_STATUS;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name showVVMStatusColumn
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if VVM Status column should be visible.
-         */
-        vm.showVVMStatusColumn = false;
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
@@ -554,6 +532,8 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
+            vm.sourceName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, adjustmentType.state);
+
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
@@ -568,7 +548,6 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
         }
 
         function initStateParams() {

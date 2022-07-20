@@ -157,13 +157,14 @@
             }).$promise;
         }
 
-        function saveDraft(draftId, lineItems) {
+        function saveDraft(draftId, lineItems, draftType) {
             var drafts = _.map(lineItems, buildLine);
             return resource.saveDraft({
                 id: draftId
             }, {
                 id: draftId,
-                lineItems: drafts
+                lineItems: drafts,
+                draftType: draftType
             }).$promise;
         }
 
