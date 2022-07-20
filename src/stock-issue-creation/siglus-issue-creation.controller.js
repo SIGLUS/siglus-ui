@@ -642,7 +642,8 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            vm.destinationName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, $stateParams.draft);
+            vm.destinationName = siglusStockUtilsService
+                .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
