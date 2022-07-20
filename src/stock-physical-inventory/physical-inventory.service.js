@@ -71,10 +71,6 @@
             submit: {
                 method: 'POST',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraftSubmit')
-            },
-            validateConflictProgram: {
-                method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/conflict')
             }
         });
         // SIGLUS-REFACTOR: ends here
@@ -92,8 +88,6 @@
         this.submitSubPhysicalInventory = subSubmit;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
-
-        this.validateConflictProgram = validateConflictProgram;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -119,15 +113,6 @@
                     siglusStockEventService.formatResponse(response);
                     return response;
                 });
-        }
-
-        function validateConflictProgram(program, facility) {
-            return resource.validateConflictProgram({
-                program: program,
-                facility: facility,
-                isDraft: true
-            })
-                .$promise;
         }
 
         /**
