@@ -13,9 +13,9 @@
         <tbody>
         <tr ng-repeat="program in vm.programs">
             <td style="min-width: 160px;">{{program.name}}</td>
-            <td style="min-width: 160px;" >{{vm.key(vm.initialDraftInfo.destinationId ? 'draft' : 'notStarted') | message}}</td>
+            <td style="min-width: 160px;" >{{vm.key(vm.hasExistInitialDraft ? 'draft' : 'notStarted') | message}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
-            <td ng-if="vm.initialDraftInfo.destinationId">
+            <td ng-if="vm.hasExistInitialDraft">
 
                 <input
                         id="continueButton"
@@ -25,7 +25,7 @@
                         ng-click="vm.proceedForIssue(program)"
                 />
             </td>
-            <td ng-if="!vm.initialDraftInfo.destinationId">
+            <td ng-if="!vm.hasExistInitialDraft">
                 <input
                         id="startButton"
                         type="button"

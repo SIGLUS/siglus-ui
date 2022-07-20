@@ -107,30 +107,6 @@ describe('SiglusIssueDraftListController', function() {
 
     });
 
-    describe('getDestinationName method', function() {
-        it('should return Outros destinationName when selected destinationName is Outros', function() {
-            vm.initialDraftInfo = {
-                destinationId: '00001',
-                destinationName: 'Outros',
-                locationFreeText: 'test',
-                documentNumber: 'number-1'
-            };
-
-            expect(vm.getDestinationName()).toEqual('Outros: test');
-        });
-
-        it('should return destinationName when selected destinationName is not Outroså', function() {
-            vm.initialDraftInfo = {
-                destinationId: '00001',
-                destinationName: 'destination name',
-                locationFreeText: 'test',
-                documentNumber: 'number-1'
-            };
-
-            expect(vm.getDestinationName()).toEqual('destination name');
-        });
-    });
-
     describe('$onInit method', function() {
         it('should call api to get initialDraftInfo when initialDraftInfo not exist in $stateParams', function() {
             vm.$onInit();

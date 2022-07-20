@@ -29,22 +29,23 @@
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'draft', 'initialDraftInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
-        'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService',
-        'adjustmentType', 'srcDstAssignments', 'isMerge',
+        '$scope', 'draft', 'initialDraftInfo', '$state', '$stateParams', '$filter',
+        'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'confirmService',
+        'messageService', 'isMerge', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
-        'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService'
+        'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
+        'siglusStockUtilsService'
     ];
 
-    function controller($scope, draft, initialDraftInfo, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, isMerge, stockAdjustmentCreationService, notificationService,
+    function controller($scope, draft, initialDraftInfo, $state, $stateParams, $filter,
+                        confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
+                        messageService, isMerge, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
                         openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService,
-                        alertConfirmModalService) {
+                        alertConfirmModalService, siglusStockUtilsService) {
         var vm = this,
             previousAdded = {};
 
@@ -55,7 +56,7 @@
         vm.isMerge = isMerge;
 
         vm.key = function(secondaryKey) {
-            return adjustmentType.prefix + 'Creation.' + secondaryKey;
+            return 'stockIssueCreation.' + secondaryKey;
         };
 
         /**
@@ -314,9 +315,6 @@
      * @param {Object} lineItem line item to be validated.
      */
         vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
-                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
-            }
             return lineItem;
         };
 
@@ -519,7 +517,7 @@
             }
 
             loadingModalService.open();
-            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems)
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems, $stateParams.draftType)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
@@ -644,10 +642,7 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            var destinationName = _.get(vm.initialDraftInfo, 'destinationName');
-            vm.destinationName = destinationName === 'Outros'
-                ? 'Outros: ' + _.get(vm.initialDraftInfo, 'locationFreeText', '')
-                : destinationName;
+            vm.destinationName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, $stateParams.draft);
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;

@@ -31,12 +31,12 @@
     // SIGLUS-REFACTOR: add user, drafts
     controller.$inject = ['$stateParams', 'facility', 'programs', 'adjustmentType',
         '$state', 'user', 'siglusInitialIssueModalService',
-        'siglusStockIssueService', 'loadingModalService'];
+        'siglusStockIssueService', 'loadingModalService', 'siglusStockUtilsService'];
     // SIGLUS-REFACTOR: ends here
 
     function controller($stateParams, facility, programs, adjustmentType, $state, user,
                         siglusInitialIssueModalService, siglusStockIssueService,
-                        loadingModalService) {
+                        loadingModalService, siglusStockUtilsService) {
         var vm = this;
 
         /**
@@ -62,6 +62,8 @@
          * Holds available programs for home facility.
          */
         vm.programs = programs;
+
+        vm.hasExistInitialDraft = false;
 
         vm.adjustmentType = adjustmentType;
 
@@ -101,6 +103,7 @@
                 _.get(programs, [0, 'id']), facility.id, adjustmentType.state
             ).then(function(data) {
                 vm.initialDraftInfo = data;
+                vm.hasExistInitialDraft = siglusStockUtilsService.isExistInitialDraft(data, adjustmentType.state);
             })
                 .finally(function() {
                     loadingModalService.close();
