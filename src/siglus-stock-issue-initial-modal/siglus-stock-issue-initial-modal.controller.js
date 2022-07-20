@@ -108,7 +108,11 @@
 
         vm.$onInit = function() {
             loadingModalService.open();
-            sourceDestinationService.getDestinationAssignments(programId, facilityId).then(function(data) {
+            var getAssignments = adjustmentType.state === 'issue'
+                ?  sourceDestinationService.getDestinationAssignments
+                : sourceDestinationService.getSourceAssignments;
+
+            getAssignments(programId, facilityId).then(function(data) {
                 vm.issueToList = _.sortBy(_.uniq(data, false, function(item) {
                     return item.name;
                 }), 'name');
