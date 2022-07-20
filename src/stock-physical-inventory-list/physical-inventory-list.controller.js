@@ -30,13 +30,12 @@
     controller.$inject = ['facility', 'programs', 'programId', 'drafts',
         'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
-        'FunctionDecorator', 'SiglusPhysicalInventoryCreationService', 'alertService',
-        'loadingModalService'];
+        'FunctionDecorator', 'SiglusPhysicalInventoryCreationService'];
 
     function controller(facility, programs, programId, drafts, messageService,
-                        $state, physicalInventoryService, physicalInventoryFactory,
-                        FunctionDecorator, SiglusPhysicalInventoryCreationService, alertService,
-                        loadingModalService) {
+                        $state,
+                        physicalInventoryService, physicalInventoryFactory,
+                        FunctionDecorator, SiglusPhysicalInventoryCreationService) {
         var vm = this;
 
         /**
@@ -186,46 +185,27 @@
                     );
                 }
             });
+
         }
 
-        function getConflictDisplayName(data) {
-            var conflictProgramNames = _.chain(vm.programs)
-                .filter(function(program) {
-                    return _.include(data, program.id);
-                })
-                .map('name')
-                .uniq()
-                .value();
-            return conflictProgramNames.join(',');
-        }
-
+        /**
+     * @ngdoc method
+     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @name Validate Draft Status
+     *
+     * @description
+     * Validate Draft Status when status is starter return pop up page to create draft list
+     *
+     * @param {Object} draft Physical inventory draft status
+     */
         vm.validateDraftStatus = function(draft) {
-            loadingModalService.open();
-            physicalInventoryService.validateConflictProgram(programId, facility.id)
-                .then(function(data) {
-                    if (data.canStartInventory) {
-                        if (draft.isStarter) {
-                            SiglusPhysicalInventoryCreationService.show(draft).then(function() {});
-                        } else {
-                            $state.go(
-                                'openlmis.stockmanagement.physicalInventory.draftList'
-                            );
-                        }
-                    } else {
-                        alertService.error(
-                            'stockPhysicalInventory.conflictProgram',
-                            '',
-                            '',
-                            {
-                                programName: getConflictDisplayName(data.containDraftProgramsList)
-                            }
-                        ).then(function() {
-                        });
-                    }
-                })
-                .finally(function() {
-                    loadingModalService.close();
-                });
+            if (draft.isStarter) {
+                SiglusPhysicalInventoryCreationService.show(draft).then(function() {});
+            } else {
+                $state.go(
+                    'openlmis.stockmanagement.physicalInventory.draftList'
+                );
+            }
 
         };
 
