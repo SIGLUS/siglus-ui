@@ -21,12 +21,11 @@ describe('PhysicalInventoryDraftController', function() {
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
         ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
         physicalInventoryDataService, siglusRemainingProductsModalService,
-        confirmDiscardService, subDraftIds, alertConfirmModalService, draftList;
+        confirmDiscardService, subDraftIds, alertConfirmModalService;
 
     beforeEach(function() {
 
         module('stock-physical-inventory-draft');
-        module('siglus-physical-inventory-draft-list');
         module('siglus-remaining-products-modal');
         module('stock-physical-inventory');
         module('stock-add-products-modal');
@@ -36,7 +35,6 @@ describe('PhysicalInventoryDraftController', function() {
         // SIGLUS-REFACTOR: ends here
 
         subDraftIds = '';
-        draftList = '';
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $q = $injector.get('$q');
@@ -564,8 +562,7 @@ describe('PhysicalInventoryDraftController', function() {
             confirmService: confirmService,
             confirmDiscardService: confirmDiscardService,
             alertConfirmModalService: alertConfirmModalService,
-            subDraftIds: subDraftIds,
-            draftList: draftList
+            subDraftIds: subDraftIds
         });
     }
 

@@ -91,6 +91,12 @@
                 label: 'analyticsReportMetabase.historicalData.title',
                 url: '/historicalData',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.HISTORICAL_DATA_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.malariaConsumptionData',
+                label: 'analyticsReportMetabase.malariaConsumptionData.title',
+                url: '/malariaConsumptionData',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MALARIA_CONSUMPTION_DATA_REPORT
             }
         ];
 

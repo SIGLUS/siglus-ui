@@ -38,8 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'draftList'
+        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -51,8 +50,7 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-                        draftList) {
+                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -550,32 +548,13 @@
                                 currentUserService.clearCache();
                                 navigationStateService.clearStatesAvailability();
                             }
-                            if (draftList.physicalInventoryId === '00000000-0000-0000-0000-000000000000') {
-                                physicalInventoryService
-                                    .deleteDraftList(draftList.physicalInventoryId).then(function() {
-                                        notificationService.success('stockPhysicalInventoryDraft.submitted');
-                                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                            program: program.id,
-                                            facility: facility.id
-                                        }, {
-                                            reload: true
-                                        });
-                                    })
-                                    .catch(function() {
-                                        loadingModalService.close();
-                                    })
-                                    .finally(function() {
-                                        loadingModalService.close();
-                                    });
-                            } else {
-                                notificationService.success('stockPhysicalInventoryDraft.submitted');
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    program: program.id,
-                                    facility: facility.id
-                                }, {
-                                    reload: true
-                                });
-                            }
+                            notificationService.success('stockPhysicalInventoryDraft.submitted');
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                program: program.id,
+                                facility: facility.id
+                            }, {
+                                reload: true
+                            });
                         }, function() {
                             loadingModalService.close();
                             alertService.error('stockPhysicalInventoryDraft.submitFailed');
