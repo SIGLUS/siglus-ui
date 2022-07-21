@@ -150,7 +150,12 @@ describe('siglusAnalyticsReportCustomizeRapidController', function() {
             openedKitByCHW: undefined,
             openedKitByHF: undefined,
             receivedKitByCHW: undefined,
-            receivedKitByHF: undefined
+            receivedKitByHF: undefined,
+            signaure: {
+                submit: 'fxffxf',
+                approve: ['11'],
+                authorize: '111'
+            }
         };
         this.requisition.usageTemplate = {
             kitUsage: [{
