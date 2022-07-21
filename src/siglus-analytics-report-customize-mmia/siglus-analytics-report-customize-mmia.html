@@ -45,9 +45,9 @@
       <thead>
       <tr id="calcTr">
           <th class="banner-text" style="width: 30px;"></th>
-          <th style="width: 100px;" class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
+          <th class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
           <th style="width: 460px;" class="col-4" openlmis-message="view.rnr.mmia.medicine">{{ 'mmia.medicine' | message }}</th>
-          <th style="width: 80px;" style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
+          <th style="width: 60px;" style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.initialAmount">{{ 'mmia.initialAmount' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.entries">{{ 'mmia.entries' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issues">{{ 'mmia.issues' | message }}</th>
@@ -59,10 +59,23 @@
       <tbody>
         <tr id="calcTr" ng-repeat="item in vm.productLineItems">
             <td class="banner-text" style="width: 30px;">{{item.id ? $index+1 : ''}}</td>
-            <td>
+            <td
+                ng-class="{
+                    'bg-color-green': item.orderable.programs[0].orderableCategoryDisplayName === 'Children',
+                    'bg-color-lightyellow': item.orderable.programs[0].orderableCategoryDisplayName === 'Adult',
+                    'bg-color-blue': item.orderable.programs[0].orderableCategoryDisplayName === 'Solution'
+                }"
+            >
                 <svg ng-if="item.id" style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
             </td>
-            <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
+            <td
+                ng-class="{
+                    'bg-color-green': item.orderable.programs[0].orderableCategoryDisplayName === 'Children',
+                    'bg-color-lightyellow': item.orderable.programs[0].orderableCategoryDisplayName === 'Adult',
+                    'bg-color-blue': item.orderable.programs[0].orderableCategoryDisplayName === 'Solution'
+                }"
+                class="{{params[item.categoryName]['productPrimaryName']}}"
+            >{{item.orderable.fullProductName}}</td>
             <td>{{item.orderable.dispensable.displayUnit}}</td>
             <td>{{item.beginningBalance}}</td>
             <td>{{item.totalReceivedQuantity}}</td>
