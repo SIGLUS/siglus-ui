@@ -29,7 +29,7 @@ module.exports = function(config) {
             '.tmp/javascript/src/**/*.routes.js',
             '.tmp/javascript/src/**/*.js',
             '.tmp/javascript/tests/**/*builder.spec.js',
-            // 'src/**/*.js',
+            'src/**/*.js',
             'src/**/*.spec.js'
         ],
 
