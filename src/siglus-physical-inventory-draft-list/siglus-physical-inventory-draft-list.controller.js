@@ -119,8 +119,6 @@
 
         vm.mergeDrafts = function() {
             if (isAllSubDraftsSubmit(vm.draftList.subDrafts)) {
-                alertService.error('PhysicalInventoryDraftList.mergeError');
-            } else {
                 var stateParams = angular.copy($stateParams);
                 // TODO translate
                 stateParams.isMerged = true;
@@ -131,6 +129,8 @@
                     return $state.go('openlmis.stockmanagement.initialInventory.draft', stateParams);
                 }
                 $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
+            } else {
+                alertService.error('PhysicalInventoryDraftList.mergeError');
             }
         };
 

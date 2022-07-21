@@ -147,11 +147,12 @@
                     // eslint-disable-next-line no-undef
                     var PDF = new jsPDF('', 'pt', 'a4');
                     PDF.addImage(pageData, 'PNG', 45, 45, imgWidth, imgHeight);
-                    PDF.save('Requi'
-                    + vm.requisition.id.substr(0, 6) + '_'
-                    + vm.facility.name
-                    + '_' + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MMM dd-yyyy')
-                    + '_Malaria' + '.pdf');
+                    PDF.save('ALS.'
+                    + vm.requisition.id.substr(0, 8) + '.'
+                    + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
+                    + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
+                    + '01'
+                    + '.pdf');
                 });
         }
 

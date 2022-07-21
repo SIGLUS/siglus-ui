@@ -3,13 +3,47 @@
   width: 1250px;
   font-size: 16px;
   margin: 0 auto;
+  .background-grey {
+    background-color: grey;
+  }
+  .hasMarginTop {
+    margin-top: 4px;
+  }
+  .rotateContainer {
+    position: relative;
+    div {
+      position: absolute;
+      right: -10px;
+    }
+  }
+  .mmia-container {
+    position: relative;
+    width: 30px;
+    font-size: 10px;
+    .text-nowrap {
+      position: absolute;
+      left: 0;
+      top: 80%;
+      right: 0;
+      -webkit-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      transform: rotate(-90deg);
 
+      -webkit-transform-origin: 50% 50%;
+      -moz-transform-origin: 50% 50%;
+      -ms-transform-origin: 50% 50%;
+      transform-origin: 50% 50%;
+    }
+  }
   * {
     margin: 0;
     padding: 0;
     border: 0;
   }
-
+  .text-center {
+    text-align: center;
+  }
   .text-nowrap {
     -webkit-transform: rotate(-90deg);
     -moz-transform: rotate(-90deg);
@@ -25,14 +59,14 @@
   .banner-text {
     text-align: center;
     font-size: 10px;
-    width: 28px;
+    width: 30px;
   }
 
   div.separate {
     content: "";
     display: block;
     height: 2px;
-    width: 31px;
+    width: 100%;
     background-color: black;
   }
 
@@ -66,7 +100,7 @@
 
     th, td {
       border: 1px solid black;
-      width: 76px;
+      // width: 76px;
       word-wrap: break-word;
     }
 
@@ -102,7 +136,11 @@
     width: 100%;
     display: -webkit-inline-box;
       .regime-form {
-        width: 60%;
+        width: 56%;
+        margin-top: 4px;
+        td {
+          padding-left: 4px;
+        }
         thead {
           background-color: #f0f0f0;
         }
@@ -122,7 +160,7 @@
       }
 
     .patient-section {
-      width: calc(40% - 4px);
+      width: calc(44% - 4px);
       margin-left:3px;
 
       .patient-form {
@@ -132,22 +170,25 @@
           tr {
             font-size: 8px;
           }
+          th {
+            height: 22px;
+          }
         }
 
-        tr {
-          td:first-child {
-            background-color: #d0d0d0;
-            text-align: left;
-            padding-left: 8px;
-            width: 120px;
-          }
-          th {
-            height: 18.8px;
-            padding: 3px;
-            font-size: 14px;
-            font-style:italic;
-          }
-        }
+        // tr {
+        //   td:first-child {
+        //     background-color: #d0d0d0;
+        //     text-align: left;
+        //     padding-left: 8px;
+        //     width: 120px;
+        //   }
+        //   th {
+        //     height: 18.8px;
+        //     padding: 3px;
+        //     font-size: 14px;
+        //     font-style:italic;
+        //   }
+        // }
       }
 
       .patient-form-dispensed {
@@ -167,13 +208,14 @@
           }
           th {
             height: 18.8px;
-            padding: 3px;
+            // padding: 3px;
             font-size: 14px;
             font-style:italic;
           }
         }
       }
       .comment-wrapper {
+        margin-top: -10px;
         .background {
           position: absolute;
           margin-top: 24px;
@@ -189,6 +231,7 @@
         .comment {
           font-family: monospace;
           width: 398px;
+          min-height: 66px;
           padding-top: 24px;
           line-height: 20.8px;
           word-break: break-all;
@@ -198,9 +241,9 @@
   }
 
   .bottom-section {
-    width: 966px;
+    width: 100%;
+    margin-top: 12px;
     clear: both;
-    margin-top: 2px;
 
     table {
       width: 100%;
@@ -227,7 +270,7 @@ table.regime-form,
 table.second-section,
 table.patient-form {
   td {
-    padding: 3px;
+    // padding: 3px;
   }
 }
 
