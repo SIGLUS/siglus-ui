@@ -28,9 +28,9 @@
         .module('stockmanagement')
         .service('siglusStockIssueService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'moment'];
 
-    function service($resource, stockmanagementUrlFactory, $filter) {
+    function service($resource, stockmanagementUrlFactory, $filter, moment) {
 
         var urlBasePath = '/api/siglusapi/drafts/initial';
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {
@@ -76,15 +76,20 @@
             },
             deleteAllDraft: {
                 method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts1/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/initial/:initialDraftId')
             },
             mergeAllDraft: {
                 method: 'POST',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts1/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
             },
             submitDraft: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/:initialDraftId/subDraft/:draftId/submit')
+            },
+            mergeSubmitDraft: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/stockEvents1'),
+                transformRequest: formatPayload
             }
         });
 
@@ -101,6 +106,8 @@
         this.submitDraft = submitDraft;
 
         this.saveDraft = saveDraft;
+
+        this.mergeSubmitDraft = mergeSubmitDraft;
 
         this.getMergedDraft = getMergedDraft;
 
@@ -119,11 +126,12 @@
         }
 
         function queryInitialDraftInfo(programId, facilityId, adjustmentTypeState) {
-            return resource.queryDraft({
+            var params = {
                 programId: programId,
                 facility: facilityId,
                 draftType: adjustmentTypeState
-            }).$promise;
+            };
+            return resource.queryDraft(params).$promise;
         }
 
         function initDraft(formData) {
@@ -136,8 +144,10 @@
             }).$promise;
         }
 
-        function deleteAllDraft() {
-            return resource.deleteAllDraft().$promise;
+        function deleteAllDraft(initialDraftId) {
+            return resource.deleteAllDraft({
+                initialDraftId: initialDraftId
+            }).$promise;
         }
 
         function mergeAllDraft() {
@@ -186,6 +196,22 @@
             }).$promise;
         }
 
+        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo) {
+
+            var params = {
+                programId: programId,
+                signature: signature,
+                mergedDraftIds: _.map(lineItems, function(item) {
+                    return item.subDraftId;
+                }),
+                lineItems: _.map(lineItems, function(item) {
+                    return buildMergeDraftLine(item, initDraftInfo);
+                })
+            };
+
+            return resource.mergeSubmitDraft(params).$promise;
+        }
+
         function buildLine(item) {
             return {
                 orderableId: item.orderable.id,
@@ -203,6 +229,53 @@
                 productCode: item.orderable.productCode,
                 productName: $filter('productName')(item.orderable)
             };
+        }
+
+        function buildMergeDraftLine(item, initialDraftInfo) {
+            return {
+                orderableId: item.orderable.id,
+                lotId: _.get(item.lot, 'id', null),
+                lotCode: _.get(item.lot, 'lotCode', null),
+                expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
+                quantity: item.quantity,
+                extraData: {
+                    vvmStatus: item.vvmStatus
+                },
+                stockOnHand: item.stockOnHand,
+                occurredDate: item.occurredDate,
+                reasonId: _.get(item.reason, 'id', null),
+                reasonFreeText: _.get(item, 'reasonFreeText', null),
+                programId: item.programId,
+                sourceId: initialDraftInfo.sourceId,
+                sourceFreeText: initialDraftInfo.sourceFreeText,
+                destinationId: initialDraftInfo.destinationId,
+                destinationFreeText: initialDraftInfo.destinationFreeText,
+                documentationNo: initialDraftInfo.documentationNo
+            };
+        }
+
+        function formatPayload(payload) {
+            payload.lineItems.forEach(function(lineItem) {
+                if (!lineItem.extraData) {
+                    lineItem.extraData = {};
+                }
+                if (!lineItem.lotId) {
+                    lineItem.extraData.lotCode = lineItem.lotCode;
+                    lineItem.extraData.expirationDate = formatDate(lineItem.expirationDate);
+                }
+                lineItem.extraData.stockCardId = lineItem.stockCardId;
+                lineItem.occurredDate = formatDate(lineItem.occurredDate);
+
+                delete lineItem.lotCode;
+                delete lineItem.expirationDate;
+                delete lineItem.stockCardId;
+            });
+
+            return angular.toJson(payload);
+        }
+
+        function formatDate(date) {
+            return date ? moment(date).format('YYYY-MM-DD') : date;
         }
     }
 })();

@@ -125,7 +125,7 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                siglusStockIssueService.deleteAllDraft()
+                siglusStockIssueService.deleteAllDraft($stateParams.initialDraftId)
                     .then(function() {
                         $state.go('openlmis.stockmanagement.issue');
                     })

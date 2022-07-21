@@ -602,18 +602,30 @@
             loadingModalService.open();
             var addedLineItems = angular.copy(vm.addedLineItems);
 
-            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                addedLineItems)
-                .then(function() {
-                    loadingModalService.close();
-                    notificationService.success(vm.key('submitted'));
-                    $scope.needToConfirm = false;
-                    vm.returnBack();
-                })
-                .catch(function(error) {
-                    loadingModalService.close();
-                    productDuplicatedHandler(error);
-                });
+            if (vm.isMerge) {
+                console.log(vm.addedLineItems);
+                siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+                    signature, vm.initialDraftInfo)
+                    .then(function() {
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
+                    });
+            } else {
+                siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                    addedLineItems)
+                    .then(function() {
+                        loadingModalService.close();
+                        notificationService.success(vm.key('submitted'));
+                        $scope.needToConfirm = false;
+                        vm.returnBack();
+                    })
+                    .catch(function(error) {
+                        loadingModalService.close();
+                        productDuplicatedHandler(error);
+                    });
+            }
+
         }
 
         function onInit() {
@@ -642,7 +654,8 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            vm.destinationName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, $stateParams.draft);
+            vm.destinationName = siglusStockUtilsService
+                .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;

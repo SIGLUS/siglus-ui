@@ -2298,7 +2298,6 @@
   "issueDraft.selectFirstForReceive": "Please create a draft to start the receive",
   "stockIssueInitialModal.titleForReceive": "Please input the receive information",
   "analyticsReportMetabase.historicalData.title":"Relatório de dados históricos",
-  "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro.",
   "physicalInventoryCreation.initialLabel": "A sua Unidade Sanitária ainda não fez inventário inicial, por favor insira o número de utilizadores para iniciar",
   "analyticsReportMetabase.malariaConsumptionData.title":"Relatório de dados de consumo de Malária",
   "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report",
@@ -2338,5 +2337,6 @@
   "mmia.dm": "Dispensado por Mês",
   "mmia.observations": "Observações",
   "mmia.print_on_computer": "Impresso no computador",
-  "mmia.downloadPdf": "Baixar PDF"
+  "mmia.downloadPdf": "Baixar PDF",
+  "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro."
 }
