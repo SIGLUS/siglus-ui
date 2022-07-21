@@ -381,7 +381,9 @@
                 summaries: [],
                 subDraftIds: subDraftIds
             })).then(function() {
-                notificationService.success('stockPhysicalInventoryDraft.saved');
+                if (!notReload) {
+                    notificationService.success('stockPhysicalInventoryDraft.saved');
+                }
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;

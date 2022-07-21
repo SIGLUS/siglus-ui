@@ -55,6 +55,7 @@
         vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.requisition = {};
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -65,6 +66,9 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
+            vm.signaure.approve = vm.signaure.approve.length
+                ? vm.signaure.approve.join(',')
+                : '';
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
