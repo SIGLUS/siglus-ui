@@ -68,9 +68,16 @@
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
             var lineItemsGroupByCategory = _.reduce(productLineItems, function(r, c) {
-                if (r[c.$program.orderableCategoryDisplayName]) {
+                if (
+                    r[c.$program.orderableCategoryDisplayName]
+                        && r[c.$program.orderableCategoryDisplayName] !== 'Default'
+                ) {
                     r[c.$program.orderableCategoryDisplayName].push(c);
-                } else {
+                }
+                if (
+                    !r[c.$program.orderableCategoryDisplayName]
+                        && r[c.$program.orderableCategoryDisplayName] !== 'Default'
+                ) {
                     r[c.$program.orderableCategoryDisplayName] = [c];
                 }
                 return r;
@@ -84,9 +91,11 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
-            vm.signaure.approve = vm.signaure.approve.length
-                ? vm.signaure.approve.join(',')
-                : '';
+            if (requisition.extraData.signaure) {
+                vm.signaure.approve = vm.signaure && vm.signaure.approve.length
+                    ? vm.signaure.approve.join(',')
+                    : '';
+            }
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
