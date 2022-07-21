@@ -2301,5 +2301,6 @@
   "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro.",
   "physicalInventoryCreation.initialLabel": "A sua Unidade Sanitária ainda não fez inventário inicial, por favor insira o número de utilizadores para iniciar",
   "analyticsReportMetabase.malariaConsumptionData.title":"Relatório de dados de consumo de Malária",
-  "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report"
+  "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report",
+  "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro."
 }
