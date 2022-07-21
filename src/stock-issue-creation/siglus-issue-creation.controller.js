@@ -602,18 +602,30 @@
             loadingModalService.open();
             var addedLineItems = angular.copy(vm.addedLineItems);
 
-            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                addedLineItems)
-                .then(function() {
-                    loadingModalService.close();
-                    notificationService.success(vm.key('submitted'));
-                    $scope.needToConfirm = false;
-                    vm.returnBack();
-                })
-                .catch(function(error) {
-                    loadingModalService.close();
-                    productDuplicatedHandler(error);
-                });
+            if (vm.isMerge) {
+                console.log(vm.addedLineItems);
+                siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+                    signature, vm.initialDraftInfo)
+                    .then(function() {
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
+                    });
+            } else {
+                siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                    addedLineItems)
+                    .then(function() {
+                        loadingModalService.close();
+                        notificationService.success(vm.key('submitted'));
+                        $scope.needToConfirm = false;
+                        vm.returnBack();
+                    })
+                    .catch(function(error) {
+                        loadingModalService.close();
+                        productDuplicatedHandler(error);
+                    });
+            }
+
         }
 
         function onInit() {
