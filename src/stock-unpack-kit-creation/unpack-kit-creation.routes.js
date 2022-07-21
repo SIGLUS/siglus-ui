@@ -98,7 +98,7 @@
                 // SIGLUS-REFACTOR: starts here
                 reasons: function($stateParams, facility, stockReasonsFactory, kit) {
                     if (!$stateParams.reasons) {
-                        return stockReasonsFactory.getIssueReasons(kit.parentProgramId, facility.type.id);
+                        return stockReasonsFactory.getReasons(kit.parentProgramId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },
