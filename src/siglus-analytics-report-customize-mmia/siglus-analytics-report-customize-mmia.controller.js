@@ -75,7 +75,6 @@
                 }
                 return r;
             }, {});
-            console.log('#### lineItemsGroupByCategory', lineItemsGroupByCategory);
             var temp = _.map(Object.keys(lineItemsGroupByCategory), function(item) {
                 lineItemsGroupByCategory[item].push({}, {});
                 return lineItemsGroupByCategory[item];

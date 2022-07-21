@@ -57,50 +57,20 @@
       </tr>
       </thead>
       <tbody>
-      <tr id="calcTr" ng-repeat="item in vm.productLineItems" ng-if="Object.keys(item).length > 0">
-          <td class="banner-text" style="width: 30px;">{{$index+1}}</td>
-          <!-- <td id="barCodeArea" class="{{params[item.categoryName]['barcode']}}">{{item.orderable.productCode===undefined ? '' : item.orderable.productCode}}</td> -->
-          <td ng-class="{'bg-color-green': item.$program.orderableCategoryDisplayName === 'Default'}">
-              <svg style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
-          </td>
-          <td ng-class="{'bg-color-green': item.$program.orderableCategoryDisplayName === 'Default'}" class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
-          <td>{{item.orderable.dispensable.displayUnit}}</td>
-          <td>{{item.beginningBalance}}</td>
-          <td>{{item.totalReceivedQuantity}}</td>
-          <td>{{item.totalConsumedQuantity}}</td>
-          <td>{{item.totalLossesAndAdjustments}}</td>
-          <td>{{item.stockOnHand}}</td>
-          <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
-      </tr>
-      <tr id="calcTr"  ng-repeat="item in vm.productLineItems" ng-if="Object.keys(item).length === 0">
-        <td class="banner-text" style="width: 30px;"></td>
-        <!-- <td id="barCodeArea" class="{{params[item.categoryName]['barcode']}}">{{item.orderable.productCode===undefined ? '' : item.orderable.productCode}}</td> -->
-        <td style="width: 100px;">
-        </td>
-        <td class="{{params[item.categoryName]['productPrimaryName']}}"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><span ng-show="item.expirationDate"></span></td>
-    </tr>
-      <tr id="calcTr" ng-repeat="item in vm.productLineItems">
-        <td class="banner-text" style="width: 30px;">{{$index+1}}</td>
-        <!-- <td id="barCodeArea" class="{{params[item.categoryName]['barcode']}}">{{item.orderable.productCode===undefined ? '' : item.orderable.productCode}}</td> -->
-        <td ng-class="{'bg-color-green': item.orderable.program.orderableCategoryDisplayName === 'Default'}">
-            <svg style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
-        </td>
-        <td ng-class="{'bg-color-green': item.orderable.program.orderableCategoryDisplayName === 'Default'}" class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
-        <td>{{item.orderable.dispensable.displayUnit}}</td>
-        <td>{{item.beginningBalance}}</td>
-        <td>{{item.totalReceivedQuantity}}</td>
-        <td>{{item.totalConsumedQuantity}}</td>
-        <td>{{item.totalLossesAndAdjustments}}</td>
-        <td>{{item.stockOnHand}}</td>
-        <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
-    </tr>
+        <tr id="calcTr" ng-repeat="item in vm.productLineItems">
+            <td class="banner-text" style="width: 30px;">{{item.id ? $index+1 : ''}}</td>
+            <td>
+                <svg ng-if="item.id" style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
+            </td>
+            <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
+            <td>{{item.orderable.dispensable.displayUnit}}</td>
+            <td>{{item.beginningBalance}}</td>
+            <td>{{item.totalReceivedQuantity}}</td>
+            <td>{{item.totalConsumedQuantity}}</td>
+            <td>{{item.totalLossesAndAdjustments}}</td>
+            <td>{{item.stockOnHand}}</td>
+            <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
+        </tr>
       </tbody>
   </table>
   <div class="separate"></div>
