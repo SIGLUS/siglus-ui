@@ -93,9 +93,12 @@ describe('SiglusInitialIssueModalController', function() {
     describe('submitForm method', function() {
         beforeEach(function() {
             vm.issueTo = {
-                id: 'afe8a536-b4ad-11eb-a394-acde48001122',
+                id: 'afe8a536-b4ad-11eb-a394-acde48001120',
                 name: 'Banco de Socorro',
-                programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad'
+                programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad',
+                node: {
+                    id: 'afe8a536-b4ad-11eb-a394-acde48001122'
+                }
             };
         });
 
