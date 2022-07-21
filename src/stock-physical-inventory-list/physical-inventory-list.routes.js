@@ -35,6 +35,9 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                drafts: undefined
+            },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             resolve: {
                 user: function(authorizationService) {
@@ -62,17 +65,6 @@
                         return $stateParams.programId;
                     }
                     return undefined;
-                },
-                // SIGLUS-REFACTOR: ends here
-                drafts: function(physicalInventoryFactory, programs, facility) {
-                    if (_.isUndefined(facility)) {
-                        return [];
-                    }
-                    var programIds = _.map(programs, function(program) {
-                        return program.id;
-                    });
-
-                    return physicalInventoryFactory.getDrafts(programIds, facility.id);
                 }
             }
         });

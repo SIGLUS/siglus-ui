@@ -24,7 +24,7 @@
 <section class="openlmis-table-container">
   <table>
     <!--        SIGLUS-REFACTOR: starts here-->
-    <caption ng-if="vm.drafts.length===0">
+    <caption ng-if="vm.drafts.length === 0">
       {{'stockPhysicalInventory.selectFirst' | message}}
     </caption>
     <!--        SIGLUS-REFACTOR: ends here-->
@@ -37,15 +37,14 @@
     </thead>
     <tbody>
     <!--SIGLUS-REFACTOR: starts here-->
-    <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts">
-      <!--SIGLUS-REFACTOR: ends here-->
-      <td>{{vm.getProgramName(draft.programId)}}</td>
-      <td>{{vm.getDraftStatus(draft.isStarter)}}</td>
+    <tr ng-if="vm.drafts.length > 0">
+      <td>{{vm.getProgramName(vm.drafts[0].programId)}}</td>
+      <td>{{vm.getDraftStatus(vm.drafts[0].isStarter)}}</td>
       <td>
         <!--         SIGLUS-REFACTOR: starts here-->
         <!--        <input id="proceedButton" type="button" ng-click="vm.editDraft(draft)"-->
-        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(draft)"
-               value="{{(draft.isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
+        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(vm.drafts[0])"
+               value="{{(vm.drafts[0].isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
                class="primary fullwidth-primary-btn"/>
         <!--         SIGLUS-REFACTOR: ends here-->
       </td>

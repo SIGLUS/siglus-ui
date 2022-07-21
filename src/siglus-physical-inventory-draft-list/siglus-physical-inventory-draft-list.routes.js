@@ -56,17 +56,6 @@
                         }
                         return result;
                     },
-                    drafts: function(physicalInventoryFactory, programs, facility) {
-                        if (_.isUndefined(facility)) {
-                            return [];
-                        }
-                        var programId = _.map(programs, function(program) {
-                            return program.id;
-                        });
-
-                        return physicalInventoryFactory.getDrafts(programId,
-                            facility.id);
-                    },
                     draftList: function(siglusPhysicalInventoryDraftListService, programs,
                         facility, $stateParams) {
                         if (_.isUndefined(facility)) {

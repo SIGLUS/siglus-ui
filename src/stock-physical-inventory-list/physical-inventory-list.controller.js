@@ -27,13 +27,13 @@
     angular
         .module('stock-physical-inventory-list')
         .controller('PhysicalInventoryListController', controller);
-    controller.$inject = ['facility', 'programs', 'programId', 'drafts',
+    controller.$inject = ['$stateParams', 'facility', 'programs', 'programId',
         'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
         'FunctionDecorator', 'SiglusPhysicalInventoryCreationService', 'alertService',
         'loadingModalService'];
 
-    function controller(facility, programs, programId, drafts, messageService,
+    function controller($stateParams, facility, programs, programId, messageService,
                         $state, physicalInventoryService, physicalInventoryFactory,
                         FunctionDecorator, SiglusPhysicalInventoryCreationService, alertService,
                         loadingModalService) {
@@ -61,7 +61,7 @@
      */
         vm.programs = programs;
         // SIGLUS-REFACTOR: starts here
-        vm.drafts = [];
+        vm.drafts = $stateParams.drafts || [];
         // SIGLUS-REFACTOR: ends here
         vm.editDraft = new FunctionDecorator()
             .decorateFunction(editDraft)
@@ -95,11 +95,9 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.searchProgram = function searchProgram() {
-
             $state.go('openlmis.stockmanagement.physicalInventory', {
-                programId: vm.program.id
-            }, {
-                reload: true
+                programId: vm.program.id,
+                drafts: vm.drafts
             });
         };
         // SIGLUS-REFACTOR: ends here
@@ -133,14 +131,20 @@
      */
 
         function onInit() {
+            vm.program = _.find(programs, function(program) {
+                return program.id === programId;
+            });
             if (programId) {
-                vm.drafts = _.filter(drafts, function(draft) {
-                    return draft.programId === programId;
-                });
-                vm.program = _.find(programs, function(program) {
-                    return program.id === programId;
-                });
+                loadingModalService.open();
+                physicalInventoryService.getDraft(programId, facility.id)
+                    .then(function(drafts) {
+                        vm.drafts = drafts;
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
+                    });
             }
+
         }
 
         /**
