@@ -62,7 +62,7 @@
         vm.programs = programs;
         // SIGLUS-REFACTOR: starts here
         vm.drafts = $stateParams.drafts || [];
-        console.log($stateParams.drafts);
+
         // SIGLUS-REFACTOR: ends here
         vm.editDraft = new FunctionDecorator()
             .decorateFunction(editDraft)
