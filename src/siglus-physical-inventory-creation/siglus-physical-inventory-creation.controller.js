@@ -41,7 +41,7 @@
     ) {
         var vm = this;
         vm.showConflictStatus = false;
-        vm.userInputSplitNum = '';
+        vm.userInputSplitNum = null;
         vm.confirm = confirm;
         vm.showError = false;
         facilityFactory.getUserHomeFacility().then(function(res) {
@@ -83,6 +83,7 @@
                             }
                         );
                     } else {
+                        $stateParams.drafts = null;
                         $state.go(
                             'openlmis.stockmanagement.physicalInventory.draftList'
                         );
