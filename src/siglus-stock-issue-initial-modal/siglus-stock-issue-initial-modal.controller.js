@@ -69,11 +69,11 @@
             } else {
                 var formInfo = {
                     issue: {
-                        destinationId: vm.issueTo.id,
+                        destinationId: vm.issueTo.node.id,
                         destinationName: vm.issueTo.name
                     },
                     receive: {
-                        sourceId: vm.issueTo.id,
+                        sourceId: vm.issueTo.node.id,
                         sourceName: vm.issueTo.name
                     }
                 };
