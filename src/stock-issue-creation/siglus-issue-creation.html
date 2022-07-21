@@ -123,4 +123,11 @@
         </tr>
       </table>
 </div>
-<ng-include src="'stock-issue-creation/issue-creation-toolbar.html'"></ng-include>
+<siglus-common-toolbar
+        data="vm.addedLineItems"
+        mode="vm.isMerge ? 'MERGE' : 'SAVE'"
+        on-delete="vm.removeDisplayItems()"
+        on-save="vm.save()"
+        on-submit="vm.submit()"
+        on-cancel="vm.returnBack()">
+</siglus-common-toolbar>
