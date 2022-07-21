@@ -36,7 +36,8 @@
                     var routerParam = {
                         Malaria: 'openlmis.analyticsReport.requisitionAndMonthly.malaria',
                         MMIT: 'openlmis.analyticsReport.requisitionAndMonthly.rapid',
-                        'Requisição Balancete': 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica'
+                        'Requisição Balancete': 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica',
+                        MMIA: 'openlmis.analyticsReport.requisitionAndMonthly.mmia'
                     };
 
                     event.preventDefault();
