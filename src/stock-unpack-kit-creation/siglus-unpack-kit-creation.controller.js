@@ -32,13 +32,15 @@
         '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'reasons', 'kit',
         'messageService', 'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService',
         'siglusStockKitUnpackService', 'alertService', 'kitCreationService', 'siglusSignatureModalService',
-        'notificationService', 'dateUtils', 'UNPACK_REASONS', 'sourceDestinationService'
+        'notificationService', 'dateUtils', 'UNPACK_REASONS', 'sourceDestinationService', 'REASON_CATEGORIES',
+        'UNPACK'
     ];
 
     function controller($scope, $state, $stateParams, facility, allProductsProgram, reasons, kit,
                         messageService, MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService,
                         siglusStockKitUnpackService, alertService, kitCreationService, siglusSignatureModalService,
-                        notificationService, dateUtils, UNPACK_REASONS, sourceDestinationService) {
+                        notificationService, dateUtils, UNPACK_REASONS, sourceDestinationService, REASON_CATEGORIES,
+                        UNPACK) {
         var vm = this;
 
         vm.showProducts = false;
@@ -239,58 +241,58 @@
                 siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
                     // SIGLUS-REFACTOR: starts here
-                    sourceDestinationService.getDestinationAssignments(
-                        allProductsProgram.id, facility.id
-                    ).then(function(srcDstAssignments) {
-                        // TODO move name to Constant when master data is ready
-                        var isssueReason = _.find(reasons, {
-                            name: 'Issue'
-                        });
-                        var unpackDestination =  _.find(srcDstAssignments, {
-                            name: 'Unpack Kit',
-                            programId: vm.kit.programId
-                        });
-                        var kitItem = {
-                            orderableId: vm.kit.id,
-                            quantity: vm.kit.unpackQuantity,
-                            occurredDate: dateUtils.toStringDate(new Date()),
-                            documentationNo: vm.kit.documentationNo,
-                            programId: vm.kit.programId,
-                            // SIGLUS-REFACTOR: starts here
-                            reasonId: isssueReason.id,
-                            destinationId: unpackDestination.node.id,
-                            // SIGLUS-REFACTOR: ends here
+                    var isssueReason = _.find(reasons, {
+                        name: UNPACK.ISSUE_REASON_NAME,
+                        reasonCategory: REASON_CATEGORIES.TRANSFER,
+                        reasonType: UNPACK.ISSUE_REASON_TYPE
+                    });
+                    var receiveReason = _.find(reasons, {
+                        name: UNPACK.RECEIVE_REASON_NAME,
+                        reasonCategory: REASON_CATEGORIES.TRANSFER,
+                        reasonType: UNPACK.RECEIVE_REASON_TYPE
+                    });
+
+                    var kitItem = {
+                        orderableId: vm.kit.id,
+                        quantity: vm.kit.unpackQuantity,
+                        occurredDate: dateUtils.toStringDate(new Date()),
+                        documentationNo: vm.kit.documentationNo,
+                        programId: vm.kit.programId,
+                        // SIGLUS-REFACTOR: starts here
+                        reasonId: isssueReason.id,
+                        destinationId: UNPACK.UNPACK_KIT_DESTINATION_NODE_ID,
+                        // SIGLUS-REFACTOR: ends here
+                        extraData: {}
+                    };
+                    var lineItems = _.map(vm.products, function(product) {
+                        return  {
+                            orderableId: product.orderableId,
+                            lotId: product.lot ? product.lot.id : null,
+                            lotCode: product.lot ? product.lot.lotCode : null,
+                            expirationDate: product.lot ? product.lot.expirationDate : null,
+                            quantity: product.quantity,
+                            occurredDate: product.occurredDate,
+                            documentationNo: product.documentationNo,
+                            programId: product.programId,
+                            reasonId: receiveReason.id,
+                            sourceId: UNPACK.UNPACK_FROM_KIT_SOURCE_NODE_ID,
                             extraData: {}
                         };
-                        // SIGLUS-REFACTOR: ends here
-                        var lineItems = _.map(vm.products, function(product) {
-                            return  {
-                                orderableId: product.orderableId,
-                                lotId: product.lot ? product.lot.id : null,
-                                lotCode: product.lot ? product.lot.lotCode : null,
-                                expirationDate: product.lot ? product.lot.expirationDate : null,
-                                quantity: product.quantity,
-                                occurredDate: product.occurredDate,
-                                documentationNo: product.documentationNo,
-                                programId: product.programId,
-                                reasonId: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID,
-                                extraData: {}
-                            };
-                        });
-                        lineItems.unshift(kitItem);
-                        kitCreationService.submitUnpack(facility.id, allProductsProgram.id, signature, lineItems)
-                            .then(function() {
-                                notificationService.success('stockUnpackKitCreation.submitted');
-                                $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                    program: allProductsProgram.id,
-                                    facility: facility.id
-                                });
-                            })
-                            .catch(function() {
-                                loadingModalService.close();
-                                alertService.error('stockUnpackKitCreation.saveFailed');
-                            });
                     });
+                    // SIGLUS-REFACTOR: ends here
+                    lineItems.unshift(kitItem);
+                    kitCreationService.submitUnpack(facility.id, allProductsProgram.id, signature, lineItems)
+                        .then(function() {
+                            notificationService.success('stockUnpackKitCreation.submitted');
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                program: allProductsProgram.id,
+                                facility: facility.id
+                            });
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                            alertService.error('stockUnpackKitCreation.saveFailed');
+                        });
                 });
             }
         };
