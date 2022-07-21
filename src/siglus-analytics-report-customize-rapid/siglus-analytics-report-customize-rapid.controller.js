@@ -66,9 +66,11 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
-            vm.signaure.approve = vm.signaure.approve.length
-                ? vm.signaure.approve.join(',')
-                : '';
+            if (requisition.extraData.signaure) {
+                vm.signaure.approve = vm.signaure && vm.signaure.approve.length
+                    ? vm.signaure.approve.join(',')
+                    : '';
+            }
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
