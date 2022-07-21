@@ -85,7 +85,7 @@
                     if (response[0].isStarter) {
                         loadingModalService.close();
                         SiglusPhysicalInventoryCreationService
-                            .show(response[0], '', responses[0][0].id).then(function() {});
+                            .show(responses[0][0].id).then(function() {});
                     } else {
                         loadingModalService.close();
                         if (shouldNotPopComfirm) {
