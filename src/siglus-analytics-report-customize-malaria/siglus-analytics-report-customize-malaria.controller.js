@@ -57,7 +57,7 @@
         vm.yearAndMonth = undefined;
         vm.processingPeriodEndDate = undefined;
         vm.submitDate = undefined;
-
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
         function onInit() {
             vm.requisition = requisition;
             vm.facility = facility;

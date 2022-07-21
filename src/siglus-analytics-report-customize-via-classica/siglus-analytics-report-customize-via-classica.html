@@ -247,7 +247,9 @@
   <tr>
     <td></td>
     <td class="text-align-right">
-      <div>
+      <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
+      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
+      <div style="clear: both;">
         <button ng-click="vm.downloadPdf()" class="btn btn-primary btn-download btn-download-pdf">{{'via.download.button'|message}}</button>
       </div>
     </td>
