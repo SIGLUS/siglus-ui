@@ -5,7 +5,8 @@
     "@bower_components/dom-to-image":"SIGLUS/siglus-dom2image.git#^1.0.1",
     "@bower_components/jsPDF": "parallax/jsPDF#^1.5.3",
     "@bower_components/underscore": "jashkenas/underscore#^1.13.4",
-    "@bower_components/sheetjs":"SheetJS/sheetjs#^0.18.5"
+    "@bower_components/sheetjs":"SheetJS/sheetjs#^0.18.5",
+    "@bower_components/jsBarcode": "lindell/JsBarcode#3.11.5"
 },
   "engines": {
     "yarn": ">= 1.0.0"
@@ -24,6 +25,9 @@
     },
     "@bower_components/underscore": {
       "main": ["underscore.js"]
+    },
+    "@bower_components/jsBarcode": {
+      "main": ["dist/JsBarcode.all.min.js"]
     }
   }
 }

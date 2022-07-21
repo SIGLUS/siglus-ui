@@ -91,12 +91,11 @@
         }
         function getPdfName(date, facilityName, id) {
             return (
-                'Requi' + id
-                + '_' + facilityName + '_'
-                + openlmisDateFilter(date, 'MMM') + ' '
-                + openlmisDateFilter(date, 'dd') + '_'
-                + openlmisDateFilter(date, 'yyyy')
-                + '_MMIT.pdf'
+                'MIT.' + id
+                + '.' + openlmisDateFilter(date, 'yy')
+                + openlmisDateFilter(date, 'MM') + '.'
+                + '01'
+                + '.pdf'
             );
         }
         function extendLineItems() {
@@ -144,7 +143,7 @@
                     getPdfName(
                         requisition.processingPeriod.startDate,
                         facility.name,
-                        requisition.id.substring(0, 6)
+                        requisition.id.substring(0, 8)
                     )
                 );
             });

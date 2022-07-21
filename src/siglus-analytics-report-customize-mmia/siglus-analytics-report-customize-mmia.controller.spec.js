@@ -13,11 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('siglusAnalyticsReportCustomizeMMIAController', function() {
+describe('siglusAnalyticsReportCustomizeRapidController', function() {
     var testData = [];
     beforeEach(function() {
         var context = this;
-        module('siglus-analytics-report-customize-mmia');
+        module('siglus-analytics-report-customize-rapid');
         module('requisition-view', function($provide) {
             context.RequisitionStockCountDateModalMock = jasmine.createSpy('RequisitionStockCountDateModal');
 
@@ -1209,8 +1209,488 @@ describe('siglusAnalyticsReportCustomizeMMIAController', function() {
                 isDefault: true
             }]
         };
+        this.requisition.regimenLineItems = [
+            {
+                regimen: {
+                    id: 'd59f88d2-fbcf-4040-bcb2-6ea8c0590123',
+                    code: '2alt3',
+                    fullProductName: 'AZT+3TC+ATV/r',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 69,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: 'e6dc994e-9e71-4a39-aa2a-d47e1ac68c52',
+                        value: 0
+                    },
+                    community: {
+                        id: '1cf495c0-321f-48f0-8f81-2f68a7255b9a',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'e1aa5e49-b25b-4e2d-9328-0a88d99e998e',
+                    code: 'A2Fped Cpts',
+                    fullProductName: 'AZT+3TC+LPV/r (2DFC+LPV/r 100/25)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 89,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '7321eade-9cfa-44d7-883f-8e1bf26df381',
+                        value: 0
+                    },
+                    community: {
+                        id: 'b8908902-4e19-4bc4-a9fe-c1899365af21',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '28f52213-325f-4d30-b040-de9ef63519a7',
+                    code: 'ABCPedXarope',
+                    fullProductName: 'ABC+3TC+LPV/r (2DFC+LPV/r 80/20)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 100,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: 'cc5a16eb-ada3-4971-a5eb-5a281728cefe',
+                        value: 0
+                    },
+                    community: {
+                        id: 'dd47f23c-0de7-47ee-a954-aee4aeb4253e',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'e1169d62-f0ca-4948-8a80-8b0ea4680597',
+                    code: '2alt1',
+                    fullProductName: 'TDF+3TC+ATV/r',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 72,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: 'f81340ba-1842-4bfc-911e-054bac62bc96',
+                        value: 0
+                    },
+                    community: {
+                        id: 'd45297e8-51df-415d-9edc-ba024d6a8d67',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '05c6962f-b06f-4b78-a501-2e931a2fb38b',
+                    code: '1alt1',
+                    fullProductName: 'ABC+3TC+DTG',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 66,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '52c3c966-6648-43be-84a3-30b09f320de4',
+                        value: 0
+                    },
+                    community: {
+                        id: '59427b53-74fb-4058-a9e6-dbf62755dc34',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '8e2d520b-3ea7-4b97-aa23-2a2976597c6c',
+                    code: 'A2Fped Xarope',
+                    fullProductName: 'AZT+3TC+LPV/r (2DFC+LPV/r 80/20)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 101,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '978141d1-f535-4849-bca4-454e47812326',
+                        value: 0
+                    },
+                    community: {
+                        id: '29d69412-d12f-4b02-bf61-a66d55019d5c',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'd35c5d0f-f63a-4a8b-ae71-c357c71b86f4',
+                    code: '2alt2',
+                    fullProductName: 'ABC+3TC+ATV/r',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 65,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: 'f205271b-2add-452d-8534-4a0716b10bca',
+                        value: 0
+                    },
+                    community: {
+                        id: 'a6872992-51f9-40a9-91a4-34653810521c',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '4134c58a-a394-491d-9b70-953e3e89a17c',
+                    code: 'ABC12',
+                    fullProductName: 'ABC+3TC+LPV/r',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 50,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: 'a093392c-5de2-423c-82fa-a6b4ebf5c8d3',
+                        value: 0
+                    },
+                    community: {
+                        id: 'c2a3d9bf-99cc-428c-8408-5642a6a8e204',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '9c694968-9bbd-4ecf-949d-8cbefafd601c',
+                    code: 'X6APed',
+                    fullProductName: 'ABC+3TC+DTG (2DFCped+DTG50)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 84,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '47fcd7a0-c330-432f-a44c-d60707615127',
+                        value: 0
+                    },
+                    community: {
+                        id: '84c244a0-e43a-461a-be42-d8dab1ca9732',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '56e512d7-e190-4781-940e-0215b22768ac',
+                    code: 'ABCPedCpts',
+                    fullProductName: 'ABC+3TC+LPV/r (2DFC+LPV/r 100/25)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 86,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '634091dd-c7c9-42d8-af96-7dbf61faa93f',
+                        value: 0
+                    },
+                    community: {
+                        id: '743b46f7-3d8f-43ae-82bb-08c664bc2ff9',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'c11d30e8-209a-48d1-956d-fe3837e086bf',
+                    code: '1aLTLD',
+                    fullProductName: 'TDF+3TC+DTG',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 73,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '7629ea90-f453-448b-a262-6c14e0acaf13',
+                        value: 0
+                    },
+                    community: {
+                        id: 'ef5a2c3b-1bf4-4496-b83f-0a5c61213b5b',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'cf09202f-3f44-438b-b79a-f541ba04ff4f',
+                    code: 'ABCPedGranulos',
+                    fullProductName: 'ABC+3TC+LPV/r (2DFC+LPV/r 40/10)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 87,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '18fa1e74-828c-4963-8548-8ae1068a8cb0',
+                        value: 0
+                    },
+                    community: {
+                        id: '66a5efac-ebeb-4a8f-a0ea-f33157e26657',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'e07904c0-4ad6-415c-bd8d-8252f2f9b5ac',
+                    code: '1alt2',
+                    fullProductName: 'AZT+3TC+DTG',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 70,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '7b4b54dc-aaa8-4624-950d-8bf8f2b36f7d',
+                        value: 0
+                    },
+                    community: {
+                        id: '856a2375-e6ee-495c-9a77-e9b26a5182bb',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '2a32712d-837c-4e49-be01-363bfc7dedb4',
+                    code: 'C7A',
+                    fullProductName: 'TDF+3TC+LPV/r',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 12,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '1adc006b-f976-4d7d-a3d1-4ee84f4a834c',
+                        value: 0
+                    },
+                    community: {
+                        id: '3be92a54-8135-4d92-be08-86f58a5d8b56',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: '9c90fc20-be66-4f23-a06a-865a59919668',
+                    code: 'A2Fped Granulos',
+                    fullProductName: 'AZT+3TC+LPV/r (2DFC+LPV/r 40/10)',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 90,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c254a-e53b-11eb-8494-acde48001122',
+                        code: 'PAEDIATRICS',
+                        name: 'Paediatrics',
+                        displayOrder: 2
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '745606e1-2965-47b0-b2ff-50ae153dba5e',
+                        value: 0
+                    },
+                    community: {
+                        id: '02d52f63-f03a-4176-b99f-d2b82211bb48',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: {
+                    id: 'd8b4aa79-2d8c-4a92-a0a7-de7932fb5f8a',
+                    code: 'A4A',
+                    fullProductName: 'TDF+3TC+EFV',
+                    active: true,
+                    isCustom: false,
+                    displayOrder: 5,
+                    programId: '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                    realProgramId: '6176fb66-580f-4238-9091-da1109a2d328',
+                    regimenCategory: {
+                        id: '873c2202-e53b-11eb-8494-acde48001122',
+                        code: 'ADULTS',
+                        name: 'Adults',
+                        displayOrder: 1
+                    }
+                },
+                name: null,
+                columns: {
+                    patients: {
+                        id: '9cd96962-9a67-4ee7-879c-0f1ee15cd8bc',
+                        value: 0
+                    },
+                    community: {
+                        id: '87a60757-cf0e-46ae-a68e-283c718d1775',
+                        value: 0
+                    }
+                }
+            },
+            {
+                regimen: null,
+                name: 'total',
+                columns: {
+                    patients: {
+                        id: '1c5dab24-bcb7-4877-8969-259f8c05c02d',
+                        value: 0
+                    },
+                    community: {
+                        id: '9a4b7b7c-55fb-4dd0-bb07-4e23e8299f11',
+                        value: 0
+                    }
+                }
+            }
+        ];
         // SIGLUS-REFACTOR: ends here
-        this.vm = this.$controller('siglusAnalyticsReportCustomizeMMIAController', {
+        this.vm = this.$controller('siglusAnalyticsReportCustomizeRapidController', {
             facility: this.facility,
             requisition: this.requisition,
             openlmisDateFilter: this.openlmisDateFilter,
