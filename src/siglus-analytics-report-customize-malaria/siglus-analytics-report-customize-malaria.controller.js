@@ -148,7 +148,7 @@
                     var PDF = new jsPDF('', 'pt', 'a4');
                     PDF.addImage(pageData, 'PNG', 45, 45, imgWidth, imgHeight);
                     PDF.save('ALS.'
-                    + vm.requisition.id.substr(0, 8) + '.'
+                    + vm.facility.code + '.'
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + '01'
