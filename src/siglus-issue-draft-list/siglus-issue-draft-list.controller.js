@@ -137,6 +137,7 @@
         vm.updateDraftList = function(initialDraftInfo) {
             vm.initialDraftInfo = initialDraftInfo;
             vm.initialDraftName = siglusStockUtilsService.getInitialDraftName(initialDraftInfo, vm.draftType);
+            vm.showToolBar = initialDraftInfo.canMergeOrDeleteSubDrafts;
             vm.refreshDraftList();
         };
 
@@ -151,7 +152,6 @@
                 loadingModalService.open();
                 siglusStockIssueService.queryInitialDraftInfo(programId, facility.id, vm.draftType)
                     .then(function(initialDraftInfo) {
-                        vm.showToolBar = initialDraftInfo.canMergeOrDeleteSubDrafts;
                         vm.updateDraftList(initialDraftInfo);
                     })
                     .catch(function() {
