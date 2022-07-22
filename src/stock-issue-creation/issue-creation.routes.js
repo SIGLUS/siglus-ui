@@ -38,13 +38,11 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             params: {
-                program: undefined,
                 facility: undefined,
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
-                // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
                 srcDstAssignments: undefined,
@@ -52,17 +50,13 @@
                 hasLoadOrderableGroups: undefined,
                 size: '50',
                 initialDraftInfo: undefined
-                // SIGLUS-REFACTOR: ends here
             },
             resolve: {
                 isMerge: function() {
                     return false;
                 },
-                program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                program: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
@@ -79,11 +73,13 @@
                         $stateParams.draftType);
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
+                orderableGroups: function($stateParams, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return existingStockOrderableGroupsFactory
-                            .getGroupsWithoutStock($stateParams, program, facility,
-                                STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
+                            .getGroupsWithoutStock($stateParams, {
+                                id: $stateParams.programId
+                            }, facility,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
                     }
                     return $stateParams.orderableGroups;
                 },

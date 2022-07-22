@@ -57,7 +57,8 @@
                 },
                 // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, stockCardDataService) {
+                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, loadingModalService,
+                    stockCardDataService) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -82,11 +83,15 @@
                             delete paramsCopy.program;
                             delete paramsCopy.supervised;
 
+                            loadingModalService.open();
                             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
                                 .query(paramsCopy)
                                 .then(function(summary) {
                                     stockCardDataService.setSummary(paramsCopy, summary);
                                     return stockCardDataService.getDisplaySummary(stateParams);
+                                })
+                                .finally(function() {
+                                    loadingModalService.close();
                                 });
                         }
                         // SIGLUS-REFACTOR: starts here

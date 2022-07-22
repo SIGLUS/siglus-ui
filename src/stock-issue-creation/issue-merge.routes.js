@@ -58,11 +58,8 @@
                 isMerge: function() {
                     return true;
                 },
-                program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                program: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
@@ -82,8 +79,10 @@
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return existingStockOrderableGroupsFactory
-                            .getGroupsWithoutStock($stateParams, program, facility,
-                                STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
+                            .getGroupsWithoutStock($stateParams, {
+                                id: $stateParams.programId
+                            }, facility,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
                     }
                     return $stateParams.orderableGroups;
                 },

@@ -92,7 +92,6 @@
                 initialDraftId: _.get(vm.initialDraftInfo, 'id')
             }).then(function(data) {
                 vm.drafts = data;
-                vm.showToolBar = true;
             })
                 .finally(function() {
                     loadingModalService.close();
@@ -152,6 +151,7 @@
                 loadingModalService.open();
                 siglusStockIssueService.queryInitialDraftInfo(programId, facility.id, vm.draftType)
                     .then(function(initialDraftInfo) {
+                        vm.showToolBar = initialDraftInfo.canMergeOrDeleteSubDrafts;
                         vm.updateDraftList(initialDraftInfo);
                     })
                     .catch(function() {
