@@ -97,6 +97,12 @@
                 label: 'analyticsReportMetabase.malariaConsumptionData.title',
                 url: '/malariaConsumptionData',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MALARIA_CONSUMPTION_DATA_REPORT
+            },
+            {
+                name: 'openlmis.analyticsReport.requisitionData',
+                label: 'analyticsReportMetabase.requisitionData.title',
+                url: '/requisitionData',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_DATA_REPORT
             }
         ];
 
