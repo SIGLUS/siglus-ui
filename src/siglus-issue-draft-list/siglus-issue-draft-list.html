@@ -44,7 +44,7 @@
         </tr>
         </tbody>
     </table>
-    <siglus-common-toolbar data="vm.drafts" mode="'FINALIZE_MERGE'" on-delete="vm.deleteDrafts()" on-merge="vm.mergeDrafts()">
+    <siglus-common-toolbar ng-if="vm.showToolBar" data="vm.drafts" mode="'FINALIZE_MERGE'" on-delete="vm.deleteDrafts()" on-merge="vm.mergeDrafts()">
     </siglus-common-toolbar>
 </section>
 

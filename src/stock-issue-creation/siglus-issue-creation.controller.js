@@ -413,10 +413,15 @@
             // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
-                });
+                if (vm.isMerge) {
+                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                        loadingModalService.open();
+                        confirmSubmit(signature);
+                    });
+                } else {
+                    confirmSubmit('');
+                }
+
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
@@ -601,12 +606,21 @@
         function confirmSubmit(signature) {
             loadingModalService.open();
             var addedLineItems = angular.copy(vm.addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                lineItem.reason = _.find(reasons, {
+                    name: 'Issue'
+                });
+            });
 
             if (vm.isMerge) {
-                console.log(vm.addedLineItems);
                 siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
-                    signature, vm.initialDraftInfo)
+                    signature, vm.initialDraftInfo, facility.id)
                     .then(function() {
+                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            facility: facility.id,
+                            program: program
+                        });
                     })
                     .finally(function() {
                         loadingModalService.close();
@@ -656,7 +670,6 @@
 
             vm.destinationName = siglusStockUtilsService
                 .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
-            vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
             vm.srcDstAssignments = srcDstAssignments;
@@ -674,7 +687,7 @@
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = program;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
