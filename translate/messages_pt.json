@@ -2338,5 +2338,6 @@
   "mmia.observations": "Observações",
   "mmia.print_on_computer": "Impresso no computador",
   "mmia.downloadPdf": "Baixar PDF",
-  "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro."
+  "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro.",
+  "analyticsReportMetabase.requisitionData.title":"Relatório de dados da requisição"
 }
