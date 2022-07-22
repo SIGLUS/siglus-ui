@@ -22,8 +22,12 @@
               maxlength="2"
           />
 
-          <span ng-show="vm.showError" id="validateInputValue">{{'physicalInventoryCreation.error'
-          | message}}</span>
+          <span ng-if="vm.showError" id="validateInputValue">
+            {{'physicalInventoryCreation.error'| message}}
+          </span>
+          <span ng-if="vm.showRequired" id="validateInputValue">
+            {{'physicalInventoryCreation.required'| message}}
+          </span>
         </fieldset>
 
       </div>
