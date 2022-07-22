@@ -154,7 +154,7 @@
                         reportName = 'REM';
                     }
                     PDF.save(reportName + '.'
-                    + vm.facility.code + '.'
+                    + vm.requisition.id.substr(0, 8) + '.'
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + vm.emergencyCount

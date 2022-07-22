@@ -143,13 +143,13 @@
                 var PDF = new jsPDF('', 'pt', 'a4');
                 // 595×842 a4纸
 
-                PDF.addImage(pageData, 'JPEG', 5, 0, imgWidth - 10, imgHeight);
+                PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
 
                 PDF.save(
                     getPdfName(
-                        vm.requisition.processingPeriod.startDate,
-                        vm.facility.name,
-                        vm.facility.code
+                        requisition.processingPeriod.startDate,
+                        facility.name,
+                        requisition.id.substring(0, 8)
                     )
                 );
             });
