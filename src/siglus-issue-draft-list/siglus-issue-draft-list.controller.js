@@ -141,10 +141,6 @@
             vm.refreshDraftList();
         };
 
-        vm.isAllowedClick = function(drafts) {
-            return drafts.length === 0;
-        };
-
         vm.$onInit = function() {
             if ($stateParams.initialDraftInfo) {
                 vm.updateDraftList($stateParams.initialDraftInfo);

@@ -614,15 +614,19 @@
             });
 
             if (vm.isMerge) {
+                var subDrafts = _.map(draft.lineItems, function(item) {
+                    return item.subDraftId;
+                });
+
                 siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
-                    signature, vm.initialDraftInfo, facility.id)
+                    signature, vm.initialDraftInfo, facility.id, subDrafts)
                     .then(function() {
                         $state.go('openlmis.stockmanagement.stockCardSummaries', {
                             facility: facility.id,
                             program: program
                         });
                     })
-                    .finally(function() {
+                    .catch(function() {
                         loadingModalService.close();
                     });
             } else {

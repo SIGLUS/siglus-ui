@@ -196,13 +196,11 @@
             }).$promise;
         }
 
-        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo, facilityId) {
+        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo, facilityId, subDrafts) {
 
             var params = {
 
-                subDrafts: _.map(lineItems, function(item) {
-                    return item.subDraftId;
-                }),
+                subDrafts: subDrafts,
                 stockEvent: {
                     programId: programId,
                     signature: signature,
