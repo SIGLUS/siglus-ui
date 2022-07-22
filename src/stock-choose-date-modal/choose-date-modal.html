@@ -16,7 +16,8 @@
                     <fieldset>
                         <label for="date" class="required">{{'stockChooseDateModal.date' | message}}</label>
                         <!-- SIGLUS-REFACTOR: starts here-->
-                        <input id="date" type="date" ng-model="vm.occurredDate" min-date="vm.minDate" max-date="vm.maxDate" ng-disabled="vm.isInitialInventory||vm.disabledChoose" required/>
+                        <input id="date" type="date" ng-model="vm.occurredDate" min-date="vm.minDate"
+                            max-date="vm.maxDate" ng-disabled="vm.isInitialInventory||vm.disabledChoose" required />
                         <!-- SIGLUS-REFACTOR: ends here-->
                     </fieldset>
 
@@ -25,9 +26,12 @@
                         <label class="is-required">{{'stockChooseDateModal.signature' | message}}</label>
                         <input ng-model="vm.signature" type="text" ng-required="vm.signatureIsRequired">
                         <!-- SIGLUS-REFACTOR: ends here-->
-                        <span class="info">
-              {{'stockChooseDateModal.submittedBy' | message: {username:vm.username} }}
-            </span>
+                        <span ng-if="vm.isInitialInventory" class="info">
+                            {{'stockChooseDateModal.submittedInitialBy' | message: {username:vm.username} }}
+                        </span>
+                        <span ng-if="!vm.isInitialInventory" class="info">
+                            {{'stockChooseDateModal.submittedBy' | message: {username:vm.username} }}
+                        </span>
                         </input>
                     </fieldset>
 
@@ -36,7 +40,7 @@
 
             <div class="modal-footer">
                 <button ng-click="$hide()">{{'stockChooseDateModal.cancel' | message}}</button>
-                <input form="dateForm" type="submit" value="{{'stockChooseDateModal.confirm' | message}}"/>
+                <input form="dateForm" type="submit" value="{{'stockChooseDateModal.confirm' | message}}" />
             </div>
 
         </div>

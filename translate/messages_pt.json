@@ -1876,7 +1876,7 @@
   "stockInitialDiscard.initialInventory": "Sua unidade Sanitária ainda não concluiu o inventário Inicial, por favor inicie o inventátio Inicial",
   "stockInitialInventory.authorization.message": "Você não têm permissão STOCK_INVETÁRIO_Editar & VISUALIZAR_FICHA_DE_STOCK para todos os programos suportados pela Unidade Sanitária. Por favor, contacte o Administrador do sistema.",
   "stockInitialInventory.initialFailed": "Sua Unidade Sanitaria concluiu o inventário Inicial",
-  "stockInitialInventory.initialInventory": "Inventário Inicial",
+  "stockInitialInventory.initialInventory": "Inventário inicial",
   "stockInitialInventory.delete": "Excluir",
   "stockIssue.action": "Ação",
   "stockIssue.continue": "Continuar",
@@ -2294,13 +2294,12 @@
   "stockIssue.submitted": "Submetido",
   "adminProgramTemplate.ageGroup": "Age group section",
   "analyticsReportMetabase.fulfillment.title":"Relatório de grau de satisfação",
-  "stockPhysicalInventory.initialTitle": "Inventário Inicial de ${facility} - ${program}",
+  "stockPhysicalInventory.initialTitle": "Inventário inicial de ${facility} - ${program}",
   "issueDraft.selectFirstForReceive": "Please create a draft to start the receive",
   "stockIssueInitialModal.titleForReceive": "Please input the receive information",
   "analyticsReportMetabase.historicalData.title":"Relatório de dados históricos",
   "physicalInventoryCreation.initialLabel": "A sua Unidade Sanitária ainda não fez inventário inicial, por favor insira o número de utilizadores para iniciar",
   "analyticsReportMetabase.malariaConsumptionData.title":"Relatório de dados de consumo de Malária",
-  "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report",
 
   "mmia.title": "MMIA",
   "mmia.republic_of_mozambique": "REPÚBLICA DE MOÇAMBIQUE",
@@ -2339,5 +2338,17 @@
   "mmia.print_on_computer": "Impresso no computador",
   "mmia.downloadPdf": "Baixar PDF",
   "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro.",
-  "analyticsReportMetabase.requisitionData.title":"Relatório de dados da requisição"
+  "analyticsReportMetabase.requisitionData.title":"Relatório de dados da requisição",
+
+  "analyticsReportMetabase.tracerDrug.title":"Relatório de Produtos Sentinela",
+  "tracer.drug.report.drug":"Produto",
+  "tracer.drug.report.province":"Província",
+  "tracer.drug.report.district":"Distrito",
+  "tracer.drug.report.startFrom":"Começar de",
+  "tracer.drug.report.export":"Exportar",
+  "tracer.drug.report.information":"Informações sobre produtos Sentinela",
+  "tracer.drug.report.to":"To",
+  "stockChooseDateModal.submittedInitialBy":"Inventário inicial submetido por ${username}",
+  "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
+  "physicalInventoryCreation.required":"Este campo é obrigatório"
 }
