@@ -1,0 +1,18 @@
+{
+  "adminFacilityList.facilities": "Facilities",
+  "adminFacilityList.geographicZone": "Geographic zone",
+  "adminFacilityList.noFacilities": "No facilities found.",
+  "adminFacilityList.name": "Facility name",
+  "adminFacilityList.code": "Code",
+  "adminFacilityList.type": "Type",
+  "adminFacilityList.active": "Active",
+  "adminFacilityList.enabled": "Enabled",
+  "adminFacilityList.actions": "Actions",
+  "adminFacilityList.search": "Search",
+  "adminFacilityList.addFacility": "Add Facility",
+  "adminFacilityList.edit": "Edit",
+  "adminFacilityList.eraseDeviceInfo": "Erase device info",
+  "adminFacilityList.eraseWarn": "Are you sure you want to erase the device info?",
+  "adminFacilityList.close": "Close",
+  "adminFacilityList.confirm": "Confirm"
+}
