@@ -2350,5 +2350,6 @@
   "tracer.drug.report.to":"To",
   "stockChooseDateModal.submittedInitialBy":"Inventário inicial submetido por ${username}",
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
-  "physicalInventoryCreation.required":"Este campo é obrigatório"
+  "physicalInventoryCreation.required":"Este campo é obrigatório",
+  "analyticsReportMetabase.rapidTestConsumptionData.title":"Relatório de dados de consumo do MMIT"
 }
