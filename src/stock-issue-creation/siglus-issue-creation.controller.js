@@ -614,9 +614,9 @@
             });
 
             if (vm.isMerge) {
-                var subDrafts = _.map(draft.lineItems, function(item) {
+                var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                     return item.subDraftId;
-                });
+                }));
 
                 siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
                     signature, vm.initialDraftInfo, facility.id, subDrafts)
