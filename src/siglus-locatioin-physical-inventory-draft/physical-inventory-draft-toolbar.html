@@ -1,0 +1,19 @@
+<div class="openlmis-toolbar">
+    <div class="button-group">
+        <button ng-if="vm.actionType === 'SUBMITTED'" class="defaul" ng-click="vm.back()">
+            {{'stockInitialInventory.goBack' | message}}
+        </button>
+        <button ng-if="!vm.isMergeDraft && vm.actionType !== 'SUBMITTED'" class="danger" ng-click="vm.delete()">
+            {{'stockInitialInventory.delete' | message}}
+        </button>
+        <button ng-if="vm.isMergeDraft && vm.actionType !== 'SUBMITTED'" class="defaul" ng-click="vm.delete()">
+            {{'stockInitialInventory.cancel' | message}}
+        </button>
+    </div>
+    <div class="button-group primary">
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <button ng-if="!vm.isMergeDraft  && vm.actionType !== 'SUBMITTED'" ng-disabled="!vm.draft.lineItems.length" ng-click="vm.saveDraft()">{{'stockPhysicalInventoryDraft.save' | message}}</button>
+        <button ng-if="vm.actionType !== 'SUBMITTED'" ng-disabled="!vm.draft.lineItems.length" class="primary" ng-click="vm.submit()">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
+        <!-- SIGLUS-REFACTOR: ends here -->
+    </div>
+</div>

@@ -1,0 +1,15 @@
+input.lot-code {
+    text-transform: uppercase;
+}
+
+::placeholder {
+    text-transform: none;
+}
+
+.stock-actions {
+    width: 110px!important;
+}
+
+.stock-actions + .stock-actions {
+    margin-top: 8px;
+}
