@@ -67,6 +67,22 @@
                     }
                     return $stateParams.facility;
                 },
+                // SIGLUS-REFACTOR: starts here
+                mergedItems: function($stateParams, siglusStockIssueService, alertService) {
+                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(
+                        function(error) {
+                            if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
+                                alertService.error('PhysicalInventoryDraftList.mergeError');
+                                throw 'subDrafts not all submitted';
+                            }
+                        }
+                    );
+                },
+                draft: function(mergedItems) {
+                    return {
+                        lineItems: mergedItems
+                    };
+                },
                 initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
@@ -100,19 +116,6 @@
                         );
                     }
                     return $stateParams.srcDstAssignments;
-                },
-                // SIGLUS-REFACTOR: starts here
-                mergedItems: function($stateParams, siglusStockIssueService, alertService) {
-                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(function(error) {
-                        if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
-                            alertService.error('PhysicalInventoryDraftList.mergeError');
-                        }
-                    });
-                },
-                draft: function(mergedItems) {
-                    return {
-                        lineItems: mergedItems
-                    };
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {
