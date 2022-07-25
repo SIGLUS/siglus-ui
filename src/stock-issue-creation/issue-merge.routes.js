@@ -102,8 +102,12 @@
                     return $stateParams.srcDstAssignments;
                 },
                 // SIGLUS-REFACTOR: starts here
-                mergedItems: function($stateParams, siglusStockIssueService) {
-                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId);
+                mergedItems: function($stateParams, siglusStockIssueService, alertService) {
+                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(function(error) {
+                        if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
+                            alertService.error('PhysicalInventoryDraftList.mergeError');
+                        }
+                    });
                 },
                 draft: function(mergedItems) {
                     return {
