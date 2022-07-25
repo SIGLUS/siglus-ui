@@ -138,24 +138,14 @@
             vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
             $timeout(function() {
                 angular.forEach(vm.productLineItems, function(item) {
-                    var colorMap = {
-                        Children: 'rgb(199, 221, 187)',
-                        Adult: 'rgb(250, 248, 199)',
-                        Solution: 'rgb(223, 234, 245)'
-                    };
                     if (item.id) {
                         // eslint-disable-next-line no-undef
                         JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
-                            width: 1,
-                            height: 20,
+                            height: 24,
                             displayValue: true,
                             fontSize: 10,
-                            marginTop: 2,
-                            marginBottom: 2,
-                            marginLeft: 2,
-                            marginRight: 2,
-                            textMargin: 1,
-                            background: colorMap[item.orderable.programs[0].orderableCategoryDisplayName]
+                            marginTop: 10,
+                            marginBottom: 2
                         });
                     }
                 });
