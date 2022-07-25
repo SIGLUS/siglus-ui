@@ -405,6 +405,43 @@
         //         // );
         //     });
         // };
+
+        function confirmMergeSubmit(signature, addedLineItems) {
+            var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
+                return item.subDraftId;
+            }));
+
+            siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+                signature, vm.initialDraftInfo, facility.id, subDrafts)
+                .then(function() {
+                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                        facility: facility.id,
+                        program: program
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    if (error.data.businessErrorExtraData === 'subDrafts quantity not match') {
+                        alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    }
+                });
+        }
+
+        function confirmSubmit(signature, addedLineItems) {
+            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                addedLineItems)
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success(vm.key('submitted'));
+                    $scope.needToConfirm = false;
+                    vm.returnBack();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    productDuplicatedHandler(error);
+                });
+        }
+
         vm.submit = function() {
             if (_.size(vm.addedLineItems) === 0) {
                 return;
@@ -412,11 +449,25 @@
             // TODO after submit, download this pdf
             // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
+
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                lineItem.reason = _.find(reasons, {
+                    name: 'Issue'
                 });
+            });
+            if (validateAllAddedItems()) {
+                if (vm.isMerge) {
+                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                        loadingModalService.open();
+                        confirmMergeSubmit(signature, addedLineItems);
+                    });
+                } else {
+                    loadingModalService.open();
+                    confirmSubmit('', addedLineItems);
+                }
+
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
@@ -598,36 +649,6 @@
                 .value();
         }
 
-        function confirmSubmit(signature) {
-            loadingModalService.open();
-            var addedLineItems = angular.copy(vm.addedLineItems);
-
-            if (vm.isMerge) {
-                console.log(vm.addedLineItems);
-                siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
-                    signature, vm.initialDraftInfo)
-                    .then(function() {
-                    })
-                    .finally(function() {
-                        loadingModalService.close();
-                    });
-            } else {
-                siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                    addedLineItems)
-                    .then(function() {
-                        loadingModalService.close();
-                        notificationService.success(vm.key('submitted'));
-                        $scope.needToConfirm = false;
-                        vm.returnBack();
-                    })
-                    .catch(function(error) {
-                        loadingModalService.close();
-                        productDuplicatedHandler(error);
-                    });
-            }
-
-        }
-
         function onInit() {
 
             $state.current.label = isMerge
@@ -656,7 +677,6 @@
 
             vm.destinationName = siglusStockUtilsService
                 .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
-            vm.program = program;
             vm.facility = facility;
             vm.reasons = reasons;
             vm.srcDstAssignments = srcDstAssignments;
@@ -674,7 +694,7 @@
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = program;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;

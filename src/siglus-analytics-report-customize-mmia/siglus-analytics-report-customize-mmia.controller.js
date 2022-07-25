@@ -69,21 +69,40 @@
             });
             var lineItemsGroupByCategory = _.reduce(productLineItems, function(r, c) {
                 if (
-                    r[c.$program.orderableCategoryDisplayName]
-                        && r[c.$program.orderableCategoryDisplayName] !== 'Default'
+                    r[c.orderable.programs[0].orderableCategoryDisplayName]
+                        && c.orderable.programs[0].orderableCategoryDisplayName !== 'Default'
                 ) {
-                    r[c.$program.orderableCategoryDisplayName].push(c);
+                    r[c.orderable.programs[0].orderableCategoryDisplayName].push(c);
                 }
                 if (
-                    !r[c.$program.orderableCategoryDisplayName]
-                        && r[c.$program.orderableCategoryDisplayName] !== 'Default'
+                    !r[c.orderable.programs[0].orderableCategoryDisplayName]
+                        && c.orderable.programs[0].orderableCategoryDisplayName !== 'Default'
                 ) {
-                    r[c.$program.orderableCategoryDisplayName] = [c];
+                    r[c.orderable.programs[0].orderableCategoryDisplayName] = [c];
                 }
                 return r;
             }, {});
             var temp = _.map(Object.keys(lineItemsGroupByCategory), function(item) {
-                lineItemsGroupByCategory[item].push({}, {});
+                lineItemsGroupByCategory[item].push(
+                    {
+                        orderable: {
+                            programs: [
+                                {
+                                    orderableCategoryDisplayName: item
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        orderable: {
+                            programs: [
+                                {
+                                    orderableCategoryDisplayName: item
+                                }
+                            ]
+                        }
+                    }
+                );
                 return lineItemsGroupByCategory[item];
             });
             vm.productLineItems = _.flatten(temp, 2);
@@ -118,17 +137,17 @@
             vm.regimensAdults = getCategories(vm.requisition.regimenLineItems).Adults;
             vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
             $timeout(function() {
-                angular.forEach(productLineItems, function(item) {
-                    // eslint-disable-next-line no-undef
-                    JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
-                        width: 1,
-                        height: 20,
-                        displayValue: true,
-                        fontSize: 10,
-                        marginTop: 2,
-                        marginBottom: 2,
-                        textMargin: 1
-                    });
+                angular.forEach(vm.productLineItems, function(item) {
+                    if (item.id) {
+                        // eslint-disable-next-line no-undef
+                        JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
+                            height: 24,
+                            displayValue: true,
+                            fontSize: 10,
+                            marginTop: 10,
+                            marginBottom: 2
+                        });
+                    }
                 });
             }, 100);
             var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
@@ -385,9 +404,9 @@
                     );
                     PDF.save(
                         getPdfName(
-                            requisition.processingPeriod.startDate,
-                            facility.name,
-                            requisition.id.substring(0, 8)
+                            vm.requisition.processingPeriod.startDate,
+                            vm.facility.name,
+                            vm.facility.code
                         )
                     );
                 });

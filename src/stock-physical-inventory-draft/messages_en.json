@@ -16,5 +16,6 @@
   "stockInitialInventory.cancel": "Cancel",
   "stockPhysicalInventoryDraft.draft": "Draft",
   "stockPhysicalInventoryDraft.mergeDraft": "Merged Draft",
-  "stockInitialInventory.goBack": "Back to previous"
+  "stockInitialInventory.goBack": "Back to previous",
+  "stockInitialInventoryDraft.submitted": "Initial inventory has successfully been submitted"
 }

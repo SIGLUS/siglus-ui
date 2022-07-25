@@ -92,7 +92,6 @@
                 initialDraftId: _.get(vm.initialDraftInfo, 'id')
             }).then(function(data) {
                 vm.drafts = data;
-                vm.showToolBar = true;
             })
                 .finally(function() {
                     loadingModalService.close();
@@ -138,11 +137,8 @@
         vm.updateDraftList = function(initialDraftInfo) {
             vm.initialDraftInfo = initialDraftInfo;
             vm.initialDraftName = siglusStockUtilsService.getInitialDraftName(initialDraftInfo, vm.draftType);
+            vm.showToolBar = initialDraftInfo.canMergeOrDeleteSubDrafts;
             vm.refreshDraftList();
-        };
-
-        vm.isAllowedClick = function(drafts) {
-            return drafts.length === 0;
         };
 
         vm.$onInit = function() {

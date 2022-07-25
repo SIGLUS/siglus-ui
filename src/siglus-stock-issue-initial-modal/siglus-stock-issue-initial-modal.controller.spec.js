@@ -119,7 +119,6 @@ describe('SiglusInitialIssueModalController', function() {
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.issue.draft', {
                 programId: '00000000-0000-0000-0000-000000000000',
                 initialDraftId: 'A0000002',
-                initialDraftInfo: data,
                 draftType: 'issue'
             });
         });

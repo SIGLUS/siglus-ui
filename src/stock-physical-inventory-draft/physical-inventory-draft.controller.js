@@ -500,7 +500,12 @@
                 subDraftIds: subDraftIds
             }))
                 .then(function() {
-                    notificationService.success('stockPhysicalInventoryDraft.submitted');
+                    if (vm.isInitialInventory) {
+                        notificationService.success('stockInitialInventoryDraft.submitted');
+                    } else {
+                        notificationService.success('stockPhysicalInventoryDraft.submitted');
+                    }
+
                     $state.go('^', {}, {
                         reload: true
                     });
@@ -549,8 +554,11 @@
                             if (vm.isInitialInventory) {
                                 currentUserService.clearCache();
                                 navigationStateService.clearStatesAvailability();
+                                notificationService.success('stockInitialInventoryDraft.submitted');
+                            } else {
+                                notificationService.success('stockPhysicalInventoryDraft.submitted');
                             }
-                            notificationService.success('stockPhysicalInventoryDraft.submitted');
+
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                 program: program.id,
                                 facility: facility.id

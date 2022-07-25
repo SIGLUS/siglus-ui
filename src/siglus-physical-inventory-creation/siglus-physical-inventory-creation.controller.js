@@ -44,13 +44,17 @@
         vm.userInputSplitNum = null;
         vm.confirm = confirm;
         vm.showError = false;
+        vm.showRequired = false;
         facilityFactory.getUserHomeFacility().then(function(res) {
             vm.facility = res;
         });
 
         vm.changeShowError = function() {
             if (vm.isValid(vm.userInputSplitNum)) {
-                vm.showError = undefined;
+                vm.showError = false;
+            }
+            if (!_.isNull(vm.userInputSplitNum)) {
+                vm.showRequired = false;
             }
         };
 
@@ -66,6 +70,12 @@
                 modalDeferred.reject();
                 return;
             }
+            if (_.isNull(vm.userInputSplitNum)) {
+                vm.showRequired = true;
+                vm.showError = false;
+                return;
+            }
+
             if (vm.isValid(vm.userInputSplitNum)) {
                 loadingModalService.open();
                 physicalInventoryService.createDraft(
