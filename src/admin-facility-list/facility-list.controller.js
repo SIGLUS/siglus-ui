@@ -18,80 +18,87 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-facility-list.controller:FacilityListController
-     *
-     * @description
-     * Controller for managing facility list screen.
-     */
+   * @ngdoc controller
+   * @name admin-facility-list.controller:FacilityListController
+   *
+   * @description
+   * Controller for managing facility list screen.
+   */
     angular
         .module('admin-facility-list')
         .controller('FacilityListController', controller);
 
     controller.$inject = [
-        '$state', '$stateParams', 'facilities', 'geographicZones'
+        '$state',
+        '$stateParams',
+        'facilities',
+        'geographicZones',
+        'alertConfirmModalService',
+        'facilityService'
     ];
 
-    function controller($state, $stateParams, facilities, geographicZones) {
+    function controller($state, $stateParams, facilities, geographicZones,
+                        alertConfirmModalService, facilityService) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.search = search;
         vm.goToAddFacilityPage = goToAddFacilityPage;
+        vm.eraseDeviceInfo = eraseDeviceInfo;
 
         /**
-         * @ngdoc property
-         * @propertyOf admin-facility-list.controller:FacilityListController
-         * @name facilities
-         * @type {Array}
-         *
-         * @description
-         * Contains filtered facilities.
-         */
+     * @ngdoc property
+     * @propertyOf admin-facility-list.controller:FacilityListController
+     * @name facilities
+     * @type {Array}
+     *
+     * @description
+     * Contains filtered facilities.
+     */
         vm.facilities = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf admin-facility-list.controller:FacilityListController
-         * @name geographicZones
-         * @type {Array}
-         *
-         * @description
-         * Contains all geographic zones.
-         */
+     * @ngdoc property
+     * @propertyOf admin-facility-list.controller:FacilityListController
+     * @name geographicZones
+     * @type {Array}
+     *
+     * @description
+     * Contains all geographic zones.
+     */
         vm.geographicZones = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf admin-facility-list.controller:FacilityListController
-         * @name facilityName
-         * @type {String}
-         *
-         * @description
-         * Contains name param for searching facilities.
-         */
+     * @ngdoc property
+     * @propertyOf admin-facility-list.controller:FacilityListController
+     * @name facilityName
+     * @type {String}
+     *
+     * @description
+     * Contains name param for searching facilities.
+     */
         vm.facilityName = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf admin-facility-list.controller:FacilityListController
-         * @name geographicZone
-         * @type {String}
-         *
-         * @description
-         * Contains geographic zone UUID param for searching facilities.
-         */
+     * @ngdoc property
+     * @propertyOf admin-facility-list.controller:FacilityListController
+     * @name geographicZone
+     * @type {String}
+     *
+     * @description
+     * Contains geographic zone UUID param for searching facilities.
+     */
         vm.geographicZone = undefined;
 
         /**
-         * @ngdoc method
-         * @methodOf admin-facility-list.controller:FacilityListController
-         * @name $onInit
-         *
-         * @description
-         * Method that is executed on initiating FacilityListController.
-         */
+     * @ngdoc method
+     * @methodOf admin-facility-list.controller:FacilityListController
+     * @name $onInit
+     *
+     * @description
+     * Method that is executed on initiating FacilityListController.
+     */
         function onInit() {
             vm.facilities = facilities;
             vm.geographicZones = geographicZones;
@@ -100,16 +107,15 @@
         }
 
         /**
-         * @ngdoc method
-         * @methodOf admin-facility-list.controller:FacilityListController
-         * @name search
-         *
-         * @description
-         * Reloads page with new search parameters.
-         */
+     * @ngdoc method
+     * @methodOf admin-facility-list.controller:FacilityListController
+     * @name search
+     *
+     * @description
+     * Reloads page with new search parameters.
+     */
         function search() {
             var stateParams = angular.copy($stateParams);
-
             stateParams.name = vm.facilityName;
             stateParams.zoneId = vm.geographicZone;
             // SIGLUS-REFACTOR: starts here
@@ -121,16 +127,40 @@
         }
 
         /**
-         * @ngdoc method
-         * @methodOf admin-facility-list.controller:FacilityListController
-         * @name goToAddFacilityPage
-         *
-         * @description
-         * Takes the user to the add facility page.
-         */
+     * @ngdoc method
+     * @methodOf admin-facility-list.controller:FacilityListController
+     * @name goToAddFacilityPage
+     *
+     * @description
+     * Takes the user to the add facility page.
+     */
         function goToAddFacilityPage() {
             $state.go('openlmis.administration.facilities.facility.add');
         }
-    }
 
+        // SIGLUS-REFACTOR: starts here
+        /**
+     * @ngdoc method
+     * @methodOf admin-facility-list.controller:FacilityListController
+     * @name eraseDeviceInfo
+     *
+     * @description
+     * Erases all device information.
+     */
+        function eraseDeviceInfo(facilityCode) {
+            alertConfirmModalService.error(
+                'adminFacilityList.eraseWarn',
+                '',
+                ['adminFacilityList.close',
+                    'adminFacilityList.confirm']
+            )
+                .then(function() {
+                    facilityService.eraseDeviceInfo(facilityCode);
+                    $state.reload();
+                });
+
+        }
+
+    // SIGLUS-REFACTOR: ends here
+    }
 })();
