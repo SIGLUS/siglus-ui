@@ -249,7 +249,7 @@
                 programId: item.programId,
                 sourceFreeText: initialDraftInfo.sourceFreeText,
                 destinationId: initialDraftInfo.destinationId,
-                destinationFreeText: _.get(initialDraftInfo, 'destinationFreeText', null),
+                destinationFreeText: _.get(initialDraftInfo, 'locationFreeText', null),
                 documentationNo: initialDraftInfo.documentNumber
             };
         }
