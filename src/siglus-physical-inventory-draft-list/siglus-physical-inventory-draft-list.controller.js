@@ -142,9 +142,9 @@
         };
 
         function isAllSubDraftsSubmit(draftList) {
-            return Boolean(_.find(draftList, function(item) {
-                return item.status !== 'SUBMITTED';
-            }));
+            return _.every(draftList, function(item) {
+                return item.status === 'SUBMITTED';
+            });
         }
 
         // All drafts must be submitted before they can be merged.

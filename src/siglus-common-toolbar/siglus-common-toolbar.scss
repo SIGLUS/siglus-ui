@@ -4,3 +4,21 @@
   width: 100%;
   padding: 0 14px;
 }
+
+.openlmis-toolbar .button-group .siglus-btn-disable {
+  cursor: not-allowed;
+}
+
+
+.openlmis-toolbar .button-group .siglus-btn-disable button {
+  pointer-events: none;
+  color: #BBB;
+}
+
+
+.openlmis-toolbar .button-group .siglus-btn-disable .primary{
+  color: #d3d3d3;
+  background: #83B5CB;
+  text-shadow: none;
+}
+

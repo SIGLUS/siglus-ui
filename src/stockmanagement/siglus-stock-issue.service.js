@@ -88,7 +88,7 @@
             },
             mergeSubmitDraft: {
                 method: 'POST',
-                url: stockmanagementUrlFactory('/api/siglusapi/stockEvents1'),
+                url: stockmanagementUrlFactory('/api/siglusapi/stockEvents/multiUser'),
                 transformRequest: formatPayload
             }
         });
@@ -196,17 +196,19 @@
             }).$promise;
         }
 
-        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo) {
+        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo, facilityId, subDrafts) {
 
             var params = {
-                programId: programId,
-                signature: signature,
-                mergedDraftIds: _.map(lineItems, function(item) {
-                    return item.subDraftId;
-                }),
-                lineItems: _.map(lineItems, function(item) {
-                    return buildMergeDraftLine(item, initDraftInfo);
-                })
+
+                subDrafts: subDrafts,
+                stockEvent: {
+                    programId: programId,
+                    signature: signature,
+                    facilityId: facilityId,
+                    lineItems: _.map(lineItems, function(item) {
+                        return buildMergeDraftLine(item, initDraftInfo);
+                    })
+                }
             };
 
             return resource.mergeSubmitDraft(params).$promise;
@@ -241,21 +243,19 @@
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
-                stockOnHand: item.stockOnHand,
                 occurredDate: item.occurredDate,
                 reasonId: _.get(item.reason, 'id', null),
-                reasonFreeText: _.get(item, 'reasonFreeText', null),
+                reasonFreeText: _.get(item, 'reasonFreeText'),
                 programId: item.programId,
-                sourceId: initialDraftInfo.sourceId,
                 sourceFreeText: initialDraftInfo.sourceFreeText,
                 destinationId: initialDraftInfo.destinationId,
-                destinationFreeText: initialDraftInfo.destinationFreeText,
-                documentationNo: initialDraftInfo.documentationNo
+                destinationFreeText: _.get(initialDraftInfo, 'locationFreeText', null),
+                documentationNo: initialDraftInfo.documentNumber
             };
         }
 
         function formatPayload(payload) {
-            payload.lineItems.forEach(function(lineItem) {
+            _.forEach(payload.stockEvent.lineItems, function(lineItem) {
                 if (!lineItem.extraData) {
                     lineItem.extraData = {};
                 }
@@ -264,11 +264,9 @@
                     lineItem.extraData.expirationDate = formatDate(lineItem.expirationDate);
                 }
                 lineItem.extraData.stockCardId = lineItem.stockCardId;
-                lineItem.occurredDate = formatDate(lineItem.occurredDate);
 
                 delete lineItem.lotCode;
                 delete lineItem.expirationDate;
-                delete lineItem.stockCardId;
             });
 
             return angular.toJson(payload);

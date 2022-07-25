@@ -89,7 +89,6 @@
                     $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.draft', {
                         programId: programId,
                         initialDraftId: initialDraftInfo.id,
-                        initialDraftInfo: initialDraftInfo,
                         draftType: adjustmentType.state
                     });
                 })

@@ -58,11 +58,8 @@
                 isMerge: function() {
                     return true;
                 },
-                program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                program: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
@@ -82,8 +79,10 @@
                 orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return existingStockOrderableGroupsFactory
-                            .getGroupsWithoutStock($stateParams, program, facility,
-                                STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
+                            .getGroupsWithoutStock($stateParams, {
+                                id: $stateParams.programId
+                            }, facility,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
                     }
                     return $stateParams.orderableGroups;
                 },
@@ -103,8 +102,12 @@
                     return $stateParams.srcDstAssignments;
                 },
                 // SIGLUS-REFACTOR: starts here
-                mergedItems: function($stateParams, siglusStockIssueService) {
-                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId);
+                mergedItems: function($stateParams, siglusStockIssueService, alertService) {
+                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(function(error) {
+                        if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
+                            alertService.error('PhysicalInventoryDraftList.mergeError');
+                        }
+                    });
                 },
                 draft: function(mergedItems) {
                     return {
