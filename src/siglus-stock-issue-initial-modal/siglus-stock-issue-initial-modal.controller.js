@@ -28,28 +28,28 @@
         .module('siglus-stock-issue-initial-modal')
         .controller('SiglusInitialIssueModalController', controller);
 
-    controller.$inject = ['programId', 'facilityId', 'adjustmentType', '$state', 'siglusInitialIssueModalService',
+    controller.$inject = ['programId', 'facilityId', 'draftType', '$state', 'siglusInitialIssueModalService',
         'modalDeferred', 'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
 
-    function controller(programId, facilityId, adjustmentType, $state, siglusInitialIssueModalService, modalDeferred,
+    function controller(programId, facilityId, draftType, $state, siglusInitialIssueModalService, modalDeferred,
                         siglusStockIssueService, sourceDestinationService, loadingModalService) {
         var vm = this;
 
-        vm.issueTo = undefined;
+        vm.location = undefined;
 
         vm.hasError = false;
 
-        vm.documentationNo = '';
+        vm.documentNumber = '';
 
-        vm.destinationFacility = '';
+        vm.locationFreeText = '';
 
-        vm.issueToList = [];
+        vm.locationList = [];
 
-        vm.adjustmentType = adjustmentType;
+        vm.draftType = draftType;
 
         vm.changeIssueTo = function() {
-            if (!_.isEmpty(vm.destinationFacility)) {
-                vm.destinationFacility = '';
+            if (!_.isEmpty(vm.locationFreeText)) {
+                vm.locationFreeText = '';
             }
         };
 
@@ -69,27 +69,27 @@
             } else {
                 var formInfo = {
                     issue: {
-                        destinationId: vm.issueTo.node.id,
-                        destinationName: vm.issueTo.name
+                        destinationId: vm.location.node.id,
+                        destinationName: vm.location.name
                     },
                     receive: {
-                        sourceId: vm.issueTo.node.id,
-                        sourceName: vm.issueTo.name
+                        sourceId: vm.location.node.id,
+                        sourceName: vm.location.name
                     }
                 };
                 loadingModalService.open();
                 siglusStockIssueService.initDraft(_.extend({
                     programId: programId,
                     facilityId: facilityId,
-                    draftType: adjustmentType.state,
-                    documentNumber: vm.documentationNo,
-                    locationFreeText: vm.destinationFacility
-                }, formInfo[adjustmentType.state])).then(function(initialDraftInfo) {
+                    draftType: draftType,
+                    documentNumber: vm.documentNumber,
+                    locationFreeText: vm.locationFreeText
+                }, formInfo[draftType])).then(function(initialDraftInfo) {
                     modalDeferred.resolve();
-                    $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.draft', {
+                    $state.go('openlmis.stockmanagement.' + draftType + '.draft', {
                         programId: programId,
                         initialDraftId: initialDraftInfo.id,
-                        draftType: adjustmentType.state
+                        draftType: draftType
                     });
                 })
                     .catch(function(error) {
@@ -107,12 +107,12 @@
 
         vm.$onInit = function() {
             loadingModalService.open();
-            var getAssignments = adjustmentType.state === 'issue'
+            var getAssignments = draftType === 'issue'
                 ?  sourceDestinationService.getDestinationAssignments
                 : sourceDestinationService.getSourceAssignments;
 
             getAssignments(programId, facilityId).then(function(data) {
-                vm.issueToList = _.sortBy(_.uniq(data, false, function(item) {
+                vm.locationList = _.sortBy(_.uniq(data, false, function(item) {
                     return item.name;
                 }), 'name');
             })

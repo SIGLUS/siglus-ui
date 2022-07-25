@@ -65,6 +65,8 @@
 
         vm.hasExistInitialDraft = false;
 
+        vm.draftType = adjustmentType.state;
+
         vm.adjustmentType = adjustmentType;
 
         vm.key = function(secondaryKey) {
@@ -72,21 +74,21 @@
         };
 
         vm.proceedForIssue = function(program) {
-            $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.draft', {
+            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft', {
                 facility: facility,
                 programId: program.id,
                 initialDraftId: vm.initialDraftInfo.id,
                 initialDraftInfo: vm.initialDraftInfo,
-                draftType: adjustmentType.state
+                draftType: vm.draftType
             });
         };
 
         vm.start = function(program) {
-            siglusInitialIssueModalService.show(program.id, facility.id, adjustmentType)
+            siglusInitialIssueModalService.show(program.id, facility.id, vm.draftType)
                 .then(function(loadIssueToInfo) {
                     if (loadIssueToInfo) {
                         loadingModalService.open();
-                        siglusStockIssueService.queryInitialDraftInfo(program.id, facility.id, adjustmentType.state)
+                        siglusStockIssueService.queryInitialDraftInfo(program.id, facility.id, vm.draftType)
                             .then(function(data) {
                                 vm.initialDraftInfo = data;
                             })
@@ -100,10 +102,10 @@
         vm.$onInit = function() {
             loadingModalService.open();
             siglusStockIssueService.queryInitialDraftInfo(
-                _.get(programs, [0, 'id']), facility.id, adjustmentType.state
+                _.get(programs, [0, 'id']), facility.id, vm.draftType
             ).then(function(data) {
                 vm.initialDraftInfo = data;
-                vm.hasExistInitialDraft = siglusStockUtilsService.isExistInitialDraft(data, adjustmentType.state);
+                vm.hasExistInitialDraft = siglusStockUtilsService.isExistInitialDraft(data, vm.draftType);
             })
                 .finally(function() {
                     loadingModalService.close();
