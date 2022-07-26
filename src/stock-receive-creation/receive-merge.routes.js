@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive.draft.merge', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:draftId/create?page&size&keyword',
+            url: '/merge?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -51,18 +51,16 @@
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
-                initialDraftInfo: undefined
+                initialDraftInfo: undefined,
+                mergedItems: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
                 isMerge: function() {
                     return true;
                 },
-                program: function($stateParams, programService) {
-                    if (!$stateParams.program) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                programId: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (!$stateParams.facility) {
@@ -75,6 +73,9 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 mergedItems: function($stateParams, siglusStockIssueService, alertService) {
+                    if ($stateParams.mergedItems) {
+                        return $stateParams.mergedItems;
+                    }
                     return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(
                         function(error) {
                             if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
@@ -90,18 +91,18 @@
                     };
                 },
                 initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
-                    if ($stateParams.issueToInfo) {
-                        return $stateParams.issueToInfo;
+                    if ($stateParams.initialDraftInfo) {
+                        return $stateParams.initialDraftInfo;
                     }
                     return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
                         facility.id,
                         ADJUSTMENT_TYPE.RECEIVE.state);
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
+                orderableGroups: function($stateParams, programId, facility, orderableGroupService) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
+                            programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
                         );
                     }
                     return $stateParams.orderableGroups;

@@ -248,8 +248,8 @@
                 reasonFreeText: _.get(item, 'reasonFreeText'),
                 programId: item.programId,
                 sourceFreeText: initialDraftInfo.sourceFreeText,
-                destinationId: initialDraftInfo.destinationId,
-                destinationFreeText: _.get(initialDraftInfo, 'locationFreeText', null),
+                destinationId: _.get(initialDraftInfo, 'destinationId') || undefined,
+                destinationFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined,
                 sourceId: _.get(initialDraftInfo, 'sourceId', null),
                 documentationNo: initialDraftInfo.documentNumber
             };

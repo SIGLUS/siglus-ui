@@ -51,7 +51,8 @@
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
-                initialDraftInfo: undefined
+                initialDraftInfo: undefined,
+                mergedItems: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -69,6 +70,9 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 mergedItems: function($stateParams, siglusStockIssueService, alertService) {
+                    if ($stateParams.mergedItems) {
+                        return $stateParams.mergedItems;
+                    }
                     return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(
                         function(error) {
                             if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {

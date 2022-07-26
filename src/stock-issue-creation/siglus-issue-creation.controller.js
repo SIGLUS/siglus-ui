@@ -29,7 +29,7 @@
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'draft', 'initialDraftInfo', '$state', '$stateParams', '$filter',
+        '$scope', 'draft', 'mergedItems', 'initialDraftInfo', '$state', '$stateParams', '$filter',
         'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'confirmService',
         'messageService', 'isMerge', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
@@ -39,7 +39,7 @@
         'siglusStockUtilsService'
     ];
 
-    function controller($scope, draft, initialDraftInfo, $state, $stateParams, $filter,
+    function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
                         confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
                         messageService, isMerge, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
@@ -695,8 +695,10 @@
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
+            $stateParams.mergedItems = mergedItems;
+            $stateParams.initialDraftInfo = initialDraftInfo;
             // SIGLUS-REFACTOR: starts here
-            $stateParams.orderableGroups = orderableGroups;
+            // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;
             // SIGLUS-REFACTOR: ends here
         }

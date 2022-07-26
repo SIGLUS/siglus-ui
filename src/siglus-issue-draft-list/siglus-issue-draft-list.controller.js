@@ -61,6 +61,11 @@
             receive: 'issueDraft.receiveFromTitle'
         };
 
+        vm.noDataInfoMapper = {
+            issue: 'issueDraft.selectFirst',
+            receive: 'issueDraft.selectFirstForReceive'
+        };
+
         vm.draftType = $stateParams.draftType;
 
         vm.addDraft = function() {
@@ -108,7 +113,6 @@
             if (isAllDraftSubmitted()) {
                 $state.go('openlmis.stockmanagement.' +  vm.draftType + '.draft.merge', {
                     programId: programId,
-                    draftId: '',
                     initialDraftInfo: vm.initialDraftInfo,
                     facility: facility
                 });
