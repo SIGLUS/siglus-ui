@@ -250,6 +250,7 @@
                 sourceFreeText: initialDraftInfo.sourceFreeText,
                 destinationId: initialDraftInfo.destinationId,
                 destinationFreeText: _.get(initialDraftInfo, 'locationFreeText', null),
+                sourceId: _.get(initialDraftInfo, 'sourceId', null),
                 documentationNo: initialDraftInfo.documentNumber
             };
         }

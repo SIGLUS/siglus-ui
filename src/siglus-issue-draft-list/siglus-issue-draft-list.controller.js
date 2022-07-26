@@ -106,7 +106,7 @@
 
         vm.mergeDrafts = function() {
             if (isAllDraftSubmitted()) {
-                $state.go('openlmis.stockmanagement.issue.draft.merge', {
+                $state.go('openlmis.stockmanagement.' +  vm.draftType + '.draft.merge', {
                     programId: programId,
                     draftId: '',
                     initialDraftInfo: vm.initialDraftInfo,
@@ -126,7 +126,7 @@
                 loadingModalService.open();
                 siglusStockIssueService.deleteAllDraft($stateParams.initialDraftId)
                     .then(function() {
-                        $state.go('openlmis.stockmanagement.issue');
+                        $state.go('openlmis.stockmanagement.' + vm.draftType);
                     })
                     .finally(function() {
                         loadingModalService.close();
