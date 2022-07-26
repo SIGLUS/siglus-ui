@@ -40,6 +40,7 @@ describe('orderableGroupService', function() {
             this.LotDataBuilder = $injector.get('LotDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
             this.OrderableGroupDataBuilder = $injector.get('OrderableGroupDataBuilder');
+            this.messageService = $injector.get('messageService');
         });
 
         this.lot1 = new this.LotDataBuilder().build();
@@ -127,7 +128,7 @@ describe('orderableGroupService', function() {
 
         //then
         expect(lots[0]).toEqual({
-            lotCode: 'orderableGroupService.noLotDefined'
+            lotCode: this.messageService.get('orderableGroupService.noLotDefined')
         });
 
         expect(lots[1]).toEqual(this.lot1);

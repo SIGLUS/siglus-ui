@@ -1,0 +1,32 @@
+<h2 ng-if="vm.facility && vm.programName">
+  {{vm.getTitle() | message: {'facility': vm.facility.name, 'program': vm.programName} }}
+</h2>
+<h2 ng-hide="vm.facility && vm.programName">{{'PhysicalInventoryDraftList.physicalInventory'
+| message}}</h2>
+
+<section class="openlmis-table-container">
+  <table>
+    <thead>
+    <tr>
+      <th style="width: 228px;">{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
+      <th style="width: 202px;">{{'PhysicalInventoryDraftList.status' | message}}</th>
+      <th style="width: 202px;">{{'PhysicalInventoryDraftList.operator' | message}}</th>
+      <th style="width: 130px;" class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in vm.draftList.subDrafts">
+      <td>{{item.groupNum}}</td>
+      <td>{{ vm.getStatus(item.status) }}</td>
+      <td>{{ item.saver }}</td>
+      <td>
+        <input style="width: 113px;" id="proceedButton" type="button" ng-click="vm.clickActions(item)"
+               value="{{ vm.actionType(item.status) }}"
+               class="primary"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<ng-include ng-if="vm.isShowDeleteAndMerge" src="'siglus-location-physical-inventory-draft-list/siglus-physical-inventory-draft-list-toolbar.html'"></ng-include>

@@ -19,14 +19,14 @@
 
     /**
    * @ngdoc controller
-   * @name stock-physical-inventory-list.controller:PhysicalInventoryListController
+   * @name siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
    *
    * @description
    * Controller for managing physical inventory.
    */
     angular
-        .module('stock-physical-inventory-list')
-        .controller('PhysicalInventoryListController', controller);
+        .module('siglus-location-physical-inventory-list')
+        .controller('LocationPhysicalInventoryListController', controller);
     controller.$inject = ['$stateParams', 'facility', 'programs', 'programId',
         'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
@@ -41,7 +41,7 @@
 
         /**
      * @ngdoc property
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name facility
      * @type {Object}
      *
@@ -52,7 +52,7 @@
         vm.$onInit = onInit;
         /**
      * @ngdoc property
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name programs
      * @type {Array}
      *
@@ -71,7 +71,7 @@
 
         /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name getProgramName
      *
      * @description
@@ -87,7 +87,7 @@
 
         /**
      * @ngdoc method
-     * @methodOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @methodOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name searchProgram
      *
      * @description
@@ -105,7 +105,7 @@
 
         /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name getDraftStatus
      *
      * @description
@@ -123,7 +123,7 @@
 
         /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name onInit
      *
      * @description
@@ -143,6 +143,10 @@
                             programId: programId,
                             isStarter: true
                         }] : drafts;
+                        $state.go('openlmis.locationManagement.physicalInventory', {
+                            programId: programId,
+                            drafts: _.clone(vm.drafts)
+                        });
                     })
                     .finally(function() {
                         loadingModalService.close();
@@ -153,7 +157,7 @@
 
         /**
      * @ngdoc method
-     * @propertyOf stock-physical-inventory-list.controller:PhysicalInventoryListController
+     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
      * @name editDraft
      *
      * @description
@@ -169,7 +173,7 @@
                 draft.facilityId).then(function(draft) {
                 if (draft.id) {
                     $state.go(
-                        'openlmis.stockmanagement.physicalInventory.draft', {
+                        'openlmis.locationManagement.physicalInventory.draft', {
                             id: draft.id,
                             draft: draft,
                             program: program,
@@ -182,7 +186,7 @@
                         function(data) {
                             draft.id = data.id;
                             $state.go(
-                                'openlmis.stockmanagement.physicalInventory.draft',
+                                'openlmis.locationManagement.physicalInventory.draft',
                                 {
                                     id: draft.id,
                                     draft: draft,
@@ -214,10 +218,10 @@
                     if (data.canStartInventory) {
                         if (isStarter) {
                             loadingModalService.close();
-                            SiglusPhysicalInventoryCreationService.show();
+                            SiglusPhysicalInventoryCreationService.show('', 'location');
                         } else {
                             $state.go(
-                                'openlmis.stockmanagement.physicalInventory.draftList'
+                                'openlmis.locationManagement.physicalInventory.draftList'
                             );
                         }
                     } else {

@@ -13,3 +13,10 @@ input.lot-code {
 .stock-actions + .stock-actions {
     margin-top: 8px;
 }
+
+.location-td {
+    display: flex;
+    div:nth-child(1) {
+        margin-right: 8px;
+    }
+}

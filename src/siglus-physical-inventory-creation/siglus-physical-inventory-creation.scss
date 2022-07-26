@@ -13,6 +13,38 @@
   padding: 7px 28px;
 }
 
+.first-step {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  padding-top: 15px;
+  color: #343434;
+  display: flex;
+  flex-direction: column;
+  .radio-group {
+    display: flex;
+    margin-top: 15px;
+    label {
+      margin-left: 9px;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+    }
+  }
+}
+
+.second-step {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  color: #343434;
+  // :first-child {
+  //   margin: 16px 0;
+  // }
+}
+
 #validateInputValue {
   background: transparent;
   position: relative;

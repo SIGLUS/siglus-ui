@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc controller
-     * @name stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+     * @name siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
      *
      * @description
      * Controller for managing physical inventory draft.
      */
     angular
-        .module('stock-physical-inventory-draft')
-        .controller('PhysicalInventoryDraftController', controller);
+        .module('siglus-locatioin-physical-inventory-draft')
+        .controller('LocationPhysicalInventoryDraftController', controller);
 
     controller.$inject = [
         '$scope', '$state', '$stateParams', 'addProductsModalService',
@@ -76,7 +76,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name displayLineItemsGroup
          * @type {Array}
          *
@@ -118,7 +118,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name program
          * @type {Object}
          *
@@ -129,7 +129,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name facility
          * @type {Object}
          *
@@ -140,7 +140,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name keyword
          * @type {String}
          *
@@ -151,7 +151,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name vvmStatuses
          * @type {Object}
          *
@@ -162,7 +162,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name groupedCategories
          * @type {Object}
          *
@@ -173,7 +173,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name showVVMStatusColumn
          * @type {boolean}
          *
@@ -191,7 +191,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name getStatusDisplay
          *
          * @description
@@ -206,7 +206,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name addProducts
          *
          * @description
@@ -253,7 +253,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name calculate
          *
          * @description
@@ -282,7 +282,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name search
          *
          * @description
@@ -342,7 +342,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name saveDraft
          *
          * @description
@@ -420,7 +420,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name saveOnPageChange
          *
          * @description
@@ -440,7 +440,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name delete
          *
          * @description
@@ -486,7 +486,7 @@
         });
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name submit
          *
          * @description
@@ -598,7 +598,7 @@
             }
             return lineItem.$errors.quantityInvalid;
         };
-
+        // TODO 校验form表单的Lot Code的地方;
         vm.validateLotCode = function(lineItem) {
             if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
@@ -723,9 +723,37 @@
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
+                vm.allLocationInfo = {
+                    MMI: ['DM22R', 'DM23R', 'DM24E'],
+                    MMC: ['DC22R', 'DC23R', 'DC24E']
+                };
+                vm.areaList = _.map(Object.keys(vm.allLocationInfo), function(item) {
+                    return {
+                        code: item,
+                        label: item
+                    };
+                });
+                // console.log('#### newList', newList);
+                var list = _.map(newList, function(item) {
+                    item[0].areaCode = null;
+                    item[0].locationCode = null;
+                    item[0].allLocationInfo = {
+                        MMI: ['DM22R', 'DM23R', 'DM24E'],
+                        MMC: ['DC22R', 'DC23R', 'DC24E']
+                    };
+                    item[0].areaList = _.map(Object.keys(item[0].allLocationInfo), function(_item) {
+                        return {
+                            code: _item,
+                            label: _item
+                        };
+                    });
+                    return item;
+                });
                 // SIGLUS-REFACTOR: starts here
-                var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
+                var categories = $filter('siglusGroupByAllProductProgramProductCategory')(list);
+                // console.log('#### categories', categories);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
+                console.log('#### vm.groupedCategories', vm.groupedCategories);
                 // SIGLUS-REFACTOR: ends here
             }, true);
         }
@@ -827,7 +855,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name checkUnaccountedStockAdjustments
          *
          * @description
@@ -842,7 +870,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name quantityChanged
          *
          * @description
@@ -991,7 +1019,7 @@
 
         /**
          * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
          * @name getPrintUrl
          *
          * @description

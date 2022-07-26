@@ -18,12 +18,12 @@
     'use strict';
 
     /**
-     * @module stock-physical-inventory-draft
+     * @module siglus-locatioin-physical-inventory-draft
      *
      * @description
      * Responsible for initiate requisition screen.
      */
-    angular.module('stock-physical-inventory-draft', [
+    angular.module('siglus-locatioin-physical-inventory-draft', [
         'angular.filter',
         'ngResource',
         'requisition',
@@ -40,6 +40,7 @@
         'openlmis-modal',
         'referencedata-program',
         'ui.router',
+        'openlmis',
         // SIGLUS-REFACTOR: starts here
         'siglus-requisition-date-picker',
         'siglus-physical-inventory-creation'

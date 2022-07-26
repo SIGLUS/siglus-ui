@@ -165,7 +165,8 @@ describe('StockAdjustmentCreationController', function() {
             };
             vm.validateQuantity(lineItem);
 
-            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.quantityGreaterThanStockOnHand');
+            expect(lineItem.$errors.quantityInvalid)
+                .toEqual(messageService.get('stockAdjustmentCreation.quantityGreaterThanStockOnHand'));
         });
 
         it('line item quantity is invalid given -1', function() {
@@ -176,7 +177,8 @@ describe('StockAdjustmentCreationController', function() {
             };
             vm.validateQuantity(lineItem);
 
-            expect(lineItem.$errors.quantityInvalid).toEqual('stockAdjustmentCreation.positiveInteger');
+            expect(lineItem.$errors.quantityInvalid)
+                .toEqual(messageService.get('stockAdjustmentCreation.positiveInteger'));
         });
     });
 
@@ -375,7 +377,7 @@ describe('StockAdjustmentCreationController', function() {
         };
         vm.validateLot(lineItem);
 
-        expect(lineItem.$errors.lotCodeInvalid).toBe('openlmisForm.required');
+        expect(lineItem.$errors.lotCodeInvalid).toBe(messageService.get('openlmisForm.required'));
     });
 
     it('should get an error of stockPhysicalInventoryDraft.lotCodeTooLong when the lot code is too long', function() {
@@ -389,7 +391,8 @@ describe('StockAdjustmentCreationController', function() {
         };
         vm.validateLot(lineItem);
 
-        expect(lineItem.$errors.lotCodeInvalid).toBe('stockPhysicalInventoryDraft.lotCodeTooLong');
+        expect(lineItem.$errors.lotCodeInvalid)
+            .toBe(messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong'));
     });
 
     it('should get an error of stockPhysicalInventoryDraft.lotCodeDuplicate ' +
@@ -412,7 +415,8 @@ describe('StockAdjustmentCreationController', function() {
         vm.addedLineItems = [lineItem1, lineItem2];
         vm.validateLot(lineItem1);
 
-        expect(lineItem1.$errors.lotCodeInvalid).toBe('stockPhysicalInventoryDraft.lotCodeDuplicate');
+        expect(lineItem1.$errors.lotCodeInvalid)
+            .toBe(messageService.get('stockPhysicalInventoryDraft.lotCodeDuplicate'));
     });
     // SIGLUS-REFACTOR: ends here
 

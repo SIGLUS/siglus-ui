@@ -14,24 +14,25 @@
  */
 
 (function() {
-
     'use strict';
 
-    angular
-        .module('siglus-location-management')
-        .config(routes);
-
-    routes.$inject = ['$stateProvider'];
-
-    function routes($stateProvider) {
-
-        $stateProvider.state('openlmis.locationManagement', {
-            url: '/locationManagement',
-            abstract: true,
-            showInNavigation: true,
-            label: 'locationManagement.title',
-            priority: 9
-        });
-    }
-
+    /**
+   * @module siglus-location-physical-inventory-list
+   *
+   * @description
+   * Responsible for physical inventory list screen.
+   */
+    angular.module('siglus-location-physical-inventory-list', [
+        'stockmanagement',
+        'stock-program-util',
+        'referencedata-facility',
+        'referencedata-program',
+        'stock-physical-inventory',
+        'openlmis-function-decorator',
+        // SIGLUS-REFACTOR: starts here
+        'siglus-physical-inventory-creation',
+        'siglus-physical-inventory-draft-list',
+        'siglus-location-management'
+        // SIGLUS-REFACTOR: ends here
+    ]);
 })();

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('PhysicalInventoryListController', function() {
+describe('LocationPhysicalInventoryListController', function() {
 
     var $controller, $q, $rootScope, $state, physicalInventoryService, physicalInventoryFactory,
         messageService, programs, facility, deferred,
@@ -55,7 +55,7 @@ describe('PhysicalInventoryListController', function() {
             supportedPrograms: programs
         };
 
-        vm = $controller('PhysicalInventoryListController', {
+        vm = $controller('LocationPhysicalInventoryListController', {
             facility: facility,
             programs: programs,
             programId: programId,
@@ -69,7 +69,7 @@ describe('PhysicalInventoryListController', function() {
     }
 
     beforeEach(function() {
-        module('stock-physical-inventory-list');
+        module('siglus-location-physical-inventory-list');
         prepareInjector();
         prepareSpies();
         prepareData();
@@ -88,13 +88,9 @@ describe('PhysicalInventoryListController', function() {
         });
 
         it('should get physical inventory draft status', function() {
-            expect(vm.getDraftStatus(true)).toEqual(
-                'stockPhysicalInventory.notStarted'
-            );
+            expect(vm.getDraftStatus(true)).toEqual(messageService.get('stockPhysicalInventory.notStarted'));
 
-            expect(vm.getDraftStatus(false)).toEqual(
-                'stockPhysicalInventory.draft'
-            );
+            expect(vm.getDraftStatus(false)).toEqual(messageService.get('stockPhysicalInventory.draft'));
         });
 
     });
@@ -115,7 +111,7 @@ describe('PhysicalInventoryListController', function() {
             $rootScope.$apply();
 
             expect($state.go).toHaveBeenCalledWith(
-                'openlmis.stockmanagement.physicalInventory.draft', {
+                'openlmis.locationManagement.physicalInventory.draft', {
                     id: draft.id,
                     draft: draft,
                     program: {
@@ -176,7 +172,7 @@ describe('PhysicalInventoryListController', function() {
             });
             $rootScope.$apply();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draftList');
+            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.physicalInventory.draftList');
         });
 
         it('should alert error hint when validate is false', function() {

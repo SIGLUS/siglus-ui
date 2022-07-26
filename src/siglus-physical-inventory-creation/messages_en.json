@@ -5,5 +5,10 @@
   "physicalInventoryCreation.required": "This field is required",
   "physicalInventoryCreation.cancel": "Cancel",
   "physicalInventoryCreation.confirm": "Confirm",
-  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first."
+  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first.",
+  "physicalInventoryCreation.choose_an_option": "1. Choose an option",
+  "physicalInventoryCreation.input_user_number": "2. Input user number",
+  "physicalInventoryCreation.inventory_by_product": "Inventory by Product",
+  "physicalInventoryCreation.inventory_by_location": "Inventory by Location",
+  "physicalInventoryCreation.option_must_be_choosed": "Option must be choosed."
 }

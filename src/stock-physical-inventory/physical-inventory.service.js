@@ -173,7 +173,7 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function createDraft(program, facility, splitNum, isInitialInventory) {
+        function createDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
             if (isInitialInventory) {
                 return resource.save({
                     splitNum: Number(splitNum),
@@ -184,7 +184,8 @@
                 }).$promise;
             }
             return resource.save({
-                splitNum: Number(splitNum)
+                splitNum: Number(splitNum),
+                locationManagementOption: locationManagementOption
             }, {
                 programId: program,
                 facilityId: facility
