@@ -127,6 +127,7 @@ describe('SiglusStockIssueCreationController', function() {
                 documentNumber: 'Number1',
                 locationFreeText: 'hdfaosdfhaidsf'
             },
+            mergedItems: [],
             displayItems: [],
             draft: {},
             user: {

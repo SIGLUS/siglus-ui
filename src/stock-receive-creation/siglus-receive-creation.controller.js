@@ -29,8 +29,9 @@
         .controller('SiglusStockReceiveCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'initialDraftInfo', 'isMerge', '$state', '$stateParams', '$filter', 'confirmDiscardService',
-        'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
+        '$scope', 'initialDraftInfo', 'mergedItems', 'isMerge', '$state', '$stateParams', '$filter',
+        'confirmDiscardService',
+        'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
         'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
@@ -38,8 +39,9 @@
         'siglusRemainingProductsModalService', 'alertConfirmModalService'
     ];
 
-    function controller($scope, initialDraftInfo, isMerge, $state, $stateParams, $filter, confirmDiscardService,
-                        program, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
+    function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
+                        confirmDiscardService,
+                        programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
@@ -304,12 +306,12 @@
                 return item.subDraftId;
             }));
 
-            siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+            siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
                 signature, vm.initialDraftInfo, facility.id, subDrafts)
                 .then(function() {
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
-                        program: program
+                        program: programId
                     });
                 })
                 .catch(function(error) {
@@ -341,11 +343,14 @@
             // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
 
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
             var addedLineItems = angular.copy(vm.addedLineItems);
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = _.first(lineItem.orderable.programs).programId;
                 lineItem.reason = _.find(reasons, {
-                    name: 'Issue'
+                    name: capitalize($stateParams.draftType)
                 });
             });
             if (validateAllAddedItems()) {
@@ -567,7 +572,7 @@
 
             vm.sourceName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, adjustmentType.state);
 
-            vm.program = program;
+            vm.programId = programId;
             vm.facility = facility;
             vm.reasons = reasons;
             vm.srcDstAssignments = srcDstAssignments;
@@ -585,10 +590,13 @@
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = programId;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
+            $stateParams.draft = draft;
+            $stateParams.initialDraftInfo = initialDraftInfo;
             $stateParams.srcDstAssignments = srcDstAssignments;
+            $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;
