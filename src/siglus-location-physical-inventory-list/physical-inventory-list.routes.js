@@ -17,7 +17,7 @@
     'use strict';
 
     angular
-        .module('siglus-location-management-physical-inventory-list')
+        .module('siglus-location-physical-inventory-list')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
@@ -30,8 +30,8 @@
             showInNavigation: true,
             views: {
                 '@openlmis': {
-                    templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',
-                    controller: 'PhysicalInventoryListController',
+                    templateUrl: 'siglus-location-physical-inventory-list/physical-inventory-list.html',
+                    controller: 'LocationPhysicalInventoryListController',
                     controllerAs: 'vm'
                 }
             },
@@ -60,11 +60,8 @@
                         );
                     });
                 },
-                programId: function($stateParams) {
-                    if ($stateParams.programId) {
-                        return $stateParams.programId;
-                    }
-                    return undefined;
+                programId: function() {
+                    return '00000000-0000-0000-0000-000000000000';
                 }
             }
         });

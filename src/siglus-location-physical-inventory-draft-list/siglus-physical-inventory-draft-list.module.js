@@ -17,22 +17,19 @@
     'use strict';
 
     /**
-   * @module stock-physical-inventory-list
+   * @module siglus-location-physical-inventory-draft-list
    *
    * @description
-   * Responsible for physical inventory list screen.
+   * Responsible for physical inventory draft list screen.
    */
-    angular.module('stock-physical-inventory-list', [
+    angular.module('siglus-location-physical-inventory-draft-list', [
         'stockmanagement',
         'stock-program-util',
         'referencedata-facility',
         'referencedata-program',
         'stock-physical-inventory',
         'openlmis-function-decorator',
-        // SIGLUS-REFACTOR: starts here
         'siglus-physical-inventory-creation',
-        'siglus-physical-inventory-draft-list',
-        'siglus-location-management-physical-inventory-list'
-        // SIGLUS-REFACTOR: ends here
+        'stock-physical-inventory-list'
     ]);
 })();

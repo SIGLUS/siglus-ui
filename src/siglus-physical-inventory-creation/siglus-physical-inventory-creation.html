@@ -6,7 +6,7 @@
         <div class="header-conflict-tips" ng-show="vm.showConflictStatus">{{ 'physicalInventoryCreation.conflictTips' | message }}</div>
       </div>
 
-      <div class="modal-body">
+      <div ng-if="vm.creationType !== 'location'" class="modal-body">
         <fieldset>
           <label ng-if="vm.isInitialInventory">{{'physicalInventoryCreation.initialLabel' | message}}
             <span class="inputNecessary">*</span>
@@ -29,7 +29,34 @@
             {{'physicalInventoryCreation.required'| message}}
           </span>
         </fieldset>
+      </div>
 
+      <div ng-if="vm.creationType === 'location'" class="modal-body">
+          <div class="first-step">
+            <div>{{ 'physicalInventoryCreation.choose_an_option' | message }}</div>
+            <div class="radio-group">
+              <input ng-model="vm.inventoryType.byProduct" type="radio" id="byProduct" name="inverntoryType">
+              <label for="byProduct">{{ 'physicalInventoryCreation.inventory_by_product' | message }}</label><br>
+              <input ng-model="vm.inventoryType.byLocation" style="margin-left: 15px;" type="radio" id="byLocation" name="inverntoryType">
+              <label for="byLocation">{{ 'physicalInventoryCreation.inventory_by_location' | message }}</label><br>
+            </div>
+          </div>
+          <div class="second-step">
+            <div style="margin: 16px 0;">{{ 'physicalInventoryCreation.input_user_number' | message }}</div>
+            <input
+                type="number"
+                id="userInputSplitNum"
+                ng-model="vm.userInputSplitNum"
+                ng-change="vm.changeShowError()"
+                maxlength="2"
+            />
+            <span ng-if="vm.showError" id="validateInputValue">
+              {{'physicalInventoryCreation.error'| message}}
+            </span>
+            <span ng-if="vm.showRequired" id="validateInputValue">
+              {{'physicalInventoryCreation.required'| message}}
+            </span>
+          </div>
       </div>
 
       <div class="modal-footer">

@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('PhysicalInventoryDraftController', function() {
+describe('LocationPhysicalInventoryDraftController', function() {
 
     var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
@@ -25,7 +25,7 @@ describe('PhysicalInventoryDraftController', function() {
 
     beforeEach(function() {
 
-        module('stock-physical-inventory-draft');
+        module('siglus-locatioin-physical-inventory-draft');
         module('siglus-remaining-products-modal');
         module('stock-physical-inventory');
         module('stock-add-products-modal');
@@ -546,7 +546,7 @@ describe('PhysicalInventoryDraftController', function() {
     });
 
     function initController() {
-        return $controller('PhysicalInventoryDraftController', {
+        return $controller('LocationPhysicalInventoryDraftController', {
             facility: facility,
             program: program,
             $state: state,

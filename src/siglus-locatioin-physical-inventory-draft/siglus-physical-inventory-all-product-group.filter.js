@@ -18,7 +18,7 @@
 
     /**
      * @ngdoc filter
-     * @name stock-physical-inventory-draft.filter:siglusGroupByAllProductProgramProductCategory
+     * @name siglus-locatioin-physical-inventory-draft.filter:siglusGroupByAllProductProgramProductCategory
      *
      * @description
      * Groups nested array of physical inventory line item by 'orderableCategoryDisplayName'
@@ -27,7 +27,7 @@
      * @return  {Object} Grouped products - category name as key and array of products as value
      */
     angular
-        .module('stock-physical-inventory-draft')
+        .module('siglus-locatioin-physical-inventory-draft')
         .filter('siglusGroupByAllProductProgramProductCategory', filter);
 
     function filter() {

@@ -88,13 +88,9 @@ describe('PhysicalInventoryListController', function() {
         });
 
         it('should get physical inventory draft status', function() {
-            expect(vm.getDraftStatus(true)).toEqual(
-                'stockPhysicalInventory.notStarted'
-            );
+            expect(vm.getDraftStatus(true)).toEqual(messageService.get('stockPhysicalInventory.notStarted'));
 
-            expect(vm.getDraftStatus(false)).toEqual(
-                'stockPhysicalInventory.draft'
-            );
+            expect(vm.getDraftStatus(false)).toEqual(messageService.get('stockPhysicalInventory.draft'));
         });
 
     });

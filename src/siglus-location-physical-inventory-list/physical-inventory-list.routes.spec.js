@@ -79,7 +79,7 @@ describe('openlmis.stock.physical.inventory.list state', function() {
     }
 
     beforeEach(function() {
-        module('stock-physical-inventory-list');
+        module('siglus-location-physical-inventory-list');
         prepareInjector();
         prepareSpies();
         init();
@@ -87,7 +87,7 @@ describe('openlmis.stock.physical.inventory.list state', function() {
 
     describe('test resolve data programId', function() {
         it('should return programId when programId param exist in route', function() {
-            expect(getResolvedValue('programId')).toEqual('a24f19a8-3743-4a1a-a919-e8f97b5719');
+            expect(getResolvedValue('programId')).toEqual('00000000-0000-0000-0000-000000000000');
         });
 
         it('should return undefined when programId param exist in route', function() {

@@ -17,5 +17,6 @@
   "stockPhysicalInventoryDraft.draft": "Draft",
   "stockPhysicalInventoryDraft.mergeDraft": "Merged Draft",
   "stockInitialInventory.goBack": "Back to previous",
-  "stockInitialInventoryDraft.submitted": "Initial inventory has successfully been submitted"
+  "stockInitialInventoryDraft.submitted": "Initial inventory has successfully been submitted",
+  "stockPhysicalInventoryDraft.location": "Location"
 }

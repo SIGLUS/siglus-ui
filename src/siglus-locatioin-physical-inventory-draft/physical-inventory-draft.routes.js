@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('stock-physical-inventory-draft')
+        .module('siglus-locatioin-physical-inventory-draft')
         .config(routes);
 
     // SIGLUS-REFACTOR: add REASON_CATEGORIES
@@ -30,8 +30,8 @@
             url: '/:id?keyword&page&size&subDraftIds&draftNum&isMerged&actionType',
             views: {
                 '@openlmis': {
-                    controller: 'PhysicalInventoryDraftController',
-                    templateUrl: 'stock-physical-inventory-draft/physical-inventory-draft.html',
+                    controller: 'LocationPhysicalInventoryDraftController',
+                    templateUrl: 'siglus-locatioin-physical-inventory-draft/physical-inventory-draft.html',
                     controllerAs: 'vm'
                 }
             },

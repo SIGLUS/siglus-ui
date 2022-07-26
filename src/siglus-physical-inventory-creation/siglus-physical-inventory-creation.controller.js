@@ -27,7 +27,8 @@
         'facilityFactory',
         '$stateParams',
         'physicalInventoryService',
-        'programId'
+        'programId',
+        'type'
     ];
 
     function controller(
@@ -37,14 +38,20 @@
         facilityFactory,
         $stateParams,
         physicalInventoryService,
-        programId
+        programId,
+        type
     ) {
         var vm = this;
+        vm.creationType = type;
         vm.showConflictStatus = false;
         vm.userInputSplitNum = null;
         vm.confirm = confirm;
         vm.showError = false;
         vm.showRequired = false;
+        vm.inventoryType = {
+            byProduct: 1,
+            byLocation: 0
+        };
         facilityFactory.getUserHomeFacility().then(function(res) {
             vm.facility = res;
         });
@@ -78,11 +85,16 @@
 
             if (vm.isValid(vm.userInputSplitNum)) {
                 loadingModalService.open();
+                var locationManagementOption = '';
+                if (vm.creationType === 'location') {
+                    locationManagementOption = vm.inventoryType.byProduct ? 'product' : 'location';
+                }
                 physicalInventoryService.createDraft(
                     $stateParams.programId ? $stateParams.programId : programId,
                     vm.facility.id,
                     vm.userInputSplitNum,
-                    !!programId
+                    !!programId,
+                    locationManagementOption
                 ).then(function() {
                     modalDeferred.resolve();
                     loadingModalService.close();
@@ -94,7 +106,13 @@
                         );
                     } else {
                         $stateParams.drafts = null;
-                        $state.go(
+                        // TODO rename
+                        var stateParamsCopy = angular.copy($stateParams);
+                        stateParamsCopy.creationType = 'location';
+                        vm.creationType === 'location' ? $state.go(
+                            'openlmis.locationManagement.physicalInventory.draftList',
+                            stateParamsCopy
+                        ) : $state.go(
                             'openlmis.stockmanagement.physicalInventory.draftList'
                         );
                     }

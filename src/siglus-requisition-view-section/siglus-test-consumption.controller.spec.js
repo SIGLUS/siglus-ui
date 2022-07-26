@@ -16,7 +16,7 @@
 describe('SiglusTestConsumptionController', function() {
 
     var vm, $controller, program, ProgramDataBuilder, sections, lineItems, canEdit,
-        requisitionValidator;
+        requisitionValidator, messageService;
 
     beforeEach(function() {
         module('siglus-requisition-view-section');
@@ -25,6 +25,7 @@ describe('SiglusTestConsumptionController', function() {
             $controller = $injector.get('$controller');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
             requisitionValidator = $injector.get('requisitionValidator');
+            messageService = $injector.get('messageService');
         });
 
         program = new ProgramDataBuilder().build();
@@ -302,7 +303,7 @@ describe('SiglusTestConsumptionController', function() {
             vm.getTotal(project, outcome);
 
             expect(outcome.value).toBe(2147483648);
-            expect(outcome.$error).toBe('requisitionValidation.numberTooLarge');
+            expect(outcome.$error).toBe(messageService.get('requisitionValidation.numberTooLarge'));
         });
     });
 

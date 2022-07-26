@@ -21,7 +21,7 @@ describe('Group by program product category filter', function() {
         physicalInventoryFactory;
 
     beforeEach(function() {
-        module('stock-physical-inventory-draft');
+        module('siglus-locatioin-physical-inventory-draft');
         module('stock-physical-inventory');
 
         inject(function($injector) {
