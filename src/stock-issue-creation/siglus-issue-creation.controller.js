@@ -421,7 +421,7 @@
                 })
                 .catch(function(error) {
                     loadingModalService.close();
-                    if (error.data.businessErrorExtraData === 'subDrafts quantity not match') {
+                    if (error.data && error.data.businessErrorExtraData === 'subDrafts quantity not match') {
                         alertService.error('stockIssueCreation.draftHasBeenUpdated');
                     }
                 });
@@ -443,18 +443,18 @@
         }
 
         vm.submit = function() {
-            if (_.size(vm.addedLineItems) === 0) {
-                return;
-            }
             // TODO after submit, download this pdf
             // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
 
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
             var addedLineItems = angular.copy(vm.addedLineItems);
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = _.first(lineItem.orderable.programs).programId;
                 lineItem.reason = _.find(reasons, {
-                    name: 'Issue'
+                    name: capitalize($stateParams.draftType || '')
                 });
             });
             if (validateAllAddedItems()) {
@@ -558,9 +558,6 @@
         }
 
         vm.save = function() {
-            if (_.size(vm.addedLineItems) === 0) {
-                return;
-            }
             var addedLineItems = angular.copy(vm.addedLineItems);
 
             if ($stateParams.keyword) {

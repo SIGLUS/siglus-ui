@@ -75,5 +75,11 @@
         <openlmis-pagination list="vm.displayItems" paged-list="vm.items"/>
     </section>
 </div>
-
-<ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>
+<siglus-common-toolbar
+        data="vm.addedLineItems"
+        mode="vm.isMerge ? 'MERGE' : 'SAVE'"
+        on-delete="vm.removeDisplayItems()"
+        on-save="vm.save()"
+        on-submit="vm.submit()"
+        on-cancel="vm.returnBack()">
+</siglus-common-toolbar>
