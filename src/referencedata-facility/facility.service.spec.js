@@ -242,7 +242,7 @@ describe('facilityService', function() {
             this.size = 2;
             this.name = 'facility';
             this.url = this.referencedataUrlFactory(
-                '/api/siglusapi/administration/facilities?page=' + this.page
+                '/api/siglusapi/facilities?page=' + this.page
           + '&size='
           + this.size
             );
@@ -255,7 +255,7 @@ describe('facilityService', function() {
         it('should resolve to facility list', function() {
             this.$httpBackend
                 .expectPOST(this.referencedataUrlFactory(
-                    '/api/siglusapi/administration/facilities?page=' + this.page
+                    '/api/siglusapi/facilities?page=' + this.page
           + '&size='
           + this.size
                 ))
