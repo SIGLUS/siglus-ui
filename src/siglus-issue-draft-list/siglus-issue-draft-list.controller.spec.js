@@ -168,7 +168,7 @@ describe('SiglusIssueDraftListController', function() {
                     title: 'Bad Request',
                     status: 400,
                     isBusinessError: true,
-                    businessErrorExtraData: 'same drafts more than limitation'
+                    businessErrorExtraData: 'subDrafts are more than limitation'
                 }
             });
             $rootScope.$apply();

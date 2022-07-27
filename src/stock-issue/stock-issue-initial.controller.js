@@ -91,6 +91,7 @@
                         siglusStockIssueService.queryInitialDraftInfo(program.id, facility.id, vm.draftType)
                             .then(function(data) {
                                 vm.initialDraftInfo = data;
+                                vm.hasExistInitialDraft = true;
                             })
                             .finally(function() {
                                 loadingModalService.close();

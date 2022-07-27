@@ -63,6 +63,11 @@
             receive: 'stockIssueInitialModal.receiveFrom'
         };
 
+        vm.errorTitleInfoMapper = {
+            issue: 'stockIssueInitialModal.hasStartedError',
+            receive: 'stockIssueInitialModal.hasReceiveStartedError'
+        };
+
         vm.submitForm = function() {
             if (vm.hasError) {
                 modalDeferred.resolve(true);
