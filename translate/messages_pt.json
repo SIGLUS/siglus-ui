@@ -2349,6 +2349,7 @@
   "physicalInventoryCreation.required": "Este campo é obrigatório",
   "analyticsReportMetabase.rapidTestConsumptionData.title": "Relatório de dados de consumo do MMIT",
   "stockIssueCreation.draftHasBeenUpdated": "The draft list has been updated, please check it again before you submit the merged draft.",
-  "analyticsReportMetabase.mmiaRegimens.title":"Relatório de Regimes MMIA",
-  "stockIssueInitialModal.hasReceiveStartedError": "Um processo de receber já foi iniciado, finalize primeiro."
+  "analyticsReportMetabase.mmiaRegimens.title": "Relatório de Regimes MMIA",
+  "stockIssueInitialModal.hasReceiveStartedError": "Um processo de receber já foi iniciado, finalize primeiro.",
+  "adminFacilityList.eraseSuccess": "Erasing is successful."
 }
