@@ -14,5 +14,6 @@
   "adminFacilityList.eraseDeviceInfo": "Erase device info",
   "adminFacilityList.eraseWarn": "Are you sure you want to erase the device info?",
   "adminFacilityList.close": "Close",
-  "adminFacilityList.confirm": "Confirm"
+  "adminFacilityList.confirm": "Confirm",
+  "adminFacilityList.eraseSuccess": "Erasing is successful."
 }

@@ -34,11 +34,13 @@
         'facilities',
         'geographicZones',
         'alertConfirmModalService',
-        'facilityService'
+        'facilityService',
+        'notificationService'
     ];
 
     function controller($state, $stateParams, facilities, geographicZones,
-                        alertConfirmModalService, facilityService) {
+                        alertConfirmModalService, facilityService,
+                        notificationService) {
 
         var vm = this;
 
@@ -157,6 +159,7 @@
                 .then(function() {
                     facilityService.eraseDeviceInfo(facilityCode);
                     $state.reload();
+                    notificationService.success('adminFacilityList.eraseSuccess');
                 });
 
         }

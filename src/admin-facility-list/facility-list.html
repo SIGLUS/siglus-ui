@@ -48,12 +48,14 @@
           {{'adminFacilityList.edit'
         | message}}
         </button>
-        <!--        SIGLUS-REFACTOR: starts here-->
-        <button ng-if="facility.isAndroidDevice" class="danger"
-                ng-click="vm.eraseDeviceInfo(facility.code)">
-          {{'adminFacilityList.eraseDeviceInfo'
-        | message}}
-        </button>
+        <div class="button-group">
+          <!--        SIGLUS-REFACTOR: starts here-->
+          <button ng-if="facility.isAndroidDevice" class="danger"
+                  ng-click="vm.eraseDeviceInfo(facility.code)">
+            {{'adminFacilityList.eraseDeviceInfo'
+          | message}}
+          </button>
+        </div>
         <!--        SIGLUS-REFACTOR: ends here-->
       </td>
     </tr>
