@@ -99,10 +99,14 @@
                     placeholder="Area"
                     ng-options="item.code as item.label for item in lineItem.areaList"
                     ng-model="lineItem.areaCode"
+                    ng-change="vm.onSelectChange('area', lineItem)"
                 >
                 </select>
                 <select
                     placeholder="Location"
+                    ng-options="item.code as item.label for item in lineItem.locationList"
+                    ng-model="lineItem.locationCode"
+                    ng-change="vm.onSelectChange('location', lineItem)"
                 >
                 </select>
             </td>

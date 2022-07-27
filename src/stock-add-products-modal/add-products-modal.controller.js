@@ -29,10 +29,12 @@
         .controller('AddProductsModalController', controller);
 
     controller.$inject = ['items', 'hasLot', 'messageService',
-        'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE'];
+        'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE',
+        'withLocation'];
 
     function controller(items, hasLot, messageService,
-                        modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE) {
+                        modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE,
+                        withLocation) {
         var vm = this;
 
         /**
@@ -45,7 +47,7 @@
          * All products available for users to choose from.
          */
         vm.items = items;
-
+        vm.withLocation = withLocation;
         /**
          * @ngdoc property
          * @propertyOf stock-add-products-modal.controller:AddProductsModalController
