@@ -84,7 +84,7 @@
                 })
                     .catch(function(error) {
                         if (error.data.isBusinessError
-                          && error.data.businessErrorExtraData === 'same drafts more than limitation') {
+                          && error.data.businessErrorExtraData === 'subDrafts are more than limitation') {
                             alertService.error('issueDraft.exceedTenDraftHint');
                         }
                     });

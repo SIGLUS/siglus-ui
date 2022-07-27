@@ -70,6 +70,9 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
+                mergedItems: function() {
+                    return [];
+                },
                 initialDraftInfo: function($stateParams, programId, facility, siglusStockIssueService,
                     ADJUSTMENT_TYPE) {
                     if ($stateParams.initialDraftInfo) {

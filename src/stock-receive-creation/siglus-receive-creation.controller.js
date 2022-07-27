@@ -373,7 +373,7 @@
         };
 
         vm.returnBack = function() {
-            $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
+            $state.go('^', $stateParams);
         };
 
         /**

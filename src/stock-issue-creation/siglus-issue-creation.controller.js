@@ -697,6 +697,7 @@
             $stateParams.srcDstAssignments = srcDstAssignments;
             $stateParams.mergedItems = mergedItems;
             $stateParams.initialDraftInfo = initialDraftInfo;
+            $stateParams.draft = draft;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;
