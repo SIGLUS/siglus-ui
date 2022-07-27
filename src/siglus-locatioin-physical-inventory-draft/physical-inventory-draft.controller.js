@@ -720,43 +720,61 @@
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 saveDraft(true);
             }
+            vm.allLocationInfo = {
+                MMI: ['DM22R', 'DM23R', 'DM24E'],
+                MMC: ['DC22R', 'DC23R', 'DC24E']
+            };
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
-                vm.allLocationInfo = {
-                    MMI: ['DM22R', 'DM23R', 'DM24E'],
-                    MMC: ['DC22R', 'DC23R', 'DC24E']
-                };
-                vm.areaList = _.map(Object.keys(vm.allLocationInfo), function(item) {
+                var areaList = _.map(Object.keys(vm.allLocationInfo), function(item) {
                     return {
                         code: item,
                         label: item
                     };
                 });
-                // console.log('#### newList', newList);
-                var list = _.map(newList, function(item) {
-                    item[0].areaCode = null;
-                    item[0].locationCode = null;
-                    item[0].allLocationInfo = {
-                        MMI: ['DM22R', 'DM23R', 'DM24E'],
-                        MMC: ['DC22R', 'DC23R', 'DC24E']
-                    };
-                    item[0].areaList = _.map(Object.keys(item[0].allLocationInfo), function(_item) {
+
+                var locationList = _.reduce(Object.keys(vm.allLocationInfo), function(r, c) {
+                    r = r.concat(_.map(vm.allLocationInfo[c], function(_item) {
                         return {
                             code: _item,
                             label: _item
                         };
-                    });
+                    }));
+                    return r;
+                }, []);
+
+                var list = _.map(newList, function(item) {
+                    item[0].areaCode = null;
+                    item[0].locationCode = null;
+                    item[0].areaList = areaList;
+                    item[0].locationList = locationList;
                     return item;
                 });
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(list);
-                // console.log('#### categories', categories);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
-                console.log('#### vm.groupedCategories', vm.groupedCategories);
                 // SIGLUS-REFACTOR: ends here
             }, true);
         }
+
+        vm.onSelectChange = function(type, lineItem) {
+            // console.log(type + ': ', lineItem);
+            // lineItem.
+            if (type === 'area') {
+                lineItem.locationCode = null;
+                lineItem.locationList = _.map(vm.allLocationInfo[lineItem.areaCode], function(item) {
+                    return {
+                        code: item,
+                        label: item
+                    };
+                });
+            } else {
+                lineItem.areaCode = _.find(Object.keys(vm.allLocationInfo), function(item) {
+                    return _.contains(vm.allLocationInfo[item], lineItem.locationCode);
+                });
+            }
+        };
 
         function onChange() {
             $scope.needToConfirm = true;

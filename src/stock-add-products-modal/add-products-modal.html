@@ -49,7 +49,7 @@
                             <!-- <th ng-if="vm.hasLot">{{'stockAddProductsModal.lotCode' | message}}</th> -->
                             <!-- <th ng-if="vm.hasLot">{{'stockAddProductsModal.expiryDate' | message}}</th> -->
                             <!-- SIGLUS-REFACTOR: ends here -->
-                            <th>{{'stockAddProductsModal.currentStock' | message}}</th>
+                            <th ng-if="!vm.withLocation">{{'stockAddProductsModal.currentStock' | message}}</th>
                             <th>{{'stockAddProductsModal.actions' | message}}</th>
                         </tr>
                         </thead>
@@ -61,7 +61,7 @@
                             <!-- <td ng-if="vm.hasLot">{{item.displayLotMessage}}</td> -->
                             <!-- <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td> -->
                             <!-- SIGLUS-REFACTOR: ends here -->
-                            <td openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
+                            <td ng-if="!vm.withLocation" openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
                                 <input positive-integer
                                        ng-class="{'error': item.quantityInvalid}"
                                        class="form-control"

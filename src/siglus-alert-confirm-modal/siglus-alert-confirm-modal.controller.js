@@ -37,63 +37,9 @@
         vm.close = function() {
             modalDeferred.reject();
         };
-
         vm.confirm = function() {
             modalDeferred.resolve();
         };
-
-        /**
-         * @ngdoc property
-         * @propertyOf openlmis-modal.controller:AlertModalController
-         * @type {String}
-         * @name alertClass
-         *
-         * @description
-         * The class of the alert. Natively supported values are 'error', 'warning' and 'success'.
-         */
-        vm.alertClass = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf openlmis-modal.controller:AlertModalController
-         * @type {String}
-         * @name title
-         *
-         * @description
-         * The title of the alert, can be a message key.
-         */
-        vm.title = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf openlmis-modal.controller:AlertModalController
-         * @type {String}
-         * @name message
-         *
-         * @description
-         * The message to be shown on the alert, can be a message key.
-         */
-        vm.message = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf openlmis-modal.controller:AlertModalController
-         * @type {String}
-         * @name buttonLabel
-         *
-         * @description
-         * The label to displayed on the confirmation button.
-         */
-        vm.buttonLabels = undefined;
-
-        /**
-         * @ngdoc method
-         * @methodOf openlmis-modal.controller:AlertModalController
-         * @name $onInit
-         *
-         * @description
-         * Initialization method of the AlertModalController. Exposes data to the view.
-         */
         function onInit() {
             vm.alertClass = alertClass;
             vm.title = title;
