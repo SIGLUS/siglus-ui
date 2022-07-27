@@ -224,7 +224,7 @@
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
-                stockOnHand: item.stockOnHand,
+                stockOnHand: item.$previewSOH,
                 occurredDate: item.occurredDate,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText', null),
