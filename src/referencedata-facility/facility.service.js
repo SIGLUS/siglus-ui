@@ -60,7 +60,7 @@
                     },
                     search: {
                         url: referencedataUrlFactory(
-                            '/api/siglusapi/administration/facilities'
+                            '/api/siglusapi/facilities'
                         ),
                         method: 'POST'
                     },
@@ -70,7 +70,7 @@
                     // SIGLUS-REFACTOR: starts here
                     eraseDeviceInfo: {
                         url: referencedataUrlFactory(
-                            '/api/siglusapi/administration/:facilityCode/android'
+                            '/api/siglusapi/facilities/:facilityCode/deviceInfo'
                         ),
                         method: 'DELETE'
                     }
