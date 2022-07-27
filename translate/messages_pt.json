@@ -2244,7 +2244,7 @@
   "PhysicalInventoryDraftList.merge": "Finalizar para mesclar",
   "PhysicalInventoryDraftList.delete": "Excluir",
   "PhysicalInventoryDraftList.mergeError": "Todos os rascunhos devem ser enviados antes de serem mesclados.",
-  "PhysicalInventoryDraftList.deleteWarn": "Depois de eliminar todos os rascunhos, o processo existente será perdido e não poderá ser removido.",
+  "PhysicalInventoryDraftList.deleteWarn": "Depois de eliminar todos os rascunhos, o processo existente será perdido e não poderá ser recuperados.",
   "PhysicalInventoryDraftList.deleteDraftWarn": "Depois de eliminar o rascunho, todos os dados neste rascunho serão apagados e não poderão ser recuperados.",
   "PhysicalInventoryDraftList.cancel": "Cancelar",
   "PhysicalInventoryDraftList.confirm": "Confirme",
@@ -2348,7 +2348,7 @@
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
   "physicalInventoryCreation.required": "Este campo é obrigatório",
   "analyticsReportMetabase.rapidTestConsumptionData.title": "Relatório de dados de consumo do MMIT",
-  "stockIssueCreation.draftHasBeenUpdated": "The draft list has been updated, please check it again before you submit the merged draft.",
+  "stockIssueCreation.draftHasBeenUpdated": "A lista de rascunhos foi atualizada. Verifique-a novamente antes de submeter o rascunho agregado.",
   "analyticsReportMetabase.mmiaRegimens.title": "Relatório de Regimes MMIA",
   "stockIssueInitialModal.hasReceiveStartedError": "Um processo de receber já foi iniciado, finalize primeiro.",
   "adminFacilityList.eraseSuccess": "Erasing is successful."
