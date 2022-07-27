@@ -518,8 +518,10 @@
                 })
                 .catch(function(error) {
                     loadingModalService.close();
-                    var data = error.data.businessErrorExtraData;
-                    openRemainingModal('submit', data);
+                    if (error.data.isBusinessError) {
+                        var data = error.data.businessErrorExtraData;
+                        openRemainingModal('submit', data);
+                    }
                 });
         };
         var submit = function() {
