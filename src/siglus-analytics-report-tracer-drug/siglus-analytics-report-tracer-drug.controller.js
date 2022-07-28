@@ -32,7 +32,7 @@
         'moment', 'analyticsReportMetabaseService', 'filterInfo', 'analyticsReportUrlFactory'];
 
     function controller($scope, analyticsReportMetabase, loadingModalService,
-                        SIGLUS_TIME, moment, analyticsReportMetabaseService, filterInfo, analyticsReportUrlFactory) {
+                        SIGLUS_TIME, moment, analyticsReportMetabaseService, filterInfo) {
 
         var vm = this;
         var DATE_FORMAT = 'YYYY-MM-DD';
