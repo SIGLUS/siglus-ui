@@ -1,0 +1,36 @@
+.tracer-drag-export{
+    h3{
+        font-size: 21px;
+        font-weight: bold;
+        font-family: "Lato";
+        color:#949aab;
+    }
+    form{
+        max-width: 100%;
+        &>div:nth-of-type(1){
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-wrap: wrap;
+
+            fieldset{
+                margin-right: 20px;
+                max-width: 250px;
+                select{
+                    width: 250px;
+                }
+                input{
+                    width: 250px;
+                }
+                div{
+                    max-width: 250px;
+                    width: 250px;
+                } 
+                
+                .select2 .select2-selection--single{
+                    max-width: 240px;
+                }
+            }
+        }
+    }
+}
