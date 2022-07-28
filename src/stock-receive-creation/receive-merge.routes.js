@@ -85,8 +85,9 @@
                         }
                     );
                 },
-                draft: function(mergedItems) {
+                draft: function(mergedItems, ADJUSTMENT_TYPE) {
                     return {
+                        draftType: ADJUSTMENT_TYPE.RECEIVE.state,
                         lineItems: mergedItems
                     };
                 },

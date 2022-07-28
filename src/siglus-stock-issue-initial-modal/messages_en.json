@@ -8,6 +8,6 @@
   "stockIssueInitialModal.confirm": "Confirm",
   "stockIssueInitialModal.inputDestination": "Input the destination",
   "stockIssueInitialModal.hasStartedError": "An issue process has already started, please finish it first.",
-  "stockIssueInitialModal.hasReceiveStartedError": "An receive process has already started, please finish it first."
+  "stockIssueInitialModal.hasReceiveStartedError": "A receive process has already started, please finish it first."
 
 }
