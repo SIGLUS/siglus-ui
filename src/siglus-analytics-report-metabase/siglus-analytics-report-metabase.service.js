@@ -28,19 +28,33 @@
         .module('siglus-analytics-report-metabase')
         .service('analyticsReportMetabaseService', service);
 
-    service.$inject = ['$resource', 'analyticsReportUrlFactory'];
+    service.$inject = ['$resource', 'analyticsReportUrlFactory', 'moment'];
 
-    function service($resource, analyticsReportUrlFactory) {
+    function service($resource, analyticsReportUrlFactory, moment) {
         var resource = $resource(
             analyticsReportUrlFactory('/api/siglusapi/dashboard'), {}, {
                 get: {
                     method: 'GET',
                     transformResponse: transformResponse
+                },
+                getTracerDrugFilterInfo: {
+                    method: 'GET',
+                    url: analyticsReportUrlFactory('/api/siglusapi/report/tracerDrug/exportFilter'),
+                    transformResponse: transformResponse
+                },
+                exportTracerDrugReport: {
+                    method: 'GET',
+                    url: analyticsReportUrlFactory('/api/siglusapi/report/tracerDrug/excel'),
+                    responseType: 'blob',
+                    //transformResponse: []
+                    transformResponse: transExcelformResponse
                 }
             }
         );
 
         this.getMetabaseUrl = getMetabaseUrl;
+        this.getTracerDrugFilterInfo = getTracerDrugFilterInfo;
+        this.exportTracerDrugReport = exportTracerDrugReport;
         /**
          * @ngdoc method
          * @methodOf siglus-analytics-report-metabase.analyticsReportMetabaseService
@@ -58,11 +72,40 @@
             }).$promise;
         }
 
+        function getTracerDrugFilterInfo() {
+            return resource.getTracerDrugFilterInfo({}).$promise;
+        }
+
+        function exportTracerDrugReport(
+            productCode, provinceCode, districtCode, startDate, endDate
+        ) {
+            return resource.exportTracerDrugReport({
+                productCode: productCode,
+                provinceCode: provinceCode,
+                districtCode: districtCode,
+                startDate: startDate,
+                endDate: endDate
+            });
+        }
+
         function transformResponse(data, headers, status) {
             if (status === 200) {
                 return angular.fromJson(data);
             }
             return data;
+        }
+
+        function transExcelformResponse(data) {
+            var objectUrl = URL.createObjectURL(data);
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            a.setAttribute('style', 'display:none');
+            a.setAttribute('href', objectUrl);
+            var filename =  'Informações_sobre_medicamento_rastreadores_'
+            + moment().format('YYYY-MM-DDTHH_mm_ss.SSSSSS') + 'Z.xlsx';
+            a.setAttribute('download', filename);
+            a.click();
+            URL.revokeObjectURL(objectUrl);
         }
 
     }

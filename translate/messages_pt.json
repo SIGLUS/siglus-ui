@@ -2342,7 +2342,7 @@
   "tracer.drug.report.district": "Distrito",
   "tracer.drug.report.startFrom": "Começar de",
   "tracer.drug.report.export": "Exportar",
-  "tracer.drug.report.information": "Informações sobre produtos Sentinela",
+  "tracer.drug.report.information.export": "Tracer Drug Information Export",
   "tracer.drug.report.to": "To",
   "stockChooseDateModal.submittedInitialBy": "Inventário inicial submetido por ${username}",
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
