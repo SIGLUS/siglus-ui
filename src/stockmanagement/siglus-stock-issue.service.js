@@ -234,7 +234,16 @@
         }
 
         function buildMergeDraftLine(item, initialDraftInfo) {
-            return {
+            var isIssue = !_.isEmpty(_.get(initialDraftInfo, 'destinationId'));
+            var data = isIssue ?
+                {
+                    destinationId: _.get(initialDraftInfo, 'destinationId'),
+                    destinationFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined
+                }  : {
+                    sourceId: _.get(initialDraftInfo, 'sourceId'),
+                    sourceFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined
+                };
+            return Object.assign({
                 orderableId: item.orderable.id,
                 lotId: _.get(item.lot, 'id', null),
                 lotCode: _.get(item.lot, 'lotCode', null),
@@ -247,12 +256,8 @@
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText'),
                 programId: item.programId,
-                sourceFreeText: initialDraftInfo.sourceFreeText,
-                destinationId: _.get(initialDraftInfo, 'destinationId') || undefined,
-                destinationFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined,
-                sourceId: _.get(initialDraftInfo, 'sourceId', null),
                 documentationNo: initialDraftInfo.documentNumber
-            };
+            }, data);
         }
 
         function formatPayload(payload) {
