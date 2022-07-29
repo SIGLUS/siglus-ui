@@ -46,7 +46,6 @@
                     method: 'GET',
                     url: analyticsReportUrlFactory('/api/siglusapi/report/tracerDrug/excel'),
                     responseType: 'blob',
-                    //transformResponse: []
                     transformResponse: transExcelformResponse
                 }
             }
