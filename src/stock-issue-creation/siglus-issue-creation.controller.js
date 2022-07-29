@@ -429,7 +429,7 @@
 
         function confirmSubmit(signature, addedLineItems) {
             siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                addedLineItems)
+                addedLineItems, $stateParams.draftType)
                 .then(function() {
                     loadingModalService.close();
                     notificationService.success(vm.key('submitted'));

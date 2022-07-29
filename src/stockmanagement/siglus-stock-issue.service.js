@@ -184,7 +184,7 @@
             }).$promise;
         }
 
-        function submitDraft(initialDraftId, draftId, signature, lineItems) {
+        function submitDraft(initialDraftId, draftId, signature, lineItems, draftType) {
             var drafts = _.map(lineItems, buildLine);
             return resource.submitDraft({
                 initialDraftId: initialDraftId,
@@ -192,7 +192,8 @@
             }, {
                 id: draftId,
                 signature: signature,
-                lineItems: drafts
+                lineItems: drafts,
+                draftType: draftType
             }).$promise;
         }
 
