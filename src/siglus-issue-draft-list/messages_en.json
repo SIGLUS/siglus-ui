@@ -1,6 +1,8 @@
 {
   "issueDraft.issueToTitle": "Issue to ${destination} - ${document}",
-  "issueDraft.selectFirst": "Please create a draft to start the issue",
+  "issueDraft.receiveFromTitle": "Receive from ${destination} - ${document}",
+  "issueDraft.selectFirst": "Please create a draft to start the issue.",
+  "issueDraft.selectFirstForReceive": "Please create a draft to start the receive.",
   "issueDraft.draftNumber": "Draft Number",
   "issueDraft.status": "Status",
   "issueDraft.operator": "Operator",
@@ -8,5 +10,6 @@
   "issueDraft.remove": "Remove",
   "issueDraft.create": "Create Draft",
   "issueDraft.exceedTenDraftHint": "At most 10 drafts can be created, you cannot create more drafts.",
-  "issueDraft.confirmRemove": "Do you want to remove this draft?"
+  "issueDraft.confirmRemove": "Do you want to remove this draft?",
+  "stockIssue.submitted": "Submitted"
 }

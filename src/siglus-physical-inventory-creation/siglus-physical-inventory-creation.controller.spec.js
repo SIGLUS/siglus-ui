@@ -28,7 +28,8 @@ describe('siglusPhysicalInventoryCeationController', function() {
 
             vm = $controller('SiglusPhysicalInventoryCreationController', {
                 $scope: $scope,
-                modalDeferred: modalDeferred
+                modalDeferred: modalDeferred,
+                programId: ''
             });
         });
     });

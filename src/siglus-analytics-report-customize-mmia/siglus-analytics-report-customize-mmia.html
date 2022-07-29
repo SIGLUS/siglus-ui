@@ -1,0 +1,324 @@
+<div id="mmia-form" class="mmia-form">
+  <table id="firstSection" class="border-all-bold head-section" cellpadding="0" cellspacing="0">
+      <tr>
+          <td rowspan="3" class="background-black mmia-container" style="width: 24px;">
+            <div class="text-nowrap">CMAM - Modelo 01</div>
+          </td>
+          <td class=" col-1" style="text-align: center;">
+              <span class="view-table-logo"></span>
+          </td>
+          <td style="padding-left: 4px;" class="col-4">
+              <h6>REPUBLICA DE MOCAMBIQUE</h6>
+              <h6>MINISTERIO DA SAUDE</h6>
+              <h6>CENTRAL DE MEDICAMENTOS E ARTIGOS MEDICOS</h6>
+          </td>
+          <td class="col-5 align-center">
+              <h5>MMIA</h5>
+              <h5>MAPA MENSAL DE INFORMACAO ARV</h5>
+          </td>
+          <td class=" col-2">
+              &nbsp;
+              <span openlmis-message="view.rnr.mmia.month">{{ 'mmia.month' | message }}</span>
+              <span> : </span> {{vm.month}}
+          </td>
+      </tr>
+
+      <tr>
+          <td colspan="3">
+              <span style="padding-left: 4px;" openlmis-message="view.rnr.healthFacility">{{ 'mmia.health_facility' | message }}</span>
+              <span>: {{vm.facility.name}}</span>
+          </td>
+          <td rowspan="2">
+              &nbsp;
+              <span openlmis-message="view.rnr.mmia.year">{{ 'mmia.year' | message }}</span>
+              <span>: {{vm.year}}</span>
+          </td>
+      </tr>
+
+      <tr class="">
+          <td style="padding-left: 4px;" colspan="2"><span openlmis-message="view.rnr.district">{{ 'mmia.district' | message }}</span>: {{vm.facility.geographicZone.name}}</td>
+          <td style="padding-left: 4px;"><span openlmis-message="view.rnr.province">{{ 'mmia.province' | message }}</span>:{{vm.facility.geographicZone.parent.name}}</td>
+      </tr>
+  </table>
+  <div class="separate"></div>
+  <table id="secondSection" class="second-section">
+      <thead>
+      <tr id="calcTr">
+          <th class="banner-text" style="width: 30px;"></th>
+          <th style="width: 100px;" class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
+          <th style="width: 460px;" class="col-4" openlmis-message="view.rnr.mmia.medicine">{{ 'mmia.medicine' | message }}</th>
+          <th style="width: 80px;" style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.initialAmount">{{ 'mmia.initialAmount' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.entries">{{ 'mmia.entries' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issues">{{ 'mmia.issues' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.adjustments">{{ 'mmia.loss_adjustments' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.inventory' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.validate">{{ 'mmia.validate' | message }}</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr id="calcTr" ng-repeat="item in vm.productLineItems">
+            <td class="banner-text" style="width: 30px;">{{item.id ? $index+1 : ''}}</td>
+            <td>
+                <svg ng-if="item.id" style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
+            </td>
+            <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
+            <td>{{item.orderable.dispensable.displayUnit}}</td>
+            <td>{{item.beginningBalance}}</td>
+            <td>{{item.totalReceivedQuantity}}</td>
+            <td>{{item.totalConsumedQuantity}}</td>
+            <td>{{item.totalLossesAndAdjustments}}</td>
+            <td>{{item.stockOnHand}}</td>
+            <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
+        </tr>
+      </tbody>
+  </table>
+  <div class="separate"></div>
+  <div class="page-break"></div>
+  <div id="middleSection" class="middle-section">
+      <table class="regime-form">
+          <col width="100"><col width="10"><col width="2000"><col width="10"><col width="10">
+          <thead>
+              <tr>
+                  <th class="banner-text" style="width: 30px;"></th>
+                  <th class="text-center" colspan="2">{{ 'mmia.therapeuticRegiment' | message }}</th>
+                  <th class="text-center" style="width: 100px;" >{{ 'mmia.totalPatients' | message }}</th>
+                  <th class="text-center" style="width: 100px;" >{{ 'mmia.communityPharmacy' | message }}</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="itm in vm.regimensAdults">
+                    <td class="banner-text" style="width: 30px;">{{$index + 1}}</td>
+                    <td class="bg-color-green rotateContainer" ng-if="$index === 0" rowspan="{{ vm.regimensAdults.length + 2 }}" style="width: 90px;">
+                        <div style="transform: rotate(-90deg);">Adultos & Adolescentes</div>
+                    </td>
+                    <td class="bg-color-green" style="text-align: left;">{{ itm.regimen.fullProductName }}</td>
+                    <td>{{ itm.columns.patients.value }}</td>
+                    <td>{{ itm.columns.community.value }}</td>
+                </tr>
+                <tr>
+                    <td class="banner-text" style="width: 30px;"></td>
+                    <td class="bg-color-green"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="banner-text" style="width: 30px;"></td>
+                    <td class="bg-color-green"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                
+                <tr ng-repeat="itm in vm.regimensPaediatrics">
+                    <td class="banner-text" style="width: 30px;">{{vm.regimensAdults.length + $index + 1}}</td>
+                    <td class="bg-color-lightyellow rotateContainer" ng-if="$index === 0" rowspan="{{ vm.regimensPaediatrics.length + 2 }}" style="width: 90px;">
+                        <div style="transform: rotate(-90deg);">Paediatrics</div>
+                    </td>
+                    <!-- <td ng-if="$index !== 0"></td> -->
+                    <td class="bg-color-lightyellow" style="text-align: left;">{{ itm.regimen.fullProductName }}</td>
+                    <td>{{ itm.columns.patients.value }}</td>
+                    <td>{{ itm.columns.community.value }}</td>
+                </tr>
+                <tr>
+                    <td class="banner-text" style="width: 30px;"></td>
+                    <td class="bg-color-lightyellow"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="banner-text" style="width: 30px;"></td>
+                    <td class="bg-color-lightyellow"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="bg-color-darkgray">Total</td>
+                    <td>{{vm.totalItem.columns.patients.value}}</td>
+                    <td>{{vm.totalItem.columns.community.value}}</td>
+                </tr>
+                <tr class="background-black">
+                    <td class="banner-text"></td>
+                    <td></td>
+                    <td>{{ 'mmia.therapeuticLines' | message }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr ng-repeat="lineItem in vm.regimenSummaryLineItems | orderBy: 'column.displayOrder'">
+                    <td style="font-size: 14px;" ng-if="lineItem.column.label !== 'Total'">{{ $index + 1 }}</td>
+                    <td ng-if="lineItem.column.label === 'Total'"  style="background-color: #fff;"></td>
+                    <td ng-if="lineItem.column.label === 'Total'" style="width: 400px;"></td>
+                    <td ng-if="lineItem.column.label === 'Total'" class="bg-color-darkgray" style="text-align: right; padding-right: 4px;">{{lineItem.column.label}}</td>
+                    <td ng-if="lineItem.column.label !== 'Total'" colspan="2" style="text-align: right; padding-right: 4px;">{{lineItem.column.label}}</td>
+                    <td>{{ lineItem.columns.community.value }}</td>
+                    <td>{{ lineItem.columns.patients.value }}</td>
+                </tr>
+              </tbody>
+      </table>
+      <div class="patient-section">
+          <table
+            ng-repeat="item in vm.patientList | orderBy: 'column.displayOrder'"
+            ng-class="{'hasMarginTop': $index === 0, 'patient-form': true}"
+          >
+              <thead>
+                <tr>
+                    <th colspan="2" class="background-black" style="text-align: center;" openlmis-message="view.rnr.mmia.patient.header.{{type}}">
+                        {{ item.column.label }}
+                    </th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="_item in item.column.columns | orderBy: 'displayOrder'">
+                  <td>{{_item.label}}</td>
+                  <td style="width: 120px;">{{item.columns[_item.name].value}}</td>
+              </tr>
+              </tbody>
+          </table>
+          <table ng-if="vm.requisition.patientLineItems.length" class="patient-form-dispensed" style="width: 100%; margin-top: 8px;">
+            <tr>
+              <th colspan="5" class="background-black" style="text-align: center;" openlmis-message="view.rnr.mmia.patient.header.md">
+                {{ 'mmia.type_of_dispense' | message }}
+              </th>
+            </tr>
+          <tr width="30px" height="30px">
+              <td class="lefttop">
+
+              </td>
+              <td class="bg-color-darkgray">DS</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+              <td style="border: none" openlmis-message="view.rnr.mmia.patient.md.adjustment">{{ 'mmia.adjustment' | message }}</td>
+          </tr>
+          <tr width="30px" height="30px">
+            <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.5m">{{ 'mmia.5m' | message }}</td>
+            <td class="bg-color-gray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 0)}}
+            </td>
+            <td style="border: none"></td>
+            <td style="border: none"></td>
+            <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Ajuste', 0)}}</td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.4m">{{ 'mmia.4m' | message }}</td>
+              <td class="bg-color-gray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 1)}}
+              </td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td style="text-align: right;padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.3m">{{ 'mmia.3m' | message }}</td>
+              <td class="bg-color-gray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 2)}}
+              </td>
+              <td class="bg-color-darkgray">DT</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.2m">{{ 'mmia.2m' | message }}</td>
+              <td class="bg-color-gray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 3)}}
+              </td>
+              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 0)}}</td>
+              <td style="border: none"></td>
+              <td style="border: none"></td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.1m">{{ 'mmia.1m' | message }}</td>
+              <td class="bg-color-gray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 4)}}
+              </td>
+              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 1)}}</td>
+              <td class="bg-color-darkgray">{{ 'mmia.dm' | message }}</td>
+              <td style="border: none">Total</td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td style="text-align: right; padding-right: 4px; border: 1px solid black;" openlmis-message="view.rnr.mmia.patient.md.withm">
+                  {{ 'mmia.withm' | message }}
+                </td>
+              <td class="bg-color-gray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 5)}}
+              </td>
+              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 2)}}</td>
+              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 0)}}</td>
+              <td class="bg-color-gray">
+                  {{
+                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 5) +
+                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 2) +
+                    vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 0)
+                  }}
+              </td>
+          </tr>
+          <tr width="30px" height="30px">
+              <td style="border: 1px solid black; text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.total">
+                {{ 'mmia.total_patients_with_treatment' | message }}
+              </td>
+              <td class="bg-color-darkgray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 6)}}
+              </td>
+              <td class="bg-color-darkgray">
+                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 3)}}
+              </td>
+              <td class="bg-color-darkgray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 1)}}</td>
+              <td class="bg-color-darkgray">
+                {{
+                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 6) +
+                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 3) +
+                    vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 1)
+                }}
+              </td>
+          </tr>
+          </table>
+
+          <div class="comment-wrapper">
+              <table class="background class=col-5 ">
+                  <tr>
+                      <td></td>
+                  </tr>
+                  <tr>
+                      <td class="col-5"></td>
+                  </tr>
+              </table>
+              <div class="comment">
+                  <span style="font-weight: 700;" openlmis-message="view.rnr.mmia.comments">{{ 'mmia.observations' | message }}: </span>
+                  {{ vm.requisition.draftStatusMessage }}
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="bottomSection" class="bottom-section">
+      <table>
+          <tr>
+              <td>
+                  <span style="font-size: 15px; font-weight: 700; padding-left: 6px;" openlmis-message="view.rnr.mmia.createBy">{{ 'rapid.completedBy' | message }}</span>
+                  <span> : {{vm.signaure.submit}}</span>
+              </td>
+              <td>
+                  <span style="font-size: 15px; font-weight: 700; padding-left: 6px;" openlmis-message="view.rnr.mmia.vistor">{{ 'rapid.approvedBy' | message }}</span>
+                  <span> : {{vm.signaure.approve}}</span>
+              </td>
+              <td>
+                  <span style="font-size: 15px; font-weight: 700; padding-left: 6px;" openlmis-message="view.rnr.mmia.dateOfCreate">{{ 'rapid.dateOfCreate' | message }}</span>
+                  <span> : {{vm.creationDate}} </span>
+              </td>
+          </tr>
+      </table>
+
+      <div style="font-size: 15px; font-weight: 700; margin-top: 3px;">Nota: Mapa de Preenchimento Obrigatório Mensal pela Farmácia da Unidade Sanitária
+      </div>
+      <div style="font-size: 15px; font-weight: 700;">Versão no 12 04Nov2021 DS e TLD90 DTG10</div>
+      <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
+      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
+  </div>
+
+  <div class="align-right" style="clear: both;">
+      <button class="btn btn-primary btn-download btn-download-pdf" ng-click="vm.downloadPdf()">
+          {{ 'mmia.downloadPdf' | message }}
+      </button>
+  </div>
+</div>
+

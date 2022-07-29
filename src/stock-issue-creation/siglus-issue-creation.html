@@ -1,6 +1,6 @@
 <h2>{{'issueDraft.issueToTitle' | message: {
     destination: vm.destinationName || '',
-    document: vm.issueToInfo.documentNumber || ''} }}</h2>
+    document: vm.initialDraftInfo.documentNumber || ''} }}</h2>
 
 <div class="stock-adjustment-creation">
     <section class="openlmis-table-container">
@@ -44,7 +44,6 @@
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
-                <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                 <th>{{vm.key('date') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
@@ -61,13 +60,6 @@
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
                 </td>
-                <td ng-if="vm.showVVMStatusColumn">
-                    <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
-                            ng-model="lineItem.vvmStatus"
-                            ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
-                            placeholder="{{'stockAdjustmentCreation.selectStatus' | message}}">
-                    </select>
-                </td>
                 <td class="date-cell">
                     <input id="lineItem.occurredDate" class="min-width-date-input" type="date" ng-model="lineItem.occurredDate"
                            ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
@@ -83,3 +75,11 @@
 </div>
 <!-- <ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include> -->
 <ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
+<siglus-common-toolbar
+        data="vm.addedLineItems"
+        mode="vm.isMerge ? 'MERGE' : 'SAVE'"
+        on-delete="vm.removeDisplayItems()"
+        on-save="vm.save()"
+        on-submit="vm.submit()"
+        on-cancel="vm.returnBack()">
+</siglus-common-toolbar>

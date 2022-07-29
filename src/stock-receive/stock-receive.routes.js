@@ -31,9 +31,9 @@
             showInNavigation: true,
             views: {
                 '@openlmis': {
-                    controller: 'StockAdjustmentController',
+                    controller: 'StockIssueInitialController',
                     controllerAs: 'vm',
-                    templateUrl: 'stock-adjustment/stock-adjustment.html'
+                    templateUrl: 'stock-issue/stock-issue-initial.html'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -52,17 +52,11 @@
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;
                 },
-                // SIGLUS-REFACTOR: starts here
-                drafts: function(user, programs, facility, adjustmentType, stockAdjustmentFactory) {
-                    if (_.isUndefined(facility)) {
-                        return [];
-                    }
-                    var programIds = _.map(programs, function(program) {
-                        return program.id;
-                    });
-                    return stockAdjustmentFactory.getDrafts(user, programIds, facility, adjustmentType);
+                issueToInfo: function(programs, facility, adjustmentType, siglusStockIssueService) {
+                    return siglusStockIssueService.queryInitialDraftInfo(
+                        _.get(programs, [0, 'id']), facility.id, adjustmentType.state
+                    );
                 }
-                // SIGLUS-REFACTOR: ends here
             }
         });
     }

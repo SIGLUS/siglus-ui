@@ -15,81 +15,84 @@
 
 describe('PhysicalInventoryListController', function() {
 
-    beforeEach(function() {
-        module('stock-physical-inventory-list');
+    var $controller, $q, $rootScope, $state, physicalInventoryService, physicalInventoryFactory,
+        messageService, programs, facility, deferred,
+        vm, programId, SiglusPhysicalInventoryCreationService, alertService;
 
-        inject(function($injector, _messageService_) {
-            this.$controller = $injector.get('$controller');
-            this.$q = $injector.get('$q');
-            this.$rootScope = $injector.get('$rootScope');
-            this.$state = $injector.get('$state');
-            this.physicalInventoryService = $injector.get('physicalInventoryService');
-            this.physicalInventoryFactory = $injector.get('physicalInventoryFactory');
-            this.FunctionDecorator = $injector.get('FunctionDecorator');
-            this.messageService = _messageService_;
+    function prepareInjector() {
+        inject(function($injector) {
+            $controller = $injector.get('$controller');
+            $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
+            $state = $injector.get('$state');
+            physicalInventoryService = $injector.get('physicalInventoryService');
+            alertService = $injector.get('alertService');
+            SiglusPhysicalInventoryCreationService = $injector.get('SiglusPhysicalInventoryCreationService');
+            physicalInventoryFactory = $injector.get('physicalInventoryFactory');
+            messageService = $injector.get('messageService');
         });
+    }
 
-        this.programs = [{
+    function prepareSpies() {
+        deferred = $q.defer();
+        spyOn($state, 'go');
+        spyOn(SiglusPhysicalInventoryCreationService, 'show').andReturn(deferred.promise);
+        spyOn(physicalInventoryService, 'validateConflictProgram').andReturn(deferred.promise);
+        spyOn(alertService, 'error');
+    }
+
+    function prepareData() {
+        programs = [{
             name: 'HIV',
             id: '1'
         }, {
             name: 'TB',
             id: '2'
         }];
-        this.facility = {
+        facility = {
             id: '10134',
             name: 'National Warehouse',
-            supportedPrograms: this.programs
+            supportedPrograms: programs
         };
 
-        var context = this;
-        spyOn(this.$state, 'go');
-        spyOn(this.FunctionDecorator.prototype, 'decorateFunction').andCallFake(
-            function(fn) {
-                context.fn = fn;
-                return this;
-            }
-        );
-        spyOn(this.FunctionDecorator.prototype, 'getDecoratedFunction').andCallFake(
-            function() {
-                return context.fn;
-            }
-        );
-
-        this.vm = this.$controller('PhysicalInventoryListController', {
-            facility: this.facility,
-            programs: this.programs,
-            programId: this.programId,
-            messageService: this.messageService,
-            physicalInventoryService: this.physicalInventoryService,
-            physicalInventoryFactory: this.physicalInventoryFactory,
+        vm = $controller('PhysicalInventoryListController', {
+            facility: facility,
+            programs: programs,
+            programId: programId,
+            messageService: messageService,
             drafts: [{
                 programId: '1'
             }, {
                 programId: '2'
             }]
         });
+    }
+
+    beforeEach(function() {
+        module('stock-physical-inventory-list');
+        prepareInjector();
+        prepareSpies();
+        prepareData();
     });
 
     describe('onInit', function() {
 
-        it('should init programs and physical inventory drafts properly',
-            function() {
-                expect(this.vm.programs).toEqual(this.programs);
-                expect(this.vm.drafts).toEqual([]);
-            });
+        it('should init programs and physical inventory drafts properly', function() {
+            expect(vm.programs).toEqual(programs);
+            expect(vm.drafts).toEqual([]);
+        });
 
         it('should get program name by id', function() {
-            expect(this.vm.getProgramName('1')).toEqual('HIV');
-            expect(this.vm.getProgramName('2')).toEqual('TB');
+            expect(vm.getProgramName('1')).toEqual('HIV');
+            expect(vm.getProgramName('2')).toEqual('TB');
         });
 
         it('should get physical inventory draft status', function() {
-            expect(this.vm.getDraftStatus(true)).toEqual(
+            expect(vm.getDraftStatus(true)).toEqual(
                 'stockPhysicalInventory.notStarted'
             );
 
-            expect(this.vm.getDraftStatus(false)).toEqual(
+            expect(vm.getDraftStatus(false)).toEqual(
                 'stockPhysicalInventory.draft'
             );
         });
@@ -104,14 +107,14 @@ describe('PhysicalInventoryListController', function() {
                 programId: '1',
                 starter: false
             };
-            spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(
-                this.$q.when(draft)
+            spyOn(physicalInventoryFactory, 'getDraft').andReturn(
+                $q.when(draft)
             );
 
-            this.vm.editDraft(draft);
-            this.$rootScope.$apply();
+            vm.editDraft(draft);
+            $rootScope.$apply();
 
-            expect(this.$state.go).toHaveBeenCalledWith(
+            expect($state.go).toHaveBeenCalledWith(
                 'openlmis.stockmanagement.physicalInventory.draft', {
                     id: draft.id,
                     draft: draft,
@@ -119,7 +122,7 @@ describe('PhysicalInventoryListController', function() {
                         name: 'HIV',
                         id: '1'
                     },
-                    facility: this.facility
+                    facility: facility
                 }
             );
         });
@@ -131,35 +134,67 @@ describe('PhysicalInventoryListController', function() {
                     starter: false
                 };
                 var id = '456';
-                spyOn(this.physicalInventoryFactory, 'getDraft').andReturn(
-                    this.$q.when(draft)
+                spyOn(physicalInventoryFactory, 'getDraft').andReturn(
+                    $q.when(draft)
                 );
-                spyOn(this.physicalInventoryService, 'createDraft').andReturn(
-                    this.$q.resolve({
+                spyOn(physicalInventoryService, 'createDraft').andReturn(
+                    $q.resolve({
                         id: id
                     })
                 );
 
-                this.vm.editDraft(draft);
-                this.$rootScope.$apply();
+                vm.editDraft(draft);
+                $rootScope.$apply();
 
-                expect(
-                    this.physicalInventoryService.createDraft
-                ).toHaveBeenCalledWith(
-                    draft.programId, this.facility.id
+                expect(physicalInventoryService.createDraft).toHaveBeenCalledWith(
+                    draft.programId, facility.id
                 );
-
-                // expect(this.$state.go).toHaveBeenCalledWith(
-                //     'openlmis.stockmanagement.physicalInventory.draft', {
-                //         id: id,
-                //         // draft: draft,
-                //         program: {
-                //             name: 'HIV',
-                //             id: '1'
-                //         },
-                //         facility: this.facility
-                //     }
-                // );
             });
+    });
+
+    describe('validateDraftStatus', function() {
+        it('should do initial draft input config when current program has no draft', function() {
+
+            vm.validateDraftStatus(true);
+
+            deferred.resolve({
+                canStartInventory: true,
+                containDraftProgramsList: []
+            });
+            $rootScope.$apply();
+
+            expect(SiglusPhysicalInventoryCreationService.show).toHaveBeenCalled();
+        });
+
+        it('should enter draft list page when current program has draft', function() {
+
+            vm.validateDraftStatus(false);
+
+            deferred.resolve({
+                canStartInventory: true,
+                containDraftProgramsList: []
+            });
+            $rootScope.$apply();
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draftList');
+        });
+
+        it('should alert error hint when validate is false', function() {
+
+            vm.validateDraftStatus(false);
+
+            deferred.resolve({
+                canStartInventory: false,
+                containDraftProgramsList: ['1', '2']
+            });
+            $rootScope.$apply();
+
+            expect(alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.conflictProgram',
+                '',
+                '',
+                {
+                    programName: 'HIV,TB'
+                });
+        });
     });
 });

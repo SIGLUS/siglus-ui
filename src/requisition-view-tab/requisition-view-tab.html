@@ -101,4 +101,14 @@
             ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
     />
     <!-- #375: ends here -->
+
+    <!-- to13 #149: create requisition with age group section -->
+    <siglus-age-group
+            program="vm.program"
+            sections="vm.requisition.usageTemplate.ageGroup"
+            line-items="vm.requisition.ageGroupLineItems"
+            can-edit="vm.userCanEdit"
+            ng-if="vm.requisition.template.extension.enableAgeGroup && !vm.requisition.emergency"
+    />
+    <!-- to13 #149: ends here>
 </div>

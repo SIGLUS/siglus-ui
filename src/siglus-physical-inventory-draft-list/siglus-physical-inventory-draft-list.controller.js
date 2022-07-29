@@ -55,6 +55,7 @@
         loadingModalService
     ) {
         var vm = this;
+        vm.isInitialInventory = $stateParams.canInitialInventory;
         vm.$onInit = onInit;
         vm.draftList = {};
         vm.programName = programName;
@@ -84,6 +85,10 @@
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType = item.status;
             stateParams.draftNum = item.groupNum;
+            if (vm.isInitialInventory) {
+                return  $state.go('openlmis.stockmanagement.initialInventory.draft', stateParams);
+            }
+
             $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
         };
 
@@ -95,6 +100,9 @@
             ).then(function() {
                 loadingModalService.open();
                 physicalInventoryService.deleteDraftList(draftList.physicalInventoryId).then(function() {
+                    if (vm.isInitialInventory) {
+                        return  $state.go('openlmis.home');
+                    }
                     $state.go('openlmis.stockmanagement.physicalInventory', $stateParams, {
                         reload: true
                     });
@@ -105,29 +113,46 @@
             });
         };
 
+        vm.isAllowedClick = function(drafts) {
+            return _.size(_.get(drafts, 'subDrafts', [])) > 0;
+        };
+
         vm.mergeDrafts = function() {
-            if (isAllSubDraftsAreSubmmitted(vm.draftList.subDrafts)) {
-                alertService.error('PhysicalInventoryDraftList.mergeError');
-            } else {
+            if (isAllSubDraftsSubmit(vm.draftList.subDrafts)) {
                 var stateParams = angular.copy($stateParams);
                 // TODO translate
                 stateParams.isMerged = true;
                 stateParams.subDraftIds = _.map(vm.draftList.subDrafts, function(item) {
                     return item.subDraftId[0];
                 }).join(',');
+                if (vm.isInitialInventory) {
+                    return $state.go('openlmis.stockmanagement.initialInventory.draft', stateParams);
+                }
                 $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
+            } else {
+                alertService.error('PhysicalInventoryDraftList.mergeError');
             }
         };
 
-        function isAllSubDraftsAreSubmmitted(draftList) {
-            return _.find(draftList, function(item) {
-                return item.status !== 'SUBMITTED';
+        vm.getTitle = function() {
+            if (vm.isInitialInventory) {
+                return messageService.get('stockPhysicalInventory.initialTitle');
+            }
+            return messageService.get('stockPhysicalInventory.title');
+        };
+
+        function isAllSubDraftsSubmit(draftList) {
+            return _.every(draftList, function(item) {
+                return item.status === 'SUBMITTED';
             });
         }
 
         // All drafts must be submitted before they can be merged.
         function onInit() {
-            $state.current.label = programName;
+            if (!vm.isInitialInventory) {
+                $state.current.label = programName;
+            }
+
             draftList.subDrafts = _.sortBy(draftList.subDrafts, 'groupNum');
             vm.draftList = draftList;
             vm.isShowDeleteAndMerge = draftList.canMergeOrDeleteDrafts;

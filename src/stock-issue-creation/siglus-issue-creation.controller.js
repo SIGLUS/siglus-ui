@@ -29,51 +29,36 @@
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'issueToInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
+        '$scope', 'draft', 'mergedItems', 'initialDraftInfo', '$state', '$stateParams', '$filter',
+        'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'confirmService',
+        'messageService', 'isMerge', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
-        'siglusRemainingProductsModalService', 'siglusStockIssueService'
+        'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
+        'siglusStockUtilsService', 'localStorageFactory'
     ];
 
-    function controller($scope, issueToInfo, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
-                        MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
-                        openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService) {
+    function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
+                        confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
+                        messageService, isMerge, srcDstAssignments, stockAdjustmentCreationService, notificationService,
+                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
+                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
+                        openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService,
+                        alertConfirmModalService, siglusStockUtilsService, localStorageFactory) {
         var vm = this,
-            previousAdded = {};
-
-        vm.issueToInfo = issueToInfo;
+            previousAdded = {},
+            currentUser = localStorageFactory('currentUser');
+        vm.preparedBy = currentUser.getAll('username').username;
+        // vm.nowDate = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.initialDraftInfo = initialDraftInfo;
 
         vm.destinationName = '';
 
-        /**
-     * @ngdoc property
-     * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name vvmStatuses
-     * @type {Object}
-     *
-     * @description
-     * Holds list of VVM statuses.
-     */
-        vm.vvmStatuses = VVM_STATUS;
-
-        /**
-     * @ngdoc property
-     * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name showVVMStatusColumn
-     * @type {boolean}
-     *
-     * @description
-     * Indicates if VVM Status column should be visible.
-     */
-        vm.showVVMStatusColumn = false;
+        vm.isMerge = isMerge;
 
         vm.key = function(secondaryKey) {
-            return adjustmentType.prefix + 'Creation.' + secondaryKey;
+            return 'stockIssueCreation.' + secondaryKey;
         };
 
         /**
@@ -96,6 +81,10 @@
                 reload: reload || $state.current.name,
                 notify: false
             });
+        };
+
+        vm.returnBack = function() {
+            $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
         };
 
         vm.setProductGroups = function() {
@@ -128,6 +117,8 @@
                     return !_.isEmpty(item);
                 })
                 .value();
+
+            $stateParams.orderableGroups = vm.orderableGroups;
         };
 
         /**
@@ -273,20 +264,23 @@
      * Remove all displayed line items.
      */
         vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
-                .then(function() {
-                    loadingModalService.open();
-                    siglusStockIssueService.resetDraft($state.draftId).then(function() {
-                        $scope.needToConfirm = false;
-                        notificationService.success(vm.key('deleted'));
-                        $state.go('openlmis.stockmanagement.issue', $stateParams, {
-                            reload: true
-                        });
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                });
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
+                    $scope.needToConfirm = false;
+                    notificationService.success(vm.key('deleted'));
+                    $state.go('openlmis.stockmanagement.issue.draft', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
         };
 
         /**
@@ -315,24 +309,6 @@
         /**
      * @ngdoc method
      * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name validateAssignment
-     *
-     * @description
-     * Validate line item assignment and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
-        vm.validateAssignment = function(lineItem) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
-        adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
-            }
-            return lineItem;
-        };
-
-        /**
-     * @ngdoc method
-     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
      * @name validateReason
      *
      * @description
@@ -341,9 +317,6 @@
      * @param {Object} lineItem line item to be validated.
      */
         vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
-                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
-            }
             return lineItem;
         };
 
@@ -394,56 +367,105 @@
          * @description
          * Submit all added items.
          */
-        // function getPdfName(date, facilityName, id) {
-        //     return (
-        //         'Requi' + id
-        //         + '_' + facilityName + '_'
-        //         + openlmisDateFilter(date, 'MMM') + ' '
-        //         + openlmisDateFilter(date, 'dd') + '_'
-        //         + openlmisDateFilter(date, 'yyyy')
-        //         + '_MMIT.pdf'
-        //     );
-        // }
-        vm.watiToPrintArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-        // function downloadPdf() {
-        //     var node = document.getElementById('waitDownload');
-        //     var contentWidth = node.offsetWidth;
-        //     var contentHeight = node.scrollHeight;
-        //     var imgWidth = 595.28;
-        //     var imgHeight = 592.28 / contentWidth * contentHeight;
-        //     // var rate = contentWidth / 595.28;
-        //     // var imgY = contentHeight / rate;
-        //     // eslint-disable-next-line no-undef
-        //     domtoimage.toPng(node, {
-        //         scale: 1,
-        //         width: contentWidth,
-        //         height: contentHeight
-        //     }).then(function(data) {
-        //         var pageData = data;
-        //         // eslint-disable-next-line no-undef
-        //         var PDF = new jsPDF('', 'pt', 'a4');
-        //         // 595×842 a4纸
-        //         PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        function getPdfName(facilityName, nowTime) {
+            return (
+                'Issue_'
+                + facilityName
+                + '_'
+                + nowTime
+                + '.pdf'
+            );
+        }
+        function downloadPdf() {
+            var node = document.getElementById('waitDownload');
+            var contentWidth = node.offsetWidth;
+            var contentHeight = node.scrollHeight;
+            var imgWidth = 595.28;
+            var imgHeight = 592.28 / contentWidth * contentHeight;
+            // var rate = contentWidth / 595.28;
+            // var imgY = contentHeight / rate;
+            // eslint-disable-next-line no-undef
+            domtoimage.toPng(node, {
+                scale: 1,
+                width: contentWidth,
+                height: contentHeight
+            }).then(function(data) {
+                var pageData = data;
+                // eslint-disable-next-line no-undef
+                var PDF = new jsPDF('', 'pt', 'a4');
+                // 595×842 a4纸
+                PDF.addImage(pageData, 'JPEG', 4, 0, imgWidth - 8, imgHeight);
 
-        //         PDF.save('test.pdf');
-        //         // PDF.save(
-        //         //     getPdfName(
-        //         //         requisition.processingPeriod.startDate,
-        //         //         facility.name,
-        //         //         requisition.id.substring(0, 6)
-        //         //     )
-        //         // );
-        //     });
-        // };
-        vm.submit = function() {
-            // TODO after submit, download this pdf
-            // downloadPdf();
-            $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
+                PDF.save(
+                    getPdfName(
+                        vm.facility.name,
+                        vm.issueVoucherDate
+                    )
+                );
+            });
+        }
+
+        function confirmMergeSubmit(signature, addedLineItems, downloadTask) {
+            var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
+                return item.subDraftId;
+            }));
+
+            siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+                signature, vm.initialDraftInfo, facility.id, subDrafts)
+                .then(function() {
+                    downloadTask();
+                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                        facility: facility.id,
+                        program: program
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    if (error.data && error.data.businessErrorExtraData === 'subDrafts quantity not match') {
+                        alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    }
                 });
+        }
+
+        function confirmSubmit(signature, addedLineItems) {
+            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                addedLineItems)
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success(vm.key('submitted'));
+                    $scope.needToConfirm = false;
+                    vm.returnBack();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    productDuplicatedHandler(error);
+                });
+        }
+
+        vm.submit = function() {
+            $scope.$broadcast('openlmis-form-submit');
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                lineItem.reason = _.find(reasons, {
+                    name: capitalize($stateParams.draftType || '')
+                });
+            });
+            if (validateAllAddedItems()) {
+                if (vm.isMerge) {
+                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                        vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
+                        loadingModalService.open();
+                        confirmMergeSubmit(signature, addedLineItems, downloadPdf);
+                    });
+                } else {
+                    loadingModalService.open();
+                    confirmSubmit('', addedLineItems);
+                }
+
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
@@ -513,6 +535,26 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
+        function productDuplicatedHandler(error) {
+            if (_.get(error, ['data', 'isBusinessError'])) {
+                var data = _.map(_.get(error, ['data', 'businessErrorExtraData']), function(item) {
+                    item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                    return item;
+                });
+                siglusRemainingProductsModalService.show(data).then(function() {
+                    var lineItems = _.clone(vm.addedLineItems);
+                    _.forEach(lineItems, function(lineItem) {
+                        var hasDuplicated = _.some(data, function(item) {
+                            return item.orderableId === lineItem.orderable.id;
+                        });
+                        if (hasDuplicated) {
+                            vm.remove(lineItem);
+                        }
+                    });
+                });
+            }
+        }
+
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
 
@@ -520,26 +562,19 @@
                 cancelFilter();
             }
 
-            siglusStockIssueService
-                .saveDraft($stateParams.draftId, addedLineItems)
+            loadingModalService.open();
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems, $stateParams.draftType)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
                     $stateParams.isAddProduct = false;
                     vm.search(true);
                 })
-                .catch(function() {
-                    siglusRemainingProductsModalService.show().then(function(data) {
-                        _.forEach(vm.addedLineItems, function(lineItem) {
-                            var hasDuplicated = _.some(data, function(item) {
-                                return item.orderable.id === lineItem.orderable.id
-                                  && (_.isEmpty(item.lot) || item.lot.id === lineItem.lot.id);
-                            });
-                            if (hasDuplicated) {
-                                vm.remove(lineItem);
-                            }
-                        });
-                    });
+                .catch(function(error) {
+                    productDuplicatedHandler(error);
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         };
 
@@ -574,7 +609,6 @@
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
                 vm.validateDate(item);
-                vm.validateAssignment(item);
                 vm.validateReason(item);
             });
             return _.chain(vm.addedLineItems)
@@ -610,35 +644,11 @@
                 .value();
         }
 
-        function confirmSubmit(signature) {
-            loadingModalService.open();
-
-            var addedLineItems = angular.copy(vm.addedLineItems);
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = _.first(lineItem.orderable.programs).programId;
-                lineItem.reason = _.find(reasons, {
-                    name: 'Issue'
-                });
-            });
-
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signature)
-                .then(function() {
-                    notificationService.success(vm.key('submitted'));
-
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
-                }, function(errorResponse) {
-                    loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
-                });
-        }
-
         function onInit() {
-            $state.current.label = messageService.get('stockIssue.draft') + $stateParams.index;
+
+            $state.current.label = isMerge
+                ? messageService.get('stockIssueCreation.mergedDraft')
+                : messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();
@@ -660,16 +670,19 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            var destinationName = _.get(vm.issueToInfo, 'destinationName');
-            vm.destinationName = destinationName === 'Outros'
-                ? 'Outros: ' + _.get(vm.issueToInfo, 'locationFreeText', '')
-                : destinationName;
-            vm.program = program;
+            vm.destinationName = siglusStockUtilsService
+                .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             vm.facility = facility;
             console.log('facility --->>>', vm.facility);
             vm.reasons = reasons;
             vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
+            // 计算total value
+            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                r = r + c.quantity * 10;
+                return r;
+            }, 0);
+            console.log('vm ---->>>', vm);
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
@@ -679,15 +692,17 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
         }
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = program;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
             $stateParams.srcDstAssignments = srcDstAssignments;
+            $stateParams.mergedItems = mergedItems;
+            $stateParams.initialDraftInfo = initialDraftInfo;
+            $stateParams.draft = draft;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;

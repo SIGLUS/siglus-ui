@@ -30,7 +30,7 @@
         addStateForDetail('regimen', 'siglus-admin-template-configure-column-setting-regimen.html');
         addStateForDetail('testConsumption', defaultTemplate);
         addStateForDetail('usageInformation', defaultTemplate);
-        addStateForDetail('ageGroup', defaultTemplate);
+        addStateForDetail('ageGroup', 'siglus-admin-template-configure-age-group.html');
 
         function addStateForDetail(section, templateFile) {
             $stateProvider

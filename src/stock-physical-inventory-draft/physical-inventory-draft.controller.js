@@ -38,7 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds'
+        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,7 +50,7 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds) {
+                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -85,7 +85,7 @@
          */
         vm.displayLineItemsGroup = displayLineItemsGroup;
         vm.back = function() {
-            $state.go('^', '', {
+            $state.go('^', {}, {
                 reload: true
             });
         };
@@ -381,7 +381,9 @@
                 summaries: [],
                 subDraftIds: subDraftIds
             })).then(function() {
-                notificationService.success('stockPhysicalInventoryDraft.saved');
+                if (!notReload) {
+                    notificationService.success('stockPhysicalInventoryDraft.saved');
+                }
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;
@@ -397,7 +399,7 @@
                     var stateParams = angular.copy($stateParams);
                     stateParams.actionType = 'DRAFT';
                     $state.go($state.current.name, stateParams, {
-                        reload: true
+                        location: 'replace'
                     });
                     return;
                 }
@@ -405,8 +407,10 @@
             })
                 .catch(function(error) {
                     loadingModalService.close();
-                    var data = error.data.businessErrorExtraData;
-                    openRemainingModal('save', data);
+                    if (error.data.isBusinessError) {
+                        var data = error.data.businessErrorExtraData;
+                        openRemainingModal('save', data);
+                    }
                 });
         };
         vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {
@@ -446,19 +450,28 @@
         // todo wait for #56
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
-                $state.go('openlmis.stockmanagement.physicalInventory.draftList');
+                // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
+                //$state.go('openlmis.stockmanagement.physicalInventory.draftList');
+                $state.go('^', {}, {
+                    reload: true
+                });
+                // SIGLUS-REFACTOR: ends here
                 return;
             }
-            confirmService.confirmDestroy(
-                'stockPhysicalInventoryDraft.deleteDraft',
-                'stockPhysicalInventoryDraft.delete'
+
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                physicalInventoryService.deleteDraft(subDraftIds).then(function() {
+                physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
-                    vm.isInitialInventory ? $state.go('openlmis.home')
-                        : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
+                    vm.isInitialInventory ?
+                        $state.go('^', {}, {
+                            reload: true
+                        }) : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
                     // SIGLUS-REFACTOR: ends here
@@ -488,10 +501,11 @@
             }))
                 .then(function() {
                     if (vm.isInitialInventory) {
-                        currentUserService.clearCache();
-                        navigationStateService.clearStatesAvailability();
+                        notificationService.success('stockInitialInventoryDraft.submitted');
+                    } else {
+                        notificationService.success('stockPhysicalInventoryDraft.submitted');
                     }
-                    notificationService.success('stockPhysicalInventoryDraft.submitted');
+
                     $state.go('^', {}, {
                         reload: true
                     });
@@ -504,8 +518,10 @@
                 })
                 .catch(function(error) {
                     loadingModalService.close();
-                    var data = error.data.businessErrorExtraData;
-                    openRemainingModal('submit', data);
+                    if (error.data.isBusinessError) {
+                        var data = error.data.businessErrorExtraData;
+                        openRemainingModal('submit', data);
+                    }
                 });
         };
         var submit = function() {
@@ -525,12 +541,13 @@
                     subDraftSubmit();
                     return;
                 }
-                chooseDateModalService.show(new Date()).then(function(resolvedData) {
+                chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
                     loadingModalService.open();
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
                     // TODO merge \ subDraft Submit
+
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                         summaries: []
                     }))
@@ -539,8 +556,11 @@
                             if (vm.isInitialInventory) {
                                 currentUserService.clearCache();
                                 navigationStateService.clearStatesAvailability();
+                                notificationService.success('stockInitialInventoryDraft.submitted');
+                            } else {
+                                notificationService.success('stockPhysicalInventoryDraft.submitted');
                             }
-                            notificationService.success('stockPhysicalInventoryDraft.submitted');
+
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                 program: program.id,
                                 facility: facility.id
@@ -718,21 +738,21 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
-            if (!vm.isInitialInventory) {
-                // var data = messageService.get('stockPhysicalInventoryDraft.title', {
-                //     facilityCode: facility.code,
-                //     facilityName: facility.name,
-                //     program: program.name
-                // });
-                if ($stateParams.isMerged === 'true') {
-                    $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
-                } else {
-                    $state.current.label =
+            // if (!vm.isInitialInventory) {
+            // var data = messageService.get('stockPhysicalInventoryDraft.title', {
+            //     facilityCode: facility.code,
+            //     facilityName: facility.name,
+            //     program: program.name
+            // });
+            if ($stateParams.isMerged === 'true') {
+                $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
+            } else {
+                $state.current.label =
                         messageService.get('stockPhysicalInventoryDraft.draft')
                         + ' '
                         + $stateParams.draftNum;
-                }
             }
+            // }
         }
 
         function initiateLineItems() {
@@ -1016,7 +1036,7 @@
         }
 
         $scope.$on('$stateChangeStart', function(event, toState) {
-            if (toState.name !== 'openlmis.stockmanagement.initialInventory'
+            if (toState.name !== 'openlmis.stockmanagement.initialInventory.draft'
                 && toState.name !== 'openlmis.stockmanagement.physicalInventory.draftList.draft') {
                 physicalInventoryDataService.clear();
             }

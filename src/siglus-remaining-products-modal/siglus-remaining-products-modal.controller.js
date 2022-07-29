@@ -21,15 +21,26 @@
         .controller('siglusRemainingProductsModalController', controller);
 
     controller.$inject = [
-        '$state', 'siglusRemainingProductsModalService', 'modalDeferred', 'items'
+        '$state', 'siglusRemainingProductsModalService', 'modalDeferred', 'items', 'messageService'
     ];
 
-    function controller($state, remainingProductsModalService, modalDeferred, items) {
+    function controller(
+        $state,
+        remainingProductsModalService,
+        modalDeferred,
+        items,
+        messageService
+    ) {
         var vm = this;
         vm.conflictItems = items;
 
         vm.confirm = function() {
             modalDeferred.resolve();
+        };
+
+        vm.translateConflictDraftName = function(name) {
+            var num = name.split(' ')[1];
+            return messageService.get('stockPhysicalInventoryDraft.draft') + ' ' + num;
         };
     }
 

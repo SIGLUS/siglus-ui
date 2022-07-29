@@ -33,17 +33,17 @@
             <!-- TODO the Documentation No. input by the user -->
             <span class="report--title-font">
               <!-- Issue Voucher Nº -->
-              {{ 'siglusIssueOrReceiveReport.issueVoucherNo' | message }}
+              {{ 'siglusIssueOrReceiveReport.issueVoucherNo' | message }} {{vm.initialDraftInfo.documentNumber}}
             </span>
           </td>
         </tr>
         <tr>
           <td class="text__left" colspan="2">
-            {{ 'siglusIssueOrReceiveReport.supplier' | message }}：{{ vm.facility.name }}
+            {{ 'siglusIssueOrReceiveReport.supplier' | message }}: {{ vm.facility.name }}
           </td>
           <!-- TODO issue destination. If the user chooses “Others”, then show the manually input destination  -->
           <td class="text__left" colspan="3">
-            {{ 'siglusIssueOrReceiveReport.client | message }}:
+            {{ 'siglusIssueOrReceiveReport.client' | message }}: {{ vm.destinationName }}
           </td>
           <td class="text__left" style="vertical-align: baseline;" colspan="2" rowspan="2">
             <div class="label-checkbox">
@@ -68,11 +68,11 @@
           <td class="text__left" colspan="2"></td>
           <!-- keep blank -->
           <td class="text__left" colspan="2">
-            {{ 'siglusIssueOrReceiveReport.totalOfVolume' | message }}
+            {{ 'siglusIssueOrReceiveReport.totalOfVolume' | message }}:
           </td>
           <!-- keep blank -->
           <td colspan="1" rowspan="3">
-            {{ 'siglusIssueOrReceiveReport.returned' | message }}
+            {{ 'siglusIssueOrReceiveReport.returned' | message }}:
           </td>
           <td class="text__left" style="vertical-align: baseline;" colspan="2" rowspan="3">
             <div class="label-checkbox">
@@ -90,12 +90,12 @@
         <tr>
           <td class="text__left" colspan="2"></td>
           <!-- keep blank -->
-          <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.requisitionDate' | message }}</td>
+          <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.requisitionDate' | message }}: </td>
         </tr>
         <tr>
           <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.facility.geographicZone.parent.name }}</td>
           <!-- TODO the date that the user submits the merged draft -->
-          <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.issueVoucherDate' | message }}</td>
+          <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.issueVoucherDate' | message }}: {{ vm.issueVoucherDate }}</td>
         </tr>
       </table>
       <table style="width: 198px; margin-left: 14px;" cellpadding="0" cellspacing="0">
@@ -110,14 +110,14 @@
           </td>
         </tr>
         <tr>
-          <td class="text__left report--title-font" style="height: 120px; vertical-align: top; display: flex; padding: 8px 4px;">
-            {{ 'siglusIssueOrReceiveReport.no' | message }}
-            <div class="N-input"></div>
+          <td class="text__left report--title-font" style="height: 120px; vertical-align: top; padding: 8px 4px;">
+            <div style="float: left;">{{ 'siglusIssueOrReceiveReport.no' | message }}</div>
+            <div class="N-input" style="text-align: center; float: right;">{{vm.initialDraftInfo.documentNumber}}</div>
           </td>
         </tr>
         <tr>
           <!-- keep blank -->
-          <td class="text__left">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}</td>
+          <td class="text__left">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: </td>
         </tr>
       </table>
     </section>
@@ -172,18 +172,18 @@
           <td>{{ 'siglusIssueOrReceiveReport.pu' | message }}</td>
           <td>{{ 'siglusIssueOrReceiveReport.qf' | message }} x {{ 'siglusIssueOrReceiveReport.pu' | message }}</td>
         </tr>
-        <tr ng-repeat="item in vm.watiToPrintArray">
-          <td class="background-black black-width" style="font-size: 14px;">{{ item }}</td>
+        <tr ng-repeat="item in vm.addedLineItems">
+          <td class="background-black black-width" style="font-size: 14px;">{{ $index + 1 }}</td>
+          <td>{{ item.productCode }}</td>
           <td></td>
           <td></td>
           <td></td>
           <td></td>
           <td></td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>{{ item.quantity }}</td>
+          <td>10</td>
+          <td>{{ item.quantity * 10 }}</td>
         </tr>
       </table>
       <table style="width: 198px; margin-left: 14px;" cellpadding="0" cellspacing="0">
@@ -217,11 +217,11 @@
     <section class="section-third">
       <!-- TODO should be automatically calculated -->
       <div>{{ 'siglusIssueOrReceiveReport.totalValue' | message }}:</div>
-      <div class="issue-voucher"></div>
+      <div class="issue-voucher" style="text-align: center;">{{ vm.totalPriceValue }}</div>
     </section>
     <section class="section-fouth">
       <!-- TODO signature of the user who submitted the merged issue draft -->
-      <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}:</div>
+      <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.preparedBy }}</div>
       <!-- keep blank -->
       <div class="fouth-conferred">{{ 'siglusIssueOrReceiveReport.conferredBy' | message }}:</div>
       <!-- keep blank -->
@@ -229,6 +229,6 @@
     </section>
     <div class="sub-information">
       <div>{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</div>
-      <div>Jul 20, 2022 00:00:00</div>
+      <div>{{ vm.issueVoucherDate }}</div>
     </div>
   </div>

@@ -1,30 +1,37 @@
 
-<h2>{{'issueDraft.issueToTitle' | message: {
-    destination: vm.destinationName || '',
-    document: vm.issueToInfo.documentNumber || ''} }}</h2>
+<h2>{{vm.titleMapper[vm.draftType] | message: {
+    destination: vm.initialDraftName || '',
+    document: vm.initialDraftInfo.documentNumber || ''} }}</h2>
 <section class="openlmis-table-container">
     <button class="pull-right add" ng-click="vm.addDraft()">
         {{'issueDraft.create' | message}}
     </button>
     <table>
         <caption ng-if="vm.drafts.length===0">
-            {{'issueDraft.selectFirst' | message}}
+            {{vm.noDataInfoMapper[vm.draftType] | message}}
         </caption>
         <thead>
         <tr>
             <th style="width:90px;word-break: break-word;">{{'issueDraft.draftNumber' | message}}</th>
             <th style="min-width:172px">{{'issueDraft.status' | message}}</th>
             <th style="min-width:125px">{{'issueDraft.operator' | message}}</th>
-            <th style="min-width:250px" class="col-sticky sticky-right">{{'issueDraft.actions' | message}}</th>
+            <th style="min-width:130px" class="col-sticky sticky-right">{{'issueDraft.actions' | message}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts">
-            <td>{{$index + 1}}</td>
+            <td>{{draft.draftNumber}}</td>
             <td>{{vm.statusMapperMapper[draft.status] | message}}</td>
             <td>{{draft.operator}}</td>
-            <td style="display: flex;">
-                <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft, $index + 1)"
+            <td style="display: flex;" ng-if="draft.status === 'SUBMITTED'">
+                <input id="issue-draft-view" type="button" ng-click="vm.view(draft)"
+                       style="min-width: 113px"
+                       value="{{vm.actionMapper[draft.status] | message}}"
+                       class="primary"/>
+            </td>
+
+            <td style="display: flex;" ng-if="['NOT_YET_STARTED', 'DRAFT'].includes(draft.status)">
+                <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft)"
                        style="min-width: 113px"
                        value="{{vm.actionMapper[draft.status] | message}}"
                        class="primary"/>
@@ -37,4 +44,8 @@
         </tr>
         </tbody>
     </table>
+    <siglus-common-toolbar ng-if="vm.showToolBar" data="vm.drafts" mode="'FINALIZE_MERGE'" on-delete="vm.deleteDrafts()" on-merge="vm.mergeDrafts()">
+    </siglus-common-toolbar>
 </section>
+
+

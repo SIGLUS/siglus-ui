@@ -21,7 +21,7 @@ describe('PhysicalInventoryDraftController', function() {
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
         ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
         physicalInventoryDataService, siglusRemainingProductsModalService,
-        confirmDiscardService, subDraftIds;
+        confirmDiscardService, subDraftIds, alertConfirmModalService;
 
     beforeEach(function() {
 
@@ -30,6 +30,9 @@ describe('PhysicalInventoryDraftController', function() {
         module('stock-physical-inventory');
         module('stock-add-products-modal');
         module('stock-confirm-discard');
+        //SIGLUS-REFACTOR: starts here
+        module('siglus-alert-confirm-modal');
+        // SIGLUS-REFACTOR: ends here
 
         subDraftIds = '';
         inject(function($injector) {
@@ -57,6 +60,10 @@ describe('PhysicalInventoryDraftController', function() {
             // spyOn(siglusRemainingProductsModalService, 'show');
             addProductsModalService = $injector.get('addProductsModalService');
             confirmDiscardService = $injector.get('confirmDiscardService');
+            alertConfirmModalService = $injector.get('alertConfirmModalService');
+
+            spyOn(alertConfirmModalService, 'error');
+
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
                 'submitPhysicalInventory', 'deleteDraft'
             ]);
@@ -504,19 +511,25 @@ describe('PhysicalInventoryDraftController', function() {
     describe('delete', function() {
 
         it('should open confirmation modal', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
+            // alertConfirmModalService.error(
+            //     'PhysicalInventoryDraftList.deleteDraftWarn',
+            //     '',
+            //     ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            // )
+            alertConfirmModalService.error.andReturn($q.resolve());
 
             vm.delete();
             $rootScope.$apply();
 
-            expect(confirmService.confirmDestroy).toHaveBeenCalledWith(
-                'stockPhysicalInventoryDraft.deleteDraft',
-                'stockPhysicalInventoryDraft.delete'
+            expect(alertConfirmModalService.error).toHaveBeenCalledWith(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             );
         });
 
         it('should go to the physical inventory screen after deleting draft', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
+            alertConfirmModalService.error.andReturn($q.resolve());
             physicalInventoryService.deleteDraft.andReturn($q.resolve());
 
             vm.delete();
@@ -548,6 +561,7 @@ describe('PhysicalInventoryDraftController', function() {
             accessTokenFactory: accessTokenFactory,
             confirmService: confirmService,
             confirmDiscardService: confirmDiscardService,
+            alertConfirmModalService: alertConfirmModalService,
             subDraftIds: subDraftIds
         });
     }

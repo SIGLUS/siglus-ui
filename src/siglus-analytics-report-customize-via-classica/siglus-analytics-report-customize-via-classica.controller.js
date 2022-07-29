@@ -30,10 +30,11 @@
 
     controller.$inject = [ 'requisition', 'facility', 'processingPeriod',
         'messageService', 'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter' ];
+        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService' ];
 
     function controller(requisition, facility, processingPeriod, messageService, lineItemsList,
-                        columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter) {
+                        columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter,
+                        requisitionService) {
         var vm = this;
         vm.requisition = undefined;
         vm.facility = undefined;
@@ -42,7 +43,8 @@
         vm.columns = undefined;
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
-
+        vm.emergencyCount = '01';
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -67,6 +69,30 @@
                         lineItem.services[serviceName]);
                 });
             }), 'displayOrder');
+            emergencyCount();
+            // console.log('vm ---->>>', vm);
+        }
+
+        function emergencyCount() {
+            var formatNumber = function(num) {
+                num = num.toString();
+                return num[1] ? num : '0' + num;
+            };
+            var stateParams = {
+                facility: facility.id,
+                initiatedDateFrom: vm.requisition.processingPeriod.startDate,
+                initiatedDateTo: vm.requisition.processingPeriod.endDate,
+                program: 'dce17f2e-af3e-40ad-8e00-3496adef44c3',
+                sort: 'createdDate,desc'
+            };
+            return requisitionService.searchOriginal(
+                false,
+                stateParams
+            ).then(function(res) {
+                if (res.totalElements > 0) {
+                    vm.emergencyCount = formatNumber(res.totalElements);
+                }
+            });
         }
 
         function downloadPdf() {
@@ -123,11 +149,16 @@
                             PDF.addPage('a4', 'l');
                         }
                     });
-                    PDF.save('Requi'
-                    + vm.requisition.id.substr(0, 6) + '_'
-                    + vm.facility.name
-                    + '_' + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MMM dd-yyyy')
-                    + '_VIA Classica' + '.pdf');
+                    var reportName = 'RNO';
+                    if (vm.requisition.emergency) {
+                        reportName = 'REM';
+                    }
+                    PDF.save(reportName + '.'
+                    + vm.requisition.id.substr(0, 8) + '.'
+                    + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
+                    + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
+                    + vm.emergencyCount
+                    + '.pdf');
                 });
             });
 

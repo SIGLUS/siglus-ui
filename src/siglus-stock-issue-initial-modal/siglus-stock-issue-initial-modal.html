@@ -7,31 +7,31 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title">
-                    {{'stockIssueInitialModal.title' | message}}
+                    {{vm.titleMapper[vm.draftType] | message}}
                 </h4>
             </div>
 
             <div class="modal-header modal-has-error" ng-if="vm.hasError">
-                {{'stockIssueInitialModal.hasStartedError' | message}}
+                {{vm.errorTitleInfoMapper[vm.draftType] | message}}
             </div>
 
             <div class="modal-body">
                 <form hide-message-dialog="true" id="initial-issue-form" ng-submit="vm.submitForm()">
                     <fieldset>
-                        <label for="issueTo">{{'stockIssueInitialModal.issueTo' | message}}</label>
-                        <select id="issueTo"
-                                ng-options="data as data.name for data in vm.issueToList"
-                                ng-model="vm.issueTo" ng-change="vm.changeIssueTo()" required>
+                        <label for="location">{{vm.typeLabelMapper[vm.draftType] | message}}</label>
+                        <select id="location"
+                                ng-options="data as data.name for data in vm.locationList"
+                                ng-model="vm.location" ng-change="vm.changeIssueTo()" required>
                         </select>
                     </fieldset>
 
-                    <fieldset ng-if="vm.issueTo && vm.issueTo.name === 'Outros'">
+                    <fieldset ng-if="vm.location && vm.location.name === 'Outros'">
                         <input type="text" placeholder="{{'stockIssueInitialModal.inputDestination' | message}}"
-                                   ng-model="vm.destinationFacility" id="destinationFacility" required/>
+                                   ng-model="vm.locationFreeText" id="destinationFacility" required/>
                     </fieldset>
                     <fieldset style="margin-bottom: 6px;">
                         <label for="documentationNo">{{'stockIssueInitialModal.documentationNo' | message}}</label>
-                        <input type="text" ng-model="vm.documentationNo" id="documentationNo" required/>
+                        <input type="text" ng-model="vm.documentNumber" id="documentationNo" required/>
                     </fieldset>
                 </form>
             </div>

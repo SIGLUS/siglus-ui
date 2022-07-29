@@ -55,6 +55,7 @@
         vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.requisition = {};
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -65,6 +66,11 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
+            if (requisition.extraData.signaure) {
+                vm.signaure.approve = vm.signaure && vm.signaure.approve.length
+                    ? vm.signaure.approve.join(',')
+                    : '';
+            }
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
@@ -91,12 +97,11 @@
         }
         function getPdfName(date, facilityName, id) {
             return (
-                'Requi' + id
-                + '_' + facilityName + '_'
-                + openlmisDateFilter(date, 'MMM') + ' '
-                + openlmisDateFilter(date, 'dd') + '_'
-                + openlmisDateFilter(date, 'yyyy')
-                + '_MMIT.pdf'
+                'MIT.' + id
+                + '.' + openlmisDateFilter(date, 'yy')
+                + openlmisDateFilter(date, 'MM') + '.'
+                + '01'
+                + '.pdf'
             );
         }
         function extendLineItems() {
@@ -144,7 +149,7 @@
                     getPdfName(
                         requisition.processingPeriod.startDate,
                         facility.name,
-                        requisition.id.substring(0, 6)
+                        requisition.id.substring(0, 8)
                     )
                 );
             });
