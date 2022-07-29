@@ -28,47 +28,73 @@
         .module('siglus-stock-issue-initial-modal')
         .controller('SiglusInitialIssueModalController', controller);
 
-    controller.$inject = ['programId', 'facilityId', 'adjustmentType', '$state', 'siglusInitialIssueModalService',
+    controller.$inject = ['programId', 'facilityId', 'draftType', '$state', 'siglusInitialIssueModalService',
         'modalDeferred', 'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
 
-    function controller(programId, facilityId, adjustmentType, $state, siglusInitialIssueModalService, modalDeferred,
+    function controller(programId, facilityId, draftType, $state, siglusInitialIssueModalService, modalDeferred,
                         siglusStockIssueService, sourceDestinationService, loadingModalService) {
         var vm = this;
 
-        vm.issueTo = undefined;
+        vm.location = undefined;
 
         vm.hasError = false;
 
-        vm.documentationNo = '';
+        vm.documentNumber = '';
 
-        vm.destinationFacility = '';
+        vm.locationFreeText = '';
 
-        vm.issueToList = [];
+        vm.locationList = [];
+
+        vm.draftType = draftType;
 
         vm.changeIssueTo = function() {
-            if (!_.isEmpty(vm.destinationFacility)) {
-                vm.destinationFacility = '';
+            if (!_.isEmpty(vm.locationFreeText)) {
+                vm.locationFreeText = '';
             }
+        };
+
+        vm.titleMapper = {
+            issue: 'stockIssueInitialModal.title',
+            receive: 'stockIssueInitialModal.titleForReceive'
+        };
+
+        vm.typeLabelMapper = {
+            issue: 'stockIssueInitialModal.issueTo',
+            receive: 'stockIssueInitialModal.receiveFrom'
+        };
+
+        vm.errorTitleInfoMapper = {
+            issue: 'stockIssueInitialModal.hasStartedError',
+            receive: 'stockIssueInitialModal.hasReceiveStartedError'
         };
 
         vm.submitForm = function() {
             if (vm.hasError) {
                 modalDeferred.resolve(true);
             } else {
-                siglusStockIssueService.initIssueDraft({
+                var formInfo = {
+                    issue: {
+                        destinationId: vm.location.node.id,
+                        destinationName: vm.location.name
+                    },
+                    receive: {
+                        sourceId: vm.location.node.id,
+                        sourceName: vm.location.name
+                    }
+                };
+                loadingModalService.open();
+                siglusStockIssueService.initDraft(_.extend({
                     programId: programId,
                     facilityId: facilityId,
-                    destinationId: vm.issueTo.id,
-                    draftType: adjustmentType.state,
-                    destinationName: vm.issueTo.name,
-                    documentNumber: vm.documentationNo,
-                    locationFreeText: vm.destinationFacility
-                }).then(function(issueToInfo) {
+                    draftType: draftType,
+                    documentNumber: vm.documentNumber,
+                    locationFreeText: vm.locationFreeText
+                }, formInfo[draftType])).then(function(initialDraftInfo) {
                     modalDeferred.resolve();
-                    $state.go('openlmis.stockmanagement.issue.draft', {
+                    $state.go('openlmis.stockmanagement.' + draftType + '.draft', {
                         programId: programId,
-                        initialDraftId: issueToInfo.id,
-                        issueToInfo: issueToInfo
+                        initialDraftId: initialDraftInfo.id,
+                        draftType: draftType
                     });
                 })
                     .catch(function(error) {
@@ -76,6 +102,9 @@
                           && error.data.businessErrorExtraData === 'same initial draft exists') {
                             vm.hasError = true;
                         }
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
                     });
             }
 
@@ -83,8 +112,12 @@
 
         vm.$onInit = function() {
             loadingModalService.open();
-            sourceDestinationService.getDestinationAssignments(programId, facilityId).then(function(data) {
-                vm.issueToList = _.sortBy(_.uniq(data, false, function(item) {
+            var getAssignments = draftType === 'issue'
+                ?  sourceDestinationService.getDestinationAssignments
+                : sourceDestinationService.getSourceAssignments;
+
+            getAssignments(programId, facilityId).then(function(data) {
+                vm.locationList = _.sortBy(_.uniq(data, false, function(item) {
                     return item.name;
                 }), 'name');
             })

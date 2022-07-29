@@ -1,0 +1,33 @@
+<div class="requisition-view-section table-container-scroll-x requisition-age-group">
+    <table class="openlmis-table">
+        <thead>
+            <tr>
+                <th>{{vm.group.label}}</td>
+                <th ng-repeat="groupColumn in vm.group.columns | orderBy : 'displayOrder'"
+                popover="{{groupColumn.definition}}"
+                popover-trigger-area="element">{{
+                    groupColumn.label}}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.lineItems | orderBy : 'displayOrder'">
+                <td
+                    popover="{{lineItem.definition}}"
+                    popover-trigger-area="element"
+                >
+                    {{lineItem.label}}
+                </td>
+                <td ng-repeat="column in lineItem.columns | orderObjectBy : 'displayOrder'"
+                ng-if="!(vm.canEdit && vm.isUserInput(lineItem))"
+                >
+                    {{column.value}}
+                </td>
+                <td ng-repeat="column in lineItem.columns | orderObjectBy : 'displayOrder'"
+                    siglus-requisition-grid-cell line-item-field="column" 
+                    ng-if="vm.canEdit && vm.isUserInput(lineItem)"
+                    >
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

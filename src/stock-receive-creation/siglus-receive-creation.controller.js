@@ -29,48 +29,36 @@
         .controller('SiglusStockReceiveCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
-        'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
-        'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService'
+        '$scope', 'initialDraftInfo', 'mergedItems', 'isMerge', '$state', '$stateParams', '$filter',
+        'confirmDiscardService',
+        'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
+        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
+        'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
+        'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
+        'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
+        'siglusRemainingProductsModalService', 'alertConfirmModalService'
     ];
 
-    function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
+    function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
+                        confirmDiscardService,
+                        programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
-                        draft, siglusArchivedProductService) {
+                        draft, siglusArchivedProductService, siglusStockUtilsService, siglusStockIssueService,
+                        siglusRemainingProductsModalService, alertConfirmModalService) {
         var vm = this,
             previousAdded = {};
+
+        vm.initialDraftInfo = initialDraftInfo;
+
+        vm.initialDraftName = '';
+
+        vm.isMerge = isMerge;
 
         vm.draft = draft;
 
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name vvmStatuses
-         * @type {Object}
-         *
-         * @description
-         * Holds list of VVM statuses.
-         */
-        vm.vvmStatuses = VVM_STATUS;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name showVVMStatusColumn
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if VVM Status column should be visible.
-         */
-        vm.showVVMStatusColumn = false;
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
@@ -202,20 +190,23 @@
          * Remove all displayed line items.
          */
         vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
-                .then(function() {
-                    loadingModalService.open();
-                    stockAdjustmentService.deleteDraft(draft.id).then(function() {
-                        $scope.needToConfirm = false;
-                        notificationService.success(vm.key('deleted'));
-                        $state.go('openlmis.stockmanagement.receive', $stateParams, {
-                            reload: true
-                        });
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                });
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
+                    $scope.needToConfirm = false;
+                    notificationService.success(vm.key('deleted'));
+                    $state.go('openlmis.stockmanagement.receive.draft', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
         };
 
         /**
@@ -253,23 +244,6 @@
             if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
                 adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
-            }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name validateReason
-         *
-         * @description
-         * Validate line item reason and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
-                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             }
             return lineItem;
         };
@@ -326,27 +300,80 @@
             obj[property] = null;
         };
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name submit
-         *
-         * @description
-         * Submit all added items.
-         */
-        vm.submit = function() {
-            $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
+        function confirmMergeSubmit(signature, addedLineItems) {
+            generateKitConstituentLineItem(addedLineItems);
+            var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
+                return item.subDraftId;
+            }));
+
+            siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
+                signature, vm.initialDraftInfo, facility.id, subDrafts)
+                .then(function() {
+                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                        facility: facility.id,
+                        program: programId
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    if (error.data.businessErrorExtraData === 'subDrafts quantity not match') {
+                        alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    }
                 });
+        }
+
+        function confirmSubmit(signature, addedLineItems) {
+            generateKitConstituentLineItem(addedLineItems);
+            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                addedLineItems)
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success(vm.key('submitted'));
+                    $scope.needToConfirm = false;
+                    vm.returnBack();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    productDuplicatedHandler(error);
+                });
+        }
+
+        vm.submit = function() {
+            // TODO after submit, download this pdf
+            // downloadPdf();
+            $scope.$broadcast('openlmis-form-submit');
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                lineItem.reason = _.find(reasons, {
+                    name: capitalize($stateParams.draftType)
+                });
+            });
+            if (validateAllAddedItems()) {
+                if (vm.isMerge) {
+                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                        loadingModalService.open();
+                        confirmMergeSubmit(signature, addedLineItems);
+                    });
+                } else {
+                    loadingModalService.open();
+                    confirmSubmit('', addedLineItems);
+                }
+
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
                 }
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
+        };
+
+        vm.returnBack = function() {
+            $state.go('^', $stateParams);
         };
 
         /**
@@ -387,6 +414,26 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
+        function productDuplicatedHandler(error) {
+            if (_.get(error, ['data', 'isBusinessError'])) {
+                var data = _.map(_.get(error, ['data', 'businessErrorExtraData']), function(item) {
+                    item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                    return item;
+                });
+                siglusRemainingProductsModalService.show(data).then(function() {
+                    var lineItems = _.clone(vm.addedLineItems);
+                    _.forEach(lineItems, function(lineItem) {
+                        var hasDuplicated = _.some(data, function(item) {
+                            return item.orderableId === lineItem.orderable.id;
+                        });
+                        if (hasDuplicated) {
+                            vm.remove(lineItem);
+                        }
+                    });
+                });
+            }
+        }
+
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
 
@@ -394,13 +441,20 @@
                 cancelFilter();
             }
 
-            stockAdjustmentService
-                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+            loadingModalService.open();
+
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems, $stateParams.draftType)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
                     $stateParams.isAddProduct = false;
                     vm.search(true);
+                })
+                .catch(function(error) {
+                    productDuplicatedHandler(error);
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
 
         };
@@ -429,8 +483,6 @@
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
                 vm.validateDate(item);
-                vm.validateAssignment(item);
-                vm.validateReason(item);
                 vm.validateLot(item);
                 vm.validateLotDate(item);
             });
@@ -467,34 +519,6 @@
                 .value();
         }
 
-        function confirmSubmit(signature) {
-            loadingModalService.open();
-
-            var addedLineItems = angular.copy(vm.addedLineItems);
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = _.first(lineItem.orderable.programs).programId;
-                lineItem.reason = _.find(reasons, {
-                    name: 'Receive'
-                });
-            });
-
-            generateKitConstituentLineItem(addedLineItems);
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signature)
-                .then(function() {
-                    notificationService.success(vm.key('submitted'));
-
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
-                }, function(errorResponse) {
-                    loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
-                });
-        }
-
         function generateKitConstituentLineItem(addedLineItems) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 return;
@@ -522,11 +546,9 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
+            $state.current.label = isMerge
+                ? messageService.get('stockIssueCreation.mergedDraft')
+                : messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();
@@ -548,7 +570,9 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            vm.program = program;
+            vm.sourceName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, adjustmentType.state);
+
+            vm.programId = programId;
             vm.facility = facility;
             vm.reasons = reasons;
             vm.srcDstAssignments = srcDstAssignments;
@@ -562,15 +586,17 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
         }
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = programId;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
+            $stateParams.draft = draft;
+            $stateParams.initialDraftInfo = initialDraftInfo;
             $stateParams.srcDstAssignments = srcDstAssignments;
+            $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;

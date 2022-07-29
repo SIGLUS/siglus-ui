@@ -1,5 +1,5 @@
 <h2 ng-if="vm.facility && vm.programName">
-  {{'PhysicalInventoryDraftList.title' | message: {'facility': vm.facility.name, 'program': vm.programName} }}
+  {{vm.getTitle() | message: {'facility': vm.facility.name, 'program': vm.programName} }}
 </h2>
 <h2 ng-hide="vm.facility && vm.programName">{{'PhysicalInventoryDraftList.physicalInventory'
 | message}}</h2>

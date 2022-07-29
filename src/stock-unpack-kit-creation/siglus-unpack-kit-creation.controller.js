@@ -29,16 +29,18 @@
         .controller('SiglusUnpackKitCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'kit', 'messageService',
-        'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService', 'siglusStockKitUnpackService',
-        'alertService', 'kitCreationService', 'siglusSignatureModalService', 'notificationService', 'dateUtils',
-        'UNPACK_REASONS'
+        '$scope', '$state', '$stateParams', 'facility', 'allProductsProgram', 'reasons', 'kit',
+        'messageService', 'MAX_INTEGER_VALUE', 'confirmDiscardService', 'loadingModalService',
+        'siglusStockKitUnpackService', 'alertService', 'kitCreationService', 'siglusSignatureModalService',
+        'notificationService', 'dateUtils', 'UNPACK_REASONS', 'sourceDestinationService', 'REASON_CATEGORIES',
+        'UNPACK'
     ];
 
-    function controller($scope, $state, $stateParams, facility, allProductsProgram, kit, messageService,
-                        MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService, siglusStockKitUnpackService,
-                        alertService, kitCreationService, siglusSignatureModalService, notificationService, dateUtils,
-                        UNPACK_REASONS) {
+    function controller($scope, $state, $stateParams, facility, allProductsProgram, reasons, kit,
+                        messageService, MAX_INTEGER_VALUE, confirmDiscardService, loadingModalService,
+                        siglusStockKitUnpackService, alertService, kitCreationService, siglusSignatureModalService,
+                        notificationService, dateUtils, UNPACK_REASONS, sourceDestinationService, REASON_CATEGORIES,
+                        UNPACK) {
         var vm = this;
 
         vm.showProducts = false;
@@ -238,13 +240,28 @@
             } else {
                 siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                     loadingModalService.open();
+                    // SIGLUS-REFACTOR: starts here
+                    var isssueReason = _.find(reasons, {
+                        name: UNPACK.ISSUE_REASON_NAME,
+                        reasonCategory: REASON_CATEGORIES.TRANSFER,
+                        reasonType: UNPACK.ISSUE_REASON_TYPE
+                    });
+                    var receiveReason = _.find(reasons, {
+                        name: UNPACK.RECEIVE_REASON_NAME,
+                        reasonCategory: REASON_CATEGORIES.TRANSFER,
+                        reasonType: UNPACK.RECEIVE_REASON_TYPE
+                    });
+
                     var kitItem = {
                         orderableId: vm.kit.id,
                         quantity: vm.kit.unpackQuantity,
                         occurredDate: dateUtils.toStringDate(new Date()),
                         documentationNo: vm.kit.documentationNo,
                         programId: vm.kit.programId,
-                        reasonId: UNPACK_REASONS.KIT_UNPACK_REASON_ID,
+                        // SIGLUS-REFACTOR: starts here
+                        reasonId: isssueReason.id,
+                        destinationId: UNPACK.UNPACK_KIT_DESTINATION_NODE_ID,
+                        // SIGLUS-REFACTOR: ends here
                         extraData: {}
                     };
                     var lineItems = _.map(vm.products, function(product) {
@@ -257,10 +274,12 @@
                             occurredDate: product.occurredDate,
                             documentationNo: product.documentationNo,
                             programId: product.programId,
-                            reasonId: UNPACK_REASONS.UNPACKED_FROM_KIT_REASON_ID,
+                            reasonId: receiveReason.id,
+                            sourceId: UNPACK.UNPACK_FROM_KIT_SOURCE_NODE_ID,
                             extraData: {}
                         };
                     });
+                    // SIGLUS-REFACTOR: ends here
                     lineItems.unshift(kitItem);
                     kitCreationService.submitUnpack(facility.id, allProductsProgram.id, signature, lineItems)
                         .then(function() {

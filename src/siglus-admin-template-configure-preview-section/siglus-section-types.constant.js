@@ -38,7 +38,8 @@
             REGIMEN: 'regimen',
             SUMMARY: 'summary',
             NUMBER: 'number',
-            GROUP: 'group'
+            GROUP: 'group',
+            COLUMNS: 'columns'
         };
     }
 })();

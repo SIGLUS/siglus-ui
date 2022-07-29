@@ -297,16 +297,18 @@
             <span openlmis-message="view.rnr.mmia.createBy">{{ 'rapid.completedBy' | message }}</span>: {{vm.signaure.submit}}
           </td>
           <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
-            <span openlmis-message="view.rnr.mmia.vistor">{{ 'rapid.approvedBy' | message }}</span>: {{vm.signaure.approve[0]}}
+            <span openlmis-message="view.rnr.mmia.vistor">{{ 'rapid.approvedBy' | message }}</span>: {{vm.signaure.approve}}
           </td>
           <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
             <span openlmis-message="view.rnr.mmia.dateOfCreate">{{ 'rapid.dateOfCreate' | message }}</span>: {{vm.creationDate}}
           </td>
         </tr>
       </table>
+      <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
+      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
     </div>
   </div>
-  <div class="align-right">
+  <div class="align-right" style="clear: both;">
     <button class="btn btn-primary btn-download btn-download-pdf" ng-click="vm.downloadPdf()" openlmis-message="view.rnr.mmia.download.button">{{ 'rapid.downloadPdf' | message }}</button>
   </div>
 </div>

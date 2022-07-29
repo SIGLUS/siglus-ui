@@ -23,9 +23,9 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
-        $stateProvider.state('openlmis.stockmanagement.receive.creation', {
+        $stateProvider.state('openlmis.stockmanagement.receive.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:programId/create?page&size&keyword&draftId',
+            url: '/:draftId/create?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -50,15 +50,16 @@
                 srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
-                size: '50'
+                size: '50',
+                initialDraftInfo: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
-                program: function($stateParams, programService) {
-                    if (!$stateParams.program) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                isMerge: function() {
+                    return false;
+                },
+                programId: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (!$stateParams.facility) {
@@ -69,11 +70,24 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
+                mergedItems: function() {
+                    return [];
+                },
+                initialDraftInfo: function($stateParams, programId, facility, siglusStockIssueService,
+                    ADJUSTMENT_TYPE) {
+                    if ($stateParams.initialDraftInfo) {
+                        return $stateParams.initialDraftInfo;
+                    }
+                    return siglusStockIssueService.queryInitialDraftInfo(programId,
+                        facility.id,
+                        ADJUSTMENT_TYPE.RECEIVE.state);
+                },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
+                orderableGroups: function($stateParams, facility, orderableGroupService) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
+                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
+                            $stateParams.draftId
                         );
                     }
                     return $stateParams.orderableGroups;
@@ -95,12 +109,11 @@
                     return $stateParams.srcDstAssignments;
                 },
                 // SIGLUS-REFACTOR: starts here
-                draft: function($stateParams, stockAdjustmentFactory, user, program, facility, adjustmentType) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return stockAdjustmentFactory.getDraftById(user.user_id, program.id, facility.id,
-                            adjustmentType.state, $stateParams.draftId);
+                draft: function(siglusStockIssueService, $stateParams) {
+                    if ($stateParams.draft) {
+                        return $stateParams.draft;
                     }
-                    return $stateParams.draft;
+                    return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {

@@ -32,7 +32,7 @@
 
     function service(openlmisModalService) {
         this.show = show;
-
+        // SIGLUS-REFACTOR: starts here:add another judgement to disable  choose date
         /**
          * @ngdoc method
          * @methodOf stock-choose-date-modal.chooseDateModalService
@@ -43,7 +43,7 @@
          *
          * @return {Promise} resolved with chosen date and signature.
          */
-        function show(minDate) {
+        function show(minDate, disabledChoose) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'ChooseDateModalController',
@@ -53,11 +53,15 @@
                     resolve: {
                         minDate: function() {
                             return minDate;
+                        },
+                        disabledChoose: function() {
+                            return disabledChoose;
                         }
                     }
                 }
             ).promise;
         }
+        // SIGLUS-REFACTOR: ends here
     }
 
 })();

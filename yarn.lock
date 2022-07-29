@@ -122,6 +122,10 @@
   version "0.1.1"
   resolved "https://codeload.github.com/zzzhan/js-shortid/tar.gz/bb5d7afc3dfa7670130a55235e0c74217735f366"
 
+"@bower_components/jsBarcode@lindell/JsBarcode#3.11.5":
+  version "3.11.5"
+  resolved "https://codeload.github.com/lindell/JsBarcode/tar.gz/2304cc0ec258c51eb67329d02cbc64a6d437e4ed"
+
 "@bower_components/jsPDF@parallax/jsPDF#^1.5.3":
   version "1.5.3"
   resolved "https://codeload.github.com/parallax/jsPDF/tar.gz/f14bac45183666e0f4ec0eb3333b8e761cb0288a"

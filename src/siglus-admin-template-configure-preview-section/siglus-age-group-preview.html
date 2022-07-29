@@ -2,7 +2,7 @@
     <table class="openlmis-table">
         <thead>
             <tr>
-                <th>Faixas Etarias</td>
+                <th>{{vm.group.label}}</td>
                 <th ng-repeat="groupColumn in vm.group.columns | orderBy : 'displayOrder'">{{
                     groupColumn.label}}</td>
             </tr>

@@ -36,7 +36,12 @@
             SOH_REPORT_BY_PRODUCT: 'soh_report_by_product',
             SOH_BY_LOT_REPORT: 'soh_by_lot_report',
             STOCK_STATUS_REPORT: 'stock_status_report',
-            MMIA_REGIMENS_REPORT: 'mmia_regimens_report'
+            MMIA_REGIMENS_REPORT: 'mmia_regimens_report',
+            FULFILLMENT_REPORT: 'fulfillment_report',
+            HISTORICAL_DATA_REPORT: 'historical_data_report',
+            MALARIA_CONSUMPTION_DATA_REPORT: 'malaria_consumption_data_report',
+            REQUISITION_DATA_REPORT: 'requisition_data_report',
+            RAPID_TEST_CONSUMPTION_DATA_REPORT: 'rapid_test_consumption_data_report'
         };
     }
 
