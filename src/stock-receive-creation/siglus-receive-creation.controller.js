@@ -30,7 +30,7 @@
 
     controller.$inject = [
         '$scope', 'initialDraftInfo', 'mergedItems', 'isMerge', '$state', '$stateParams', '$filter',
-        'confirmDiscardService',
+        'confirmDiscardService', 'openlmisDateFilter', 'localStorageFactory',
         'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
@@ -40,7 +40,7 @@
     ];
 
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
-                        confirmDiscardService,
+                        confirmDiscardService, openlmisDateFilter, localStorageFactory,
                         programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
@@ -48,8 +48,9 @@
                         draft, siglusArchivedProductService, siglusStockUtilsService, siglusStockIssueService,
                         siglusRemainingProductsModalService, alertConfirmModalService) {
         var vm = this,
-            previousAdded = {};
-
+            previousAdded = {},
+            currentUser = localStorageFactory('currentUser');
+        vm.receivedBy = currentUser.getAll('username').username;
         vm.initialDraftInfo = initialDraftInfo;
 
         vm.initialDraftName = '';
@@ -300,7 +301,7 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signature, addedLineItems) {
+        function confirmMergeSubmit(signature, addedLineItems, downloadTask) {
             generateKitConstituentLineItem(addedLineItems);
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
@@ -309,6 +310,7 @@
             siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
                 signature, vm.initialDraftInfo, facility.id, subDrafts)
                 .then(function() {
+                    downloadTask();
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
                         program: programId
@@ -338,9 +340,218 @@
                 });
         }
 
+        function getPdfName(facilityName, nowTime) {
+            return (
+                'Issue_'
+                + facilityName
+                + '_'
+                + nowTime
+                + '.pdf'
+            );
+        }
+        function downloadPdf() {
+            // var node = document.getElementById('waitDownload');
+            var sectionFirst = document.getElementById('sectionFirst');
+            var sectionSecond = document.getElementById('sectionSecond');
+            var sectionThird = document.getElementById('sectionThird');
+            var sectionFouth = document.getElementById('sectionFouth');
+            var subInformation = document.getElementById('subInformation');
+            // var contentWidth = node.offsetWidth;
+            // var contentHeight = node.scrollHeight;
+            var rate = 585 / 1260;
+            var a4Height = 781.89 / rate;
+            var leftHeight = sectionFirst.offsetHeight
+                    + sectionSecond.offsetHeight
+                    + sectionThird.offsetHeight
+                    + sectionFouth.offsetHeight
+                    + subInformation.offsetHeight;
+            var canUseHeight = a4Height - leftHeight;
+            // var imgWidth = 595.28;
+            // var imgHeight = 592.28 / contentWidth * contentHeight;
+            var leftTrNodes = document.querySelectorAll('#calcTr');
+            var leftTrNodesArray = Array.from(leftTrNodes);
+            var headerAndFooterPromiseList = [
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionFirst, {
+                    scale: 1,
+                    width: sectionFirst.offsetWidth,
+                    height: sectionFirst.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: sectionFirst.offsetWidth,
+                        nodeHeight: sectionFirst.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionSecond, {
+                    scale: 1,
+                    width: sectionSecond.offsetWidth,
+                    height: sectionSecond.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: sectionSecond.offsetWidth,
+                        nodeHeight: sectionSecond.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionThird, {
+                    scale: 1,
+                    width: sectionThird.offsetWidth,
+                    height: sectionThird.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: sectionThird.offsetWidth,
+                        nodeHeight: sectionThird.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionFouth, {
+                    scale: 1,
+                    width: sectionFouth.offsetWidth,
+                    height: sectionFouth.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: sectionFouth.offsetWidth,
+                        nodeHeight: sectionFouth.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(subInformation, {
+                    scale: 1,
+                    width: subInformation.offsetWidth,
+                    height: subInformation.offsetHeight + 30
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: subInformation.offsetWidth,
+                        nodeHeight: subInformation.offsetHeight + 30
+                    };
+                })
+            ];
+            var promiseList = [];
+            // eslint-disable-next-line no-undef
+            var PDF = new jsPDF('', 'pt', 'a4');
+            _.forEach(leftTrNodesArray, function(item) {
+                // eslint-disable-next-line no-undef
+                promiseList.push(domtoimage.toPng(item, {
+                    scale: 1,
+                    width: item.offsetWidth,
+                    height: item.offsetHeight + 2
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: item.offsetWidth,
+                        nodeHeight: item.offsetHeight
+                    };
+                }));
+            });
+            $q.all(headerAndFooterPromiseList).then(function(reback) {
+                var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                var realHeight = 0;
+                var pageNumber = 0;
+                $q.all(promiseList).then(function(result) {
+                    PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                    PDF.addImage(
+                        reback[1].data,
+                        'JPEG',
+                        5,
+                        reback[0].nodeHeight * rate,
+                        585,
+                        reback[1].nodeHeight * rate
+                    );
+                    _.forEach(result, function(res, index) {
+                        realHeight = realHeight + result[index].nodeHeight;
+                        if (realHeight > canUseHeight) {
+                            pageNumber = pageNumber + 1;
+                            PDF.addImage(
+                                reback[2].data,
+                                'JPEG',
+                                5,
+                                (
+                                    offsetHeight
+                                ) * rate,
+                                585,
+                                reback[2].nodeHeight * rate
+                            );
+                            PDF.addImage(
+                                reback[3].data,
+                                'JPEG',
+                                5,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[3].nodeHeight * rate
+                            );
+                            PDF.addImage(
+                                reback[4].data,
+                                'JPEG',
+                                5,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[4].nodeHeight * rate
+                            );
+                            PDF.addPage();
+                            PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                            PDF.addImage(reback[1].data, 'JPEG', 5, reback[0].nodeHeight * rate, 585, reback[1].nodeHeight * rate);
+                            // PDF.text(
+                            //     pageNumber,
+                            //     585 / 2,
+                            //     (offsetHeight + reback[1].nodeHeight + reback[2].nodeHeight + 4) * rate
+                            // );
+                            offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                            realHeight = 0;
+                        }
+                        PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, res.nodeWidth * rate, res.nodeHeight * rate);
+                        offsetHeight = offsetHeight + result[index].nodeHeight;
+                        // PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
+                        // PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
+                    });
+                    PDF.addImage(
+                        reback[2].data,
+                        'JPEG',
+                        5,
+                        (offsetHeight) * rate,
+                        585,
+                        reback[2].nodeHeight * rate
+                    );
+                    PDF.addImage(
+                        reback[3].data,
+                        'JPEG',
+                        5,
+                        (offsetHeight + reback[2].nodeHeight) * rate,
+                        585,
+                        reback[3].nodeHeight * rate
+                    );
+                    PDF.addImage(
+                        reback[4].data,
+                        'JPEG',
+                        5,
+                        (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
+                        585,
+                        reback[4].nodeHeight * rate
+                    );
+                    PDF.save(
+                        getPdfName(
+                            vm.facility.name,
+                            vm.issueVoucherDate
+                        )
+                    );
+                });
+            });
+        }
+
         vm.submit = function() {
             // TODO after submit, download this pdf
-            // downloadPdf();
             $scope.$broadcast('openlmis-form-submit');
 
             function capitalize(str) {
@@ -356,8 +567,10 @@
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
                     siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
+                        vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
+                        // downloadPdf();
                         loadingModalService.open();
-                        confirmMergeSubmit(signature, addedLineItems);
+                        confirmMergeSubmit(signature, addedLineItems, downloadPdf);
                     });
                 } else {
                     loadingModalService.open();
@@ -580,12 +793,19 @@
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-
+            // 计算total value
+            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                r = r + c.quantity * 10;
+                return r;
+            }, 0);
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
+            console.log('vm --->>>', vm);
+            vm.supplier = vm.sourceName;
+            vm.client = vm.facility.name;
         }
 
         function initStateParams() {

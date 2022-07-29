@@ -9,6 +9,9 @@
     // }
     .label-checkbox {
       width: 100%;
+      label {
+        font-size: 17px;
+      }
       input {
         float: right;
       }
@@ -20,39 +23,39 @@
       border: 1px solid #000000;
     }
     .section-first {
-      width: 1250px;
+      width: 1260px;
       display: flex;
     }
     .section-second {
-      width: 1250px;
+      width: 1260px;
       display: flex;
     }
     .section-third {
-      width: 1250px;
+      width: 1260px;
       height: 58px;
       display: flex;
       align-items: center;
       font-weight: 700;
       font-size: 18px;
-      :first-child {
-        margin-left: 685px;
+      .issue-voucher-title {
+        margin-left: 690px;
+        margin-right: 8px;
       }
       .issue-voucher {
-        width: 104px;
+        width: 106px;
         height: 30px;
-        margin-left: 8px;
         background: #FFFFFF;
         border: 2px solid #000000;
       }
     }
     .section-fouth {
       padding: 5px 8px;
-      width: 1250px;
+      width: 1260px;
       height: 30px;
       display: flex;
       align-items: center;
       background: #FFFFFF;
-      border: 1px solid #000000;
+      border: 2px solid #000000;
       font-weight: 700;
       font-size: 18px;
       .fouth-conferred {
@@ -63,7 +66,7 @@
       }
     }
     .sub-information {
-      width: 1250px;
+      width: 1260px;
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
@@ -78,14 +81,15 @@
   
     table {
       width: 100%;
+      border-collapse: collapse;
       // background: #FFFFFF;
       tr {
-        height: 30px;
         text-align: center;
       }
   
       td {
-        border: 1px solid black;
+        box-sizing: border-box;
+        border: 2px solid black;
         word-wrap: break-word;
         word-break: break-all;
         padding: 0 4px;
