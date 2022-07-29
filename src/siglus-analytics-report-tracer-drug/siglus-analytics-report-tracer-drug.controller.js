@@ -52,13 +52,7 @@
 
         vm.startMaxDate = moment().format(DATE_FORMAT);
 
-        vm.startMinDate = moment().subtract(1, 'year')
-            .format(DATE_FORMAT);
-
         vm.endMaxDate = moment().format(DATE_FORMAT);
-
-        vm.endMinDate =  moment().subtract(1, 'year')
-            .format(DATE_FORMAT);
 
         function onInit() {
 
@@ -80,8 +74,13 @@
                     districtList.push(item);
                 }
             });
-            provinceList.push(all);
-            districtList.push(all);
+            if (_.size(provinceList) > 1) {
+                provinceList.push(all);
+            }
+
+            if (_.size(districtList) > 1) {
+                districtList.push(all);
+            }
 
             vm.provinceList = provinceList;
             vm.districtList = districtList;
@@ -127,11 +126,16 @@
                 return vm.startDate;
             }, function(newValue) {
                 if (_.isEmpty(newValue)) {
-
-                    vm.endMinDate =  moment().subtract(1, 'year')
+                    vm.startMaxDate =  moment()
                         .format(DATE_FORMAT);
                 } else {
                     vm.endMinDate = newValue;
+                    if (moment() > moment(newValue).add(1, 'year')) {
+                        vm.endMaxDate =  moment(newValue).add(1, 'year')
+                            .format(DATE_FORMAT);
+                    } else {
+                        vm.endMaxDate =  moment().format(DATE_FORMAT);
+                    }
                 }
 
             }, true);
@@ -140,11 +144,13 @@
                 return vm.endDate;
             }, function(newValue) {
                 if (_.isEmpty(newValue)) {
-
-                    vm.startMaxDate =  moment()
-                        .format(DATE_FORMAT);
+                    vm.startMaxDate = moment().format(DATE_FORMAT);
+                    vm.startMinDate = undefined;
                 } else {
                     vm.startMaxDate = newValue;
+                    vm.startMinDate =  moment(newValue).subtract(1, 'year')
+                        .format(DATE_FORMAT);
+
                 }
             }, true);
         }
@@ -154,71 +160,13 @@
         });
 
         function exportData() {
-            //loadingModalService.open();
-
-            // var exportUrl = analyticsReportUrlFactory('/api/siglusapi/report/tracerDrug/excel')
-            // + '?provinceCode='
-            // + vm.provinceCode +
-            // + '&districtCode='
-            // + vm.districtCode
-            // + '&startDate='
-            // + vm.startDate
-            // + '&endDate='
-            // + vm.endDate
-            // + '&drugCode='
-            // + vm.drugCode;
-
-            // var link = document.createElement('a');
-            // link.style.display = 'none';
-            // link.href = exportUrl;
-            // link.setAttribute('download', 'test.xlsx');
-            // document.body.appendChild(link);
-            // link.click();
-            // link.remove();
-
-            //window.open(exportUrl, '_blank');
             analyticsReportMetabaseService.exportTracerDrugReport(vm.drugCode,
                 vm.provinceCode,
                 vm.districtCode,
                 vm.startDate,
                 vm.endDate);
-            /*
-                .$promise.then(function(result) {
-                console.log(result);
-                //loadingModalService.close();
-                // var blob = new Blob([result], {
-                //     type: 'application/vnd.ms-excel'
-                // });
-                var objectUrl = URL.createObjectURL(result);
-                //利用浏览器打开URL实现下载
-                var a = document.createElement('a');
-                document.body.appendChild(a);
-                a.setAttribute('style', 'display:none');
-                a.setAttribute('href', objectUrl);
-                var filename = 'test.xlsx';
-                a.setAttribute('download', filename);
-                a.click();
-                URL.revokeObjectURL(objectUrl);
-
-                // var BLOB = result;
-                // var fileReader = new FileReader();
-                // fileReader.readAsDataURL(BLOB);
-                // fileReader.onload = function(event) {
-                //     var a = document.createElement('a');
-                //     a.download = 'tracer_drug_information_'
-                 + moment().format('YYYY-MM-DDTHH_mm_ss.SSSSSS') + 'Z.xlsx';
-                //     a.href = event.target.result;
-                //     document.body.appendChild(a);
-                //     a.click();
-                //     document.body.removeChild(a);
-                // };
-            })
-                .catch(function() {
-                    loadingModalService.close();
-                });
-                */
-
         }
+
         function iframeLoadedCallBack() {
             // eslint-disable-next-line no-undef
             iFrameResize({}, '#metabase-iframe');
