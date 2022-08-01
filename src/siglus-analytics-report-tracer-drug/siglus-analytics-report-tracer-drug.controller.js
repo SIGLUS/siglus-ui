@@ -128,6 +128,9 @@
                 if (_.isEmpty(newValue)) {
                     vm.startMaxDate =  moment()
                         .format(DATE_FORMAT);
+                    vm.endMaxDate =  moment().
+                        format(DATE_FORMAT);
+                    vm.endMinDate =  undefined;
                 } else {
                     vm.endMinDate = newValue;
                     if (moment() > moment(newValue).add(1, 'year')) {
