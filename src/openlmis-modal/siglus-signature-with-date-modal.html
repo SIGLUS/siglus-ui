@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <div class="date-picker-radio form-group">
                     <label class="is-required">{{'adminServiceAccount.date' | message}}</label>
-                    <div class="date-picker-radio-group">
+                    <div class="date-picker-radio-group" ng-if="!vm.onlyShowToday">
                         <div class="radio-item">
                             <input type="radio" ng-model="vm.isToday"
                                    ng-value="true" required ng-change="vm.changeDateType(true)"/>
@@ -18,14 +18,11 @@
                             <label class="radio">{{'openlmisModal.today' | message}}</label>
                         </div>
 
-                        <div class="radio-item" ng-if="!vm.onlyShowToday">
+                        <div class="radio-item">
                             <input type="radio" ng-model="vm.isToday" ng-value="false" required
                                    ng-change="vm.changeDateType(false)"/>
                             <label class="radio">{{'openlmisModal.beforeToday' | message}}</label>
                         </div>
-
-
-
                     </div>
                     <input type="date" autocomplete="off" ng-disabled="vm.isToday" ng-model="vm.occurredDate"
                            max-date="vm.maxDate"
