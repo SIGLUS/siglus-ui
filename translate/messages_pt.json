@@ -2351,5 +2351,9 @@
   "stockIssueCreation.draftHasBeenUpdated": "A lista de rascunhos foi atualizada. Verifique-a novamente antes de submeter o rascunho agregado.",
   "analyticsReportMetabase.mmiaRegimens.title": "Relatório de Regimes MMIA",
   "stockIssueInitialModal.hasReceiveStartedError": "Um processo de receber já foi iniciado, finalize primeiro.",
-  "adminFacilityList.eraseSuccess": "Erasing is successful."
+  "adminFacilityList.eraseSuccess": "Erasing is successful.",
+  "openlmisModal.date": "Data",
+  "stockReceiveCreation.itemDuplicated": "The lot under the same product cannot be repeated, please enter a new one.",
+  "openlmisModal.today": "Today",
+  "openlmisModal.beforeToday": "Not today"
 }

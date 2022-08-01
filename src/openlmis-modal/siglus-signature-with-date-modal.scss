@@ -1,0 +1,14 @@
+.date-picker-radio {
+  .date-picker-radio-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+
+    input[type='radio'] {
+      margin: 0 4px 0 0;
+    }
+    label {
+      margin-right: 24px;
+    }
+  }
+}

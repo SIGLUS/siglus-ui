@@ -34,7 +34,7 @@
         'messageService', 'isMerge', 'srcDstAssignments',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'stockAdjustmentService', 'openlmisDateFilter',
+        'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
         'siglusStockUtilsService'
     ];
@@ -43,9 +43,9 @@
                         confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
                         messageService, isMerge, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
-                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService,
-                        openlmisDateFilter, siglusRemainingProductsModalService, siglusStockIssueService,
-                        alertConfirmModalService, siglusStockUtilsService) {
+                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
+                        stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
+                        siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService) {
         var vm = this,
             previousAdded = {};
 
@@ -330,21 +330,6 @@
         /**
      * @ngdoc method
      * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-     * @name validateDate
-     *
-     * @description
-     * Validate line item occurred date and returns self.
-     *
-     * @param {Object} lineItem line item to be validated.
-     */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
-            return lineItem;
-        };
-
-        /**
-     * @ngdoc method
-     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
      * @name clearFreeText
      *
      * @description
@@ -406,13 +391,13 @@
         //     });
         // };
 
-        function confirmMergeSubmit(signature, addedLineItems) {
+        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
             }));
 
             siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
-                signature, vm.initialDraftInfo, facility.id, subDrafts)
+                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
@@ -459,10 +444,11 @@
             });
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
-                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                        loadingModalService.open();
-                        confirmMergeSubmit(signature, addedLineItems);
-                    });
+                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
+                        .then(function(data) {
+                            loadingModalService.open();
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                        });
                 } else {
                     loadingModalService.open();
                     confirmSubmit('', addedLineItems);
@@ -610,7 +596,6 @@
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
-                vm.validateDate(item);
                 vm.validateReason(item);
             });
             return _.chain(vm.addedLineItems)
