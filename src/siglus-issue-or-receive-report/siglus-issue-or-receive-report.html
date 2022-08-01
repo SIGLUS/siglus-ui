@@ -63,8 +63,8 @@
                 <div style="
                       width: 8px;
                       height: 15px;
-                      border-right: 4px solid red;
-                      border-bottom: 4px solid red;
+                      border-right: 4px solid #000;
+                      border-bottom: 4px solid #000;
                       transform: rotate(40deg);
                       position: absolute;
                       top: -3px;
@@ -176,14 +176,14 @@
             <td></td>
             <td></td>
             <td></td>
-            <td style="border: none;"></td>
+            <td style="border: none !important;"></td>
             <td style="width: 84px;"></td>
             <td style="width: 84px;"></td>
           </tr>
           <tr>
             <td class="background-black black-width"></td>
             <td class="text__left" colspan="10">{{ 'siglusIssueOrReceiveReport.filledInByTheSupplier' | message }}</td>
-            <td style="width: 14px; border: none;"></td>
+            <td style="width: 14px; border: none !important;"></td>
             <td colspan="2">{{ 'siglusIssueOrReceiveReport.filledInByTheClient' | message }}</td>
             <!-- <td>123</td> -->
           </tr>
@@ -195,7 +195,7 @@
             </td>
             <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.lotNr' | message }}
             </td>
-            <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
+            <td style="width: 85px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
             </td>
             <!-- keep blank -->
             <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityOrdered' | message }}
@@ -203,9 +203,9 @@
             <!-- TODO issue quantity -->
             <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.suppliedQuantity' | message }}
             </td>
-            <td class="report--main-font">{{ 'siglusIssueOrReceiveReport.price' | message }}</td>
+            <td style="width: 50px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.price' | message }}</td>
             <td style="width: 104px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.value' | message }}</td>
-            <td style="border: none;"></td>
+            <td style="border: none !important;"></td>
             <!-- keep blank -->
             <td style="padding: 0 6px; height: 60px; font-weight: 700;
             font-size: 14px;">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}</td>
@@ -226,27 +226,29 @@
             <td>{{ 'siglusIssueOrReceiveReport.qf' | message }}</td>
             <td>{{ 'siglusIssueOrReceiveReport.pu' | message }}</td>
             <td>{{ 'siglusIssueOrReceiveReport.qf' | message }} x {{ 'siglusIssueOrReceiveReport.pu' | message }}</td>
-            <td style="border: none;"></td>
+            <td style="border: none !important;"></td>
             <td style="height: 30px;">{{ 'siglusIssueOrReceiveReport.qr' | message }}</td>
             <td>{{ 'siglusIssueOrReceiveReport.qr' | message }} - {{ 'siglusIssueOrReceiveReport.qf' | message }}</td>
           </tr>
         </thead>
-        <tr id="calcTr" ng-repeat="item in vm.addedLineItems">
-          <td class="background-black black-width" style="font-size: 14px;">{{ $index + 1 }}</td>
-          <td style="width: 30px;">{{ item.productCode }}</td>
-          <td style="width: 260px;">{{ item.productName }}</td>
-          <td></td>
-          <td></td>
-          <td style="width: 100px;">{{ item.lotCode }}</td>
-          <td>{{ item.expirationDate }}</td>
-          <td>{{ item.stockOnHand }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>10</td>
-          <td style="width: 30px;">{{ item.quantity * 10 }}</td>
-          <td style="border: none;"></td>
-          <td>123</td>
-          <td>123</td>
-        </tr>
+        <tbody>
+          <tr id="calcTr" ng-repeat="item in vm.addedLineItems">
+            <td class="background-black black-width" style="font-size: 14px;">{{ $index + 1 }}</td>
+            <td style="width: 30px;">{{ item.productCode }}</td>
+            <td style="width: 260px;">{{ item.productName }}</td>
+            <td></td>
+            <td></td>
+            <td style="width: 100px;">{{ item.lotCode }}</td>
+            <td>{{ item.expirationDate }}</td>
+            <td>{{ item.stockOnHand }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>10</td>
+            <td style="width: 30px;">{{ item.quantity * 10 }}</td>
+            <td style="border: none !important;"></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
       </table>
     </section>
     <section id="sectionThird" class="section-third">
