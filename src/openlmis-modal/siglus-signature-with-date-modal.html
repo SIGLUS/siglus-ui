@@ -11,18 +11,25 @@
                 <div class="date-picker-radio form-group">
                     <label class="is-required">{{'adminServiceAccount.date' | message}}</label>
                     <div class="date-picker-radio-group">
-                        <input type="radio" ng-model="vm.isToday"
-                               ng-value="true" required ng-change="vm.changeDateType(true)"/>
-                        {{'openlmisModal.today' | message}}
-                        <label class="radio"></label>
-                        <input type="radio" ng-model="vm.isToday" ng-value="false" required
-                               ng-change="vm.changeDateType(false)"/>
-                        {{'openlmisModal.beforeToday' | message}}
-                        <label class="radio" ng-if="!vm.onlyShowToday">
-                        </label>
+                        <div class="radio-item">
+                            <input type="radio" ng-model="vm.isToday"
+                                   ng-value="true" required ng-change="vm.changeDateType(true)"/>
+
+                            <label class="radio">{{'openlmisModal.today' | message}}</label>
+                        </div>
+
+                        <div class="radio-item" ng-if="!vm.onlyShowToday">
+                            <input type="radio" ng-model="vm.isToday" ng-value="false" required
+                                   ng-change="vm.changeDateType(false)"/>
+                            <label class="radio">{{'openlmisModal.beforeToday' | message}}</label>
+                        </div>
+
+
+
                     </div>
-                    <input type="date" autocomplete="off" ng-disabled="vm.isToday" ng-model="vm.occurredDate" max-date="vm.maxDate"
-                           required />
+                    <input type="date" autocomplete="off" ng-disabled="vm.isToday" ng-model="vm.occurredDate"
+                           max-date="vm.maxDate"
+                           required/>
                 </div>
                 <div class="form-group">
                     <label class="is-required">{{vm.message | message}}</label>
