@@ -384,7 +384,7 @@
             var subInformation = document.getElementById('subInformation');
             // var contentWidth = node.offsetWidth;
             // var contentHeight = node.scrollHeight;
-            var rate = 585 / 1260;
+            var rate = 585 / 1250;
             var a4Height = 781.89 / rate;
             var leftHeight = sectionFirst.offsetHeight
                     + sectionSecond.offsetHeight
@@ -400,60 +400,60 @@
                 // eslint-disable-next-line no-undef
                 domtoimage.toPng(sectionFirst, {
                     scale: 1,
-                    width: sectionFirst.offsetWidth,
+                    width: 1250,
                     height: sectionFirst.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: sectionFirst.offsetWidth,
+                        nodeWidth: 1250,
                         nodeHeight: sectionFirst.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
                 domtoimage.toPng(sectionSecond, {
                     scale: 1,
-                    width: sectionSecond.offsetWidth,
+                    width: 1250,
                     height: sectionSecond.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: sectionSecond.offsetWidth,
+                        nodeWidth: 1250,
                         nodeHeight: sectionSecond.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
                 domtoimage.toPng(sectionThird, {
                     scale: 1,
-                    width: sectionThird.offsetWidth,
+                    width: 1250,
                     height: sectionThird.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: sectionThird.offsetWidth,
+                        nodeWidth: 1250,
                         nodeHeight: sectionThird.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
                 domtoimage.toPng(sectionFouth, {
                     scale: 1,
-                    width: sectionFouth.offsetWidth,
+                    width: 1250,
                     height: sectionFouth.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: sectionFouth.offsetWidth,
+                        nodeWidth: 1250,
                         nodeHeight: sectionFouth.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
                 domtoimage.toPng(subInformation, {
                     scale: 1,
-                    width: subInformation.offsetWidth,
+                    width: 1250,
                     height: subInformation.offsetHeight + 30
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: subInformation.offsetWidth,
+                        nodeWidth: 1250,
                         nodeHeight: subInformation.offsetHeight + 30
                     };
                 })
@@ -465,12 +465,12 @@
                 // eslint-disable-next-line no-undef
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
-                    width: item.offsetWidth,
+                    width: 1250,
                     height: item.offsetHeight + 2
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: item.offsetWidth,
+                        nodeWidth: 1250,
                         nodeHeight: item.offsetHeight
                     };
                 }));
@@ -479,7 +479,9 @@
                 var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                 var realHeight = 0;
                 var pageNumber = 0;
+                console.log('reback', reback);
                 $q.all(promiseList).then(function(result) {
+                    console.log('result', result);
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     PDF.addImage(
                         reback[1].data,
@@ -528,7 +530,13 @@
                             );
                             PDF.addPage();
                             PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
-                            PDF.addImage(reback[1].data, 'JPEG', 5, reback[0].nodeHeight * rate, 585, reback[1].nodeHeight * rate);
+                            PDF.addImage(
+                                reback[1].data,
+                                'JPEG',
+                                5,
+                                reback[0].nodeHeight * rate, 585,
+                                reback[1].nodeHeight * rate
+                            );
                             // PDF.text(
                             //     pageNumber,
                             //     585 / 2,
@@ -537,7 +545,14 @@
                             offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                             realHeight = 0;
                         }
-                        PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, res.nodeWidth * rate, res.nodeHeight * rate);
+                        PDF.addImage(
+                            res.data,
+                            'JPEG',
+                            5,
+                            offsetHeight * rate,
+                            res.nodeWidth * rate,
+                            res.nodeHeight * rate
+                        );
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                         // PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
                         // PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
@@ -629,8 +644,9 @@
                 if (vm.isMerge) {
                     siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
                         vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
-                        loadingModalService.open();
-                        confirmMergeSubmit(signature, addedLineItems, downloadPdf);
+                        downloadPdf();
+                        // loadingModalService.open();
+                        // confirmMergeSubmit(signature, addedLineItems, downloadPdf);
                     });
                 } else {
                     loadingModalService.open();
