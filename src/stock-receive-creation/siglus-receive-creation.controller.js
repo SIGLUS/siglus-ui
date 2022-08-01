@@ -34,7 +34,7 @@
         'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
-        'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
+        'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
         'siglusRemainingProductsModalService', 'alertConfirmModalService'
     ];
@@ -44,9 +44,9 @@
                         programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
-                        draft, siglusArchivedProductService, siglusStockUtilsService, siglusStockIssueService,
-                        siglusRemainingProductsModalService, alertConfirmModalService) {
+                        ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
+                        stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
+                        siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService) {
         var vm = this,
             previousAdded = {};
 
@@ -176,6 +176,7 @@
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
+            vm.validateLotCodeDuplicated();
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
@@ -248,14 +249,34 @@
             return lineItem;
         };
 
+        vm.validateLotCodeDuplicated = function() {
+            var groupItems = _.groupBy(vm.addedLineItems, 'orderableId');
+            _.forEach(vm.addedLineItems, function(item) {
+                var hasDupliatedItems = _.size(_.filter(groupItems[item.orderableId], function(groupItem) {
+                    var lotCode = _.get(groupItem, ['lot', 'lotCode']);
+                    return lotCode && lotCode === _.get(item, ['lot', 'lotCode']);
+                })) > 1;
+                if (item.$errors.lotCodeInvalid !== messageService.get('openlmisForm.required')) {
+                    if (hasDupliatedItems) {
+                        item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
+                    } else {
+                        item.$errors.lotCodeInvalid = false;
+                    }
+                }
+            });
+        };
+
         vm.validateLot = function(lineItem) {
             if (!lineItem.isKit) {
+
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
                     lineItem.$errors.lotCodeInvalid = false;
                 } else {
                     lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
                 }
             }
+
+            vm.validateLotCodeDuplicated();
             return lineItem;
         };
 
@@ -267,21 +288,6 @@
                     lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
                 }
             }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
             return lineItem;
         };
 
@@ -300,14 +306,14 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signature, addedLineItems) {
+        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
             generateKitConstituentLineItem(addedLineItems);
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
             }));
 
             siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
-                signature, vm.initialDraftInfo, facility.id, subDrafts)
+                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
@@ -355,10 +361,11 @@
             });
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
-                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                        loadingModalService.open();
-                        confirmMergeSubmit(signature, addedLineItems);
-                    });
+                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
+                        then(function(data) {
+                            loadingModalService.open();
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                        });
                 } else {
                     loadingModalService.open();
                     confirmSubmit('', addedLineItems);
@@ -482,7 +489,6 @@
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
-                vm.validateDate(item);
                 vm.validateLot(item);
                 vm.validateLotDate(item);
             });

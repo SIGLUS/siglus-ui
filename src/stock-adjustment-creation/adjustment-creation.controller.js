@@ -35,7 +35,7 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
-        'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
+        'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
         'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService'
         // SIGLUS-REFACTOR: ends here
     ];
@@ -45,7 +45,7 @@
                         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
-                        siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
+                        siglusSignatureWithDateModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
                         siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService) {
         var vm = this,
             previousAdded = {};
@@ -438,21 +438,6 @@
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
          * @name clearFreeText
          *
          * @description
@@ -482,10 +467,11 @@
                 //     number: vm.addedLineItems.length
                 // });
                 // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
-                });
+                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
+                    .then(function(signatureInfo) {
+                        loadingModalService.open();
+                        confirmSubmit(signatureInfo);
+                    });
             } else {
                 cancelFilter();
                 // vm.keyword = null;
@@ -574,7 +560,6 @@
 
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
-                vm.validateDate(item);
                 vm.validateAssignment(item);
                 vm.validateReason(item);
                 vm.validateReasonFreeText(item);
@@ -617,7 +602,7 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function confirmSubmit(signature) {
+        function confirmSubmit(signatureInfo) {
             loadingModalService.open();
 
             var addedLineItems = angular.copy(vm.addedLineItems);
@@ -628,7 +613,7 @@
 
             // generateKitConstituentLineItem(addedLineItems);
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signature)
+                addedLineItems, adjustmentType, signatureInfo.signature, signatureInfo.occurredDate)
             // SIGLUS-REFACTOR: ends here
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
