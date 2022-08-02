@@ -70,7 +70,6 @@
                 });
             }), 'displayOrder');
             emergencyCount();
-            // console.log('vm ---->>>', vm);
         }
 
         function emergencyCount() {

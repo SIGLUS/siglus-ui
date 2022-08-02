@@ -99,10 +99,6 @@
             return products;
         }
 
-        // function close() {
-        //     openlmisModalService.$hide();
-        // }
-
         /**
          * @ngdoc method
          * @methodOf select-products-modal.selectProductsModalService
