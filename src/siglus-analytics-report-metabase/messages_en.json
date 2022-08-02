@@ -12,5 +12,6 @@
   "analyticsReportMetabase.historicalData.title":"Historical Data Report",
   "analyticsReportMetabase.malariaConsumptionData.title":"Malaria Consumption Data Report",
   "analyticsReportMetabase.requisitionData.title":"Requisition Data Report",
-  "analyticsReportMetabase.rapidTestConsumptionData.title":"Rapid Test Consumption Data Report"
+  "analyticsReportMetabase.rapidTestConsumptionData.title":"Rapid Test Consumption Data Report",
+  "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report"
 }

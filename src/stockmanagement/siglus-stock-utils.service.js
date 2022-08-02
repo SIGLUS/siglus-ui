@@ -28,9 +28,9 @@
         .module('stockmanagement')
         .service('siglusStockUtilsService', service);
 
-    service.$inject = [];
+    service.$inject = ['moment'];
 
-    function service() {
+    function service(moment) {
 
         this.getInitialDraftName = function(initialDraftInfo, draftType) {
             var typeKeyNameMapper = {
@@ -50,6 +50,10 @@
             };
 
             return !_.isEmpty(_.get(initialDraftInfo, idKeyNameMapper[draftType]));
+        };
+
+        this.formatDate = function(date) {
+            return date ? moment(date).format('YYYY-MM-DD') : date;
         };
     }
 })();

@@ -34,7 +34,7 @@
         'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
-        'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
+        'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
         'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q'
     ];
@@ -44,9 +44,15 @@
                         programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
+<<<<<<< HEAD
                         ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
                         draft, siglusArchivedProductService, siglusStockUtilsService, siglusStockIssueService,
                         siglusRemainingProductsModalService, alertConfirmModalService, $q) {
+=======
+                        ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
+                        stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
+                        siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService) {
+>>>>>>> master
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -177,6 +183,7 @@
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
+            vm.validateLotCodeDuplicated();
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
@@ -249,14 +256,34 @@
             return lineItem;
         };
 
+        vm.validateLotCodeDuplicated = function() {
+            var groupItems = _.groupBy(vm.addedLineItems, 'orderableId');
+            _.forEach(vm.addedLineItems, function(item) {
+                var hasDupliatedItems = _.size(_.filter(groupItems[item.orderableId], function(groupItem) {
+                    var lotCode = _.get(groupItem, ['lot', 'lotCode']);
+                    return lotCode && lotCode === _.get(item, ['lot', 'lotCode']);
+                })) > 1;
+                if (item.$errors.lotCodeInvalid !== messageService.get('openlmisForm.required')) {
+                    if (hasDupliatedItems) {
+                        item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
+                    } else {
+                        item.$errors.lotCodeInvalid = false;
+                    }
+                }
+            });
+        };
+
         vm.validateLot = function(lineItem) {
             if (!lineItem.isKit) {
+
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
                     lineItem.$errors.lotCodeInvalid = false;
                 } else {
                     lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
                 }
             }
+
+            vm.validateLotCodeDuplicated();
             return lineItem;
         };
 
@@ -268,21 +295,6 @@
                     lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
                 }
             }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
             return lineItem;
         };
 
@@ -301,14 +313,14 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signature, addedLineItems, downloadTask) {
+        function confirmMergeSubmit(signature, addedLineItems, occurredDate, downloadTask) {
             generateKitConstituentLineItem(addedLineItems);
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
             }));
 
             siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
-                signature, vm.initialDraftInfo, facility.id, subDrafts)
+                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
                     downloadTask();
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -327,7 +339,7 @@
         function confirmSubmit(signature, addedLineItems) {
             generateKitConstituentLineItem(addedLineItems);
             siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                addedLineItems)
+                addedLineItems, $stateParams.draftType)
                 .then(function() {
                     loadingModalService.close();
                     notificationService.success(vm.key('submitted'));
@@ -350,27 +362,32 @@
             );
         }
         function downloadPdf() {
-            // var node = document.getElementById('waitDownload');
+            // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
             var sectionThird = document.getElementById('sectionThird');
             var sectionFouth = document.getElementById('sectionFouth');
             var subInformation = document.getElementById('subInformation');
-            // var contentWidth = node.offsetWidth;
-            // var contentHeight = node.scrollHeight;
-            var rate = 585 / 1250;
-            var a4Height = 781.89 / rate;
-            var leftHeight = sectionFirst.offsetHeight
+            // 定义常量
+            var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
+            // 计算px to a4实际单位换算比例
+            var rate = A4_WIDTH / CONTAINER_WIDTH;
+            // a4实际高度换算px
+            var a4Height2px = A4_HEIGHT / rate;
+            // 计算固定部分的高度总和
+            var fixedHeight = sectionFirst.offsetHeight
                     + sectionSecond.offsetHeight
                     + sectionThird.offsetHeight
                     + sectionFouth.offsetHeight
                     + subInformation.offsetHeight;
-            var canUseHeight = a4Height - leftHeight;
-            // var imgWidth = 595.28;
-            // var imgHeight = 592.28 / contentWidth * contentHeight;
-            var leftTrNodes = document.querySelectorAll('#calcTr');
-            var leftTrNodesArray = Array.from(leftTrNodes);
-            var headerAndFooterPromiseList = [
+            // 分页部分的高度计算
+            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            // 获取分页部分每行节点
+            var needCalcTrNodes = document.querySelectorAll('#calcTr');
+            // NodeList -> 数组
+            var needCalcTrNodesArray = Array.from(needCalcTrNodes);
+            // 定义固定部分的promiseList
+            var fixedPromiseList = [
                 // eslint-disable-next-line no-undef
                 domtoimage.toPng(sectionFirst, {
                     scale: 1,
@@ -432,15 +449,16 @@
                     };
                 })
             ];
+            // 定义分页部分的promiseList
             var promiseList = [];
             // eslint-disable-next-line no-undef
             var PDF = new jsPDF('', 'pt', 'a4');
-            _.forEach(leftTrNodesArray, function(item) {
+            _.forEach(needCalcTrNodesArray, function(item) {
                 // eslint-disable-next-line no-undef
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: 1250,
-                    height: item.offsetHeight + 2
+                    height: item.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
@@ -449,13 +467,16 @@
                     };
                 }));
             });
-            $q.all(headerAndFooterPromiseList).then(function(reback) {
+            // 固定部分的图片转换完成后再去做分页部分的图片转换
+            $q.all(fixedPromiseList).then(function(reback) {
+                // 偏移量
                 var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                // 当前分页部分tr的累积高度
                 var realHeight = 0;
-                var pageNumber = 0;
-                console.log('reback', reback);
+                // 页码
+                var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
-                    console.log('result', result);
+                    // 添加分页部分上方的固定部分图片到PDF中
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     PDF.addImage(
                         reback[1].data,
@@ -466,9 +487,22 @@
                         reback[1].nodeHeight * rate
                     );
                     _.forEach(result, function(res, index) {
+                        // 计算分页部分实际高度
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
-                            pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                    + reback[4].nodeHeight
+                                    + 10
+                                ) * rate
+                            );
+                            // 遍历跟随分页部分重复的部分
                             PDF.addImage(
                                 reback[2].data,
                                 'JPEG',
@@ -502,7 +536,20 @@
                                 585,
                                 reback[4].nodeHeight * rate
                             );
+                            // 新开分页
                             PDF.addPage();
+                            pageNumber = pageNumber + 1;
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                    + reback[4].nodeHeight
+                                    + 10
+                                ) * rate
+                            );
                             PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                             PDF.addImage(
                                 reback[1].data,
@@ -511,14 +558,10 @@
                                 reback[0].nodeHeight * rate, 585,
                                 reback[1].nodeHeight * rate
                             );
-                            // PDF.text(
-                            //     pageNumber,
-                            //     585 / 2,
-                            //     (offsetHeight + reback[1].nodeHeight + reback[2].nodeHeight + 4) * rate
-                            // );
                             offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                             realHeight = 0;
                         }
+                        // 添加当前遍历元素的图片到PDF
                         PDF.addImage(
                             res.data,
                             'JPEG',
@@ -528,9 +571,8 @@
                             res.nodeHeight * rate
                         );
                         offsetHeight = offsetHeight + result[index].nodeHeight;
-                        // PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
-                        // PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
                     });
+                    // 添加分页部分下方的固定部分图片到PDF中
                     PDF.addImage(
                         reback[2].data,
                         'JPEG',
@@ -555,6 +597,7 @@
                         585,
                         reback[4].nodeHeight * rate
                     );
+                    // 生成PDF文件，并且命名
                     PDF.save(
                         getPdfName(
                             vm.facility.name,
@@ -581,12 +624,14 @@
             });
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
-                    siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                        vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
-                        // downloadPdf();
-                        loadingModalService.open();
-                        confirmMergeSubmit(signature, addedLineItems, downloadPdf);
-                    });
+                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
+                        then(function(data) {
+                            vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
+                            // downloadPdf();
+                            loadingModalService.open();
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            
+                        });
                 } else {
                     loadingModalService.open();
                     confirmSubmit('', addedLineItems);
@@ -710,7 +755,6 @@
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
-                vm.validateDate(item);
                 vm.validateLot(item);
                 vm.validateLotDate(item);
             });

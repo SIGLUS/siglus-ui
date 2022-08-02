@@ -1,0 +1,55 @@
+<div class="tracer-drug-report-container">
+  <div>
+    <iframe id="metabase-iframe" ng-src="{{vm.analyticsReportMetabase.iframeUrl}}" iframe-onload="iframeLoadedCallBack()"  allowtransparency frameborder="0"></iframe>
+  </div>
+  <div class="tracer-drag-export">
+    <h3>{{'tracer.drug.report.information.export'|message}}</h3>
+    <div>
+      <form ng-submit="vm.exportData()">
+        <div>
+          <fieldset>
+            <label for="drug">{{'tracer.drug.report.drug' | message}}</label>
+            <select id="drug" 
+            required
+            ng-options="drug.productCode as drug.productName for drug in vm.drugList"
+            ng-model="vm.drugCode">
+            </select>
+          </fieldset>
+          <fieldset>
+            <label for="province">{{'tracer.drug.report.province'|message}}</label>
+            <select 
+            id="province"
+            required
+            ng-options="province.code as province.name for province in vm.provinceList "
+            ng-model="vm.provinceCode">
+            </select>
+          </fieldset>
+          <fieldset>
+            <label for="district">{{'tracer.drug.report.district'|message}}</label>
+            <select 
+            id="district"
+            required
+            ng-options="district.code as district.name for district in vm.districtList "
+            ng-model='vm.districtCode'> 
+            </select>
+          </fieldset>
+          <fieldset style="margin-right:0px;">
+            <label for="startDate">{{'tracer.drug.report.startFrom'|message}}</label>
+              <input required id="startDate" type="date" ng-model="vm.startDate" max-date="vm.startMaxDate" min-date="vm.startMinDate"/>
+          </fieldset>
+          <fieldset style="margin:0px 10px;">
+            <span style="display: inline-block;height:65px;line-height:90px">—</span>
+          </fieldset>
+          <fieldset style="margin-right:0px;">
+            <label for="endDate">{{'tracer.drug.report.to'|message}}</label>
+            <input required id="endDate" type="date" ng-model="vm.endDate" max-date="vm.endMaxDate" min-date="vm.endMinDate"/>
+          </fieldset>
+        </div>
+
+        <div>
+          <input  type="submit" value="{{'tracer.drug.report.export' | message}}" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

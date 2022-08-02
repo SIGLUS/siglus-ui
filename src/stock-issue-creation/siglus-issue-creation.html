@@ -44,7 +44,6 @@
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
-                <th>{{vm.key('date') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
             </thead>
@@ -59,10 +58,6 @@
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
-                </td>
-                <td class="date-cell">
-                    <input id="lineItem.occurredDate" class="min-width-date-input" type="date" ng-model="lineItem.occurredDate"
-                           ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
                 </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>

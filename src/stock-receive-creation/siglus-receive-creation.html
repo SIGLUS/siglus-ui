@@ -38,7 +38,6 @@
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
-                <th>{{vm.key('date') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
             </thead>
@@ -46,8 +45,12 @@
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
-                <td ng-if="!lineItem.isKit">
-                    <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
+                <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotCodeDuplicated}}">
+                    <siglus-stock-input-select
+                            line-items="vm.items"
+                            line-item="lineItem"
+                            enable-input="true">
+                    </siglus-stock-input-select>
                 </td>
                 <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                     <input  ng-if="!lineItem.isKit" id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
@@ -60,11 +63,6 @@
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
-                </td>
-                <td class="date-cell">
-                    <input id="lineItem.occurredDate" type="date" ng-model="lineItem.occurredDate"
-                           class="min-width-date-input"
-                           ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
                 </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
