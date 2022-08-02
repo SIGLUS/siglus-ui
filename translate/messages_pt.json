@@ -48,9 +48,10 @@
   "adminFacilityList.noFacilities": "Nenhuma Unidade Sanitária foi encontrada",
   "adminFacilityList.search": "Pesquisar",
   "adminFacilityList.type": "Tipo",
-  "adminFacilityList.cancel": "Cancelar",
+  "adminFacilityList.close": "Fechar",
   "adminFacilityList.confirm": "Confirme",
-  "adminFacilityList.eraseSuccess": "Erasing is successful.",
+  "adminFacilityList.eraseDeviceInfo": "Apagar informações do dispositivo",
+  "adminFacilityList.eraseWarn": "Tem certeza de que deseja apagar as informações do dispositivo?",
   "adminFacilityPrograms.active": "Activo",
   "adminFacilityPrograms.add": "Adicionar",
   "adminFacilityPrograms.assignProgramsTo": "Atribuir programas à ${facility}",
@@ -2345,8 +2346,6 @@
   "mmia.observations": "Observações",
   "mmia.print_on_computer": "Impresso no computador",
   "mmia.downloadPdf": "Baixar PDF",
-  "adminFacilityList.eraseDeviceInfo": "Erase device info",
-  "adminFacilityList.eraseWarn": "Are you sure you want to erase the device info?",
   "tracer.drug.report.drug": "Produto",
   "tracer.drug.report.province": "Província",
   "tracer.drug.report.district": "Distrito",
@@ -2354,5 +2353,6 @@
   "tracer.drug.report.export": "Exportar",
   "tracer.drug.report.information.export": "Tracer Drug Information Export",
   "tracer.drug.report.to": "To",
-  "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso"
+  "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
+  "adminFacilityList.eraseSuccess": "Erasing is successful."
 }
