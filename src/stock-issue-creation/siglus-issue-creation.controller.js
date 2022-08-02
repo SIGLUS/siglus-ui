@@ -466,7 +466,7 @@
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: 1250,
-                    height: item.offsetHeight + 2
+                    height: item.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
@@ -478,10 +478,10 @@
             $q.all(headerAndFooterPromiseList).then(function(reback) {
                 var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                 var realHeight = 0;
-                var pageNumber = 0;
-                console.log('reback', reback);
+                var pageNumber = 1;
+                // console.log('reback', reback);
                 $q.all(promiseList).then(function(result) {
-                    console.log('result', result);
+                    // console.log('result', result);
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     PDF.addImage(
                         reback[1].data,
@@ -494,7 +494,18 @@
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
-                            pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                    + reback[4].nodeHeight
+                                    + 10
+                                ) * rate
+                            );
                             PDF.addImage(
                                 reback[2].data,
                                 'JPEG',
@@ -529,6 +540,18 @@
                                 reback[4].nodeHeight * rate
                             );
                             PDF.addPage();
+                            pageNumber = pageNumber + 1;
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                    + reback[4].nodeHeight
+                                    + 10
+                                ) * rate
+                            );
                             PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                             PDF.addImage(
                                 reback[1].data,
@@ -537,11 +560,6 @@
                                 reback[0].nodeHeight * rate, 585,
                                 reback[1].nodeHeight * rate
                             );
-                            // PDF.text(
-                            //     pageNumber,
-                            //     585 / 2,
-                            //     (offsetHeight + reback[1].nodeHeight + reback[2].nodeHeight + 4) * rate
-                            // );
                             offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                             realHeight = 0;
                         }
