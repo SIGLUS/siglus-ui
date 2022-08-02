@@ -1904,7 +1904,7 @@
   "stockIssueCreation.confirm": "Confirmar",
   "stockIssueCreation.confirmInfo": "${username}, pretende confirmar ${number} eventos de saida de stock?",
   "stockIssueCreation.date": "Data",
-  "stockIssueCreation.delete": "Apagar",
+  "stockIssueCreation.delete": "Excluir",
   "stockIssueCreation.deleted": "A eliminação foi bem sucedida",
   "stockIssueCreation.deleteDraft": "Têm a certeza que pretende apagar este rascunho?",
   "stockIssueCreation.issueExpiredLot": "Lote expirado. Não pode ser aviado",
