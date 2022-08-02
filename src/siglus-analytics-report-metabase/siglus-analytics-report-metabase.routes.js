@@ -137,6 +137,36 @@
                 }
             });
         });
-    }
 
+        $stateProvider.state('openlmis.analyticsReport.tracerDrug', {
+            url: '/tracerDrug',
+            showInNavigation: true,
+            label: 'analyticsReportMetabase.tracerDrug.title',
+            priority: 10,
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportTracerDrugController',
+                    controllerAs: 'vm',
+                    // eslint-disable-next-line max-len
+                    templateUrl: 'siglus-analytics-report-tracer-drug/siglus-analytics-report-tracer-drug.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
+                },
+                filterInfo: function(analyticsReportMetabaseService) {
+                    return analyticsReportMetabaseService
+                        .getTracerDrugFilterInfo().then(function(data) {
+                            return data;
+                        });
+                }
+            }
+        });
+    }
 })();

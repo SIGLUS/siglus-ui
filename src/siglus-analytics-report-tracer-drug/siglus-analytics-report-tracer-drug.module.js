@@ -18,16 +18,17 @@
     'use strict';
 
     /**
-    * @module
-    *
-    * @description
-    * Main siglus-analytics-report-metabase module.
-    */
-    angular.module('siglus-analytics-report-metabase', [
-        'ui.router',
+     * @module siglus-analytics-report-tracer-drug
+     *
+     * @description
+     * second-tier detail page for Tracer drug report
+     */
+    angular.module('siglus-analytics-report-tracer-drug', [
+        'siglus-analytics-report',
         'openlmis-i18n',
-        'openlmis-date',
-        'siglus-analytics-report'
+        'openlmis-message',
+        'ui.router',
+        'openlmis-date'
     ]);
 
 })();

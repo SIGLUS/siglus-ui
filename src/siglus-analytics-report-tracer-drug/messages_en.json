@@ -1,0 +1,9 @@
+{
+    "tracer.drug.report.drug":"Drug",
+    "tracer.drug.report.province":"Province",
+    "tracer.drug.report.district":"District",
+    "tracer.drug.report.startFrom":"Start from",
+    "tracer.drug.report.to":"To",
+    "tracer.drug.report.export":"Export",
+    "tracer.drug.report.information.export":"Tracer Drug Information Export"
+}

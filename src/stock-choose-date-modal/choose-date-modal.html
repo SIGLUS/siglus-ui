@@ -25,7 +25,7 @@
                         <!-- SIGLUS-REFACTOR: starts here-->
                         <label class="is-required">{{'stockChooseDateModal.signature' | message}}</label>
                         <input ng-model="vm.signature" type="text" ng-required="vm.signatureIsRequired">
-                        <!-- SIGLUS-REFACTOR: ends here-->
+
                         <span ng-if="vm.isInitialInventory" class="info">
                             {{'stockChooseDateModal.submittedInitialBy' | message: {username:vm.username} }}
                         </span>
@@ -33,6 +33,7 @@
                             {{'stockChooseDateModal.submittedBy' | message: {username:vm.username} }}
                         </span>
                         </input>
+                        <!-- SIGLUS-REFACTOR: ends here-->
                     </fieldset>
 
                 </form>
