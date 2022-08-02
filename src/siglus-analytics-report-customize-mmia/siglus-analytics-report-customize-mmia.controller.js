@@ -51,7 +51,6 @@
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
-        // console.log('#### template', template);
         vm.comments = undefined;
         vm.signaure = {};
         vm.$onInit = onInit;
@@ -161,12 +160,7 @@
             var patients = patientTemplateFactory();
             vm.patientList = patients.normalPatientList;
             vm.mergedPatientMap = patients.mergedPatientMap;
-            // console.log('#### map', vm.mergedPatientMap);
-            console.log('#### vm', vm);
             vm.getValueByKey = function(key, index) {
-                // var innerKeys = Object.keys(vm.mergedPatientMap[key].columns);
-                // console.log('#### array', vm.mergedPatientMap[key].column.columns);
-                // console.log('#### obj', vm.mergedPatientMap[key].columns);
                 if (!vm.requisition.patientLineItems.length) {
                     return '';
                 }
@@ -199,7 +193,6 @@
                 });
                 temp.column = c;
                 if (_.contains(jugeArray, c.label)) {
-                    // console.log('hello', c);
                     r.mergedPatientMap[c.label] = temp;
                 } else {
                     r.normalPatientList.push(temp);
@@ -224,7 +217,6 @@
             });
         }
         function getCategories(regimenLineItems) {
-            // console.log('#### regimenLineItems', regimenLineItems);
             var regimentLineItemsCopy = angular.copy(regimenLineItems);
             vm.totalItem = regimentLineItemsCopy.pop();
             return _.reduce(regimentLineItemsCopy, function(r, c) {
@@ -270,12 +262,7 @@
         function getMonth(date) {
             return openlmisDateFilter(date, 'MMMM');
         }
-        // function translateCodeToBarcode() {
-        //     var codeNodes = document.querySelectorAll('#barCodeArea');
-        //     console.log(codeNodes);
-        //     // eslint-disable-next-line no-undef
-        //     // JsBarcode(codeNode, code);
-        // }
+
         vm.downloadPdf = function() {
             var node = document.getElementById('mmia-form');
             var secondSectionNode = document.getElementById('secondSection');
@@ -287,7 +274,6 @@
             var a4Height = 1250 / 585 * 781.89;
             var leftHeight = contentHeight - secondSectionNode.offsetHeight;
             var canUseHeight = a4Height - leftHeight;
-            // console.log('#### canUseHeight', canUseHeight);
             var secondSectionTrNodes = document.querySelectorAll('#calcTr');
             var secondSectionTrNodesArray = Array.from(secondSectionTrNodes);
             // eslint-disable-next-line no-undef
@@ -354,7 +340,6 @@
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
-                        console.log(index + ':', realHeight);
                         if (realHeight > canUseHeight - 30) {
                             pageNumber = pageNumber + 1;
                             PDF.addImage(
@@ -375,11 +360,7 @@
                             );
                             PDF.addPage();
                             PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
-                            // PDF.text(
-                            //     pageNumber,
-                            //     585 / 2,
-                            //     (offsetHeight + reback[1].nodeHeight + reback[2].nodeHeight + 4) * rate
-                            // );
+
                             offsetHeight = firstSectionNode.offsetHeight;
                             realHeight = 0;
                         }
@@ -411,10 +392,6 @@
                     );
                 });
             });
-            // var imgWidth = 585.28;
-            // var imgHeight = 592.28 / contentWidth * contentHeight;
-            // // var rate = contentWidth / 585.28;
-            // // var imgY = contentHeight / rate;
         };
     }
 

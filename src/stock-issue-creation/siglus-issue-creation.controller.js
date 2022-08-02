@@ -146,8 +146,8 @@
 
             if (_.get(vm.selectedLot, 'id')) {
                 vm.setProductGroups();
-                vm.selectedOrderableGroup = _.filter(vm.selectedOrderableGroup, function(item) {
-                    return _.get(item, ['lot', 'id']) !== vm.selectedLot.id;
+                vm.selectedOrderableGroup = _.filter(vm.selectedOrderableGroup, function(data) {
+                    return _.get(data, ['lot', 'id']) !== vm.selectedLot.id;
                 });
 
                 vm.setLots();
