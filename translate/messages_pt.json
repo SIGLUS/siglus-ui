@@ -104,6 +104,10 @@
   "adminFacilityView.savePrograms": "Guardar programas",
   "adminFacilityView.startDate.description": "A data de início do programa determina a primeira data disponível para os utilizadores introduzirem as requisições relacionadas com o programa.",
   "adminFacilityView.startDate": "Start Date",
+  "adminFacilityView.export": "Exportar",
+  "adminFacilityView.upload": "Carregar",
+  "adminFacilityView.close": "Fechar",
+  "adminFacilityView.confirm": "Confirme",
   "adminGeographicZoneList.actions": "Acções",
   "adminGeographicZoneList.code": "Código",
   "adminGeographicZoneList.geographicZones": "Zonas geográficas",
@@ -2354,5 +2358,15 @@
   "tracer.drug.report.information.export": "Tracer Drug Information Export",
   "tracer.drug.report.to": "To",
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
-  "adminFacilityList.eraseSuccess": "Erasing is successful."
+  "adminFacilityList.eraseSuccess": "Erasing is successful.",
+  "adminFacilityView.locationManagement": "Location Management",
+  "adminFacilityView.locationManagement.instructionTitle": "You can follow the steps below to set location management:",
+  "adminFacilityView.locationManagement.viewLocation": "1. View current location information as CSV.",
+  "adminFacilityView.locationManagement.editFile": "2. Edit the CSV file and upload.",
+  "adminFacilityView.locationManagement.uploadMessages": "If file upload is successful, the changes will be accepted into the system.\nIf file upload is unsuccessfully, errors will be displayed on the page.",
+  "adminFacilityView.locationManagement.enableLocation": "3. Enable location management",
+  "adminFacilityView.locationManagement.closeSwitch": "Once you disable the feature, the facility won't be able to use location management in the system. Do you want to disable it?",
+  "adminFacilityView.locationManagement.closeSwitchWithoutConfigure": "Please configure location management first.",
+  "adminFacilityView.uploadSuccess": "Upload Successfully!",
+  "adminFacilityView.uploadFailed": "Upload failed!"
 }
