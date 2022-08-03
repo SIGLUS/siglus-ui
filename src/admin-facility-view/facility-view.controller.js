@@ -157,6 +157,9 @@
             vm.enableValue = angular.copy(
                 facility.enableLocationManagement
             );
+            vm.isAndroid = angular.copy(
+                facility.isAndroidDevice
+            );
             vm.facilityId = angular.copy(facility.id);
             vm.facilityWithPrograms = angular.copy(facility);
             vm.facilityTypes = facilityTypes;
@@ -350,6 +353,13 @@
             } else if (enableValue === true && !vm.file) {
                 alertConfirmModalService.error(
                     'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
+                    '',
+                    ['adminFacilityView.close',
+                        'adminFacilityView.confirm']
+                );
+            } else if (enableValue === false && !vm.file) {
+                alertConfirmModalService.error(
+                    'adminFacilityView.locationManagement.closeSwitch',
                     '',
                     ['adminFacilityView.close',
                         'adminFacilityView.confirm']
