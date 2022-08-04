@@ -30,11 +30,11 @@
 
     controller.$inject = ['$scope', '$stateParams', '$state',
         'alertService', 'loadingModalService',
-        'alertConfirmModalService', 'proofOfDeliveryManageService', 'programName'];
+        'alertConfirmModalService', 'proofOfDeliveryManageService', 'programName', 'facility'];
 
     function controller($scope, $stateParams, $state,
                         alertService, loadingModalService,
-                        alertConfirmModalService, proofOfDeliveryManageService, programName)  {
+                        alertConfirmModalService, proofOfDeliveryManageService, programName, facility)  {
         var vm = this;
         vm.$onInit = onInit;
 
@@ -43,6 +43,7 @@
         vm.showToolBar = false;
 
         vm.programName = undefined;
+        vm.facilityName = undefined;
         vm.orderCode =  undefined;
 
         vm.actionMapper = {
@@ -124,6 +125,7 @@
         function onInit() {
             vm.programName = programName;
             vm.orderCode = $stateParams.orderCode;
+            vm.facilityName = _.get(facility, 'name');
             vm.refreshDraftList();
         }
 

@@ -2316,7 +2316,7 @@
   "stockIssueCreation.mergedDraft": "Rascunho compilado",
   "stockIssue.cancel": "Cancelar",
   "stockIssue.submitted": "Submetido",
-  "adminProgramTemplate.ageGroup": "Age group section",
+  "adminProgramTemplate.ageGroup": "Seção de faixa etária",
   "analyticsReportMetabase.fulfillment.title": "Relatório de grau de satisfação",
   "stockPhysicalInventory.initialTitle": "Inventário inicial de ${facility} - ${program}",
   "issueDraft.selectFirstForReceive": "Crie um rascunho para iniciar a recepção",
@@ -2365,7 +2365,7 @@
   "tracer.drug.report.district": "Distrito",
   "tracer.drug.report.startFrom": "Começar de",
   "tracer.drug.report.export": "Exportar",
-  "tracer.drug.report.information.export": "Tracer Drug Information Export",
+  "tracer.drug.report.information.export": "Exportação de informações sobre medicamentos rastreados",
   "tracer.drug.report.to": "To",
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
   "analyticsReportMetabase.mmiaRegimens.title": "Relatório de Regimes MMIA",
@@ -2422,9 +2422,9 @@
 
   "siglusIssueOrReceiveReport.quantityReceived": "Quantity Received",
   "siglusIssueOrReceiveReport.totalValue": "Total value  of the issue voucher",
-  "proofOfDeliveryManage.view": "View",
-  "proofOfDeliveryManage.continue": "Continue",
-  "proofOfDeliveryManage.start": "start",
-  "proofOfDeliveryInitialModal.label": "Please input the number of users doing POD for ${orderCode}",
-  "proofOfDeliveryInitialModal.conflictTips": "A POD process has already started, please finish it first."
+  "proofOfDeliveryManage.view": "Visualizar",
+  "proofOfDeliveryManage.continue": "Continuar",
+  "proofOfDeliveryManage.start": "Começar",
+  "proofOfDeliveryInitialModal.label": "Por favor, insira o número de usuários disponiveis para fazer este relatório de recepção para ${orderCode}",
+  "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página."
 }
