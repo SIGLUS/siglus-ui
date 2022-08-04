@@ -1,0 +1,5 @@
+{
+  "proofOfDeliveryInitialModal.label": "Please input the number of users doing POD for ${orderCode}",
+  "proofOfDeliveryInitialModal.conflictTips": "A POD process has already started, please finish it first."
+}
+
