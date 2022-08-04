@@ -20,6 +20,8 @@ describe('PodViewController', function() {
 
     beforeEach(function() {
         module('proof-of-delivery-view');
+        module('proof-of-delivery');
+        module('referencedata-orderable-fulfills');
 
         inject(function($injector) {
             $q = $injector.get('$q');
@@ -170,31 +172,6 @@ describe('PodViewController', function() {
             vm.$onInit();
         });
 
-        it('should open the window', function() {
-            vm.printProofOfDelivery();
-
-            expect(ProofOfDeliveryPrinter.prototype.openTab).toHaveBeenCalled();
-        });
-
-        it('should close the window when save proof of delivery failed', function() {
-            proofOfDelivery.isInitiated.andReturn(true);
-            proofOfDelivery.save.andReturn($q.reject());
-
-            vm.printProofOfDelivery();
-            $rootScope.$apply();
-
-            expect(ProofOfDeliveryPrinter.prototype.closeTab).toHaveBeenCalled();
-        });
-
-        it('should attempt to save proof of delivery if it is initiated', function() {
-            proofOfDelivery.isInitiated.andReturn(true);
-
-            vm.printProofOfDelivery();
-            $rootScope.$apply();
-
-            expect(proofOfDelivery.save).toHaveBeenCalled();
-        });
-
         it('should not call save if the pod is confirmed', function() {
             proofOfDelivery.isInitiated.andReturn(false);
 
@@ -202,18 +179,6 @@ describe('PodViewController', function() {
             $rootScope.$apply();
 
             expect(proofOfDelivery.save).not.toHaveBeenCalled();
-        });
-
-        it('should open the window if the pod is confirmed', function() {
-            proofOfDelivery.isInitiated.andReturn(true);
-
-            vm.printProofOfDelivery();
-
-            expect(ProofOfDeliveryPrinter.prototype.print).not.toHaveBeenCalled();
-
-            $rootScope.$apply();
-
-            expect(ProofOfDeliveryPrinter.prototype.print).toHaveBeenCalled();
         });
     });
 });

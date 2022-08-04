@@ -69,7 +69,7 @@
                     <button class="primary" ng-click="vm.openPod(order.id)">
                         {{'proofOfDeliveryManage.manage' | message}}
                     </button>
-                    <button ng-click="vm.printProofOfDelivery(order.id)">
+                    <button ng-click="vm.printProofOfDelivery(order)">
                         {{'proofOfDeliveryManage.print' | message}}
                     </button>
                 </td>
@@ -78,3 +78,4 @@
     </table>
     <openlmis-pagination list="vm.pods"></openlmis-pagination>
 </section>
+<ng-include src="'siglus-pod-report/siglus-issue-or-receive-report.html'"></ng-include>

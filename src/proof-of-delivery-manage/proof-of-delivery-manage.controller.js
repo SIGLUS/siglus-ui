@@ -19,178 +19,246 @@
 
     /**
      * @ngdoc controller
-     * @name proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name proof-of-delivery-manage.controller:ProofOfDeliveryManageController
      *
      * @description
-     * Controller that drives the POD view screen.
+     * Controller for proof of delivery manage page
      */
     angular
-        .module('proof-of-delivery-view')
-        .controller('ProofOfDeliveryViewController', ProofOfDeliveryViewController);
+        .module('proof-of-delivery-manage')
+        .controller('ProofOfDeliveryManageController', controller);
 
-    ProofOfDeliveryViewController.$inject = [
-        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS', 'orderLineItems', 'canEdit',
-        'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryManageService',
-        'openlmisDateFilter', 'proofOfDeliveryService', 'fulfillingLineItemFactory',
-        'notificationService', '$stateParams'
+    controller.$inject = [
+        'proofOfDeliveryManageService', '$state', 'loadingModalService', 'notificationService', 'pods',
+        '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
+        'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
+        'stockReasonsFactory'
     ];
 
-    function ProofOfDeliveryViewController(
-        proofOfDelivery,
-        order,
-        reasons,
-        messageService,
-        VVM_STATUS,
-        orderLineItems,
-        canEdit,
-        ProofOfDeliveryPrinter,
-        $q,
-        loadingModalService,
+    function controller(
         proofOfDeliveryManageService,
-        openlmisDateFilter,
+        $state,
+        loadingModalService,
+        notificationService,
+        pods,
+        $stateParams,
+        programs,
+        requestingFacilities,
+        supplyingFacilities,
+        ProofOfDeliveryPrinter,
         proofOfDeliveryService,
         fulfillingLineItemFactory,
-        notificationService,
-        $stateParams
+        $q,
+        openlmisDateFilter,
+        stockReasonsFactory
     ) {
-
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.getStatusDisplayName = getStatusDisplayName;
-        vm.getReasonName = getReasonName;
+        vm.openPod = openPod;
+        vm.loadOrders = loadOrders;
         vm.printProofOfDelivery = printProofOfDelivery;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         /**
          * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name proofOfDelivery
-         * @type {Object}
-         *
-         * @description
-         * Holds Proof of Delivery.
-         */
-        vm.proofOfDelivery = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name order
-         * @type {Object}
-         *
-         * @description
-         * Holds Order from Proof of Delivery.
-         */
-        vm.order = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name orderLineItems
-         * @type {Object}
-         *
-         * @description
-         * Holds a map of Order Line Items with Proof of Delivery Line Items grouped by orderable.
-         */
-        vm.orderLineItems = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name showVvmColumn
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if VVM Status column should be shown for current Proof of Delivery.
-         */
-        vm.showVvmColumn = undefined;
-        vm.getReason = function(reasonId) {
-            // return 
-            var reasonMap = _.reduce(reasons, function(r, c) {
-                r[c.id] = c.name;
-                return r;
-            }, {});
-            return reasonMap[reasonId];
-        };
-        /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name canEdit
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if PoD is in initiated status and if user has permission to edit it.
-         */
-        vm.canEdit = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name reasons
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name pods
          * @type {Array}
          *
          * @description
-         * List of available stock reasons.
+         * Holds pods that will be displayed.
          */
-        vm.reasons = undefined;
+        vm.pods = undefined;
 
         /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name programs
+         * @type {Array}
+         *
+         * @description
+         * Holds list of supervised programs.
+         */
+        vm.programs = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name requestingFacilities
+         * @type {Array}
+         *
+         * @description
+         * Holds list of supervised requesting facilities.
+         */
+        vm.requestingFacilities = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name supplyingFacilities
+         * @type {Array}
+         *
+         * @description
+         * Holds list of supervised supplying facilities.
+         */
+        vm.supplyingFacilities = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name program
+         * @type {Object}
+         *
+         * @description
+         * Holds selected program.
+         */
+        vm.program = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name requestingFacility
+         * @type {Object}
+         *
+         * @description
+         * Holds selected requesting facility.
+         */
+        vm.requestingFacility = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name supplyingFacility
+         * @type {Object}
+         *
+         * @description
+         * Holds selected supplying facility.
+         */
+        vm.supplyingFacility = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name facilityName
+         * @type {string}
+         * 
+         * @description
+         * The name of the requesting facility for which the Proofs of Delivery are shown.
+         */
+        vm.facilityName = undefined;
+
+        /**
+         * @ngdoc property
+         * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name programName
+         * @type {string}
+         * 
+         * @description
+         * The name of the program for which the Proofs of Delivery are shown.
+         */
+        vm.programName = undefined;
+        vm.incosistencies = [
+            {
+                productCode: 'aaaa',
+                productName: 'bbbb',
+                quantityShipped: 99,
+                quantityAccepted: 50,
+                rejectionReasonId: 'abcdefg',
+                notes: 'hello'
+            },
+            {
+                productCode: 'aaaa',
+                productName: 'bbbb',
+                quantityShipped: 99,
+                quantityAccepted: 50,
+                rejectionReasonId: 'abcdefg',
+                notes: 'hello'
+            },
+            {
+                productCode: 'aaaa',
+                productName: 'bbbb',
+                quantityShipped: 99,
+                quantityAccepted: 50,
+                rejectionReasonId: 'abcdefg',
+                notes: 'hello'
+            }
+        ];
+        /**
          * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+         * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
          * @name $onInit
          *
          * @description
-         * Initialization method of the ProofOfDeliveryViewController.
+         * Initialization method called after the controller has been created. Responsible for
+         * setting data to be available on the view.
          */
         function onInit() {
-            vm.order = order;
-            // SIGLUS-REFACTOR: starts here
-            // vm.reasons = reasons;
-            vm.reasons = _.filter(reasons, function(reason) {
-                return _.contains(reason.tags, 'rejection');
+            vm.pods = pods;
+            vm.programs = programs;
+            vm.requestingFacilities = requestingFacilities;
+            vm.supplyingFacilities = supplyingFacilities;
+            vm.program = getSelectedObjectById(programs, $stateParams.programId);
+            vm.requestingFacility = getSelectedObjectById(requestingFacilities, $stateParams.requestingFacilityId);
+            vm.supplyingFacility = getSelectedObjectById(supplyingFacilities, $stateParams.supplyingFacilityId);
+            vm.facilityName = getName(vm.requestingFacility);
+            vm.programName = getName(vm.program);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name loadOrders
+         *
+         * @description
+         * Retrieves the list of orders matching the selected requesting facility and program.
+         *
+         * @return {Array} the list of matching orders
+         */
+        function loadOrders() {
+            var stateParams = angular.copy($stateParams);
+
+            stateParams.programId = vm.program.id;
+            stateParams.requestingFacilityId = vm.requestingFacility ? vm.requestingFacility.id : null;
+            stateParams.supplyingFacilityId = vm.supplyingFacility ? vm.supplyingFacility.id : null;
+
+            $state.go('openlmis.orders.podManage', stateParams, {
+                reload: true
             });
-            // SIGLUS-REFACTOR: ends here
-            vm.proofOfDelivery = proofOfDelivery;
-            vm.orderLineItems = orderLineItems;
-            vm.vvmStatuses = VVM_STATUS;
-            vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
-            vm.canEdit = canEdit;
-            // console.log('#### vm', vm);
-            // console.log('$stateParams', $stateParams);
         }
 
         /**
+         *
          * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name getStatusDisplayName
+         * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name openPod
          *
          * @description
-         * Returns translated status display name.
-         */
-        function getStatusDisplayName(status) {
-            return messageService.get(VVM_STATUS.$getDisplayName(status));
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name getReasonName
+         * Redirect to POD page.
          *
-         * @description
-         * Returns a name of the reason with the given ID.
-         *
-         * @param  {string} id the ID of the reason
-         * @return {string}    the name of the reason
+         * @param {String} orderId id of order to find it's POD
          */
-        function getReasonName(id) {
-            if (!id) {
-                return;
-            }
-
-            return vm.reasons.filter(function(reason) {
-                return reason.id === id;
-            })[0].name;
+        function openPod(orderId) {
+            loadingModalService.open();
+            proofOfDeliveryManageService.getByOrderId(orderId)
+                .then(function(pod) {
+                    $state.go('openlmis.orders.podManage.podView', {
+                        podId: pod.id
+                    });
+                })
+                .catch(function() {
+                    notificationService.error('proofOfDeliveryManage.noOrderFound');
+                    loadingModalService.close();
+                });
         }
+        // function getPdfName(facilityName, nowTime) {
+        //     return (
+        //         'Issue_'
+        //         + facilityName
+        //         + '_'
+        //         + nowTime
+        //         + '.pdf'
+        //     );
+        // }
         function downloadPdf() {
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
@@ -555,7 +623,6 @@
                         offsetHeight = offsetHeight + _result[index].nodeHeight;
                     });
                     // 添加分页部分下方的固定部分图片到PDF中
-                    // console.log('打印footer');
                     opt.PDF.addImage(
                         _reback[1].data,
                         'JPEG',
@@ -576,84 +643,125 @@
             });
         }
 
+        vm.getReason = function(reasonId) {
+            // return 
+            // TODO  vm
+            var reasonMap = _.reduce(vm.reasons, function(r, c) {
+                r[c.id] = c.name;
+                return r;
+            }, {});
+            return reasonMap[reasonId];
+        };
+
         /**
          *
          * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+         * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
          * @name printProofOfDelivery
          *
          * @description
-         * Prints the proof of delivery.
+         * Prints the given proof of delivery.
+         *
+         * @param  {Object} orderId the UUID of order to find it's POD
+         * @return {String}         the prepared URL
          */
-        function printProofOfDelivery() {
-            var orderId = vm.order.id;
-            var podId = $stateParams.podId;
-            // loadingModalService.open();
-            proofOfDeliveryManageService.getPodInfo(podId, orderId).then(function(res) {
-                // console.log('返回值：', res);
-                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm a');
-                vm.supplier = res.supplier;
-                vm.client = res.client;
-                vm.supplierDistrict = res.supplierDistrict;
-                vm.supplierProvince = res.supplierProvince;
-                vm.requisitionDate = res.requisitionDate;
-                vm.issueVoucherDate = openlmisDateFilter(res.issueVoucherDate, 'yyyy-MM-dd');
-                vm.deliveredBy = res.deliveredBy;
-                vm.receivedBy = res.receivedBy;
-                vm.receivedDate = res.receivedDate;
-                vm.fileName = res.fileName;
-            });
-            proofOfDeliveryService.get(podId).then(function(res) {
-                fulfillingLineItemFactory
-                    .groupByOrderable(res.lineItems, res.shipment.order.orderLineItems).then(function(result) {
-                        vm.addedLineItems = _.reduce(result, function(r, c) {
-                            r.push(angular.merge({
-                                productCode: c.orderable.productCode,
-                                productName: c.orderable.fullProductName,
-                                lotCode: c.groupedLineItems[0][0].lot.lotCode,
-                                expirationDate: c.groupedLineItems[0][0].lot.expirationDate,
-                                notes: c.groupedLineItems[0][0].notes,
-                                quantityShipped: c.groupedLineItems[0][0].quantityShipped,
-                                quantityAccepted: c.groupedLineItems[0][0].quantityAccepted,
-                                rejectionReasonId: c.groupedLineItems[0][0].rejectionReasonId
-                            }, c));
-                            return r;
-                        }, []);
-                        vm.incosistencies = [
-                            {
-                                productCode: 'aaaa',
-                                productName: 'bbbb',
-                                quantityShipped: 99,
-                                quantityAccepted: 50,
-                                rejectionReasonId: 'abcdefg',
-                                notes: 'hello'
-                            },
-                            {
-                                productCode: 'aaaa',
-                                productName: 'bbbb',
-                                quantityShipped: 99,
-                                quantityAccepted: 50,
-                                rejectionReasonId: 'abcdefg',
-                                notes: 'hello'
-                            },
-                            {
-                                productCode: 'aaaa',
-                                productName: 'bbbb',
-                                quantityShipped: 99,
-                                quantityAccepted: 50,
-                                rejectionReasonId: 'abcdefg',
-                                notes: 'hello'
-                            }
-                        ];
-                        vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
-                            return item.rejectionReasonId;
-                        });
-                        console.log('vm --->>>', vm);
-                        setTimeout(function() {
-                            downloadPdf();
-                        }, 500);
-                    });
-            });
+        function printProofOfDelivery(order) {
+            console.log('#### order', order);
+            var orderId = order.id;
+            loadingModalService.open();
+            stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT')
+                .then(function(reasons) {
+                    vm.reasons = reasons;
+                    proofOfDeliveryManageService.getByOrderId(orderId)
+                        .then(function(pod) {
+                            proofOfDeliveryManageService.getPodInfo(pod.id, orderId).then(function(res) {
+                                // console.log('返回值：', res);
+                                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm a');
+                                vm.supplier = res.supplier;
+                                vm.client = res.client;
+                                vm.supplierDistrict = res.supplierDistrict;
+                                vm.supplierProvince = res.supplierProvince;
+                                vm.requisitionDate = res.requisitionDate;
+                                vm.issueVoucherDate = openlmisDateFilter(res.issueVoucherDate, 'yyyy-MM-dd');
+                                vm.deliveredBy = res.deliveredBy;
+                                vm.receivedBy = res.receivedBy;
+                                vm.receivedDate = res.receivedDate;
+                                vm.fileName = res.fileName;
+                                vm.receivedDate = res.receivedDate;
+                            });
+                            proofOfDeliveryService.get(pod.id).then(function(res) {
+                                fulfillingLineItemFactory
+                                    .groupByOrderable(res.lineItems, res.shipment.order.orderLineItems)
+                                    .then(function(result) {
+                                        vm.addedLineItems = _.reduce(result, function(r, c) {
+                                            r.push(angular.merge({
+                                                productCode: c.orderable.productCode,
+                                                productName: c.orderable.fullProductName,
+                                                lotCode: c.groupedLineItems[0][0].lot.lotCode,
+                                                expirationDate: c.groupedLineItems[0][0].lot.expirationDate,
+                                                notes: c.groupedLineItems[0][0].notes,
+                                                quantityShipped: c.groupedLineItems[0][0].quantityShipped,
+                                                quantityAccepted: c.groupedLineItems[0][0].quantityAccepted,
+                                                rejectionReasonId: c.groupedLineItems[0][0].rejectionReasonId
+                                            }, c));
+                                            return r;
+                                        }, []);
+                                        vm.incosistencies = [
+                                            {
+                                                productCode: 'aaaa',
+                                                productName: 'bbbb',
+                                                quantityShipped: 99,
+                                                quantityAccepted: 50,
+                                                rejectionReasonId: 'abcdefg',
+                                                notes: 'hello'
+                                            },
+                                            {
+                                                productCode: 'aaaa',
+                                                productName: 'bbbb',
+                                                quantityShipped: 99,
+                                                quantityAccepted: 50,
+                                                rejectionReasonId: 'abcdefg',
+                                                notes: 'hello'
+                                            },
+                                            {
+                                                productCode: 'aaaa',
+                                                productName: 'bbbb',
+                                                quantityShipped: 99,
+                                                quantityAccepted: 50,
+                                                rejectionReasonId: 'abcdefg',
+                                                notes: 'hello'
+                                            }
+                                        ];
+                                        vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
+                                            return item.rejectionReasonId;
+                                        });
+                                        console.log('vm --->>>', vm);
+                                        setTimeout(function() {
+                                            downloadPdf();
+                                        }, 500);
+                                    });
+                            });
+                        })
+                        .catch(function() {
+                            // printer.closeTab();
+                            notificationService.error('proofOfDeliveryManage.noOrderFound');
+                        })
+                        .finally(loadingModalService.close);
+                });
         }
     }
-}());
+
+    function getName(object) {
+        return object ? object.name : undefined;
+    }
+
+    function getSelectedObjectById(list, id) {
+        if (!list || !id) {
+            return null;
+        }
+        var filteredList = list.filter(function(object) {
+            return object.id === id;
+        });
+        return filteredList.length > 0 ? filteredList[0] : null;
+    }
+})();

@@ -29,19 +29,36 @@
         .service('proofOfDeliveryManageService', service);
 
     service.$inject = [
-        'OpenLMISRepositoryImpl', 'fulfillmentUrlFactory'
+        'OpenLMISRepositoryImpl', 'fulfillmentUrlFactory', '$resource'
     ];
 
-    function service(OpenLMISRepositoryImpl, fulfillmentUrlFactory) {
+    function service(OpenLMISRepositoryImpl, fulfillmentUrlFactory, $resource) {
 
         // SIGLUS-REFACTOR: starts here
         var proofOfDeliveryRepositoryImpl = new OpenLMISRepositoryImpl(
             fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery')
         );
+
+        function getPodInfo(id, orderId) {
+            var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/printInfo'), {}, {
+                find: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/printInfo'),
+                    method: 'get'
+                }
+            });
+            return resource.find({
+                id: id,
+                orderId: orderId
+            }).$promise
+                .then(function(response) {
+                    return response;
+                });
+        }
         // SIGLUS-REFACTOR: ends here
 
         return {
-            getByOrderId: getByOrderId
+            getByOrderId: getByOrderId,
+            getPodInfo: getPodInfo
         };
 
         /**
