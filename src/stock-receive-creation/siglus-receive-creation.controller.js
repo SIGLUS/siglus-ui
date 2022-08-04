@@ -32,7 +32,7 @@
         '$scope', 'initialDraftInfo', 'mergedItems', 'isMerge', '$state', '$stateParams', '$filter',
         'confirmDiscardService', 'openlmisDateFilter', 'localStorageFactory',
         'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
-        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
+        'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
         'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
@@ -42,7 +42,7 @@
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
                         confirmDiscardService, openlmisDateFilter, localStorageFactory,
                         programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
+                        stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
@@ -844,7 +844,6 @@
             vm.programId = programId;
             vm.facility = facility;
             vm.reasons = reasons;
-            vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
@@ -870,7 +869,6 @@
             $stateParams.reasons = reasons;
             $stateParams.draft = draft;
             $stateParams.initialDraftInfo = initialDraftInfo;
-            $stateParams.srcDstAssignments = srcDstAssignments;
             $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;

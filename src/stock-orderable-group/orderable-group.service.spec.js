@@ -159,23 +159,6 @@ describe('orderableGroupService', function() {
             ];
         });
 
-        it('should query stock card summaries', function() {
-            service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', false);
-
-            expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
-                programId: 'program-id',
-                facilityId: 'facility-id'
-            });
-        });
-
-        it('should create orderable groups from canFulfillForMe', function() {
-            var orderableGroups = findAvailableProductsAndCreateOrderableGroups(false);
-
-            expect(orderableGroups.length).toBe(2);
-            orderableGroupElementEquals(orderableGroups[0][0], stockCardSummaries[0].canFulfillForMe[0]);
-            orderableGroupElementEquals(orderableGroups[1][0], stockCardSummaries[1].canFulfillForMe[0]);
-        });
-
         it('should create orderable groups from approved products', function() {
             var orderableOne = new this.OrderableDataBuilder()
                     .withIdentifiers({
@@ -246,11 +229,11 @@ describe('orderableGroupService', function() {
             return orderableGroups;
         }
 
-        function orderableGroupElementEquals(orderableGroupElement, expected) {
-            expect(orderableGroupElement.orderable).toEqual(expected.orderable);
-            expect(orderableGroupElement.lot).toEqual(expected.lot);
-            expect(orderableGroupElement.stockOnHand).toEqual(expected.stockOnHand);
-        }
+        // function orderableGroupElementEquals(orderableGroupElement, expected) {
+        //     expect(orderableGroupElement.orderable).toEqual(expected.orderable);
+        //     expect(orderableGroupElement.lot).toEqual(expected.lot);
+        //     expect(orderableGroupElement.stockOnHand).toEqual(expected.stockOnHand);
+        // }
 
         function orderableGroupElementEqualsNoLot(orderableGroupElement, expected) {
             expect(orderableGroupElement.orderable).toEqual(expected.orderable);
