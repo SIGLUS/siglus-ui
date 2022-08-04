@@ -39,7 +39,7 @@
       font-weight: 700;
       font-size: 18px;
       .issue-voucher-title {
-        margin-left: 680px;
+        margin-left: 678px;
         margin-right: 8px;
       }
       .issue-voucher {
@@ -67,9 +67,7 @@
       }
     }
     .sub-information {
-      width: 1246px;
-      display: flex;
-      justify-content: space-between;
+      width: 100%;
       margin-top: 20px;
       font-size: 18px;
       font-weight: 700;
@@ -129,6 +127,10 @@
       }
       .text__left {
         text-align: left !important;
+        padding: 0 6px;
+      }
+      .text__right {
+        text-align: right !important;
         padding: 0 6px;
       }
   

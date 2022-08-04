@@ -45,7 +45,8 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
                         stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
-                        siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService, $q) {
+                        siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
+                        localStorageFactory, $q) {
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
@@ -55,6 +56,8 @@
         vm.destinationName = '';
 
         vm.isMerge = isMerge;
+
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
 
         vm.key = function(secondaryKey) {
             return 'stockIssueCreation.' + secondaryKey;
@@ -378,7 +381,8 @@
                     + sectionSecond.offsetHeight
                     + sectionThird.offsetHeight
                     + sectionFouth.offsetHeight
-                    + subInformation.offsetHeight;
+                    + subInformation.offsetHeight
+                    + PAGE_NUM_HEIGHT / rate;
             // 分页部分的高度计算
             var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
             // 获取分页部分每行节点
@@ -457,12 +461,12 @@
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: 1250,
-                    height: item.offsetHeight
+                    height: item.offsetHeight + 1
                 }).then(function(data) {
                     return {
                         data: data,
                         nodeWidth: 1250,
-                        nodeHeight: item.offsetHeight
+                        nodeHeight: item.offsetHeight + 1
                     };
                 }));
             });
@@ -476,11 +480,11 @@
                 var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
-                    PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
                     PDF.addImage(
                         reback[1].data,
                         'JPEG',
-                        5,
+                        4,
                         reback[0].nodeHeight * rate,
                         585,
                         reback[1].nodeHeight * rate
@@ -493,19 +497,13 @@
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
-                                (
-                                    offsetHeight
-                                    + reback[2].nodeHeight
-                                    + reback[3].nodeHeight
-                                    + reback[4].nodeHeight
-                                    + 10
-                                ) * rate
+                                A4_HEIGHT
                             );
                             // 遍历跟随分页部分重复的部分
                             PDF.addImage(
                                 reback[2].data,
                                 'JPEG',
-                                5,
+                                4,
                                 (
                                     offsetHeight
                                 ) * rate,
@@ -515,7 +513,7 @@
                             PDF.addImage(
                                 reback[3].data,
                                 'JPEG',
-                                5,
+                                4,
                                 (
                                     offsetHeight
                                     + reback[2].nodeHeight
@@ -526,7 +524,7 @@
                             PDF.addImage(
                                 reback[4].data,
                                 'JPEG',
-                                5,
+                                4,
                                 (
                                     offsetHeight
                                     + reback[2].nodeHeight
@@ -541,19 +539,13 @@
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
-                                (
-                                    offsetHeight
-                                    + reback[2].nodeHeight
-                                    + reback[3].nodeHeight
-                                    + reback[4].nodeHeight
-                                    + 10
-                                ) * rate
+                                A4_HEIGHT
                             );
-                            PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
                             PDF.addImage(
                                 reback[1].data,
                                 'JPEG',
-                                5,
+                                4,
                                 reback[0].nodeHeight * rate, 585,
                                 reback[1].nodeHeight * rate
                             );
@@ -564,7 +556,7 @@
                         PDF.addImage(
                             res.data,
                             'JPEG',
-                            5,
+                            4,
                             offsetHeight * rate,
                             res.nodeWidth * rate,
                             res.nodeHeight * rate
@@ -575,7 +567,7 @@
                     PDF.addImage(
                         reback[2].data,
                         'JPEG',
-                        5,
+                        4,
                         (offsetHeight) * rate,
                         585,
                         reback[2].nodeHeight * rate
@@ -583,7 +575,7 @@
                     PDF.addImage(
                         reback[3].data,
                         'JPEG',
-                        5,
+                        4,
                         (offsetHeight + reback[2].nodeHeight) * rate,
                         585,
                         reback[3].nodeHeight * rate
@@ -591,7 +583,7 @@
                     PDF.addImage(
                         reback[4].data,
                         'JPEG',
-                        5,
+                        4,
                         (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
                         585,
                         reback[4].nodeHeight * rate
@@ -658,18 +650,12 @@
             });
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
-                    // siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    //     vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
-                    //     downloadPdf();
-                    //     // loadingModalService.open();
-                    //     // confirmMergeSubmit(signature, addedLineItems, downloadPdf);
-                    // });
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                         .then(function(data) {
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
-                            downloadPdf();
-                            // loadingModalService.open();
-                            // confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            // downloadPdf();
+                            loadingModalService.open();
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
                     loadingModalService.open();

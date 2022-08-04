@@ -44,15 +44,10 @@
                         programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
                         srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-<<<<<<< HEAD
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
-                        draft, siglusArchivedProductService, siglusStockUtilsService, siglusStockIssueService,
-                        siglusRemainingProductsModalService, alertConfirmModalService, $q) {
-=======
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
-                        siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService) {
->>>>>>> master
+                        siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
+                        $q) {
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -62,6 +57,8 @@
         vm.initialDraftName = '';
 
         vm.isMerge = isMerge;
+
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
 
         vm.draft = draft;
 
@@ -379,7 +376,8 @@
                     + sectionSecond.offsetHeight
                     + sectionThird.offsetHeight
                     + sectionFouth.offsetHeight
-                    + subInformation.offsetHeight;
+                    + subInformation.offsetHeight
+                    + PAGE_NUM_HEIGHT / rate;
             // 分页部分的高度计算
             var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
             // 获取分页部分每行节点
@@ -458,12 +456,12 @@
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: 1250,
-                    height: item.offsetHeight
+                    height: item.offsetHeight + 1
                 }).then(function(data) {
                     return {
                         data: data,
                         nodeWidth: 1250,
-                        nodeHeight: item.offsetHeight
+                        nodeHeight: item.offsetHeight + 1
                     };
                 }));
             });
@@ -477,11 +475,11 @@
                 var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
-                    PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
                     PDF.addImage(
                         reback[1].data,
                         'JPEG',
-                        5,
+                        4,
                         reback[0].nodeHeight * rate,
                         585,
                         reback[1].nodeHeight * rate
@@ -498,15 +496,14 @@
                                     offsetHeight
                                     + reback[2].nodeHeight
                                     + reback[3].nodeHeight
-                                    + reback[4].nodeHeight
-                                    + 10
+                                    // + reback[4].nodeHeight
                                 ) * rate
                             );
                             // 遍历跟随分页部分重复的部分
                             PDF.addImage(
                                 reback[2].data,
                                 'JPEG',
-                                5,
+                                4,
                                 (
                                     offsetHeight
                                 ) * rate,
@@ -516,7 +513,7 @@
                             PDF.addImage(
                                 reback[3].data,
                                 'JPEG',
-                                5,
+                                4,
                                 (
                                     offsetHeight
                                     + reback[2].nodeHeight
@@ -527,7 +524,7 @@
                             PDF.addImage(
                                 reback[4].data,
                                 'JPEG',
-                                5,
+                                4,
                                 (
                                     offsetHeight
                                     + reback[2].nodeHeight
@@ -546,15 +543,14 @@
                                     offsetHeight
                                     + reback[2].nodeHeight
                                     + reback[3].nodeHeight
-                                    + reback[4].nodeHeight
-                                    + 10
+                                    // + reback[4].nodeHeight
                                 ) * rate
                             );
-                            PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
                             PDF.addImage(
                                 reback[1].data,
                                 'JPEG',
-                                5,
+                                4,
                                 reback[0].nodeHeight * rate, 585,
                                 reback[1].nodeHeight * rate
                             );
@@ -565,7 +561,7 @@
                         PDF.addImage(
                             res.data,
                             'JPEG',
-                            5,
+                            4,
                             offsetHeight * rate,
                             res.nodeWidth * rate,
                             res.nodeHeight * rate
@@ -576,7 +572,7 @@
                     PDF.addImage(
                         reback[2].data,
                         'JPEG',
-                        5,
+                        4,
                         (offsetHeight) * rate,
                         585,
                         reback[2].nodeHeight * rate
@@ -584,7 +580,7 @@
                     PDF.addImage(
                         reback[3].data,
                         'JPEG',
-                        5,
+                        4,
                         (offsetHeight + reback[2].nodeHeight) * rate,
                         585,
                         reback[3].nodeHeight * rate
@@ -592,7 +588,7 @@
                     PDF.addImage(
                         reback[4].data,
                         'JPEG',
-                        5,
+                        4,
                         (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
                         585,
                         reback[4].nodeHeight * rate
@@ -609,7 +605,6 @@
         }
 
         vm.submit = function() {
-            // TODO after submit, download this pdf
             $scope.$broadcast('openlmis-form-submit');
 
             function capitalize(str) {
@@ -629,8 +624,7 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             // downloadPdf();
                             loadingModalService.open();
-                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
-                            
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
                     loadingModalService.open();

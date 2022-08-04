@@ -42,5 +42,12 @@
   "siglusIssueOrReceiveReport.preparedBy": "Prepared by",
   "siglusIssueOrReceiveReport.conferredBy": "Conferred by",
   "siglusIssueOrReceiveReport.receivedBy": "Received by",
-  "siglusIssueOrReceiveReport.printOnTheComputer": "Printed on the computer"
+  "siglusIssueOrReceiveReport.printOnTheComputer": "Printed on the computer",
+  "siglusIssueOrReceiveReport.product": "product",
+  "siglusIssueOrReceiveReport.quantityShipped": "Quantity Shipped",
+  "siglusIssueOrReceiveReport.quantityReceived": "QuantityReceived",
+  "siglusIssueOrReceiveReport.reason_for_adjustment": "Reason for adjustment",
+  "siglusIssueOrReceiveReport.notes": "Notes",
+  "siglusIssueOrReceiveReport.create_by": "Create by",
+  "siglusIssueOrReceiveReport.date": "Date"
 }
