@@ -31,7 +31,7 @@
     controller.$inject = [
         '$scope', 'draft', 'mergedItems', 'initialDraftInfo', '$state', '$stateParams', '$filter',
         'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'confirmService',
-        'messageService', 'isMerge', 'srcDstAssignments',
+        'messageService', 'isMerge',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
@@ -41,7 +41,7 @@
 
     function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
                         confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
-                        messageService, isMerge, srcDstAssignments, stockAdjustmentCreationService, notificationService,
+                        messageService, isMerge, stockAdjustmentCreationService, notificationService,
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
                         stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
@@ -896,7 +896,6 @@
                 .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             vm.facility = facility;
             vm.reasons = reasons;
-            vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             // 计算total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
@@ -921,7 +920,6 @@
             $stateParams.programId = program;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
-            $stateParams.srcDstAssignments = srcDstAssignments;
             $stateParams.mergedItems = mergedItems;
             $stateParams.initialDraftInfo = initialDraftInfo;
             $stateParams.draft = draft;
