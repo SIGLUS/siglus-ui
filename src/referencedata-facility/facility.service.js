@@ -292,7 +292,6 @@
                 facilityCode: facilityCode
             }).$promise;
         }
-
     // SIGLUS-REFACTOR: ends here
     }
 })();
