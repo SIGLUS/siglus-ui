@@ -45,7 +45,7 @@
                 initialDraftInfo: undefined
             },
             resolve: {
-                initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                initialDraftInfo: function($stateParams, facility, siglusStockIssueService) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
                     }

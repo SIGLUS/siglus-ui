@@ -110,13 +110,13 @@
             var productsMap = getProductsMap();
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
-                angular.forEach(Object.keys(lineItem.informations), function(information) {
-                    lineItem.informations[information] = angular.merge({},
-                        informationColumnsMap[information], lineItem.informations[information]);
-                    angular.forEach(Object.keys(lineItem.informations[information].orderables), function(orderableId) {
-                        lineItem.informations[information].orderables[orderableId] = angular.merge({},
+                angular.forEach(Object.keys(lineItem.informations), function(key) {
+                    lineItem.informations[key] = angular.merge({},
+                        informationColumnsMap[key], lineItem.informations[key]);
+                    angular.forEach(Object.keys(lineItem.informations[key].orderables), function(orderableId) {
+                        lineItem.informations[key].orderables[orderableId] = angular.merge({},
                             productsMap[orderableId],
-                            lineItem.informations[information].orderables[orderableId]);
+                            lineItem.informations[key].orderables[orderableId]);
                     });
                 });
             });
