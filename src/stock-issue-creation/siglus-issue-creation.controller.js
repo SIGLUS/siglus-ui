@@ -54,11 +54,8 @@
         vm.initialDraftInfo = initialDraftInfo;
 
         vm.destinationName = '';
-
+        vm.type = 'issue';
         vm.isMerge = isMerge;
-
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
-
         vm.key = function(secondaryKey) {
             return 'stockIssueCreation.' + secondaryKey;
         };
@@ -470,6 +467,8 @@
                     };
                 }));
             });
+            // var totalPage = getTotalPaginationNum(promiseList, canUseHeight);
+            // console.log('totalPage', totalPage);
             // 固定部分的图片转换完成后再去做分页部分的图片转换
             $q.all(fixedPromiseList).then(function(reback) {
                 // 偏移量
@@ -478,6 +477,7 @@
                 var realHeight = 0;
                 // 页码
                 var pageNumber = 1;
+                var promiseListLen = promiseList.length;
                 $q.all(promiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
                     PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
@@ -500,16 +500,16 @@
                                 A4_HEIGHT
                             );
                             // 遍历跟随分页部分重复的部分
-                            PDF.addImage(
-                                reback[2].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                ) * rate,
-                                585,
-                                reback[2].nodeHeight * rate
-                            );
+                            // PDF.addImage(
+                            //     '',
+                            //     'JPEG',
+                            //     4,
+                            //     (
+                            //         offsetHeight
+                            //     ) * rate,
+                            //     585,
+                            //     reback[2].nodeHeight * rate
+                            // );
                             PDF.addImage(
                                 reback[3].data,
                                 'JPEG',
@@ -561,17 +561,29 @@
                             res.nodeWidth * rate,
                             res.nodeHeight * rate
                         );
+                        if (promiseListLen - 1 === index) {
+                            PDF.addImage(
+                                reback[2].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight + result[index].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[2].nodeHeight * rate
+                            );
+                        }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
                     // 添加分页部分下方的固定部分图片到PDF中
-                    PDF.addImage(
-                        reback[2].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight) * rate,
-                        585,
-                        reback[2].nodeHeight * rate
-                    );
+                    // PDF.addImage(
+                    //     '',
+                    //     'JPEG',
+                    //     4,
+                    //     (offsetHeight) * rate,
+                    //     585,
+                    //     reback[2].nodeHeight * rate
+                    // );
                     PDF.addImage(
                         reback[3].data,
                         'JPEG',
@@ -588,7 +600,6 @@
                         585,
                         reback[4].nodeHeight * rate
                     );
-                    // 生成PDF文件，并且命名
                     PDF.save(
                         getPdfName(
                             vm.facility.name,
@@ -598,6 +609,21 @@
                 });
             });
         }
+
+        // function getTotalPaginationNum(promiseList, canUseHeight) {
+        //     // return 'hello';
+        //     var totalNum = 0;
+        //     $q.all(promiseList).then(function(res) {
+        //         var realHeight = 0;
+        //         _.forEach(res, function(itm) {
+        //             realHeight = realHeight + itm.nodeHeight;
+        //             if (canUseHeight < realHeight) {
+        //                 totalNum = totalNum + 1;
+        //             }
+        //         });
+        //     });
+        //     return totalNum;
+        // }
 
         function confirmMergeSubmit(signature, addedLineItems, occurredDate, downloadTask) {
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
@@ -653,6 +679,7 @@
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                         .then(function(data) {
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
+                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             // downloadPdf();
                             loadingModalService.open();
                             confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);

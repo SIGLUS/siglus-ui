@@ -1,4 +1,4 @@
-<div id="waitDownload" class="wait-for-download">
+<div id="waitDownload" class="wait-for-download1">
       <section id="sectionFirst" class="section-first">
         <table cellpadding="0" cellspacing="0">
           <tr class="hide-tr">
@@ -240,10 +240,12 @@
               <td></td>
               <td style="width: 100px;">{{ item.lotCode }}</td>
               <td>{{ item.expirationDate }}</td>
-              <td>{{ item.stockOnHand }}</td>
+              <td></td>
               <td>{{ vm.type === 'issue' ? item.quantity : '' }}</td>
-              <td>10</td>
-              <td style="width: 30px;">{{ vm.type === 'issue' ? item.quantity * 10 : '' }}</td>
+              <!-- price -->
+              <td></td>
+              <!-- value -->
+              <td style="width: 30px;"></td>
               <td style="border: none; border-left: 1px solid #000;"></td>
               <td></td>
               <td style="border-right: 1px solid #000;"></td>
@@ -254,7 +256,8 @@
       <section id="sectionThird" class="section-third">
         <!-- TODO should be automatically calculated -->
         <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
-        <div class="issue-voucher" style="text-align: center;">{{ vm.totalPriceValue }}</div>
+        <!-- total value -->
+        <div class="issue-voucher" style="text-align: center;"></div>
       </section>
       <section id="sectionFouth" class="section-fouth">
         <!-- TODO signature of the user who submitted the merged issue draft -->
@@ -265,7 +268,7 @@
         <div class="fouth-received">{{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.receivedBy }}</div>
       </section>
       <div id="subInformation" class="sub-information">
-        <div>{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</div>
-        <div>{{ vm.nowTime }}</div>
+        <div style="width: 50%; text-align: left;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</div>
+        <div style="width: 50%; text-align: right;">{{ vm.nowTime }}</div>
       </div>
 </div>
