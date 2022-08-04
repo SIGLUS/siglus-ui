@@ -32,7 +32,7 @@
         'proofOfDeliveryManageService', '$state', 'loadingModalService', 'notificationService', 'pods',
         '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
-        'stockReasonsFactory'
+        'stockReasonsFactory', 'siglusInitialProofOfDeliveryService', 'messageService', 'SIGLUS_TIME'
     ];
 
     function controller(
@@ -50,15 +50,22 @@
         fulfillingLineItemFactory,
         $q,
         openlmisDateFilter,
-        stockReasonsFactory
+        stockReasonsFactory,
+        siglusInitialProofOfDeliveryService,
+        messageService,
+        SIGLUS_TIME
     ) {
-        var vm = this;
 
+        var vm = this;
         vm.$onInit = onInit;
         vm.openPod = openPod;
         vm.loadOrders = loadOrders;
         vm.printProofOfDelivery = printProofOfDelivery;
-        this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
+        vm.getStatusText = getStatusText;
+        vm.validatePODStatus = _.throttle(validatePODStatus, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+        vm.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         /**
          * @ngdoc property
          * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
@@ -657,6 +664,42 @@
          *
          * @ngdoc method
          * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
+         * @name validatePoDDraftList
+         *
+         * @description
+         * judge POD has started multi-users issue voucher
+         *
+         * @param {String} isStarter status of POD
+         */
+        function validatePODStatus(order) {
+
+            if (order.status  === 'RECEIVED') {
+                proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
+                    $state.go('openlmis.orders.podManage.draftList.draft', {
+                        orderId: order.id,
+                        podId: pod.id,
+                        actionType: 'VIEW'
+                    });
+                });
+            } else if (order.hasSubDraft) {
+                proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
+                    $state.go('openlmis.orders.podManage.draftList', {
+                        orderId: order.id,
+                        podId: pod.id,
+                        orderCode: order.orderCode
+                    });
+                });
+            } else {
+                proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
+                    siglusInitialProofOfDeliveryService.show(order.id, pod.id, order.orderCode);
+                });
+            }
+        }
+
+        /**
+         *
+         * @ngdoc method
+         * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
          * @name printProofOfDelivery
          *
          * @description
@@ -747,8 +790,18 @@
                         .finally(loadingModalService.close);
                 });
         }
-    }
 
+        function getStatusText(order) {
+            if (order.status  === 'RECEIVED') {
+                return messageService.get('proofOfDeliveryManage.view');
+            }
+            if (order.hasSubDraft) {
+                return messageService.get('proofOfDeliveryManage.continue');
+            }
+            return messageService.get('proofOfDeliveryManage.start');
+
+        }
+    }
     function getName(object) {
         return object ? object.name : undefined;
     }

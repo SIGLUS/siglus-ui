@@ -197,7 +197,7 @@ describe('ProofOfDeliveryManageController', function() {
             spyOn(proofOfDeliveryManageService, 'getByOrderId').andReturn(deferred.promise);
             spyOn($state, 'go').andReturn();
 
-            vm.openPod(pod);
+            vm.openPod(pod.id);
             deferred.resolve(pod);
             $rootScope.$apply();
 

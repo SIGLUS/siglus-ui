@@ -28,31 +28,19 @@
         .module('proof-of-delivery-view')
         .controller('ProofOfDeliveryViewController', ProofOfDeliveryViewController);
 
-    ProofOfDeliveryViewController.$inject = [
+    ProofOfDeliveryViewController.$inject = ['$scope',
         'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS', 'orderLineItems', 'canEdit',
-        'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryManageService',
-        'openlmisDateFilter', 'proofOfDeliveryService', 'fulfillingLineItemFactory',
-        'notificationService', '$stateParams'
-    ];
+        'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryService', 'notificationService',
+        '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
+        'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory'];
 
-    function ProofOfDeliveryViewController(
-        proofOfDelivery,
-        order,
-        reasons,
-        messageService,
-        VVM_STATUS,
-        orderLineItems,
-        canEdit,
-        ProofOfDeliveryPrinter,
-        $q,
-        loadingModalService,
-        proofOfDeliveryManageService,
-        openlmisDateFilter,
-        proofOfDeliveryService,
-        fulfillingLineItemFactory,
-        notificationService,
-        $stateParams
-    ) {
+    function ProofOfDeliveryViewController($scope
+        , proofOfDelivery, order, reasons, messageService
+        , VVM_STATUS, orderLineItems, canEdit, ProofOfDeliveryPrinter
+        , $q, loadingModalService, proofOfDeliveryService, notificationService
+        , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
+        , confirmService, confirmDiscardService, proofOfDeliveryManageService
+        , openlmisDateFilter, fulfillingLineItemFactory) {
 
         var vm = this;
 
@@ -60,7 +48,21 @@
         vm.getStatusDisplayName = getStatusDisplayName;
         vm.getReasonName = getReasonName;
         vm.printProofOfDelivery = printProofOfDelivery;
+        vm.save = save;
+        vm.submit = submit;
+        vm.deleteDraft = deleteDraft;
+        vm.returnBack = returnBack;
+        vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
+        vm.getReason = function(reasonId) {
+            // return 
+            var reasonMap = _.reduce(reasons, function(r, c) {
+                r[c.id] = c.name;
+                return r;
+            }, {});
+            return reasonMap[reasonId];
+        };
+
         /**
          * @ngdoc property
          * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
@@ -104,14 +106,7 @@
          * Indicates if VVM Status column should be shown for current Proof of Delivery.
          */
         vm.showVvmColumn = undefined;
-        vm.getReason = function(reasonId) {
-            // return 
-            var reasonMap = _.reduce(reasons, function(r, c) {
-                r[c.id] = c.name;
-                return r;
-            }, {});
-            return reasonMap[reasonId];
-        };
+
         /**
          * @ngdoc property
          * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
@@ -143,6 +138,7 @@
          * Initialization method of the ProofOfDeliveryViewController.
          */
         function onInit() {
+            updateLabel();
             vm.order = order;
             // SIGLUS-REFACTOR: starts here
             // vm.reasons = reasons;
@@ -155,8 +151,16 @@
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;
-            // console.log('#### vm', vm);
-            // console.log('$stateParams', $stateParams);
+            vm.isMerge = $stateParams.actionType === 'MERGE'
+            || $stateParams.actionType === 'VIEW';
+
+            $scope.$watch(function() {
+                return vm.proofOfDelivery;
+            }, function(newValue, oldValue) {
+                $scope.needToConfirm =  !angular.equals(newValue, oldValue);
+            }, true);
+            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+
         }
 
         /**
@@ -190,6 +194,119 @@
             return vm.reasons.filter(function(reason) {
                 return reason.id === id;
             })[0].name;
+        }
+
+        function save() {
+            $scope.needToConfirm = false;
+            loadingModalService.open();
+            proofOfDeliveryService.updateSubDraft($stateParams.podId,
+                $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE').then(function() {
+                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+            })
+                .catch(function() {
+                    notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
+                })
+                .finally(loadingModalService.close);
+        }
+
+        function submit() {
+            $scope.needToConfirm = false;
+            //console.log('openlmis-form-submit');
+            $scope.$broadcast('openlmis-form-submit');
+            var copy = angular.copy(vm.proofOfDelivery),
+                errors = copy.validate(vm.isMerge);
+            if (errors) {
+                return $q.reject(errors);
+            }
+            if (vm.isMerge) {
+                submitDraft();
+            } else {
+                submitSubDraft();
+            }
+        }
+
+        // submit subDraft
+        function submitSubDraft() {
+            loadingModalService.open();
+            proofOfDeliveryService.updateSubDraft($stateParams.podId,
+                $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT').then(function() {
+                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+                $state.go('^', $stateParams, {
+                    reload: true
+                });
+            })
+                .catch(function() {
+                    notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
+                })
+                .finally(loadingModalService.close);
+        }
+
+        // final merge and submit
+        function submitDraft() {
+            confirmService.confirm(
+                'proofOfDeliveryView.confirm.message',
+                'proofOfDeliveryView.confirm.label'
+            )
+                .then(function() {
+                    loadingModalService.open();
+                    var copy = angular.copy(vm.proofOfDelivery);
+                    copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
+                    proofOfDeliveryService.submitDraft($stateParams.podId,
+                        copy).then(function() {
+                        notificationService.success(
+                            'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
+                        );
+                        $state.go('openlmis.orders.podManage', {
+                            requestingFacilityId: $stateParams.requestingFacilityId,
+                            programId: $stateParams.programId
+                        });
+                    })
+                        .catch(function() {
+                            notificationService.error(
+                                'proofOfDeliveryView.failedToConfirmProofOfDelivery'
+                            );
+                        })
+                        .finally(loadingModalService.close);
+                });
+
+        }
+
+        function deleteDraft() {
+            $scope.needToConfirm = false;
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                proofOfDeliveryService.deleteSubDraft($stateParams.podId,
+                    $stateParams.subDraftId).then(function() {
+                    $state.go('^', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    })
+                    .finally(loadingModalService.close);
+            });
+        }
+
+        function returnBack() {
+            $state.go('^', {}, {
+                reload: true
+            });
+        }
+
+        function updateLabel() {
+            if ($stateParams.isMerged === 'true') {
+                $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
+            } else {
+                $state.current.label =
+                        messageService.get('stockPhysicalInventoryDraft.draft')
+                        + ' '
+                        + $stateParams.draftNum;
+            }
         }
         function downloadPdf() {
             // 获取固定高度的dom节点
