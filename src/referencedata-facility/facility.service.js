@@ -40,11 +40,12 @@
 
         var facilitiesOffline = localStorageFactory('facilities'),
             facilitiesPromise,
-            resource = $resource(referencedataUrlFactory('/api/facilities/:id'),
+            resource = $resource(
+                referencedataUrlFactory('/api/siglusapi/facilities/:id'),
                 {},
                 {
                     query: {
-                        url: referencedataUrlFactory('/api/facilities/'),
+                        url: referencedataUrlFactory('/api/siglusapi/facilities/'),
                         method: 'GET'
                     },
                     getAllMinimal: {
@@ -75,7 +76,8 @@
                         method: 'DELETE'
                     }
                     // SIGLUS-REFACTOR: ends here
-                });
+                }
+            );
 
         this.get = get;
         this.query = query;
@@ -112,8 +114,8 @@
                         return $q.resolve(facility);
                     });
             }
-
             return facilitiesPromise;
+
         }
 
         /**

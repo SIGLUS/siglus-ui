@@ -42,8 +42,6 @@
 
         vm.destinationName = '';
 
-        vm.items;
-
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
