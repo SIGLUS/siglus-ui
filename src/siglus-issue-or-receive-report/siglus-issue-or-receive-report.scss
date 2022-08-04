@@ -1,9 +1,9 @@
-.wait-for-download {
+.wait-for-download1 {
     width: 1250px;
     padding: 0 2px;
     display: block;
-    // overflow: hidden;
-    // height: 0;
+    overflow: hidden;
+    height: 0;
     // .rapid-test-pdf-container {
     //   // padding: 60px 90px 0 90px;
       
@@ -67,9 +67,8 @@
       }
     }
     .sub-information {
-      width: 1246px;
+      width: 100%;
       display: flex;
-      justify-content: space-between;
       margin-top: 20px;
       font-size: 18px;
       font-weight: 700;

@@ -648,7 +648,6 @@
                         vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
                             return item.rejectionReasonId;
                         });
-                        console.log('vm --->>>', vm);
                         setTimeout(function() {
                             downloadPdf();
                         }, 500);

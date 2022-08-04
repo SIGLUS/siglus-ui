@@ -666,7 +666,6 @@
          * @return {String}         the prepared URL
          */
         function printProofOfDelivery(order) {
-            console.log('#### order', order);
             var orderId = order.id;
             loadingModalService.open();
             stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT')
@@ -735,7 +734,6 @@
                                         vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
                                             return item.rejectionReasonId;
                                         });
-                                        console.log('vm --->>>', vm);
                                         setTimeout(function() {
                                             downloadPdf();
                                         }, 500);
