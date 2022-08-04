@@ -28,6 +28,7 @@
       <th>{{'adminFacilityList.type' | message}}</th>
       <th>{{'adminFacilityList.active' | message}}</th>
       <th>{{'adminFacilityList.enabled' | message}}</th>
+      <th>{{'adminFacilityList.android' | message}}</th>
       <th>{{'adminFacilityList.actions' | message}}</th>
     </tr>
     </thead>
@@ -42,6 +43,9 @@
       </td>
       <td>
         <i ng-class="{'icon-ok': facility.enabled}"></i>
+      </td>
+      <td>
+        <i ng-class="{'icon-ok': facility.isAndroidDevice}"></i>
       </td>
       <td>
         <button ui-sref="openlmis.administration.facilities.edit({id: facility.id})">
