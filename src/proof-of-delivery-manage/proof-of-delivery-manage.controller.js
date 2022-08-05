@@ -32,7 +32,7 @@
         'proofOfDeliveryManageService', '$state', 'loadingModalService', 'notificationService', 'pods',
         '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
-        'stockReasonsFactory'
+        'stockReasonsFactory', 'facilityFactory'
     ];
 
     function controller(
@@ -50,7 +50,8 @@
         fulfillingLineItemFactory,
         $q,
         openlmisDateFilter,
-        stockReasonsFactory
+        stockReasonsFactory,
+        facilityFactory
     ) {
         var vm = this;
 
@@ -202,6 +203,11 @@
             vm.supplyingFacility = getSelectedObjectById(supplyingFacilities, $stateParams.supplyingFacilityId);
             vm.facilityName = getName(vm.requestingFacility);
             vm.programName = getName(vm.program);
+            facilityFactory.getUserHomeFacility()
+                .then(function(res) {
+                    vm.facility = res;
+                });
+            console.log('vm --->>>', vm);
         }
 
         /**
@@ -374,6 +380,12 @@
                 var realHeight = 0;
                 // 页码
                 var pageNumber = 1;
+                PDF.setFontSize(10);
+                PDF.text(
+                    pageNumber.toString(),
+                    585 / 2,
+                    A4_HEIGHT
+                );
                 var promiseListLen = promiseList.length;
                 $q.all(promiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
@@ -390,12 +402,6 @@
                         // 计算分页部分实际高度
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
                             // 遍历跟随分页部分重复的部分
                             // PDF.addImage(
                             //     '',
@@ -433,6 +439,7 @@
                             // 新开分页
                             PDF.addPage();
                             pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
@@ -512,6 +519,17 @@
         }
 
         function downloadIncosostenciesPdf(opt) {
+            var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
+            if (needCalcTrNodesArray.length === 0) {
+                opt.PDF.save(
+                    // getPdfName(
+                    //     vm.facility.name,
+                    //     vm.issueVoucherDate
+                    // )
+                    vm.fileName + '.pdf'
+                );
+                return;
+            }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
             opt.PDF.setFontSize(10);
@@ -521,12 +539,13 @@
                 opt.A4_HEIGHT
             );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
-                incosostencyFooterNode = document.getElementById('inconsistencyFooter');
+                incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
+                inconsistencyTh = document.getElementById('inconsistencyTh');
             var fixedHeight = incosostencyHeaderNode.offsetHeight
                     + incosostencyFooterNode.offsetHeight
+                    + inconsistencyTh.offsetHeight
                     + opt.PAGE_NUM_HEIGHT / opt.rate;
             var canUseHeight = opt.a4Height2px - fixedHeight - opt.PAGE_NUM_HEIGHT;
-            var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
 
             var fixedPromiseListIn = [
                 // eslint-disable-next-line no-undef
@@ -539,6 +558,18 @@
                         data: data,
                         nodeWidth: 1250,
                         nodeHeight: incosostencyHeaderNode.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(inconsistencyTh, {
+                    scale: 1,
+                    width: 1250,
+                    height: inconsistencyTh.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: inconsistencyTh.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
@@ -557,7 +588,7 @@
             var promiseListIn = [];
             _.forEach(needCalcTrNodesArray, function(item) {
                 // eslint-disable-next-line no-undef
-                promiseList.push(domtoimage.toPng(item, {
+                promiseListIn.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: 1250,
                     height: item.offsetHeight + 1
@@ -571,13 +602,16 @@
             });
             $q.all(fixedPromiseListIn).then(function(_reback) {
                 // 偏移量
-                var offsetHeight = incosostencyHeaderNode.offsetHeight;
+                var offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
                 // 当前分页部分tr的累积高度
                 var realHeight = 0;
                 // 页码
                 $q.all(promiseListIn).then(function(_result) {
                     // 添加分页部分上方的固定部分图片到PDF中
                     opt.PDF.addImage(_reback[0].data, 'JPEG', 4, 0, 585, _reback[0].nodeHeight * opt.rate);
+                    opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
+                        incosostencyHeaderNode.offsetHeight * opt.rate,
+                        585, _reback[1].nodeHeight * opt.rate);
                     _.forEach(_result, function(res, index) {
                         // 计算分页部分实际高度
                         realHeight = realHeight + _result[index].nodeHeight;
@@ -590,14 +624,14 @@
                             );
                             // 遍历跟随分页部分重复的部分
                             opt.PDF.addImage(
-                                _reback[1].data,
+                                _reback[2].data,
                                 'JPEG',
                                 4,
                                 (
                                     offsetHeight
                                 ) * opt.rate,
                                 585,
-                                _reback[1].nodeHeight * opt.rate + 2
+                                _reback[2].nodeHeight * opt.rate + 2
                             );
                             // 新开分页
                             opt.PDF.addPage();
@@ -608,7 +642,9 @@
                                 opt.A4_HEIGHT
                             );
                             opt.PDF.addImage(_reback[0].data, 'JPEG', 4, 0, 585, _reback[0].nodeHeight * opt.rate);
-                            offsetHeight = incosostencyHeaderNode.offsetHeight;
+                            opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
+                                incosostencyHeaderNode.offsetHeight * opt.rate, 585, _reback[1].nodeHeight * opt.rate);
+                            offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
                             realHeight = 0;
                         }
                         // 添加当前遍历元素的图片到PDF
@@ -624,12 +660,12 @@
                     });
                     // 添加分页部分下方的固定部分图片到PDF中
                     opt.PDF.addImage(
-                        _reback[1].data,
+                        _reback[2].data,
                         'JPEG',
                         4,
                         (offsetHeight) * opt.rate,
                         585,
-                        _reback[1].nodeHeight * opt.rate + 2
+                        _reback[2].nodeHeight * opt.rate + 2
                     );
                     // 生成PDF文件，并且命名
                     opt.PDF.save(
@@ -667,6 +703,7 @@
          */
         function printProofOfDelivery(order) {
             var orderId = order.id;
+            vm.orderCode = order.orderCode;
             loadingModalService.open();
             stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT')
                 .then(function(reasons) {
@@ -675,18 +712,29 @@
                         .then(function(pod) {
                             proofOfDeliveryManageService.getPodInfo(pod.id, orderId).then(function(res) {
                                 // console.log('返回值：', res);
-                                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm a');
+                                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                                 vm.supplier = res.supplier;
                                 vm.client = res.client;
                                 vm.supplierDistrict = res.supplierDistrict;
                                 vm.supplierProvince = res.supplierProvince;
-                                vm.requisitionDate = res.requisitionDate;
+                                vm.requisitionDate = openlmisDateFilter(res.requisitionDate, 'yyyy-MM-dd');
                                 vm.issueVoucherDate = openlmisDateFilter(res.issueVoucherDate, 'yyyy-MM-dd');
                                 vm.deliveredBy = res.deliveredBy;
                                 vm.receivedBy = res.receivedBy;
                                 vm.receivedDate = res.receivedDate;
-                                vm.fileName = res.fileName;
-                                vm.receivedDate = res.receivedDate;
+                                var orderCodeArray = vm.orderCode.split('-');
+                                // if (fileNameArray[fileNameArray.length - 1])
+                                if (orderCodeArray.length > 2) {
+                                    var leftString =
+                                        orderCodeArray[orderCodeArray.length - 1] < 10
+                                            ? '0' + orderCodeArray[orderCodeArray.length - 1]
+                                            : orderCodeArray[orderCodeArray.length - 1];
+                                    vm.fileName = res.fileName + '-' + leftString;
+                                } else {
+                                    vm.fileName = res.fileName + '-' + '01';
+                                }
+                                vm.requisitionId = res.requisitionId;
+                                vm.requisitionNum = res.requisitionNum;
                             });
                             proofOfDeliveryService.get(pod.id).then(function(res) {
                                 fulfillingLineItemFactory

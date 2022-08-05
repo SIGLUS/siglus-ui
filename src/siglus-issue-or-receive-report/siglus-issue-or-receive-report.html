@@ -33,7 +33,7 @@
               <!-- TODO the Documentation No. input by the user -->
               <span class="report--title-font">
                 <!-- Issue Voucher Nº -->
-                {{ 'siglusIssueOrReceiveReport.issueVoucherNo' | message }} {{vm.initialDraftInfo.documentNumber}}
+                {{vm.initialDraftInfo.documentNumber}}
               </span>
             </td>
           </tr>
@@ -92,8 +92,8 @@
               {{ 'siglusIssueOrReceiveReport.totalOfVolume' | message }}:
             </td>
             <!-- keep blank -->
-            <td colspan="1" rowspan="3">
-              {{ 'siglusIssueOrReceiveReport.returned' | message }}:
+            <td style="vertical-align: top; text-align: left; font-size: 18px; font-weight: 700;" colspan="1" rowspan="3">
+              {{ 'siglusIssueOrReceiveReport.returned' | message }}
             </td>
             <td class="text__left" style="vertical-align: baseline; border-right: 1px solid #000;" colspan="2" rowspan="3">
               <div class="label-checkbox">
@@ -156,7 +156,7 @@
           </tr>
           <tr>
             <!-- keep blank -->
-            <td class="text__left" style="border-right: 1px solid #000;">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.type === 'receive' ? vm.issueVoucherDate  : '' }}</td>
+            <td class="text__left" style="border-right: 1px solid #000; height: 72px; vertical-align: top;">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.type === 'receive' ? vm.issueVoucherDate  : '' }}</td>
           </tr>
         </table>
       </section>
@@ -195,7 +195,7 @@
               </td>
               <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.lotNr' | message }}
               </td>
-              <td style="width: 85px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
+              <td style="width: 100px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
               </td>
               <!-- keep blank -->
               <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityOrdered' | message }}
@@ -208,7 +208,7 @@
               <td style="border: none; border-left: 1px solid #000;"></td>
               <!-- keep blank -->
               <td style="padding: 0 6px; height: 60px; font-weight: 700;
-              font-size: 14px;">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}: {{ vm.type === 'issue' ? '' : item.quantity }}</td>
+              font-size: 14px;">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}</td>
               <!-- keep blank -->
               <td style="padding: 0 4px; height: 60px; font-weight: 700;
               font-size: 14px; border-right: 1px solid #000;">{{ 'siglusIssueOrReceiveReport.difference' | message }}</td>
@@ -247,7 +247,7 @@
               <!-- value -->
               <td style="width: 30px;"></td>
               <td style="border: none; border-left: 1px solid #000;"></td>
-              <td></td>
+              <td>{{ vm.type === 'issue' ? '' : item.quantity }}</td>
               <td style="border-right: 1px solid #000;"></td>
             </tr>
           </tbody>
@@ -261,11 +261,11 @@
       </section>
       <section id="sectionFouth" class="section-fouth">
         <!-- TODO signature of the user who submitted the merged issue draft -->
-        <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.preparedBy }}</div>
+        <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.type === 'issue' ? vm.signature : '' }}</div>
         <!-- keep blank -->
         <div class="fouth-conferred">{{ 'siglusIssueOrReceiveReport.conferredBy' | message }}:</div>
         <!-- keep blank -->
-        <div class="fouth-received">{{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.receivedBy }}</div>
+        <div class="fouth-received">{{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.type === 'receive' ? vm.signature : '' }}</div>
       </section>
       <div id="subInformation" class="sub-information">
         <div style="width: 50%; text-align: left;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</div>

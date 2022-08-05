@@ -239,7 +239,7 @@
      * @param {Object} lineItem line item to be removed.
      */
         vm.remove = function(lineItem) {
-            var index = vm.addedLineItems.indexOf(lineItem);
+            var index = _.indexOf(vm.addedLineItems, lineItem);
             vm.addedLineItems.splice(index, 1);
             vm.setProductGroups();
             var productId = _.get(vm, ['selectedOrderableGroup', 0, 'orderable', 'id']);
@@ -352,13 +352,23 @@
          * Submit all added items.
          */
         function getPdfName(facilityName, nowTime) {
-            return (
+            var result = (
                 'Issue_'
                 + facilityName
                 + '_'
                 + nowTime
                 + '.pdf'
             );
+            if (facilityName.indexOf('Outros') > -1) {
+                result = (
+                    'Issue_'
+                    + facilityName.split(':')[1]
+                    + '_'
+                    + nowTime
+                    + '.pdf'
+                );
+            }
+            return result;
         }
         function downloadPdf() {
             // 获取固定高度的dom节点
@@ -602,7 +612,7 @@
                     );
                     PDF.save(
                         getPdfName(
-                            vm.facility.name,
+                            vm.destinationName,
                             vm.issueVoucherDate
                         )
                     );
@@ -680,8 +690,9 @@
                         .then(function(data) {
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                            vm.signature = data.signature;
                             // downloadPdf();
-                            loadingModalService.open();
+                            // loadingModalService.open();
                             confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
@@ -885,6 +896,7 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
+            // console.log('vm --->>>', vm);
         }
 
         function initViewModel() {
@@ -913,7 +925,9 @@
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
             vm.supplier = vm.facility.name;
-            vm.client = vm.destinationName;
+            console.log('#### destinationName', vm.destinationName);
+            vm.client =
+                vm.destinationName.indexOf('Outros') === 0 ? vm.destinationName.split(':')[1] : vm.destinationName;
         }
 
         function initStateParams() {

@@ -139,9 +139,9 @@ describe('SiglusStockIssueCreationController', function() {
             },
             facility: {
                 id: '004f4232-cfb8-11e9-9398-0242ac130008'
-            }
+            },
+            destinationName: 'test'
         });
-
     }
 
     beforeEach(function() {
