@@ -19,7 +19,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
         stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries, facilityFactory,
         MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user, programService, stockProgramUtilService,
-        stockCardDataService;
+        stockCardDataService, siglusProductOrderableGroupService;
     // SIGLUS-REFACTOR: ends here
     /*eslint-enable */
 
@@ -30,47 +30,47 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         prepareSpies();
     });
 
-    // it('should be available under \'stockmanagement/stockCardSummaries\'', function() {
-    //     expect($state.current.name).not.toEqual('openlmis.stockmanagement.stockCardSummaries');
-    //
-    //     goToUrl('/stockmanagement/stockCardSummaries');
-    //
-    //     expect($state.current.name).toEqual('openlmis.stockmanagement.stockCardSummaries');
-    // });
-    //
-    // it('should resolve stockCardSummaries', function() {
-    //     goToUrl('/stockmanagement/stockCardSummaries?stockCardListPage=0&stockCardListSize=10&program=program-id');
-    //
-    //     expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
-    // });
-    //
-    // it('should call stock card summary repository with parameters', function() {
-    //     goToUrl('/stockmanagement/stockCardSummaries' +
-    //         '?stockCardListPage=0&stockCardListSize=10&facility=facility-id&program=program-id');
-    //
-    //     expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
-    //     expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
-    //         page: 0,
-    //         size: 2147483647,
-    //         facilityId: 'facility-id',
-    //         programId: 'program-id',
-    //         nonEmptyOnly: true,
-    //         // #103: archive product
-    //         excludeArchived: true,
-    //         // #103: ends here,
-    //         // #225: cant view detail page when not have stock view right
-    //         rightName: 'STOCK_CARDS_VIEW'
-    //         // #225: ends here
-    //     });
-    // });
+    it('should be available under \'stockmanagement/stockCardSummaries\'', function() {
+        expect($state.current.name).not.toEqual('openlmis.stockmanagement.stockCardSummaries');
 
-    // it('should use template', function() {
-    //     spyOn($templateCache, 'get').andCallThrough();
-    //
-    //     goToUrl('/stockmanagement/stockCardSummaries');
-    //
-    //     expect($templateCache.get).toHaveBeenCalledWith('stock-card-summary-list/stock-card-summary-list.html');
-    // });
+        goToUrl('/stockmanagement/stockCardSummaries');
+
+        expect($state.current.name).toEqual('openlmis.stockmanagement.stockCardSummaries');
+    });
+
+    it('should resolve stockCardSummaries', function() {
+        goToUrl('/stockmanagement/stockCardSummaries?stockCardListPage=0&stockCardListSize=10&program=program-id');
+
+        expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
+    });
+
+    it('should call stock card summary repository with parameters', function() {
+        goToUrl('/stockmanagement/stockCardSummaries' +
+            '?stockCardListPage=0&stockCardListSize=10&facility=facility-id&program=program-id');
+
+        expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
+        expect(siglusProductOrderableGroupService.queryStockOnHandsInfo).toHaveBeenCalledWith({
+            page: 0,
+            size: 2147483647,
+            facilityId: 'facility-id',
+            programId: 'program-id',
+            nonEmptyOnly: true,
+            // #103: archive product
+            excludeArchived: true,
+            // #103: ends here,
+            // #225: cant view detail page when not have stock view right
+            rightName: 'STOCK_CARDS_VIEW'
+            // #225: ends here
+        });
+    });
+
+    it('should use template', function() {
+        spyOn($templateCache, 'get').andCallThrough();
+
+        goToUrl('/stockmanagement/stockCardSummaries');
+
+        expect($templateCache.get).toHaveBeenCalledWith('stock-card-summary-list/stock-card-summary-list.html');
+    });
 
     it('should require stock cards view right to enter', function() {
         expect(state.accessRights).toEqual([STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW]);
@@ -88,6 +88,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         // SIGLUS-REFACTOR: starts here
         module('stock-program-util');
         module('stock-card');
+        module('stock-orderable-group');
         // SIGLUS-REFACTOR: ends here
     }
 
@@ -96,6 +97,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             $q = $injector.get('$q');
             $state = $injector.get('$state');
             $rootScope = $injector.get('$rootScope');
+            siglusProductOrderableGroupService = $injector.get('siglusProductOrderableGroupService');
             $location = $injector.get('$location');
             $templateCache = $injector.get('$templateCache');
             authorizationService = $injector.get('authorizationService');
@@ -134,17 +136,18 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         // SIGLUS-REFACTOR: starts here
         spyOn(authorizationService, 'getUser').andReturn($q.resolve(user));
         spyOn(facilityFactory, 'getUserHomeFacility').andReturn($q.resolve(homeFacility));
+        spyOn(siglusProductOrderableGroupService, 'queryStockOnHandsInfo').andReturn($q.resolve(stockCardSummaries));
         spyOn(programService, 'getAllProductsProgram').andReturn($q.resolve([]));
         spyOn(stockProgramUtilService, 'getPrograms').andReturn($q.resolve([]));
         // SIGLUS-REFACTOR: ends here
     }
 
-    // function getResolvedValue(name) {
-    //     return $state.$current.locals.globals[name];
-    // }
-    //
-    // function goToUrl(url) {
-    //     $location.url(url);
-    //     $rootScope.$apply();
-    // }
+    function getResolvedValue(name) {
+        return $state.$current.locals.globals[name];
+    }
+
+    function goToUrl(url) {
+        $location.url(url);
+        $rootScope.$apply();
+    }
 });
