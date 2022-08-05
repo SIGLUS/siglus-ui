@@ -55,7 +55,7 @@
         vm.initialDraftInfo = initialDraftInfo;
         vm.destinationName = '';
         vm.initialDraftName = '';
-
+        var deferred = $q.defer();
         vm.isMerge = isMerge;
 
         vm.draft = draft;
@@ -600,6 +600,7 @@
                             vm.issueVoucherDate
                         )
                     );
+                    deferred.resolve('success');
                 });
             });
         }
@@ -626,7 +627,9 @@
                             vm.signature = data.signature;
                             loadingModalService.open();
                             downloadPdf();
-                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            deferred.promise.then(function() {
+                                confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            });
                         });
                 } else {
                     loadingModalService.open();

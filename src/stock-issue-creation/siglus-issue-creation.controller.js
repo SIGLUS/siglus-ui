@@ -52,7 +52,7 @@
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
         // vm.nowDate = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
         vm.initialDraftInfo = initialDraftInfo;
-
+        var deferred = $q.defer();
         vm.destinationName = '';
         vm.type = 'issue';
         vm.isMerge = isMerge;
@@ -615,6 +615,7 @@
                             vm.issueVoucherDate
                         )
                     );
+                    deferred.resolve('success');
                 });
             });
         }
@@ -689,9 +690,11 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            downloadPdf();
                             loadingModalService.open();
-                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
+                            downloadPdf();
+                            deferred.promise.then(function() {
+                                confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            });
                         });
                 } else {
                     loadingModalService.open();
