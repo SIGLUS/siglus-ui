@@ -250,7 +250,7 @@
                     // #105: activate archived product
                     siglusArchivedProductService.alterInfo(addedItems);
                     // #105: ends here
-                })
+                });
             });
         };
         // SIGLUS-REFACTOR: ends here
