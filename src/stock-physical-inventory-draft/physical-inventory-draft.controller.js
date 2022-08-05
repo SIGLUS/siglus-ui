@@ -38,7 +38,8 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService'
+        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
+        'siglusOrderableLotService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,7 +51,8 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService) {
+                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
+                        siglusOrderableLotService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -229,24 +231,26 @@
                 return !isInAdded;
             });
             addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function(addedItems) {
-                draft.lineItems = draft.lineItems.concat(addedItems);
-                refreshLotOptions();
-                // $stateParams.program = vm.program;
-                // $stateParams.facility = vm.facility;
-                // $stateParams.draft = draft;
-                //
-                // $stateParams.isAddProduct = true;
-                //
-                // //Only reload current state and avoid reloading parent state
-                // $state.go($state.current.name, $stateParams, {
-                //     reload: $state.current.name
-                // });
-                $stateParams.isAddProduct = true;
-                reload($state.current.name);
+                siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
+                    draft.lineItems = draft.lineItems.concat(addedItems);
+                    refreshLotOptions();
+                    // $stateParams.program = vm.program;
+                    // $stateParams.facility = vm.facility;
+                    // $stateParams.draft = draft;
+                    //
+                    // $stateParams.isAddProduct = true;
+                    //
+                    // //Only reload current state and avoid reloading parent state
+                    // $state.go($state.current.name, $stateParams, {
+                    //     reload: $state.current.name
+                    // });
+                    $stateParams.isAddProduct = true;
+                    reload($state.current.name);
 
-                // #105: activate archived product
-                siglusArchivedProductService.alterInfo(addedItems);
-                // #105: ends here
+                    // #105: activate archived product
+                    siglusArchivedProductService.alterInfo(addedItems);
+                    // #105: ends here
+                })
             });
         };
         // SIGLUS-REFACTOR: ends here
@@ -987,7 +991,9 @@
             var lotOptions = getLotOptions();
             _.forEach(draft.lineItems, function(displayLineItem) {
                 var orderableId = displayLineItem.orderable.id;
-                displayLineItem.lotOptions = lotOptions[orderableId];
+                if (lotOptions[orderableId]) {
+                    displayLineItem.lotOptions = lotOptions[orderableId];
+                }
             });
         }
 

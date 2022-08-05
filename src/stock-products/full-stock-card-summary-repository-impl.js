@@ -31,12 +31,13 @@
 
     // SIGLUS-REFACTOR: starts here
     FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotResource',
-        'OrderableResource', '$q', 'SiglusStockCardSummaryResource', 'siglusArchivedProductService'];
+        'OrderableResource', '$q', 'SiglusStockCardSummaryResource', 'siglusArchivedProductService',
+        'siglusOrderableLotService'];
     // SIGLUS-REFACTOR: ends here
 
     function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource,
                                                 OrderableResource, $q, SiglusStockCardSummaryResource,
-                                                siglusArchivedProductService) {
+                                                siglusArchivedProductService, siglusOrderableLotService) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -77,40 +78,44 @@
             var LotResource = this.LotResource,
                 OrderableResource = this.OrderableResource;
                 // orderableFulfillsResource = this.orderableFulfillsResource;
-
+            var givenOrderableIds = params.orderableIds;
+            delete params.orderableIds;
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
                     return addMissingStocklessProducts(stockCardSummariesPage,
-                        LotResource, OrderableResource, params.facilityId);
+                        LotResource, OrderableResource, params.facilityId, givenOrderableIds);
                 });
         }
 
         function addMissingStocklessProducts(summaries, LotResource,
-                                             OrderableResource, facilityId) {
+                                             OrderableResource, facilityId, givenOrderableIds) {
             // var commodityTypeIds = summaries.content.map(function(summary) {
             //     return summary.orderable.id;
             // });
-
             var identities = summaries.content.map(function(summary) {
                 return summary.orderable;
             });
-
             return OrderableResource.getByVersionIdentities(identities)
                 .then(function(orderablePage) {
-                    var tradeItemIds = getTradeItemIdsSet(orderablePage);
-
+                    siglusOrderableLotService.setOrderables(orderablePage);
+                    var tradeItemIds = getTradeItemIdsSet(orderablePage, givenOrderableIds);
                     return LotResource.query({
                         tradeItemId: tradeItemIds
                     })
                         .then(function(lotPage) {
                             return siglusArchivedProductService.getArchivedOrderables(facilityId)
                                 .then(function(archivedOrderables) {
+                                    // orderableIdToLots with same tradeItem
                                     var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
+                                    // orderableIdToOrderableMap
                                     var orderableMap = mapOrderablesById(orderablePage, archivedOrderables);
                                     summaries.content.forEach(function(summary) {
+                                        // make id -> entity of orderable & lot
                                         addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
                                         var orderableId = summary.orderable.id;
                                         lotMap[orderableId].forEach(function(lot) {
+                                            // hasOrderableWithLot : summary canFulfillForMe has
+                                            // entry match this orderableId & lot
                                             if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
                                                 summary.canFulfillForMe.push(createCanFulfillForMeEntry(
                                                     orderableMap[orderableId], lot
@@ -124,7 +129,6 @@
                                             );
                                         }
                                     });
-
                                     return summaries;
                                 });
                         });
@@ -230,8 +234,13 @@
             });
         }
 
-        function getTradeItemIdsSet(orderables) {
-            return orderables.reduce(function(ids, orderable) {
+        function getTradeItemIdsSet(orderables, givenOrderableIds) {
+            return orderables.filter(function(orderable) {
+                if (givenOrderableIds) {
+                    return _.contains(givenOrderableIds, orderable.id);
+                }
+                return true;
+            }).reduce(function(ids, orderable) {
                 if (orderable.identifiers.tradeItem) {
                     addIfNotExist(ids, orderable.identifiers.tradeItem);
                 }
