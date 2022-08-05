@@ -66,8 +66,9 @@
                     <i ng-class="{'icon-ok': order.emergency}"></i>
                 </td>
                 <td>
-                    <button class="primary" ng-click="vm.openPod(order.id)">
-                        {{'proofOfDeliveryManage.manage' | message}}
+                    <!-- SIGLUS-REFACTOR: starts here -->
+                    <button class="primary" ng-click="vm.validatePODStatus(order)">
+                        {{vm.getStatusText(order)}}
                     </button>
                     <button ng-click="vm.printProofOfDelivery(order)">
                         {{'proofOfDeliveryManage.print' | message}}

@@ -45,7 +45,6 @@
                 addedLineItems: undefined,
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
@@ -90,14 +89,6 @@
                     }
                     return $stateParams.reasons;
                 },
-                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getDestinationAssignments(
-                            $stateParams.programId, facility.id
-                        );
-                    }
-                    return $stateParams.srcDstAssignments;
-                },
                 mergedItems: function() {
                     return [];
                 },
@@ -108,13 +99,13 @@
                     }
                     return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
                         draft.lineItems = filterOutOrderable(draft, orderableGroups);
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
+                                undefined, reasons);
                         }
                         return [];
                     }

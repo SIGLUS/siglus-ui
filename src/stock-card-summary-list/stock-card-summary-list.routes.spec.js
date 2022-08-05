@@ -19,7 +19,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
         stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries, facilityFactory,
         MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user, programService, stockProgramUtilService,
-        stockCardDataService;
+        stockCardDataService, siglusProductOrderableGroupService;
     // SIGLUS-REFACTOR: ends here
     /*eslint-enable */
 
@@ -49,7 +49,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             '?stockCardListPage=0&stockCardListSize=10&facility=facility-id&program=program-id');
 
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
-        expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+        expect(siglusProductOrderableGroupService.queryStockOnHandsInfo).toHaveBeenCalledWith({
             page: 0,
             size: 2147483647,
             facilityId: 'facility-id',
@@ -88,6 +88,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         // SIGLUS-REFACTOR: starts here
         module('stock-program-util');
         module('stock-card');
+        module('stock-orderable-group');
         // SIGLUS-REFACTOR: ends here
     }
 
@@ -96,6 +97,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             $q = $injector.get('$q');
             $state = $injector.get('$state');
             $rootScope = $injector.get('$rootScope');
+            siglusProductOrderableGroupService = $injector.get('siglusProductOrderableGroupService');
             $location = $injector.get('$location');
             $templateCache = $injector.get('$templateCache');
             authorizationService = $injector.get('authorizationService');
@@ -134,6 +136,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
         // SIGLUS-REFACTOR: starts here
         spyOn(authorizationService, 'getUser').andReturn($q.resolve(user));
         spyOn(facilityFactory, 'getUserHomeFacility').andReturn($q.resolve(homeFacility));
+        spyOn(siglusProductOrderableGroupService, 'queryStockOnHandsInfo').andReturn($q.resolve(stockCardSummaries));
         spyOn(programService, 'getAllProductsProgram').andReturn($q.resolve([]));
         spyOn(stockProgramUtilService, 'getPrograms').andReturn($q.resolve([]));
         // SIGLUS-REFACTOR: ends here

@@ -32,6 +32,7 @@ describe('PhysicalInventoryDraftController', function() {
         module('stock-confirm-discard');
         //SIGLUS-REFACTOR: starts here
         module('siglus-alert-confirm-modal');
+        module('stock-orderable-group');
         // SIGLUS-REFACTOR: ends here
 
         subDraftIds = '';
@@ -61,6 +62,8 @@ describe('PhysicalInventoryDraftController', function() {
             addProductsModalService = $injector.get('addProductsModalService');
             confirmDiscardService = $injector.get('confirmDiscardService');
             alertConfirmModalService = $injector.get('alertConfirmModalService');
+            // siglusOrderableLotService = $injector.get('siglusOrderableLotService');
+            // spyOn(siglusOrderableLotService, 'fillLotsToAddedItems');
 
             spyOn(alertConfirmModalService, 'error');
 

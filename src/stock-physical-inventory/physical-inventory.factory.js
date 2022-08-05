@@ -173,7 +173,11 @@
         function getPhysicalInventorySubDraft(id, flag) {
             return physicalInventoryService.getPhysicalInventorySubDraft(id)
                 .then(function(physicalInventory) {
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag)
+                    var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
+                        return line.orderableId;
+                    });
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag,
+                        allLineOrderableIds)
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -193,7 +197,11 @@
             return physicalInventoryService.getInitialDraft(programId, facilityId)
                 .then(function(drafts) {
                     var draft = _.first(drafts);
-                    return getStockProducts(draft.programId, draft.facilityId)
+                    var allLineOrderableIds = draft.lineItems.map(function(line) {
+                        return line.orderableId;
+                    });
+                    return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
+                        allLineOrderableIds)
                         .then(function(summaries) {
                             var initialInventory = {
                                 programId: draft.programId,
@@ -351,19 +359,21 @@
         }*/
         // SIGLUS-REFACTOR: ends here
 
-        function getStockProducts(programId, facilityId, subDraftIds, flag) {
+        function getStockProducts(programId, facilityId, subDraftIds, flag, orderableIds) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
             // #225: cant view detail page when not have stock view right
             return repository.query(flag ? {
                 programId: programId,
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
-                subDraftIds: subDraftIds
+                subDraftIds: subDraftIds,
+                orderableIds: orderableIds
             } : {
                 programId: programId,
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
-                subDraftIds: subDraftIds
+                subDraftIds: subDraftIds,
+                orderableIds: orderableIds
             }).then(function(summaries) {
                 // #225: ends here
                 return summaries.content.reduce(function(items, summary) {

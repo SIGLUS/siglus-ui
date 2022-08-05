@@ -36,7 +36,8 @@
         'proof-of-delivery',
         'proof-of-delivery-view',
         // SIGLUS-REFACTOR: starts here
-        'siglus-order-status-messages'
+        'siglus-order-status-messages',
+        'siglus-proof-of-delivery-initial-modal'
         // SIGLUS-REFACTOR: starts here
     ]);
 })();

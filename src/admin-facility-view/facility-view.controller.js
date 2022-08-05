@@ -53,7 +53,7 @@
         vm.addProgram = addProgram;
         vm.exportFile = exportFile;
         vm.upload = upload;
-        vm.enableLocationManagement = enableLocationManagement;
+        vm.updateEnableLocationManagement = updateEnableLocationManagement;
 
         /**
          * @ngdoc property
@@ -309,7 +309,6 @@
                             notificationService.success(message);
                         });
                         loadingModalService.close();
-                        return true;
                     })
                     .catch(function(error) {
                         notificationService.error(
@@ -319,19 +318,13 @@
                             : undefined;
                         vm.file = undefined;
                         loadingModalService.close();
-                        return false;
                     });
             } else {
                 notificationService.error(
                     'adminIsaManage.fileIsNotSelected'
                 );
-                return false;
             }
         }
-
-        // function onChange(enableValue) {
-        //     enableValue = $scope.;
-        // }
 
         /**
          * @ngdoc method
@@ -341,32 +334,40 @@
          * @description
          * Uploads csv file with catalog item to the server.
          */
-        function enableLocationManagement(enableValue) {
-            enableValue = vm.enableValue;
-            if (enableValue === false && vm.file) {
-                alertConfirmModalService.error(
-                    'adminFacilityView.locationManagement.closeSwitch',
-                    '',
-                    ['adminFacilityView.close',
-                        'adminFacilityView.confirm']
-                );
-            } else if (enableValue === true && !vm.file) {
-                alertConfirmModalService.error(
-                    'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
-                    '',
-                    ['adminFacilityView.close',
-                        'adminFacilityView.confirm']
-                );
-            } else if (enableValue === false && !vm.file) {
-                alertConfirmModalService.error(
-                    'adminFacilityView.locationManagement.closeSwitch',
-                    '',
-                    ['adminFacilityView.close',
-                        'adminFacilityView.confirm']
-                );
-            }
-        }
 
+        function updateEnableLocationManagement(facility) {
+            facility = vm.facility;
+            var enableValue = vm.enableValue;
+            vm.facility.enableLocationManagement = enableValue;
+            return new locationManagementService
+                .update(vm.facility.id, facility)
+                .then(function() {
+                    if (enableValue === true && !vm.file) {
+                        alertConfirmModalService.error(
+                            'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
+                            '',
+                            ['adminFacilityView.close',
+                                'adminFacilityView.confirm']
+                        );
+                        return $q.reject();
+                    } else if (enableValue === false && vm.file) {
+                        alertConfirmModalService.error(
+                            'adminFacilityView.locationManagement.closeSwitch',
+                            '',
+                            ['adminFacilityView.close',
+                                'adminFacilityView.confirm']
+                        );
+                    } else if (enableValue === false && !vm.file) {
+                        alertConfirmModalService.error(
+                            'adminFacilityView.locationManagement.closeSwitch',
+                            '',
+                            ['adminFacilityView.close',
+                                'adminFacilityView.confirm']
+                        );
+                    }
+
+                });
+        }
     }
 }
 )();
