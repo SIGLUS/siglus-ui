@@ -32,7 +32,8 @@
         'proofOfDeliveryManageService', '$state', 'loadingModalService', 'notificationService', 'pods',
         '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
-        'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService', 'messageService', 'SIGLUS_TIME'
+        'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
+        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService'
     ];
 
     function controller(
@@ -54,7 +55,8 @@
         facilityFactory,
         siglusInitialProofOfDeliveryService,
         messageService,
-        SIGLUS_TIME
+        SIGLUS_TIME,
+        siglusDownloadLoadingModalService
     ) {
 
         var vm = this;
@@ -292,7 +294,7 @@
                     + subInformation.offsetHeight
                     + PAGE_NUM_HEIGHT / rate;
             // 分页部分的高度计算
-            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT - 50;
             // 获取分页部分每行节点
             var needCalcTrNodes = document.querySelectorAll('#calcTr');
             // NodeList -> 数组
@@ -482,6 +484,13 @@
                                 585,
                                 reback[2].nodeHeight * rate
                             );
+                            if (vm.incosistencies.length === 0) {
+                                PDF.text(
+                                    pageNumber.toString() + '-END',
+                                    585 / 2,
+                                    A4_HEIGHT
+                                );
+                            }
                         }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
@@ -534,16 +543,18 @@
                     // )
                     vm.fileName + '.pdf'
                 );
+                siglusDownloadLoadingModalService.close();
                 return;
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            opt.PDF.setFontSize(10);
-            opt.PDF.text(
-                pageNumber.toString(),
-                585 / 2,
-                opt.A4_HEIGHT
-            );
+            console.log('22222', pageNumber);
+            // opt.PDF.setFontSize(10);
+            // opt.PDF.text(
+            //     pageNumber.toString(),
+            //     585 / 2,
+            //     opt.A4_HEIGHT
+            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');
@@ -606,6 +617,7 @@
                     };
                 }));
             });
+            var promiseListInLen = promiseListIn.length;
             $q.all(fixedPromiseListIn).then(function(_reback) {
                 // 偏移量
                 var offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
@@ -618,9 +630,9 @@
                     opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
                         incosostencyHeaderNode.offsetHeight * opt.rate,
                         585, _reback[1].nodeHeight * opt.rate);
-                    _.forEach(_result, function(res, index) {
+                    _.forEach(_result, function(res, _index) {
                         // 计算分页部分实际高度
-                        realHeight = realHeight + _result[index].nodeHeight;
+                        realHeight = realHeight + _result[_index].nodeHeight;
                         if (realHeight > canUseHeight) {
                             opt.PDF.setFontSize(10);
                             opt.PDF.text(
@@ -642,6 +654,7 @@
                             // 新开分页
                             opt.PDF.addPage();
                             pageNumber = pageNumber + 1;
+                            opt.PDF.setFontSize(10);
                             opt.PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
@@ -662,7 +675,16 @@
                             res.nodeWidth * opt.rate,
                             res.nodeHeight * opt.rate
                         );
-                        offsetHeight = offsetHeight + _result[index].nodeHeight;
+                        // console.log('promiseListInLen', promiseListInLen);
+                        // console.log('_index', _index);
+                        if (promiseListInLen - 1 === _index) {
+                            opt.PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                opt.A4_HEIGHT
+                            );
+                        }
+                        offsetHeight = offsetHeight + _result[_index].nodeHeight;
                     });
                     // 添加分页部分下方的固定部分图片到PDF中
                     opt.PDF.addImage(
@@ -681,6 +703,7 @@
                         // )
                         vm.fileName + '.pdf'
                     );
+                    siglusDownloadLoadingModalService.close();
                 });
             });
         }
@@ -746,7 +769,7 @@
         function printProofOfDelivery(order) {
             var orderId = order.id;
             vm.orderCode = order.orderCode;
-            loadingModalService.open();
+            siglusDownloadLoadingModalService.open();
             stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT')
                 .then(function(reasons) {
                     vm.reasons = reasons;
@@ -794,32 +817,6 @@
                                             }, c));
                                             return r;
                                         }, []);
-                                        vm.incosistencies = [
-                                            {
-                                                productCode: 'aaaa',
-                                                productName: 'bbbb',
-                                                quantityShipped: 99,
-                                                quantityAccepted: 50,
-                                                rejectionReasonId: 'abcdefg',
-                                                notes: 'hello'
-                                            },
-                                            {
-                                                productCode: 'aaaa',
-                                                productName: 'bbbb',
-                                                quantityShipped: 99,
-                                                quantityAccepted: 50,
-                                                rejectionReasonId: 'abcdefg',
-                                                notes: 'hello'
-                                            },
-                                            {
-                                                productCode: 'aaaa',
-                                                productName: 'bbbb',
-                                                quantityShipped: 99,
-                                                quantityAccepted: 50,
-                                                rejectionReasonId: 'abcdefg',
-                                                notes: 'hello'
-                                            }
-                                        ];
                                         vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
                                             return item.rejectionReasonId;
                                         });
@@ -832,8 +829,7 @@
                         .catch(function() {
                             // printer.closeTab();
                             notificationService.error('proofOfDeliveryManage.noOrderFound');
-                        })
-                        .finally(loadingModalService.close);
+                        });
                 });
         }
 
