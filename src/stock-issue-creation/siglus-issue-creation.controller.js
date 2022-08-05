@@ -690,9 +690,9 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            downloadPdf();
-                            // loadingModalService.open();
-                            // confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
+                            // downloadPdf();
+                            loadingModalService.open();
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
                     loadingModalService.open();
