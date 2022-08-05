@@ -5,6 +5,7 @@
                autocomplete="off"
                ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
                ng-focus="showSelect($event, lineItem)"
+               ng-blur="fillLotCode(lineItem)"
                ng-change="finishInput(lineItem)"
                ng-keydown="input(lineItem)"
                openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid : ''}}"
