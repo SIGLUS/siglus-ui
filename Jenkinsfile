@@ -32,8 +32,10 @@ pipeline {
                 println "test converage: check"
                 sh '''
                     coverage_threshold=80
-                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -1`;
-                    coverage_int=`awk -v var="$coverage" 'BEGIN {print int(var)}'`
+                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -2`;
+                    echo "$coverage"
+                    echo "$coverage[1]"
+                    coverage_int=`awk -v var="$coverage[0]" 'BEGIN {print int(var)}'`
                     echo "Current test coverage: $coverage%.";
                     if [ $coverage_int -lt $coverage_threshold ];
                     then
