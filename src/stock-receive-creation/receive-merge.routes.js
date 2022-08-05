@@ -47,7 +47,6 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
@@ -118,18 +117,12 @@
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;
                 },
-                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
-                    }
-                    return $stateParams.srcDstAssignments;
-                },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
+                                undefined, reasons);
                         }
                         return [];
                     }

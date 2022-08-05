@@ -45,18 +45,26 @@
                 {
                     'Content-Type': undefined
                 }
+                },
+
+                update: {
+                    url: referencedataUrlFactory(
+                        '/api/siglusapi/facilities/:id'
+                    ),
+                    method: 'PUT'
                 }
             }
         );
 
         return {
             getDownloadUrl: getDownloadUrl,
-            upload: upload
+            upload: upload,
+            update: update
         };
 
         /**
      * @ngdoc method
-     * @methodOf referencedata-isa.isaService
+     * @methodOf siglus-admin-facility-view-location-management.locationManagementService
      * @name getDownloadUrl
      *
      * @description
@@ -73,7 +81,7 @@
 
         /**
      * @ngdoc method
-     * @methodOf referencedata-isa.isaService
+     * @methodOf siglus-admin-facility-view-location-management.locationManagementService
      * @name upload
      *
      * @description
@@ -90,6 +98,25 @@
                 .upload({
                     id: id
                 }, formData)
+                .$promise;
+        }
+
+        /**
+     * @ngdoc method
+     * @methodOf siglus-admin-facility-view-location-management.locationManagementService
+     * @name update
+     *
+     * @description
+     * Uploads ISA records in csv file.
+     *
+     * @param  {Object}  file the csv file that will be uploaded
+     * @return {Promise}      the number of uploaded items
+     */
+        function update(id, facility) {
+            return resource.update({
+                id: id
+            },
+            facility)
                 .$promise;
         }
     }

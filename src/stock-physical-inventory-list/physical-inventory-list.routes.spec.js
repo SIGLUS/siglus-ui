@@ -19,6 +19,10 @@ describe('openlmis.stock.physical.inventory.list state', function() {
 
     var allProductsProgram, otherPrograms;
 
+    beforeEach(function() {
+        module('stock-orderable-group');
+    });
+
     function prepareInjector() {
         inject(function($injector) {
             $q = $injector.get('$q');

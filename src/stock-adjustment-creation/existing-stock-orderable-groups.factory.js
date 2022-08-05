@@ -64,8 +64,8 @@
 
         function getNotEmptyGroupsWithNotZeroSoh(orderableGroups) {
             var filteredGroups = [];
-            orderableGroups.forEach(function(orderableGroup) {
-                var group = orderableGroup.filter(isStockOnHandNotZero);
+            _.forEach(orderableGroups, function(orderableGroup) {
+                var group = _.filter(orderableGroup, isStockOnHandNotZero);
                 if (group.length !== 0) {
                     filteredGroups.push(group);
                 }

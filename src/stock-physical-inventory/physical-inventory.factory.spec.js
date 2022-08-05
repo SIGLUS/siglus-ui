@@ -34,7 +34,7 @@ describe('physicalInventoryFactory', function() {
                 };
             });
         });
-
+        module('stock-orderable-group');
         inject(function($injector) {
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');

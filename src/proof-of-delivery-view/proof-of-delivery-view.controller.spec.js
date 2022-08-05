@@ -22,16 +22,18 @@ describe('PodViewController', function() {
         module('proof-of-delivery-view');
         module('proof-of-delivery');
         module('referencedata-orderable-fulfills');
+        module('stock-confirm-discard');
 
         inject(function($injector) {
             $q = $injector.get('$q');
+            $rootScope = $injector.get('$rootScope');
+
             $controller = $injector.get('$controller');
             OrderDataBuilder = $injector.get('OrderDataBuilder');
             ProofOfDeliveryDataBuilder = $injector.get('ProofOfDeliveryDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             VVM_STATUS = $injector.get('VVM_STATUS');
             messageService = $injector.get('messageService');
-            $rootScope = $injector.get('$rootScope');
             ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
         });
 
@@ -73,7 +75,8 @@ describe('PodViewController', function() {
             order: order,
             reasons: reasons,
             orderLineItems: orderLineItems,
-            canEdit: true
+            canEdit: true,
+            $scope: $rootScope.$new()
         });
     });
 
@@ -117,7 +120,8 @@ describe('PodViewController', function() {
             order: order,
             reasons: reasons,
             orderLineItems: orderLineItems,
-            canEdit: false
+            canEdit: false,
+            $scope: $rootScope.$new()
         });
         vm.$onInit();
 

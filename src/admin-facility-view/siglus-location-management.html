@@ -4,7 +4,7 @@
 <input openlmis-download="{{vm.exportFile(facilityId)}}" type="button"
        value="{{'adminFacilityView.export' | message}}"/>
 <br>
-<p>{{'adminFacilityView.locationManagement.editFile' | message}}</p>
+<h4>{{'adminFacilityView.locationManagement.editFile' | message}}</h4>
 <p class="multiline">{{'adminFacilityView.locationManagement.uploadMessages' | message}}</p>
 <form id="catalogItemUpload" class="button-group"
       ng-submit="vm.upload() ">
@@ -21,9 +21,10 @@
 
 <label class="switch">
   <input type="checkbox" ng-model="vm.enableValue"
-         ng-change="vm.enableLocationManagement()"
-  >
+         ng-click="vm.updateEnableLocationManagement()">
   <span class="slider round"></span>
 </label>
+<!--         ng-change="vm.updateEnableLocationManagement()"-->
 <!--ng-disabled="vm.isAndroid"-->
 <!--ng-click="vm.enableLocationManagement()"-->
+<!--         ng-change="vm.enableLocationManagement()"-->

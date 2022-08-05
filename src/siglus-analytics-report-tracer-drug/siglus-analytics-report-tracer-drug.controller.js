@@ -67,10 +67,10 @@
             var geographicZones = angular.copy(_.get(filterInfo, 'geographicZones', []));
             var provinceList = [], districtList = [];
             angular.forEach(geographicZones, function(item) {
-                if (item.level === 'Province' && _.isNull(item.parentCode)) {
+                if (item.level === 'Province') {
                     provinceList.push(item);
                 }
-                if (item.level === 'District' && !_.isEmpty(item.parentCode)) {
+                if (item.level === 'District') {
                     districtList.push(item);
                 }
             });
