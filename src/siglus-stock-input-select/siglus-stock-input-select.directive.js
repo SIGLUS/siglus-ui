@@ -29,8 +29,12 @@
                 },
                 controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
                     'siglusOrderableLotMapping', '$timeout', 'messageService', 'dateUtils',
+                    'SIGLUS_LOT_CODE_REGEXP', 'moment', 'SIGLUS_LOT_CODE_DATE_FORMATE',
+                    'SIGLUS_LOT_CODE_REGEXP_REPLACE', 'SIGLUS_LOT_CODE_DATE_ISVALID',
                     function($scope, orderableGroupService, siglusAutoGenerateService,
-                        siglusOrderableLotMapping, $timeout, messageService, dateUtils) {
+                        siglusOrderableLotMapping, $timeout, messageService, dateUtils,
+                        SIGLUS_LOT_CODE_REGEXP, moment, SIGLUS_LOT_CODE_DATE_FORMATE,
+                        SIGLUS_LOT_CODE_REGEXP_REPLACE, SIGLUS_LOT_CODE_DATE_ISVALID) {
                         $scope.$watch('lineItem.lot', function(newLot, oldLot) {
                             if ((!_.isEqual(newLot, oldLot))) {
                                 $scope.$emit('lotCodeChange', {
@@ -45,21 +49,25 @@
                             newDate = angular.isDate(newDate) ? dateUtils.toStringDate(newDate) : newDate;
                             oldDate = angular.isDate(oldDate) ? dateUtils.toStringDate(oldDate) : oldDate;
                             if (newDate && newDate !== oldDate
-                                && (lineItem.lot.isAuto || lineItem.isTryAuto)) {
-                                // id means from option
+                            ) {
                                 if (!lineItem.lot.id) {
-                                    var lotCode = siglusAutoGenerateService.autoGenerateLotCode(lineItem);
-                                    lineItem.lot = {
-                                        lotCode: lotCode,
-                                        expirationDate: lineItem.lot.expirationDate,
-                                        isAuto: true
-                                    };
-                                    lineItem.isTryAuto = false;
+                                    if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
+                                    && moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()
+                                    ) {
+                                        lineItem.lot.lotCode = lineItem.lot.lotCode
+                                            .replace(SIGLUS_LOT_CODE_REGEXP_REPLACE,
+                                                moment(lineItem.lot.expirationDate)
+                                                    .format(SIGLUS_LOT_CODE_DATE_FORMATE));
+                                    } else if (_.get(lineItem, ['lot', 'lotCode'])) {
+                                        lineItem.lot.lotCode = lineItem.lot.lotCode +
+                                        moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
+                                    }
                                 }
                             }
                         });
 
                         $scope.select = function(lotCode) {
+                            lotCode = lotCode.replace(/^\[expired\]/, '');
                             var lineItem = $scope.lineItem;
                             var option = findLotOptionByCode(lineItem.lotOptions, lotCode);
                             lineItem.lot = angular.copy(option);
@@ -83,15 +91,13 @@
                                 var lotCode = siglusAutoGenerateService.autoGenerateLotCode(lineItem);
                                 $scope.lineItem.lot = {
                                     lotCode: lotCode,
-                                    expirationDate: lineItem.lot.expirationDate,
-                                    isAuto: true
+                                    expirationDate: lineItem.lot.expirationDate
                                 };
                                 $scope.lineItem.isFromInput = false;
                                 $scope.lineItem.isFromSelect = true;
 
                             } else {
                                 lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
-                                lineItem.isTryAuto = true;
                                 lineItem.lot = null;
                             }
                             $scope.hideAllSelect();
@@ -129,7 +135,6 @@
                                         .findByLotInOrderableGroup(selectedOrderableGroup, option);
 
                                     lineItem.showSelect = false;
-                                    lineItem.isAuto = false;
 
                                     lineItem.lot = angular.copy(option);
 
@@ -155,6 +160,45 @@
                                 validateRequiredLot(lineItem);
                                 validateRequiredLotDate(lineItem);
                             }, 100);
+                        };
+
+                        $scope.testLotCode = function() {
+                            var lineItem = $scope.lineItem;
+                            if (_.get(lineItem, ['lot', 'lotCode'])) {
+                                if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
+                                && moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
+                                    lineItem.lot.lotCode = lineItem.lot.lotCode.slice(0, -11);
+                                }
+                            }
+                        };
+                        // todo _.get lot information
+
+                        // eslint-disable-next-line complexity
+                        $scope.fillLotCode = function() {
+                            var lineItem = $scope.lineItem;
+                            if (
+                                _.get(lineItem, ['lot', 'lotCode']) &&
+                                _.get(lineItem, ['lot', 'expirationDate']) &&
+                                !_.get(lineItem, ['lot', 'id'])
+
+                            ) {
+                                if (!SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)) {
+                                    lineItem.lot.lotCode = lineItem.lot.lotCode +
+                                    moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
+                                }
+                            } else if (
+                                _.get(lineItem, ['lot', 'lotCode']) &&
+                                !_.get(lineItem, ['lot', 'expirationDate']) &&
+                                !_.get(lineItem, ['lot', 'id'])
+                            ) {
+                                if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
+                                && moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
+                                    lineItem.lot.expirationDate =
+                                    moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID)
+                                        .format('YYYY-MM-DD');
+                                }
+
+                            }
                         };
 
                         function validateRequiredLot(lineItem) {
@@ -193,6 +237,7 @@
 
                     var body = angular.element(document).find('body');
                     scope.showSelect = function($event, lineItem) {
+                        scope.testLotCode();
                         if (!lineItem.showSelect) {
                             lineItem.showSelect = true;
                             scope.hideAllSelect();

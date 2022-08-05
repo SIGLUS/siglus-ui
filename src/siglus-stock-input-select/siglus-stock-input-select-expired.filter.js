@@ -14,20 +14,36 @@
  */
 
 (function() {
+
     'use strict';
 
     /**
-     * @ngdoc object
-     * @name stockmanagement.max-string-value
+     * @ngdoc filter
+     * @name siglus-stock-input-selectt.filter:siglusExpiredLotName
      *
      * @description
-     * This is constant for max lot code string value.
+     * Add expired tag for expired lot name.
+     *
+     * @param   {Object} lot
+     * @return  {String}
      */
-    angular.module('stockmanagement')
-        .constant('SIGLUS_MAX_STRING_VALUE', 40)
-        .constant('SIGLUS_LOT_CODE_DATE_FORMATE', '-DD/MM/YYYY')
-        .constant('SIGLUS_LOT_CODE_REGEXP', /^.*-[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/)
-        .constant('SIGLUS_LOT_CODE_REGEXP_REPLACE', /-[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/)
-        .constant('SIGLUS_LOT_CODE_DATE_ISVALID', 'DD/MM/YYYY');
+    angular
+        .module('siglus-stock-input-select')
+        .filter('siglusExpiredLotCode', expiredLotCodeFilter);
+
+    expiredLotCodeFilter.$inject = ['moment'];
+
+    function expiredLotCodeFilter(moment) {
+        return function(option) {
+            if (!option) {
+                return undefined;
+            }
+
+            if (moment() > moment(option.expirationDate)) {
+                return '[expired]' + option.lotCode;
+            }
+            return option.lotCode;
+        };
+    }
 
 })();

@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="order in vm.pods">
+            <tr ng-repeat="order in vm.pods | orderBy:'-createdDate' ">
                 <td>{{order.orderCode}}</td>
                 <!-- SIGLUS-REFACTOR: starts here -->
                 <td>{{order.status | orderStatus}}</td>
