@@ -781,9 +781,9 @@
                         orderCodeArray[orderCodeArray.length - 1] < 10
                             ? '0' + orderCodeArray[orderCodeArray.length - 1]
                             : orderCodeArray[orderCodeArray.length - 1];
-                    vm.fileName = res.fileName + '-' + leftString;
+                    vm.fileName = res.fileName + '/' + leftString;
                 } else {
-                    vm.fileName = res.fileName + '-' + '01';
+                    vm.fileName = res.fileName + '/' + '01';
                 }
                 // vm.fileName = res.fileName;
                 vm.requisitionId = res.requisitionId;

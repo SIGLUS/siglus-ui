@@ -309,7 +309,7 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signature, addedLineItems, occurredDate, downloadTask) {
+        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
             generateKitConstituentLineItem(addedLineItems);
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
@@ -318,7 +318,6 @@
             siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
                 signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
-                    downloadTask();
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
                         facility: facility.id,
                         program: programId
@@ -626,8 +625,8 @@
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
                             loadingModalService.open();
-                            // downloadPdf();
-                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
+                            downloadPdf();
+                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
                         });
                 } else {
                     loadingModalService.open();
