@@ -478,7 +478,6 @@
                 }));
             });
             // var totalPage = getTotalPaginationNum(promiseList, canUseHeight);
-            // console.log('totalPage', totalPage);
             // 固定部分的图片转换完成后再去做分页部分的图片转换
             $q.all(fixedPromiseList).then(function(reback) {
                 // 偏移量
@@ -691,9 +690,9 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            // downloadPdf();
+                            downloadPdf();
                             // loadingModalService.open();
-                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
+                            // confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
                     loadingModalService.open();
@@ -896,7 +895,6 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
-            // console.log('vm --->>>', vm);
         }
 
         function initViewModel() {
@@ -924,7 +922,6 @@
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
             vm.supplier = vm.facility.name;
-            console.log('#### destinationName', vm.destinationName);
             vm.client =
                 _.indexOf(vm.destinationName, 'Outros') === 1 ? vm.destinationName.split(':')[1] : vm.destinationName;
         }

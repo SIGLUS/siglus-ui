@@ -625,9 +625,9 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            loadingModalService.open();
-                            // downloadPdf();
-                            confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
+                            // loadingModalService.open();
+                            downloadPdf();
+                            // confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
                     loadingModalService.open();
@@ -832,7 +832,6 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
-            console.log('vm --->>>', vm);
         }
 
         function initViewModel() {
@@ -859,9 +858,9 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.client =
-                vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.facility.name;
-            vm.supplier = vm.client;
+            vm.client = vm.facility.name;
+            vm.supplier =
+                vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
         }
 
         function initStateParams() {

@@ -214,7 +214,6 @@
                 .then(function(res) {
                     vm.facility = res;
                 });
-            console.log('vm --->>>', vm);
         }
 
         /**
@@ -754,7 +753,6 @@
                     proofOfDeliveryManageService.getByOrderId(orderId)
                         .then(function(pod) {
                             proofOfDeliveryManageService.getPodInfo(pod.id, orderId).then(function(res) {
-                                // console.log('返回值：', res);
                                 vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                                 vm.supplier = res.supplier;
                                 vm.client = res.client;

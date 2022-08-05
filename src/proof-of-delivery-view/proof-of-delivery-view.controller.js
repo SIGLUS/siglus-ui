@@ -157,8 +157,6 @@
                 .then(function(res) {
                     vm.facility = res;
                 });
-            // console.log('#### vm', vm);
-            // console.log('$stateParams', $stateParams);
             vm.isMerge = $stateParams.actionType === 'MERGE'
             || $stateParams.actionType === 'VIEW';
 
@@ -233,7 +231,6 @@
 
         function submit() {
             $scope.needToConfirm = false;
-            //console.log('openlmis-form-submit');
             $scope.$broadcast('openlmis-form-submit');
             var copy = angular.copy(vm.proofOfDelivery),
                 errors = copy.validate(vm.isMerge);
