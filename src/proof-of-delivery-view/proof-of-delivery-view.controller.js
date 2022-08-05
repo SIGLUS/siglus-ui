@@ -32,7 +32,7 @@
         'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS', 'orderLineItems', 'canEdit',
         'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryManageService',
         'openlmisDateFilter', 'proofOfDeliveryService', 'fulfillingLineItemFactory',
-        'notificationService', '$stateParams'
+        'notificationService', '$stateParams', 'facilityFactory'
     ];
 
     function ProofOfDeliveryViewController(
@@ -51,7 +51,8 @@
         proofOfDeliveryService,
         fulfillingLineItemFactory,
         notificationService,
-        $stateParams
+        $stateParams,
+        facilityFactory
     ) {
 
         var vm = this;
@@ -155,6 +156,11 @@
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;
+            vm.orderCode = order.orderCode;
+            facilityFactory.getUserHomeFacility()
+                .then(function(res) {
+                    vm.facility = res;
+                });
             // console.log('#### vm', vm);
             // console.log('$stateParams', $stateParams);
         }
@@ -306,6 +312,12 @@
                 var realHeight = 0;
                 // 页码
                 var pageNumber = 1;
+                PDF.setFontSize(10);
+                PDF.text(
+                    pageNumber.toString(),
+                    585 / 2,
+                    A4_HEIGHT
+                );
                 var promiseListLen = promiseList.length;
                 $q.all(promiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
@@ -444,6 +456,17 @@
         }
 
         function downloadIncosostenciesPdf(opt) {
+            var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
+            if (needCalcTrNodesArray.length === 0) {
+                opt.PDF.save(
+                    // getPdfName(
+                    //     vm.facility.name,
+                    //     vm.issueVoucherDate
+                    // )
+                    vm.fileName + '.pdf'
+                );
+                return;
+            }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
             opt.PDF.setFontSize(10);
@@ -453,12 +476,13 @@
                 opt.A4_HEIGHT
             );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
-                incosostencyFooterNode = document.getElementById('inconsistencyFooter');
+                incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
+                inconsistencyTh = document.getElementById('inconsistencyTh');
             var fixedHeight = incosostencyHeaderNode.offsetHeight
                     + incosostencyFooterNode.offsetHeight
+                    + inconsistencyTh.offsetHeight
                     + opt.PAGE_NUM_HEIGHT / opt.rate;
             var canUseHeight = opt.a4Height2px - fixedHeight - opt.PAGE_NUM_HEIGHT;
-            var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
 
             var fixedPromiseListIn = [
                 // eslint-disable-next-line no-undef
@@ -471,6 +495,18 @@
                         data: data,
                         nodeWidth: 1250,
                         nodeHeight: incosostencyHeaderNode.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(inconsistencyTh, {
+                    scale: 1,
+                    width: 1250,
+                    height: inconsistencyTh.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: inconsistencyTh.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
@@ -489,7 +525,7 @@
             var promiseListIn = [];
             _.forEach(needCalcTrNodesArray, function(item) {
                 // eslint-disable-next-line no-undef
-                promiseList.push(domtoimage.toPng(item, {
+                promiseListIn.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: 1250,
                     height: item.offsetHeight + 1
@@ -503,13 +539,16 @@
             });
             $q.all(fixedPromiseListIn).then(function(_reback) {
                 // 偏移量
-                var offsetHeight = incosostencyHeaderNode.offsetHeight;
+                var offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
                 // 当前分页部分tr的累积高度
                 var realHeight = 0;
                 // 页码
                 $q.all(promiseListIn).then(function(_result) {
                     // 添加分页部分上方的固定部分图片到PDF中
                     opt.PDF.addImage(_reback[0].data, 'JPEG', 4, 0, 585, _reback[0].nodeHeight * opt.rate);
+                    opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
+                        incosostencyHeaderNode.offsetHeight * opt.rate,
+                        585, _reback[1].nodeHeight * opt.rate);
                     _.forEach(_result, function(res, index) {
                         // 计算分页部分实际高度
                         realHeight = realHeight + _result[index].nodeHeight;
@@ -522,14 +561,14 @@
                             );
                             // 遍历跟随分页部分重复的部分
                             opt.PDF.addImage(
-                                _reback[1].data,
+                                _reback[2].data,
                                 'JPEG',
                                 4,
                                 (
                                     offsetHeight
                                 ) * opt.rate,
                                 585,
-                                _reback[1].nodeHeight * opt.rate + 2
+                                _reback[2].nodeHeight * opt.rate + 2
                             );
                             // 新开分页
                             opt.PDF.addPage();
@@ -540,7 +579,9 @@
                                 opt.A4_HEIGHT
                             );
                             opt.PDF.addImage(_reback[0].data, 'JPEG', 4, 0, 585, _reback[0].nodeHeight * opt.rate);
-                            offsetHeight = incosostencyHeaderNode.offsetHeight;
+                            opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
+                                incosostencyHeaderNode.offsetHeight * opt.rate, 585, _reback[1].nodeHeight * opt.rate);
+                            offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
                             realHeight = 0;
                         }
                         // 添加当前遍历元素的图片到PDF
@@ -555,14 +596,13 @@
                         offsetHeight = offsetHeight + _result[index].nodeHeight;
                     });
                     // 添加分页部分下方的固定部分图片到PDF中
-                    // console.log('打印footer');
                     opt.PDF.addImage(
-                        _reback[1].data,
+                        _reback[2].data,
                         'JPEG',
                         4,
                         (offsetHeight) * opt.rate,
                         585,
-                        _reback[1].nodeHeight * opt.rate + 2
+                        _reback[2].nodeHeight * opt.rate + 2
                     );
                     // 生成PDF文件，并且命名
                     opt.PDF.save(
@@ -590,18 +630,30 @@
             var podId = $stateParams.podId;
             // loadingModalService.open();
             proofOfDeliveryManageService.getPodInfo(podId, orderId).then(function(res) {
-                // console.log('返回值：', res);
-                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm a');
+                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                 vm.supplier = res.supplier;
                 vm.client = res.client;
                 vm.supplierDistrict = res.supplierDistrict;
                 vm.supplierProvince = res.supplierProvince;
-                vm.requisitionDate = res.requisitionDate;
+                vm.requisitionDate = openlmisDateFilter(res.requisitionDate, 'yyyy-MM-dd');
                 vm.issueVoucherDate = openlmisDateFilter(res.issueVoucherDate, 'yyyy-MM-dd');
                 vm.deliveredBy = res.deliveredBy;
                 vm.receivedBy = res.receivedBy;
                 vm.receivedDate = res.receivedDate;
-                vm.fileName = res.fileName;
+                var orderCodeArray = vm.order.orderCode.split('-');
+                // if (fileNameArray[fileNameArray.length - 1])
+                if (orderCodeArray.length > 2) {
+                    var leftString =
+                        orderCodeArray[orderCodeArray.length - 1] < 10
+                            ? '0' + orderCodeArray[orderCodeArray.length - 1]
+                            : orderCodeArray[orderCodeArray.length - 1];
+                    vm.fileName = res.fileName + '-' + leftString;
+                } else {
+                    vm.fileName = res.fileName + '-' + '01';
+                }
+                // vm.fileName = res.fileName;
+                vm.requisitionId = res.requisitionId;
+                vm.requisitionNum = res.requisitionNum;
             });
             proofOfDeliveryService.get(podId).then(function(res) {
                 fulfillingLineItemFactory
@@ -619,38 +671,12 @@
                             }, c));
                             return r;
                         }, []);
-                        vm.incosistencies = [
-                            {
-                                productCode: 'aaaa',
-                                productName: 'bbbb',
-                                quantityShipped: 99,
-                                quantityAccepted: 50,
-                                rejectionReasonId: 'abcdefg',
-                                notes: 'hello'
-                            },
-                            {
-                                productCode: 'aaaa',
-                                productName: 'bbbb',
-                                quantityShipped: 99,
-                                quantityAccepted: 50,
-                                rejectionReasonId: 'abcdefg',
-                                notes: 'hello'
-                            },
-                            {
-                                productCode: 'aaaa',
-                                productName: 'bbbb',
-                                quantityShipped: 99,
-                                quantityAccepted: 50,
-                                rejectionReasonId: 'abcdefg',
-                                notes: 'hello'
-                            }
-                        ];
                         vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
                             return item.rejectionReasonId;
                         });
                         setTimeout(function() {
                             downloadPdf();
-                        }, 500);
+                        }, 1000);
                     });
             });
         }

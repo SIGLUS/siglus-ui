@@ -33,7 +33,7 @@
               <!-- TODO the Documentation No. input by the user -->
               <span class="report--title-font">
                 <!-- Issue Voucher Nº -->
-                {{ 'siglusIssueOrReceiveReport.issueVoucherNo' | message }} {{vm.initialDraftInfo.documentNumber}}
+                {{vm.orderCode}}
               </span>
             </td>
           </tr>
@@ -82,7 +82,7 @@
             </td>
             <!-- keep blank -->
             <td class="text__left" colspan="3">
-              {{ 'siglusIssueOrReceiveReport.requisitionNr' | message }}:
+              {{ 'siglusIssueOrReceiveReport.requisitionNr' | message }}: {{ vm.requisitionNum }}
             </td>
           </tr>
           <tr>
@@ -92,8 +92,8 @@
               {{ 'siglusIssueOrReceiveReport.totalOfVolume' | message }}:
             </td>
             <!-- keep blank -->
-            <td colspan="1" rowspan="3">
-              {{ 'siglusIssueOrReceiveReport.returned' | message }}:
+            <td style="text-align: left; vertical-align: top; font-size: 18px; font-weight: 700;" colspan="1" rowspan="3">
+              {{ 'siglusIssueOrReceiveReport.returned' | message }}
             </td>
             <td class="text__left" style="vertical-align: baseline; border-right: 1px solid #000;" colspan="2" rowspan="3">
               <div class="label-checkbox">
@@ -129,10 +129,10 @@
           <tr>
             <td class="text__left" colspan="2"></td>
             <!-- keep blank -->
-            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.requisitionDate' | message }}: </td>
+            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.requisitionDate' | message }}: {{ vm.requisitionDate }}</td>
           </tr>
           <tr>
-            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.province }}</td>
+            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.supplierProvince }}</td>
             <!-- TODO the date that the user submits the merged draft -->
             <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.issueVoucherDate' | message }}: {{ vm.issueVoucherDate }}</td>
           </tr>
@@ -142,21 +142,21 @@
             <td></td>
           </tr>
           <tr>
-            <td style="border-right: 1px solid #000;">
+            <td style="border-left: 1px solid #000; border-right: 1px solid #000;">
               <span class="report--title-font" style="height: 90px; display: block; line-height: 90px;">
                 {{ 'siglusIssueOrReceiveReport.pod' | message }}
               </span>
             </td>
           </tr>
           <tr>
-            <td class="text__left report--title-font" style="height: 120px; padding: 0; vertical-align: top; padding: 8px 4px; border-right: 1px solid #000;">
+            <td class="text__left report--title-font" style="height: 120px; padding: 0; vertical-align: top; padding: 8px 4px; border-right: 1px solid #000; border-left: 1px solid #000;">
               <div style="float: left;">{{ 'siglusIssueOrReceiveReport.no' | message }}</div>
-              <div class="N-input" style="text-align: center; float: right;">{{vm.initialDraftInfo.documentNumber}}</div>
+              <div class="N-input" style="text-align: center; float: right;">{{vm.orderCode}}</div>
             </td>
           </tr>
           <tr>
             <!-- keep blank -->
-            <td class="text__left" style="border-right: 1px solid #000;">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.type === 'receive' ? vm.issueVoucherDate  : '' }}</td>
+            <td class="text__left" style="border-right: 1px solid #000; height: 72px; vertical-align: top;">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.receivedDate }}</td>
           </tr>
         </table>
       </section>
@@ -189,27 +189,27 @@
             <tr>
               <!-- TODO product code -->
               <td class="background-black black-width"></td>
-              <td style="width: 80px; height: 90px;" class="report--subtitle" rowspan="2">{{ 'siglusIssueOrReceiveReport.fnm' | message }}</td>
-              <td style="width: 362px; height: 60px;" class="report--subtitle" colspan="3">{{ 'siglusIssueOrReceiveReport.destinationOfProduct' | message }}
+              <td style="width: 80px; height: 90px; border-top: none;" class="report--subtitle" rowspan="2">{{ 'siglusIssueOrReceiveReport.fnm' | message }}</td>
+              <td style="width: 362px; height: 60px; border-top: none; border-bottom: none;" class="report--subtitle" colspan="3">{{ 'siglusIssueOrReceiveReport.destinationOfProduct' | message }}
               </td>
-              <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.lotNr' | message }}
+              <td style="width: 73px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.lotNr' | message }}
               </td>
-              <td style="width: 85px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
+              <td style="width: 100px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
               </td>
               <!-- keep blank -->
-              <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityOrdered' | message }}
+              <td style="width: 73px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityOrdered' | message }}
               </td>
               <!-- TODO issue quantity -->
-              <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.suppliedQuantity' | message }}
+              <td style="width: 73px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.suppliedQuantity' | message }}
               </td>
-              <td style="width: 50px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.price' | message }}</td>
-              <td style="width: 104px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.value' | message }}</td>
-              <td style="border: none; border-left: 1px solid #000;"></td>
+              <td style="width: 50px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.price' | message }}</td>
+              <td style="width: 104px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.value' | message }}</td>
+              <td style="border: none; border-top: none; border-bottom: none; border-left: 1px solid #000;"></td>
               <!-- keep blank -->
-              <td style="padding: 0 6px; height: 60px; font-weight: 700;
-              font-size: 14px;">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}: {{ vm.type === 'issue' ? '' : item.quantity }}</td>
+              <td style="padding: 0 6px; height: 60px; font-weight: 700; border-top: none; border-bottom: none;
+              font-size: 14px;">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}</td>
               <!-- keep blank -->
-              <td style="padding: 0 4px; height: 60px; font-weight: 700;
+              <td style="padding: 0 4px; height: 60px; font-weight: 700; border-top: none;
               font-size: 14px; border-right: 1px solid #000;">{{ 'siglusIssueOrReceiveReport.difference' | message }}</td>
             </tr>
             <tr>
@@ -247,7 +247,7 @@
               <td style="width: 30px;"></td>
               <td style="border: none; border-left: 1px solid #000;"></td>
               <td>{{ item.quantityAccepted }}</td>
-              <td style="border-right: 1px solid #000;"></td>
+              <td style="border-right: 1px solid #000;">{{ item.quantityAccepted ? item.quantityAccepted - item.quantityShipped : '' }}</td>
             </tr>
           </tbody>
         </table>
@@ -259,11 +259,11 @@
       </section>
       <section id="sectionFouth" class="section-fouth">
         <!-- TODO signature of the user who submitted the merged issue draft -->
-        <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.preparedBy }}</div>
+        <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.supplier }}</div>
         <!-- keep blank -->
-        <div class="fouth-conferred">{{ 'siglusIssueOrReceiveReport.conferredBy' | message }}:</div>
+        <div class="fouth-conferred">{{ 'siglusIssueOrReceiveReport.conferredBy' | message }}: {{ vm.supplier }}</div>
         <!-- keep blank -->
-        <div class="fouth-received">{{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.receivedBy }}</div>
+        <div class="fouth-received" style="min-width: 260px;">{{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.receivedBy }}</div>
       </section>
       <div id="subInformation" class="sub-information">
         <div style="width: 50%; text-align: left;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</div>
@@ -314,9 +314,9 @@
           </td>
         </tr>
         <tr>
-          <td style="height: 60px; width: 420px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.supplierProvince }}</td>
-          <td style="height: 60px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.district' | message }}: {{ vm.supplierDistrict }}</td>
-          <td style="height: 60px; width: 420px; border-right: 1px solid #000;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.health_facility' | message }}: {{ vm.supplier }}</td>
+          <td style="height: 60px; width: 420px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.facility.geographicZone.parent.name }}</td>
+          <td style="height: 60px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.district' | message }}: {{ vm.facility.geographicZone.name }}</td>
+          <td style="height: 60px; width: 420px; border-right: 1px solid #000;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.health_facility' | message }}: {{ vm.client }}</td>
         </tr>
         <tr>
           <td
@@ -327,16 +327,16 @@
             colspan="9"
           ></td>
         </tr>
-        <tr>
+      </thead>
+      <tbody>
+        <tr id="inconsistencyTh">
           <td style="height: 60px;" class="report--main-font text__left">{{ 'siglusIssueOrReceiveReport.fnm' | message }}</td>
           <td class="report--main-font text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.product' | message }}</td>
-          <td class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityShipped' | message }}</td>
+          <td style="width: 125px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityShipped' | message }}</td>
           <td class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityReceived' | message }}</td>
           <td class="report--main-font text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.reason_for_adjustment' | message }}</td>
           <td class="report--main-font text__left" style="border-right: 1px solid #000;" colspan="2">{{ 'siglusIssueOrReceiveReport.notes' | message }}</td>
         </tr>
-      </thead>
-      <tbody>
         <tr id="inconsistencyCalcTr" ng-repeat="item in vm.incosistencies">
           <td class="text__left" style="height: 30px;">{{ item.productCode }}</td>
           <td class="text__left" colspan="5">{{ item.productName }}</td>
@@ -351,8 +351,8 @@
           <td style="height: 30px; border: none;" colspan="15"></td>
         </tr>
         <tr>
-          <td style="height: 30px; font-weight: 700; font-size: 18px;" class="text__left" colspan="8">{{ 'siglusIssueOrReceiveReport.create_by' | message }}:</td>
-          <td style="border-left: none; border-right: 1px solid #000; height: 30px; font-weight: 700; font-size: 18px;" class="text__left" colspan="7">{{ 'siglusIssueOrReceiveReport.date' | message }}: {{ vm.receivedDate }}</td>
+          <td style="height: 30px; font-weight: 700; font-size: 18px;" class="text__left" colspan="8">{{ 'siglusIssueOrReceiveReport.create_by' | message }}: {{ vm.deliveredBy }}</td>
+          <td style="border-left: none; border-right: 1px solid #000; height: 30px; font-weight: 700; font-size: 18px; text-align: right;" colspan="7">{{ 'siglusIssueOrReceiveReport.date' | message }}: {{ vm.receivedDate }}</td>
         </tr>
         <tr>
           <td colspan="8" class="text__left" style="padding: 0; height: 40px; border: none; font-weight: 700 !important; font-size: 18px;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</td>

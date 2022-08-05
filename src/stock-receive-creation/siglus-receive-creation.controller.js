@@ -597,7 +597,7 @@
                     );
                     PDF.save(
                         getPdfName(
-                            vm.facility.name,
+                            vm.client,
                             vm.issueVoucherDate
                         )
                     );
@@ -624,9 +624,9 @@
                         then(function(data) {
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
-                            // console.log('vm --->>>', vm);
-                            // downloadPdf();
+                            vm.signature = data.signature;
                             loadingModalService.open();
+                            // downloadPdf();
                             confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate, downloadPdf);
                         });
                 } else {
@@ -832,6 +832,7 @@
             $scope.$on('$stateChangeStart', function() {
                 angular.element('.popover').popover('destroy');
             });
+            console.log('vm --->>>', vm);
         }
 
         function initViewModel() {
@@ -859,8 +860,9 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.supplier = vm.sourceName;
-            vm.client = vm.facility.name;
+            vm.client =
+                vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.facility.name;
+            vm.supplier = vm.client;
         }
 
         function initStateParams() {

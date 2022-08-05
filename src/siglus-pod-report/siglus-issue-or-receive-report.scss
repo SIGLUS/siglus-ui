@@ -1,9 +1,9 @@
 .wait-for-download {
     width: 1250px;
     padding: 0 2px;
-    display: block;
+    // display: block;
     // overflow: hidden;
-    // height: 0;
+    height: 0;
     // .rapid-test-pdf-container {
     //   // padding: 60px 90px 0 90px;
       
@@ -22,6 +22,7 @@
       height: 50px;
       background: #FFFFFF;
       border: 1px solid #000000;
+      font-size: 14px;
     }
     .section-first {
       width: 1246px;
@@ -54,17 +55,12 @@
       width: 1246px;
       height: 30px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
       background: #FFFFFF;
       border: 2px solid #000000;
       font-weight: 700;
       font-size: 18px;
-      .fouth-conferred {
-        margin-left: 351px;
-      }
-      .fouth-received {
-        margin-left: 295px;
-      }
     }
     .sub-information {
       width: 100%;
@@ -86,7 +82,17 @@
       tr {
         text-align: center;
       }
-  
+      thead {
+        td {
+          border-top: 1px solid #000;
+          border-left: 1px solid #000;
+          border-bottom: 1px solid #000;
+          border-right: 0px solid #000;
+          word-wrap: break-word;
+          word-break: break-all;
+          padding: 0 4px;
+        }
+      }
       td {
         border-top: 1px solid #000;
         border-left: 1px solid #000;
