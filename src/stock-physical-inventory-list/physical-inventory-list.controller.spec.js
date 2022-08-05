@@ -19,6 +19,9 @@ describe('PhysicalInventoryListController', function() {
         messageService, programs, facility, deferred,
         vm, programId, SiglusPhysicalInventoryCreationService, alertService;
 
+    beforeEach(function() {
+        module('stock-orderable-group');
+    });
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
