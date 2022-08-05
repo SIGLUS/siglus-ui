@@ -1,17 +1,17 @@
-<h2>{{vm.facilityName}}-{{vm.programName}}-{{vm.orderCode}}</h2>
+<h2>{{vm.facilityName}}-{{vm.orderCode}}</h2>
 <section class="openlmis-table-container">
     <table>
         <thead>
             <tr>
-                <th style="width: 228px;">{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
-                <th style="width: 202px;">{{'PhysicalInventoryDraftList.status' | message}}</th>
-                <th style="width: 202px;">{{'PhysicalInventoryDraftList.operator' | message}}</th>
-                <th style="width: 130px;" class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' |
+                <th style="width:90px;word-break: break-word;">{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
+                <th style="min-width:172px">{{'PhysicalInventoryDraftList.status' | message}}</th>
+                <th style="min-width:125px">{{'PhysicalInventoryDraftList.operator' | message}}</th>
+                <th style="min-width:130px" class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' |
                     message}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts">
+            <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts |orderBy:'groupNum'">
                 <td>{{draft.groupNum}}</td>
                 <td>{{vm.statusMapperMapper[draft.status] | message}}</td>
                 <td>{{draft.saver}}</td>

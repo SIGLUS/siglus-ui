@@ -2278,7 +2278,7 @@
   "PhysicalInventoryDraftList.continue": "Continuar",
   "PhysicalInventoryDraftList.draft": "Rascunho",
   "PhysicalInventoryDraftList.view": "Ver",
-  "physicalInventoryCreation.error": "Insira um número inteiro entre 1 e 10.",
+  "physicalInventoryCreation.error": "Insira um número inteiro entre 1 e 10",
   "physicalInventoryCreation.label": "Insira o número de usuários que fazem o inventário",
   "physicalInventoryCreation.cancel": "Cancelar",
   "physicalInventoryCreation.confirm": "Confirme",
@@ -2426,5 +2426,6 @@
   "proofOfDeliveryManage.continue": "Continuar",
   "proofOfDeliveryManage.start": "Começar",
   "proofOfDeliveryInitialModal.label": "Por favor, insira o número de usuários disponiveis para fazer este relatório de recepção para ${orderCode}",
-  "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página."
+  "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página.",
+  "proofOfDeliveryView.fnm":"FNM"
 }

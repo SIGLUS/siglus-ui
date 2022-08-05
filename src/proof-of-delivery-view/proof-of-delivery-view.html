@@ -50,6 +50,7 @@
         <table class="openlmis-table">
             <thead>
             <tr>
+                <th>{{'proofOfDeliveryView.fnm' | message}}</th>
                 <th>{{'proofOfDeliveryView.productName' | message}}</th>
                 <th>{{'proofOfDeliveryView.productUnit' | message}}</th>
                 <th>{{'proofOfDeliveryView.quantityOrdered' | message}}</th>
@@ -67,6 +68,7 @@
             </thead>
             <tbody ng-repeat="orderLineItem in vm.orderLineItems | orderBy : 'orderable.fullProductName'">
             <tr class="is-secondary">
+                <td>{{orderLineItem.orderable.productCode}}</td>
                 <td>{{orderLineItem.orderable.fullProductName}}</td>
                 <td>{{orderLineItem.orderable.dispensable.displayUnit}}</td>
                 <td>{{orderLineItem.orderedQuantity}}</td>
@@ -82,6 +84,7 @@
                 <td></td>
             </tr>
             <tr ng-repeat-start="groupOfFulfillingLineItems in orderLineItem.groupedLineItems | orderBy: '[0].orderable.fullProductName'">
+                <td>{{groupOfFulfillingLineItems[0].orderable.productCode}}</td>
                 <td>{{groupOfFulfillingLineItems[0].orderable.fullProductName}}</td>
                 <td>{{groupOfFulfillingLineItems[0].orderable.dispensable.displayUnit}}</td>
                 <td></td>
@@ -97,6 +100,7 @@
                 <td></td>
             </tr>
             <tr ng-repeat-end ng-repeat="fulfillingLineItem in groupOfFulfillingLineItems">
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -177,6 +181,8 @@
     </aside>
 </form>
 
+<ng-include src="'siglus-pod-report/siglus-issue-or-receive-report.html'"></ng-include>
+
  <!-- SIGLUS-REFACTOR: starts here -->
  <div class="openlmis-toolbar"  ng-if="vm.canEdit">
     <div class="button-group">
@@ -195,6 +201,12 @@
         <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" form="proof-of-delivery-form">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
     </div>
 </div>
+
+<div class="openlmis-toolbar"  ng-if="!vm.canEdit">
+    <div class="button-group">
+        <siglus-go-back />
+    </div>
+</div>
  <!-- SIGLUS-REFACTOR: ends here -->
 
 <!-- <div class="openlmis-toolbar button-group" ng-show="vm.canEdit">
@@ -209,4 +221,3 @@
     <siglus-go-back />
 </div>
 <!-- #462: ends here -->
-<ng-include src="'siglus-pod-report/siglus-issue-or-receive-report.html'"></ng-include>

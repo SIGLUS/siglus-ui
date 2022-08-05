@@ -139,7 +139,7 @@
          * Initialization method of the ProofOfDeliveryViewController.
          */
         function onInit() {
-            updateLabel();
+
             vm.order = order;
             // SIGLUS-REFACTOR: starts here
             // vm.reasons = reasons;
@@ -162,13 +162,17 @@
             vm.isMerge = $stateParams.actionType === 'MERGE'
             || $stateParams.actionType === 'VIEW';
 
+            if ($stateParams.actionType === 'NOT_YET_STARTED') {
+                save(true);
+            }
+
             $scope.$watch(function() {
                 return vm.proofOfDelivery;
             }, function(newValue, oldValue) {
                 $scope.needToConfirm =  !angular.equals(newValue, oldValue);
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-
+            updateLabel();
         }
 
         /**
@@ -204,12 +208,22 @@
             })[0].name;
         }
 
-        function save() {
+        function save(notReload) {
             $scope.needToConfirm = false;
             loadingModalService.open();
             proofOfDeliveryService.updateSubDraft($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE').then(function() {
-                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+                if (!notReload) {
+                    notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+                }
+                if (notReload) {
+                    var stateParams = angular.copy($stateParams);
+                    stateParams.actionType = 'DRAFT';
+                    $state.go($state.current.name, stateParams, {
+                        location: 'replace'
+                    });
+                }
+
             })
                 .catch(function() {
                     notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
@@ -267,6 +281,8 @@
                         $state.go('openlmis.orders.podManage', {
                             requestingFacilityId: $stateParams.requestingFacilityId,
                             programId: $stateParams.programId
+                        }, {
+                            reload: true
                         });
                     })
                         .catch(function() {
@@ -307,7 +323,9 @@
         }
 
         function updateLabel() {
-            if ($stateParams.isMerged === 'true') {
+            if ($stateParams.actionType === 'VIEW') {
+                $state.current.label = messageService.get('proofOfDeliveryManage.view');
+            } else if ($stateParams.actionType === 'MERGE') {
                 $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
             } else {
                 $state.current.label =
