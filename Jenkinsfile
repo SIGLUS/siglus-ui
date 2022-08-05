@@ -31,12 +31,15 @@ pipeline {
                 }
                 println "test converage: check"
                 sh '''
-                    coverage_threshold=80
-                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -2`;
+                    coverage_threshold=66
+                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -4`;
                     echo "$coverage"
                     echo "$coverage[1]"
-                    coverage_int=`awk -v var="$coverage[0]" 'BEGIN {print int(var)}'`
-                    echo "Current test coverage: $coverage%.";
+                    coverage_int=`awk -v var="$coverage[1]" 'BEGIN {print int(var)}'`
+                    echo "Current statement coverage: $coverage[0]%.";
+                    echo "Current branch coverage: $coverage[1]%.";
+                    echo "Current function coverage: $coverage[2]%.";
+                    echo "Current lines coverage: $coverage[3]%.";
                     if [ $coverage_int -lt $coverage_threshold ];
                     then
                         echo "Error: current test coverage is less than $coverage_threshold%, please add unit tests before push code to ensure test coverage reaches $coverage_threshold%.";
