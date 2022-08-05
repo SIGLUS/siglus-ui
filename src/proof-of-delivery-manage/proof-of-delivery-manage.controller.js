@@ -711,7 +711,7 @@
 
             if (order.status  === 'RECEIVED') {
                 proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
-                    $state.go('openlmis.orders.podManage.draftList.draft', {
+                    $state.go('openlmis.orders.podManage.view', {
                         orderId: order.id,
                         podId: pod.id,
                         actionType: 'VIEW'
