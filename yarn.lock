@@ -95,9 +95,9 @@
   version "4.3.2"
   resolved "https://codeload.github.com/davidjbradshaw/iframe-resizer/tar.gz/ef663ecfb638ceca526300f265db6785f8d243fc"
 
-"@bower_components/dom-to-image@SIGLUS/siglus-dom2image.git#^1.0.1":
-  version "1.0.1"
-  resolved "https://codeload.github.com/SIGLUS/siglus-dom2image/tar.gz/41bd55c5be39932b06ea532413af090bf241e4da"
+"@bower_components/dom-to-image@SIGLUS/siglus-dom2image.git#^1.0.3":
+  version "1.0.3"
+  resolved "https://codeload.github.com/SIGLUS/siglus-dom2image/tar.gz/4f370209d473d9a8c42dc2026413c1ff967bc226"
   dependencies:
     bower "1.8.14"
 

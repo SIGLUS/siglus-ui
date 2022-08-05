@@ -17,7 +17,8 @@ describe('ProofOfDeliveryManageController', function() {
 
     var proofOfDeliveryManageService, $rootScope, $state, $q, $controller, ProgramDataBuilder, FacilityDataBuilder,
         ProofOfDeliveryDataBuilder, vm, deferred, pod, stateParams, supplyingFacilities, programs, requestingFacilities,
-        loadingModalService, notificationService, loadingDeferred, $window, ProofOfDeliveryPrinter, order;
+        loadingModalService, siglusDownloadLoadingModalService,
+        notificationService, loadingDeferred, $window, ProofOfDeliveryPrinter, order;
 
     beforeEach(function() {
         module('proof-of-delivery-manage');
@@ -38,6 +39,7 @@ describe('ProofOfDeliveryManageController', function() {
             loadingModalService = $injector.get('loadingModalService');
             notificationService = $injector.get('notificationService');
             ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
+            siglusDownloadLoadingModalService = $injector.get('siglusDownloadLoadingModalService');
         });
 
         order = {
@@ -99,6 +101,7 @@ describe('ProofOfDeliveryManageController', function() {
         loadingDeferred = $q.defer();
 
         spyOn(loadingModalService, 'close');
+        spyOn(siglusDownloadLoadingModalService, 'close');
         spyOn(notificationService, 'success');
         spyOn(notificationService, 'error');
         spyOn($window, 'open').andCallThrough();
@@ -106,6 +109,7 @@ describe('ProofOfDeliveryManageController', function() {
         spyOn(ProofOfDeliveryPrinter.prototype, 'openTab');
         spyOn(ProofOfDeliveryPrinter.prototype, 'print');
 
+        spyOn(siglusDownloadLoadingModalService, 'open').andReturn(loadingDeferred.promise);
         spyOn(loadingModalService, 'open').andReturn(loadingDeferred.promise);
     });
 
@@ -219,23 +223,23 @@ describe('ProofOfDeliveryManageController', function() {
 
             vm.printProofOfDelivery(order);
 
-            expect(loadingModalService.open).toHaveBeenCalled();
-            expect(loadingModalService.close).not.toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.open).toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.close).not.toHaveBeenCalled();
         });
 
         it('should attempt to get proof of delivery', function() {
             vm.printProofOfDelivery(order);
             $rootScope.$apply();
 
-            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.open).toHaveBeenCalled();
             // expect(proofOfDeliveryManageService.getByOrderId).toHaveBeenCalledWith(pod.id);
-            expect(loadingModalService.close).not.toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.close).not.toHaveBeenCalled();
         });
 
         it('should open window after proof of delivery was found', function() {
             vm.printProofOfDelivery(order);
 
-            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.open).toHaveBeenCalled();
             // expect(proofOfDeliveryManageService.getByOrderId).toHaveBeenCalledWith(pod.id);
 
             deferred.resolve(pod);
@@ -250,7 +254,7 @@ describe('ProofOfDeliveryManageController', function() {
         it('should close loading modal after pod failed to get', function() {
             vm.printProofOfDelivery(order);
 
-            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.open).toHaveBeenCalled();
             // expect(proofOfDeliveryManageService.getByOrderId).toHaveBeenCalledWith(pod.id);
 
             // deferred.reject();
@@ -262,7 +266,7 @@ describe('ProofOfDeliveryManageController', function() {
         it('should close the window after pod failed to get', function() {
             vm.printProofOfDelivery(order);
 
-            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(siglusDownloadLoadingModalService.open).toHaveBeenCalled();
             // expect(proofOfDeliveryManageService.getByOrderId).toHaveBeenCalledWith(pod.id);
 
             // deferred.reject();

@@ -36,7 +36,7 @@
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
-        'siglusStockUtilsService', 'localStorageFactory', '$q'
+        'siglusStockUtilsService', 'localStorageFactory', '$q', 'siglusDownloadLoadingModalService'
     ];
 
     function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
@@ -46,7 +46,7 @@
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
                         stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
                         siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
-                        localStorageFactory, $q) {
+                        localStorageFactory, $q, siglusDownloadLoadingModalService) {
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
@@ -371,6 +371,7 @@
             return result;
         }
         function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
@@ -509,16 +510,6 @@
                                 A4_HEIGHT
                             );
                             // 遍历跟随分页部分重复的部分
-                            // PDF.addImage(
-                            //     '',
-                            //     'JPEG',
-                            //     4,
-                            //     (
-                            //         offsetHeight
-                            //     ) * rate,
-                            //     585,
-                            //     reback[2].nodeHeight * rate
-                            // );
                             PDF.addImage(
                                 reback[3].data,
                                 'JPEG',
@@ -545,6 +536,7 @@
                             // 新开分页
                             PDF.addPage();
                             pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
@@ -571,6 +563,12 @@
                             res.nodeHeight * rate
                         );
                         if (promiseListLen - 1 === index) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                A4_HEIGHT
+                            );
                             PDF.addImage(
                                 reback[2].data,
                                 'JPEG',
@@ -615,6 +613,7 @@
                             vm.issueVoucherDate
                         )
                     );
+                    siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
                 });
             });
@@ -690,9 +689,10 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            loadingModalService.open();
+                            // loadingModalService.open();
                             downloadPdf();
                             deferred.promise.then(function() {
+                                loadingModalService.open();
                                 confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
                             });
                         });

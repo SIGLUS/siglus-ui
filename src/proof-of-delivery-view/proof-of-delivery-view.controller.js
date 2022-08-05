@@ -33,7 +33,7 @@
         'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryService', 'notificationService',
         '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory'];
+        'facilityFactory', 'siglusDownloadLoadingModalService'];
 
     function ProofOfDeliveryViewController($scope
         , proofOfDelivery, order, reasons, messageService
@@ -41,7 +41,8 @@
         , $q, loadingModalService, proofOfDeliveryService, notificationService
         , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
         , confirmService, confirmDiscardService, proofOfDeliveryManageService
-        , openlmisDateFilter, fulfillingLineItemFactory, facilityFactory) {
+        , openlmisDateFilter, fulfillingLineItemFactory
+        , facilityFactory, siglusDownloadLoadingModalService) {
 
         var vm = this;
 
@@ -352,7 +353,7 @@
                     + subInformation.offsetHeight
                     + PAGE_NUM_HEIGHT / rate;
             // 分页部分的高度计算
-            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT - 50;
             // 获取分页部分每行节点
             var needCalcTrNodes = document.querySelectorAll('#calcTr');
             // NodeList -> 数组
@@ -468,12 +469,6 @@
                         // 计算分页部分实际高度
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
                             // 遍历跟随分页部分重复的部分
                             // PDF.addImage(
                             //     '',
@@ -511,6 +506,7 @@
                             // 新开分页
                             PDF.addPage();
                             pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
@@ -547,6 +543,13 @@
                                 585,
                                 reback[2].nodeHeight * rate
                             );
+                            if (vm.incosistencies.length === 0) {
+                                PDF.text(
+                                    pageNumber.toString() + '-END',
+                                    585 / 2,
+                                    A4_HEIGHT
+                                );
+                            }
                         }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
@@ -599,16 +602,18 @@
                     // )
                     vm.fileName + '.pdf'
                 );
+                siglusDownloadLoadingModalService.close();
                 return;
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            opt.PDF.setFontSize(10);
-            opt.PDF.text(
-                pageNumber.toString(),
-                585 / 2,
-                opt.A4_HEIGHT
-            );
+            console.log('22222', pageNumber);
+            // opt.PDF.setFontSize(10);
+            // opt.PDF.text(
+            //     pageNumber.toString(),
+            //     585 / 2,
+            //     opt.A4_HEIGHT
+            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');
@@ -671,6 +676,7 @@
                     };
                 }));
             });
+            var promiseListInLen = promiseListIn.length;
             $q.all(fixedPromiseListIn).then(function(_reback) {
                 // 偏移量
                 var offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
@@ -683,9 +689,9 @@
                     opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
                         incosostencyHeaderNode.offsetHeight * opt.rate,
                         585, _reback[1].nodeHeight * opt.rate);
-                    _.forEach(_result, function(res, index) {
+                    _.forEach(_result, function(res, _index) {
                         // 计算分页部分实际高度
-                        realHeight = realHeight + _result[index].nodeHeight;
+                        realHeight = realHeight + _result[_index].nodeHeight;
                         if (realHeight > canUseHeight) {
                             opt.PDF.setFontSize(10);
                             opt.PDF.text(
@@ -707,6 +713,7 @@
                             // 新开分页
                             opt.PDF.addPage();
                             pageNumber = pageNumber + 1;
+                            opt.PDF.setFontSize(10);
                             opt.PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
@@ -727,7 +734,16 @@
                             res.nodeWidth * opt.rate,
                             res.nodeHeight * opt.rate
                         );
-                        offsetHeight = offsetHeight + _result[index].nodeHeight;
+                        // console.log('promiseListInLen', promiseListInLen);
+                        // console.log('_index', _index);
+                        if (promiseListInLen - 1 === _index) {
+                            opt.PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                opt.A4_HEIGHT
+                            );
+                        }
+                        offsetHeight = offsetHeight + _result[_index].nodeHeight;
                     });
                     // 添加分页部分下方的固定部分图片到PDF中
                     opt.PDF.addImage(
@@ -746,6 +762,7 @@
                         // )
                         vm.fileName + '.pdf'
                     );
+                    siglusDownloadLoadingModalService.close();
                 });
             });
         }
@@ -790,6 +807,7 @@
                 vm.requisitionNum = res.requisitionNum;
             });
             proofOfDeliveryService.get(podId).then(function(res) {
+                siglusDownloadLoadingModalService.open();
                 fulfillingLineItemFactory
                     .groupByOrderable(res.lineItems, res.shipment.order.orderLineItems).then(function(result) {
                         vm.addedLineItems = _.reduce(result, function(r, c) {

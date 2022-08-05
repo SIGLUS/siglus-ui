@@ -36,7 +36,7 @@
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
         'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
-        'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q'
+        'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusDownloadLoadingModalService'
     ];
 
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
@@ -47,7 +47,7 @@
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
                         siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
-                        $q) {
+                        $q, siglusDownloadLoadingModalService) {
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -357,6 +357,7 @@
             );
         }
         function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
@@ -530,6 +531,7 @@
                             // 新开分页
                             PDF.addPage();
                             pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
@@ -566,6 +568,12 @@
                                 585,
                                 reback[2].nodeHeight * rate
                             );
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                A4_HEIGHT
+                            );
                         }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
@@ -600,6 +608,7 @@
                             vm.issueVoucherDate
                         )
                     );
+                    siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
                 });
             });
@@ -625,9 +634,9 @@
                             vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            loadingModalService.open();
                             downloadPdf();
                             deferred.promise.then(function() {
+                                loadingModalService.open();
                                 confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
                             });
                         });

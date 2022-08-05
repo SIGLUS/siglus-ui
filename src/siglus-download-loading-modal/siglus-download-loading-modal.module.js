@@ -14,31 +14,13 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-     * @module proof-of-delivery-manage
-     *
-     * @description
-     * Responsible for manage POD screen.
-     */
-    angular.module('proof-of-delivery-manage', [
-        'openlmis-date',
-        'openlmis-i18n',
-        'openlmis-pagination',
-        'openlmis-table',
-        'openlmis-templates',
-        'order',
-        'referencedata-facilities-permissions',
-        'referencedata-program',
+    angular.module('siglus-download-loading-modal', [
         'ui.router',
-        'proof-of-delivery',
-        'proof-of-delivery-view',
-        // SIGLUS-REFACTOR: starts here
-        'siglus-order-status-messages',
-        'siglus-proof-of-delivery-initial-modal',
-        'siglus-download-loading-modal'
-        // SIGLUS-REFACTOR: starts here
+        'openlmis-modal',
+        'siglus-physical-inventory-draft-list',
+        'referencedata-facility',
+        'requisition'
     ]);
 })();
