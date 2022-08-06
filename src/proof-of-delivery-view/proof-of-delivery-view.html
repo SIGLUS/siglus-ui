@@ -192,7 +192,7 @@
         <button ng-if="!vm.isMerge && vm.actionType !== 'SUBMITTED'" class="danger" ng-click="vm.deleteDraft()">
             {{'stockInitialInventory.delete' | message}}
         </button>
-        <button ng-if="vm.isMerge && vm.actionType !== 'SUBMITTED'" class="defaul" ng-click="vm.deleteDraft()">
+        <button ng-if="vm.isMerge && vm.actionType !== 'SUBMITTED'" class="defaul" ng-click="vm.returnBack()">
             {{'stockInitialInventory.cancel' | message}}
         </button>
     </div>
