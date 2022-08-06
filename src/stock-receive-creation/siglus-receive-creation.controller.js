@@ -612,8 +612,8 @@
                     );
                     PDF.save(
                         getPdfName(
-                            vm.client,
-                            vm.issueVoucherDate
+                            vm.destinationName,
+                            openlmisDateFilter(new Date(), 'yyyy-MM-dd')
                         )
                     );
                     siglusDownloadLoadingModalService.close();
@@ -639,7 +639,7 @@
                 if (vm.isMerge) {
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
                         then(function(data) {
-                            vm.issueVoucherDate = openlmisDateFilter(new Date(), 'yyyy-MM-dd');
+                            vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
                             downloadPdf();
