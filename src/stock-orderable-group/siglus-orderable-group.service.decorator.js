@@ -124,7 +124,7 @@
                 .find(function(groupItem) {
                     // SIGLUS-REFACTOR: strats here
                     var selectedNoLot = !groupItem.lot && (!selectedLot || angular.equals(selectedLot, noLotDefined));
-                    var lotMatch = groupItem.lot && angular.equals(groupItem.lot, selectedLot);
+                    var lotMatch = groupItem.lot && selectedLot && angular.equals(groupItem.lot.id, selectedLot.id);
                     // SIGLUS-REFACTOR: ends here
                     return selectedNoLot || lotMatch;
                 })
@@ -211,7 +211,7 @@
          * by orderable id.
          */
         function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts,
-                                                               rightName, draftId) {
+                                                               rightName, draftId, orderableIds) {
             var repository;
             if (includeApprovedProducts) {
                 repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
@@ -219,7 +219,8 @@
                     programId: programId,
                     facilityId: facilityId,
                     rightName: rightName,
-                    draftId: draftId
+                    draftId: draftId,
+                    orderableIds: orderableIds
                 }).then(function(summaries) {
                     return $delegate.groupByOrderableId(summaries.content.reduce(function(items, summary) {
                         summary.canFulfillForMe.forEach(function(fulfill) {

@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         // 'UNPACK_REASONS',
         'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService'
+        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService', 'siglusOrderableLotService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,8 @@
                         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
                         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
                         siglusSignatureWithDateModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
-                        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService) {
+                        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService,
+                        siglusOrderableLotService) {
         var vm = this,
             previousAdded = {};
 
@@ -141,16 +142,17 @@
         // };
 
         vm.addProductWithoutLot = function() {
+            loadingModalService.open();
             var selectedItem = orderableGroupService
                 .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
 
-            var lotOptions = angular.copy(vm.lots);
+            // var lotOptions = angular.copy(vm.lots);
 
             var item = _.extend(
                 {
                     $errors: {},
                     $previewSOH: null,
-                    lotOptions: angular.copy(lotOptions),
+                    // lotOptions: angular.copy(lotOptions),
                     orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
@@ -170,14 +172,20 @@
             }
 
             item.reason = null;
-            vm.addedLineItems.unshift(item);
 
-            previousAdded = vm.addedLineItems[0];
-            $stateParams.isAddProduct = true;
-            vm.search($state.current.name);
-            // #105: activate archived product
-            siglusArchivedProductService.alterInfo([item]);
-            // #105: ends here
+            siglusOrderableLotService.fillLotsToAddedItems([item]).then(function() {
+                vm.addedLineItems.unshift(item);
+                previousAdded = vm.addedLineItems[0];
+                $stateParams.isAddProduct = true;
+                vm.search($state.current.name);
+                // #105: activate archived product
+                siglusArchivedProductService.alterInfo([item]);
+                // #105: ends here
+            })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -342,8 +350,8 @@
             }
             vm.selectedOrderableGroup =
                 siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(lineItem.orderableId);
-            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
-            lineItem.lotOptions = angular.copy(vm.lots);
+            // vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
+            // lineItem.lotOptions = angular.copy(vm.lots);
             if (lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
                 var hasStockLotCodes = _.chain(vm.selectedOrderableGroup)
                     .filter(function(item) {

@@ -81,17 +81,6 @@
                         facility.id,
                         ADJUSTMENT_TYPE.RECEIVE.state);
                 },
-                // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, facility, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
-                            $stateParams.draftId
-                        );
-                    }
-                    return $stateParams.orderableGroups;
-                },
-                // SIGLUS-REFACTOR: ends here
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
@@ -107,6 +96,18 @@
                         return $stateParams.draft;
                     }
                     return siglusStockIssueService.getDraftById($stateParams.draftId);
+                },
+                orderableGroups: function($stateParams, facility, draft, orderableGroupService) {
+                    if (!$stateParams.hasLoadOrderableGroups) {
+                        var allLineOrderableIds = draft.lineItems.map(function(line) {
+                            return line.orderableId;
+                        });
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
+                            $stateParams.draftId, allLineOrderableIds
+                        );
+                    }
+                    return $stateParams.orderableGroups;
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {

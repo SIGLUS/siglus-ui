@@ -36,7 +36,8 @@
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
         'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
-        'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusDownloadLoadingModalService'
+        'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusOrderableLotService',
+        'siglusDownloadLoadingModalService'
     ];
 
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
@@ -47,7 +48,7 @@
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
                         siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
-                        $q, siglusDownloadLoadingModalService) {
+                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService) {
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -91,6 +92,7 @@
 
         // first add without lot
         vm.addProductWithoutLot = function() {
+            loadingModalService.open();
             var selectedItem = orderableGroupService
                 .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
 
@@ -98,7 +100,7 @@
                 {
                     $errors: {},
                     $previewSOH: null,
-                    lotOptions: angular.copy(vm.lots),
+                    // lotOptions: angular.copy(vm.lots),
                     orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
@@ -116,15 +118,21 @@
                 }
             }
 
-            vm.addedLineItems.unshift(item);
+            siglusOrderableLotService.fillLotsToAddedItems([item]).then(function() {
+                vm.addedLineItems.unshift(item);
 
-            previousAdded = vm.addedLineItems[0];
+                previousAdded = vm.addedLineItems[0];
 
-            $stateParams.isAddProduct = true;
-            vm.search($state.current.name);
-            // #105: activate archived product
-            siglusArchivedProductService.alterInfo([item]);
-            // #105: ends here
+                $stateParams.isAddProduct = true;
+                vm.search($state.current.name);
+                // #105: activate archived product
+                siglusArchivedProductService.alterInfo([item]);
+                // #105: ends here
+            })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -676,8 +684,8 @@
             $scope.productForm.$setPristine();
 
             //vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
-            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
-            vm.selectedOrderableHasLots = vm.lots.length > 0;
+            // vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
+            // vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
         /**
