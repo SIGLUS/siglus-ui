@@ -254,7 +254,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query({
-                facilityId: 'facilityId'
+                facilityId: 'facilityId',
+                orderableIds: ['123']
             })
                 .catch(function() {
                     rejected = true;
@@ -272,7 +273,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             spyOn(siglusArchivedProductService, 'getArchivedOrderables').andReturn($q.resolve([]));
             var result;
             fullStockCardSummaryRepositoryImpl.query({
-                facilityId: 'facilityId'
+                facilityId: 'facilityId',
+                orderableIds: ['123']
             })
                 .then(function(response) {
                     result = response;

@@ -18,10 +18,12 @@
         .module('stock-orderable-group')
         .service('siglusOrderableLotService', service);
 
-    service.$inject = ['$http', 'openlmisUrlFactory'];
+    service.$inject = ['$http', 'openlmisUrlFactory', '$q'];
 
-    function service($http, openlmisUrlFactory) {
+    function service($http, openlmisUrlFactory, $q) {
         this.tradeItemIdToOrderableIdMap = {};
+        this.orderableIdToLots = {};
+
         this.setOrderables = function(orderables) {
             var map = {};
             orderables.forEach(function(orderable) {
@@ -30,32 +32,47 @@
                 }
             });
             this.tradeItemIdToOrderableIdMap = map;
+            this.orderableIdToLots = {};
         };
+
         this.getLotsByOrderableIds = function(orderableIds) {
             return $http.post(openlmisUrlFactory('/api/siglusapi/stockCardSummaries/lots'), orderableIds);
         };
 
         this.fillLotsToAddedItems = function(addedItems) {
-            var orderableIds = addedItems.map(function(item) {
-                return item.orderable.id;
-            });
-            var tradeItemIdToOrderableIdMap = this.tradeItemIdToOrderableIdMap;
+            var deferred = $q.defer();
 
-            var orderableIdToLotsMap = {};
-            return this.getLotsByOrderableIds(orderableIds).then(function(lots) {
-                lots.data.forEach(function(lot) {
-                    var tradeItemId = lot.tradeItemId;
-                    var orderableId = tradeItemIdToOrderableIdMap[tradeItemId];
-                    if (orderableIdToLotsMap[orderableId]) {
-                        orderableIdToLotsMap[orderableId].push(lot);
-                    } else {
-                        orderableIdToLotsMap[orderableId] = [lot];
-                    }
-                });
+            var orderableIdToLotsMap = this.orderableIdToLots;
+            var missingOrderableIds = addedItems.map(function(item) {
+                return item.orderable.id;
+            }).filter(function(id) {
+                return !_.contains(Object.keys(orderableIdToLotsMap), id);
+            });
+
+            if (_.isEmpty(missingOrderableIds)) {
                 addedItems.forEach(function(item) {
                     item.lotOptions = orderableIdToLotsMap[item.orderable.id];
                 });
-            });
+                deferred.resolve();
+            } else {
+                var tradeItemIdToOrderableIdMap = this.tradeItemIdToOrderableIdMap;
+                this.getLotsByOrderableIds(missingOrderableIds).then(function(lots) {
+                    lots.data.forEach(function(lot) {
+                        var tradeItemId = lot.tradeItemId;
+                        var orderableId = tradeItemIdToOrderableIdMap[tradeItemId];
+                        if (orderableIdToLotsMap[orderableId]) {
+                            orderableIdToLotsMap[orderableId].push(lot);
+                        } else {
+                            orderableIdToLotsMap[orderableId] = [lot];
+                        }
+                    });
+                    addedItems.forEach(function(item) {
+                        item.lotOptions = orderableIdToLotsMap[item.orderable.id];
+                    });
+                    deferred.resolve();
+                });
+            }
+            return deferred.promise;
         };
     }
 
