@@ -44,7 +44,7 @@
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
         vm.emergencyCount = '01';
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -153,7 +153,7 @@
                         reportName = 'REM';
                     }
                     PDF.save(reportName + '.'
-                    + vm.requisition.id.substr(0, 8) + '.'
+                    + vm.facility.code + '.'
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + vm.emergencyCount
