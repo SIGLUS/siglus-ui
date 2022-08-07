@@ -99,10 +99,14 @@
                         ADJUSTMENT_TYPE.RECEIVE.state);
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, programId, facility, orderableGroupService) {
+                orderableGroups: function($stateParams, programId, facility, mergedItems, orderableGroupService) {
                     if (!$stateParams.hasLoadOrderableGroups) {
+                        var allLineOrderableIds = mergedItems.map(function(line) {
+                            return line.orderableId;
+                        });
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
+                            programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, undefined,
+                            allLineOrderableIds
                         );
                     }
                     return $stateParams.orderableGroups;
