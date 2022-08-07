@@ -63,7 +63,11 @@
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
             services = requisition.testConsumptionLineItems;
-            vm.comments = requisition.draftStatusMessage;
+            var commentsStr = _.reduce(requisition.statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            vm.comments = commentsStr.substr(0, commentsStr.length - 1);
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
             if (requisition.extraData.signaure) {
@@ -149,7 +153,7 @@
                     getPdfName(
                         requisition.processingPeriod.startDate,
                         facility.name,
-                        requisition.id.substring(0, 8)
+                        vm.facility.code
                     )
                 );
             });
