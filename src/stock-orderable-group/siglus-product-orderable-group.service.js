@@ -35,12 +35,12 @@
         var resource = $resource(stockmanagementUrlFactory(), {}, {
             get: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummaries/integration'),
+                url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummaries/integration/detail'),
                 isArray: true
             },
             queryStockOnHandsInfo: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummaries/integration/flatten'),
+                url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummaries/integration/summary'),
                 isArray: true
             }
         });
