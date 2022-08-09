@@ -28,7 +28,7 @@
 .view-table {
   align-items: top;
   font-family: Verdana, Arial, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 20px;
   border-collapse: initial;
   border-spacing: 0;
@@ -76,6 +76,7 @@
   border: 1px solid #000000;
   box-sizing: content-box;
   padding: 1px;
+  word-break: break-word;
 }
 
 .text-nowrap {
@@ -258,4 +259,15 @@
 
 .text-align-center .border-all-thin span {
   padding-left: 0px;
+}
+
+.via-table-body tr td{
+  word-break: break-all;
+}
+
+.via-table-body tr td{
+  border-left: none;
+}
+.via-table-body tr td:first-of-type{
+  border-left: 1px solid #000;
 }
