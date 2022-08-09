@@ -2438,5 +2438,7 @@
   "adminFacilityList.android": "Android",
   "adminFacilityView.androidFacility": "Android Facility",
   "adminFacilityView.upgradeToWeb": "Upgrade to web facility",
-  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?"
+  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?",
+  "locationShipmentView.lotExpired": "This lot has expired, it cannot be fulfilled.",
+  "locationShipmentView.notFirstToExpire": "This lot is not the first to expire."
 }
