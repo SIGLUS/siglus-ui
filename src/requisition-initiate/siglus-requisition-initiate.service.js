@@ -36,16 +36,22 @@
         this.getLatestPhysicalInventory = getLatestPhysicalInventory;
         this.getPhysicalInventoryDates = getPhysicalInventoryDates;
 
-        function getLatestPhysicalInventory(facilityId) {
+        function getLatestPhysicalInventory(facilityId, programId) {
             var resource = $resource(requisitionUrlFactory('/api/siglusapi/physicalInventories/latest'));
             return resource.get({
-                facilityId: facilityId
+                facilityId: facilityId,
+                programId: programId
             }).$promise;
         }
 
-        function getPhysicalInventoryDates(facilityId, startDate, endDate) {
+        <!-- SIGLUS-REFACTOR: starts here -->
+        function getPhysicalInventoryDates(programId, facilityId,  startDate, endDate) {
+            <!-- SIGLUS-REFACTOR: ends here -->
             var resource = $resource(requisitionUrlFactory('/api/siglusapi/physicalInventories/dates'));
             return resource.query({
+                <!-- SIGLUS-REFACTOR: starts here -->
+                programId: programId,
+                <!-- SIGLUS-REFACTOR: ends here -->
                 facilityId: facilityId,
                 startDate: startDate,
                 endDate: endDate

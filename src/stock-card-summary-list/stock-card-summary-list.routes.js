@@ -57,7 +57,8 @@
                 },
                 // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, stockCardDataService) {
+                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, loadingModalService,
+                    stockCardDataService, siglusProductOrderableGroupService, dateUtils) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -82,11 +83,29 @@
                             delete paramsCopy.program;
                             delete paramsCopy.supervised;
 
-                            return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                                .query(paramsCopy)
-                                .then(function(summary) {
-                                    stockCardDataService.setSummary(paramsCopy, summary);
-                                    return stockCardDataService.getDisplaySummary(stateParams);
+                            loadingModalService.open();
+                            return siglusProductOrderableGroupService.queryStockOnHandsInfo(paramsCopy)
+                                .then(
+                                    function(summary) {
+                                        _.forEach(summary, function(item) {
+                                            _.forEach(item.stockCardDetails, function(stockCard) {
+                                                stockCard.occurredDate = dateUtils.toDate(stockCard.occurredDate);
+                                                if (stockCard.lot && stockCard.lot.expirationDate) {
+                                                    stockCard.lot.expirationDate =
+                                                      dateUtils.toDate(stockCard.lot.expirationDate);
+                                                }
+                                            });
+                                        });
+
+                                        stockCardDataService.setSummary(paramsCopy, {
+                                            content: summary,
+                                            totalElements: summary.length
+                                        });
+                                        return stockCardDataService.getDisplaySummary(stateParams);
+                                    }
+                                )
+                                .finally(function() {
+                                    loadingModalService.close();
                                 });
                         }
                         // SIGLUS-REFACTOR: starts here

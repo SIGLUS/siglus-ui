@@ -37,7 +37,8 @@
         'stock-reasons-modal',
         'openlmis-state-tracker',
         // SIGLUS-REFACTOR: starts here
-        'siglus-order-status-messages'
+        'siglus-order-status-messages',
+        'siglus-alert-confirm-modal'
         // SIGLUS-REFACTOR: starts here
     ]);
 })();

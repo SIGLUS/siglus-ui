@@ -18,70 +18,57 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name stock-issue-creation.controller:SiglusStockIssueCreationController
-     *
-     * @description
-     * Controller for managing stock issue creation.
-     */
+   * @ngdoc controller
+   * @name stock-issue-creation.controller:SiglusStockIssueCreationController
+   *
+   * @description
+   * Controller for managing stock issue creation.
+   */
     angular
         .module('stock-issue-creation')
         .controller('SiglusStockIssueCreationController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType', 'srcDstAssignments',
+        '$scope', 'draft', 'mergedItems', 'initialDraftInfo', '$state', '$stateParams', '$filter',
+        'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'confirmService',
+        'messageService', 'isMerge',
         'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureModalService', 'stockAdjustmentService', 'draft', 'openlmisDateFilter'
+        'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
+        'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
+        'siglusStockUtilsService', 'localStorageFactory', '$q', 'siglusDownloadLoadingModalService'
     ];
 
-    function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
-                        MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, stockAdjustmentService, draft,
-                        openlmisDateFilter) {
+    function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
+                        confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
+                        messageService, isMerge, stockAdjustmentCreationService, notificationService,
+                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
+                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
+                        stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
+                        siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
+                        localStorageFactory, $q, siglusDownloadLoadingModalService) {
         var vm = this,
             previousAdded = {};
-
-        vm.draft = draft;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name vvmStatuses
-         * @type {Object}
-         *
-         * @description
-         * Holds list of VVM statuses.
-         */
-        vm.vvmStatuses = VVM_STATUS;
-
-        /**
-         * @ngdoc property
-         * @propertyOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name showVVMStatusColumn
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if VVM Status column should be visible.
-         */
-        vm.showVVMStatusColumn = false;
-
+        vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
+        // vm.nowDate = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.initialDraftInfo = initialDraftInfo;
+        var deferred = $q.defer();
+        vm.destinationName = '';
+        vm.type = 'issue';
+        vm.isMerge = isMerge;
         vm.key = function(secondaryKey) {
-            return adjustmentType.prefix + 'Creation.' + secondaryKey;
+            return 'stockIssueCreation.' + secondaryKey;
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name search
-         *
-         * @description
-         * It searches from the total line items with given keyword. If keyword is empty then all line
-         * items will be shown.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name search
+     *
+     * @description
+     * It searches from the total line items with given keyword. If keyword is empty then all line
+     * items will be shown.
+     */
         vm.search = function(reload) {
             vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
 
@@ -95,14 +82,52 @@
             });
         };
 
+        vm.returnBack = function() {
+            $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
+        };
+
+        vm.setProductGroups = function() {
+            var addedLotIds = _.chain(vm.addedLineItems)
+                .map(function(item) {
+                    return _.get(item, ['lot', 'id']);
+                })
+                .compact()
+                .value();
+            var existingKitProductId = _.chain(vm.addedLineItems)
+                .filter(function(item) {
+                    return item.orderable.isKit || isEmpty(item.lot);
+                })
+                .map(function(item) {
+                    return item.orderable.id;
+                })
+                .value();
+
+            vm.orderableGroups = _.chain(orderableGroups)
+                .map(function(group) {
+                    return _.filter(group, function(item) {
+                        return isEmpty(addedLotIds) || !_.include(addedLotIds, _.get(item, ['lot', 'id']));
+                    });
+                })
+                .filter(function(group) {
+                    var orderableId = _.get(group, [0, 'orderable', 'id']);
+                    return !_.include(existingKitProductId, orderableId);
+                })
+                .filter(function(item) {
+                    return !_.isEmpty(item);
+                })
+                .value();
+
+            $stateParams.orderableGroups = vm.orderableGroups;
+        };
+
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name addProduct
-         *
-         * @description
-         * Add a product for stock adjustment.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name addProduct
+     *
+     * @description
+     * Add a product for stock adjustment.
+     */
         vm.addProduct = function() {
             if (vm.selectedLot && isDateBeforeToday(vm.selectedLot.expirationDate)) {
                 alertService.error('stockIssueCreation.issueExpiredLot');
@@ -119,6 +144,19 @@
                 selectedItem, copyDefaultValue()
             );
             vm.addedLineItems.unshift(item);
+
+            if (_.get(vm.selectedLot, 'id')) {
+                vm.setProductGroups();
+                vm.selectedOrderableGroup = _.filter(vm.selectedOrderableGroup, function(data) {
+                    return _.get(data, ['lot', 'id']) !== vm.selectedLot.id;
+                });
+
+                vm.setLots();
+                vm.setLotSelectionStatus();
+            } else {
+                vm.setProductGroups();
+                vm.selectedOrderableGroup = [];
+            }
 
             previousAdded = vm.addedLineItems[0];
 
@@ -170,59 +208,90 @@
             };
         }
 
+        vm.setSelectedOrderableGroup = function(key, id) {
+            vm.selectedOrderableGroup = _.find(vm.orderableGroups, function(group) {
+                var lotId = _.map(group, function(item) {
+                    return _.get(item, [key, 'id']);
+                });
+                return _.include(lotId, id);
+            });
+        };
+
+        vm.setLots = function() {
+            var addedLotIds = _.chain(vm.addedLineItems).map(function(item) {
+                return _.get(item.lot, 'id');
+            })
+                .compact()
+                .value();
+            vm.lots = _.filter(orderableGroupService.lotsOf(vm.selectedOrderableGroup), function(item) {
+                return addedLotIds.length === 0 || !_.include(addedLotIds, item.id);
+            });
+        };
+
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name remove
-         *
-         * @description
-         * Remove a line item from added products.
-         *
-         * @param {Object} lineItem line item to be removed.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name remove
+     *
+     * @description
+     * Remove a line item from added products.
+     *
+     * @param {Object} lineItem line item to be removed.
+     */
         vm.remove = function(lineItem) {
-            var index = vm.addedLineItems.indexOf(lineItem);
+            var index = _.indexOf(vm.addedLineItems, lineItem);
             vm.addedLineItems.splice(index, 1);
+            vm.setProductGroups();
+            var productId = _.get(vm, ['selectedOrderableGroup', 0, 'orderable', 'id']);
+            var isRemoveItemInCurrentProduct = lineItem.orderable.id === productId;
+
+            if (isRemoveItemInCurrentProduct) {
+                vm.setSelectedOrderableGroup('lot', _.get(lineItem, ['lot', 'id']));
+                vm.setLots();
+            }
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name removeDisplayItems
-         *
-         * @description
-         * Remove all displayed line items.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name removeDisplayItems
+     *
+     * @description
+     * Remove all displayed line items.
+     */
         vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
-                .then(function() {
-                    loadingModalService.open();
-                    stockAdjustmentService.deleteDraft(draft.id).then(function() {
-                        $scope.needToConfirm = false;
-                        notificationService.success(vm.key('deleted'));
-                        $state.go('openlmis.stockmanagement.issue', $stateParams, {
-                            reload: true
-                        });
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                });
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
+                    $scope.needToConfirm = false;
+                    notificationService.success(vm.key('deleted'));
+                    $state.go('openlmis.stockmanagement.issue.draft', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateQuantity
-         *
-         * @description
-         * Validate line item quantity and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name validateQuantity
+     *
+     * @description
+     * Validate line item quantity and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
         vm.validateQuantity = function(lineItem) {
             if (lineItem.quantity > MAX_INTEGER_VALUE) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
@@ -237,37 +306,16 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateAssignment
-         *
-         * @description
-         * Validate line item assignment and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateAssignment = function(lineItem) {
-            if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
-                adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
-                lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
-            }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateReason
-         *
-         * @description
-         * Validate line item reason and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name validateReason
+     *
+     * @description
+     * Validate line item reason and returns self.
+     *
+     * @param {Object} lineItem line item to be validated.
+     */
         vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
-                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
-            }
             return lineItem;
         };
 
@@ -281,31 +329,16 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name clearFreeText
-         *
-         * @description
-         * remove free text from given object.
-         *
-         * @param {Object} obj      given target to be changed.
-         * @param {String} property given property to be cleared.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name clearFreeText
+     *
+     * @description
+     * remove free text from given object.
+     *
+     * @param {Object} obj      given target to be changed.
+     * @param {String} property given property to be cleared.
+     */
         vm.clearFreeText = function(obj, property) {
             obj[property] = null;
         };
@@ -318,13 +351,357 @@
          * @description
          * Submit all added items.
          */
+        function getPdfName(facilityName, nowTime) {
+            var result = (
+                'Issue_'
+                + facilityName
+                + '_'
+                + nowTime
+                + '.pdf'
+            );
+            if (facilityName.indexOf('Outros') > -1) {
+                result = (
+                    'Issue_'
+                    + facilityName.split(':')[1]
+                    + '_'
+                    + nowTime
+                    + '.pdf'
+                );
+            }
+            return result;
+        }
+        function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
+            // 获取固定高度的dom节点
+            var sectionFirst = document.getElementById('sectionFirst');
+            var sectionSecond = document.getElementById('sectionSecond');
+            var sectionThird = document.getElementById('sectionThird');
+            var sectionFouth = document.getElementById('sectionFouth');
+            var subInformation = document.getElementById('subInformation');
+            // 定义常量
+            var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
+            // 计算px to a4实际单位换算比例
+            var rate = A4_WIDTH / CONTAINER_WIDTH;
+            // a4实际高度换算px
+            var a4Height2px = A4_HEIGHT / rate;
+            // 计算固定部分的高度总和
+            var fixedHeight = sectionFirst.offsetHeight
+                    + sectionSecond.offsetHeight
+                    + sectionThird.offsetHeight
+                    + sectionFouth.offsetHeight
+                    + subInformation.offsetHeight
+                    + PAGE_NUM_HEIGHT / rate;
+            // 分页部分的高度计算
+            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            // 获取分页部分每行节点
+            var needCalcTrNodes = document.querySelectorAll('#calcTr');
+            // NodeList -> 数组
+            var needCalcTrNodesArray = Array.from(needCalcTrNodes);
+            // 定义固定部分的promiseList
+            var fixedPromiseList = [
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionFirst, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionFirst.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionFirst.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionSecond, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionSecond.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionSecond.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionThird, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionThird.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionThird.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionFouth, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionFouth.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionFouth.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(subInformation, {
+                    scale: 1,
+                    width: 1250,
+                    height: subInformation.offsetHeight + 30
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: subInformation.offsetHeight + 30
+                    };
+                })
+            ];
+            // 定义分页部分的promiseList
+            var promiseList = [];
+            // eslint-disable-next-line no-undef
+            var PDF = new jsPDF('', 'pt', 'a4');
+            _.forEach(needCalcTrNodesArray, function(item) {
+                // eslint-disable-next-line no-undef
+                promiseList.push(domtoimage.toPng(item, {
+                    scale: 1,
+                    width: 1250,
+                    height: item.offsetHeight + 1
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: item.offsetHeight + 1
+                    };
+                }));
+            });
+            // var totalPage = getTotalPaginationNum(promiseList, canUseHeight);
+            // 固定部分的图片转换完成后再去做分页部分的图片转换
+            $q.all(fixedPromiseList).then(function(reback) {
+                // 偏移量
+                var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                // 当前分页部分tr的累积高度
+                var realHeight = 0;
+                // 页码
+                var pageNumber = 1;
+                var promiseListLen = promiseList.length;
+                $q.all(promiseList).then(function(result) {
+                    // 添加分页部分上方的固定部分图片到PDF中
+                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
+                    PDF.addImage(
+                        reback[1].data,
+                        'JPEG',
+                        4,
+                        reback[0].nodeHeight * rate,
+                        585,
+                        reback[1].nodeHeight * rate
+                    );
+                    _.forEach(result, function(res, index) {
+                        // 计算分页部分实际高度
+                        realHeight = realHeight + result[index].nodeHeight;
+                        if (realHeight > canUseHeight) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT
+                            );
+                            // 遍历跟随分页部分重复的部分
+                            PDF.addImage(
+                                reback[3].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[3].nodeHeight * rate
+                            );
+                            PDF.addImage(
+                                reback[4].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[4].nodeHeight * rate
+                            );
+                            // 新开分页
+                            PDF.addPage();
+                            pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT
+                            );
+                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
+                            PDF.addImage(
+                                reback[1].data,
+                                'JPEG',
+                                4,
+                                reback[0].nodeHeight * rate, 585,
+                                reback[1].nodeHeight * rate
+                            );
+                            offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                            realHeight = 0;
+                        }
+                        // 添加当前遍历元素的图片到PDF
+                        PDF.addImage(
+                            res.data,
+                            'JPEG',
+                            4,
+                            offsetHeight * rate,
+                            res.nodeWidth * rate,
+                            res.nodeHeight * rate
+                        );
+                        if (promiseListLen - 1 === index) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                A4_HEIGHT
+                            );
+                            PDF.addImage(
+                                reback[2].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight + result[index].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[2].nodeHeight * rate
+                            );
+                        }
+                        offsetHeight = offsetHeight + result[index].nodeHeight;
+                    });
+                    // 添加分页部分下方的固定部分图片到PDF中
+                    // PDF.addImage(
+                    //     '',
+                    //     'JPEG',
+                    //     4,
+                    //     (offsetHeight) * rate,
+                    //     585,
+                    //     reback[2].nodeHeight * rate
+                    // );
+                    PDF.addImage(
+                        reback[3].data,
+                        'JPEG',
+                        4,
+                        (offsetHeight + reback[2].nodeHeight) * rate,
+                        585,
+                        reback[3].nodeHeight * rate
+                    );
+                    PDF.addImage(
+                        reback[4].data,
+                        'JPEG',
+                        4,
+                        (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
+                        585,
+                        reback[4].nodeHeight * rate
+                    );
+                    PDF.save(
+                        getPdfName(
+                            vm.destinationName,
+                            openlmisDateFilter(new Date(), 'yyyy-MM-dd')
+                        )
+                    );
+                    siglusDownloadLoadingModalService.close();
+                    deferred.resolve('success');
+                });
+            });
+        }
+
+        // function getTotalPaginationNum(promiseList, canUseHeight) {
+        //     // return 'hello';
+        //     var totalNum = 0;
+        //     $q.all(promiseList).then(function(res) {
+        //         var realHeight = 0;
+        //         _.forEach(res, function(itm) {
+        //             realHeight = realHeight + itm.nodeHeight;
+        //             if (canUseHeight < realHeight) {
+        //                 totalNum = totalNum + 1;
+        //             }
+        //         });
+        //     });
+        //     return totalNum;
+        // }
+
+        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
+            var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
+                return item.subDraftId;
+            }));
+
+            siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
+                .then(function() {
+                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                        facility: facility.id,
+                        program: program
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    if (error.data && error.data.businessErrorExtraData === 'subDrafts quantity not match') {
+                        alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    }
+                });
+        }
+
+        function confirmSubmit(signature, addedLineItems) {
+            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                addedLineItems, $stateParams.draftType)
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success(vm.key('submitted'));
+                    $scope.needToConfirm = false;
+                    vm.returnBack();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    productDuplicatedHandler(error);
+                });
+        }
+
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                lineItem.reason = _.find(reasons, {
+                    name: capitalize($stateParams.draftType || '')
                 });
+            });
+            if (validateAllAddedItems()) {
+                if (vm.isMerge) {
+                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
+                        .then(function(data) {
+                            // console.log('data --->>>', data);
+                            vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                            vm.signature = data.signature;
+                            // loadingModalService.open();
+                            downloadPdf();
+                            deferred.promise.then(function() {
+                                loadingModalService.open();
+                                confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            });
+                        });
+                } else {
+                    loadingModalService.open();
+                    confirmSubmit('', addedLineItems);
+                }
+
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
@@ -350,14 +727,15 @@
         // SIGLUS-REFACTOR: ends here
 
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name orderableSelectionChanged
-         *
-         * @description
-         * Reset form status and change content inside lots drop down list.
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name orderableSelectionChanged
+     *
+     * @description
+     * Reset form status and change content inside lots drop down list.
+     */
         vm.orderableSelectionChanged = function() {
+
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
@@ -366,25 +744,52 @@
 
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
-
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            vm.setSelectedOrderableGroup('orderable', _.get(vm, ['selectedOrderableGroup', 0, 'orderable', 'id']));
+            vm.setLots();
             vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
+        vm.setLotSelectionStatus = function() {
+            vm.selectedOrderableHasLots = vm.lots.length > 0;
+            if (vm.lots.length === 0) {
+                vm.selectedOrderableGroup = [];
+            }
+        };
+
         /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name getStatusDisplay
-         *
-         * @description
-         * Returns VVM status display.
-         *
-         * @param  {String} status VVM status
-         * @return {String}        VVM status display name
-         */
+     * @ngdoc method
+     * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
+     * @name getStatusDisplay
+     *
+     * @description
+     * Returns VVM status display.
+     *
+     * @param  {String} status VVM status
+     * @return {String}        VVM status display name
+     */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
+
+        function productDuplicatedHandler(error) {
+            if (_.get(error, ['data', 'isBusinessError'])) {
+                var data = _.map(_.get(error, ['data', 'businessErrorExtraData']), function(item) {
+                    item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                    return item;
+                });
+                siglusRemainingProductsModalService.show(data).then(function() {
+                    var lineItems = _.clone(vm.addedLineItems);
+                    _.forEach(lineItems, function(lineItem) {
+                        var hasDuplicated = _.some(data, function(item) {
+                            return item.orderableId === lineItem.orderable.id;
+                        });
+                        if (hasDuplicated) {
+                            vm.remove(lineItem);
+                        }
+                    });
+                });
+            }
+        }
 
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
@@ -393,13 +798,19 @@
                 cancelFilter();
             }
 
-            stockAdjustmentService
-                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+            loadingModalService.open();
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems, $stateParams.draftType)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
                     $stateParams.isAddProduct = false;
                     vm.search(true);
+                })
+                .catch(function(error) {
+                    productDuplicatedHandler(error);
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         };
 
@@ -411,19 +822,19 @@
         function isDateBeforeToday(date) {
             var currentDate = new Date();
             return date.getFullYear() < currentDate.getUTCFullYear()
-                || isMonthInYearBeforeCurrentUTCMonth(date, currentDate)
-                || isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate);
+        || isMonthInYearBeforeCurrentUTCMonth(date, currentDate)
+        || isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate);
         }
 
         function isMonthInYearBeforeCurrentUTCMonth(date, currentDate) {
             return date.getFullYear() === currentDate.getUTCFullYear()
-                && date.getMonth() < currentDate.getUTCMonth();
+        && date.getMonth() < currentDate.getUTCMonth();
         }
 
         function isDayInYearAndMonthBeforeCurrentUTCDay(date, currentDate) {
             return date.getFullYear() === currentDate.getUTCFullYear()
-                && date.getMonth() === currentDate.getUTCMonth()
-                && date.getDate() < currentDate.getUTCDate();
+        && date.getMonth() === currentDate.getUTCMonth()
+        && date.getDate() < currentDate.getUTCDate();
         }
 
         function isEmpty(value) {
@@ -433,8 +844,6 @@
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
-                vm.validateDate(item);
-                vm.validateAssignment(item);
                 vm.validateReason(item);
             });
             return _.chain(vm.addedLineItems)
@@ -470,39 +879,11 @@
                 .value();
         }
 
-        function confirmSubmit(signature) {
-            loadingModalService.open();
-
-            var addedLineItems = angular.copy(vm.addedLineItems);
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = _.first(lineItem.orderable.programs).programId;
-                lineItem.reason = _.find(reasons, {
-                    name: 'Issue'
-                });
-            });
-
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signature)
-                .then(function() {
-                    notificationService.success(vm.key('submitted'));
-
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
-                }, function(errorResponse) {
-                    loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
-                });
-        }
-
         function onInit() {
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
+
+            $state.current.label = isMerge
+                ? messageService.get('stockIssueCreation.mergedDraft')
+                : messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();
@@ -524,29 +905,38 @@
             vm.maxDate = new Date();
             vm.maxDate.setHours(23, 59, 59, 999);
 
-            vm.program = program;
+            vm.destinationName = siglusStockUtilsService
+                .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             vm.facility = facility;
             vm.reasons = reasons;
-            vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
+            // 计算total value
+            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                r = r + c.quantity * 10;
+                return r;
+            }, 0);
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-
-            vm.orderableGroups = orderableGroups;
+            vm.orderableGroups = _.clone(orderableGroups);
+            vm.setProductGroups();
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
+            vm.supplier = vm.facility.name;
+            vm.client =
+                _.indexOf(vm.destinationName, 'Outros') === 1 ? vm.destinationName.split(':')[1] : vm.destinationName;
         }
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = program;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
-            $stateParams.srcDstAssignments = srcDstAssignments;
+            $stateParams.mergedItems = mergedItems;
+            $stateParams.initialDraftInfo = initialDraftInfo;
+            $stateParams.draft = draft;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;

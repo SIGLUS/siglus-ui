@@ -1,0 +1,315 @@
+<div class="rapid-test-form">
+  <div class="rapid-test-pdf-container" id="test_repaid_wrap">
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td rowspan="3" class="background-black banner-text black-width">
+          <div class="banner-text text-nowrap">CMAM - TDR</div>
+        </td>
+        <td  class="logo--center"><span class="view-table-logo"></span></td>
+        <td class="text__left">
+          <h6 openlmis-message="view.rnr.republic.of.mozambique">
+            {{ 'rapid.republic_of_mozambique' | message }}
+          </h6>
+          <h6 openlmis-message="view.rnr.ministry.of.health">
+            {{ 'rapid.ministry_of_health' | message }}
+          </h6>
+          <h6 openlmis-message="view.rnr.central.medicines.and.medical.arricles">
+            {{ 'rapid.central_medicines_and_medical_articles' | message }}
+          </h6>
+        </td>
+        <td class="report--title width-700">
+          <span class="report--title-font">
+            {{ 'rapid.rapid_test_title' | message }}
+          </span>
+        </td>
+        <td>
+          <span openlmis-message="view.rnr.month">
+            {{ 'rapid.month' | message }}:
+          </span>
+          <span>{{ vm.month }}</span>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="3" class="text__left">
+          <span openlmis-message="view.rnr.healthFacility">
+            {{'rapid.health_facility'|message}}:
+          </span>
+          <span>{{vm.facility.name}}</span>
+        </td>
+        <td rowspan="2">
+          <span openlmis-message="view.rnr.year">
+            {{ 'rapid.year'|message }}:
+          </span>
+          <span>{{ vm.year }}</span>
+        </td>
+      </tr>
+
+      <tr class="text__left">
+        <td class="text__padding">
+          <span openlmis-message="view.rnr.district">
+            {{ 'rapid.district' | message }}:
+          </span>
+        </td>
+        <td class="text__padding">{{ vm.facility.geographicZone.name }}</td>
+        <td class="text__padding">
+          <span openlmis-message="view.rnr.province">
+            {{ 'rapid.province' | message }}:
+          </span>
+          {{ vm.facility.geographicZone.parent.name }}
+        </td>
+      </tr>
+    </table>
+
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="background-black black-width"></td>
+        <td colspan="9" class="report--title height-50">
+          <span class="report--title-font">
+            {{ 'rapid.sencond_title' | message }}
+            <!-- {{ rapid.SENCOND_TITLE }} -->
+          </span>
+          <span class="report--subtitle" openlmis-message="view.rnr.rapid.test.attentionkits">
+            {{ 'rapid.attentionkits' | message }}
+          </span>
+        </td>
+      </tr>
+      <tr class="table--title">
+        <td class="background-black black-width"></td>
+        <td colspan="2" openlmis-message="view.rnr.rapid.test.codeandproduct">
+          {{ 'rapid.code_and_product' | message }}
+        </td>
+        <!--<td openlmis-message="view.rnr.rapid.test.unit"></td>-->
+        <td openlmis-message="view.rnr.rapid.test.initialstork">
+          {{ 'rapid.initial_stock' | message }}
+        </td>
+        <td openlmis-message="view.rnr.rapid.test.entries">
+          {{ 'rapid.entries' | message }}
+        </td>
+        <td openlmis-message="view.rnr.rapid.test.issues">
+          {{ 'rapid.issues' | message }}
+        </td>
+        <td openlmis-message="view.rnr.rapid.test.lossandadjustment">
+          {{ 'rapid.loss_and_adjustment' | message }}
+        </td>
+        <td openlmis-message="view.rnr.rapid.test.inverntory">
+          {{ 'rapid.inverntory' | message }}
+        </td>
+        <td openlmis-message="view.rnr.rapid.test.expirydate">
+          {{ 'rapid.expiry_date' | message }}
+        </td>
+      </tr>
+
+      <!--Todo: waiting the android release, then should change the code.-->
+      <tr ng-repeat="product in vm.columns">
+        <td class="background-black black-width"></td>
+        <td class="font-bold">{{product.orderable.productCode}}</td>
+        <td class="font-bold">{{product.orderable.fullProductName}}</td>
+        <!--<td></td>-->
+        <td>{{product.beginningBalance}}</td>
+        <td>{{product.totalReceivedQuantity}}</td>
+        <td>{{product.totalConsumedQuantity}}</td>
+        <td>{{product.totalLossesAndAdjustments}}</td>
+        <td>{{product.stockOnHand}}</td>
+        <td>{{product.expirationDate}}</td>
+      </tr>
+    </table>
+
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="background-black black-width"></td>
+        <td colspan="13" class="report--title height-50">
+          <span class="report--title-font" openlmis-message="view.rnr.rapid.test.thirdTitle">
+            {{ 'rapid.third_title' | message }}
+          </span>
+          <span class="report--subtitle" openlmis-message="view.rnr.rapid.test.attentiontests">
+            {{ 'rapid.third_attentiontests' | message }}
+          </span>
+        </td>
+      </tr>
+      <tr class="table--title">
+        <td class="background-black black-width"></td>
+        <td rowspan="2" openlmis-message="view.rnr.rapid.test.service">
+          {{ 'rapid.services' | message }}
+        </td>
+        <td colspan="3" openlmis-message="view.rnr.rapid.test.hivdetermine">
+          {{ 'rapid.hiv_determine' | message }}
+        </td>
+        <td colspan="3" openlmis-message="view.rnr.rapid.test.hivunigold">
+          {{ 'rapid.hiv_unigold' | message }}
+        </td>
+        <td colspan="3" openlmis-message="view.rnr.rapid.test.syphillis">
+          {{ 'rapid.syphillis' | message }}
+        </td>
+        <td colspan="3" openlmis-message="view.rnr.rapid.test.malaria">
+          {{ 'rapid.malaria' | message }}
+        </td>
+      </tr>
+      <tr>
+        <td class="background-black black-width"></td>
+        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+          {{ 'rapid.consumption' | message }}
+        </td>
+        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+          {{ 'rapid.positive' | message }}
+        </td>
+        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+          {{ 'rapid.unjustifiled' | message }}
+        </td>
+
+        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+          {{ 'rapid.consumption' | message }}
+        </td>
+        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+          {{ 'rapid.positive' | message }}
+        </td>
+        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+          {{ 'rapid.unjustifiled' | message }}
+        </td>
+
+        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+          {{ 'rapid.consumption' | message }}
+        </td>
+        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+          {{ 'rapid.positive' | message }}
+        </td>
+        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+          {{ 'rapid.unjustifiled' | message }}
+        </td>
+
+        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+          {{ 'rapid.consumption' | message }}
+        </td>
+        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+          {{ 'rapid.positive' | message }}
+        </td>
+        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+          {{ 'rapid.unjustifiled' | message }}
+        </td>
+      </tr>
+
+      <tr ng-if="service.service == 'HF'" ng-repeat="service in vm.services">
+        <td class="background-black black-width"></td>
+        <td>{{service.label}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+
+        <!-- <td>{{service['CONSUME_SYPHILLIS']}}</td>
+        <td>{{service['positive_SYPHILLIS']}}</td>
+        <td>{{service['UNJUSTIFIED_SYPHILLIS']}}</td>
+
+        <td>{{service['CONSUME_MALARIA']}}</td>
+        <td>{{service['positive_MALARIA']}}</td>
+        <td>{{service['UNJUSTIFIED_MALARIA']}}</td> -->
+      </tr>
+      
+      <tr ng-if="service.name !== 'total' && service.name !== 'HF' && service.service !== 'APES'" ng-repeat="service in vm.services">
+        <td class="background-black black-width"></td>
+        <td>{{service.label}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+      </tr>
+
+      <tr ng-if="service.service == 'total'" ng-repeat="service in vm.services" class="table--title height-30">
+        <td class="background-black black-width"></td>
+        <td openlmis-message="label.total">{{ 'rapid.total' | message }}</td>
+        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+      </tr>
+
+      <tr class="black-tr"></tr>
+
+      <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services">
+        <td class="background-black black-width">a</td>
+        <td class="table--subtitle-dark-gray">{{ 'rapid.APEs' | message }}</td>
+        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+
+        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
+        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+      </tr>
+    </table>
+
+    <div class="report--footer-section">
+      <table>
+        <tr class="height-50">
+          <td style="padding-left: 20px" class="font-bold text__left">
+            <span openlmis-message="view.rnr.mmia.comments">{{ 'rapid.observations' | message }}</span>:
+          </td>
+        </tr>
+        <tr  class="height-30 text__left"><td style="padding-left: 20px">{{vm.comments}}</td></tr>
+      </table>
+    </div>
+
+    <div class="report--footer-section">
+      <table>
+        <tr class="height-50">
+          <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
+            <span openlmis-message="view.rnr.mmia.createBy">{{ 'rapid.completedBy' | message }}</span>: {{vm.signaure.submit}}
+          </td>
+          <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
+            <span openlmis-message="view.rnr.mmia.vistor">{{ 'rapid.approvedBy' | message }}</span>: {{vm.signaure.approve}}
+          </td>
+          <td style="vertical-align: baseline; padding-left: 20px" class="font-bold text__left">
+            <span openlmis-message="view.rnr.mmia.dateOfCreate">{{ 'rapid.dateOfCreate' | message }}</span>: {{vm.creationDate}}
+          </td>
+        </tr>
+      </table>
+      <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
+      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
+    </div>
+  </div>
+  <div class="align-right" style="clear: both;">
+    <button class="btn btn-primary btn-download btn-download-pdf" ng-click="vm.downloadPdf()" openlmis-message="view.rnr.mmia.download.button">{{ 'rapid.downloadPdf' | message }}</button>
+  </div>
+</div>
+

@@ -68,7 +68,8 @@
                         item.orderable.id, item.lot ? item.lot.id : null,
                         item.quantity, physicalInventory.occurredDate,
                         {
-                            vvmStatus: item.vvmStatus
+                            vvmStatus: item.vvmStatus,
+                            stockCardId: item.stockCardId
                         }, stockAdjustments,
                         // SIGLUS-REFACTOR: starts here
                         item.reasonFreeText,
@@ -78,8 +79,9 @@
                         // SIGLUS-REFACTOR: ends here
                     );
                 });
-
-            return new StockEvent(physicalInventoryCopy);
+            return _.extend(new StockEvent(physicalInventoryCopy), {
+                subDraftIds: physicalInventoryCopy.subDraftIds
+            });
         }
     }
 })();

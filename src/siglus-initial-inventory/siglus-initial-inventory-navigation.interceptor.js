@@ -18,34 +18,40 @@
 
     /**
      * @ngdoc service
-     * @name stock-physical-inventory-draft.siglusInitialInventoryNavigationInterceptor
+     * @name siglus-initial-inventory.siglusInitialInventoryNavigationInterceptor
      *
      * @description
      * Check if state being transitioned is able to be viewed initial inventory, if the
      * initial inventory hasn't been finished.
      */
-    angular.module('stock-physical-inventory-draft')
+    angular.module('siglus-initial-inventory')
         .run(siglusInitialInventoryNavigationInterceptor);
 
-    siglusInitialInventoryNavigationInterceptor.$inject = [
+    siglusInitialInventoryNavigationInterceptor.$inject = ['$q',
         '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
         '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService',
-        'authorizationService', 'alertService'
-    ];
+        'authorizationService', 'alertService', 'SiglusPhysicalInventoryCreationService'];
 
-    function siglusInitialInventoryNavigationInterceptor($rootScope, loadingModalService, confirmService, $state,
+    function siglusInitialInventoryNavigationInterceptor($q, $rootScope, loadingModalService, confirmService, $state,
                                                          stockmanagementUrlFactory, $http, programService,
                                                          facilityFactory, physicalInventoryFactory,
-                                                         currentUserService, authorizationService, alertService) {
-        $rootScope.$on('$stateChangeStart', function(event, toState) {
-            if (checkInitialInventoryStatus() && !toState.url.contains('/initialInventory')
+                                                         currentUserService, authorizationService, alertService,
+                                                         SiglusPhysicalInventoryCreationService) {
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+            if (checkInitialInventoryStatus() && !toState.name.contains('initialInventory')
                 && toState.showInNavigation && toState.url !== '/home') {
                 event.preventDefault();
-                loadingModalService.close();
                 if ($state.current.url === '/home') {
-                    propopConfirm();
+                    checkDraftIsStarter();
                 } else {
                     $state.go('openlmis.home');
+                }
+            } else if (checkInitialInventoryStatus()
+            && toState.name === 'openlmis.stockmanagement.initialInventory'
+            && toState.showInNavigation) {
+                if (_.isEmpty(toParams.programId)) {
+                    event.preventDefault();
+                    checkDraftIsStarter(true);
                 }
             }
         });
@@ -53,8 +59,8 @@
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
             if (checkInitialInventoryStatus() && toState.url === '/home') {
                 event.preventDefault();
-                loadingModalService.close();
-                propopConfirm();
+
+                checkDraftIsStarter();
             }
         });
 
@@ -63,21 +69,56 @@
                 return;
             });
             var user = currentUserService.getUserInfo().$$state.value;
-
             if (_.isUndefined(user) || _.isUndefined(user.canInitialInventory)) {
                 return false;
             }
             return user.canInitialInventory;
         }
 
-        function propopConfirm() {
+        function checkDraftIsStarter(shouldNotPopComfirm) {
+            loadingModalService.open();
+            $q.all([
+                programService.getAllProductsProgram(),
+                facilityFactory.getUserHomeFacility()
+            ]).then(function(responses) {
+                physicalInventoryFactory.getDrafts([responses[0][0].id], responses[1].id).then(function(response) {
+                    if (response[0].isStarter) {
+                        loadingModalService.close();
+                        SiglusPhysicalInventoryCreationService
+                            .show(responses[0][0].id).then(function() {});
+                    } else {
+                        loadingModalService.close();
+                        if (shouldNotPopComfirm) {
+                            $state.go('openlmis.stockmanagement.initialInventory', {
+                                programId: responses[0][0].id
+                            });
+                        } else {
+                            propopConfirm(responses[0][0].id);
+                        }
+
+                    }
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+
+            })
+                .catch(function() {
+                    loadingModalService.close();
+                });
+        }
+
+        function propopConfirm(programId) {
+
             confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialInventory.initialInventory')
                 .then(function() {
                     if (cannotViewState()) {
                         alertService.error('openlmisAuth.authorization.error',
                             'stockInitialInventory.authorization.message');
                     } else {
-                        $state.go('openlmis.stockmanagement.initialInventory');
+                        $state.go('openlmis.stockmanagement.initialInventory', {
+                            programId: programId
+                        });
                     }
                 });
         }

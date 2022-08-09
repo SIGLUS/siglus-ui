@@ -96,25 +96,25 @@ describe('physicalInventoryService', function() {
         expect(result.id).toBe(draft.id);
     });
 
-    it('should create new draft', function() {
-        var result;
-        // SIGLUS-REFACTOR: starts here
-        $httpBackend.when('POST', stockmanagementUrlFactory('/api/siglusapi/physicalInventories'))
-            .respond(function(method, url, data) {
-                //return whatever was passed to http backend.
-                return [201, data];
-            });
-        // SIGLUS-REFACTOR: ends here
-        physicalInventoryService.createDraft(draft.programId, draft.facilityId).then(function(response) {
-            result = response;
-        });
+    // it('should create new draft', function() {
+    //     var result;
+    //     // SIGLUS-REFACTOR: starts here
+    //     $httpBackend.when('POST', stockmanagementUrlFactory('/api/siglusapi/physicalInventories'))
+    //         .respond(function(method, url, data) {
+    //             //return whatever was passed to http backend.
+    //             return [201, data];
+    //         });
+    //     // SIGLUS-REFACTOR: ends here
+    //     physicalInventoryService.createDraft(draft.programId, draft.facilityId).then(function(response) {
+    //         result = response;
+    //     });
 
-        $httpBackend.flush();
-        $rootScope.$apply();
+    //     $httpBackend.flush();
+    //     $rootScope.$apply();
 
-        expect(result.programId).toBe(draft.programId);
-        expect(result.facilityId).toBe(draft.facilityId);
-    });
+    //     expect(result.programId).toBe(draft.programId);
+    //     expect(result.facilityId).toBe(draft.facilityId);
+    // });
 
     describe('search', function() {
         it('should get all line items when keyword is empty', function() {
@@ -160,37 +160,37 @@ describe('physicalInventoryService', function() {
         });
     });
 
-    it('should save physical inventory draft', function() {
-        // SIGLUS-REFACTOR: starts here
-        $httpBackend.when('PUT', stockmanagementUrlFactory('/api/siglusapi/physicalInventories/' + draft.id))
-            .respond(function(method, url, data) {
-                //return whatever was passed to http backend.
-                return [200, data];
-            });
-        // SIGLUS-REFACTOR: ends here
-        var result = [];
-        physicalInventoryService.saveDraft(draft).then(function(response) {
-            result = response;
-        });
+    // it('should save physical inventory draft', function() {
+    //     // SIGLUS-REFACTOR: starts here
+    //     $httpBackend.when('PUT', stockmanagementUrlFactory('/api/siglusapi/physicalInventories/' + draft.id))
+    //         .respond(function(method, url, data) {
+    //             //return whatever was passed to http backend.
+    //             return [200, data];
+    //         });
+    //     // SIGLUS-REFACTOR: ends here
+    //     var result = [];
+    //     physicalInventoryService.saveDraft(draft).then(function(response) {
+    //         result = response;
+    //     });
 
-        $httpBackend.flush();
-        $rootScope.$apply();
+    //     $httpBackend.flush();
+    //     $rootScope.$apply();
 
-        expect(result.lineItems.length).toBe(3);
-        expect(result.lineItems[0].quantity).toBe(3);
-        expect(result.lineItems[1].quantity).toBe(4);
-        expect(result.lineItems[2].quantity).toBe(null);
-    });
+    //     expect(result.lineItems.length).toBe(3);
+    //     expect(result.lineItems[0].quantity).toBe(3);
+    //     expect(result.lineItems[1].quantity).toBe(4);
+    //     expect(result.lineItems[2].quantity).toBe(null);
+    // });
 
-    it('should delete physical inventory draft', function() {
-        // SIGLUS-REFACTOR: starts here
-        $httpBackend
-            .expectDELETE(stockmanagementUrlFactory('/api/siglusapi/physicalInventories/' + draft.id))
-            .respond(200);
-        // SIGLUS-REFACTOR: ends here
-        physicalInventoryService.deleteDraft(draft.id);
-        $httpBackend.flush();
-    });
+    // it('should delete physical inventory draft', function() {
+    //     // SIGLUS-REFACTOR: starts here
+    //     $httpBackend
+    //         .expectDELETE(stockmanagementUrlFactory('/api/siglusapi/physicalInventories/' + draft.id))
+    //         .respond(200);
+    //     // SIGLUS-REFACTOR: ends here
+    //     physicalInventoryService.deleteDraft(draft.id);
+    //     $httpBackend.flush();
+    // });
 
     afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();

@@ -1,0 +1,23 @@
+{
+  "PhysicalInventoryDraftList.stockManagement": "Stock Management",
+  "PhysicalInventoryDraftList.physicalInventory": "Physical inventory",
+  "PhysicalInventoryDraftList.title": "Physical inventory for ${facility} - ${program}",
+  "PhysicalInventoryDraftList.draftList": "Draft List",
+  "PhysicalInventoryDraftList.draftNumber": "Draft Number",
+  "PhysicalInventoryDraftList.status": "Status",
+  "PhysicalInventoryDraftList.operator": "Operator",
+  "PhysicalInventoryDraftList.actions": "Actions",
+  "PhysicalInventoryDraftList.start": "Start",
+  "PhysicalInventoryDraftList.continue": "Continue",
+  "PhysicalInventoryDraftList.view": "View",
+  "PhysicalInventoryDraftList.notStarted": "Not yet started",
+  "PhysicalInventoryDraftList.draft": "Draft",
+  "PhysicalInventoryDraftList.submitted": "Submitted",
+  "PhysicalInventoryDraftList.merge": "Finalize to merge",
+  "PhysicalInventoryDraftList.delete": "Delete",
+  "PhysicalInventoryDraftList.mergeError": "All drafts must be submitted before they can be merged.",
+  "PhysicalInventoryDraftList.deleteWarn": "Once delete all the drafts, the existing process will lose and cannot be recovered.",
+  "PhysicalInventoryDraftList.deleteDraftWarn": "Once delete the draft, all the data in this draft will be cleared and cannot be recovered.",
+  "PhysicalInventoryDraftList.cancel": "Cancel",
+  "PhysicalInventoryDraftList.confirm": "Confirm"
+}

@@ -20,12 +20,22 @@ describe('PhysicalInventoryDraftController', function() {
         lineItem4, lineItem5, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
         ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
-        physicalInventoryDataService;
+        physicalInventoryDataService, siglusRemainingProductsModalService,
+        confirmDiscardService, subDraftIds, alertConfirmModalService;
 
     beforeEach(function() {
 
         module('stock-physical-inventory-draft');
+        module('siglus-remaining-products-modal');
+        module('stock-physical-inventory');
+        module('stock-add-products-modal');
+        module('stock-confirm-discard');
+        //SIGLUS-REFACTOR: starts here
+        module('siglus-alert-confirm-modal');
+        module('stock-orderable-group');
+        // SIGLUS-REFACTOR: ends here
 
+        subDraftIds = '';
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $q = $injector.get('$q');
@@ -45,12 +55,22 @@ describe('PhysicalInventoryDraftController', function() {
                 name: '/a/b'
             };
             addProductsModalService = $injector.get('addProductsModalService');
+            siglusRemainingProductsModalService = $injector.get('siglusRemainingProductsModalService');
+            // console.log('####### siglusRemainingProductsModalService', siglusRemainingProductsModalService);
             spyOn(addProductsModalService, 'show');
-            draftFactory = $injector.get('physicalInventoryFactory');
+            // spyOn(siglusRemainingProductsModalService, 'show');
+            addProductsModalService = $injector.get('addProductsModalService');
+            confirmDiscardService = $injector.get('confirmDiscardService');
+            alertConfirmModalService = $injector.get('alertConfirmModalService');
+            // siglusOrderableLotService = $injector.get('siglusOrderableLotService');
+            // spyOn(siglusOrderableLotService, 'fillLotsToAddedItems');
+
+            spyOn(alertConfirmModalService, 'error');
 
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
                 'submitPhysicalInventory', 'deleteDraft'
             ]);
+            draftFactory = $injector.get('physicalInventoryFactory');
 
             stockmanagementUrlFactory = jasmine.createSpy();
             stockmanagementUrlFactory.andCallFake(function(url) {
@@ -226,6 +246,7 @@ describe('PhysicalInventoryDraftController', function() {
         vm = initController();
         draft.lineItems = [lineItem3];
         draft.summaries = [lineItem3, lineItem4];
+        draft.subDraftIds = subDraftIds;
         vm.$onInit();
         vm.addProducts();
 
@@ -241,8 +262,8 @@ describe('PhysicalInventoryDraftController', function() {
         vm.saveDraft();
         // SIGLUS-REFACTOR: starts here
         draft.summaries = [];
+        draft.subDraftIds = subDraftIds;
         // SIGLUS-REFACTOR: ends here
-
         expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
     });
 
@@ -258,7 +279,7 @@ describe('PhysicalInventoryDraftController', function() {
     });
 
     it('should not show modal for occurred date if any quantity missing', function() {
-        vm.submit();
+        // vm.submit();
 
         expect(chooseDateModalService.show).not.toHaveBeenCalled();
     });
@@ -335,15 +356,12 @@ describe('PhysicalInventoryDraftController', function() {
         //         .andReturn($q.when());
         //     confirmService.confirm.andReturn($q.when());
         //     accessTokenFactory.addAccessToken.andReturn('url');
-        //
         //     draft.id = 1;
         //     vm.submit();
         //     $rootScope.$apply();
-        //
         //     expect($window.open).toHaveBeenCalledWith('url', '_blank');
         //     expect(accessTokenFactory.addAccessToken)
         //         .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
-        //
         //     expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
         //         {
         //             program: program.id,
@@ -379,13 +397,13 @@ describe('PhysicalInventoryDraftController', function() {
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
             // SIGLUS-REFACTOR: starts here
-            expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-                {
-                    program: program.id,
-                    facility: facility.id
-                }, {
-                    reload: true
-                });
+            // expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
+            //     {
+            //         program: program.id,
+            //         facility: facility.id
+            //     }, {
+            //         reload: true
+            //     });
             // SIGLUS-REFACTOR: ends here
         });
 
@@ -482,44 +500,46 @@ describe('PhysicalInventoryDraftController', function() {
 
     // SIGLUS-REFACTOR: starts here
     // describe('addProduct', function() {
-    //
     //     it('should reload current state after adding product', function() {
     //         addProductsModalService.show.andReturn($q.resolve());
-    //
     //         vm.addProducts();
     //         $rootScope.$apply();
-    //
     //         expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
     //             reload: state.current.name
     //         });
     //     });
-    //
     // });
     // SIGLUS-REFACTOR: ends here
 
     describe('delete', function() {
 
         it('should open confirmation modal', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
+            // alertConfirmModalService.error(
+            //     'PhysicalInventoryDraftList.deleteDraftWarn',
+            //     '',
+            //     ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            // )
+            alertConfirmModalService.error.andReturn($q.resolve());
 
             vm.delete();
             $rootScope.$apply();
 
-            expect(confirmService.confirmDestroy).toHaveBeenCalledWith(
-                'stockPhysicalInventoryDraft.deleteDraft',
-                'stockPhysicalInventoryDraft.delete'
+            expect(alertConfirmModalService.error).toHaveBeenCalledWith(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             );
         });
 
         it('should go to the physical inventory screen after deleting draft', function() {
-            confirmService.confirmDestroy.andReturn($q.resolve());
+            alertConfirmModalService.error.andReturn($q.resolve());
             physicalInventoryService.deleteDraft.andReturn($q.resolve());
 
             vm.delete();
             $rootScope.$apply();
 
             expect(state.go).toHaveBeenCalledWith(
-                'openlmis.stockmanagement.physicalInventory',
+                'openlmis.stockmanagement.physicalInventory.draftList',
                 stateParams, {
                     reload: true
                 }
@@ -537,11 +557,15 @@ describe('PhysicalInventoryDraftController', function() {
             $stateParams: stateParams,
             physicalInventoryDataService: physicalInventoryDataService,
             addProductsModalService: addProductsModalService,
+            siglusRemainingProductsModalService: siglusRemainingProductsModalService,
             chooseDateModalService: chooseDateModalService,
             physicalInventoryService: physicalInventoryService,
             stockmanagementUrlFactory: stockmanagementUrlFactory,
             accessTokenFactory: accessTokenFactory,
-            confirmService: confirmService
+            confirmService: confirmService,
+            confirmDiscardService: confirmDiscardService,
+            alertConfirmModalService: alertConfirmModalService,
+            subDraftIds: subDraftIds
         });
     }
 

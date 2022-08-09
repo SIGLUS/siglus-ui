@@ -21,13 +21,13 @@
         .module('stock-physical-inventory-draft')
         .config(routes);
 
+    // SIGLUS-REFACTOR: add REASON_CATEGORIES
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'REASON_CATEGORIES'];
+    // SIGLUS-REFACTOR: ends here
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
-        $stateProvider.state('openlmis.stockmanagement.initialInventory', {
-            url: '/initialInventory?keyword&page&size',
-            label: 'stockInitialInventory.initialInventory',
-            showInNavigation: true,
+        $stateProvider.state('openlmis.stockmanagement.initialInventory.draft', {
+            url: '/:id?keyword&page&size&subDraftIds&draftNum&isMerged&actionType',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
@@ -35,19 +35,16 @@
                     controllerAs: 'vm'
                 }
             },
-            canAccess: function(currentUserService) {
-                return currentUserService.getUserInfo().then(function(user) {
-                    return user.canInitialInventory;
-                });
-            },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             params: {
                 program: undefined,
                 facility: undefined,
                 draft: undefined,
+                // SIGLUS-REFACTOR: add reasons, isAddProduct
                 reasons: undefined,
                 isAddProduct: undefined,
                 canInitialInventory: true
+                // SIGLUS-REFACTOR: ends here
             },
             resolve: {
                 facility: function($stateParams, facilityFactory) {
@@ -58,40 +55,66 @@
                 },
                 program: function($stateParams, programService) {
                     if (_.isUndefined($stateParams.program)) {
-                        return programService.getAllProductsProgram().then(function(programs) {
-                            return programs[0];
+                        return programService.get($stateParams.programId).then(function(programs) {
+                            return programs;
                         });
                     }
                     return $stateParams.program;
                 },
-                // SIGLUS-REFACTOR: starts here
-                draft: function($stateParams, physicalInventoryFactory, program, facility,
-                    physicalInventoryDataService, $q) {
+                subDraftIds: function($stateParams) {
+                    return $stateParams.subDraftIds.indexOf(',')
+                        ? $stateParams.subDraftIds.split(',')
+                        : [$stateParams.subDraftIds];
+                },
+                draft: function(
+                    facility,
+                    $stateParams,
+                    physicalInventoryFactory,
+                    physicalInventoryDataService,
+                    $q,
+                    program
+                ) {
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        physicalInventoryFactory.getInitialInventory(program.id, facility.id)
-                            .then(function(draft) {
-                                physicalInventoryDataService.setDraft(facility.id, draft);
-                                deferred.resolve();
-                            });
+                        if ($stateParams.subDraftIds && !$stateParams.isMerged) {
+                            var id = $stateParams.subDraftIds.length > 1
+                                ? $stateParams.subDraftIds.split(',')
+                                : [$stateParams.subDraftIds];
+                            // TODO  flag命名
+                            var flag = $stateParams.isMerged === 'true';
+                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
+                                .then(function(draft) {
+                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                    deferred.resolve();
+                                });
+                        } else {
+                            physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                                .then(function(draft) {
+                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                    deferred.resolve();
+                                });
+                        }
                     } else {
                         deferred.resolve();
                     }
                     return deferred.promise;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    facility, draft, orderableGroupService, physicalInventoryDataService) {
+                    orderableGroupService, physicalInventoryDataService, draft, facility) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
 
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
                                 // SIGLUS-REFACTOR: starts here
-                                return !!item.$errors.quantityInvalid === false;
+                                return !!item.$errors.quantityInvalid === false &&
+                                    !!item.$errors.reasonFreeTextInvalid === false &&
+                                    !!item.$errors.lotCodeInvalid === false &&
+                                    !!item.$errors.lotDateInvalid === false;
                                 // SIGLUS-REFACTOR: ends here
                             })
                             .value();
@@ -102,7 +125,6 @@
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
                             stateParamsCopy.draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
-
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {
@@ -112,7 +134,8 @@
                             .value();
                         groups.forEach(function(group) {
                             group.forEach(function(lineItem) {
-                                orderableGroupService.determineLotMessage(lineItem, group);
+                                orderableGroupService
+                                    .determineLotMessage(lineItem, group, $stateParams.canInitialInventory);
                             });
                         });
 
@@ -122,8 +145,8 @@
                             physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, items);
                         });
                 },
-                reasons: function($stateParams, facility, program, stockReasonsFactory,
-                    physicalInventoryDataService) {
+                /*eslint-enable */
+                reasons: function(facility, program, stockReasonsFactory, physicalInventoryDataService) {
                     if (_.isUndefined(physicalInventoryDataService.getReasons(facility.id))) {
                         return stockReasonsFactory.getReasons(
                             program.id ? program.id : program,
@@ -140,6 +163,7 @@
                                 physicalInventoryDataService.setReasons(facility.id, reasons);
                             });
                     }
+                    // SIGLUS-REFACTOR: ends here
                 }
             }
         });

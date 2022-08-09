@@ -1,0 +1,273 @@
+/* lato-regular - latin */
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Lato Regular"), local("Lato-Regular"),
+     url(siglus-analytics-report/65e877e527022735c1a1.woff2)
+      format("woff2")
+}
+
+.page,
+.flex-page,
+.batch-requisition-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.page>div.ng-scope {
+  display: block;
+  flex: 1 0 auto;
+}
+
+#metabase-iframe {
+  width: 1;
+  min-width: 100%;
+}
+
+.view-table {
+  align-items: top;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  border-collapse: initial;
+  border-spacing: 0;
+
+  ul {
+    padding: 0px;
+    margin: 0px;
+
+    li {
+      list-style: none;
+      padding: 8px 0px;
+    }
+  }
+
+  h2 {
+    margin: inherit;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+  }
+}
+
+.view-table-logo {
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  background: url("siglus-analytics-report/table-logo-moz.png") no-repeat left top;
+  background-size: 100% auto;
+}
+
+.left-block {
+  border-left: 2px solid;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-right: 0px;
+  border-color: #000000;
+}
+
+.border-all-bold {
+  border: 2px solid #000000;
+}
+
+.border-all-thin {
+  border: 1px solid #000000;
+  box-sizing: content-box;
+  padding: 1px;
+  word-break: break-word;
+}
+
+.text-nowrap {
+  white-space: nowrap;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.text-align-bottom {
+  vertical-align: text-bottom;
+}
+
+.view-table-spacing {
+  height: 5px;
+}
+
+.view-table-cell-scrolling {
+  overflow: auto;
+}
+
+.rotate {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.background-black {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.width-28 {
+  width: 28px;
+}
+
+.banner-text {
+  margin-top: 75px;
+}
+
+.left-block .rotate {
+  margin-top: 450px;
+}
+
+/*check box*/
+.analytics-report-checkbox input[type=checkbox] {
+  visibility: hidden;
+}
+
+.analytics-report-checkbox {
+  width: 15px;
+  position: relative;
+  margin-left: 12px;
+  margin-right: 12px;
+  display: unset;
+  padding-left: 18px;
+  margin-top: 0px;
+}
+
+.analytics-report-checkbox label {
+  cursor: pointer;
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: -2px;
+  left: 0;
+  border: 2px solid #000;
+  margin-top: 0px;
+  display: block;
+  box-sizing: content-box;
+  padding-left: 0px;
+  min-height: 15px;
+}
+
+.analytics-report-checkbox label:after {
+  opacity: 0;
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 6px;
+  background: transparent;
+  top: 3px;
+  left: 3px;
+  border: 3px solid #000;
+  border-top: none;
+  border-right: none;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.analytics-report-checkbox input[type=checkbox]:checked+label:after {
+  opacity: 1;
+}
+
+.type-checkbox .analytics-report-checkbox {
+  float: right;
+}
+
+/*check box*/
+
+
+.bigger-checkbox {
+  width: 230px;
+  height: 32px;
+}
+
+.sign-box {
+  height: 50px;
+  width: 1223px;
+}
+
+.text-nowrap {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+
+.checkbox-group {
+  margin-top: 350px;
+}
+
+.phantomjs_compatible_style_div {
+  border-right: 1px solid black;
+  display: inline-block;
+  height: 132px;
+}
+
+
+.fnm_div {
+  width: 44px;
+  margin-left: 17px;
+}
+
+.fnm_span {
+  padding-top: 50px;
+}
+
+.phantomjs_compatible_style_left_td {
+  border-right-style: none;
+}
+
+.phantomjs_compatible_style_left_td.border-all-thin {
+  padding: 0px 2px 0px 1px;
+}
+
+.phantomjs_compatible_style_right_td {
+  border-left-style: none;
+}
+
+.btn-download {
+  display: inline;
+  margin: 1.2em 1.2em 0 0;
+  float: left;
+}
+
+.page-num-pdf {
+  display: none;
+  margin-right: 4%;
+  margin-top: 1%;
+}
+
+.border-all-thin span,
+.border-signaure span:nth-of-type(1) {
+  display: inline-block;
+  padding-left: 4px;
+}
+
+.text-align-center .border-all-thin span {
+  padding-left: 0px;
+}
+
+.via-table-body tr td{
+  word-break: break-all;
+}
+
+.via-table-body tr td{
+  border-left: none;
+}
+.via-table-body tr td:first-of-type{
+  border-left: 1px solid #000;
+}

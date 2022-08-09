@@ -32,6 +32,7 @@
             'testConsumption',
             'patient',
             'regimen',
-            'consultationNumber'
+            'consultationNumber',
+            'ageGroup'
         ]);
 })();

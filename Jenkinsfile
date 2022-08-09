@@ -14,7 +14,7 @@ pipeline {
         stage('Build') {
             steps {
                 println "gradle: build"
-                withCredentials([file(credentialsId: 'settings.qa.env', variable: 'ENV_FILE')]) {
+                withCredentials([file(credentialsId: 'settings.dev.env', variable: 'ENV_FILE')]) {
                     sh '''
                         sudo rm -rf .env node_modules build .tmp lcov.info
                         cp $ENV_FILE .env
@@ -31,10 +31,15 @@ pipeline {
                 }
                 println "test converage: check"
                 sh '''
-                    coverage_threshold=82
-                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -1`;
-                    coverage_int=`awk -v var="$coverage" 'BEGIN {print int(var)}'`
-                    echo "Current test coverage: $coverage%.";
+                    coverage_threshold=66
+                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -4`;
+                    echo "$coverage"
+                    echo "$coverage[1]"
+                    coverage_int=`awk -v var="$coverage[1]" 'BEGIN {print int(var)}'`
+                    echo "Current statement coverage: $coverage[0]%.";
+                    echo "Current branch coverage: $coverage[1]%.";
+                    echo "Current function coverage: $coverage[2]%.";
+                    echo "Current lines coverage: $coverage[3]%.";
                     if [ $coverage_int -lt $coverage_threshold ];
                     then
                         echo "Error: current test coverage is less than $coverage_threshold%, please add unit tests before push code to ensure test coverage reaches $coverage_threshold%.";
@@ -78,6 +83,15 @@ pipeline {
             steps {
                 sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
                 build job: '../siglus-reference-ui/master', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
+            }
+        }
+        stage('Notify to build reference-ui showcase') {
+            when {
+                branch 'showcase'
+            }
+            steps {
+                sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
+                build job: '../siglus-reference-ui/showcase', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
             }
         }
         stage('Notify to build reference-ui release') {

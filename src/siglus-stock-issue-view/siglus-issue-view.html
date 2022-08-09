@@ -1,0 +1,50 @@
+<h2>{{'issueDraft.issueToTitle' | message: {
+    destination: vm.destinationName || '',
+    document: vm.initialDraftInfo.documentNumber || ''
+} }}</h2>
+
+<div class="stock-adjustment-creation">
+    <section class="openlmis-table-container">
+        <form ng-submit="vm.search()">
+            <fieldset>
+                <label for="search">{{vm.key('keyword') | message}}</label>
+                <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
+            </fieldset>
+
+            <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
+                   ng-click="vm.doCancelFilter()"/>
+            <input type="submit" value="{{vm.key('search') | message}}"/>
+        </form>
+        <table>
+            <thead>
+            <tr>
+                <th>{{vm.key('productCode') | message}}</th>
+                <th>{{vm.key('productName') | message}}</th>
+                <th>{{vm.key('lotCode') | message}}</th>
+                <th>{{vm.key('expiryDate') | message}}</th>
+                <th>{{vm.key('soh') | message}}</th>
+                <th>{{vm.key('quantity') | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="lineItem in vm.items">
+                <td>{{lineItem.productCode}}</td>
+                <td>{{lineItem.productName}}</td>
+                <td>{{lineItem.lotCode}}</td>
+                <td>{{lineItem.expirationDate}}</td>
+                <td>{{lineItem.stockOnHand}}</td>
+                <td>{{lineItem.quantity}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination list="vm.filterLineItems" paged-list="vm.items"/>
+    </section>
+</div>
+
+<div class="openlmis-toolbar">
+    <div class="button-group">
+        <button class="default" ng-click="vm.returnBack()">
+            {{'stockInitialInventory.goBack' | message}}
+        </button>
+    </div>
+</div>

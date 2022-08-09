@@ -22,10 +22,10 @@
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
-        $stateProvider.state('openlmis.stockmanagement.issue.creation', {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
+        $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:programId/create?page&size&keyword&draftId',
+            url: '/:draftId/create?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -38,27 +38,24 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             params: {
-                program: undefined,
                 facility: undefined,
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
-                // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
-                size: '50'
-                // SIGLUS-REFACTOR: ends here
+                size: '50',
+                initialDraftInfo: undefined
             },
             resolve: {
-                program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                isMerge: function() {
+                    return false;
+                },
+                program: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (_.isUndefined($stateParams.facility)) {
@@ -66,15 +63,22 @@
                     }
                     return $stateParams.facility;
                 },
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
+                initialDraftInfo: function($stateParams, facility, siglusStockIssueService) {
+                    if ($stateParams.initialDraftInfo) {
+                        return $stateParams.initialDraftInfo;
+                    }
+                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
+                        facility.id,
+                        $stateParams.draftType);
                 },
                 // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, existingStockOrderableGroupsFactory) {
+                orderableGroups: function($stateParams, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.hasLoadOrderableGroups) {
                         return existingStockOrderableGroupsFactory
-                            .getGroupsWithoutStock($stateParams, program, facility,
-                                STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST);
+                            .getGroupsWithoutStock($stateParams, {
+                                id: $stateParams.programId
+                            }, facility,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
                     }
                     return $stateParams.orderableGroups;
                 },
@@ -85,32 +89,23 @@
                     }
                     return $stateParams.reasons;
                 },
-                adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.ISSUE;
-                },
-                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getDestinationAssignments(
-                            $stateParams.programId, facility.id
-                        );
-                    }
-                    return $stateParams.srcDstAssignments;
+                mergedItems: function() {
+                    return [];
                 },
                 // SIGLUS-REFACTOR: starts here
-                draft: function($stateParams, stockAdjustmentFactory, user, program, facility, adjustmentType) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return stockAdjustmentFactory.getDraftById(user.user_id, program.id, facility.id,
-                            adjustmentType.state, $stateParams.draftId);
+                draft: function($stateParams, siglusStockIssueService) {
+                    if ($stateParams.draft) {
+                        return $stateParams.draft;
                     }
-                    return $stateParams.draft;
+                    return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
                         draft.lineItems = filterOutOrderable(draft, orderableGroups);
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
+                                undefined, reasons);
                         }
                         return [];
                     }
@@ -138,7 +133,7 @@
                 orderableIds.push(group[0].orderable.id);
             } else {
                 group.forEach(function(lotItem) {
-                    lotIds.push(lotItem.lot.id);
+                    lotIds.push(_.get(lotItem, ['lot', 'id']));
                 });
             }
 

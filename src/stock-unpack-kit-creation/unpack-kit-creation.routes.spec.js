@@ -65,7 +65,6 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         spyOn(this.facilityFactory, 'getUserHomeFacility').andReturn(this.$q.resolve(this.homeFacility));
         spyOn(this.stockProgramUtilService, 'getPrograms').andReturn(this.$q.resolve(this.programs));
         spyOn(this.existingStockOrderableGroupsFactory, 'getGroupsWithoutStock').andReturn(this.$q.resolve([]));
-        spyOn(this.stockReasonsFactory, 'getUnpackReasons').andReturn(this.$q.resolve(this.unpackReasons));
         spyOn(this.$templateCache, 'get').andCallThrough();
         spyOn(this.authorizationService, 'getUser').andReturn(this.$q.resolve(this.user));
         spyOn(this.orderableGroupService, 'getKitOnlyOrderablegroup').andCallThrough();
@@ -73,6 +72,7 @@ describe('openlmis.stockmanagement.kitunpack.creation state', function() {
         spyOn(this.programService, 'getAllProductsProgram').andReturn(this.$q.resolve(this.program));
         spyOn(this.siglusStockKitUnpackService, 'getUnpackKits').andReturn('kits');
         spyOn(this.siglusStockKitUnpackService, 'getUnpackKit').andReturn('kit');
+        spyOn(this.stockReasonsFactory, 'getReasons').andReturn(this.$q.resolve(this.unpackReasons));
         // SIGLUS-REFACTOR: ends here
 
         this.state = this.$state.get('openlmis.stockmanagement.kitunpack.creation');

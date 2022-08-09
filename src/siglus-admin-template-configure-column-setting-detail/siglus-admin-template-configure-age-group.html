@@ -1,0 +1,13 @@
+<div ng-if="vm.sections.length">
+    <div ng-repeat="section in vm.sections | orderBy : 'displayOrder'">
+        <div class="sub-heading">
+            <h3 ng-if="$first">Patients Age Group</h3>
+            <h3 ng-if="!$first">{{section.label}}</h3>
+        </div>
+        <siglus-template-configure-section
+                section="section"
+                edit-header="$first"
+                on-add-column="vm.addColumn"
+        />
+    </div>
+</div>

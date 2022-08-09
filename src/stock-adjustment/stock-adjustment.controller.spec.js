@@ -20,52 +20,55 @@ describe('StockAdjustmentController', function() {
         stockAdjustmentService, ADJUSTMENT_TYPE;
     // SIGLUS-REFACTOR: ends here
 
-    beforeEach(function() {
+    function prepareInjector() {
+        inject(function($injector) {
+            q = $injector.get('$q');
+            rootScope = $injector.get('$rootScope');
+            $controller = $injector.get('$controller');
+            ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
+            stockAdjustmentFactory = $injector.get('stockAdjustmentFactory');
+            stockAdjustmentService = $injector.get('stockAdjustmentService');
+        });
+    }
 
+    function prepareSpies() {
+        state = jasmine.createSpyObj('$state', ['go']);
+    }
+
+    function prepareData() {
+        programs = [{
+            name: 'HIV',
+            id: '1'
+        }, {
+            name: 'TB',
+            id: '2'
+        }];
+        facility = {
+            id: '10134',
+            name: 'National Warehouse',
+            supportedPrograms: programs
+        };
+        drafts = [];
+        user = {};
+        vm = $controller('StockAdjustmentController', {
+            facility: facility,
+            programs: programs,
+            adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
+            $state: state,
+            // SIGLUS-REFACTOR: starts here
+            drafts: drafts,
+            user: user
+            // SIGLUS-REFACTOR: ends here
+        });
+    }
+
+    beforeEach(function() {
         module('stock-adjustment');
         module('stock-orderable-group');
-
-        inject(
-            function($q, $rootScope, $injector) {
-                q = $injector.get('$q');
-                rootScope = $injector.get('$rootScope');
-                $controller = $injector.get('$controller');
-                ADJUSTMENT_TYPE = $injector.get('ADJUSTMENT_TYPE');
-                stockAdjustmentFactory = $injector.get('stockAdjustmentFactory');
-                stockAdjustmentService = $injector.get('stockAdjustmentService');
-
-                state = jasmine.createSpyObj('$state', ['go']);
-
-                programs = [{
-                    name: 'HIV',
-                    id: '1'
-                }, {
-                    name: 'TB',
-                    id: '2'
-                }];
-                facility = {
-                    id: '10134',
-                    name: 'National Warehouse',
-                    supportedPrograms: programs
-                };
-
-                // SIGLUS-REFACTOR: starts here
-                drafts = [];
-                user = {};
-                // SIGLUS-REFACTOR: ends here
-
-                vm = $controller('StockAdjustmentController', {
-                    facility: facility,
-                    programs: programs,
-                    adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
-                    $state: state,
-                    // SIGLUS-REFACTOR: starts here
-                    drafts: drafts,
-                    user: user
-                    // SIGLUS-REFACTOR: ends here
-                });
-            }
-        );
+        module('siglus-stock-issue-initial-modal');
+        prepareInjector();
+        prepareSpies();
+        prepareData();
     });
 
     it('should init programs properly', function() {
@@ -121,5 +124,47 @@ describe('StockAdjustmentController', function() {
             draftId: draft.id
         });
         // SIGLUS-REFACTOR: ends here
+    });
+
+    describe('setDraftAttribute method', function() {
+        it('should return result contains draft equal to true when input data is not empty', function() {
+            var data = [{
+                draftType: 'issue',
+                id: '0aeb0d2a-6b05-42c4-a38b-0e7d53014678',
+                isDraft: true,
+                programId: '1'
+            }];
+
+            var result = [{
+                name: 'HIV',
+                draft: true,
+                id: '1'
+            }, {
+                name: 'TB',
+                draft: false,
+                id: '2'
+            }];
+            vm.setDraftAttribute(data);
+
+            expect(vm.programs).toEqual(result);
+        });
+
+        it('should return result all contains true when input data is empty array', function() {
+            var data = [];
+
+            var result = [{
+                name: 'HIV',
+                draft: false,
+                id: '1'
+            }, {
+                name: 'TB',
+                draft: false,
+                id: '2'
+            }];
+            vm.setDraftAttribute(data);
+
+            expect(vm.programs).toEqual(result);
+        });
+
     });
 });

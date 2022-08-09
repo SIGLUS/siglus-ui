@@ -1,0 +1,9 @@
+{
+    "proofOfDeliveryManage.view": "View",
+    "proofOfDeliveryManage.continue": "Continue",
+    "proofOfDeliveryManage.start": "Start",
+    "proofOfDeliveryManage.orderDate": "Order Date",
+    "proofOfDeliveryManage.orderNumber": "Order No.",
+    "proofOfDeliveryManage.orderStatus": "Order Status",
+    "proofOfDeliveryManage.supplyingDepot": "Supplying Depot"
+}

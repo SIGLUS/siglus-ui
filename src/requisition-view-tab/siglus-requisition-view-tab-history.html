@@ -82,6 +82,13 @@
             can-edit="false"
             ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
     />
+    <siglus-age-group
+            program="vm.program"
+            sections="vm.requisition.usageTemplate.ageGroup"
+            line-items="vm.requisition.ageGroupLineItems"
+            can-edit="false"
+            ng-if="vm.requisition.template.extension.enableAgeGroup && !vm.requisition.emergency"
+    />
 </div>
 <div class="openlmis-toolbar button-group">
     <siglus-go-back />

@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.physicalInventory', {
-            url: '/physicalInventory',
+            url: '/physicalInventory?programId',
             label: 'stockPhysicalInventory.physicalInventory',
             priority: 3,
             showInNavigation: true,
@@ -35,30 +35,36 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                drafts: undefined
+            },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             resolve: {
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
+                },
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
-                // SIGLUS-REFACTOR
-                // user: function(authorizationService) {
-                //     return authorizationService.getUser();
-                // },
-                programs: function(programService) {
-                    // return stockProgramUtilService.getPrograms(user.user_id,
-                    //     STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT);
-                    return programService.getAllProductsProgram();
-                },
-                // SIGLUS-REFACTOR: ends here
-                drafts: function(physicalInventoryFactory, programs, facility) {
-                    if (_.isUndefined(facility)) {
-                        return [];
-                    }
-                    var programIds = _.map(programs, function(program) {
-                        return program.id;
+                // // SIGLUS-REFACTOR: starts here
+                programs: function(user, $q, programService, stockProgramUtilService) {
+                    return $q.all([
+                        programService.getAllProductsProgram(),
+                        stockProgramUtilService.getPrograms(user.user_id,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
+                    ]).then(function(responses) {
+                        return responses[0].concat(
+                            _.filter(responses[1], function(item) {
+                                return item.code !== 'ML';
+                            })
+                        );
                     });
-
-                    return physicalInventoryFactory.getDrafts(programIds, facility.id);
+                },
+                programId: function($stateParams) {
+                    if ($stateParams.programId) {
+                        return $stateParams.programId;
+                    }
+                    return undefined;
                 }
             }
         });
