@@ -116,9 +116,14 @@
                     ? vm.signaure.approve.join(',')
                     : '';
             }
+            var historyCommentsStr = _.reduce(requisition.statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            vm.historyComments = historyCommentsStr.substr(0, historyCommentsStr.length - 1);
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
-            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
@@ -239,7 +244,10 @@
         function getCreationDate(date) {
             return openlmisDateFilter(date, 'MMM')
                 + ' '
-                + openlmisDateFilter(date, 'yyyy');
+                + openlmisDateFilter(date, 'yyyy')
+                + ' '
+                + openlmisDateFilter(date, 'dd');
+
         }
         function getPdfName(date, facilityName, id) {
             return (
