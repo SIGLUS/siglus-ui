@@ -29,11 +29,12 @@
         .controller('siglusAnalyticsReportCustomizeMalariaController', controller);
 
     controller.$inject = [ 'requisition', 'facility', 'siglusColumnUtils',
-        'siglusTemplateConfigureService',
+        'siglusTemplateConfigureService', 'siglusDownloadLoadingModalService',
         'requisitionValidator', 'SIGLUS_SECTION_TYPES', 'openlmisDateFilter'];
 
     function controller(requisition, facility, siglusColumnUtils, siglusTemplateConfigureService,
-                        requisitionValidator, SIGLUS_SECTION_TYPES, openlmisDateFilter) {
+                        requisitionValidator, SIGLUS_SECTION_TYPES, openlmisDateFilter,
+                        siglusDownloadLoadingModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -135,6 +136,7 @@
         }
 
         function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
             var dom = document.getElementById('malaria-form-outer');
             // eslint-disable-next-line no-undef
             domtoimage.toPng(dom)
@@ -153,6 +155,7 @@
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + '01'
                     + '.pdf');
+                    siglusDownloadLoadingModalService.close();
                 });
         }
 

@@ -131,18 +131,27 @@
                 .then(function(proofOfDeliveryJson) {
                     var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
                         orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
-
-                    return $q.all([
-                        lotRepositoryImpl.query({
-                            id: lotIds
-                        }),
-                        orderableResource.query({
-                            id: orderableIds
-                        })
-                    ])
+                    console.log('#### lotIds', lotIds);
+                    var promiseList = lotIds.length ?
+                        [
+                            lotRepositoryImpl.query({
+                                id: lotIds
+                            }),
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ] :
+                        [
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ];
+                    return $q.all(promiseList)
                         .then(function(responses) {
-                            var lotPage = responses[0],
-                                orderablePage = responses[1];
+                            var lotPage = lotIds.length ? responses[0] : {
+                                    content: []
+                                },
+                                orderablePage = lotIds.length ? responses[1] : responses[0];
                             return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
                         });
                 });

@@ -274,6 +274,7 @@
         //     );
         // }
         function downloadPdf() {
+            console.log('进来了');
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
@@ -543,12 +544,13 @@
                     // )
                     vm.fileName + '.pdf'
                 );
+                console.log(22222222222);
                 siglusDownloadLoadingModalService.close();
                 return;
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            console.log('22222', pageNumber);
+            // console.log('22222', pageNumber);
             // opt.PDF.setFontSize(10);
             // opt.PDF.text(
             //     pageNumber.toString(),
@@ -695,6 +697,7 @@
                         585,
                         _reback[2].nodeHeight * opt.rate + 2
                     );
+                    console.log(11111111111);
                     // 生成PDF文件，并且命名
                     opt.PDF.save(
                         // getPdfName(
@@ -808,8 +811,14 @@
                                             r.push(angular.merge({
                                                 productCode: c.orderable.productCode,
                                                 productName: c.orderable.fullProductName,
-                                                lotCode: c.groupedLineItems[0][0].lot.lotCode,
-                                                expirationDate: c.groupedLineItems[0][0].lot.expirationDate,
+                                                lotCode:
+                                                    c.groupedLineItems[0][0].lot
+                                                        ? c.groupedLineItems[0][0].lot.lotCode
+                                                        : '',
+                                                expirationDate:
+                                                    c.groupedLineItems[0][0].lot
+                                                        ? c.groupedLineItems[0][0].lot.expirationDate
+                                                        : '',
                                                 notes: c.groupedLineItems[0][0].notes,
                                                 quantityShipped: c.groupedLineItems[0][0].quantityShipped,
                                                 quantityAccepted: c.groupedLineItems[0][0].quantityAccepted,

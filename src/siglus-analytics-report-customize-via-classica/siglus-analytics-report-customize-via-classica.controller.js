@@ -28,13 +28,13 @@
         .module('siglus-analytics-report-customize-via-classica')
         .controller('siglusAnalyticsReportCustomizeViaClassicaController', controller);
 
-    controller.$inject = [ 'requisition', 'facility', 'processingPeriod',
+    controller.$inject = [ 'requisition', 'facility', 'processingPeriod', 'siglusDownloadLoadingModalService',
         'messageService', 'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService' ];
 
     function controller(requisition, facility, processingPeriod, messageService, lineItemsList,
                         columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter,
-                        requisitionService) {
+                        requisitionService, siglusDownloadLoadingModalService) {
         var vm = this;
         vm.requisition = undefined;
         vm.facility = undefined;
@@ -95,6 +95,7 @@
         }
 
         function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
             var viaHeader = document.getElementById('via-header');
             var viaTableHeader = document.getElementById('via-table-header');
             var viaSignaure = document.getElementById('via-signaure');
@@ -254,7 +255,6 @@
                             BLANK_DIVIDE_HEIGHT +
                             viaTableHeaderHeight +
                             BLANK_DIVIDE_HEIGHT;
-                            console.log(offsetHeight);
                             realHeight = 0;
                         }
                         // 添加当前遍历元素的图片到PDF
@@ -311,6 +311,7 @@
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + vm.emergencyCount
                     + '.pdf');
+                    siglusDownloadLoadingModalService.close();
                 });
             });
         }
