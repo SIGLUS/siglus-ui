@@ -573,7 +573,12 @@
                             });
                         }, function() {
                             loadingModalService.close();
-                            alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                            if (vm.isInitialInventory) {
+                                alertService.error('stockInitialInventoryDraft.submitFailed');
+                            } else {
+                                alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                            }
+
                         });
                 });
             }
