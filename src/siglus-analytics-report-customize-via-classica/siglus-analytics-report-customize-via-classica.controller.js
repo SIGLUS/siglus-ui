@@ -28,13 +28,13 @@
         .module('siglus-analytics-report-customize-via-classica')
         .controller('siglusAnalyticsReportCustomizeViaClassicaController', controller);
 
-    controller.$inject = [ 'requisition', 'facility', 'processingPeriod',
+    controller.$inject = [ 'requisition', 'facility', 'processingPeriod', 'siglusDownloadLoadingModalService',
         'messageService', 'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService' ];
 
     function controller(requisition, facility, processingPeriod, messageService, lineItemsList,
                         columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter,
-                        requisitionService) {
+                        requisitionService, siglusDownloadLoadingModalService) {
         var vm = this;
         vm.requisition = undefined;
         vm.facility = undefined;
@@ -95,93 +95,225 @@
         }
 
         function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
             var viaHeader = document.getElementById('via-header');
             var viaTableHeader = document.getElementById('via-table-header');
             var viaSignaure = document.getElementById('via-signaure');
-            var viaTableBodys = document.getElementsByClassName('via-table-body');
+            var viaPrint = document.getElementById('via-print');
 
-            var imgWidth = 781.89;
-            var leftOffsetConstant = 30;
-            var topOffsetConstant = 30;
-            var contentWidth = viaHeader.offsetWidth;
             var viaHeaderHeight = viaHeader.offsetHeight;
             var viaTableHeaderHeight = viaTableHeader.offsetHeight;
             var viaSignaureHeight = viaSignaure.offsetHeight;
+            var viaPrintHeight = viaPrint.offsetHeight;
 
-            var tableDomList = [viaHeader, viaTableHeader, viaSignaure];
-            var tableImagePromiseList = [];
-
+            //A4[595.28,841.89] 
+            var leftOffsetConstant = 20;
+            var topOffsetConstant = 20;
+            var A4_WIDTH = 801.89,
+                A4_HEIGHT = 555,
+                CONTAINER_WIDTH = viaHeader.offsetWidth,
+                BLANK_DIVIDE_HEIGHT = 10,
+                PAGE_NUMBER_TOPOFFSET_HEIGHT = 575;
+            var rate = A4_WIDTH / CONTAINER_WIDTH;
+            var a4Height2px = A4_HEIGHT / rate;
+            var fixedHeight = viaHeaderHeight
+                    + viaTableHeaderHeight
+                    + viaSignaureHeight
+                    + viaPrintHeight;
+            var canUseHeight = a4Height2px - fixedHeight  - topOffsetConstant * 2;
+            var needCalcTrNodes = document.querySelectorAll('.calcTr');
+            var needCalcTrNodesArray = Array.from(needCalcTrNodes);
+            var tableDomList = [viaHeader, viaTableHeader, viaSignaure, viaPrint];
+            var fixedPromiseList = [];
             angular.forEach(tableDomList, function(item) {
                 // eslint-disable-next-line no-undef
-                tableImagePromiseList.push(domtoimage.toPng(item).then(function(dataUrl) {
-                    return dataUrl;
+                fixedPromiseList.push(domtoimage.toPng(item, {
+                    scale: 1,
+                    width: CONTAINER_WIDTH,
+                    height: item.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: CONTAINER_WIDTH,
+                        nodeHeight: item.offsetHeight
+                    };
                 }));
             });
 
-            $q.all(tableImagePromiseList).then(function(result) {
-                var promiseList = [];
-                angular.forEach(viaTableBodys, function(item) {
-                    // eslint-disable-next-line no-undef
-                    promiseList.push(domtoimage.toPng(item).then(function(dataUrl) {
-                        return dataUrl;
-                    }));
-                });
-                $q.all(promiseList).then(function(result2) {
-                    // eslint-disable-next-line no-undef
-                    var PDF = new jsPDF('l', 'pt', 'a4');
-                    angular.forEach(result2, function(item, index) {
-                        PDF.addImage(result[0], 'PNG', getLeftOffset(),
-                            topOffsetConstant, imgWidth, getImgHeight(viaHeaderHeight));
-                        PDF.addImage(result[1], 'PNG', getLeftOffset(),
-                            getViaTableHeaderTopOffset(), imgWidth, getImgHeight(viaTableHeaderHeight));
-                        PDF.addImage(item, 'PNG', getLeftOffset(), getViaTableBodyTopOffset(),
-                            imgWidth, getImgHeight(viaTableBodys[index].offsetHeight));
-                        PDF.addImage(result[2], 'PNG', getLeftOffset(),
-                            getViaSignaureTopOffset(viaTableBodys[index]), imgWidth, getImgHeight(viaSignaureHeight));
-                        var pageNumber = index + 1 + '';
-                        var pageNumberLeftOffset = 841.89 - leftOffsetConstant  - 15;
-                        var pageNumberTopOffset = getViaSignaureTopOffset(viaTableBodys[index])
-                        + getImgHeight(viaSignaureHeight) + 12;
-                        PDF.setFontSize(10);
-                        PDF.text(pageNumber,  pageNumberLeftOffset, pageNumberTopOffset);
-                        if (index !== result2.length - 1) {
+            var promiseList = [];
+            // eslint-disable-next-line no-undef
+            var PDF = new jsPDF('l', 'pt', 'a4');
+            _.forEach(needCalcTrNodesArray, function(item) {
+                // eslint-disable-next-line no-undef
+                promiseList.push(domtoimage.toPng(item, {
+                    scale: 1,
+                    width: CONTAINER_WIDTH,
+                    height: item.offsetHeight + 1
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: CONTAINER_WIDTH,
+                        nodeHeight: item.offsetHeight + 1
+                    };
+                }));
+            });
+
+            $q.all(fixedPromiseList).then(function(reback) {
+                var offsetHeight = topOffsetConstant / rate +
+                viaHeaderHeight +
+                BLANK_DIVIDE_HEIGHT +
+                viaTableHeaderHeight +
+                BLANK_DIVIDE_HEIGHT;
+                // 当前分页部分tr的累积高度
+                var realHeight = 0;
+                // 页码
+                var pageNumber = 1;
+                var promiseListLen = promiseList.length;
+                //$q.all(promiseList).then(function() {
+                $q.all(promiseList).then(function(result) {
+                    // 添加分页部分上方的固定部分图片到PDF中
+                    PDF.addImage(
+                        reback[0].data,
+                        'PNG',
+                        leftOffsetConstant,
+                        topOffsetConstant,
+                        A4_WIDTH,
+                        reback[0].nodeHeight * rate
+                    );
+                    PDF.addImage(
+                        reback[1].data,
+                        'PNG',
+                        leftOffsetConstant,
+                        topOffsetConstant + (reback[0].nodeHeight + BLANK_DIVIDE_HEIGHT)   * rate,
+                        A4_WIDTH,
+                        reback[1].nodeHeight * rate
+                    );
+                    _.forEach(result, function(res, index) {
+                        // 计算分页部分实际高度
+                        realHeight = realHeight + result[index].nodeHeight;
+                        if (realHeight > canUseHeight) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                A4_WIDTH / 2,
+                                PAGE_NUMBER_TOPOFFSET_HEIGHT
+                            );
+
+                            // 遍历跟随分页部分重复的部分
+                            PDF.addImage(
+                                reback[2].data,
+                                'PNG',
+                                leftOffsetConstant,
+                                (
+                                    offsetHeight
+                                    + 10
+                                ) * rate,
+                                A4_WIDTH,
+                                reback[2].nodeHeight * rate
+                            );
+                            PDF.addImage(
+                                reback[3].data,
+                                'PNG',
+                                leftOffsetConstant,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + 10
+                                ) * rate,
+                                A4_WIDTH,
+                                reback[3].nodeHeight * rate
+                            );
+                            // 新开分页
                             PDF.addPage('a4', 'l');
+                            pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
+
+                            PDF.text(
+                                pageNumber.toString(),
+                                A4_WIDTH / 2,
+                                PAGE_NUMBER_TOPOFFSET_HEIGHT
+                            );
+
+                            PDF.addImage(
+                                reback[0].data,
+                                'PNG',
+                                leftOffsetConstant,
+                                topOffsetConstant,
+                                A4_WIDTH,
+                                reback[0].nodeHeight * rate
+                            );
+                            PDF.addImage(
+                                reback[1].data,
+                                'PNG',
+                                leftOffsetConstant,
+                                topOffsetConstant + (reback[0].nodeHeight + BLANK_DIVIDE_HEIGHT)   * rate,
+                                A4_WIDTH,
+                                reback[1].nodeHeight * rate
+                            );
+                            offsetHeight = topOffsetConstant / rate +
+                            viaHeaderHeight +
+                            BLANK_DIVIDE_HEIGHT +
+                            viaTableHeaderHeight +
+                            BLANK_DIVIDE_HEIGHT;
+                            realHeight = 0;
                         }
+                        // 添加当前遍历元素的图片到PDF
+                        PDF.addImage(
+                            res.data,
+                            'PNG',
+                            leftOffsetConstant,
+                            offsetHeight * rate,
+                            res.nodeWidth * rate,
+                            res.nodeHeight * rate
+                        );
+                        if (promiseListLen - 1 === index) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                A4_WIDTH / 2,
+                                PAGE_NUMBER_TOPOFFSET_HEIGHT
+                            );
+                        }
+                        offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
+                    PDF.addImage(
+                        reback[2].data,
+                        'PNG',
+                        leftOffsetConstant,
+                        (
+                            offsetHeight
+                            + 10
+                        ) * rate,
+                        A4_WIDTH,
+                        reback[2].nodeHeight * rate
+                    );
+                    PDF.addImage(
+                        reback[3].data,
+                        'PNG',
+                        leftOffsetConstant,
+                        (
+                            offsetHeight
+                            + reback[2].nodeHeight
+                            + 10
+                        ) * rate,
+                        A4_WIDTH,
+                        reback[3].nodeHeight * rate
+                    );
+
                     var reportName = 'RNO';
                     if (vm.requisition.emergency) {
                         reportName = 'REM';
                     }
+
                     PDF.save(reportName + '.'
                     + vm.facility.code + '.'
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + vm.emergencyCount
                     + '.pdf');
+                    siglusDownloadLoadingModalService.close();
                 });
             });
-
-            function getImgHeight(y) {
-                return (imgWidth / contentWidth) * y;
-            }
-
-            function getLeftOffset() {
-                return leftOffsetConstant;
-            }
-
-            function getViaTableHeaderTopOffset() {
-                return parseInt(topOffsetConstant + getImgHeight(viaHeaderHeight) + getImgHeight(5));
-            }
-
-            function getViaTableBodyTopOffset() {
-                return parseInt(topOffsetConstant + getImgHeight(viaHeaderHeight)
-                +  getImgHeight(viaTableHeaderHeight) + getImgHeight(10));
-            }
-
-            function getViaSignaureTopOffset(item) {
-                return  parseInt(topOffsetConstant + getImgHeight(viaHeaderHeight)
-                + getImgHeight(item.offsetHeight) + getImgHeight(viaTableHeaderHeight) + getImgHeight(15));
-            }
         }
     }
 })();
