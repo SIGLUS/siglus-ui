@@ -33,7 +33,7 @@
         'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryService', 'notificationService',
         '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory', 'siglusDownloadLoadingModalService'];
+        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment'];
 
     function ProofOfDeliveryViewController($scope
         , proofOfDelivery, order, reasons, messageService
@@ -42,8 +42,7 @@
         , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
         , confirmService, confirmDiscardService, proofOfDeliveryManageService
         , openlmisDateFilter, fulfillingLineItemFactory
-        , facilityFactory, siglusDownloadLoadingModalService) {
-
+        , facilityFactory, siglusDownloadLoadingModalService, user, moment) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -56,6 +55,7 @@
         vm.returnBack = returnBack;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
+        vm.maxDate = undefined;
         vm.getReason = function(reasonId) {
             // return 
             var reasonMap = _.reduce(reasons, function(r, c) {
@@ -165,6 +165,11 @@
                 save(true);
             }
 
+            if (vm.isMerge) {
+                vm.proofOfDelivery.receivedBy = user.username;
+                vm.maxDate = moment().format('YYYY-MM-DD');
+            }
+
             $scope.$watch(function() {
                 return vm.proofOfDelivery;
             }, function(newValue, oldValue) {
@@ -271,8 +276,13 @@
                     loadingModalService.open();
                     var copy = angular.copy(vm.proofOfDelivery);
                     copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
+                    var pod = {
+                        podDto: copy,
+                        conferredBy: copy.conferredBy,
+                        preparedBy: copy.preparedBy
+                    };
                     proofOfDeliveryService.submitDraft($stateParams.podId,
-                        copy).then(function() {
+                        pod).then(function() {
                         notificationService.success(
                             'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
                         );
@@ -596,10 +606,6 @@
             var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
             if (needCalcTrNodesArray.length === 0) {
                 opt.PDF.save(
-                    // getPdfName(
-                    //     vm.facility.name,
-                    //     vm.issueVoucherDate
-                    // )
                     vm.fileName + '.pdf'
                 );
                 siglusDownloadLoadingModalService.close();
@@ -607,13 +613,6 @@
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            console.log('22222', pageNumber);
-            // opt.PDF.setFontSize(10);
-            // opt.PDF.text(
-            //     pageNumber.toString(),
-            //     585 / 2,
-            //     opt.A4_HEIGHT
-            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');
