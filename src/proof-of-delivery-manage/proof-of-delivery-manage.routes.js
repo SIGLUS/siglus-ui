@@ -38,6 +38,11 @@
                 FULFILLMENT_RIGHTS.SHIPMENTS_EDIT
             ],
             resolve: {
+                // SIGLUS-REFACTOR: starts here
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
+                // SIGLUS-REFACTOR: ends here
                 programs: function(programService, authorizationService) {
                     return programService.getUserPrograms(authorizationService.getUser().user_id);
                 },

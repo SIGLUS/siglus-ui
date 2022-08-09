@@ -607,13 +607,6 @@
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            console.log('22222', pageNumber);
-            // opt.PDF.setFontSize(10);
-            // opt.PDF.text(
-            //     pageNumber.toString(),
-            //     585 / 2,
-            //     opt.A4_HEIGHT
-            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');

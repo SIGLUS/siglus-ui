@@ -38,6 +38,7 @@
         // SIGLUS-REFACTOR: starts here
         'siglus-order-status-messages',
         'siglus-proof-of-delivery-initial-modal',
+        'referencedata-facility',
         'siglus-download-loading-modal'
         // SIGLUS-REFACTOR: starts here
     ]);
