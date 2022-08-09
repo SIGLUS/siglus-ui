@@ -35,7 +35,8 @@
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
         '$timeout',
-        '$q'
+        '$q',
+        'siglusDownloadLoadingModalService'
     ];
 
     function controller(
@@ -45,7 +46,8 @@
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
         $timeout,
-        $q
+        $q,
+        siglusDownloadLoadingModalService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -164,8 +166,14 @@
                 if (!vm.requisition.patientLineItems.length) {
                     return '';
                 }
-                var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
-                return vm.mergedPatientMap[key].columns[innerKey].value ;
+                // console.log('#### key', key);
+                var result = '';
+                if (vm.mergedPatientMap[key]) {
+                    var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
+                    // console.log(key, vm.mergedPatientMap[key]);
+                    result = vm.mergedPatientMap[key].columns[innerKey].value;
+                }
+                return result;
             };
         }
 
@@ -264,6 +272,7 @@
         }
 
         vm.downloadPdf = function() {
+            siglusDownloadLoadingModalService.open();
             var node = document.getElementById('mmia-form');
             var secondSectionNode = document.getElementById('secondSection');
             var middleSectionNode = document.getElementById('middleSection');
@@ -332,15 +341,23 @@
                     };
                 }));
             });
+            var A4_HEIGHT = 801.89;
+            var promiseListLen = promiseList.length;
             $q.all(headerAndFooterPromiseList).then(function(reback) {
                 var offsetHeight = firstSectionNode.offsetHeight;
                 var realHeight = 0;
-                var pageNumber = 0;
+                var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight - 30) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT - 10
+                            );
                             pageNumber = pageNumber + 1;
                             PDF.addImage(
                                 reback[1].data,
@@ -359,12 +376,26 @@
                                 reback[2].nodeHeight * rate
                             );
                             PDF.addPage();
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT - 10
+                            );
                             PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
 
                             offsetHeight = firstSectionNode.offsetHeight;
                             realHeight = 0;
                         }
                         PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
+                        if (promiseListLen - 1 === index) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                A4_HEIGHT - 10
+                            );
+                        }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
                     PDF.addImage(
@@ -390,6 +421,7 @@
                             vm.facility.code
                         )
                     );
+                    siglusDownloadLoadingModalService.close();
                 });
             });
         };

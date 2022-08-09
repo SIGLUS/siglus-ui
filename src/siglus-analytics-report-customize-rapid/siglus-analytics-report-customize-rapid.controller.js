@@ -33,7 +33,8 @@
         'requisition',
         'openlmisDateFilter',
         'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES'
+        'SIGLUS_SECTION_TYPES',
+        'siglusDownloadLoadingModalService'
     ];
 
     function controller(
@@ -41,7 +42,8 @@
         requisition,
         openlmisDateFilter,
         siglusTemplateConfigureService,
-        SIGLUS_SECTION_TYPES
+        SIGLUS_SECTION_TYPES,
+        siglusDownloadLoadingModalService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -125,6 +127,7 @@
             return openlmisDateFilter(date, 'MMMM');
         }
         vm.downloadPdf = function() {
+            siglusDownloadLoadingModalService.open();
             var node = document.getElementById('test_repaid_wrap');
             var contentWidth = node.offsetWidth;
             var contentHeight = node.offsetHeight;
@@ -152,6 +155,7 @@
                         requisition.id.substring(0, 8)
                     )
                 );
+                siglusDownloadLoadingModalService.close();
             });
         };
     }
