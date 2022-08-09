@@ -33,7 +33,7 @@
         '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
         'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
-        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService'
+        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility'
     ];
 
     function controller(
@@ -56,7 +56,8 @@
         siglusInitialProofOfDeliveryService,
         messageService,
         SIGLUS_TIME,
-        siglusDownloadLoadingModalService
+        siglusDownloadLoadingModalService,
+        facility
     ) {
 
         var vm = this;
@@ -274,7 +275,6 @@
         //     );
         // }
         function downloadPdf() {
-            console.log('进来了');
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
@@ -544,19 +544,11 @@
                     // )
                     vm.fileName + '.pdf'
                 );
-                console.log(22222222222);
                 siglusDownloadLoadingModalService.close();
                 return;
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            // console.log('22222', pageNumber);
-            // opt.PDF.setFontSize(10);
-            // opt.PDF.text(
-            //     pageNumber.toString(),
-            //     585 / 2,
-            //     opt.A4_HEIGHT
-            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');
@@ -677,8 +669,6 @@
                             res.nodeWidth * opt.rate,
                             res.nodeHeight * opt.rate
                         );
-                        // console.log('promiseListInLen', promiseListInLen);
-                        // console.log('_index', _index);
                         if (promiseListInLen - 1 === _index) {
                             opt.PDF.text(
                                 pageNumber.toString() + '-END',
@@ -697,7 +687,6 @@
                         585,
                         _reback[2].nodeHeight * opt.rate + 2
                     );
-                    console.log(11111111111);
                     // 生成PDF文件，并且命名
                     opt.PDF.save(
                         // getPdfName(
@@ -733,7 +722,15 @@
          * @param {String} isStarter status of POD
          */
         function validatePODStatus(order) {
-
+            if (_.get(order, ['facility', 'id']) !== _.get(facility, 'id')) {
+                return proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
+                    $state.go('openlmis.orders.podManage.view', {
+                        orderId: order.id,
+                        podId: pod.id,
+                        actionType: 'VIEW'
+                    });
+                });
+            }
             if (order.status  === 'RECEIVED') {
                 proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
                     $state.go('openlmis.orders.podManage.view', {
@@ -843,6 +840,9 @@
         }
 
         function getStatusText(order) {
+            if (_.get(order, ['facility', 'id']) !== facility.id) {
+                return messageService.get('proofOfDeliveryManage.view');
+            }
             if (order.status  === 'RECEIVED') {
                 return messageService.get('proofOfDeliveryManage.view');
             }
