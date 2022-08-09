@@ -1,0 +1,9 @@
+{
+  "physicalInventoryCreation.label": "Please input the number of users doing the inventory",
+  "physicalInventoryCreation.initialLabel": "Your facility haven't initial inventory yet, input the number of users to start it",
+  "physicalInventoryCreation.error": "Please enter an integer between 1 and 10",
+  "physicalInventoryCreation.required": "This field is required",
+  "physicalInventoryCreation.cancel": "Cancel",
+  "physicalInventoryCreation.confirm": "Confirm",
+  "physicalInventoryCreation.conflictTips": "An inventory process has already started, please finish it first."
+}

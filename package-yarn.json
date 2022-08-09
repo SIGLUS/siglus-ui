@@ -1,7 +1,13 @@
 {
   "dependencies": {
-    "@bower_components/perfect-scrollbar": "noraesae/perfect-scrollbar-bower#0.6.12"
-  },
+    "@bower_components/perfect-scrollbar": "noraesae/perfect-scrollbar-bower#0.6.12",
+    "@bower_components/bower-iframe-resizer": "davidjbradshaw/iframe-resizer#^4.3.2",
+    "@bower_components/dom-to-image":"SIGLUS/siglus-dom2image.git#^1.0.3",
+    "@bower_components/jsPDF": "parallax/jsPDF#^1.5.3",
+    "@bower_components/underscore": "jashkenas/underscore#^1.13.4",
+    "@bower_components/sheetjs":"SheetJS/sheetjs#^0.18.5",
+    "@bower_components/jsBarcode": "lindell/JsBarcode#3.11.5"
+},
   "engines": {
     "yarn": ">= 1.0.0"
   },
@@ -11,6 +17,17 @@
         "src/perfect-scrollbar.css",
         "src/perfect-scrollbar.js"
       ]
+    },
+    "@bower_components/jsPDF": {
+      "main": [
+        "dist/jspdf.min.js"
+      ]
+    },
+    "@bower_components/underscore": {
+      "main": ["underscore.js"]
+    },
+    "@bower_components/jsBarcode": {
+      "main": ["dist/JsBarcode.all.min.js"]
     }
   }
 }

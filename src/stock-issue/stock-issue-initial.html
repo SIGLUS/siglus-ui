@@ -1,0 +1,41 @@
+<h2 ng-show="vm.facility">{{ vm.key('title') | message: {'facility': vm.facility.name} }}</h2>
+<section class="openlmis-table-container">
+    <table>
+        <caption ng-if="!vm.programs.length">{{vm.key('noProgramAvailable') | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th style="min-width: 160px;">{{vm.key('program') | message}}</th>
+            <th style="min-width: 160px;">{{vm.key('status') | message}}</th>
+            <th>{{vm.key('action') | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="program in vm.programs">
+            <td style="min-width: 160px;">{{program.name}}</td>
+            <td style="min-width: 160px;" >{{vm.key(vm.hasExistInitialDraft ? 'draft' : 'notStarted') | message}}</td>
+            <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
+            <td ng-if="vm.hasExistInitialDraft">
+
+                <input
+                        id="continueButton"
+                        type="button"
+                        value="{{'stockIssue.continue' | message}}"
+                        class="primary"
+                        ng-click="vm.proceedForIssue(program)"
+                />
+            </td>
+            <td ng-if="!vm.hasExistInitialDraft">
+                <input
+                        id="startButton"
+                        type="button"
+                        value="{{'stockIssue.issueStart' | message}}"
+                        class="primary"
+                        ng-click="vm.start(program)"
+                />
+            <!-- SIGLUS-REFACTOR: ends here -->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>

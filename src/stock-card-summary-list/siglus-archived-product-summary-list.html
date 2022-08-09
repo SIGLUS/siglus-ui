@@ -1,0 +1,104 @@
+<!-- #146: archived product list-->
+<h2 ng-if="vm.facility && vm.program">
+    {{
+    vm.isArchivedProducts
+            ? ('stockCardSummaryList.archivedProductTitle' | message: { 'facility': vm.facility.name,
+                'program':vm.program.name})
+            : ('stockCardSummaryList.title' | message: { 'facility': vm.facility.name, 'program': vm.program.name})
+    }}
+</h2>
+<h2 ng-hide="vm.facility && vm.program">
+    {{vm.isArchivedProducts
+        ? ('stockCardSummaryList.archivedProduct' | message)
+        : ('stockCardSummaryList.stockOnHand' | message)
+    }}
+</h2>
+<!-- #146: ends here -->
+
+<!-- SIGLUS-REFACTOR: starts here -->
+<form ng-submit="vm.loadStockCardSummaries()" class="sidebar" id="stock-card-summary-list-sidebar">
+
+    <label for="selectProgram">{{'stockCardSummaryList.program' | message}}</label>
+    <select
+            id="selectProgram"
+            ng-model="vm.program"
+            ng-options="p.name for p in vm.programs"
+            placeholder="{{'stockCardSummaryList.selectProgram' | message}}"
+            required
+    >
+    </select>
+    <input type="submit" value="{{'stockCardSummaryList.search'|message}}"/>
+</form>
+<!-- SIGLUS-REFACTOR: ends here -->
+<section class="openlmis-table-container">
+    <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-show="!vm.isArchivedProducts" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+
+    <!-- SIGLUS-REFACTOR: starts here -->
+    <form ng-submit="vm.search()" ng-show="!vm.isArchivedProducts">
+        <label for="searchFor">{{'stockCardSummaryList.keyword' | message}}</label>
+        <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+        <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.doCancelFilter()"/>
+        <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
+    </form>
+    <!-- SIGLUS-REFACTOR: ends here  -->
+
+    <table>
+        <caption ng-if="!vm.stockCardSummaries.length">
+            {{'stockCardSummaryList.noProducts' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th>{{'stockCardSummaryList.productCode' | message}}</th>
+            <th>{{'stockCardSummaryList.product' | message}}</th>
+            <th>{{'stockCardSummaryList.lotCode' | message}}</th>
+            <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
+            <th>{{'stockCardSummaryList.lastUpdate' | message}}</th>
+            <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            <th>{{'stockCardSummaryList.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <tr class="is-secondary" ng-if="vm.stockCardSummaries.length > 0" ng-repeat-start="summary in vm.stockCardSummaries">
+            <!-- SIGLUS-REFACTOR: ends here -->
+            <td>{{summary.orderable.productCode}}</td>
+            <td>{{summary.orderable.fullProductName}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <!-- SIGLUS-REFACTOR: starts here -->
+            <td class="text-align-right">{{summary.stockOnHand}}</td>
+            <td>
+                <button ng-if="summary.orderable"
+                        type="button"
+                        ng-click="vm.viewProductStockCard(summary.orderable.id)"
+                        class="primary">
+                    {{'stockCardSummaryList.view'| message}}
+                </button>
+            </td>
+        </tr>
+        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+            <td>{{fulfills.orderable.productCode}}</td>
+            <td>{{fulfills.orderable.fullProductName}}</td>
+            <td>{{fulfills.lot && !fulfills.orderable.isKit ? fulfills.lot.lotCode : ''}}</td>
+            <td>{{fulfills.lot && !fulfills.orderable.isKit ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
+            <td>{{fulfills.occurredDate | openlmisDate}}</td>
+            <td class="text-align-right">{{fulfills.stockOnHand}}</td>
+            <!-- SIGLUS-REFACTOR: ends here -->
+            <td>
+                <button ng-if="fulfills.stockCard"
+                        type="button"
+                        ng-click="vm.viewSingleCard(fulfills.stockCard.id)"
+                        class="primary">
+                    {{'stockCardSummaryList.view'| message}}
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- #219: use different paginationId when is archived-->
+    <openlmis-pagination list="vm.stockCardSummaryList" paged-list="vm.pagedSummaries"
+                         pagination-id="vm.isArchivedProducts ? 'archivedStockCardList' : 'stockCardList' ">
+    </openlmis-pagination>
+    <!-- #219: ends here -->
+</section>

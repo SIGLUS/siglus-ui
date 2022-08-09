@@ -29,13 +29,19 @@ describe('ChooseDateModalController', function() {
             UserDataBuilder = $injector.get('UserDataBuilder');
         });
 
+        // var minDate = chooseDateModalService.
         user = new UserDataBuilder().build();
+        var minDate = new Date();
         modalDeferred = $q.defer();
 
         spyOn(authorizationService, 'getUser').andReturn(user);
 
         vm = $controller('ChooseDateModalController', {
-            modalDeferred: modalDeferred
+            modalDeferred: modalDeferred,
+            minDate: minDate,
+            // SIGLUS-REFACTOR: starts here
+            disabledChoose: false
+            // SIGLUS-REFACTOR: ends here
         });
     });
 

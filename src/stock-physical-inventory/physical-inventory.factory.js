@@ -46,6 +46,7 @@
             getDraft: getDraft,
             getDraftByProgramAndFacility: getDraftByProgramAndFacility,
             getPhysicalInventory: getPhysicalInventory,
+            getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
             saveDraft: saveDraft,
             // SIGLUS-REFACTOR: starts here
             getInitialInventory: getInitialInventory
@@ -69,7 +70,6 @@
             angular.forEach(programIds, function(program) {
                 promises.push(getDraftByProgramAndFacility(program, facility));
             });
-
             return $q.all(promises);
         }
 
@@ -94,7 +94,6 @@
                             facilityId: facilityId,
                             lineItems: []
                         };
-
                     // no saved draft
                     if (draft.length === 0) {
                         draftToReturn.isStarter = true;
@@ -122,13 +121,12 @@
                 physicalInventoryService.getDraft(programId, facilityId)
             ]).then(function(responses) {
                 var summaries = responses[0],
-                    draft = responses[1],
+                    draft = responses[1].data,
                     draftToReturn = {
                         programId: programId,
                         facilityId: facilityId,
                         lineItems: []
                     };
-
                 // no saved draft
                 if (draft.length === 0) {
                     // SIGLUS-REFACTOR: starts here
@@ -139,7 +137,6 @@
                     prepareLineItems(draft[0], summaries, draftToReturn);
                     draftToReturn.id = draft[0].id;
                 }
-
                 return draftToReturn;
             });
         }
@@ -173,12 +170,38 @@
                 });
         }
 
+        function getPhysicalInventorySubDraft(id, flag) {
+            return physicalInventoryService.getPhysicalInventorySubDraft(id)
+                .then(function(physicalInventory) {
+                    var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
+                        return line.orderableId;
+                    });
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag,
+                        allLineOrderableIds)
+                        .then(function(summaries) {
+                            var draftToReturn = {
+                                programId: physicalInventory.programId,
+                                facilityId: physicalInventory.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            draftToReturn.id = physicalInventory.id;
+
+                            return draftToReturn;
+                        });
+                });
+        }
+
         // SIGLUS-REFACTOR: starts here
         function getInitialInventory(programId, facilityId) {
             return physicalInventoryService.getInitialDraft(programId, facilityId)
                 .then(function(drafts) {
                     var draft = _.first(drafts);
-                    return getStockProducts(draft.programId, draft.facilityId)
+                    var allLineOrderableIds = draft.lineItems.map(function(line) {
+                        return line.orderableId;
+                    });
+                    return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
+                        allLineOrderableIds)
                         .then(function(summaries) {
                             var initialInventory = {
                                 programId: draft.programId,
@@ -242,14 +265,6 @@
 
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
-            /*var quantities = {},
-                extraData = {};
-
-            angular.forEach(physicalInventory.lineItems, function(lineItem) {
-                quantities[identityOfLines(lineItem)] = lineItem.quantity;
-                extraData[identityOfLines(lineItem)] = lineItem.extraData;
-            });*/
-
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -344,16 +359,23 @@
         }*/
         // SIGLUS-REFACTOR: ends here
 
-        function getStockProducts(programId, facilityId) {
+        function getStockProducts(programId, facilityId, subDraftIds, flag, orderableIds) {
             var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
-
             // #225: cant view detail page when not have stock view right
-            return repository.query({
+            return repository.query(flag ? {
                 programId: programId,
                 facilityId: facilityId,
-                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
+                subDraftIds: subDraftIds,
+                orderableIds: orderableIds
+            } : {
+                programId: programId,
+                facilityId: facilityId,
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
+                subDraftIds: subDraftIds,
+                orderableIds: orderableIds
             }).then(function(summaries) {
-            // #225: ends here
+                // #225: ends here
                 return summaries.content.reduce(function(items, summary) {
                     summary.canFulfillForMe.forEach(function(fulfill) {
                         items.push(fulfill);

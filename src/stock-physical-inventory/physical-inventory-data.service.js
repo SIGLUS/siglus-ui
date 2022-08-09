@@ -44,6 +44,7 @@
         this.getReasons = function(facilityId) {
             return this.facilityId === facilityId ? this.reasons : undefined;
         };
+
         this.setReasons = function(facilityId, reasons) {
             this.facilityId = facilityId;
             this.reasons = reasons;

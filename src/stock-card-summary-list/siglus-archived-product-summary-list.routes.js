@@ -36,7 +36,7 @@
                 '@openlmis': {
                     controller: 'StockCardSummaryListController',
                     controllerAs: 'vm',
-                    templateUrl: 'stock-card-summary-list/stock-card-summary-list.html'
+                    templateUrl: 'stock-card-summary-list/siglus-archived-product-summary-list.html'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],

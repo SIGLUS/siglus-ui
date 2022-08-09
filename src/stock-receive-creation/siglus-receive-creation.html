@@ -1,6 +1,6 @@
-<h2>
-    {{vm.key('title') | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
-</h2>
+<h2>{{'issueDraft.receiveFromTitle' | message: {
+    destination: vm.sourceName || '',
+    document: vm.initialDraftInfo.documentNumber || ''} }}</h2>
 
 <div class="stock-adjustment-creation">
     <section class="openlmis-table-container">
@@ -37,11 +37,7 @@
                 <th>{{vm.key('lotCode') | message}}</th>
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
-                <th ng-show="vm.srcDstAssignments">{{vm.key('srcDstLabel') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
-                <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
-                <th>{{vm.key('date') | message}}</th>
-                <th>{{vm.key('documentationNo') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
             </thead>
@@ -49,8 +45,12 @@
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td>{{lineItem.orderable | productName}}</td>
-                <td ng-if="!lineItem.isKit">
-                    <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
+                <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotCodeDuplicated}}">
+                    <siglus-stock-input-select
+                            line-items="vm.items"
+                            line-item="lineItem"
+                            enable-input="true">
+                    </siglus-stock-input-select>
                 </td>
                 <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                     <input  ng-if="!lineItem.isKit" id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
@@ -59,31 +59,10 @@
                 <td ng-if="lineItem.isKit"></td>
                 <td ng-if="lineItem.isKit"></td>
                 <td class="text-align-right">{{lineItem.$previewSOH}}</td>
-                <td ng-show="vm.srcDstAssignments" openlmis-invalid="{{lineItem.$errors.assignmentInvalid ? 'openlmisForm.required' : '' | message}}">
-                    <select ng-model="lineItem.assignment"
-                            ng-change="vm.validateAssignment(lineItem);vm.clearFreeText(lineItem, 'srcDstFreeText')"
-                            ng-options="assignment.name for assignment in vm.filterByProgram(vm.srcDstAssignments, lineItem.orderable.programs) track by assignment.id" autofocus>
-                    </select>
-                </td>
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
-                </td>
-                <td ng-if="vm.showVVMStatusColumn">
-                    <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
-                            ng-model="lineItem.vvmStatus"
-                            ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
-                            placeholder="{{'stockAdjustmentCreation.selectStatus' | message}}">
-                    </select>
-                </td>
-                <td class="date-cell">
-                    <input id="lineItem.occurredDate" type="date" ng-model="lineItem.occurredDate"
-                           class="min-width-date-input"
-                           ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
-                </td>
-                <td class="digit-cell">
-                    <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100"/>
                 </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
@@ -94,5 +73,12 @@
         <openlmis-pagination list="vm.displayItems" paged-list="vm.items"/>
     </section>
 </div>
-
-<ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>
+<ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
+<siglus-common-toolbar
+        data="vm.addedLineItems"
+        mode="vm.isMerge ? 'MERGE' : 'SAVE'"
+        on-delete="vm.removeDisplayItems()"
+        on-save="vm.save()"
+        on-submit="vm.submit()"
+        on-cancel="vm.returnBack()">
+</siglus-common-toolbar>

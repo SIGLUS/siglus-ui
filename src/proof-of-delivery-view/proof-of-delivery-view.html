@@ -45,11 +45,12 @@
     </ul>
 </aside>
 
-<form id="proof-of-delivery-form" ng-submit="vm.proofOfDelivery.confirm()">
+<form id="proof-of-delivery-form" ng-submit="vm.submit()">
     <div class="openlmis-table-container">
         <table class="openlmis-table">
             <thead>
             <tr>
+                <th>{{'proofOfDeliveryView.fnm' | message}}</th>
                 <th>{{'proofOfDeliveryView.productName' | message}}</th>
                 <th>{{'proofOfDeliveryView.productUnit' | message}}</th>
                 <th>{{'proofOfDeliveryView.quantityOrdered' | message}}</th>
@@ -67,6 +68,7 @@
             </thead>
             <tbody ng-repeat="orderLineItem in vm.orderLineItems | orderBy : 'orderable.fullProductName'">
             <tr class="is-secondary">
+                <td>{{orderLineItem.orderable.productCode}}</td>
                 <td>{{orderLineItem.orderable.fullProductName}}</td>
                 <td>{{orderLineItem.orderable.dispensable.displayUnit}}</td>
                 <td>{{orderLineItem.orderedQuantity}}</td>
@@ -82,6 +84,7 @@
                 <td></td>
             </tr>
             <tr ng-repeat-start="groupOfFulfillingLineItems in orderLineItem.groupedLineItems | orderBy: '[0].orderable.fullProductName'">
+                <td>{{groupOfFulfillingLineItems[0].orderable.productCode}}</td>
                 <td>{{groupOfFulfillingLineItems[0].orderable.fullProductName}}</td>
                 <td>{{groupOfFulfillingLineItems[0].orderable.dispensable.displayUnit}}</td>
                 <td></td>
@@ -97,6 +100,7 @@
                 <td></td>
             </tr>
             <tr ng-repeat-end ng-repeat="fulfillingLineItem in groupOfFulfillingLineItems">
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -148,21 +152,19 @@
             </tbody>
         </table>
     </div>
-    <aside class="pod-footer">
+    <aside class="pod-footer" ng-if="vm.isMerge">
         <dl>
             <dt>{{'proofOfDeliveryView.deliveredBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.deliveredBy"
-                           openlmis-invalid="{{vm.proofOfDelivery.validate().deliveredBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.deliveredBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).deliveredBy | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.deliveredBy}}</div>
             </dd>
             <dt>{{'proofOfDeliveryView.receivedBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy"
-                           openlmis-invalid="{{vm.proofOfDelivery.validate().receivedBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).receivedBy | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.receivedBy}}</div>
             </dd>
@@ -177,16 +179,44 @@
             </dd>
         </dl>
     </aside>
-
 </form>
-<div class="openlmis-toolbar button-group" ng-show="vm.canEdit">
-    <!-- #462: add back to previous button -->
+
+<ng-include src="'siglus-pod-report/siglus-issue-or-receive-report.html'"></ng-include>
+
+ <!-- SIGLUS-REFACTOR: starts here -->
+ <div class="openlmis-toolbar"  ng-if="vm.canEdit">
+    <div class="button-group">
+        <button ng-if="vm.actionType === 'SUBMITTED'" class="defaul" ng-click="vm.returnBack()">
+            {{'stockInitialInventory.goBack' | message}}
+        </button>
+        <button ng-if="!vm.isMerge && vm.actionType !== 'SUBMITTED'" class="danger" ng-click="vm.deleteDraft()">
+            {{'stockInitialInventory.delete' | message}}
+        </button>
+        <button ng-if="vm.isMerge && vm.actionType !== 'SUBMITTED'" class="defaul" ng-click="vm.returnBack()">
+            {{'stockInitialInventory.cancel' | message}}
+        </button>
+    </div>
+    <div class="button-group primary">
+        <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">{{'stockPhysicalInventoryDraft.save' | message}}</button>
+        <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" form="proof-of-delivery-form">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
+    </div>
+</div>
+
+<div class="openlmis-toolbar"  ng-if="!vm.canEdit">
+    <div class="button-group">
+        <siglus-go-back />
+    </div>
+</div>
+ <!-- SIGLUS-REFACTOR: ends here -->
+
+<!-- <div class="openlmis-toolbar button-group" ng-show="vm.canEdit">
+    #462: add back to previous button
     <siglus-go-back />
-    <!-- #462: ends here -->
+    #462: ends here
     <button ng-click="vm.proofOfDelivery.save()">{{'proofOfDeliveryView.save' | message}}</button>
     <button type="submit" class="primary" form="proof-of-delivery-form">{{'proofOfDeliveryView.confirm.label' | message}}</button>
-</div>
-<!-- #462: add back to previous button -->
+</div> -->
+<!-- #462: add back to previous button
 <div class="openlmis-toolbar button-group" ng-if="!vm.canEdit">
     <siglus-go-back />
 </div>

@@ -1,0 +1,274 @@
+<div id="waitDownload" class="wait-for-download1">
+      <section id="sectionFirst" class="section-first">
+        <table cellpadding="0" cellspacing="0">
+          <tr class="hide-tr">
+            <td></td>
+            <td></td>
+            <td style="width: 190px;"></td>
+            <td></td>
+            <td></td>
+            <td style="width: 120px;"></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td rowspan="6" class="background-black banner-text black-width">
+              <div class="banner-text text-nowrap">
+                {{ 'siglusIssueOrReceiveReport.modelo' | message }}
+              </div>
+            </td>
+            <td style="width: 80px; height: 90px;" class="logo--center "><span class="view-table-logo"></span></td>
+            <td colspan="3" class="text__left">
+              <h6 class="report--main-font" openlmis-message="view.rnr.republic.of.mozambique">
+                {{ 'siglusIssueOrReceiveReport.republic_of_mozambique' | message }}
+              </h6>
+              <h6 class="report--main-font" openlmis-message="view.rnr.ministry.of.health">
+                {{ 'siglusIssueOrReceiveReport.ministry_of_health' | message }}
+              </h6>
+              <h6 class="report--main-font" openlmis-message="view.rnr.central.medicines.and.medical.arricles">
+                {{ 'siglusIssueOrReceiveReport.central_medicines_and_medical_articles' | message }}
+              </h6>
+            </td>
+            <td colspan="3" style="border-right: 1px solid #000;" class="report--title">
+              <!-- TODO the Documentation No. input by the user -->
+              <span class="report--title-font">
+                <!-- Issue Voucher Nº -->
+                {{vm.initialDraftInfo.documentNumber}}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="text__left" colspan="2">
+              {{ 'siglusIssueOrReceiveReport.supplier' | message }}: {{ vm.supplier }}
+            </td>
+            <!-- TODO issue destination. If the user chooses “Others”, then show the manually input destination  -->
+            <td class="text__left" colspan="3">
+              {{ 'siglusIssueOrReceiveReport.client' | message }}: {{ vm.client }}
+            </td>
+            <td class="text__left" style="vertical-align: baseline; border-right: 1px solid #000;" colspan="2" rowspan="2">
+              <div class="label-checkbox">
+                <label for="Supply">
+                  {{ 'siglusIssueOrReceiveReport.supply' | message }}:
+                </label>
+                <!-- <input id="Supply" type="checkbox" checked disabled label /> -->
+                <div style="
+                    margin-top: 4px;
+                    border: 2px solid #000;
+                    width: 17px;
+                    height: 17px;
+                    position: relative;
+                    float: right;
+                  "
+                >
+                  <div style="
+                        width: 8px;
+                        height: 15px;
+                        border-right: 4px solid #000;
+                        border-bottom: 4px solid #000;
+                        transform: rotate(40deg);
+                        position: absolute;
+                        top: -3px;
+                        left: 2px;
+                    "
+                  ></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text__left" colspan="2">
+              {{ 'siglusIssueOrReceiveReport.district' | message }}:
+              {{ vm.facility.geographicZone.name }}
+            </td>
+            <!-- keep blank -->
+            <td class="text__left" colspan="3">
+              {{ 'siglusIssueOrReceiveReport.requisitionNr' | message }}:
+            </td>
+          </tr>
+          <tr>
+            <td class="text__left" colspan="2"></td>
+            <!-- keep blank -->
+            <td class="text__left" colspan="2">
+              {{ 'siglusIssueOrReceiveReport.totalOfVolume' | message }}:
+            </td>
+            <!-- keep blank -->
+            <td style="vertical-align: top; text-align: left; font-size: 18px; font-weight: 700;" colspan="1" rowspan="3">
+              {{ 'siglusIssueOrReceiveReport.returned' | message }}
+            </td>
+            <td class="text__left" style="vertical-align: baseline; border-right: 1px solid #000;" colspan="2" rowspan="3">
+              <div class="label-checkbox">
+                <label for="Expired">
+                  {{ 'siglusIssueOrReceiveReport.expired' | message }}
+                </label>
+                <div style="
+                    margin-top: 4px;
+                    border: 2px solid #000;
+                    width: 17px;
+                    height: 17px;
+                    position: relative;
+                    float: right;
+                  "
+                >
+                </div>
+              </div>
+              <div class="label-checkbox">
+                <label for="Overstocked">{{ 'siglusIssueOrReceiveReport.overstocked' | message }}</label>
+                <div style="
+                    margin-top: 4px;
+                    border: 2px solid #000;
+                    width: 17px;
+                    height: 17px;
+                    position: relative;
+                    float: right;
+                  "
+                >
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text__left" colspan="2"></td>
+            <!-- keep blank -->
+            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.requisitionDate' | message }}: </td>
+          </tr>
+          <tr>
+            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.facility.geographicZone.parent.name }}</td>
+            <!-- TODO the date that the user submits the merged draft -->
+            <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.issueVoucherDate' | message }}: {{ vm.issueVoucherDate }}</td>
+          </tr>
+        </table>
+        <table style="width: 198px; margin-left: 14px;" cellpadding="0" cellspacing="0">
+          <tr class="hide-tr">
+            <td></td>
+          </tr>
+          <tr>
+            <td style="border-right: 1px solid #000;">
+              <span class="report--title-font" style="height: 90px; display: block; line-height: 90px;">
+                {{ 'siglusIssueOrReceiveReport.pod' | message }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="text__left report--title-font" style="height: 120px; padding: 0; vertical-align: top; padding: 8px 4px; border-right: 1px solid #000;">
+              <div style="float: left;">{{ 'siglusIssueOrReceiveReport.no' | message }}</div>
+              <div class="N-input" style="text-align: center; float: right;">{{vm.initialDraftInfo.documentNumber}}</div>
+            </td>
+          </tr>
+          <tr>
+            <!-- keep blank -->
+            <td class="text__left" style="border-right: 1px solid #000; height: 72px; vertical-align: top;">{{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.type === 'receive' ? vm.issueVoucherDate  : '' }}</td>
+          </tr>
+        </table>
+      </section>
+    
+      <section class="section-second">
+        <table cellpadding="0" cellspacing="0">
+          <thead id="sectionSecond">
+            <tr class="hide-tr">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td style="border: none; border-left: 1px solid #000;"></td>
+              <td style="width: 84px;"></td>
+              <td style="width: 84px;"></td>
+            </tr>
+            <tr>
+              <td class="background-black black-width"></td>
+              <td class="text__left" colspan="10">{{ 'siglusIssueOrReceiveReport.filledInByTheSupplier' | message }}</td>
+              <td style="width: 14px; border: none;  border-left: 1px solid #000;"></td>
+              <td class="text__left" style="border-right: 1px solid #000;" colspan="2">{{ 'siglusIssueOrReceiveReport.filledInByTheClient' | message }}</td>
+              <!-- <td>123</td> -->
+            </tr>
+            <tr>
+              <!-- TODO product code -->
+              <td class="background-black black-width"></td>
+              <td style="width: 80px; height: 90px;" class="report--subtitle" rowspan="2">{{ 'siglusIssueOrReceiveReport.fnm' | message }}</td>
+              <td style="width: 362px; height: 60px;" class="report--subtitle" colspan="3">{{ 'siglusIssueOrReceiveReport.destinationOfProduct' | message }}
+              </td>
+              <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.lotNr' | message }}
+              </td>
+              <td style="width: 100px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.expiringDate' | message }}
+              </td>
+              <!-- keep blank -->
+              <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityOrdered' | message }}
+              </td>
+              <!-- TODO issue quantity -->
+              <td style="width: 73px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.suppliedQuantity' | message }}
+              </td>
+              <td style="width: 50px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.price' | message }}</td>
+              <td style="width: 104px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.value' | message }}</td>
+              <td style="border: none; border-left: 1px solid #000;"></td>
+              <!-- keep blank -->
+              <td style="padding: 0 6px; height: 60px; font-weight: 700;
+              font-size: 14px;">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}</td>
+              <!-- keep blank -->
+              <td style="padding: 0 4px; height: 60px; font-weight: 700;
+              font-size: 14px; border-right: 1px solid #000;">{{ 'siglusIssueOrReceiveReport.difference' | message }}</td>
+            </tr>
+            <tr>
+              <td class="background-black black-width"></td>
+              <td class="report--main-font">{{ 'siglusIssueOrReceiveReport.productName' | message }}</td>
+              <!-- keep blank -->
+              <td class="report--main-font">{{ 'siglusIssueOrReceiveReport.dosage' | message }}</td>
+              <!-- keep blank -->
+              <td class="report--main-font">{{ 'siglusIssueOrReceiveReport.designation' | message }}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>{{ 'siglusIssueOrReceiveReport.qf' | message }}</td>
+              <td>{{ 'siglusIssueOrReceiveReport.pu' | message }}</td>
+              <td>{{ 'siglusIssueOrReceiveReport.qf' | message }} x {{ 'siglusIssueOrReceiveReport.pu' | message }}</td>
+              <td style="border: none; border-left: 1px solid #000;"></td>
+              <td style="height: 30px;">{{ 'siglusIssueOrReceiveReport.qr' | message }}</td>
+              <td style="border-right: 1px solid #000;">{{ 'siglusIssueOrReceiveReport.qr' | message }} - {{ 'siglusIssueOrReceiveReport.qf' | message }}</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="calcTr" ng-repeat="item in vm.addedLineItems">
+              <td class="background-black black-width" style="font-size: 14px;">{{ $index + 1 }}</td>
+              <td style="width: 30px;">{{ item.productCode }}</td>
+              <td style="width: 260px;">{{ item.productName }}</td>
+              <td></td>
+              <td></td>
+              <td style="width: 100px;">{{ item.lotCode }}</td>
+              <td>{{ item.expirationDate }}</td>
+              <td></td>
+              <td>{{ vm.type === 'issue' ? item.quantity : '' }}</td>
+              <!-- price -->
+              <td></td>
+              <!-- value -->
+              <td style="width: 30px;"></td>
+              <td style="border: none; border-left: 1px solid #000;"></td>
+              <td>{{ vm.type === 'issue' ? '' : item.quantity }}</td>
+              <td style="border-right: 1px solid #000;"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section id="sectionThird" class="section-third">
+        <!-- TODO should be automatically calculated -->
+        <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
+        <!-- total value -->
+        <div class="issue-voucher" style="text-align: center;"></div>
+      </section>
+      <section id="sectionFouth" class="section-fouth">
+        <!-- TODO signature of the user who submitted the merged issue draft -->
+        <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.type === 'issue' ? vm.signature : '' }}</div>
+        <!-- keep blank -->
+        <div class="fouth-conferred">{{ 'siglusIssueOrReceiveReport.conferredBy' | message }}:</div>
+        <!-- keep blank -->
+        <div class="fouth-received">{{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.type === 'receive' ? vm.signature : '' }}</div>
+      </section>
+      <div id="subInformation" class="sub-information">
+        <div style="width: 50%; text-align: left;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</div>
+        <div style="width: 50%; text-align: right;">{{ vm.nowTime }}</div>
+      </div>
+</div>

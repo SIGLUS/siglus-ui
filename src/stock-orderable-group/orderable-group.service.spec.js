@@ -15,7 +15,7 @@
 
 describe('orderableGroupService', function() {
 
-    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries;
+    var $q, $rootScope, service, stockCardRepositoryMock, stockCardSummaries, siglusProductOrderableGroupService;
 
     beforeEach(function() {
         stockCardRepositoryMock = jasmine.createSpyObj('stockCardSummaryRepository', ['query']);
@@ -36,6 +36,7 @@ describe('orderableGroupService', function() {
             service = $injector.get('orderableGroupService');
             this.StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
             this.CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
+            siglusProductOrderableGroupService = $injector.get('siglusProductOrderableGroupService');
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.LotDataBuilder = $injector.get('LotDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
@@ -145,6 +146,7 @@ describe('orderableGroupService', function() {
     });
 
     describe('findAvailableProductsAndCreateOrderableGroups', function() {
+        var productGroups;
         beforeEach(function() {
             prepareStockCardSummaries(
                 new this.StockCardSummaryDataBuilder().build(),
@@ -157,23 +159,144 @@ describe('orderableGroupService', function() {
                 new this.LotDataBuilder().withTradeItemId('trade-item-id-2')
                     .build()
             ];
+            productGroups = [
+                [
+                    {
+                        lot: {
+                            id: '40e1b14e-d56a-4483-bba9-a28830bba4eb',
+                            lotCode: 'FAKE-LOTE-26B09-122017',
+                            expirationDate: '2022-12-12'
+                        },
+                        occurredDate: '2022-08-01',
+                        orderable: {
+                            id: '7d598fb1-d511-46ff-9b53-bac560292138',
+                            productCode: '26B09',
+                            fullProductName: 'Kit de Emergengia -Interagency ' +
+                              'Emergency Health Kit (Basic Unit); N/A; KIT'
+                        },
+                        processedDate: '2022-08-01T08:41:03.545Z',
+                        stockCard: {
+                            id: '73f2373e-f954-46d5-94de-6c9dc61d408f'
+                        },
+                        stockOnHand: 2
+                    }
+                ],
+                [
+                    {
+                        lot: {
+                            id: 'e2877242-1bcc-4eb6-9359-5f34c3ac0c75',
+                            lotCode: 'SEM-LOTE-08A07-032021',
+                            expirationDate: '2022-12-12'
+                        },
+                        occurredDate: '2021-11-23',
+                        orderable: {
+                            id: '23c078e5-d7de-4ee8-99d2-f8cece5ea2d4',
+                            productCode: '08A07',
+                            fullProductName: 'Amoxicilina trihidrato; 500mg; Caps'
+                        },
+                        processedDate: '2021-11-23T01:56:50.827Z',
+                        stockCard: {
+                            id: 'b4cf3b3a-35ef-444d-b2f7-587a6b3cd66f'
+                        },
+                        stockOnHand: 100
+                    },
+                    {
+                        lot: {
+                            id: '2324c8ea-a1f8-4b0c-946f-086cae42a32b',
+                            lotCode: 'SEM-LOTE-08A07-062022-1',
+                            expirationDate: '2022-12-12'
+                        },
+                        occurredDate: '2021-11-23',
+                        orderable: {
+                            id: '23c078e5-d7de-4ee8-99d2-f8cece5ea2d4',
+                            productCode: '08A07',
+                            fullProductName: 'Amoxicilina trihidrato; 500mg; Caps'
+                        },
+                        processedDate: '2021-11-23T01:56:50.827Z',
+                        stockCard: {
+                            id: '2a855e29-ea7c-4b65-8c75-912b835225da'
+                        },
+                        stockOnHand: 5000
+                    }
+                ]
+            ];
+            spyOn(siglusProductOrderableGroupService, 'getProductOrderableGroup').andReturn($q.resolve(productGroups));
         });
 
         it('should query stock card summaries', function() {
             service.findAvailableProductsAndCreateOrderableGroups('program-id', 'facility-id', false);
 
-            expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
+            expect(siglusProductOrderableGroupService.getProductOrderableGroup).toHaveBeenCalledWith({
                 programId: 'program-id',
                 facilityId: 'facility-id'
             });
         });
 
-        it('should create orderable groups from canFulfillForMe', function() {
+        it('should sort orderable group by productName', function() {
             var orderableGroups = findAvailableProductsAndCreateOrderableGroups(false);
 
-            expect(orderableGroups.length).toBe(2);
-            orderableGroupElementEquals(orderableGroups[0][0], stockCardSummaries[0].canFulfillForMe[0]);
-            orderableGroupElementEquals(orderableGroups[1][0], stockCardSummaries[1].canFulfillForMe[0]);
+            expect(orderableGroups).toEqual([
+                [
+                    {
+                        lot: {
+                            id: 'e2877242-1bcc-4eb6-9359-5f34c3ac0c75',
+                            lotCode: 'SEM-LOTE-08A07-032021',
+                            expirationDate: new Date('2022-12-12')
+                        },
+                        occurredDate: new Date('2021-11-23'),
+                        orderable: {
+                            id: '23c078e5-d7de-4ee8-99d2-f8cece5ea2d4',
+                            productCode: '08A07',
+                            fullProductName: 'Amoxicilina trihidrato; 500mg; Caps'
+                        },
+                        processedDate: '2021-11-23T01:56:50.827Z',
+                        stockCard: {
+                            id: 'b4cf3b3a-35ef-444d-b2f7-587a6b3cd66f'
+                        },
+                        stockOnHand: 100
+                    },
+                    {
+                        lot: {
+                            id: '2324c8ea-a1f8-4b0c-946f-086cae42a32b',
+                            lotCode: 'SEM-LOTE-08A07-062022-1',
+                            expirationDate: new Date('2022-12-12')
+                        },
+                        occurredDate: new Date('2021-11-23'),
+                        orderable: {
+                            id: '23c078e5-d7de-4ee8-99d2-f8cece5ea2d4',
+                            productCode: '08A07',
+                            fullProductName: 'Amoxicilina trihidrato; 500mg; Caps'
+                        },
+                        processedDate: '2021-11-23T01:56:50.827Z',
+                        stockCard: {
+                            id: '2a855e29-ea7c-4b65-8c75-912b835225da'
+                        },
+                        stockOnHand: 5000
+                    }
+                ],
+                [
+                    {
+                        lot: {
+                            id: '40e1b14e-d56a-4483-bba9-a28830bba4eb',
+                            lotCode: 'FAKE-LOTE-26B09-122017',
+                            expirationDate: new Date('2022-12-12')
+                        },
+                        occurredDate: new Date('2022-08-01'),
+                        orderable: {
+                            id: '7d598fb1-d511-46ff-9b53-bac560292138',
+                            productCode: '26B09',
+                            fullProductName: 'Kit de Emergengia -Interagency ' +
+                              'Emergency Health Kit (Basic Unit); N/A; KIT'
+                        },
+                        processedDate: '2022-08-01T08:41:03.545Z',
+                        stockCard: {
+                            id: '73f2373e-f954-46d5-94de-6c9dc61d408f'
+                        },
+                        stockOnHand: 2
+                    }
+                ]
+            ]);
+
         });
 
         it('should create orderable groups from approved products', function() {
@@ -244,12 +367,6 @@ describe('orderableGroupService', function() {
                 });
             $rootScope.$apply();
             return orderableGroups;
-        }
-
-        function orderableGroupElementEquals(orderableGroupElement, expected) {
-            expect(orderableGroupElement.orderable).toEqual(expected.orderable);
-            expect(orderableGroupElement.lot).toEqual(expected.lot);
-            expect(orderableGroupElement.stockOnHand).toEqual(expected.stockOnHand);
         }
 
         function orderableGroupElementEqualsNoLot(orderableGroupElement, expected) {

@@ -59,6 +59,8 @@
          */
         vm.programs = programs;
 
+        vm.adjustmentType = adjustmentType;
+
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
@@ -87,17 +89,15 @@
                         draftId: draft && draft.id
                     });
                 });
+
         };
 
-        vm.$onInit = function() {
-            drafts = _.filter(drafts, function(draft) {
-                return draft;
-            });
-            if (drafts.length > 0) {
+        vm.setDraftAttribute = function(data) {
+            if (data.length > 0) {
                 vm.programs = _.map(programs, function(program) {
-                    program.draft = _.find(drafts, function(draft) {
+                    program.draft = !_.isEmpty(_.find(data, function(draft) {
                         return draft.programId === program.id;
-                    });
+                    }));
                     return program;
                 });
             } else {
@@ -106,6 +106,13 @@
                     return program;
                 });
             }
+        };
+
+        vm.$onInit = function() {
+            drafts = _.filter(drafts, function(draft) {
+                return draft;
+            });
+            vm.setDraftAttribute(drafts);
         };
         // SIGLUS-REFACTOR: ends here
     }

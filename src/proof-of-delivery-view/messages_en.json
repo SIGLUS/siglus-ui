@@ -1,4 +1,5 @@
 {
   "proofOfDeliveryView.partialFulfilledQuantity": "Partial Fulfilled",
-  "proofOfDeliveryView.requisitionNumber": "Requisition number"
+  "proofOfDeliveryView.requisitionNumber": "Requisition number",
+  "proofOfDeliveryView.fnm":"FNM"
 }

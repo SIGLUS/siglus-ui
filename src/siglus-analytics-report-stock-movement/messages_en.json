@@ -1,0 +1,17 @@
+{
+  "stock.movement.title": "Stock Movements Report",
+  "stock.movement.date":"Date of Movement",
+  "stock.movement.reason":"Origin/Destination of Movement",
+  "stock.movement.document.number":"Document Number",
+  "stock.movement.entries":"Entries",
+  "stock.movement.negative.adjustment":"Negative Adjustment",
+  "stock.movement.positive.adjustment":"Positive Adjustment",
+  "stock.movement.issues":"Issues",
+  "stock.movement.soh":"Product SOH",
+  "stock.movement.requestedquantity":"Requested",
+  "stock.movement.signature":"Signature",
+  "stock.movement.health.facility":"Health Facility",
+  "stock.movement.district":"District",
+  "stock.movement.province":"Province",
+  "stock.movement.export.data":"Export Data"
+}

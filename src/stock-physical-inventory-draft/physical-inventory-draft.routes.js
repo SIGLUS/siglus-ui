@@ -26,8 +26,8 @@
     // SIGLUS-REFACTOR: ends here
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
-        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draft', {
-            url: '/:id?keyword&page&size',
+        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draftList.draft', {
+            url: '/:id?keyword&page&size&subDraftIds&draftNum&isMerged&actionType',
             views: {
                 '@openlmis': {
                     controller: 'PhysicalInventoryDraftController',
@@ -52,29 +52,55 @@
                     }
                     return $stateParams.facility;
                 },
-                draft: function(facility,  $stateParams, physicalInventoryFactory, physicalInventoryDataService, $q) {
+                program: function($stateParams, programService) {
+                    if (_.isUndefined($stateParams.program)) {
+                        return programService.get($stateParams.programId).then(function(programs) {
+                            return programs;
+                        });
+                    }
+                    return $stateParams.program;
+                },
+                subDraftIds: function($stateParams) {
+                    return $stateParams.subDraftIds.indexOf(',')
+                        ? $stateParams.subDraftIds.split(',')
+                        : [$stateParams.subDraftIds];
+                },
+                draft: function(
+                    facility,
+                    $stateParams,
+                    physicalInventoryFactory,
+                    physicalInventoryDataService,
+                    $q,
+                    program
+                ) {
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
                     }
                     $stateParams.draft = undefined;
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        physicalInventoryFactory.getPhysicalInventory($stateParams.id)
-                            .then(function(draft) {
-                                physicalInventoryDataService.setDraft(facility.id, draft);
-                                deferred.resolve();
-                            });
+                        if ($stateParams.subDraftIds && !$stateParams.isMerged) {
+                            var id = $stateParams.subDraftIds.length > 1
+                                ? $stateParams.subDraftIds.split(',')
+                                : [$stateParams.subDraftIds];
+
+                            var isMerge = $stateParams.isMerged === 'true';
+                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, isMerge)
+                                .then(function(draft) {
+                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                    deferred.resolve();
+                                });
+                        } else {
+                            physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                                .then(function(draft) {
+                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                    deferred.resolve();
+                                });
+                        }
                     } else {
                         deferred.resolve();
                     }
                     return deferred.promise;
-                },
-                /*eslint-disable */
-                program: function($stateParams, programService, physicalInventoryDataService, facility, draft) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get(physicalInventoryDataService.getDraft(facility.id).programId);
-                    }
-                    return $stateParams.program;
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
@@ -98,7 +124,6 @@
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
                             stateParamsCopy.draft.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
-
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {
@@ -115,7 +140,7 @@
                         return groups;
                     })
                         .then(function(items) {
-                            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id,items);
+                            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, items);
                         });
                 },
                 /*eslint-enable */

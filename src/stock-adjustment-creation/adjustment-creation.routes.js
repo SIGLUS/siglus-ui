@@ -66,16 +66,6 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
-                        );
-                    }
-                    return $stateParams.orderableGroups;
-                },
-                // SIGLUS-REFACTOR: ends here
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
@@ -95,6 +85,18 @@
                             adjustmentType.state, $stateParams.draftId);
                     }
                     return $stateParams.draft;
+                },
+                orderableGroups: function($stateParams, program, facility, draft, orderableGroupService) {
+                    if (!$stateParams.hasLoadOrderableGroups) {
+                        var allLineOrderableIds = draft.lineItems.map(function(line) {
+                            return line.orderableId;
+                        });
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, null,
+                            allLineOrderableIds
+                        );
+                    }
+                    return $stateParams.orderableGroups;
                 },
                 addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {

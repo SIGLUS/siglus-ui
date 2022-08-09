@@ -1,0 +1,17 @@
+{
+  "analyticsReportMetabase.systemVersion.title": "System Version Report",
+  "analyticsReportMetabase.expiringProducts.title": "Expiring Products Report",
+  "analyticsReportMetabase.systemUpdate.title":"System Update Report",
+  "analyticsReportMetabase.expiredProducts.title": "Expired Products Report",
+  "analyticsReportMetabase.requisitionAndMonthly.title": "Requisitions & Monthly Report",
+  "analyticsReportMetabase.sohReportByProduct.title": "SOH by Product Report",
+  "analyticsReportMetabase.sohByLot.title": "SOH by Lot Report",
+  "analyticsReportMetabase.stockStatus.title": "Stock Status Report",
+  "analyticsReportMetabase.mmiaRegimens.title": "MMIA Regimens Report",
+  "analyticsReportMetabase.fulfillment.title":"Fulfillment Report",
+  "analyticsReportMetabase.historicalData.title":"Historical Data Report",
+  "analyticsReportMetabase.malariaConsumptionData.title":"Malaria Consumption Data Report",
+  "analyticsReportMetabase.requisitionData.title":"Requisition Data Report",
+  "analyticsReportMetabase.rapidTestConsumptionData.title":"Rapid Test Consumption Data Report",
+  "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report"
+}

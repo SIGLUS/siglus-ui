@@ -51,10 +51,11 @@
          * @return {Promise}    the orderable groups from state params or stock card summaries.
          */
         // #225: cant view detail page when not have stock view right
-        function getGroupsWithoutStock(stateParams, program, facility, rightName) {
+        function getGroupsWithoutStock(stateParams, program, facility, rightName, draftId) {
             if (!stateParams.orderableGroups) {
                 return orderableGroupService
-                    .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false, rightName)
+                    .findAvailableProductsAndCreateOrderableGroups(program.id, facility.id, false,
+                        rightName, draftId)
                     .then(getNotEmptyGroupsWithNotZeroSoh);
             }
             return stateParams.orderableGroups;
@@ -63,8 +64,8 @@
 
         function getNotEmptyGroupsWithNotZeroSoh(orderableGroups) {
             var filteredGroups = [];
-            orderableGroups.forEach(function(orderableGroup) {
-                var group = orderableGroup.filter(isStockOnHandNotZero);
+            _.forEach(orderableGroups, function(orderableGroup) {
+                var group = _.filter(orderableGroup, isStockOnHandNotZero);
                 if (group.length !== 0) {
                     filteredGroups.push(group);
                 }

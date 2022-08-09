@@ -28,9 +28,9 @@
         .module('stock-adjustment-creation')
         .service('sourceDestinationService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    service.$inject = ['$q', '$resource', 'stockmanagementUrlFactory'];
 
-    function service($resource, stockmanagementUrlFactory) {
+    function service($q, $resource, stockmanagementUrlFactory) {
         this.getSourceAssignments = getSourceAssignments;
         this.getDestinationAssignments = getDestinationAssignments;
 

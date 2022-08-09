@@ -32,12 +32,12 @@
         '$filter', 'openlmisDateFilter', 'messageService', 'productNameFilter', 'dateUtils',
         // SIGLUS-REFACTOR: starts here
         // '$resource', 'stockmanagementUrlFactory',
-        'siglusStockEventService', 'ADJUSTMENT_TYPE'
+        'siglusStockEventService', 'ADJUSTMENT_TYPE', 'siglusStockUtilsService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($filter, openlmisDateFilter, messageService, productNameFilter, dateUtils, siglusStockEventService,
-                     ADJUSTMENT_TYPE) {
+                     ADJUSTMENT_TYPE, siglusStockUtilsService) {
         // SIGLUS-REFACTOR: starts here
         // var resource = $resource(stockmanagementUrlFactory('/api/stockEvents'));
         // SIGLUS-REFACTOR: ends here
@@ -84,12 +84,13 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature) {
+        function submitAdjustments(programId, facilityId, lineItems, adjustmentType, signature, occurredDate) {
             var event = {
                 programId: programId,
                 facilityId: facilityId,
                 signature: signature
             };
+            var formattedOccurredDate = siglusStockUtilsService.formatDate(occurredDate);
             event.lineItems = _.map(lineItems, function(item) {
                 var isKit = item.isKit || (item.orderable && item.orderable.isKit);
                 var lotId = null;
@@ -116,7 +117,7 @@
                     extraData: {
                         vvmStatus: item.vvmStatus
                     },
-                    occurredDate: item.occurredDate,
+                    occurredDate: formattedOccurredDate,
                     reasonId: item.reason ? item.reason.id : null,
                     reasonFreeText: item.reasonFreeText,
                     documentationNo: item.documentationNo ? item.documentationNo : '',

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -eu
+
+project_dir="$(dirname $0)/.."
+cd "${project_dir}"
+
+openlmis_modules_path='.openlmis'
+
+rm -rf ${openlmis_modules_path}
+mkdir -p "${openlmis_modules_path}"
+cp -r ../openlmis-* "${openlmis_modules_path}/"
+cp -r ../dev-ui "${openlmis_modules_path}/"

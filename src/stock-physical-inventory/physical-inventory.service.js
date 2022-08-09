@@ -46,24 +46,54 @@
             },
             update: {
                 method: 'PUT',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
+            },
+            deleteDraftList: {
+                method: 'DELETE',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             },
             delete: {
                 method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft'),
+                hasBody: true,
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
+            },
+            find: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
+            },
+            getConflict: {
+                method: 'GET',
+                url: '/api/get-conflict-draft'
+            },
+            submit: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraftSubmit')
+            },
+            validateConflictProgram: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/conflict')
             }
         });
         // SIGLUS-REFACTOR: ends here
 
         this.getDraft = getDraft;
         this.createDraft = createDraft;
+        this.getConflictDraft = getConflictDraft;
         this.getPhysicalInventory = getPhysicalInventory;
+        this.getPhysicalInventorySubDraft = getPhysicalInventorySubDraft;
         this.search = search;
         this.saveDraft = saveDraft;
         this.deleteDraft = deleteDraft;
+        this.deleteDraftList = deleteDraftList;
         this.submitPhysicalInventory = submit;
+        this.submitSubPhysicalInventory = subSubmit;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
+
+        this.validateConflictProgram = validateConflictProgram;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -86,9 +116,18 @@
             })
                 .$promise
                 .then(function(response) {
-                    siglusStockEventService.formatResponse(response[0]);
+                    siglusStockEventService.formatResponse(response);
                     return response;
                 });
+        }
+
+        function validateConflictProgram(program, facility) {
+            return resource.validateConflictProgram({
+                program: program,
+                facility: facility,
+                isDraft: true
+            })
+                .$promise;
         }
 
         /**
@@ -112,6 +151,16 @@
                 });
         }
 
+        function getPhysicalInventorySubDraft(id) {
+            return resource.find({
+                subDraftIds: id
+            })
+                .$promise
+                .then(function(response) {
+                    return siglusStockEventService.formatResponse(response);
+                });
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory.physicalInventoryService
@@ -124,10 +173,29 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function createDraft(program, facility) {
+        function createDraft(program, facility, splitNum, isInitialInventory) {
+            if (isInitialInventory) {
+                return resource.save({
+                    splitNum: Number(splitNum),
+                    initialPhysicalInventory: true
+                }, {
+                    programId: program,
+                    facilityId: facility
+                }).$promise;
+            }
             return resource.save({
+                splitNum: Number(splitNum)
+            }, {
                 programId: program,
                 facilityId: facility
+            }).$promise;
+
+        }
+
+        function getConflictDraft(facilityId, programId) {
+            return resource.getConflict({
+                programId: programId,
+                facilityId: facilityId
             }).$promise;
         }
 
@@ -187,9 +255,7 @@
          */
         // SIGLUS-REFACTOR: starts here
         function saveDraft(draft) {
-            return resource.update({
-                id: draft.id
-            }, siglusStockEventService.formatPayload(draft)).$promise;
+            return resource.update(siglusStockEventService.formatPayload(draft)).$promise;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -204,10 +270,20 @@
          * @param  {String}   id  Draft that will be removed
          * @return {Promise}      Promise with response
          */
-        function deleteDraft(id) {
-            return resource.delete({
+
+        function deleteDraftList(id) {
+            return resource.deleteDraftList({
                 id: id
             }).$promise;
+        }
+
+        function deleteDraft(ids, isInitialInventory) {
+            if (isInitialInventory) {
+                return resource.delete({
+                    initialPhysicalInventory: true
+                }, ids).$promise;
+            }
+            return resource.delete({}, ids).$promise;
         }
 
         /**
@@ -221,6 +297,33 @@
          * @param  {Object} physicalInventory Draft that will be saved
          * @return {Promise}                  Submitted Physical Inventory
          */
+        function subSubmit(physicalInventory) {
+            var draft = angular.copy(physicalInventory);
+
+            // SIGLUS-REFACTOR: Filter not added items
+            draft.lineItems = _.map(physicalInventory.lineItems, function(item) {
+                return {
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    lotCode: item.lot ? item.lot.lotCode : null,
+                    expirationDate: item.lot ? item.lot.expirationDate : null,
+                    quantity: item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    stockAdjustments: item.stockAdjustments,
+                    reasonFreeText: item.reasonFreeText,
+                    stockCardId: item.stockCardId,
+                    programId: item.programId
+                };
+            });
+            // SIGLUS-REFACTOR: ends here
+            var event = siglusStockEventService.formatPayload(draft);
+            // SIGLUS-REFACTOR: starts here
+            return resource.submit(event).$promise;
+            // SIGLUS-REFACTOR: ends here
+        }
+
         function submit(physicalInventory) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
             // SIGLUS-REFACTOR: starts here
@@ -239,8 +342,7 @@
             return resource.query({
                 program: program,
                 facility: facility,
-                isDraft: true,
-                canInitialInventory: true
+                isDraft: true
             })
                 .$promise
                 .then(function(response) {

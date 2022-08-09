@@ -6,18 +6,18 @@
         </caption>
         <thead>
         <tr>
-            <th>{{vm.key('program') | message}}</th>
+            <th style="min-width: 160px;">{{vm.key('program') | message}}</th>
             <th>{{vm.key('action') | message}}</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="program in vm.programs">
-            <td>{{program.name}}</td>
+            <td style="min-width: 160px;">{{program.name}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
             <td ng-if="program.draft">
 
                 <input
-                        id="proceedButton"
+                        id="continueButton"
                         type="button"
                         value="{{(vm.key('continue')) | message}}"
                         class="primary"
@@ -26,7 +26,7 @@
             </td>
             <td ng-if="!program.draft">
                 <input
-                        id="proceedButton"
+                        id="startButton"
                         type="button"
                         value="{{vm.key('start') | message}}"
                         class="primary"

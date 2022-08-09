@@ -34,9 +34,10 @@
     }
 
     decorator.$inject = ['$delegate', 'messageService', 'StockCardSummaryRepositoryImpl',
-        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository'];
+        'FullStockCardSummaryRepositoryImpl', 'StockCardSummaryRepository', 'siglusProductOrderableGroupService',
+        'dateUtils'];
     function decorator($delegate, messageService, StockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl,
-                       StockCardSummaryRepository) {
+                       StockCardSummaryRepository, siglusProductOrderableGroupService, dateUtils) {
         var orderableGroupService = $delegate;
         var noLotDefined = {
             lotCode: messageService.get('orderableGroupService.noLotDefined')
@@ -95,9 +96,9 @@
          * @param {Object} selectedItem     product with lot property. Property displayLotMessage
          *                                  will be assigned to id.
          */
-        function determineLotMessage(selectedItem, orderableGroup) {
+        function determineLotMessage(selectedItem, orderableGroup, isInitialInventory) {
             // SIGLUS-REFACTOR: starts here
-            if (selectedItem.lot && selectedItem.lot.id) {
+            if ((selectedItem.lot && selectedItem.lot.id) || (selectedItem.lot && isInitialInventory)) {
             // SIGLUS-REFACTOR: ends here
                 selectedItem.displayLotMessage = selectedItem.lot.lotCode;
             } else {
@@ -123,7 +124,7 @@
                 .find(function(groupItem) {
                     // SIGLUS-REFACTOR: strats here
                     var selectedNoLot = !groupItem.lot && (!selectedLot || angular.equals(selectedLot, noLotDefined));
-                    var lotMatch = groupItem.lot && angular.equals(groupItem.lot, selectedLot);
+                    var lotMatch = groupItem.lot && selectedLot && angular.equals(groupItem.lot.id, selectedLot.id);
                     // SIGLUS-REFACTOR: ends here
                     return selectedNoLot || lotMatch;
                 })
@@ -144,9 +145,8 @@
          * get lots without null
          */
         function lotsOfWithNull(orderableGroup) {
-            var lots = _.chain(orderableGroup).pluck('lot')
+            return  _.chain(orderableGroup).pluck('lot')
                 .value();
-            return lots;
         }
 
         /**
@@ -211,26 +211,46 @@
          * by orderable id.
          */
         function findAvailableProductsAndCreateOrderableGroups(programId, facilityId, includeApprovedProducts,
-                                                               rightName) {
+                                                               rightName, draftId, orderableIds) {
             var repository;
             if (includeApprovedProducts) {
                 repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
-            } else {
-                repository = new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl());
+                return repository.query({
+                    programId: programId,
+                    facilityId: facilityId,
+                    rightName: rightName,
+                    draftId: draftId,
+                    orderableIds: orderableIds
+                }).then(function(summaries) {
+                    return $delegate.groupByOrderableId(summaries.content.reduce(function(items, summary) {
+                        summary.canFulfillForMe.forEach(function(fulfill) {
+                            items.push(fulfill);
+                        });
+                        return items;
+                    }, []));
+                });
             }
-
-            return repository.query({
+            var params = {
                 programId: programId,
                 facilityId: facilityId,
-                rightName: rightName
-            }).then(function(summaries) {
-                return $delegate.groupByOrderableId(summaries.content.reduce(function(items, summary) {
-                    summary.canFulfillForMe.forEach(function(fulfill) {
-                        items.push(fulfill);
+                rightName: rightName,
+                draftId: draftId
+            };
+            return siglusProductOrderableGroupService.getProductOrderableGroup(params).then(function(productGroup) {
+                _.forEach(productGroup, function(group) {
+                    _.forEach(group, function(item) {
+                        item.occurredDate = dateUtils.toDate(item.occurredDate);
+
+                        if (item.lot && item.lot.expirationDate) {
+                            item.lot.expirationDate = dateUtils.toDate(item.lot.expirationDate);
+                        }
                     });
-                    return items;
-                }, []));
+                });
+                return _.sortBy(productGroup, function(group) {
+                    return group[0].orderable.fullProductName;
+                });
             });
+
         }
     }
 })();

@@ -77,18 +77,18 @@
                 </button>
             </td>
         </tr>
-        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
-            <td>{{fulfills.orderable.productCode}}</td>
-            <td>{{fulfills.orderable.fullProductName}}</td>
-            <td>{{fulfills.lot && !fulfills.orderable.isKit ? fulfills.lot.lotCode : ''}}</td>
-            <td>{{fulfills.lot && !fulfills.orderable.isKit ? (fulfills.lot.expirationDate | openlmisDate) : ''}}</td>
-            <td>{{fulfills.occurredDate | openlmisDate}}</td>
-            <td class="text-align-right">{{fulfills.stockOnHand}}</td>
+        <tr ng-repeat="stockCardDetail in summary.stockCardDetails | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+            <td>{{stockCardDetail.orderable.productCode}}</td>
+            <td>{{stockCardDetail.orderable.fullProductName}}</td>
+            <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? stockCardDetail.lot.lotCode : ''}}</td>
+            <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? (stockCardDetail.lot.expirationDate | openlmisDate) : ''}}</td>
+            <td>{{stockCardDetail.occurredDate | openlmisDate}}</td>
+            <td class="text-align-right">{{stockCardDetail.stockOnHand}}</td>
             <!-- SIGLUS-REFACTOR: ends here -->
             <td>
-                <button ng-if="fulfills.stockCard"
+                <button ng-if="stockCardDetail.stockCard"
                         type="button"
-                        ng-click="vm.viewSingleCard(fulfills.stockCard.id)"
+                        ng-click="vm.viewSingleCard(stockCardDetail.stockCard.id)"
                         class="primary">
                     {{'stockCardSummaryList.view'| message}}
                 </button>
