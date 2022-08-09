@@ -33,7 +33,8 @@
         'requisition',
         'openlmisDateFilter',
         'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES'
+        'SIGLUS_SECTION_TYPES',
+        'siglusDownloadLoadingModalService'
     ];
 
     function controller(
@@ -41,7 +42,8 @@
         requisition,
         openlmisDateFilter,
         siglusTemplateConfigureService,
-        SIGLUS_SECTION_TYPES
+        SIGLUS_SECTION_TYPES,
+        siglusDownloadLoadingModalService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -129,10 +131,11 @@
             return openlmisDateFilter(date, 'MMMM');
         }
         vm.downloadPdf = function() {
+            siglusDownloadLoadingModalService.open();
             var node = document.getElementById('test_repaid_wrap');
             var contentWidth = node.offsetWidth;
             var contentHeight = node.offsetHeight;
-            var imgWidth = 595.28;
+            var imgWidth = 585.28;
             var imgHeight = 592.28 / contentWidth * contentHeight;
             // var rate = contentWidth / 595.28;
             // var imgY = contentHeight / rate;
@@ -147,7 +150,7 @@
                 var PDF = new jsPDF('', 'pt', 'a4');
                 // 595×842 a4纸
 
-                PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                PDF.addImage(pageData, 'JPEG', 5, 0, imgWidth, imgHeight);
 
                 PDF.save(
                     getPdfName(
@@ -156,6 +159,7 @@
                         vm.facility.code
                     )
                 );
+                siglusDownloadLoadingModalService.close();
             });
         };
     }
