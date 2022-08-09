@@ -274,7 +274,6 @@
         //     );
         // }
         function downloadPdf() {
-            console.log('进来了');
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
@@ -544,19 +543,11 @@
                     // )
                     vm.fileName + '.pdf'
                 );
-                console.log(22222222222);
                 siglusDownloadLoadingModalService.close();
                 return;
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
-            // console.log('22222', pageNumber);
-            // opt.PDF.setFontSize(10);
-            // opt.PDF.text(
-            //     pageNumber.toString(),
-            //     585 / 2,
-            //     opt.A4_HEIGHT
-            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');
@@ -781,6 +772,8 @@
                             proofOfDeliveryManageService.getPodInfo(pod.id, orderId).then(function(res) {
                                 vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                                 vm.supplier = res.supplier;
+                                vm.preparedBy = res.preparedBy;
+                                vm.conferredBy = res.conferredBy;
                                 vm.client = res.client;
                                 vm.supplierDistrict = res.supplierDistrict;
                                 vm.supplierProvince = res.supplierProvince;

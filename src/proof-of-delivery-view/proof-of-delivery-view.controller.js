@@ -783,6 +783,8 @@
             proofOfDeliveryManageService.getPodInfo(podId, orderId).then(function(res) {
                 vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                 vm.supplier = res.supplier;
+                vm.preparedBy = res.preparedBy;
+                vm.conferredBy = res.conferredBy;
                 vm.client = res.client;
                 vm.supplierDistrict = res.supplierDistrict;
                 vm.supplierProvince = res.supplierProvince;

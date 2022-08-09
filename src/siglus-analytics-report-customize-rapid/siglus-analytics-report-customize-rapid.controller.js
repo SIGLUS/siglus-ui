@@ -33,8 +33,7 @@
         'requisition',
         'openlmisDateFilter',
         'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES',
-        'siglusDownloadLoadingModalService'
+        'SIGLUS_SECTION_TYPES'
     ];
 
     function controller(
@@ -42,8 +41,7 @@
         requisition,
         openlmisDateFilter,
         siglusTemplateConfigureService,
-        SIGLUS_SECTION_TYPES,
-        siglusDownloadLoadingModalService
+        SIGLUS_SECTION_TYPES
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -57,7 +55,7 @@
         vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.requisition = {};
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -65,14 +63,18 @@
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
             services = requisition.testConsumptionLineItems;
-            vm.comments = requisition.draftStatusMessage;
+            var commentsStr = _.reduce(requisition.statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            vm.comments = commentsStr.substr(0, commentsStr.length - 1);
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
-            if (requisition.extraData.signaure) {
-                vm.signaure.approve = vm.signaure && vm.signaure.approve.length
-                    ? vm.signaure.approve.join(',')
-                    : '';
-            }
+            // if (requisition.extraData.signaure) {
+            //     vm.signaure.approve = vm.signaure && vm.signaure.approve.length
+            //         ? vm.signaure.approve.join(',')
+            //         : '';
+            // }
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
@@ -127,7 +129,6 @@
             return openlmisDateFilter(date, 'MMMM');
         }
         vm.downloadPdf = function() {
-            siglusDownloadLoadingModalService.open();
             var node = document.getElementById('test_repaid_wrap');
             var contentWidth = node.offsetWidth;
             var contentHeight = node.offsetHeight;
@@ -152,10 +153,9 @@
                     getPdfName(
                         requisition.processingPeriod.startDate,
                         facility.name,
-                        requisition.id.substring(0, 8)
+                        vm.facility.code
                     )
                 );
-                siglusDownloadLoadingModalService.close();
             });
         };
     }

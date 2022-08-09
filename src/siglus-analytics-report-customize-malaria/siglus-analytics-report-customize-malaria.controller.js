@@ -29,14 +29,13 @@
         .controller('siglusAnalyticsReportCustomizeMalariaController', controller);
 
     controller.$inject = [ 'requisition', 'facility', 'siglusColumnUtils',
-        'siglusTemplateConfigureService', 'siglusDownloadLoadingModalService',
-        'requisitionValidator', 'SIGLUS_SECTION_TYPES', 'openlmisDateFilter'];
+        'siglusTemplateConfigureService', 'requisitionValidator',
+        'SIGLUS_SECTION_TYPES', 'siglusDownloadLoadingModalService', 'openlmisDateFilter'];
 
     function controller(requisition, facility, siglusColumnUtils, siglusTemplateConfigureService,
-                        requisitionValidator, SIGLUS_SECTION_TYPES, openlmisDateFilter,
-                        siglusDownloadLoadingModalService) {
+                        requisitionValidator, SIGLUS_SECTION_TYPES,
+                        siglusDownloadLoadingModalService, openlmisDateFilter) {
         var vm = this;
-
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
         vm.requisition = undefined;
@@ -58,7 +57,7 @@
         vm.yearAndMonth = undefined;
         vm.processingPeriodEndDate = undefined;
         vm.submitDate = undefined;
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.requisition = requisition;
             vm.facility = facility;
@@ -150,7 +149,7 @@
                     var PDF = new jsPDF('', 'pt', 'a4');
                     PDF.addImage(pageData, 'PNG', 45, 45, imgWidth, imgHeight);
                     PDF.save('ALS.'
-                    + vm.requisition.id.substr(0, 8) + '.'
+                    + vm.facility.code + '.'
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + '01'
