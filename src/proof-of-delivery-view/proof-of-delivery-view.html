@@ -154,24 +154,31 @@
     </div>
     <aside class="pod-footer" ng-if="vm.isMerge">
         <dl>
-            <dt>{{'proofOfDeliveryView.deliveredBy' | message}}</dt>
+            <dt>{{'proofOfDeliveryView.preparedBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.deliveredBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).deliveredBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.preparedBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).preparedBy | message}}"/>
                 </div>
-                <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.deliveredBy}}</div>
+                <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.preparedBy}}</div>
+            </dd>
+            <dt>{{'proofOfDeliveryView.conferredBy' | message}}</dt>
+            <dd>
+                <div ng-if="vm.canEdit">
+                    <input type="text" ng-model="vm.proofOfDelivery.conferredBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).conferredBy | message}}"/>
+                </div>
+                <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.conferredBy}}</div>
             </dd>
             <dt>{{'proofOfDeliveryView.receivedBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).receivedBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" disabled openlmis-invalid="{{vm.proofOfDelivery.validate(true).receivedBy | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.receivedBy}}</div>
             </dd>
             <dt>{{'proofOfDeliveryView.receivedDate' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input id="receivedDate" type="date" ng-model="vm.proofOfDelivery.receivedDate" required/>
+                    <input id="receivedDate" type="date" max-date="vm.maxDate"  ng-model="vm.proofOfDelivery.receivedDate" required/>
                 </div>
                 <div ng-if="!vm.canEdit">
                     {{vm.proofOfDelivery.receivedDate | openlmisDate}}
