@@ -85,10 +85,6 @@
                 facility: user.homeFacilityId
             })
                 .then(function(res) {
-                    if (!res.canInitialInventory) {
-                        currentUserService.clearCache();
-                        navigationStateService.clearStatesAvailability();
-                    }
                     defered.resolve(res.canInitialInventory);
                 });
 
@@ -124,16 +120,18 @@
                             })
                             .catch(function() {
                                 loadingModalService.close();
-                            });
+                            })
+                            .finally(loadingModalService.close);
 
                     })
                         .catch(function() {
                             loadingModalService.close();
-                        });
+                        })
+                        .finally(loadingModalService.close);
                 } else {
                     currentUserService.clearCache();
                     navigationStateService.clearStatesAvailability();
-                    $state.go($state.current.name, $stateParams, {
+                    $state.go('openlmis.home', {}, {
                         reload: true
                     });
                 }
