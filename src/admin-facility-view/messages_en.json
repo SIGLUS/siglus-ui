@@ -1,6 +1,7 @@
 {
   "adminFacilityView.noAssociatedPrograms": "No programs are associated with  ${facility}",
   "adminFacilityView.program": "Program",
+  "adminFacilityView.reports": "Reports",
   "adminFacilityView.startDate": "Start Date",
   "adminFacilityView.active": "Active",
   "adminFacilityView.locallyFulfill": "Locally Fulfilled",
@@ -12,8 +13,10 @@
   "adminFacilityView.saveFacility.fail": "Failed to save facility!",
   "adminFacilityView.facilityInformation": "Facility Information",
   "adminFacilityView.associatedPrograms": "Associated Programs",
+  "adminFacilityView.associatedReports": "Associated Reports",
   "adminFacilityView.add": "Add",
   "adminFacilityView.savePrograms": "Save Programs",
+  "adminFacilityView.saveReports": "Save Reports",
   "adminFacilityView.enabled": "Enabled",
   "adminFacilityView.startDate.description": "The program start date determines the first date available for users to enter requisitions related to the program.",
   "adminFacilityView.locationManagement": "Location Management",

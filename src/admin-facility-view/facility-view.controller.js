@@ -162,6 +162,7 @@
             );
             vm.facilityId = angular.copy(facility.id);
             vm.facilityWithPrograms = angular.copy(facility);
+            console.log('### vm.facilityWithPrograms', vm.facilityWithPrograms);
             vm.facilityTypes = facilityTypes;
             vm.geographicZones = geographicZones;
             vm.facilityOperators = facilityOperators;
