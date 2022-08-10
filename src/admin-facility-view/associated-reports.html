@@ -1,0 +1,35 @@
+<form style="justify-content: space-between;" id="add-program-form" class="form-inline" ng-submit="vm.addProgram()" reload-form>
+    <div class="form-group">
+        <label for="program">{{'adminFacilityView.reports' | message}}</label>
+        <select id="program" ng-model="vm.selectedProgram"
+            ng-options="program as program.name for program in vm.programs"
+            required>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="start-date">{{'adminFacilityView.startDate' | message}}</label>
+        <input id="start-date" type="date" ng-model="vm.selectedStartDate" required/>
+    </div>
+    <button type="submit" class="add">{{'adminFacilityView.add' | message}}</button>
+</form>
+<form id="associatedReports" class="openlmis-table-container" ng-submit="vm.saveFacilityWithReports()">
+    <table>
+        <caption ng-if="!vm.facilityWithPrograms.supportedPrograms || vm.facilityWithPrograms.supportedPrograms.length === 0">
+            {{'adminFacilityView.noAssociatedPrograms' | message: {facility: vm.facility.name} }}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'adminFacilityView.reports' | message}}</th>
+                <th>{{'adminFacilityView.active' | message}}</th>
+                <th style="width: 262px;" popover="{{'adminFacilityView.startDate.description' | message}}">{{'adminFacilityView.startDate' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="program in vm.facilityWithPrograms.supportedPrograms">
+                <td>{{program.name}}</td>
+                <td><input type="checkbox" ng-model="program.supportActive"/></td>
+                <td><input type="date" ng-model="program.supportStartDate"/></td>
+            </tr>
+        </tbody>
+    </table>
+</form>

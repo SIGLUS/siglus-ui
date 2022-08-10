@@ -548,6 +548,12 @@
             }
             opt.PDF.addPage();
             var pageNumber = opt.pageNumber + 1;
+            // opt.PDF.setFontSize(10);
+            // opt.PDF.text(
+            //     pageNumber.toString(),
+            //     585 / 2,
+            //     opt.A4_HEIGHT
+            // );
             var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
                 incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
                 inconsistencyTh = document.getElementById('inconsistencyTh');
@@ -688,7 +694,6 @@
                         585,
                         _reback[2].nodeHeight * opt.rate + 2
                     );
-                    console.log(11111111111);
                     // 生成PDF文件，并且命名
                     opt.PDF.save(
                         // getPdfName(
