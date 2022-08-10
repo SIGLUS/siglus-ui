@@ -33,7 +33,7 @@
         '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
         'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
-        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService'
+        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility'
     ];
 
     function controller(
@@ -56,7 +56,8 @@
         siglusInitialProofOfDeliveryService,
         messageService,
         SIGLUS_TIME,
-        siglusDownloadLoadingModalService
+        siglusDownloadLoadingModalService,
+        facility
     ) {
 
         var vm = this;
@@ -674,8 +675,6 @@
                             res.nodeWidth * opt.rate,
                             res.nodeHeight * opt.rate
                         );
-                        // console.log('promiseListInLen', promiseListInLen);
-                        // console.log('_index', _index);
                         if (promiseListInLen - 1 === _index) {
                             opt.PDF.text(
                                 pageNumber.toString() + '-END',
@@ -729,7 +728,15 @@
          * @param {String} isStarter status of POD
          */
         function validatePODStatus(order) {
-
+            if (_.get(order, ['facility', 'id']) !== _.get(facility, 'id')) {
+                return proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
+                    $state.go('openlmis.orders.podManage.view', {
+                        orderId: order.id,
+                        podId: pod.id,
+                        actionType: 'VIEW'
+                    });
+                });
+            }
             if (order.status  === 'RECEIVED') {
                 proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
                     $state.go('openlmis.orders.podManage.view', {
@@ -801,36 +808,28 @@
                                 vm.requisitionId = res.requisitionId;
                                 vm.requisitionNum = res.requisitionNum;
                             });
-                            proofOfDeliveryService.get(pod.id).then(function(res) {
-                                fulfillingLineItemFactory
-                                    .groupByOrderable(res.lineItems, res.shipment.order.orderLineItems)
-                                    .then(function(result) {
-                                        vm.addedLineItems = _.reduce(result, function(r, c) {
-                                            r.push(angular.merge({
-                                                productCode: c.orderable.productCode,
-                                                productName: c.orderable.fullProductName,
-                                                lotCode:
-                                                    c.groupedLineItems[0][0].lot
-                                                        ? c.groupedLineItems[0][0].lot.lotCode
-                                                        : '',
-                                                expirationDate:
-                                                    c.groupedLineItems[0][0].lot
-                                                        ? c.groupedLineItems[0][0].lot.expirationDate
-                                                        : '',
-                                                notes: c.groupedLineItems[0][0].notes,
-                                                quantityShipped: c.groupedLineItems[0][0].quantityShipped,
-                                                quantityAccepted: c.groupedLineItems[0][0].quantityAccepted,
-                                                rejectionReasonId: c.groupedLineItems[0][0].rejectionReasonId
-                                            }, c));
-                                            return r;
-                                        }, []);
-                                        vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
-                                            return item.rejectionReasonId;
-                                        });
-                                        setTimeout(function() {
-                                            downloadPdf();
-                                        }, 500);
-                                    });
+                            proofOfDeliveryService.get(pod.id).then(function(result) {
+                                vm.addedLineItems = _.reduce(result.lineItems, function(r, c) {
+                                    r.push(angular.merge({
+                                        productCode: c.orderable.productCode,
+                                        productName: c.orderable.fullProductName,
+                                        lotCode:
+                                            c.lot
+                                                ? c.lot.lotCode
+                                                : '',
+                                        expirationDate:
+                                            c.lot
+                                                ? c.lot.expirationDate
+                                                : ''
+                                    }, c));
+                                    return r;
+                                }, []);
+                                vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
+                                    return item.rejectionReasonId;
+                                });
+                                setTimeout(function() {
+                                    downloadPdf();
+                                }, 500);
                             });
                         })
                         .catch(function() {
@@ -841,6 +840,9 @@
         }
 
         function getStatusText(order) {
+            if (_.get(order, ['facility', 'id']) !== facility.id) {
+                return messageService.get('proofOfDeliveryManage.view');
+            }
             if (order.status  === 'RECEIVED') {
                 return messageService.get('proofOfDeliveryManage.view');
             }
