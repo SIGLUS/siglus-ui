@@ -15,14 +15,17 @@
 
 describe('PodViewController', function() {
 
-    var vm, $controller, ProofOfDeliveryDataBuilder, OrderDataBuilder, proofOfDelivery, order, reasons, $rootScope, $q,
-        ReasonDataBuilder, VVM_STATUS, messageService, orderLineItems, ProofOfDeliveryPrinter;
+    var vm, $controller, ProofOfDeliveryDataBuilder, OrderDataBuilder,
+        proofOfDelivery, order, reasons, $rootScope, $q,
+        ReasonDataBuilder, VVM_STATUS, messageService, orderLineItems,
+        ProofOfDeliveryPrinter, UserDataBuilder, userDataBuilder;
 
     beforeEach(function() {
         module('proof-of-delivery-view');
         module('proof-of-delivery');
         module('referencedata-orderable-fulfills');
         module('stock-confirm-discard');
+        module('referencedata-user');
 
         inject(function($injector) {
             $q = $injector.get('$q');
@@ -35,6 +38,7 @@ describe('PodViewController', function() {
             VVM_STATUS = $injector.get('VVM_STATUS');
             messageService = $injector.get('messageService');
             ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
+            UserDataBuilder = $injector.get('UserDataBuilder');
         });
 
         proofOfDelivery = new ProofOfDeliveryDataBuilder().build();
@@ -45,6 +49,7 @@ describe('PodViewController', function() {
             new ReasonDataBuilder().build()
         ];
         // SIGLUS-REFACTOR: starts here
+        userDataBuilder = new UserDataBuilder().asNew();
         _.extend(reasons[0], {
             tags: ['rejection']
         });
@@ -76,7 +81,8 @@ describe('PodViewController', function() {
             reasons: reasons,
             orderLineItems: orderLineItems,
             canEdit: true,
-            $scope: $rootScope.$new()
+            $scope: $rootScope.$new(),
+            user: userDataBuilder.build()
         });
     });
 
@@ -121,7 +127,8 @@ describe('PodViewController', function() {
             reasons: reasons,
             orderLineItems: orderLineItems,
             canEdit: false,
-            $scope: $rootScope.$new()
+            $scope: $rootScope.$new(),
+            user: userDataBuilder.build()
         });
         vm.$onInit();
 

@@ -108,7 +108,9 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
                 .expectGET(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
                     'proof-of-delivery-id?expand=shipment.order'))
                 // #400: ends here
-                .respond(200, angular.copy(proofOfDeliveryJson));
+                .respond(200, {
+                    podDto: angular.copy(proofOfDeliveryJson)
+                });
 
             var result;
             proofOfDeliveryRepositoryImpl.get('proof-of-delivery-id')
