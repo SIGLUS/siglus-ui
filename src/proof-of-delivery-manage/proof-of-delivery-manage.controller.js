@@ -688,7 +688,6 @@
                         585,
                         _reback[2].nodeHeight * opt.rate + 2
                     );
-                    console.log(11111111111);
                     // 生成PDF文件，并且命名
                     opt.PDF.save(
                         // getPdfName(
