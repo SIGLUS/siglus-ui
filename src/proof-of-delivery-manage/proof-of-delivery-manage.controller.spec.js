@@ -95,7 +95,8 @@ describe('ProofOfDeliveryManageController', function() {
             requestingFacilities: requestingFacilities,
             supplyingFacilities: supplyingFacilities,
             pods: [pod],
-            $stateParams: stateParams
+            $stateParams: stateParams,
+            facility: new FacilityDataBuilder().build()
         });
 
         loadingDeferred = $q.defer();

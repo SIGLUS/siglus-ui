@@ -90,8 +90,10 @@
         </td>
       </tr>
     </table>
-    <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
-    <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
+    <div style="width: 100%; display: flex;">
+      <div style="width: 50%;font-size: 15px; font-weight: 700; border: none; text-align: left;">{{ 'mmia.print_on_computer' | message }}</div>
+      <div style="width: 50%; font-size: 15px; font-weight: 700; border: none; text-align: right;">{{ vm.nowTime }}</div>
+    </div>
   </div>
   <div class="align-right" style="clear: both;">
     <button class="btn btn-primary btn-download btn-download-pdf"
