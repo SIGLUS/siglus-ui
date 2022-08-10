@@ -801,30 +801,29 @@
                 vm.requisitionId = res.requisitionId;
                 vm.requisitionNum = res.requisitionNum;
             });
-            proofOfDeliveryService.get(podId).then(function(res) {
+            proofOfDeliveryService.get(podId).then(function(result) {
                 siglusDownloadLoadingModalService.open();
-                fulfillingLineItemFactory
-                    .groupByOrderable(res.lineItems, res.shipment.order.orderLineItems).then(function(result) {
-                        vm.addedLineItems = _.reduce(result, function(r, c) {
-                            r.push(angular.merge({
-                                productCode: c.orderable.productCode,
-                                productName: c.orderable.fullProductName,
-                                lotCode: c.groupedLineItems[0][0].lot.lotCode,
-                                expirationDate: c.groupedLineItems[0][0].lot.expirationDate,
-                                notes: c.groupedLineItems[0][0].notes,
-                                quantityShipped: c.groupedLineItems[0][0].quantityShipped,
-                                quantityAccepted: c.groupedLineItems[0][0].quantityAccepted,
-                                rejectionReasonId: c.groupedLineItems[0][0].rejectionReasonId
-                            }, c));
-                            return r;
-                        }, []);
-                        vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
-                            return item.rejectionReasonId;
-                        });
-                        setTimeout(function() {
-                            downloadPdf();
-                        }, 1000);
-                    });
+                vm.addedLineItems = _.reduce(result.lineItems, function(r, c) {
+                    r.push(angular.merge({
+                        productCode: c.orderable.productCode,
+                        productName: c.orderable.fullProductName,
+                        lotCode:
+                            c.lot
+                                ? c.lot.lotCode
+                                : '',
+                        expirationDate:
+                            c.lot
+                                ? c.lot.expirationDate
+                                : ''
+                    }, c));
+                    return r;
+                }, []);
+                vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
+                    return item.rejectionReasonId;
+                });
+                setTimeout(function() {
+                    downloadPdf();
+                }, 500);
             });
         }
     }
