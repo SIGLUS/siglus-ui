@@ -19,7 +19,7 @@
   "adminFacilityView.saveReports": "Save Reports",
   "adminFacilityView.enabled": "Enabled",
   "adminFacilityView.startDate.description": "The program start date determines the first date available for users to enter requisitions related to the program.",
-  "adminFacilityView.locationManagement": "Location Management",
+  "adminFacilityView.locationManagement.label": "Location Management",
   "adminFacilityView.locationManagement.instructionTitle": "You can follow the steps below to set location management:",
   "adminFacilityView.locationManagement.viewLocation": "1. View current location information as CSV.",
   "adminFacilityView.locationManagement.editFile": "2. Edit the CSV file and upload.",

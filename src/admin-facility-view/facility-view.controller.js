@@ -382,6 +382,7 @@
             // vm.enableValue = !vm.enableValue;
             // hasSuccessUploadLocations
             var facility = vm.facility;
+            console.log(facility);
             var enableValue = vm.enableValue;
             if (enableValue) {
                 alertConfirmModalService.error(
@@ -397,7 +398,7 @@
                 });
                 return;
             }
-            if (!enableValue && !vm.file) {
+            if (!enableValue && !facility.hasSuccessUploadLocations) {
                 alertConfirmModalService.error(
                     'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
                     '',
