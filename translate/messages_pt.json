@@ -106,7 +106,7 @@
   "adminFacilityView.saveFacility.success": "A Unidade Sanitária foi guardada com sucesso!",
   "adminFacilityView.savePrograms": "Guardar programas",
   "adminFacilityView.startDate.description": "A data de início do programa determina a primeira data disponível para os utilizadores introduzirem as requisições relacionadas com o programa.",
-  "adminFacilityView.startDate": "Start Date",
+  "adminFacilityView.startDate": "Data Começar",
   "adminFacilityView.export": "Exportar",
   "adminFacilityView.upload": "Carregar",
   "adminFacilityView.close": "Fechar",
