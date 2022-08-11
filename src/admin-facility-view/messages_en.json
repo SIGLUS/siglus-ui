@@ -25,6 +25,8 @@
   "adminFacilityView.locationManagement.editFile": "2. Edit the CSV file and upload.",
   "adminFacilityView.locationManagement.uploadMessages": "If file upload is successful, the changes will be accepted into the system.\nIf file upload is unsuccessfully, errors will be displayed on the page.",
   "adminFacilityView.locationManagement.enableLocation": "3. Enable location management",
+  "adminFacilityView.enableLocation": "Location management enabled successfully!",
+  "adminFacilityView.disabledLocation": "Location management disabled successfully!",
   "adminFacilityView.export": "Export",
   "adminFacilityView.selectFile": "Select CSV File",
   "adminFacilityView.upload": "Upload",
