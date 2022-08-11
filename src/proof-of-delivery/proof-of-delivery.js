@@ -152,7 +152,8 @@
             var errors = {};
             if (isMerge) {
                 verifyNotEmpty(errors, this.receivedBy, 'receivedBy');
-                verifyNotEmpty(errors, this.deliveredBy, 'deliveredBy');
+                verifyNotEmpty(errors, this.preparedBy, 'preparedBy');
+                verifyNotEmpty(errors, this.conferredBy, 'conferredBy');
                 verifyNotEmpty(errors, this.receivedDate, 'receivedDate');
             }
 

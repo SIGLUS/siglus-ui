@@ -63,6 +63,8 @@
             this.enableLocationManagement = json.enableLocationManagement;
             this.extraData = json.extraData;
             this.supportedPrograms = json.supportedPrograms || [];
+            this.reportTypes = json.reportTypes || [];
+            this.hasSuccessUploadLocations = json.hasSuccessUploadLocations || '';
         }
 
         /**
