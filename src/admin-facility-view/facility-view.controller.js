@@ -379,10 +379,7 @@
          */
 
         function updateEnableLocationManagement() {
-            // vm.enableValue = !vm.enableValue;
-            // hasSuccessUploadLocations
             var facility = vm.facility;
-            console.log(facility);
             var enableValue = vm.enableValue;
             if (enableValue) {
                 alertConfirmModalService.error(
@@ -394,7 +391,10 @@
                     vm.enableValue = !vm.enableValue;
                     facility.enableLocationManagement = vm.enableValue;
                     new locationManagementService
-                        .update(vm.facility.id, facility);
+                        .update(vm.facility.id, facility)
+                        .then(function() {
+                            notificationService.success('adminFacilityView.disabledLocation');
+                        });
                 });
                 return;
             }
@@ -411,45 +411,19 @@
                 vm.enableValue = !vm.enableValue;
                 facility.enableLocationManagement = vm.enableValue;
                 new locationManagementService
-                    .update(vm.facility.id, facility);
+                    .update(vm.facility.id, facility)
+                    .then(function() {
+                        notificationService.success('adminFacilityView.enableLocation');
+                    });
                 return;
             }
             vm.enableValue = !vm.enableValue;
             facility.enableLocationManagement = vm.enableValue;
             new locationManagementService
-                .update(vm.facility.id, facility);
-            // if (!enableValue && !vm.file) {
-            //     alertConfirmModalService.error(
-            //         'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
-            //         '',
-            //         ['adminFacilityView.close',
-            //             'adminFacilityView.confirm']
-            //     );
-            // } else if (enableValue && !vm.file) {
-            //     alertConfirmModalService.error(
-            //         'adminFacilityView.locationManagement.closeSwitch',
-            //         '',
-            //         ['adminFacilityView.close',
-            //             'adminFacilityView.confirm']
-            //     ).then(function() {
-            //         vm.enableValue = !vm.enableValue;
-            //         facility.enableLocationManagement = vm.enableValue;
-            //         new locationManagementService
-            //             .update(vm.facility.id, facility);
-            //     });
-            // } else if (!enableValue && vm.file) {
-            //     alertConfirmModalService.error(
-            //         'adminFacilityView.locationManagement.closeSwitch',
-            //         '',
-            //         ['adminFacilityView.close',
-            //             'adminFacilityView.confirm']
-            //     ).then(function() {
-            //         vm.enableValue = !vm.enableValue;
-            //         facility.enableLocationManagement = vm.enableValue;
-            //         new locationManagementService
-            //             .update(vm.facility.id, facility);
-            //     });
-            // }
+                .update(vm.facility.id, facility)
+                .then(function() {
+                    notificationService.success('adminFacilityView.enableLocation');
+                });
         }
     }
 }
