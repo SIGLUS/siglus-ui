@@ -44,8 +44,8 @@
                                     fulfillmentUrlFactory, messageService, accessTokenFactory,
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-                                    stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-                                    ShipmentLineItem, ShipmentViewLineItemGroup, displayTableLineItems,
+                                    stockCardSummaries, SiglusLocationShipmentViewLineItemFactory, orderService,
+                                    SiglusLocationShipmentLineItem, ShipmentViewLineItemGroup, displayTableLineItems,
                                     SiglusLocationShipmentViewLineItem, $stateParams, order, moment) {
         var vm = this;
 
@@ -158,8 +158,6 @@
             }
         ];
 
-        vm.lot = {};
-
         /**
          * @ngdoc method
          * @methodOf shipment-view.controller:ShipmentViewController
@@ -174,77 +172,112 @@
             vm.shipment = _.clone(shipment);
             vm.tableLineItems = tableLineItems;
             $stateParams.order = order;
-            $stateParams.hasLoadOrderableGroups = true;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
+            $stateParams.displayTableLineItems = vm.displayTableLineItems;
         }
 
         function resetFirstRow(currentItem) {
             currentItem.lot = null;
-            currentItem.shipmentLineItem = null;
+            currentItem.shipmentLineItem = {};
             currentItem.location = null;
         }
 
-        function getRowTemplateData(currentItem, lineItems, shipmentLineItem) {
+        function getRowTemplateData(currentItem, lineItems, isFirstRowToLineItem) {
             var lot = lineItems.length === 1 && currentItem.lot;
+
             return new SiglusLocationShipmentViewLineItem({
-                $error: {},
+                $error: isFirstRowToLineItem ? currentItem.$error : {},
+                $hint: isFirstRowToLineItem ? currentItem.$hint : {},
                 productCode: currentItem.productCode,
                 productName: currentItem.fullProductName,
                 id: currentItem.id,
-                shipmentLineItem: shipmentLineItem,
-                orderQuantity: '',
+                shipmentLineItem: _.clone(currentItem.shipmentLineItem) || {},
+                orderQuantity: 0,
                 lot: lot,
                 netContent: currentItem.netContent,
                 // #287: Warehouse clerk can skip some products in order
-                skipped: false,
+                skipped: currentItem.skipped,
                 orderableId: currentItem.orderableId
                 // #287: ends here
             });
         }
 
-        function addRow(tableLineItem, lineItems, shipmentLineItem) {
-            lineItems.splice(1, 0, getRowTemplateData(tableLineItem, lineItems, shipmentLineItem));
+        function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
+            lineItems.splice(1, 0,
+                getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
 
-        function validateLotExpired(lot, lineItem) {
-            lineItem.$error = {};
-            lineItem.$hint = {};
-            var lotExpiredDate = moment(lot.experiationDate);
-            if (moment().isAfter(lotExpiredDate)) {
-                lineItem.$error.lotCodeError = 'locationShipmentView.lotExpired';
-                return;
-            }
+        vm.validateLot = function(lineItems) {
+            _.forEach(lineItems, function(item, index) {
+                item.$error = {};
+                item.$hint = {};
+                if (index !== 0 || lineItems.length === 1) {
+                    var hasDuplicated = _.size(_.filter(lineItems, function(data) {
+                        return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
+                          && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                    })) > 1;
+                    if (hasDuplicated) {
+                        item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
+                    }
 
-            var hasOldLotCode = _.some(lotOptions[lineItem.orderableId], function(lotOption) {
-                return moment(lot.experiationDate).isAfter(lotOption.experiationDate);
+                    if (!item.$error.lotCodeError && item.lot) {
+                        var lotExpiredDate = moment(item.lot.expirationDate);
+                        if (moment().isAfter(lotExpiredDate)) {
+                            item.$error.lotCodeError = 'locationShipmentView.lotExpired';
+                        }
+                    }
+
+                    var hasOldLotCode = _.some(lotOptions[item.orderableId], function(lotOption) {
+                        return item.lot && moment(item.lot.expirationDate).isAfter(lotOption.expirationDate);
+                    });
+
+                    if (!item.$error.lotCodeError && hasOldLotCode) {
+                        item.$hint.lotCodeHint = 'locationShipmentView.notFirstToExpire';
+                    }
+                }
+
             });
+        };
 
-            if (hasOldLotCode) {
-                lineItem.$hint.lotCodeHint = 'locationShipmentView.notFirstToExpire';
-                return;
+        vm.expirationDateChange = function(lineItem, lineItems) {
+            // if (!_.get(lineItem.lot, 'expirationDate')) {
+            // }
+            vm.validateLot(lineItems);
+        };
+
+        vm.changeLot = function(currentItem, lineItems) {
+            if (_.isEmpty(currentItem.lot)) {
+                vm.validateLot(lineItems);
+                currentItem.shipmentLineItem = {};
+                currentItem.location = null;
+            } else {
+                var shipmentLineItem =  _.find(vm.shipment.lineItems, function(item) {
+                    return item.orderable.id === currentItem.orderableId;
+                });
+                if (currentItem.shipmentLineItem.quantityShipped) {
+                    shipmentLineItem.quantityShipped = currentItem.shipmentLineItem.quantityShipped;
+                }
+                currentItem.shipmentLineItem = shipmentLineItem;
+                currentItem.$error.expirationDateRequired = '';
+                vm.validateLot(lineItems);
             }
-        }
+        };
 
-        vm.changeLot = function(currentItem) {
-            var shipmentLineItem =  _.find(vm.shipment.lineItems, function(item) {
-                return item.orderable.id === currentItem.orderableId;
-            });
-            currentItem.shipmentLineItem = _.clone(shipmentLineItem);
-            validateLotExpired(currentItem.lot, currentItem);
+        vm.changeLocation = function(currentItem, lineItems) {
+            if (_.isEmpty(currentItem.location)) {
+                currentItem.lot = null;
+                currentItem.shipmentLineItem = {};
+            }
+            vm.validateLot(lineItems);
         };
 
         vm.addLot = function(currentItem, lineItems) {
-            var shipmentLineItem = _.clone(_.find(vm.shipment.lineItems, function(item) {
-                return item.orderable.id === currentItem.orderableId;
-            }));
             if (lineItems.length === 1) {
-                addRow(currentItem, lineItems, Object.assign({}, shipmentLineItem, {
-                    quantityShipped: currentItem.shipmentLineItem.quantityShipped
-                }));
+                addRow(currentItem, lineItems, true);
                 resetFirstRow(currentItem);
             }
-            addRow(currentItem, lineItems, {});
+            addRow(currentItem, lineItems, false);
             // setLineItems(lineItems);
         };
 
@@ -259,7 +292,20 @@
             } else if (lineItems.length > 3) {
                 lineItems.splice(index, 1);
             }
+            vm.validateLot(lineItems);
+            vm.displayTableLineItems = _.filter(vm.displayTableLineItems, function(item) {
+                return !_.isEmpty(item);
+            });
+            $stateParams.displayTableLineItems = _.clone(vm.displayTableLineItems);
+            reloadParams();
         };
+
+        function reloadParams() {
+            $state.go($state.current.name, $stateParams, {
+                reload: $state.current.name,
+                notify: false
+            });
+        }
 
         vm.getTotalQuantityShipped = function(lineItems) {
             return _.reduce(lineItems, function(sum, item) {
@@ -268,18 +314,69 @@
             }, 0);
         };
 
-        function calculationStockCard(lineItem) {
+        function recalculateQuantity(quantity, lineItem) {
             if (vm.showInDoses()) {
-                return lineItem.shipmentLineItem.stockOnHand *  lineItem.netContent;
+                var netContent =  _.get(lineItem, 'netContent', 1);
+                return quantity * netContent;
             }
-            return lineItem.shipmentLineItem.stockOnHand;
+            return quantity;
         }
 
-        vm.getAvailableSoh = function(lineItems) {
-            if (lineItems.length === 1) {
-                return calculationStockCard(lineItems[0]);
+        vm.getOrderQuantity = function(lineItems, index) {
+            if (index === 0) {
+                var quantity = _.reduce(lineItems, function(orderQuantity, item) {
+                    return orderQuantity + _.get(item, 'orderQuantity', 0);
+                }, 0);
+                return recalculateQuantity(quantity, lineItems[index]);
+            }
+            return recalculateQuantity(_.get(lineItems[index], 'orderQuantity', 0), lineItems[index]);
+        };
+
+        vm.getFillQuantity = function(lineItems, index) {
+            if (index === 0) {
+                return _.reduce(lineItems, function(fillQuantity, item) {
+                    return fillQuantity + _.get(item.shipmentLineItem, 'quantityShipped', 0);
+                }, 0);
+            }
+            return _.get(lineItems[index], ['shipmentLineItem', 'quantityShipped'], 0);
+
+        };
+
+        vm.getAvailableSoh = function(lineItems, index) {
+            if (index === 0) {
+                return _.reduce(lineItems, function(availableSoh, lineItem) {
+                    var stockOnHand = recalculateQuantity(_.get(lineItem.shipmentLineItem, 'stockOnHand', 0), lineItem);
+                    return availableSoh + stockOnHand;
+                }, 0);
+            }
+            return recalculateQuantity(
+                _.get(lineItems[index], ['shipmentLineItem', 'stockOnHand'], 0), lineItems[index]
+            );
+
+        };
+
+        vm.getRemainingSoh = function(lineItems, index) {
+            var quantity = vm.getAvailableSoh(lineItems, index) - vm.getFillQuantity(lineItems, index);
+            return quantity < 0 ? 0 : quantity;
+        };
+
+        vm.isFillQuantityInvalid = function(lineItem) {
+            var errors = {};
+
+            var quantityShipped = _.get(lineItem.shipmentLineItem, 'quantityShipped');
+            var stockOnHand = _.get(lineItem.shipmentLineItem, 'stockOnHand', 0);
+            var skipped = _.get(lineItem.shipmentLineItem, 'skipped', false);
+            // #287: Warehouse clerk can skip some products in order
+            if (!quantityShipped && quantityShipped !== 0 && !skipped) {
+                errors.quantityShipped = 'shipment.required';
+            }
+            // #287: ends here
+
+            if (quantityShipped > stockOnHand) {
+                errors.quantityShipped = 'shipment.fillQuantityCannotExceedStockOnHand';
             }
 
+            return angular.equals(errors, {}) ? undefined : errors;
         };
 
         /**
@@ -350,13 +447,20 @@
                             orderLineItems: addedOrderLineItems
                         }
                     });
-                    var addedTableLineItems = new ShipmentViewLineItemFactory()
-                        .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
+                    var addedTableLineItems = new SiglusLocationShipmentViewLineItemFactory()
+                        .createFrom(addedOrderLineItemsShipment);
                     addedShipmentLineItems.forEach(function(shipmentLineItem) {
                         shipment.lineItems.push(shipmentLineItem);
                     });
                     vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
-                    vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
+                    vm.displayTableLineItems = vm.displayTableLineItems.concat(
+                        _.map(addedTableLineItems, function(item) {
+                            return [item];
+                        })
+                    );
+                    $stateParams.displayTableLineItems = _.clone(vm.displayTableLineItems);
+                    $stateParams.order = vm.order;
+                    reloadParams();
                 });
         }
 
@@ -374,6 +478,7 @@
 
             return selectProductsModalService.show({
                 products: decoratedAvailableProducts,
+                stateParams: _.clone($stateParams),
                 limit: vm.order.emergency ? {
                     max: 10 - vm.order.orderLineItems.length,
                     errorMsg: 'shipmentView.selectTooMany'
@@ -405,88 +510,101 @@
         // #374: confirm shipment effect soh
         function prepareShipmentLineItems(selectedProducts) {
             var addedShipmentLineItems = [];
-            var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+            var stockCardDetailMap = mapStockCardDetail(stockCardSummaries);
             selectedProducts.forEach(function(orderable) {
-                var canFulfillForMeByOrderable = canFulfillForMeMap[orderable.id];
+                var stockCardDetailByOrderable = stockCardDetailMap[orderable.id];
                 orderable.versionNumber = orderable.meta.versionNumber;
-                Object.values(canFulfillForMeByOrderable).forEach(function(canFulfillForMe) {
-                    addedShipmentLineItems.push(new ShipmentLineItem({
-                        lot: canFulfillForMe.lot,
+                Object.values(stockCardDetailByOrderable).forEach(function(stockCardDetail) {
+                    addedShipmentLineItems.push(new SiglusLocationShipmentLineItem({
+                        lot: stockCardDetail.lot,
                         orderable: orderable,
                         quantityShipped: 0,
-                        canFulfillForMe: canFulfillForMe
+                        canFulfillForMe: stockCardDetail
                     }));
                 });
             });
             return addedShipmentLineItems;
         }
 
-        function mapCanFulfillForMe(summaries) {
-            var canFulfillForMeMap = {};
+        function mapStockCardDetail(summaries) {
+            var stockCardDetailMap = {};
             summaries.forEach(function(summary) {
-                summary.canFulfillForMe.forEach(function(canFulfillForMe) {
-                    var orderableId = canFulfillForMe.orderable.id,
-                        lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined;
-                    if (!canFulfillForMeMap[orderableId]) {
-                        canFulfillForMeMap[orderableId] = {};
+                summary.stockCardDetails.forEach(function(stockCardDetail) {
+                    var orderableId = stockCardDetail.orderable.id,
+                        lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
+                    if (!stockCardDetailMap[orderableId]) {
+                        stockCardDetailMap[orderableId] = {};
                     }
-                    canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
+                    stockCardDetailMap[orderableId][lotId] = stockCardDetail;
                 });
             });
-            return canFulfillForMeMap;
+            return stockCardDetailMap;
         }
         // #374: ends here
 
         // #287: Warehouse clerk can skip some products in order
         function skipAllLineItems() {
-            vm.tableLineItems.forEach(function(tableLineItem) {
-                if (tableLineItem.isMainGroup && !tableLineItem.skipped && canSkip(tableLineItem)) {
-                    tableLineItem.skipped = true;
-                    changeSkipStatus(tableLineItem);
-                }
+            vm.displayTableLineItems.forEach(function(lineItemGroup) {
+                _.forEach(lineItemGroup, function(lineItem) {
+                    if (!lineItem.skipped && canSkip(lineItemGroup) && lineItemGroup.length === 1) {
+                        lineItem.skipped = true;
+                        changeSkipStatus(lineItem);
+                    }
+                });
             });
         }
 
         function unskipAllLineItems() {
-            vm.tableLineItems.forEach(function(tableLineItem) {
-                if (tableLineItem.isMainGroup && tableLineItem.skipped && canSkip(tableLineItem)) {
-                    tableLineItem.skipped = false;
-                    changeSkipStatus(tableLineItem);
-                }
+            vm.displayTableLineItems.forEach(function(lineItemGroup) {
+                _.forEach(lineItemGroup, function(lineItem) {
+                    if (lineItem.skipped && canSkip(lineItemGroup)) {
+                        lineItem.skipped = false;
+                        changeSkipStatus(lineItem);
+                    }
+                });
+
             });
         }
 
-        function changeSkipStatus(tableLineItem) {
-            tableLineItem.lineItems.forEach(function(lineItem) {
-                lineItem.skipped = tableLineItem.skipped;
-                if (lineItem instanceof ShipmentViewLineItemGroup) {
-                    changeSkipStatus(lineItem);
-                } else {
-                    lineItem.shipmentLineItem.skipped = tableLineItem.skipped;
+        function changeSkipStatus(currentItem, lineItems) {
+            _.forEach(lineItems, function(lineItem) {
+                lineItem.skipped = currentItem.skipped;
+                if (!isEmpty(lineItem.shipmentLineItem)) {
+                    lineItem.shipmentLineItem.skipped = lineItem.skipped;
                 }
             });
             vm.shipment.order.orderLineItems.forEach(function(orderLineItem) {
-                if (orderLineItem.orderable.productCode === tableLineItem.productCode) {
-                    orderLineItem.skipped = tableLineItem.skipped;
+                if (orderLineItem.orderable.productCode === currentItem.productCode) {
+                    orderLineItem.skipped = currentItem.skipped;
                 }
             });
         }
 
-        function canSkip(tableLineItem) {
-            var result = true;
-            _.forEach(tableLineItem.lineItems, function(lineItem) {
-                if (lineItem instanceof ShipmentViewLineItemGroup) {
-                    result = canSkip(lineItem);
-                } else if (!isEmpty(lineItem.shipmentLineItem.quantityShipped)) {
-                    result = false;
-                }
+        function canSkip(lineItems) {
+            return  _.every(lineItems, function(lineItem) {
+                return isEmpty(_.get(lineItem.shipmentLineItem, 'quantityShipped'));
             });
-            return result;
         }
 
         function isEmpty(value) {
             return !value || !value.toString().trim();
         }
-        // #287: ends here
+
+        vm.showEmptyBlockWithKit = function(lineItem, lineItems) {
+            return vm.showEmptyBlock(lineItem, lineItems) || lineItem.isKit;
+        };
+
+        vm.showEmptyBlock = function(lineItem, lineItems) {
+            return lineItem.isMainGroup && lineItems.length > 1;
+        };
+
+        vm.showEditableBlockWithLots = function(lineItem, lineItems) {
+            return vm.showEditableBlocks(lineItem, lineItems) && _.size(vm.lotOptions[lineItem.orderableId]) > 0;
+        };
+
+        vm.showEditableBlocks = function(lineItem, lineItems) {
+            return (lineItem.isMainGroup && lineItems.length === 1) || (!lineItem.isMainGroup && lineItems.length > 1);
+        };
+
     }
 })();

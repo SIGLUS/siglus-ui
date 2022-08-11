@@ -43,7 +43,8 @@
                 stockCardSummaries: undefined,
                 shipment: undefined,
                 order: undefined,
-                hasLoadOrderableGroups: false
+                hasLoadOrderableGroups: false,
+                displayTableLineItems: undefined
             },
             areAllRightsRequired: false,
             resolve: {
@@ -65,7 +66,7 @@
                         return orderable.id;
                     });
 
-                    return new StockCardSummaryRepositoryImpl().queryWithStockCards({
+                    return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation({
                         programId: order.program.id,
                         facilityId: order.supplyingFacility.id,
                         orderableId: orderableIds
@@ -81,6 +82,11 @@
                         _.forEach(summary.stockCardDetails, function(stockCardDetail) {
                             if (stockCardDetail.lot) {
                                 lotOption.push(stockCardDetail.lot);
+                                var newLot = _.clone(stockCardDetail.lot);
+                                newLot.lotCode = 'test lot code';
+                                newLot.expirationDate = '2022-08-26';
+                                newLot.id = '123123';
+                                lotOption.push(newLot);
                             }
                         });
                         var orderableId = summary.orderable.id;
@@ -111,8 +117,13 @@
                     var validator = function() {
                         return true;
                     };
+                    if ($stateParams.displayTableLineItems) {
+                        return paginationService.registerList(validator, angular.copy($stateParams), function() {
+                            return $stateParams.displayTableLineItems;
+                        });
+                    }
                     return paginationService.registerList(validator, angular.copy($stateParams), function() {
-                        return [_.values(_.groupBy(tableLineItems, 'productCode'))[0]];
+                        return _.values(_.groupBy(tableLineItems, 'productCode'));
                     });
                 },
                 // #264: warehouse clerk can add product to orders
