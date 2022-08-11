@@ -81,7 +81,7 @@ nav.facility-edit {
 .switch {
   position: relative;
   display: inline-block;
-  width: 38px;
+  width: 36px;
   height: 18px;
 }
 
@@ -106,10 +106,10 @@ nav.facility-edit {
 .slider:before {
   position: absolute;
   content: "";
-  height: 15px;
-  width: 15px;
-  left: 2px;
-  bottom: 2px;
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  top: 3px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -118,10 +118,10 @@ nav.facility-edit {
 .sliderChecked:before {
   position: absolute;
   content: "";
-  height: 15px;
-  width: 15px;
+  height: 12px;
+  width: 12px;
   left: -5px;
-  bottom: 2px;
+  top: 3px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
