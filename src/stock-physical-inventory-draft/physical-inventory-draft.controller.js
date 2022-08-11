@@ -779,7 +779,7 @@
                 if (!summary.$errors) {
                     summary.$errors = {};
                 }
-                if (summary.lot && summary.lot.id) {
+                if (summary.lot && summary.lot.id && summary.lot.lotCode) {
                     vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
                 }
             });
