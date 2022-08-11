@@ -2432,7 +2432,7 @@
   "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página.",
   "proofOfDeliveryView.fnm":"FNM",
   "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial",
-
   "adminFacilityView.enableLocation": "Location management enabled successfully!",
-  "adminFacilityView.disabledLocation": "Location management disabled successfully!"
+  "adminFacilityView.disabledLocation": "Location management disabled successfully!",
+  "downloadModal.downloading": "Baixando..."
 }
