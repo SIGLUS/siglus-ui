@@ -54,7 +54,8 @@
         vm.exportFile = exportFile;
         vm.upload = upload;
         vm.updateEnableLocationManagement = updateEnableLocationManagement;
-
+        vm.selectedReport = null;
+        // vm.minDate = '2022-08-08';
         /**
          * @ngdoc property
          * @propertyOf admin-facility-view.controller:FacilityViewController
@@ -162,17 +163,34 @@
             );
             vm.facilityId = angular.copy(facility.id);
             vm.facilityWithPrograms = angular.copy(facility);
-            console.log('### vm.facilityWithPrograms', vm.facilityWithPrograms);
             vm.facilityTypes = facilityTypes;
             vm.geographicZones = geographicZones;
             vm.facilityOperators = facilityOperators;
             vm.programs = programs;
             vm.selectedTab = 0;
             vm.managedExternally = facility.isManagedExternally();
-
             if (!vm.facilityWithPrograms.supportedPrograms) {
                 vm.facilityWithPrograms.supportedPrograms = [];
             }
+            var programsCopy = angular.copy(vm.programs);
+            vm.reportMap = {
+                TR: 'MMIT',
+                T: 'MMIA',
+                TB: 'MMTB',
+                VC: 'Balance Requisition',
+                ML: 'AL'
+            };
+            var programsWithReportName = _.map(programsCopy, function(item) {
+                return angular.merge({
+                    reportName: vm.reportMap[item.code]
+                }, item);
+            });
+            var programCodeByReports = _.map(vm.facilityWithPrograms.reportTypes, function(item) {
+                return item.programCode;
+            });
+            vm.reports = programsWithReportName.filter(function(item) {
+                return !_.contains(programCodeByReports, item.code);
+            });
 
             vm.facilityWithPrograms.supportedPrograms.filter(
                 function(supportedProgram) {
@@ -211,7 +229,6 @@
                 'adminFacilityView.saveFacility.success',
                 'adminFacilityView.saveFacility.fail');
         }
-
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.controller:FacilityViewController
@@ -225,6 +242,16 @@
                 'adminFacilityView.saveFacility.success',
                 'adminFacilityView.saveFacility.fail');
         }
+
+        vm.saveFacilityWithReports = function() {
+            doSave(vm.facilityWithPrograms,
+                'adminFacilityView.saveFacility.success',
+                'adminFacilityView.saveFacility.fail');
+        };
+
+        vm.selectFileChange = function() {
+            vm.invalidMessage = null;
+        };
 
         /**
          * @ngdoc method
@@ -253,6 +280,20 @@
 
             return $q.when();
         }
+        vm.addReport = function() {
+            vm.facilityWithPrograms.reportTypes.push(angular.merge({
+                startDate: vm.selectedStartDate,
+                programCode: vm.selectedReport.code,
+                name: 'Requisition',
+                facilityId: vm.facility.id
+            }, vm.selectedReport));
+            vm.reports = _.filter(vm.reports, function(itm) {
+                return itm.code !== vm.selectedReport.code;
+            });
+            vm.selectedReport = null;
+            vm.selectedStartDate = null;
+            return $q.when();
+        };
 
         function doSave(facility, successMessage, errorMessage) {
             loadingModalService.open();
@@ -315,10 +356,11 @@
                         notificationService.error(
                             'adminFacilityView.uploadFailed'
                         );
+                        vm.file = null;
                         vm.invalidMessage = error ? error.data.message
                             : undefined;
-                        vm.file = undefined;
                         loadingModalService.close();
+                        document.getElementById('fileupload').value = '';
                     });
             } else {
                 notificationService.error(
@@ -336,38 +378,77 @@
          * Uploads csv file with catalog item to the server.
          */
 
-        function updateEnableLocationManagement(facility) {
-            facility = vm.facility;
+        function updateEnableLocationManagement() {
+            // vm.enableValue = !vm.enableValue;
+            // hasSuccessUploadLocations
+            var facility = vm.facility;
             var enableValue = vm.enableValue;
-            vm.facility.enableLocationManagement = enableValue;
-            return new locationManagementService
-                .update(vm.facility.id, facility)
-                .then(function() {
-                    if (enableValue === true && !vm.file) {
-                        alertConfirmModalService.error(
-                            'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
-                            '',
-                            ['adminFacilityView.close',
-                                'adminFacilityView.confirm']
-                        );
-                        return $q.reject();
-                    } else if (enableValue === false && vm.file) {
-                        alertConfirmModalService.error(
-                            'adminFacilityView.locationManagement.closeSwitch',
-                            '',
-                            ['adminFacilityView.close',
-                                'adminFacilityView.confirm']
-                        );
-                    } else if (enableValue === false && !vm.file) {
-                        alertConfirmModalService.error(
-                            'adminFacilityView.locationManagement.closeSwitch',
-                            '',
-                            ['adminFacilityView.close',
-                                'adminFacilityView.confirm']
-                        );
-                    }
-
+            if (enableValue) {
+                alertConfirmModalService.error(
+                    'adminFacilityView.locationManagement.closeSwitch',
+                    '',
+                    ['adminFacilityView.close',
+                        'adminFacilityView.confirm']
+                ).then(function() {
+                    vm.enableValue = !vm.enableValue;
+                    facility.enableLocationManagement = vm.enableValue;
+                    new locationManagementService
+                        .update(vm.facility.id, facility);
                 });
+                return;
+            }
+            if (!enableValue && !vm.file) {
+                alertConfirmModalService.error(
+                    'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
+                    '',
+                    ['adminFacilityView.close',
+                        'adminFacilityView.confirm']
+                );
+                return;
+            }
+            if (!enableValue && facility.hasSuccessUploadLocations) {
+                vm.enableValue = !vm.enableValue;
+                facility.enableLocationManagement = vm.enableValue;
+                new locationManagementService
+                    .update(vm.facility.id, facility);
+                return;
+            }
+            vm.enableValue = !vm.enableValue;
+            facility.enableLocationManagement = vm.enableValue;
+            new locationManagementService
+                .update(vm.facility.id, facility);
+            // if (!enableValue && !vm.file) {
+            //     alertConfirmModalService.error(
+            //         'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
+            //         '',
+            //         ['adminFacilityView.close',
+            //             'adminFacilityView.confirm']
+            //     );
+            // } else if (enableValue && !vm.file) {
+            //     alertConfirmModalService.error(
+            //         'adminFacilityView.locationManagement.closeSwitch',
+            //         '',
+            //         ['adminFacilityView.close',
+            //             'adminFacilityView.confirm']
+            //     ).then(function() {
+            //         vm.enableValue = !vm.enableValue;
+            //         facility.enableLocationManagement = vm.enableValue;
+            //         new locationManagementService
+            //             .update(vm.facility.id, facility);
+            //     });
+            // } else if (!enableValue && vm.file) {
+            //     alertConfirmModalService.error(
+            //         'adminFacilityView.locationManagement.closeSwitch',
+            //         '',
+            //         ['adminFacilityView.close',
+            //             'adminFacilityView.confirm']
+            //     ).then(function() {
+            //         vm.enableValue = !vm.enableValue;
+            //         facility.enableLocationManagement = vm.enableValue;
+            //         new locationManagementService
+            //             .update(vm.facility.id, facility);
+            //     });
+            // }
         }
     }
 }

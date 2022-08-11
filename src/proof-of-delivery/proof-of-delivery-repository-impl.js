@@ -129,8 +129,11 @@
                 expand: 'shipment.order'
             }).$promise
                 .then(function(proofOfDeliveryJson) {
-                    var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
-                        orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
+                    var copyProofOfDeliveryJson = angular.copy(_.get(proofOfDeliveryJson, 'podDto'));
+                    copyProofOfDeliveryJson.conferredBy = _.get(proofOfDeliveryJson, 'conferredBy');
+                    copyProofOfDeliveryJson.preparedBy = _.get(proofOfDeliveryJson, 'preparedBy');
+                    var lotIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'lot'),
+                        orderableIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'orderable');
                     var promiseList = lotIds.length ?
                         [
                             lotRepositoryImpl.query({
@@ -151,7 +154,7 @@
                                     content: []
                                 },
                                 orderablePage = lotIds.length ? responses[1] : responses[0];
-                            return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
+                            return combineResponses(copyProofOfDeliveryJson, lotPage.content, orderablePage.content);
                         });
                 });
         }
