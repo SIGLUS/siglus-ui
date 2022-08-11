@@ -34,7 +34,7 @@
         'programs', 'FacilityRepository', 'loadingModalService',
         'notificationService', 'locationManagementService',
         'messageService',
-        'alertConfirmModalService'
+        'alertConfirmModalService', '$stateParams'
     ];
 
     function controller($q, $state, facility, facilityTypes,
@@ -42,7 +42,7 @@
                         facilityOperators,
                         programs, FacilityRepository, loadingModalService,
                         notificationService, locationManagementService,
-                        messageService, alertConfirmModalService) {
+                        messageService, alertConfirmModalService, $stateParams) {
 
         var vm = this;
 
@@ -351,6 +351,10 @@
                             notificationService.success(message);
                         });
                         loadingModalService.close();
+                        new FacilityRepository().get($stateParams.id)
+                            .then(function(res) {
+                                vm.facility = res;
+                            });
                     })
                     .catch(function(error) {
                         notificationService.error(
@@ -380,6 +384,9 @@
 
         function updateEnableLocationManagement() {
             var facility = vm.facility;
+            if (facility.isAndroidDevice) {
+                return;
+            }
             var enableValue = vm.enableValue;
             if (enableValue) {
                 alertConfirmModalService.error(
