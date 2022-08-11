@@ -17,5 +17,6 @@
   "shipmentView.allLineItemsNotFulfilled": "You cannot confirm the shipment if the shipment doesn't have any line item",
   "shipmentView.closed": "The order was closed, You cannot fulfill a closed order. Please back to the order list and refresh the list.",
   "locationShipmentView.lotExpired": "This lot has expired, it cannot be fulfilled.",
-  "locationShipmentView.notFirstToExpire": "This lot is not the first to expire."
+  "locationShipmentView.notFirstToExpire": "This lot is not the first to expire.",
+  "locationShipmentView.lotDuplicated": "The lot under the same product cannot be repeated, please enter a new one."
 }

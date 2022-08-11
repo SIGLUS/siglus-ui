@@ -58,6 +58,8 @@
             this.netContent = config.netContent;
             this.isLot = true;
             this.orderableId = config.orderableId;
+            this.$error = config.$error;
+            this.$hint = config.$hint;
         }
 
         /**
@@ -88,7 +90,7 @@
          * @return {number} the fill quantity for the specific commodity type or lot
          */
         function getFillQuantity() {
-            return this.shipmentLineItem.quantityShipped || 0;
+            return _.get(this.shipmentLineItem, 'quantityShipped', 0);
         }
 
         /**

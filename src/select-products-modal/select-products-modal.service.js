@@ -28,7 +28,7 @@
         .module('select-products-modal')
         .service('selectProductsModalService', service);
 
-    service.$inject = ['$q', '$state'];
+    service.$inject = ['$q', '$state', '$stateParams'];
 
     function service($q, $state) {
         var deferred,
@@ -62,6 +62,7 @@
             deferred = $q.defer();
 
             products = config ? config.products : undefined;
+            var passedStateParams = config.stateParams;
             selections = config && config.selections ? angular.copy(config.selections) : {};
             // SIGLUS-REFACTOR: starts here
             limit = config && config.limit ? config.limit : undefined;
@@ -71,7 +72,8 @@
             stateParams.productName = undefined;
             stateParams.productCode = undefined;
             // SIGLUS-REFACTOR: starts here
-            $state.go(config.state || '.addOrderables', stateParams, {
+
+            $state.go(config.state || '.addOrderables', passedStateParams ? passedStateParams : stateParams, {
                 notify: false
             });
             // SIGLUS-REFACTOR: ends here

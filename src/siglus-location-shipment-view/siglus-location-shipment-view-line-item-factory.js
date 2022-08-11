@@ -64,36 +64,18 @@
             var shipmentViewLineItemGroups = shipment.order.orderLineItems
                 .map(function(orderLineItem) {
                     var orderableId = orderLineItem.orderable.id;
-                    // summary = findSummaryByOrderableId(summaries, orderableId);
-                    // shipmentLineItem = findShipmentLineItemByOrderableIdAndLotId(
-                    //     shipmentLineItemMap,
-                    //     orderableId,
-                    //     undefined
-                    // );
-
-                    // if (isForGenericOrderable(summary) && shipmentLineItem && !summary.orderable.isKit) {
-                    //     return new SiglusLocationShipmentViewLineItem({
-                    //         productCode: orderLineItem.orderable.productCode,
-                    //         productName: orderLineItem.orderable.fullProductName,
-                    //         id: orderLineItem.id,
-                    //         shipmentLineItem: shipmentLineItem,
-                    //         orderQuantity: orderLineItem.orderedQuantity,
-                    //         netContent: orderLineItem.orderable.netContent,
-                    //         // #287: Warehouse clerk can skip some products in order
-                    //         skipped: orderLineItem.skipped,
-                    //         orderableId: orderableId
-                    //         // #287: ends here
-                    //     });
-                    // }
 
                     return new SiglusLocationShipmentViewLineItemGroup({
                         $error: {},
+                        $hint: {},
                         productCode: orderLineItem.orderable.productCode,
                         productName: orderLineItem.orderable.fullProductName,
                         id: orderLineItem.id,
+                        isKit: orderLineItem.orderable.isKit,
                         lineItems: [],
                         orderQuantity: orderLineItem.orderedQuantity,
                         isMainGroup: true,
+                        shipmentLineItem: {},
                         netContent: orderLineItem.orderable.netContent,
                         // #287: Warehouse clerk can skip some products in order
                         skipped: orderLineItem.skipped,

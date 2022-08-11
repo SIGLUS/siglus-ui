@@ -62,6 +62,8 @@
             this.isLot = !config.isKit;
             this.skipped = config.skipped;
             this.orderableId = config.orderableId;
+            this.$error = config.$error;
+            this.$hint = config.$hint;
         }
 
     }
