@@ -2428,5 +2428,6 @@
   "proofOfDeliveryInitialModal.label": "Por favor, insira o número de usuários disponiveis para fazer este relatório de recepção para ${orderCode}",
   "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página.",
   "proofOfDeliveryView.fnm":"FNM",
-  "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial"
+  "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial",
+  "downloadModal.downloading": "Baixando..."
 }
