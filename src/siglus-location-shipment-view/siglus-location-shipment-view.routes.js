@@ -43,7 +43,6 @@
                 stockCardSummaries: undefined,
                 shipment: undefined,
                 order: undefined,
-                hasLoadOrderableGroups: false,
                 displayTableLineItems: undefined
             },
             areAllRightsRequired: false,
@@ -76,6 +75,88 @@
                         });
 
                 },
+                locations: function(SiglusLocationViewService, order) {
+                    var orderableIds = order.availableProducts.map(function(orderable) {
+                        return orderable.id;
+                    });
+                    return SiglusLocationViewService.getOrderableLocationLotsInfo({
+                        orderablesId: orderableIds,
+                        extraData: true
+                    }).then(function() {
+                        var locations = [
+                            {
+                                locationId: '4954457b-4331-491b-98f5-76d903a5b481',
+                                locationCode: 'AA25A',
+                                lots: [
+                                    {
+                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                                        lotCode: 'SEM-LOTE-07A03-012023-1',
+                                        expirationDate: '2022-08-25',
+                                        stockOnHand: 1000
+                                    },
+                                    {
+                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                                        lotCode: 'SEM-LOTE-07A03-012023-2',
+                                        expirationDate: '2022-08-09',
+                                        stockOnHand: 1000
+                                    }
+                                ]
+                            },
+                            {
+                                locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cd8',
+                                locationCode: 'AA25B',
+                                lots: [
+                                    {
+                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                                        lotCode: 'SEM-LOTE-07A03-012023-1',
+                                        expirationDate: '2022-08-25',
+                                        stockOnHand: 678
+                                    },
+                                    {
+                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e89',
+                                        lotCode: 'SEM-LOTE-07A03-012023-3',
+                                        expirationDate: '2022-08-17',
+                                        stockOnHand: 8000
+                                    }
+                                ]
+                            },
+                            {
+                                locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cd0',
+                                locationCode: 'AA28B',
+                                lots: [
+                                    {
+                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                                        lotCode: 'SEM-LOTE-07A03-012023-1',
+                                        expirationDate: '2022-08-25',
+                                        stockOnHand: 256
+                                    },
+                                    {
+                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e67',
+                                        lotCode: 'SEM-LOTE-07A03-012023-4',
+                                        expirationDate: '2023-08-17',
+                                        stockOnHand: 8000
+                                    }
+                                ]
+                            }
+                        ];
+                        return locations;
+                    });
+                },
+
+                orderableLocationLotsMap: function(locations, SiglusLocationCommonUtilsService) {
+                    return SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
+                },
+
+                orderableLotsLocationMap: function(SiglusLocationCommonUtilsService, locations) {
+                    return SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations);
+                },
+
                 lotOptions: function(stockCardSummaries) {
                     var options = _.reduce(stockCardSummaries, function(result, summary) {
                         var lotOption = [];
@@ -114,16 +195,20 @@
                     return new SiglusLocationShipmentViewLineItemFactory().createFrom(shipment);
                 },
                 displayTableLineItems: function(paginationService, tableLineItems, $stateParams) {
-                    var validator = function() {
-                        return true;
-                    };
-                    if ($stateParams.displayTableLineItems) {
-                        return paginationService.registerList(validator, angular.copy($stateParams), function() {
-                            return $stateParams.displayTableLineItems;
+                    var validator = function(group) {
+                        return _.every(group, function(lineItem) {
+                            return _.chain(lineItem.$error).keys()
+                                .all(function(key) {
+                                    return _.isEmpty(lineItem.$error[key]);
+                                })
+                                .value();
                         });
-                    }
+                    };
+
                     return paginationService.registerList(validator, angular.copy($stateParams), function() {
-                        return _.values(_.groupBy(tableLineItems, 'productCode'));
+                        return $stateParams.displayTableLineItems
+                            ? $stateParams.displayTableLineItems
+                            : _.values(_.groupBy(tableLineItems, 'productCode'));
                     });
                 },
                 // #264: warehouse clerk can add product to orders

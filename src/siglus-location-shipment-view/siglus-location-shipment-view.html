@@ -43,7 +43,7 @@
     </button>
 </div>
 <!-- #264: ends here -->
-<div class="openlmis-table-container" id="locationShipmentForm">
+<div class="openlmis-table-container">
     <quantity-unit-toggle class="is-primary quantity-unit-btn" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
     <!-- #287: Warehouse clerk can skip some products in order-->
     <h4>{{'shipmentView.skip' | message}}</h4>
@@ -64,7 +64,7 @@
             <!-- #370: hide VVM Status-->
             <!--<th>{{'shipmentView.vvmStatus' | message}}</th>-->
             <!-- #370: ends here -->
-            <th>{{'shipmentView.expiryDate' | message}}</th>
+            <th style="min-width: 130px">{{'shipmentView.expiryDate' | message}}</th>
             <th>Location</th>
             <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
                 {{'shipmentView.orderQuantity' | message}}
@@ -84,7 +84,7 @@
 
         </thead>
         <tbody ng-repeat="lineItems in vm.pagedLineItems">
-        <tr ng-repeat="(index, lineItem) in lineItems">
+        <tr ng-repeat="(index, lineItem) in lineItems" empty-row="vm.isEmptyRow(lineItem)" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="12">
             <td>
                 <input type="checkbox" ng-if="lineItem.isMainGroup" ng-model="lineItem.skipped"
                        ng-change="vm.changeSkipStatus(lineItem, lineItems)"
@@ -94,13 +94,14 @@
             <td>{{lineItem.isMainGroup && lineItem.productName}}</td>
             <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
             <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)"
-                openlmis-invalid="{{lineItem.$error.lotCodeError ? lineItem.$error.lotCodeError : '' | message}}"
+                openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
                 popover="{{lineItem.$hint.lotCodeHint | message}}"
             >
                 <select
                         ng-model="lineItem.lot"
                         no-auto-select="true"
-                        ng-options="lot.lotCode for lot in vm.lotOptions[lineItem.orderableId] track by lot.lotCode"
+                        ng-disabled="lineItem.skipped"
+                        ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
                         ng-change="vm.changeLot(lineItem, lineItems);$event.blur()"
                 >
                 </select>
@@ -108,18 +109,20 @@
             <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
             <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)">
                 <input type="date" ng-model="lineItem.lot.expirationDate"
-                       openlmis-invalid="{{lineItem.$error.expirationDateRequired ? lineItem.$error.expirationDateRequired : '' | message}}"
+                       ng-disabled="lineItem.skipped"
+                       autocomplete="off"
+                       openlmis-invalid="{{lineItem.$error.expirationDateError ||  '' | message}}"
                        ng-change="vm.expirationDateChange(lineItem, lineItems)"/>
             </td>
             <td ng-if="vm.showEmptyBlock(lineItem, lineItems)"></td>
             <td ng-if="vm.showEditableBlocks(lineItem, lineItems)"
-                openlmis-invalid="{{lineItem.$error.lotCodeError === 'locationShipmentView.lotDuplicated'
-                    ? 'locationShipmentView.lotDuplicated' : '' | message}}"
+                openlmis-invalid="{{lineItem.$error.locationError || '' | message}}"
             >
                 <select
                         ng-model="lineItem.location"
                         no-auto-select="true"
-                        ng-options="location.locationCode for location in vm.locations"
+                        ng-disabled="lineItem.skipped"
+                        ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
                         ng-change="vm.changeLocation(lineItem, lineItems)"
                 >
                 </select>
@@ -131,9 +134,10 @@
                 {{vm.getFillQuantity(lineItems, index)}}
             </td>
             <td ng-if="vm.showEditableBlocks(lineItem, lineItems)">
-                <!--openlmis-invalid="{{vm.isFillQuantityInvalid(lineItem) && vm.isFillQuantityInvalid(lineItem).quantityShipped | message}}"-->
                 <input positive-integer
                        ng-model="lineItem.shipmentLineItem.quantityShipped"
+                       openlmis-invalid="{{lineItem.$error.quantityShippedError || '' | message}}"
+                       ng-change="vm.changeFillQuantity(lineItem)"
                        ng-disabled="lineItem.skipped"/>
             </td>
             <td>{{vm.getAvailableSoh(lineItems, index)}}</td>
@@ -142,7 +146,7 @@
                 <input type="button"
                        value="{{'stockPhysicalInventoryDraft.addLot' | message}}"
                        ng-if="lineItem.isMainGroup && !lineItem.isKit" class="stock-actions add"
-                       ng-disabled="lineItem.skipped"
+                       ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem)"
                        ng-click="vm.addLot(lineItem, lineItems)">
                 <input type="button"
                        value="{{'stockPhysicalInventoryDraft.remove' | message}}"
@@ -161,7 +165,7 @@
 <div class="openlmis-toolbar">
     <siglus-go-back/>
     <div class="button-group primary">
-        <button form="locationShipmentForm" class="primary">
+        <button type="submit" ng-click="vm.submit()" class="primary">
             {{'shipmentView.confirmShipment' | message}}
         </button>
         <button ng-show="vm.shipment.id" class="danger" ng-click="vm.shipment.delete()">

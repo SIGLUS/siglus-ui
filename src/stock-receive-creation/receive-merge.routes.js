@@ -48,7 +48,6 @@
                 draft: undefined,
                 orderableGroups: undefined,
                 isAddProduct: undefined,
-                hasLoadOrderableGroups: undefined,
                 size: '50',
                 initialDraftInfo: undefined,
                 mergedItems: undefined
@@ -103,7 +102,7 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, programId, facility, mergedItems, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
+                    if (!$stateParams.orderableGroups) {
                         var allLineOrderableIds = mergedItems.map(function(line) {
                             return line.orderableId;
                         });

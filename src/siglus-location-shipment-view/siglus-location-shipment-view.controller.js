@@ -37,7 +37,8 @@
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
         'stockCardSummaries', 'SiglusLocationShipmentViewLineItemFactory', 'orderService',
         'SiglusLocationShipmentLineItem', 'SiglusLocationShipmentViewLineItemGroup', 'displayTableLineItems',
-        'SiglusLocationShipmentViewLineItem', '$stateParams', 'order', 'moment'
+        'SiglusLocationShipmentViewLineItem', '$stateParams', 'order', 'moment',
+        'orderableLotsLocationMap', 'orderableLocationLotsMap', 'SiglusLocationCommonUtilsService'
     ];
 
     function ShipmentViewController(lotOptions, $scope, shipment, loadingModalService, $state, $window,
@@ -46,7 +47,9 @@
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, SiglusLocationShipmentViewLineItemFactory, orderService,
                                     SiglusLocationShipmentLineItem, ShipmentViewLineItemGroup, displayTableLineItems,
-                                    SiglusLocationShipmentViewLineItem, $stateParams, order, moment) {
+                                    SiglusLocationShipmentViewLineItem, $stateParams, order, moment,
+                                    orderableLotsLocationMap, orderableLocationLotsMap,
+                                    SiglusLocationCommonUtilsService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -111,66 +114,20 @@
         vm.displayTableLineItems = displayTableLineItems;
 
         vm.lotOptions = lotOptions;
-        vm.locations = [
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b121',
-                locationCode: 'AA25A'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6sd',
-                locationCode: 'AA25B'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b689',
-                locationCode: 'AA25C'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            },
-            {
-                id: 'a8478ba2-4e50-4f24-912e-fb4418e2b6acs',
-                locationCode: 'AA25D'
-            }
-        ];
 
-        /**
-         * @ngdoc method
-         * @methodOf shipment-view.controller:ShipmentViewController
-         * @name onInit
-         *
-         * @description
-         * Initialization method called after the controller has been created. Responsible for
-         * setting data to be available on the view.
-         */
+        vm.getLotList = function(lineItem) {
+            return SiglusLocationCommonUtilsService.getLotList(lineItem, orderableLocationLotsMap);
+        };
+
+        vm.getLocationList = function(lineItem) {
+            return SiglusLocationCommonUtilsService.getLocationList(lineItem, orderableLotsLocationMap);
+        };
+
         function onInit() {
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.tableLineItems = tableLineItems;
+
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
@@ -185,8 +142,9 @@
 
         function getRowTemplateData(currentItem, lineItems, isFirstRowToLineItem) {
             var lot = lineItems.length === 1 && currentItem.lot;
+            var location = lineItems.length === 1 && currentItem.location;
 
-            return new SiglusLocationShipmentViewLineItem({
+            return {
                 $error: isFirstRowToLineItem ? currentItem.$error : {},
                 $hint: isFirstRowToLineItem ? currentItem.$hint : {},
                 productCode: currentItem.productCode,
@@ -195,12 +153,13 @@
                 shipmentLineItem: _.clone(currentItem.shipmentLineItem) || {},
                 orderQuantity: 0,
                 lot: lot,
+                location: location,
                 netContent: currentItem.netContent,
                 // #287: Warehouse clerk can skip some products in order
                 skipped: currentItem.skipped,
                 orderableId: currentItem.orderableId
                 // #287: ends here
-            });
+            };
         }
 
         function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
@@ -208,69 +167,123 @@
                 getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
 
-        vm.validateLot = function(lineItems) {
+        function validateLotLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item, index) {
-                item.$error = {};
-                item.$hint = {};
                 if (index !== 0 || lineItems.length === 1) {
+                    if (item.$error.lotCodeError === 'locationShipmentView.lotDuplicated') {
+                        item.$error.lotCodeError = '';
+                    }
+
+                    if (item.$error.locationError === 'locationShipmentView.lotDuplicated') {
+                        item.$error.locationError = '';
+                    }
                     var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                         return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
                           && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
                     })) > 1;
                     if (hasDuplicated) {
                         item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
-                    }
-
-                    if (!item.$error.lotCodeError && item.lot) {
-                        var lotExpiredDate = moment(item.lot.expirationDate);
-                        if (moment().isAfter(lotExpiredDate)) {
-                            item.$error.lotCodeError = 'locationShipmentView.lotExpired';
-                        }
-                    }
-
-                    var hasOldLotCode = _.some(lotOptions[item.orderableId], function(lotOption) {
-                        return item.lot && moment(item.lot.expirationDate).isAfter(lotOption.expirationDate);
-                    });
-
-                    if (!item.$error.lotCodeError && hasOldLotCode) {
-                        item.$hint.lotCodeHint = 'locationShipmentView.notFirstToExpire';
+                        item.$error.locationError = 'locationShipmentView.lotDuplicated';
                     }
                 }
-
             });
-        };
+        }
 
-        vm.expirationDateChange = function(lineItem, lineItems) {
-            // if (!_.get(lineItem.lot, 'expirationDate')) {
-            // }
-            vm.validateLot(lineItems);
-        };
+        function validateLotExpired(lineItem) {
+            if (!lineItem.$error.lotCodeError && lineItem.lot) {
+                var lotExpiredDate = moment(lineItem.lot.expirationDate);
+                if (moment().isAfter(lotExpiredDate)) {
+                    lineItem.$error.lotCodeError = 'locationShipmentView.lotExpired';
+                }
+            }
+        }
+
+        function validateLotNotFirstToExpire(lineItem) {
+            var hasOldLotCode = _.some(lotOptions[lineItem.orderableId], function(lotOption) {
+                return lineItem.lot && moment(lineItem.lot.expirationDate).isAfter(lotOption.expirationDate);
+            });
+
+            if (!lineItem.$error.lotCodeError && hasOldLotCode) {
+                lineItem.$hint.lotCodeHint = 'locationShipmentView.notFirstToExpire';
+            }
+        }
+
+        function validateLot(lineItem, lineItems) {
+            lineItem.$error.lotCodeError = '';
+            lineItem.$hint.lotCodeHint = '';
+            if (_.isEmpty(lineItem.lot)) {
+                lineItem.$error.lotCodeError = 'openlmisForm.required';
+                return;
+            }
+            validateLotLocationDuplicated(lineItems, 'lotCodeError');
+
+            validateLotExpired(lineItem);
+
+            validateLotNotFirstToExpire(lineItem);
+
+        }
 
         vm.changeLot = function(currentItem, lineItems) {
-            if (_.isEmpty(currentItem.lot)) {
-                vm.validateLot(lineItems);
-                currentItem.shipmentLineItem = {};
-                currentItem.location = null;
-            } else {
-                var shipmentLineItem =  _.find(vm.shipment.lineItems, function(item) {
+            if (!_.isEmpty(currentItem.lot)) {
+                var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
                     return item.orderable.id === currentItem.orderableId;
-                });
+                }));
                 if (currentItem.shipmentLineItem.quantityShipped) {
                     shipmentLineItem.quantityShipped = currentItem.shipmentLineItem.quantityShipped;
                 }
                 currentItem.shipmentLineItem = shipmentLineItem;
                 currentItem.$error.expirationDateRequired = '';
-                vm.validateLot(lineItems);
+                validateLot(currentItem, lineItems);
             }
+
+            validateLot(currentItem, lineItems);
         };
+
+        function validateLocation(lineItem, lineItems) {
+            lineItem.locationError = '';
+            if (_.isEmpty(lineItem.location)) {
+                lineItem.$error.locationError = 'openlmisForm.required';
+                return;
+            }
+            validateLotLocationDuplicated(lineItems, 'locationError');
+        }
 
         vm.changeLocation = function(currentItem, lineItems) {
             if (_.isEmpty(currentItem.location)) {
-                currentItem.lot = null;
+                // currentItem.lot = null;
                 currentItem.shipmentLineItem = {};
             }
-            vm.validateLot(lineItems);
+            validateLocation(currentItem, lineItems);
         };
+
+        function validateExpirationDate(currentItem) {
+            currentItem.$error.expirationDateError = '';
+            if (_.isEmpty(_.get(currentItem.lot, 'expirationDate'))) {
+                currentItem.$error.expirationDateError = 'openlmisForm.required';
+                return;
+            }
+            validateLotExpired(currentItem);
+        }
+
+        vm.changeExpirationDate = function(currentItem) {
+            validateExpirationDate(currentItem);
+        };
+
+        function validateFillQuantity(currentItem) {
+            currentItem.$error.quantityShippedError = '';
+            var quantityShipped = _.get(currentItem.shipmentLineItem, 'quantityShipped');
+            if (isEmpty(quantityShipped)) {
+                currentItem.$error.quantityShippedError = 'openlmisForm.required';
+                return;
+            }
+
+            var stockOnHand = _.get(currentItem.lot, 'stockOnHand', 0);
+            if (quantityShipped > stockOnHand) {
+                currentItem.$error.quantityShippedError = 'shipment.fillQuantityCannotExceedStockOnHand';
+            }
+        }
+
+        vm.changeFillQuantity = validateFillQuantity;
 
         vm.addLot = function(currentItem, lineItems) {
             if (lineItems.length === 1) {
@@ -278,7 +291,6 @@
                 resetFirstRow(currentItem);
             }
             addRow(currentItem, lineItems, false);
-            // setLineItems(lineItems);
         };
 
         vm.removeLot = function(lineItems, index) {
@@ -287,12 +299,13 @@
             } else if (lineItems.length === 3) {
                 var remainRowData = index > 1 ? lineItems[1] : lineItems[2];
                 lineItems[0].lot = remainRowData.lot;
+                lineItems[0].location = remainRowData.location;
                 lineItems[0].shipmentLineItem = remainRowData.shipmentLineItem;
                 lineItems.splice(1, 2);
             } else if (lineItems.length > 3) {
                 lineItems.splice(index, 1);
             }
-            vm.validateLot(lineItems);
+            validateLotLocationDuplicated(lineItems);
             vm.displayTableLineItems = _.filter(vm.displayTableLineItems, function(item) {
                 return !_.isEmpty(item);
             });
@@ -342,41 +355,31 @@
 
         };
 
+        function getSohByOrderableAndLocation(lineItem) {
+            var lot = _.chain(orderableLocationLotsMap[lineItem.orderableId])
+                .get(_.get(lineItem.location, 'locationCode'))
+                .find(function(item) {
+                    return item.lotCode === _.get(lineItem.lot, 'lotCode');
+                })
+                .value();
+
+            return recalculateQuantity(_.get(lot, 'stockOnHand', 0));
+        }
+
         vm.getAvailableSoh = function(lineItems, index) {
             if (index === 0) {
                 return _.reduce(lineItems, function(availableSoh, lineItem) {
-                    var stockOnHand = recalculateQuantity(_.get(lineItem.shipmentLineItem, 'stockOnHand', 0), lineItem);
-                    return availableSoh + stockOnHand;
+                    return availableSoh + getSohByOrderableAndLocation(lineItem);
+
                 }, 0);
             }
-            return recalculateQuantity(
-                _.get(lineItems[index], ['shipmentLineItem', 'stockOnHand'], 0), lineItems[index]
-            );
+            return getSohByOrderableAndLocation(lineItems[index]);
 
         };
 
         vm.getRemainingSoh = function(lineItems, index) {
             var quantity = vm.getAvailableSoh(lineItems, index) - vm.getFillQuantity(lineItems, index);
             return quantity < 0 ? 0 : quantity;
-        };
-
-        vm.isFillQuantityInvalid = function(lineItem) {
-            var errors = {};
-
-            var quantityShipped = _.get(lineItem.shipmentLineItem, 'quantityShipped');
-            var stockOnHand = _.get(lineItem.shipmentLineItem, 'stockOnHand', 0);
-            var skipped = _.get(lineItem.shipmentLineItem, 'skipped', false);
-            // #287: Warehouse clerk can skip some products in order
-            if (!quantityShipped && quantityShipped !== 0 && !skipped) {
-                errors.quantityShipped = 'shipment.required';
-            }
-            // #287: ends here
-
-            if (quantityShipped > stockOnHand) {
-                errors.quantityShipped = 'shipment.fillQuantityCannotExceedStockOnHand';
-            }
-
-            return angular.equals(errors, {}) ? undefined : errors;
         };
 
         /**
@@ -546,7 +549,7 @@
         function skipAllLineItems() {
             vm.displayTableLineItems.forEach(function(lineItemGroup) {
                 _.forEach(lineItemGroup, function(lineItem) {
-                    if (!lineItem.skipped && canSkip(lineItemGroup) && lineItemGroup.length === 1) {
+                    if (!lineItem.skipped && lineItemGroup.length === 1 && canSkip(lineItemGroup)) {
                         lineItem.skipped = true;
                         changeSkipStatus(lineItem);
                     }
@@ -604,6 +607,41 @@
 
         vm.showEditableBlocks = function(lineItem, lineItems) {
             return (lineItem.isMainGroup && lineItems.length === 1) || (!lineItem.isMainGroup && lineItems.length > 1);
+        };
+
+        vm.isEmptyRow = function(lineItem) {
+            if (lineItem.isKit) {
+                return _.size(vm.getLocationList(lineItem)) === 0;
+            }
+            return _.size(vm.getLotList(lineItem)) === 0 || _.size(vm.getLocationList(lineItem)) === 0;
+        };
+
+        function isTableFormValid() {
+            _.forEach(vm.displayTableLineItems, function(lineItems) {
+                _.forEach(lineItems, function(lineItem) {
+                    validateLot(lineItem, lineItems);
+                    validateLocation(lineItem, lineItems);
+                    validateExpirationDate(lineItem);
+                    validateFillQuantity(lineItem);
+                });
+            });
+
+            return _.every(vm.displayTableLineItems, function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$error)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$error[key]);
+                        })
+                        .value();
+                });
+            });
+        }
+
+        vm.submit = function() {
+            if (isTableFormValid()) {
+                console.log(11111);
+            }
         };
 
     }
