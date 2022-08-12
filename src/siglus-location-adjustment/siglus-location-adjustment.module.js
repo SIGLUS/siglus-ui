@@ -14,24 +14,18 @@
  */
 
 (function() {
-
     'use strict';
 
-    angular
-        .module('siglus-analytics-report')
-        .config(routes);
-
-    routes.$inject = ['$stateProvider'];
-
-    function routes($stateProvider) {
-
-        $stateProvider.state('openlmis.analyticsReport', {
-            url: '/analyticsReports',
-            abstract: true,
-            showInNavigation: true,
-            label: 'analyticsReport.title',
-            priority: 8
-        });
-    }
-
+    /**
+   * @module siglus-location-adjustment
+   *
+   * @description
+   * Responsible for make location adjustment list screen.
+   */
+    angular.module('siglus-location-adjustment', [
+        'siglus-location-management',
+        'stock-program-util',
+        'referencedata-facility',
+        'referencedata-program'
+    ]);
 })();

@@ -2434,5 +2434,6 @@
   "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial",
   "adminFacilityView.enableLocation": "Location management enabled successfully!",
   "adminFacilityView.disabledLocation": "Location management disabled successfully!",
-  "downloadModal.downloading": "Baixando..."
+  "downloadModal.downloading": "Baixando...",
+  "locationmanagement.title": "Location Management"
 }
