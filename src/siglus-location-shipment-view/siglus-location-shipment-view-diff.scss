@@ -14,3 +14,8 @@
 #locationShipmentForm input.number {
   text-align: left;
 }
+
+
+#locationShipmentForm input[disabled] {
+  cursor: not-allowed;
+}

@@ -48,7 +48,6 @@
                 draft: undefined,
                 orderableGroups: undefined,
                 isAddProduct: undefined,
-                hasLoadOrderableGroups: undefined,
                 size: '50',
                 initialDraftInfo: undefined
                 // SIGLUS-REFACTOR: ends here
@@ -101,7 +100,7 @@
                     return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
                 orderableGroups: function($stateParams, facility, draft, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
+                    if (!$stateParams.orderableGroups) {
                         var allLineOrderableIds = draft.lineItems.map(function(line) {
                             return line.orderableId;
                         });

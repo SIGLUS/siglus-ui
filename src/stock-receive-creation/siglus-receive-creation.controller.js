@@ -902,8 +902,8 @@
             $stateParams.initialDraftInfo = initialDraftInfo;
             $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
-            // $stateParams.orderableGroups = orderableGroups;
-            $stateParams.hasLoadOrderableGroups = true;
+            $stateParams.orderableGroups = orderableGroups;
+            // $stateParams.hasLoadOrderableGroups = true;
             // SIGLUS-REFACTOR: ends here
         }
 

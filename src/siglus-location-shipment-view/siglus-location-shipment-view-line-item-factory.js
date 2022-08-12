@@ -33,9 +33,7 @@
         'SiglusLocationShipmentViewLineItemGroup'
     ];
 
-    function ShipmentViewLineItemFactory(StockCardResource, VVM_STATUS,
-                                         SiglusLocationShipmentViewLineItem,
-                                         SiglusLocationShipmentViewLineItemGroup) {
+    function ShipmentViewLineItemFactory() {
 
         ShipmentViewLineItemFactory.prototype.createFrom = buildFrom;
 
@@ -59,13 +57,11 @@
          * @return {Array}              the list of line items
          */
         function buildFrom(shipment) {
-            // var shipmentLineItemMap = mapByOrderableAndLot(shipment.lineItems);
-
             var shipmentViewLineItemGroups = shipment.order.orderLineItems
                 .map(function(orderLineItem) {
                     var orderableId = orderLineItem.orderable.id;
 
-                    return new SiglusLocationShipmentViewLineItemGroup({
+                    return {
                         $error: {},
                         $hint: {},
                         productCode: orderLineItem.orderable.productCode,
@@ -77,14 +73,10 @@
                         isMainGroup: true,
                         shipmentLineItem: {},
                         netContent: orderLineItem.orderable.netContent,
-                        // #287: Warehouse clerk can skip some products in order
                         skipped: orderLineItem.skipped,
                         orderableId: orderableId,
-                        // #287: ends here
-                        // #400: Facility user partially fulfill an order and create sub-order for an requisition
                         partialFulfilledQuantity: orderLineItem.partialFulfilledQuantity
-                        // #400: ends here
-                    });
+                    };
                 });
 
             sortLotLineItems(shipmentViewLineItemGroups);
@@ -104,85 +96,6 @@
             });
         }
 
-        // function buildTradeItems(summary, shipmentLineItemMap, skipped) {
-        //     var uniqueOrderables = getUniqueOrderables(summary.canFulfillForMe),
-        //         canFulfillForMeMap = groupByOrderables(summary.canFulfillForMe),
-        //         tradeItemLineItems = [];
-        //
-        //     uniqueOrderables.forEach(function(orderable) {
-        //         var lotLineItems = buildLotLineItems(shipmentLineItemMap, canFulfillForMeMap, orderable, skipped);
-        //
-        //         if (lotLineItems.length > 1) {
-        //             tradeItemLineItems.push(new SiglusLocationShipmentViewLineItemGroup({
-        //                 productCode: orderable.productCode,
-        //                 productName: orderable.fullProductName,
-        //                 lineItems: lotLineItems,
-        //                 orderableId: orderable.id,
-        //                 netContent: orderable.netContent,
-        //                 // #287: Warehouse clerk can skip some products in order
-        //                 skipped: skipped
-        //                 // #287: ends here
-        //             }));
-        //         } else if (lotLineItems.length || summary.orderable.isKit) {
-        //             tradeItemLineItems.push(new SiglusLocationShipmentViewLineItem({
-        //                 productCode: orderable.productCode,
-        //                 productName: orderable.fullProductName,
-        //                 lot: lotLineItems[0].lot,
-        //                 vvmStatus: lotLineItems[0].vvmStatus,
-        //                 shipmentLineItem: lotLineItems[0].shipmentLineItem,
-        //                 netContent: orderable.netContent,
-        //                 // #287: Warehouse clerk can skip some products in order
-        //                 isKit: summary.orderable.isKit,
-        //                 skipped: skipped
-        //                 // #287: ends here
-        //             }));
-        //         }
-        //     });
-        //
-        //     return tradeItemLineItems;
-        // }
-
-        // function buildLotLineItems(shipmentLineItemMap, canFulfillForMeMap, orderable, skipped) {
-        //     var lotLineItems = [];
-        //
-        //     canFulfillForMeMap[orderable.id].forEach(function(canFulfillForMe) {
-        //         var lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined,
-        //             shipmentLineItem = findShipmentLineItemByOrderableIdAndLotId(
-        //                 shipmentLineItemMap,
-        //                 orderable.id,
-        //                 lotId
-        //             );
-        //
-        //         if (shipmentLineItem) {
-        //             lotLineItems.push(new SiglusLocationShipmentViewLineItem({
-        //                 lot: canFulfillForMe.lot,
-        //                 vvmStatus: getVvmStatus(canFulfillForMe),
-        //                 shipmentLineItem: shipmentLineItem,
-        //                 netContent: orderable.netContent,
-        //                 // #287: Warehouse clerk can skip some products in order
-        //                 skipped: skipped
-        //                 // #287: ends here
-        //             }));
-        //         }
-        //     });
-        //
-        //     lotLineItems.sort(compareLineItems);
-        //
-        //     return lotLineItems;
-        // }
-
-        // function findShipmentLineItemByOrderableIdAndLotId(shipmentLineItemMap, orderableId, lotId) {
-        //     if (shipmentLineItemMap[orderableId]) {
-        //         return shipmentLineItemMap[orderableId][lotId];
-        //     }
-        // }
-
-        // function findSummaryByOrderableId(summaries, orderableId) {
-        //     return summaries.filter(function(summary) {
-        //         return summary.orderable.id === orderableId;
-        //     })[0];
-        // }
-
         function flatten(shipmentViewLineItems) {
             return shipmentViewLineItems.reduce(function(shipmentViewLineItems, lineItem) {
                 shipmentViewLineItems.push(lineItem);
@@ -199,52 +112,6 @@
                 return shipmentViewLineItems;
             }, []);
         }
-
-        // function groupByOrderables(canFulfillForMe) {
-        //     return canFulfillForMe.reduce(function(canFulfillForMeMap, canFulfillForMe) {
-        //         var orderableId = canFulfillForMe.orderable.id;
-        //
-        //         if (!canFulfillForMeMap[orderableId]) {
-        //             canFulfillForMeMap[orderableId] = [];
-        //         }
-        //
-        //         canFulfillForMeMap[orderableId].push(canFulfillForMe);
-        //
-        //         return canFulfillForMeMap;
-        //     }, {});
-        // }
-
-        // function mapByOrderableAndLot(lineItems) {
-        //     return lineItems.reduce(function(map, lineItem) {
-        //         var orderableId = lineItem.orderable.id,
-        //             lotId = lineItem.lot ? lineItem.lot.id : undefined;
-        //
-        //         if (!map[orderableId]) {
-        //             map[orderableId] = {};
-        //         }
-        //
-        //         map[orderableId][lotId] = lineItem;
-        //
-        //         return map;
-        //     }, {});
-        // }
-
-        // function getUniqueOrderables(canFulfillForMe) {
-        //     var orderablesMap = canFulfillForMe.reduce(function(orderables, canFulfillForMe) {
-        //         orderables[canFulfillForMe.orderable.id] = canFulfillForMe.orderable;
-        //         return orderables;
-        //     }, {});
-        //
-        //     return Object.keys(orderablesMap).map(function(id) {
-        //         return orderablesMap[id];
-        //     });
-        // }
-
-        // function isForGenericOrderable(summary) {
-        //     return summary &&
-        //         summary.canFulfillForMe.length === 1 &&
-        //         summary.orderable.id === summary.canFulfillForMe[0].orderable.id;
-        // }
 
         function compareLineItems(left, right) {
             return compareLots(left.lot, right.lot) ||
