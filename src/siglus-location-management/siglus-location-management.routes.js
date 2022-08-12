@@ -14,23 +14,21 @@
  */
 
 (function() {
-
     'use strict';
 
     angular
-        .module('siglus-analytics-report')
+        .module('siglus-location-management')
         .config(routes);
 
     routes.$inject = ['$stateProvider'];
 
     function routes($stateProvider) {
-
-        $stateProvider.state('openlmis.analyticsReport', {
-            url: '/analyticsReports',
+        $stateProvider.state('openlmis.locationManagement', {
             abstract: true,
+            url: '/locationManagement',
+            label: 'locationManagement.title',
             showInNavigation: true,
-            label: 'analyticsReport.title',
-            priority: 8
+            priority: 9
         });
     }
 

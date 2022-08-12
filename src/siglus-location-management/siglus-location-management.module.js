@@ -17,21 +17,24 @@
 
     'use strict';
 
-    angular
-        .module('siglus-analytics-report')
-        .config(routes);
-
-    routes.$inject = ['$stateProvider'];
-
-    function routes($stateProvider) {
-
-        $stateProvider.state('openlmis.analyticsReport', {
-            url: '/analyticsReports',
-            abstract: true,
-            showInNavigation: true,
-            label: 'analyticsReport.title',
-            priority: 8
-        });
-    }
+    /**
+     * @module
+     *
+     * @description
+     * Main locationManagement module.
+     */
+    angular.module('siglus-location-management', [
+        'ngResource',
+        'ui.router',
+        'openlmis-urls',
+        'openlmis-auth',
+        'openlmis-i18n',
+        'openlmis-modal',
+        'openlmis-table',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'openlmis-date',
+        'openlmis-main-state'
+    ]);
 
 })();
