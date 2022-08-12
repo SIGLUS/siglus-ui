@@ -779,8 +779,8 @@
                 if (!summary.$errors) {
                     summary.$errors = {};
                 }
-                if (summary.lot && summary.lot.id && summary.lot.lotCode) {
-                    vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
+                if (summary.lot && summary.lot.id) {
+                    vm.existLotCode.push(summary.lot.id);
                 }
             });
             _.forEach(draft.lineItems, function(item) {
