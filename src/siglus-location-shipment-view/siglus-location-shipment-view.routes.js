@@ -50,6 +50,7 @@
                 order: function(orderRepository, $stateParams) {
                     if (!$stateParams.order) {
                         return orderRepository.get($stateParams.id).then(function(data) {
+                            console.log(data);
                             return _.omit(data, ['$promise', '$resolved']);
                         });
                     }
@@ -71,6 +72,7 @@
                         orderableId: orderableIds
                     })
                         .then(function(page) {
+                            console.log(page);
                             return page;
                         });
 
@@ -89,16 +91,16 @@
                                 locationCode: 'AA25A',
                                 lots: [
                                     {
-                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
                                         lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                        lotCode: 'SEM-LOTE-07A03-012023-1',
+                                        lotCode: 'SEM-LOTE-07A03-2508022-1',
                                         expirationDate: '2022-08-25',
                                         stockOnHand: 1000
                                     },
                                     {
-                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
                                         lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
-                                        lotCode: 'SEM-LOTE-07A03-012023-2',
+                                        lotCode: 'SEM-LOTE-07A03-09082022-2',
                                         expirationDate: '2022-08-09',
                                         stockOnHand: 1000
                                     }
@@ -109,16 +111,16 @@
                                 locationCode: 'AA25B',
                                 lots: [
                                     {
-                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
                                         lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                        lotCode: 'SEM-LOTE-07A03-012023-1',
+                                        lotCode: 'SEM-LOTE-07A03-2508022-1',
                                         expirationDate: '2022-08-25',
                                         stockOnHand: 678
                                     },
                                     {
-                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
                                         lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e89',
-                                        lotCode: 'SEM-LOTE-07A03-012023-3',
+                                        lotCode: 'SEM-LOTE-07A03-17082022-4',
                                         expirationDate: '2022-08-17',
                                         stockOnHand: 8000
                                     }
@@ -129,18 +131,38 @@
                                 locationCode: 'AA28B',
                                 lots: [
                                     {
-                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
                                         lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                        lotCode: 'SEM-LOTE-07A03-012023-1',
+                                        lotCode: 'SEM-LOTE-07A03-2508022-1',
                                         expirationDate: '2022-08-25',
                                         stockOnHand: 256
                                     },
                                     {
-                                        orderablesId: 'dac6d9e6-d472-48ae-aba9-ae882e81a28e',
+                                        orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
                                         lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e67',
-                                        lotCode: 'SEM-LOTE-07A03-012023-4',
+                                        lotCode: 'SEM-LOTE-07A03-17082023-4',
                                         expirationDate: '2023-08-17',
                                         stockOnHand: 8000
+                                    }
+                                ]
+                            },
+                            {
+                                locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cd0',
+                                locationCode: 'AA28B',
+                                lots: [
+                                    {
+                                        orderablesId: '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a',
+                                        stockOnHand: 333
+                                    }
+                                ]
+                            },
+                            {
+                                locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cdc',
+                                locationCode: 'AA23C',
+                                lots: [
+                                    {
+                                        orderablesId: '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a',
+                                        stockOnHand: 567
                                     }
                                 ]
                             }

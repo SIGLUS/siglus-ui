@@ -190,6 +190,7 @@
                 orderId: order.id
             })
                 .then(function(page) {
+
                     var shipment = page.content[0];
                     var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
                     var orderableIds = Object.keys(canFulfillForMeMap);

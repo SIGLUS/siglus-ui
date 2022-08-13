@@ -57,10 +57,14 @@
          * @return {Array}              the list of line items
          */
         function buildFrom(shipment) {
+
             var shipmentViewLineItemGroups = shipment.order.orderLineItems
                 .map(function(orderLineItem) {
+                    var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
+                        return item.orderable.id === orderLineItem.orderable.id;
+                    }));
+                    shipmentLineItem.quantityShipped = null;
                     var orderableId = orderLineItem.orderable.id;
-
                     return {
                         $error: {},
                         $hint: {},
@@ -71,7 +75,7 @@
                         lineItems: [],
                         orderQuantity: orderLineItem.orderedQuantity,
                         isMainGroup: true,
-                        shipmentLineItem: {},
+                        shipmentLineItem: shipmentLineItem,
                         netContent: orderLineItem.orderable.netContent,
                         skipped: orderLineItem.skipped,
                         orderableId: orderableId,

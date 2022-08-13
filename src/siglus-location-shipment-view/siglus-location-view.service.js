@@ -35,7 +35,7 @@
     function SiglusLocationViewService($resource, fulfillmentUrlFactory) {
     // #400: Facility user partially fulfill an order and create sub-order for an requisition
         var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/locations'), {}, {
-            create: {
+            saveDraft: {
                 method: 'POST'
             },
             getOrderableLocationLotsInfo: {
@@ -43,6 +43,10 @@
                 isArray: true
             }
         });
+
+        this.saveDraft = function() {
+
+        };
 
         this.getOrderableLocationLotsInfo = function(params) {
             return resource.getOrderableLocationLotsInfo(params).$promise;

@@ -43,7 +43,7 @@
     </button>
 </div>
 <!-- #264: ends here -->
-<div class="openlmis-table-container">
+<div id="locationShipmentForm" class="openlmis-table-container">
     <quantity-unit-toggle class="is-primary quantity-unit-btn" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
     <!-- #287: Warehouse clerk can skip some products in order-->
     <h4>{{'shipmentView.skip' | message}}</h4>
@@ -91,18 +91,18 @@
                        ng-disabled="!vm.canSkip(lineItems)"/>
             </td>
             <td>{{lineItem.isMainGroup && lineItem.productCode}}</td>
-            <td>{{lineItem.isMainGroup && lineItem.productName}}</td>
+            <td>{{lineItem.isMainGroup && lineItem.productName}} {{lineItem.isKit}}</td>
             <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
             <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)"
                 openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
-                popover="{{lineItem.$hint.lotCodeHint | message}}"
+                popover="{{!lineItem.$error.lotCodeError && lineItem.$hint.lotCodeHint || '' | message}}"
             >
                 <select
                         ng-model="lineItem.lot"
                         no-auto-select="true"
                         ng-disabled="lineItem.skipped"
                         ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
-                        ng-change="vm.changeLot(lineItem, lineItems);$event.blur()"
+                        ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()"
                 >
                 </select>
             </td>
@@ -112,18 +112,21 @@
                        ng-disabled="lineItem.skipped"
                        autocomplete="off"
                        openlmis-invalid="{{lineItem.$error.expirationDateError ||  '' | message}}"
-                       ng-change="vm.expirationDateChange(lineItem, lineItems)"/>
+                       ng-change="vm.changeExpirationDate(lineItem, lineItems)"/>
             </td>
             <td ng-if="vm.showEmptyBlock(lineItem, lineItems)"></td>
             <td ng-if="vm.showEditableBlocks(lineItem, lineItems)"
-                openlmis-invalid="{{lineItem.$error.locationError || '' | message}}"
+                openlmis-invalid="{{
+                lineItem.$error.lotCodeError === 'locationShipmentView.lotDuplicated'
+                    ? lineItem.$error.lotCodeError
+                    : (lineItem.$error.locationError || '') | message}}"
             >
                 <select
                         ng-model="lineItem.location"
                         no-auto-select="true"
                         ng-disabled="lineItem.skipped"
                         ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
-                        ng-change="vm.changeLocation(lineItem, lineItems)"
+                        ng-change="vm.changeLocation(lineItem, lineItems, index)"
                 >
                 </select>
             </td>
@@ -144,8 +147,8 @@
             <td>{{vm.getRemainingSoh(lineItems, index)}}</td>
             <td>
                 <input type="button"
-                       value="{{'stockPhysicalInventoryDraft.addLot' | message}}"
-                       ng-if="lineItem.isMainGroup && !lineItem.isKit" class="stock-actions add"
+                       value="{{'locationShipmentView.addItem' | message}}"
+                       ng-if="lineItem.isMainGroup" class="stock-actions add"
                        ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem)"
                        ng-click="vm.addLot(lineItem, lineItems)">
                 <input type="button"
@@ -172,7 +175,7 @@
             {{'shipmentView.deleteDraft' | message}}
         </button>
     </div>
-    <button ng-click="vm.shipment.save()">{{'shipmentView.saveDelete' | message}}</button>
+    <button ng-click="vm.save()">{{'shipmentView.saveDelete' | message}}</button>
     <button ng-click="vm.printShipment()">
         {{'shipmentView.generatePickPackList' | message}}
     </button>

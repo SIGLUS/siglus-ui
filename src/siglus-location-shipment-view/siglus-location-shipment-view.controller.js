@@ -143,6 +143,11 @@
         function getRowTemplateData(currentItem, lineItems, isFirstRowToLineItem) {
             var lot = lineItems.length === 1 && currentItem.lot;
             var location = lineItems.length === 1 && currentItem.location;
+            var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
+                return item.orderable.id === currentItem.orderableId;
+            }));
+            shipmentLineItem.quantityShipped = isFirstRowToLineItem
+                ? currentItem.shipmentLineItem.quantityShipped : null;
 
             return {
                 $error: isFirstRowToLineItem ? currentItem.$error : {},
@@ -150,9 +155,10 @@
                 productCode: currentItem.productCode,
                 productName: currentItem.fullProductName,
                 id: currentItem.id,
-                shipmentLineItem: _.clone(currentItem.shipmentLineItem) || {},
+                shipmentLineItem: shipmentLineItem,
                 orderQuantity: 0,
                 lot: lot,
+                isKit: currentItem.isKit,
                 location: location,
                 netContent: currentItem.netContent,
                 // #287: Warehouse clerk can skip some products in order
@@ -167,102 +173,135 @@
                 getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
 
-        function validateLotLocationDuplicated(lineItems) {
-            _.forEach(lineItems, function(item, index) {
-                if (index !== 0 || lineItems.length === 1) {
-                    if (item.$error.lotCodeError === 'locationShipmentView.lotDuplicated') {
-                        item.$error.lotCodeError = '';
-                    }
-
-                    if (item.$error.locationError === 'locationShipmentView.lotDuplicated') {
-                        item.$error.locationError = '';
-                    }
-                    var hasDuplicated = _.size(_.filter(lineItems, function(data) {
-                        return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
-                          && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
-                    })) > 1;
-                    if (hasDuplicated) {
-                        item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
-                        item.$error.locationError = 'locationShipmentView.lotDuplicated';
-                    }
-                }
-            });
-        }
-
-        function validateLotExpired(lineItem) {
-            if (!lineItem.$error.lotCodeError && lineItem.lot) {
-                var lotExpiredDate = moment(lineItem.lot.expirationDate);
+        function validateLotExpired(item) {
+            if (!item.$error.lotCodeError && item.lot) {
+                var lotExpiredDate = moment(item.lot.expirationDate);
                 if (moment().isAfter(lotExpiredDate)) {
-                    lineItem.$error.lotCodeError = 'locationShipmentView.lotExpired';
+                    item.$error.lotCodeError = 'locationShipmentView.lotExpired';
                 }
             }
         }
 
-        function validateLotNotFirstToExpire(lineItem) {
-            var hasOldLotCode = _.some(lotOptions[lineItem.orderableId], function(lotOption) {
-                return lineItem.lot && moment(lineItem.lot.expirationDate).isAfter(lotOption.expirationDate);
+        function validateNotFirstToExpire(item) {
+            if (!item.$error.lotCodeError) {
+                var lotOptions = _.filter(SiglusLocationCommonUtilsService.getLotList(item,
+                    orderableLocationLotsMap), function(lot) {
+                    return moment().isBefore(moment(lot.expirationDate));
+                });
+
+                var hasOldLotCode = _.some(lotOptions, function(lotOption) {
+                    return item.lot && moment(item.lot.expirationDate)
+                        .isAfter(moment(lotOption.expirationDate));
+                });
+
+                if (hasOldLotCode) {
+                    item.$hint.lotCodeHint = 'locationShipmentView.notFirstToExpire';
+                }
+            }
+        }
+
+        function validateBase(lineItems, callback) {
+            _.forEach(lineItems, function(item, $index) {
+                var hasDuplicated = _.size(_.filter(lineItems, function(data) {
+                    return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
+                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                })) > 1;
+
+                if (hasDuplicated) {
+                    item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
+                } else {
+                    callback(item, $index);
+
+                    validateLotExpired(item);
+
+                    validateNotFirstToExpire(item);
+                }
             });
-
-            if (!lineItem.$error.lotCodeError && hasOldLotCode) {
-                lineItem.$hint.lotCodeHint = 'locationShipmentView.notFirstToExpire';
-            }
         }
 
-        function validateLot(lineItem, lineItems) {
+        function validateLot(lineItem, lineItems, index) {
             lineItem.$error.lotCodeError = '';
-            lineItem.$hint.lotCodeHint = '';
-            if (_.isEmpty(lineItem.lot)) {
-                lineItem.$error.lotCodeError = 'openlmisForm.required';
-                return;
-            }
-            validateLotLocationDuplicated(lineItems, 'lotCodeError');
 
-            validateLotExpired(lineItem);
-
-            validateLotNotFirstToExpire(lineItem);
-
-        }
-
-        vm.changeLot = function(currentItem, lineItems) {
-            if (!_.isEmpty(currentItem.lot)) {
-                var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
-                    return item.orderable.id === currentItem.orderableId;
-                }));
-                if (currentItem.shipmentLineItem.quantityShipped) {
-                    shipmentLineItem.quantityShipped = currentItem.shipmentLineItem.quantityShipped;
+            validateBase(lineItems, function(item, $index) {
+                if (index === $index && _.isEmpty(item.lot)) {
+                    item.$error.lotCodeError = 'openlmisForm.required';
+                    return ;
                 }
-                currentItem.shipmentLineItem = shipmentLineItem;
-                currentItem.$error.expirationDateRequired = '';
-                validateLot(currentItem, lineItems);
-            }
-
-            validateLot(currentItem, lineItems);
-        };
-
-        function validateLocation(lineItem, lineItems) {
-            lineItem.locationError = '';
-            if (_.isEmpty(lineItem.location)) {
-                lineItem.$error.locationError = 'openlmisForm.required';
-                return;
-            }
-            validateLotLocationDuplicated(lineItems, 'locationError');
+                item.$error.lotCodeError = '';
+                item.$hint.lotCodeHint = '';
+            });
+            lotOrLocationChangeEmitValidation(lineItem);
+            validateExpirationDate(lineItem);
         }
 
-        vm.changeLocation = function(currentItem, lineItems) {
-            if (_.isEmpty(currentItem.location)) {
-                // currentItem.lot = null;
-                currentItem.shipmentLineItem = {};
-            }
-            validateLocation(currentItem, lineItems);
+        vm.changeLot = function(lineItem, lineItems, index) {
+            validateLot(lineItem, lineItems, index);
         };
 
-        function validateExpirationDate(currentItem) {
-            currentItem.$error.expirationDateError = '';
-            if (_.isEmpty(_.get(currentItem.lot, 'expirationDate'))) {
-                currentItem.$error.expirationDateError = 'openlmisForm.required';
-                return;
+        function lotOrLocationChangeEmitValidation(lineItem) {
+            var hasKitLocation = lineItem.isKit && !_.isEmpty(lineItem.location);
+            var hasBothLocationAndLot = !lineItem.isKit && !_.isEmpty(lineItem.location)
+              && !_.isEmpty(lineItem.lot);
+            var hasQuantityShippedFilled = !_.isNull(lineItem.shipmentLineItem.quantityShipped);
+            if ((hasKitLocation || hasBothLocationAndLot) && hasQuantityShippedFilled) {
+                validateFillQuantity(lineItem);
             }
-            validateLotExpired(currentItem);
+        }
+
+        function validateLocationDuplicated(lineItems) {
+            _.forEach(lineItems, function(item) {
+                var hasDuplicated = _.size(_.filter(lineItems, function(data) {
+                    return data.location
+                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                })) > 1;
+                if (hasDuplicated) {
+                    item.$error.locationError = 'locationShipmentView.locationDuplicated';
+                }
+            });
+        }
+
+        vm.changeLocation = function(lineItem, lineItems, index) {
+
+            lineItem.$error.locationError = '';
+
+            if (lineItem.isKit) {
+                if (_.isEmpty(lineItem.location)) {
+                    lineItem.$error.locationError = 'openlmisForm.required';
+                }
+                validateLocationDuplicated(lineItems);
+            } else {
+                validateBase(lineItems, function(item, $index) {
+                    if (_.isEmpty(lineItem.location) && $index === index) {
+                        lineItem.$error.locationError = 'openlmisForm.required';
+                    }
+                    item.$error.lotCodeError = '';
+                    item.$hint.lotCodeHint = '';
+
+                    if (_.isEmpty(item.lot) && $index === index) {
+                        item.$error.lotCodeError = 'openlmisForm.required';
+                    }
+                });
+            }
+
+            validateFillQuantity(lineItem);
+
+        };
+
+        function validateExpirationDate(lineItem) {
+            lineItem.$error.expirationDateError = '';
+            if (_.isEmpty(_.get(lineItem.lot, 'expirationDate'))) {
+                lineItem.$error.expirationDateError = 'openlmisForm.required';
+            }
+
+            // if (lineItem.$error.lotCodeError === 'locationShipmentView.lotExpired'
+            //   || _.isEmpty(lineItem.$error.lotCodeError)) {
+            //     var lotExpiredDate = moment(lineItem.lot.expirationDate);
+            //     if (moment().isAfter(lotExpiredDate)) {
+            //         lineItem.$error.lotCodeError = 'locationShipmentView.lotExpired';
+            //     } else {
+            //         lineItem.$error.lotCodeError = '';
+            //     }
+            // }
         }
 
         vm.changeExpirationDate = function(currentItem) {
@@ -277,10 +316,19 @@
                 return;
             }
 
-            var stockOnHand = _.get(currentItem.lot, 'stockOnHand', 0);
-            if (quantityShipped > stockOnHand) {
+            if (quantityShipped > getSohByOrderableLocation(currentItem)) {
                 currentItem.$error.quantityShippedError = 'shipment.fillQuantityCannotExceedStockOnHand';
             }
+        }
+
+        function getSohByOrderableLocation(lineItem) {
+            var lot = _.chain(orderableLocationLotsMap[lineItem.orderableId])
+                .get(_.get(lineItem.location, 'locationCode'))
+                .find(function(item) {
+                    return item.lotCode === _.get(lineItem.lot, 'lotCode');
+                })
+                .value();
+            return _.get(lot, 'stockOnHand', 0);
         }
 
         vm.changeFillQuantity = validateFillQuantity;
@@ -301,11 +349,18 @@
                 lineItems[0].lot = remainRowData.lot;
                 lineItems[0].location = remainRowData.location;
                 lineItems[0].shipmentLineItem = remainRowData.shipmentLineItem;
+                lineItems[0].$error = remainRowData.$error;
+                lineItems[0].$hint = remainRowData.$hint;
                 lineItems.splice(1, 2);
             } else if (lineItems.length > 3) {
                 lineItems.splice(index, 1);
             }
-            validateLotLocationDuplicated(lineItems);
+
+            validateBase(lineItems, function(item) {
+                item.$error.lotCodeError = '';
+                item.$hint.lotCodeHint = '';
+            });
+
             vm.displayTableLineItems = _.filter(vm.displayTableLineItems, function(item) {
                 return !_.isEmpty(item);
             });
@@ -356,14 +411,7 @@
         };
 
         function getSohByOrderableAndLocation(lineItem) {
-            var lot = _.chain(orderableLocationLotsMap[lineItem.orderableId])
-                .get(_.get(lineItem.location, 'locationCode'))
-                .find(function(item) {
-                    return item.lotCode === _.get(lineItem.lot, 'lotCode');
-                })
-                .value();
-
-            return recalculateQuantity(_.get(lot, 'stockOnHand', 0));
+            return recalculateQuantity(getSohByOrderableLocation(lineItem));
         }
 
         vm.getAvailableSoh = function(lineItems, index) {
@@ -616,13 +664,58 @@
             return _.size(vm.getLotList(lineItem)) === 0 || _.size(vm.getLocationList(lineItem)) === 0;
         };
 
+        function validateRequired(lineItem) {
+            if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
+                lineItem.$error.lotCodeError = 'openlmisForm.required';
+            }
+
+            if (_.isEmpty(_.get(lineItem.lot, 'expirationDate')) && !lineItem.isKit) {
+                lineItem.$error.expirationDateError = 'openlmisForm.required';
+            }
+
+            if (_.isEmpty(lineItem.location)) {
+                lineItem.$error.locationError = 'openlmisForm.required';
+            }
+
+        }
+
+        function validateDuplicated(lineItems, item) {
+            var hasDuplicated = _.size(_.filter(lineItems, function(data) {
+                return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
+                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+            })) > 1;
+
+            if (hasDuplicated) {
+                item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
+            }
+        }
+
+        function validateKitLocationDuplicated(lineItems, item) {
+            var hasKitLocationDuplicated = _.size(_.filter(lineItems, function(data) {
+                return data.location
+                  && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+            })) > 1;
+
+            if (hasKitLocationDuplicated) {
+                item.$error.locationError = 'locationShipmentView.locationDuplicated';
+            }
+        }
+
         function isTableFormValid() {
             _.forEach(vm.displayTableLineItems, function(lineItems) {
-                _.forEach(lineItems, function(lineItem) {
-                    validateLot(lineItem, lineItems);
-                    validateLocation(lineItem, lineItems);
-                    validateExpirationDate(lineItem);
-                    validateFillQuantity(lineItem);
+                _.forEach(lineItems, function(lineItem, index) {
+                    if (index === 0 && lineItems.length !== 1) {
+                        lineItem.$error = {};
+                    } else {
+                        validateRequired(lineItem);
+                        validateLotExpired(lineItem);
+                        if (lineItem.isKit) {
+                            validateKitLocationDuplicated(lineItems, lineItem);
+                        } else {
+                            validateDuplicated(lineItems, lineItem);
+                        }
+                        validateFillQuantity(lineItem);
+                    }
                 });
             });
 
@@ -642,6 +735,10 @@
             if (isTableFormValid()) {
                 console.log(11111);
             }
+        };
+
+        vm.save = function() {
+            console.log(vm.displayTableLineItems);
         };
 
     }
