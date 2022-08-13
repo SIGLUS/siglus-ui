@@ -18,5 +18,7 @@
   "shipmentView.closed": "The order was closed, You cannot fulfill a closed order. Please back to the order list and refresh the list.",
   "locationShipmentView.lotExpired": "This lot has expired, it cannot be fulfilled.",
   "locationShipmentView.notFirstToExpire": "This lot is not the first to expire.",
-  "locationShipmentView.lotDuplicated": "The lot under the same product cannot be repeated, please enter a new one."
+  "locationShipmentView.lotDuplicated": "The lot under the same product cannot be repeated, please enter a new one.",
+  "locationShipmentView.locationDuplicated": "The locations for issue Kit cannot be repeated, please enter a new one.",
+  "locationShipmentView.addItem": "Add Item"
 }
