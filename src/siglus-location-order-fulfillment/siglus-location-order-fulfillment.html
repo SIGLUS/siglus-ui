@@ -44,10 +44,10 @@
             <td>{{order.processingPeriod.name}}</td>
             <td>{{order.createdDate | openlmisDate}}</td>
             <td>
-                <button ng-if="order.isFulfilling()" ui-sref="openlmis.orders.locationShipmentView({id: order.id})">
+                <button ng-if="order.isFulfilling()" ui-sref="openlmis.locationManagement.locationShipmentView({id: order.id})">
                     {{'orderFulfillment.continueFulfillment' | message}}
                 </button>
-                <button ng-if="!order.isFulfilling()" ui-sref="openlmis.orders.locationShipmentView({id: order.id})">
+                <button ng-if="!order.isFulfilling()" ui-sref="openlmis.locationManagement.locationShipmentView({id: order.id})">
                     {{'orderFulfillment.startFulfillment' | message}}
                 </button>
             </td>

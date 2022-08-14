@@ -91,7 +91,7 @@
                        ng-disabled="!vm.canSkip(lineItems)"/>
             </td>
             <td>{{lineItem.isMainGroup && lineItem.productCode}}</td>
-            <td>{{lineItem.isMainGroup && lineItem.productName}} {{lineItem.isKit}}</td>
+            <td>{{lineItem.isMainGroup && lineItem.productName}}</td>
             <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
             <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)"
                 openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
@@ -171,7 +171,7 @@
         <button type="submit" ng-click="vm.submit()" class="primary">
             {{'shipmentView.confirmShipment' | message}}
         </button>
-        <button ng-show="vm.shipment.id" class="danger" ng-click="vm.shipment.delete()">
+        <button ng-show="vm.shipment.id" class="danger" ng-click="vm.delete()">
             {{'shipmentView.deleteDraft' | message}}
         </button>
     </div>

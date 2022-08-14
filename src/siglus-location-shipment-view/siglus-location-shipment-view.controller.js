@@ -32,23 +32,23 @@
         'lotOptions',
         '$scope',
         'shipment', 'loadingModalService', '$state', '$window', 'fulfillmentUrlFactory',
-        'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT', 'tableLineItems',
+        'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT',
         'VVM_STATUS',
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
         'stockCardSummaries', 'SiglusLocationShipmentViewLineItemFactory', 'orderService',
-        'SiglusLocationShipmentLineItem', 'SiglusLocationShipmentViewLineItemGroup', 'displayTableLineItems',
-        'SiglusLocationShipmentViewLineItem', '$stateParams', 'order', 'moment',
+        'SiglusLocationShipmentLineItem',
+        'displayTableLineItems',
+        '$stateParams', 'order', 'moment', 'SiglusLocationViewService',
         'orderableLotsLocationMap', 'orderableLocationLotsMap', 'SiglusLocationCommonUtilsService'
     ];
 
     function ShipmentViewController(lotOptions, $scope, shipment, loadingModalService, $state, $window,
                                     fulfillmentUrlFactory, messageService, accessTokenFactory,
-                                    updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
+                                    updatedOrder, QUANTITY_UNIT, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, SiglusLocationShipmentViewLineItemFactory, orderService,
-                                    SiglusLocationShipmentLineItem, ShipmentViewLineItemGroup, displayTableLineItems,
-                                    SiglusLocationShipmentViewLineItem, $stateParams, order, moment,
-                                    orderableLotsLocationMap, orderableLocationLotsMap,
+                                    SiglusLocationShipmentLineItem, displayTableLineItems, $stateParams, order, moment,
+                                    SiglusLocationViewService, orderableLotsLocationMap, orderableLocationLotsMap,
                                     SiglusLocationCommonUtilsService) {
         var vm = this;
 
@@ -92,17 +92,6 @@
         /**
          * @ngdoc property
          * @propertyOf shipment-view.controller:ShipmentViewController
-         * @name tableLineItems
-         * @type {Array}
-         *
-         * @description
-         * Holds line items to be displayed on the grid.
-         */
-        vm.tableLineItems = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf shipment-view.controller:ShipmentViewController
          * @name quantityUnit
          * @type {Object}
          *
@@ -111,7 +100,7 @@
          */
         vm.quantityUnit = undefined;
 
-        vm.displayTableLineItems = displayTableLineItems;
+        vm.displayTableLineItems = undefined;
 
         vm.lotOptions = lotOptions;
 
@@ -126,7 +115,7 @@
         function onInit() {
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
-            vm.tableLineItems = tableLineItems;
+            vm.displayTableLineItems = displayTableLineItems;
 
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
@@ -704,7 +693,7 @@
         function isTableFormValid() {
             _.forEach(vm.displayTableLineItems, function(lineItems) {
                 _.forEach(lineItems, function(lineItem, index) {
-                    if (index === 0 && lineItems.length !== 1) {
+                    if (index === 0 && lineItems.length !== 1 || lineItem.skipped) {
                         lineItem.$error = {};
                     } else {
                         validateRequired(lineItem);
@@ -733,12 +722,71 @@
 
         vm.submit = function() {
             if (isTableFormValid()) {
-                console.log(11111);
+                console.log('submit');
             }
+        };
+
+        function updateOrderSkipStatus() {
+            _.forEach(vm.order.orderLineItems, function(orderLineItem) {
+                orderLineItem.skipped = _.chain(vm.displayTableLineItems)
+                    .flatten()
+                    .find(function(item) {
+                        return item.orderableId === orderLineItem.orderable.id;
+                    })
+                    .get('skipped')
+                    .value();
+            });
+        }
+
+        function buildSaveParams() {
+
+            var lineItems = _.chain(vm.displayTableLineItems)
+                .map(function(group) {
+                    var data =  _.filter(group, function(lineItem) {
+                        return (group.length > 1 && !lineItem.isMainGroup)
+                         || (group.length === 1 && lineItem.isMainGroup);
+                    });
+                    return data;
+                })
+                .flatten()
+                .map(function(lineItem) {
+                    var lot = _.get(lineItem.lot);
+                    var locationId = _.get(lineItem.location, 'locationId');
+
+                    return {
+                        lot: _.isEmpty(lot) ? null : _.pick(lineItem.lot, ['id', 'expirationDate']),
+                        location: _.isEmpty(locationId) ? null : {
+                            id: locationId
+                        },
+                        id: lineItem.id,
+                        orderable: lineItem.shipmentLineItem.orderable,
+                        quantityShipped: lineItem.shipmentLineItem.quantityShipped,
+                        stockOnHand: getSohByOrderableLocation(lineItem)
+                    };
+                })
+                .value();
+            updateOrderSkipStatus();
+            return {
+                id: shipment.id,
+                order: vm.order,
+                notes: null,
+                lineItems: lineItems,
+                repository: shipment.repository
+            };
+        }
+
+        vm.delete = function() {
+            SiglusLocationViewService.deleteDraft({
+                id: '123123'
+            }).then(function() {
+
+            });
         };
 
         vm.save = function() {
             console.log(vm.displayTableLineItems);
+            SiglusLocationViewService.saveDraft(buildSaveParams()).then(function() {
+            });
         };
 
     }

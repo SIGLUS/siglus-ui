@@ -36,6 +36,7 @@
     function ShipmentViewLineItemFactory() {
 
         ShipmentViewLineItemFactory.prototype.createFrom = buildFrom;
+        ShipmentViewLineItemFactory.prototype.prepareGroupLineItems = prepareGroupLineItems;
 
         return ShipmentViewLineItemFactory;
 
@@ -86,6 +87,66 @@
             sortLotLineItems(shipmentViewLineItemGroups);
 
             return flatten(shipmentViewLineItemGroups);
+        }
+
+        function getDataTemplate(orderLineItem, shipment, isMainGroup) {
+            var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
+                return item.orderable.id === orderLineItem.orderable.id;
+            }));
+
+            var orderable = _.get(_.find(shipment.order.orderLineItems, function(item) {
+                return orderLineItem.orderable.id === item.orderable.id;
+            }), 'orderable', {});
+
+            console.log(orderable);
+            shipmentLineItem.quantityShipped = null;
+            return {
+                $error: {},
+                $hint: {},
+                productCode: orderable.productCode,
+                productName: orderable.fullProductName,
+                id: orderLineItem.id,
+                isKit: orderable.isKit,
+                lineItems: [],
+                location: null,
+                lot: null,
+                orderQuantity: orderLineItem.orderedQuantity,
+                isMainGroup: isMainGroup,
+                shipmentLineItem: shipmentLineItem,
+                netContent: orderable.netContent,
+                skipped: orderLineItem.skipped,
+                orderableId: orderable.id,
+                partialFulfilledQuantity: orderLineItem.partialFulfilledQuantity
+            };
+        }
+
+        function prepareGroupLineItems(shipment) {
+            var groupOrderLineItems = _.chain(shipment.lineItems)
+                .groupBy(function(item)  {
+                    return item.orderable.id;
+                })
+                .values()
+                .value();
+            var result = [];
+            _.forEach(groupOrderLineItems, function(groupLineItems, index) {
+
+                if (!_.isArray(result[index])) {
+                    result[index] = [];
+                }
+                if (groupLineItems.length === 1) {
+                    result[index].push(getDataTemplate(_.first(groupLineItems), shipment, true));
+                    return;
+                }
+
+                if (groupLineItems.length > 1) {
+                    result[index].push(getDataTemplate(_.first(groupLineItems), shipment, true));
+                    _.forEach(groupLineItems, function(orderLineItem) {
+                        result[index].push(getDataTemplate(orderLineItem, shipment, false));
+                    });
+                }
+            });
+            console.log(result);
+            return result;
         }
 
         function sortLotLineItems(commodityTypeLineItems) {

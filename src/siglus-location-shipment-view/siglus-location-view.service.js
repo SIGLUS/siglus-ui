@@ -41,11 +41,19 @@
             getOrderableLocationLotsInfo: {
                 method: 'GET',
                 isArray: true
+            },
+            deleteDraft: {
+                url: fulfillmentUrlFactory('/api/siglusapi/shipmentDrafts/:id'),
+                method: 'DELETE'
             }
         });
 
         this.saveDraft = function() {
 
+        };
+
+        this.deleteDraft = function(params) {
+            return resource.deleteDraft(params).$promise;
         };
 
         this.getOrderableLocationLotsInfo = function(params) {

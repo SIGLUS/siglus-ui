@@ -27,13 +27,13 @@
      */
     angular
         .module('siglus-location-shipment')
-        .factory('SiglusLocationShipmentLineItem', ShipmentLineItem);
+        .factory('SiglusLocationShipmentLineItem', SiglusLocationShipmentLineItem);
 
-    function ShipmentLineItem() {
+    function SiglusLocationShipmentLineItem() {
 
-        ShipmentLineItem.prototype.isInvalid = isInvalid;
+        SiglusLocationShipmentLineItem.prototype.isInvalid = isInvalid;
 
-        return ShipmentLineItem;
+        return SiglusLocationShipmentLineItem;
 
         /**
          * @ngdoc method
@@ -45,7 +45,7 @@
          *
          * @param {Object} json the json representation of the shipment line item
          */
-        function ShipmentLineItem(json) {
+        function  SiglusLocationShipmentLineItem(json) {
             this.id = json.id;
             this.orderable = json.orderable;
             this.lot = json.lot;

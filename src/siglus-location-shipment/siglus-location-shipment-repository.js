@@ -32,7 +32,7 @@
         'SiglusLocationShipment', 'OpenlmisRepository', 'classExtender', 'SiglusLocationShipmentRepositoryImpl'
     ];
 
-    function SiglusLocationShipmentRepository(Shipment, OpenlmisRepository, classExtender,
+    function SiglusLocationShipmentRepository(SiglusLocationShipment, OpenlmisRepository, classExtender,
                                               SiglusLocationShipmentRepositoryImpl) {
 
         classExtender.extend(SiglusLocationShipmentRepository, OpenlmisRepository);
@@ -56,7 +56,7 @@
          * will use an instance of the ShipmentRepositoryImpl class by default.
          */
         function SiglusLocationShipmentRepository(impl) {
-            this.super(Shipment, impl || new SiglusLocationShipmentRepositoryImpl());
+            this.super(SiglusLocationShipment, impl || new SiglusLocationShipmentRepositoryImpl());
         }
 
         /**
@@ -98,7 +98,7 @@
 
             return this.impl.createDraft(json, order, stockCardSummaries)
                 .then(function(shipmentJson) {
-                    return new Shipment(shipmentJson, repository);
+                    return new SiglusLocationShipment(shipmentJson, repository);
                 });
         }
         // #372: ends here
@@ -122,7 +122,7 @@
 
             return this.impl.getDraftByOrderId(order, stockCardSummaries)
                 .then(function(shipmentJson) {
-                    return new Shipment(shipmentJson, repository);
+                    return new SiglusLocationShipment(shipmentJson, repository);
                 });
         }
         // #372: ends here
@@ -145,7 +145,7 @@
 
             return this.impl.getByOrderId(orderId)
                 .then(function(shipmentJson) {
-                    return new Shipment(shipmentJson, repository);
+                    return new SiglusLocationShipment(shipmentJson, repository);
                 });
         }
 
