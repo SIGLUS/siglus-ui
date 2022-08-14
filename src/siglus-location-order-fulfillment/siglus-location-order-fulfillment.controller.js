@@ -151,7 +151,7 @@
             // SIGLUS-REFACTOR: starts here
             stateParams.page = 0;
             // SIGLUS-REFACTOR: ends here
-            $state.go('openlmis.orders.locationFulfillment', stateParams, {
+            $state.go('openlmis.locationManagement.fulfillOrder', stateParams, {
                 reload: true
             });
         }

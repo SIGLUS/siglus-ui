@@ -25,12 +25,18 @@
 
     function config($stateProvider, FULFILLMENT_RIGHTS) {
 
-        $stateProvider.state('openlmis.orders.locationFulfillment', {
-            controller: 'SiglusLocationOrderFulfillmentController',
-            controllerAs: 'vm',
+        $stateProvider.state('openlmis.locationManagement.fulfillOrder', {
             label: 'orderFulfillment.fulfillOrders',
             showInNavigation: true,
-            templateUrl: 'siglus-location-order-fulfillment/siglus-location-order-fulfillment.html',
+            views: {
+                '@openlmis': {
+                    controller: 'SiglusLocationOrderFulfillmentController',
+                    controllerAs: 'vm',
+                    templateUrl: 'siglus-location-order-fulfillment/siglus-location-order-fulfillment.html'
+                }
+            },
+            priority: 1,
+
             url: '/location-fulfillment?requestingFacilityId&programId&status&page&size',
             params: {
                 sort: ['createdDate,desc']

@@ -27,21 +27,21 @@
      */
     angular
         .module('siglus-location-shipment')
-        .factory('SiglusLocationShipmentRepositoryImpl', ShipmentRepositoryImpl);
+        .factory('SiglusLocationShipmentRepositoryImpl', SiglusLocationShipmentRepositoryImpl);
 
     // #287: add SiglusShipmentResource, SiglusShipmentDraftResource, SiglusOrderResource
     // programService, STOCKMANAGEMENT_RIGHTS
-    ShipmentRepositoryImpl.$inject = [
+    SiglusLocationShipmentRepositoryImpl.$inject = [
         'ShipmentResource', 'ShipmentDraftResource', 'SiglusLocationShipmentDraftResource',
         'OrderResource', 'StockCardSummaryRepositoryImpl',
         'SiglusLocationShipmentResource', 'SiglusOrderResource'
     ];
     // #287: ends here
 
-    function ShipmentRepositoryImpl(ShipmentResource, ShipmentDraftResource,
-                                    SiglusLocationShipmentDraftResource, OrderResource,
-                                    StockCardSummaryRepositoryImpl, SigluLocationShipmentResource,
-                                    SiglusOrderResource) {
+    function SiglusLocationShipmentRepositoryImpl(ShipmentResource, ShipmentDraftResource,
+                                                  SiglusLocationShipmentDraftResource, OrderResource,
+                                                  StockCardSummaryRepositoryImpl, SigluLocationShipmentResource,
+                                                  SiglusOrderResource) {
 
         ShipmentRepositoryImpl.prototype.create = create;
         ShipmentRepositoryImpl.prototype.createDraft = createDraft;

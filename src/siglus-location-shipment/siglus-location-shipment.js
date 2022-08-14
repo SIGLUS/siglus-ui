@@ -26,13 +26,15 @@
      */
     angular
         .module('siglus-location-shipment')
-        .factory('SiglusLocationShipment', Shipment);
+        .factory('SiglusLocationShipment', SiglusLocationShipment);
 
     // #400: add $resource, fulfillmentUrlFactory
-    Shipment.$inject = ['SiglusLocationShipmentLineItem', 'ORDER_STATUS', '$q', '$resource', 'fulfillmentUrlFactory'];
+    SiglusLocationShipment.$inject = ['SiglusLocationShipmentLineItem', 'ORDER_STATUS',
+        '$q', '$resource', 'fulfillmentUrlFactory'];
     // #400: ends here
 
-    function Shipment(ShipmentLineItem, ORDER_STATUS, $q, $resource, fulfillmentUrlFactory) {
+    function SiglusLocationShipment(SiglusLocationShipmentLineItem, ORDER_STATUS, $q, $resource,
+                                    fulfillmentUrlFactory) {
         // #400: Facility user partially fulfill an order and create sub-order for an requisition
         var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/shipments'), {}, {
             create: {
@@ -41,17 +43,17 @@
         });
         // #400: ends here
 
-        Shipment.prototype.canBeConfirmed = canBeConfirmed;
-        Shipment.prototype.isEditable = isEditable;
-        Shipment.prototype.save = save;
-        Shipment.prototype.confirm = confirm;
-        Shipment.prototype.delete = deleteDraft;
-        Shipment.prototype.isInvalid = isInvalid;
+        SiglusLocationShipment.prototype.canBeConfirmed = canBeConfirmed;
+        SiglusLocationShipment.prototype.isEditable = isEditable;
+        SiglusLocationShipment.prototype.save = save;
+        SiglusLocationShipment.prototype.confirm = confirm;
+        SiglusLocationShipment.prototype.delete = deleteDraft;
+        SiglusLocationShipment.prototype.isInvalid = isInvalid;
         // #400: Facility user partially fulfill an order and create sub-order for an requisition
-        Shipment.prototype.createSuborder = createSuborder;
+        SiglusLocationShipment.prototype.createSuborder = createSuborder;
         // #400: ends here
 
-        return Shipment;
+        return SiglusLocationShipment;
 
         /**
          * @ngdoc method
@@ -65,12 +67,12 @@
          * @param {Object}             json       the JSON representation of the shipment (draft)
          * @param {ShipmentRepository} repository the instance of the ShipmentRepository class
          */
-        function Shipment(json, repository) {
+        function SiglusLocationShipment(json, repository) {
             angular.copy(json, this);
             this.repository = repository;
 
             this.lineItems = json.lineItems.map(function(lineItemJson) {
-                return new ShipmentLineItem(lineItemJson);
+                return new SiglusLocationShipmentLineItem(lineItemJson);
             });
         }
 

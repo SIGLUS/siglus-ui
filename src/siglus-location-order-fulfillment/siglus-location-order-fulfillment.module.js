@@ -32,8 +32,9 @@
         'shipment-view',
         'ui.router',
         // SIGLUS-REFACTOR: starts here
-        'siglus-order-status-messages'
-        // SIGLUS-REFACTOR: starts here
+        'siglus-order-status-messages',
+        // SIGLUS-REFACTOR: starts here,
+        'siglus-location-management'
     ]);
 
 })();
