@@ -39,6 +39,10 @@
             return $http.post(openlmisUrlFactory('/api/siglusapi/stockCardSummaries/lots'), orderableIds);
         };
 
+        this.getOrderablesPrice = function() {
+            return $http.get(openlmisUrlFactory('/api/siglusapi/orderables/price'));
+        };
+
         this.fillLotsToAddedItems = function(addedItems) {
             var deferred = $q.defer();
 

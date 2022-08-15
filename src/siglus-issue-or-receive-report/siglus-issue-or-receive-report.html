@@ -243,9 +243,9 @@
               <td></td>
               <td>{{ vm.type === 'issue' ? item.quantity : '' }}</td>
               <!-- price -->
-              <td></td>
+              <td>{{ item.price ? item.price : '' }}</td>
               <!-- value -->
-              <td style="width: 30px;"></td>
+              <td style="width: 30px;">{{ item.price && vm.type ===  'issue' ? item.price * 100 * item.quantity / 100 : '' }}</td>
               <td style="border: none; border-left: 1px solid #000;"></td>
               <td>{{ vm.type === 'issue' ? '' : item.quantity }}</td>
               <td style="border-right: 1px solid #000;"></td>
@@ -257,7 +257,7 @@
         <!-- TODO should be automatically calculated -->
         <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
         <!-- total value -->
-        <div class="issue-voucher" style="text-align: center;"></div>
+        <div class="issue-voucher" style="text-align: center;">{{ vm.type ===  'issue' ? vm.totalPriceValue / 100 : '' }}</div>
       </section>
       <section id="sectionFouth" class="section-fouth">
         <!-- TODO signature of the user who submitted the merged issue draft -->

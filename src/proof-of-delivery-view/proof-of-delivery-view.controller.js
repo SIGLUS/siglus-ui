@@ -33,7 +33,7 @@
         'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryService', 'notificationService',
         '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment'];
+        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment', 'orderablesPrice'];
 
     function ProofOfDeliveryViewController($scope
         , proofOfDelivery, order, reasons, messageService
@@ -42,7 +42,8 @@
         , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
         , confirmService, confirmDiscardService, proofOfDeliveryManageService
         , openlmisDateFilter, fulfillingLineItemFactory
-        , facilityFactory, siglusDownloadLoadingModalService, user, moment) {
+        , facilityFactory, siglusDownloadLoadingModalService, user, moment
+        , orderablesPrice) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -813,6 +814,7 @@
                     r.push(angular.merge({
                         productCode: c.orderable.productCode,
                         productName: c.orderable.fullProductName,
+                        price: orderablesPrice.data[c.orderable.id] * 100,
                         lotCode:
                             c.lot
                                 ? c.lot.lotCode
@@ -824,6 +826,10 @@
                     }, c));
                     return r;
                 }, []);
+                vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                    r = r + c.quantityShipped * c.price;
+                    return r;
+                }, 0);
                 vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
                     return item.rejectionReasonId;
                 });

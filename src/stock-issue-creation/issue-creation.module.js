@@ -14,32 +14,10 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-     * @module proof-of-delivery-view
-     *
-     * @description
-     * Responsible for view POD screen.
-     */
-    angular.module('proof-of-delivery-view', [
-        'openlmis-i18n',
-        'fulfillment',
-        'proof-of-delivery',
-        'openlmis-date',
-        'openlmis-pagination',
-        'order',
-        'ui.router',
-        'shipment',
-        'stock-constants',
-        'stock-valid-reason',
-        'stock-reasons-modal',
-        'openlmis-state-tracker',
-        // SIGLUS-REFACTOR: starts here
-        'siglus-order-status-messages',
-        'siglus-alert-confirm-modal',
+    angular.module('stock-issue-creation', [
+        'stock-adjustment-creation',
         'stock-orderable-group'
-        // SIGLUS-REFACTOR: starts here
     ]);
 })();

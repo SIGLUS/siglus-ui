@@ -33,7 +33,8 @@
         '$stateParams', 'programs', 'requestingFacilities', 'supplyingFacilities', 'ProofOfDeliveryPrinter',
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
         'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
-        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility'
+        'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility',
+        'orderablesPrice'
     ];
 
     function controller(
@@ -57,7 +58,8 @@
         messageService,
         SIGLUS_TIME,
         siglusDownloadLoadingModalService,
-        facility
+        facility,
+        orderablesPrice
     ) {
 
         var vm = this;
@@ -813,6 +815,7 @@
                                     r.push(angular.merge({
                                         productCode: c.orderable.productCode,
                                         productName: c.orderable.fullProductName,
+                                        price: orderablesPrice.data[c.orderable.id] * 100,
                                         lotCode:
                                             c.lot
                                                 ? c.lot.lotCode
@@ -824,6 +827,10 @@
                                     }, c));
                                     return r;
                                 }, []);
+                                vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                                    r = r + c.quantityShipped * c.price;
+                                    return r;
+                                }, 0);
                                 vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
                                     return item.rejectionReasonId;
                                 });
