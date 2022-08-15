@@ -727,8 +727,6 @@
                             res.nodeWidth * opt.rate,
                             res.nodeHeight * opt.rate
                         );
-                        // console.log('promiseListInLen', promiseListInLen);
-                        // console.log('_index', _index);
                         if (promiseListInLen - 1 === _index) {
                             opt.PDF.text(
                                 pageNumber.toString() + '-END',
