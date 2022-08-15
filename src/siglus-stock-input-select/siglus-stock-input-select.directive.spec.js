@@ -72,7 +72,6 @@ describe('stockInputSelectDirective', function() {
 
         it('Replaces the directive to html element', function() {
             // Check that the compiled element contains the templated content
-            //console.log(element.html());
             expect(input).toBeDefined();
             expect(options).toBeDefined();
         });
@@ -154,7 +153,6 @@ describe('stockInputSelectDirective', function() {
 
         it('Replaces the directive to html element', function() {
             // Check that the compiled element contains the templated content
-            //console.log(element.html());
             expect(div).toBeDefined();
             expect(options).toBeDefined();
         });

@@ -227,7 +227,6 @@ describe('ProofOfDeliveryManageController', function() {
         });
 
         it('should open loading modal', function() {
-            // console.log('podId', pod.id);
 
             vm.printProofOfDelivery(order);
 
