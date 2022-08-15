@@ -18,24 +18,27 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name admin-facility-add.controller:FacilityAddController
-     *
-     * @description
-     * Provides methods for Add Facility modal. Allows returning to previous states and saving
-     * facility.
-     */
+   * @ngdoc controller
+   * @name admin-facility-add.controller:FacilityAddController
+   *
+   * @description
+   * Provides methods for Add Facility modal. Allows returning to previous states and saving
+   * facility.
+   */
     angular
         .module('admin-facility-add')
         .controller('FacilityAddController', FacilityAddController);
 
     FacilityAddController.$inject = [
-        'facility', 'facilityTypes', 'geographicZones', 'facilityOperators', 'confirmService',
-        'FacilityRepository', 'stateTrackerService', '$state', 'loadingModalService',
+        'facility', 'facilityTypes', 'geographicZones', 'facilityOperators',
+        'confirmService',
+        'FacilityRepository', 'stateTrackerService', '$state',
+        'loadingModalService',
         'notificationService', 'messageService'
     ];
 
-    function FacilityAddController(facility, facilityTypes, geographicZones, facilityOperators,
+    function FacilityAddController(facility, facilityTypes, geographicZones,
+                                   facilityOperators,
                                    confirmService, FacilityRepository, stateTrackerService,
                                    $state, loadingModalService, notificationService,
                                    messageService) {
@@ -46,13 +49,13 @@
         vm.goToPreviousState = stateTrackerService.goToPreviousState;
 
         /**
-         * @ngdoc method
-         * @methodOf admin-facility-add.controller:FacilityAddController
-         * @name $onInit
-         *
-         * @description
-         * Initialization method of the FacilityAddController.
-         */
+     * @ngdoc method
+     * @methodOf admin-facility-add.controller:FacilityAddController
+     * @name $onInit
+     *
+     * @description
+     * Initialization method of the FacilityAddController.
+     */
         function onInit() {
             vm.facility = angular.copy(facility);
             vm.facilityTypes = facilityTypes;
@@ -60,23 +63,25 @@
             vm.facilityOperators = facilityOperators;
             vm.facility.active = facility.active !== false;
             vm.facility.enabled = facility.enabled !== false;
-            vm.facility.isAndroidDevice = facility.isAndroidDevice !== false;
+            vm.facility.isAndroidDevice = facility.isAndroidDevice;
             vm.facility.isNewFacility = facility.isNewFacility;
         }
 
         /**
-         * @ngdoc method
-         * @methodOf admin-facility-add.controller:FacilityAddController
-         * @name save
-         *
-         * @description
-         * Saves the facility and takes user back to the previous state.
-         */
+     * @ngdoc method
+     * @methodOf admin-facility-add.controller:FacilityAddController
+     * @name save
+     *
+     * @description
+     * Saves the facility and takes user back to the previous state.
+     */
         function save() {
             return doSave().then(function(response) {
-                var confirmMessage = messageService.get('adminFacilityAdd.doYouWantToAddPrograms', {
-                    facility: response.name
-                });
+                var confirmMessage = messageService.get(
+                    'adminFacilityAdd.doYouWantToAddPrograms', {
+                        facility: response.name
+                    }
+                );
 
                 confirmService.confirm(confirmMessage,
                     'adminFacilityAdd.addPrograms',
