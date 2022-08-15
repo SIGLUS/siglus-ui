@@ -230,7 +230,6 @@
 
         function combineResponses(shipment, order, stockCardDetailMap) {
             shipment.order = order;
-
             shipment.lineItems.forEach(function(lineItem) {
                 lineItem.canFulfillForMe = stockCardDetailMap[lineItem.orderable.id][getId(lineItem.lot)];
             });

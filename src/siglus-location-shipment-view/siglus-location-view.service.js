@@ -36,7 +36,13 @@
     // #400: Facility user partially fulfill an order and create sub-order for an requisition
         var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/locations'), {}, {
             saveDraft: {
-                method: 'POST'
+                method: 'PUT',
+                url: fulfillmentUrlFactory('/api/siglusapi/shipmentDraftsWithLocation/:id')
+            },
+            getDraftByOrderId: {
+                url: fulfillmentUrlFactory('/api/siglusapi/shipmentDraftsWithLocation/:id'),
+                method: 'GET',
+                isArray: false
             },
             getOrderableLocationLotsInfo: {
                 method: 'GET',
@@ -48,8 +54,23 @@
             }
         });
 
-        this.saveDraft = function() {
+        this.getDraftByOrderId = function(order, stockCardSummaries) {
+            return resource.getDraftByOrderId({
+                id: order.id
+            }).$promise.then(function(shipment) {
+                var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+                var orderableIds = Object.keys(canFulfillForMeMap);
+                shipment.lineItems = shipment.lineItems.filter(function(lineItem) {
+                    return orderableIds.includes(lineItem.orderable.id);
+                });
+                return combineResponses(shipment, order, canFulfillForMeMap);
+            });
+        };
 
+        this.saveDraft = function(params) {
+            return resource.saveDraft({
+                id: params.id
+            }, params).$promise;
         };
 
         this.deleteDraft = function(params) {
@@ -59,6 +80,37 @@
         this.getOrderableLocationLotsInfo = function(params) {
             return resource.getOrderableLocationLotsInfo(params).$promise;
         };
+
+        function combineResponses(shipment, order, stockCardDetailMap) {
+            shipment.order = order;
+
+            shipment.lineItems.forEach(function(lineItem) {
+                var lotId = _.get(lineItem.lot, 'id', undefined);
+                lineItem.canFulfillForMe = stockCardDetailMap[lineItem.orderable.id][lotId];
+            });
+
+            return shipment;
+        }
+
+        function mapCanFulfillForMe(summaries) {
+            var stockCardDetailMap = {};
+
+            summaries.forEach(function(summary) {
+                summary.stockCardDetails.forEach(function(stockCardDetail) {
+                    var orderableId = stockCardDetail.orderable.id,
+                        lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
+
+                    if (!stockCardDetailMap[orderableId]) {
+                        stockCardDetailMap[orderableId] = {};
+                    }
+
+                    stockCardDetailMap[orderableId][lotId] = stockCardDetail;
+                });
+            });
+
+            return stockCardDetailMap;
+        }
+
     }
 
 })();

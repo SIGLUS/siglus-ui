@@ -26,19 +26,19 @@
      */
     angular
         .module('siglus-location-shipment')
-        .factory('SiglusLocationShipmentDraftResource', SiglusShipmentDraftResource);
+        .factory('SiglusLocationShipmentDraftResource', SiglusLocationShipmentDraftResource);
 
-    SiglusShipmentDraftResource.$inject = [
+    SiglusLocationShipmentDraftResource.$inject = [
         'OpenlmisResource', 'classExtender'
     ];
 
-    function SiglusShipmentDraftResource(OpenlmisResource, classExtender) {
+    function SiglusLocationShipmentDraftResource(OpenlmisResource, classExtender) {
 
-        classExtender.extend(SiglusShipmentDraftResource, OpenlmisResource);
+        classExtender.extend(SiglusLocationShipmentDraftResource, OpenlmisResource);
 
-        return SiglusShipmentDraftResource;
+        return SiglusLocationShipmentDraftResource;
 
-        function SiglusShipmentDraftResource() {
+        function SiglusLocationShipmentDraftResource() {
             this.super('/api/siglusapi/shipmentDrafts');
         }
     }

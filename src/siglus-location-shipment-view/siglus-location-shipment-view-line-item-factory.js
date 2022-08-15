@@ -58,7 +58,6 @@
          * @return {Array}              the list of line items
          */
         function buildFrom(shipment) {
-
             var shipmentViewLineItemGroups = shipment.order.orderLineItems
                 .map(function(orderLineItem) {
                     var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
@@ -89,7 +88,7 @@
             return flatten(shipmentViewLineItemGroups);
         }
 
-        function getDataTemplate(orderLineItem, shipment, isMainGroup) {
+        function getDataTemplate(orderLineItem, shipment, isMainGroup, orderableLocationLotsMap) {
             var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
                 return item.orderable.id === orderLineItem.orderable.id;
             }));
@@ -98,8 +97,13 @@
                 return orderLineItem.orderable.id === item.orderable.id;
             }), 'orderable', {});
 
-            console.log(orderable);
-            shipmentLineItem.quantityShipped = null;
+            var location =  orderLineItem.location;
+
+            var lot =  _.find(_.get(orderableLocationLotsMap, [orderable.id, location.locationCode]), function(item) {
+                return item.id === orderLineItem.lot.id;
+            });
+
+            shipmentLineItem.quantityShipped = orderLineItem.quantityShipped || 0;
             return {
                 $error: {},
                 $hint: {},
@@ -108,8 +112,8 @@
                 id: orderLineItem.id,
                 isKit: orderable.isKit,
                 lineItems: [],
-                location: null,
-                lot: null,
+                location: location,
+                lot: lot,
                 orderQuantity: orderLineItem.orderedQuantity,
                 isMainGroup: isMainGroup,
                 shipmentLineItem: shipmentLineItem,
@@ -120,7 +124,7 @@
             };
         }
 
-        function prepareGroupLineItems(shipment) {
+        function prepareGroupLineItems(shipment, orderableLocationLotsMap, orderableLotsLocationMap) {
             var groupOrderLineItems = _.chain(shipment.lineItems)
                 .groupBy(function(item)  {
                     return item.orderable.id;
@@ -134,18 +138,20 @@
                     result[index] = [];
                 }
                 if (groupLineItems.length === 1) {
-                    result[index].push(getDataTemplate(_.first(groupLineItems), shipment, true));
+                    result[index].push(getDataTemplate(_.first(groupLineItems), shipment, true,
+                        orderableLocationLotsMap, orderableLotsLocationMap));
                     return;
                 }
 
                 if (groupLineItems.length > 1) {
-                    result[index].push(getDataTemplate(_.first(groupLineItems), shipment, true));
+                    result[index].push(getDataTemplate(_.first(groupLineItems), shipment, true,
+                        orderableLocationLotsMap, orderableLotsLocationMap));
                     _.forEach(groupLineItems, function(orderLineItem) {
-                        result[index].push(getDataTemplate(orderLineItem, shipment, false));
+                        result[index].push(getDataTemplate(orderLineItem, shipment, false,
+                            orderableLocationLotsMap, orderableLotsLocationMap));
                     });
                 }
             });
-            console.log(result);
             return result;
         }
 
