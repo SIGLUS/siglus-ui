@@ -171,11 +171,9 @@
                 if (!vm.requisition.patientLineItems.length) {
                     return '';
                 }
-                // console.log('#### key', key);
                 var result = '';
                 if (vm.mergedPatientMap[key]) {
                     var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
-                    // console.log(key, vm.mergedPatientMap[key]);
                     result = vm.mergedPatientMap[key].columns[innerKey].value;
                 }
                 return result;

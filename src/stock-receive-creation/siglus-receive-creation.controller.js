@@ -119,6 +119,11 @@
             }
 
             siglusOrderableLotService.fillLotsToAddedItems([item]).then(function() {
+                item.productCode = item.orderable.productCode;
+                item.productName = item.orderable.fullProductName;
+                item.lotCode = item.lot && item.lot.lotCode;
+                item.expirationDate = item.lot && item.lot.expirationDate;
+
                 vm.addedLineItems.unshift(item);
 
                 previousAdded = vm.addedLineItems[0];
@@ -278,6 +283,7 @@
         };
 
         vm.validateLot = function(lineItem) {
+            lineItem.lotCode = lineItem.lot.lotCode;
             if (!lineItem.isKit) {
 
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
@@ -292,6 +298,7 @@
         };
 
         vm.validateLotDate = function(lineItem) {
+            lineItem.expirationDate = lineItem.lot.expirationDate;
             if (!lineItem.isKit) {
                 if (lineItem.lot && lineItem.lot.expirationDate) {
                     lineItem.$errors.lotDateInvalid = false;

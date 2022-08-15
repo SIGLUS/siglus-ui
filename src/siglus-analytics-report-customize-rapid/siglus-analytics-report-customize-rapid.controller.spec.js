@@ -143,7 +143,6 @@ describe('siglusAnalyticsReportCustomizeRapidController', function() {
                     .buildJson()
             ])
             .build();
-        // console.log('#### requisition', this.requisition)
         // SIGLUS-REFACTOR: starts here
         this.requisition.extraData = {
             consultationNumber: undefined,

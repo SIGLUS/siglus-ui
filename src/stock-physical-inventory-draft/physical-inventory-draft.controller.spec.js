@@ -56,7 +56,6 @@ describe('PhysicalInventoryDraftController', function() {
             };
             addProductsModalService = $injector.get('addProductsModalService');
             siglusRemainingProductsModalService = $injector.get('siglusRemainingProductsModalService');
-            // console.log('####### siglusRemainingProductsModalService', siglusRemainingProductsModalService);
             spyOn(addProductsModalService, 'show');
             // spyOn(siglusRemainingProductsModalService, 'show');
             addProductsModalService = $injector.get('addProductsModalService');
