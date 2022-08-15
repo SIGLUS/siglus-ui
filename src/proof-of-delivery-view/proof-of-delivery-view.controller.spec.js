@@ -18,7 +18,7 @@ describe('PodViewController', function() {
     var vm, $controller, ProofOfDeliveryDataBuilder, OrderDataBuilder,
         proofOfDelivery, order, reasons, $rootScope, $q,
         ReasonDataBuilder, VVM_STATUS, messageService, orderLineItems,
-        ProofOfDeliveryPrinter, UserDataBuilder, userDataBuilder;
+        ProofOfDeliveryPrinter, UserDataBuilder, userDataBuilder, orderablesPrice;
 
     beforeEach(function() {
         module('proof-of-delivery-view');
@@ -40,7 +40,11 @@ describe('PodViewController', function() {
             ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
             UserDataBuilder = $injector.get('UserDataBuilder');
         });
-
+        orderablesPrice = {
+            '5f655d74-1213-46e0-9009-38a01e39c503': 66.66,
+            '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': 55,
+            '0fe4e147-714e-4bf0-9e5b-921e3f6d608d': 10
+        };
         proofOfDelivery = new ProofOfDeliveryDataBuilder().build();
         order = new OrderDataBuilder().build();
         reasons = [
@@ -82,7 +86,8 @@ describe('PodViewController', function() {
             orderLineItems: orderLineItems,
             canEdit: true,
             $scope: $rootScope.$new(),
-            user: userDataBuilder.build()
+            user: userDataBuilder.build(),
+            orderablesPrice: orderablesPrice
         });
     });
 
@@ -128,7 +133,8 @@ describe('PodViewController', function() {
             orderLineItems: orderLineItems,
             canEdit: false,
             $scope: $rootScope.$new(),
-            user: userDataBuilder.build()
+            user: userDataBuilder.build(),
+            orderablesPrice: orderablesPrice
         });
         vm.$onInit();
 

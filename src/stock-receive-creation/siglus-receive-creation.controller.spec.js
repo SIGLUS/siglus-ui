@@ -17,7 +17,7 @@ describe('SiglusStockReceiveCreationController', function() {
     var vm, $q, confirmDeferred, $rootScope, confirmDiscardService, alertService,
         confirmService, siglusStockIssueService, $state,
         stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, siglusRemainingProductsModalService,
-        alertConfirmModalService;
+        alertConfirmModalService, orderablesPrice;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -113,7 +113,11 @@ describe('SiglusStockReceiveCreationController', function() {
                 }
             ]
         ];
-
+        orderablesPrice = {
+            '5f655d74-1213-46e0-9009-38a01e39c503': 66.66,
+            '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': 55,
+            '0fe4e147-714e-4bf0-9e5b-921e3f6d608d': 10
+        };
         vm = $controller('SiglusStockReceiveCreationController', {
             $scope: $rootScope.$new(),
             orderableGroups: orderableGroups,
@@ -137,7 +141,8 @@ describe('SiglusStockReceiveCreationController', function() {
             programId: '000000-000000-000000-0000000',
             facility: {
                 id: '004f4232-cfb8-11e9-9398-0242ac130008'
-            }
+            },
+            orderablesPrice: orderablesPrice
         });
 
     }

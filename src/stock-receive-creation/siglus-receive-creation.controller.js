@@ -37,7 +37,7 @@
         'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
         'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusOrderableLotService',
-        'siglusDownloadLoadingModalService'
+        'siglusDownloadLoadingModalService', 'orderablesPrice'
     ];
 
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
@@ -48,7 +48,7 @@
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
                         siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
-                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService) {
+                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService, orderablesPrice) {
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -119,6 +119,11 @@
             }
 
             siglusOrderableLotService.fillLotsToAddedItems([item]).then(function() {
+                item.productCode = item.orderable.productCode;
+                item.productName = item.orderable.fullProductName;
+                item.lotCode = item.lot && item.lot.lotCode;
+                item.expirationDate = item.lot && item.lot.expirationDate;
+                item.price = orderablesPrice.data[item.orderable.id];
                 vm.addedLineItems.unshift(item);
 
                 previousAdded = vm.addedLineItems[0];
@@ -278,6 +283,7 @@
         };
 
         vm.validateLot = function(lineItem) {
+            lineItem.lotCode = lineItem.lot.lotCode;
             if (!lineItem.isKit) {
 
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
@@ -292,6 +298,7 @@
         };
 
         vm.validateLotDate = function(lineItem) {
+            lineItem.expirationDate = lineItem.lot.expirationDate;
             if (!lineItem.isKit) {
                 if (lineItem.lot && lineItem.lot.expirationDate) {
                     lineItem.$errors.lotDateInvalid = false;
@@ -867,9 +874,13 @@
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-            // 计算total value
+            _.forEach(vm.addedLineItems, function(item) {
+                item.price = orderablesPrice.data[item.orderable.id];
+            });
+            // calc total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                r = r + c.quantity * 10;
+                var price = c.price * 100;
+                r = r + c.quantity * price;
                 return r;
             }, 0);
             vm.orderableGroups = orderableGroups;

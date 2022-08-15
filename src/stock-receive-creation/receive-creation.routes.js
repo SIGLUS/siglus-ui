@@ -81,6 +81,9 @@
                         facility.id,
                         ADJUSTMENT_TYPE.RECEIVE.state);
                 },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);

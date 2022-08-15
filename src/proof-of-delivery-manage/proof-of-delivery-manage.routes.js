@@ -58,6 +58,9 @@
                         FULFILLMENT_RIGHTS.PODS_VIEW
                     ]);
                 },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 // #579: the "Supplying facility" field is automatically fille
                 pods: function(paginationService, orderRepository, $stateParams, programs) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {

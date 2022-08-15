@@ -67,6 +67,9 @@
                     }
                     return $stateParams.facility;
                 },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 // SIGLUS-REFACTOR: starts here
                 mergedItems: function($stateParams, siglusStockIssueService, alertService) {
                     if ($stateParams.mergedItems) {

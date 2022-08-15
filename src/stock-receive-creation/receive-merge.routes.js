@@ -90,6 +90,9 @@
                         lineItems: mergedItems
                     };
                 },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
