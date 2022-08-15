@@ -13,12 +13,12 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('SiglusShipmentDraftResource', function() {
+describe('SiglusLocationShipmentDraftResource', function() {
 
-    var SiglusShipmentDraftResource, OpenlmisResourceMock;
+    var SiglusLocationShipmentDraftResource, OpenlmisResourceMock;
 
     beforeEach(function() {
-        module('shipment', function($provide) {
+        module('siglus-location-shipment', function($provide) {
             OpenlmisResourceMock = jasmine.createSpy('OpenlmisResource');
 
             $provide.factory('OpenlmisResource', function() {
@@ -27,12 +27,12 @@ describe('SiglusShipmentDraftResource', function() {
         });
 
         inject(function($injector) {
-            SiglusShipmentDraftResource = $injector.get('SiglusShipmentDraftResource');
+            SiglusLocationShipmentDraftResource = $injector.get('SiglusLocationShipmentDraftResource');
         });
     });
 
     it('should extend OpenlmisResource', function() {
-        new SiglusShipmentDraftResource();
+        new SiglusLocationShipmentDraftResource();
 
         expect(OpenlmisResourceMock).toHaveBeenCalledWith('/api/siglusapi/shipmentDrafts');
     });

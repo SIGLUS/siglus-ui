@@ -13,310 +13,917 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('ShipmentViewController', function() {
+describe('SiglusLocationShipmentViewController', function() {
+    var vm, $controller, $scope, $rootScope, $state, $q;
+    function prepareInjector() {
 
-    var vm, $q, $controller, ShipmentDataBuilder, shipment, tableLineItems, OrderDataBuilder, fulfillmentUrlFactory,
-        QUANTITY_UNIT, order, messageService, $window, $rootScope,
-        // #264: warehouse clerk can add product to orders
-        selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory,
-        shipmentViewLineItemFactory, StockCardSummaryDataBuilder, stockCardSummaries,
-        CanFulfillForMeEntryDataBuilder,
-        // #264: ends here
-        // #287: Warehouse clerk can skip some products in order
-        ShipmentLineItem, ShipmentLineItemDataBuilder;
-        // #287: ends here
-
-    beforeEach(function() {
-        module('shipment-view');
-        // #264: warehouse clerk can add product to orders
-        module('openlmis-array-decorator');
-        // #264: ends here
-        // #287: Warehouse clerk can skip some products in order
-        module('shipment');
-        // #287: ends here
         inject(function($injector) {
             $q = $injector.get('$q');
-            $controller = $injector.get('$controller');
-            ShipmentDataBuilder = $injector.get('ShipmentDataBuilder');
-            OrderDataBuilder = $injector.get('OrderDataBuilder');
-            QUANTITY_UNIT = $injector.get('QUANTITY_UNIT');
-            messageService = $injector.get('messageService');
-            $window = $injector.get('$window');
             $rootScope = $injector.get('$rootScope');
-            fulfillmentUrlFactory = $injector.get('fulfillmentUrlFactory');
-            // #264: warehouse clerk can add product to orders
-            selectProductsModalService = $injector.get('selectProductsModalService');
-            alertService = $injector.get('alertService');
-            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            ShipmentViewLineItemFactory = $injector.get('ShipmentViewLineItemFactory');
-            shipmentViewLineItemFactory = new ShipmentViewLineItemFactory();
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
-            CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
-            // #264: ends here
-            // #287: Warehouse clerk can skip some products in order
-            ShipmentLineItem = $injector.get('ShipmentLineItem');
-            ShipmentLineItemDataBuilder = $injector.get('ShipmentLineItemDataBuilder');
-            // #287: ends here
+            $scope = $rootScope.$new();
+            $state = $injector.get('$state');
+            $controller = $injector.get('$controller');
         });
+    }
 
-        shipment = new ShipmentDataBuilder().build();
-        order = new OrderDataBuilder().build();
-        tableLineItems = [{}, {}];
+    function prepareSpies() {
+        spyOn($state, 'go').andReturn($q.resolve());
+    }
 
-        // #264: warehouse clerk can add product to orders
-        availableProducts = [
-            new OrderableDataBuilder()
-                .withFullProductName('C Product')
-                .build(),
-            new OrderableDataBuilder()
-                .withFullProductName('A Product')
-                .build(),
-            new OrderableDataBuilder()
-                .withFullProductName('B product')
-                .build()
-        ];
-        stockCardSummaries = [
-            new StockCardSummaryDataBuilder()
-                .withCanFulfillForMeEntry(
-                    new CanFulfillForMeEntryDataBuilder()
-                        .withOrderable(availableProducts[0])
-                        .buildJson()
-                )
-                .buildJson()
-        ];
-        vm = $controller('ShipmentViewController', {
-            shipment: shipment,
-            tableLineItems: tableLineItems,
-            updatedOrder: order,
-            stockCardSummaries: stockCardSummaries
+    function prepareData() {
+        var order = {
+            id: '0c4d80de-01c2-4a36-85e7-ce27c8b7b168',
+            orderLineItems: [
+                {
+                    id: '0eb44dfd-ca40-499d-9e0b-5aa30b410349',
+                    orderable: {
+                        id: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
+                        productCode: '08I01',
+                        fullProductName: 'Cotrimoxazol (Sulfametazol+Trimetoprim); 480mg; Comp',
+                        netContent: 1,
+                        isKit: false
+                    },
+                    orderedQuantity: 10,
+                    partialFulfilledQuantity: 0,
+                    skipped: false
+                },
+                {
+                    added: true,
+                    id: '8b8fd8bc-c16d-4429-8790-ef4fce013813',
+                    orderable: {
+                        id: '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a',
+                        productCode: '26B02',
+                        fullProductName: 'KIT AL/APE (Artemeter+Lumefantrina); 75 Tratamentos+ 200 Tests; KIT',
+                        netContent: 1,
+                        isKit: true
+                    },
+                    orderedQuantity: 0,
+                    partialFulfilledQuantity: 0,
+                    skipped: true
+                },
+                {
+                    id: '506eae2c-d320-45ab-b6fd-e1b2d10877a6',
+
+                    orderable: {
+                        id: '51d0e915-0b39-49b1-bb14-8999e9d90dad',
+                        productCode: '08R01',
+                        fullProductName: 'Aciclovir; 400mg; Comp',
+                        netContent: 1,
+                        isKit: false
+                    },
+                    orderedQuantity: 0,
+                    partialFulfilledQuantity: 0,
+                    skipped: true
+                }
+            ]
+        };
+
+        var stockCardSummaries = {};
+
+        vm = $controller('SiglusLocationShipmentViewController', {
+            $scope: $scope,
+            shipment: {},
+            updatedOrder: {},
+            stockCardSummaries: stockCardSummaries,
+            displayTableLineItems: [],
+            order: order,
+            orderableLotsLocationMap: {
+                'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
+                    '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a': [
+                        {
+                            locationId: 'AA25A',
+                            locationCode: 'AA25A',
+                            stockOnHand: 1000
+                        },
+                        {
+                            locationId: 'AA25B',
+                            locationCode: 'AA25B',
+                            stockOnHand: 678
+                        },
+                        {
+                            locationId: 'AA28B',
+                            locationCode: 'AA28B',
+                            stockOnHand: 256
+                        }
+                    ],
+                    '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c': [
+                        {
+                            locationId: 'AA25A',
+                            locationCode: 'AA25A',
+                            stockOnHand: 1000
+                        }
+                    ],
+                    '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e89': [
+                        {
+                            locationId: 'AA28B',
+                            locationCode: 'AA28B',
+                            stockOnHand: 8000
+                        }
+                    ],
+                    '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e67': [
+                        {
+                            locationId: 'AA28B',
+                            locationCode: 'AA28B',
+                            stockOnHand: 8000
+                        }
+                    ]
+                },
+                '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': {
+                    undefined: [
+                        {
+                            locationId: 'AA28B',
+                            locationCode: 'AA28B'
+                        }
+                    ]
+                },
+                '51d0e915-0b39-49b1-bb14-8999e9d90dad': {
+                    '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e90': [
+                        {
+                            locationId: 'AA23C',
+                            locationCode: 'AA23C',
+                            stockOnHand: 356
+                        }
+                    ],
+                    '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e98': [
+                        {
+                            locationId: 'AA35C',
+                            locationCode: 'AA35C',
+                            stockOnHand: 232
+                        }
+                    ]
+                }
+            },
+            orderableLocationLotsMap: {
+                'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
+                    AA25A: [
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            expirationDate: '2022-08-25',
+                            stockOnHand: 1000
+                        },
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                            lotCode: 'SEM-LOTE-07A03-09082022-2',
+                            expirationDate: '2022-08-09',
+                            stockOnHand: 1000
+                        }
+                    ],
+                    AA25B: [
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            expirationDate: '2022-08-25',
+                            stockOnHand: 678
+                        },
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e89',
+                            lotCode: 'SEM-LOTE-07A03-17082022-4',
+                            expirationDate: '2022-08-17',
+                            stockOnHand: 8000
+                        }
+                    ],
+                    AA28B: [
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            expirationDate: '2022-08-25',
+                            stockOnHand: 256
+                        },
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e67',
+                            lotCode: 'SEM-LOTE-07A03-17082023-4',
+                            expirationDate: '2023-08-17',
+                            stockOnHand: 8000
+                        }
+                    ]
+                },
+                '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': {
+                    AA28B: [
+                        {
+                            stockOnHand: 333
+                        }
+                    ],
+                    AA23C: [
+                        {
+                            stockOnHand: 567
+                        }
+                    ]
+                },
+                '51d0e915-0b39-49b1-bb14-8999e9d90dad': {
+                    AA23C: [
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e90',
+                            lotCode: 'SEM-LOTE-08R01-052023-3',
+                            expirationDate: '2023-06-26',
+                            stockOnHand: 356
+                        }
+                    ],
+                    AA35C: [
+                        {
+                            id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e98',
+                            lotCode: 'SEM-LOTE-08R01-072023-3',
+                            expirationDate: '2023-07-18',
+                            stockOnHand: 232
+                        }
+                    ]
+                }
+            }
         });
-        // #264: ends here
+    }
+
+    beforeEach(function() {
+        module('siglus-location-shipment-view');
+        module('siglus-location-shipment');
+        module('requisition-template');
+        module('shipment-view');
+        module('siglus-requisition-initiate-history');
+        module('openlmis-array-decorator');
+
+        prepareInjector();
+        prepareSpies();
+        prepareData();
     });
 
-    describe('$onInit', function() {
-
-        it('should expose order', function() {
+    describe('onInit', function() {
+        it('should init method be called correctly', function() {
             vm.$onInit();
 
-            expect(vm.order).toEqual(order);
-        });
-
-        it('should expose shipment', function() {
-            vm.$onInit();
-
-            expect(vm.shipment).toEqual(shipment);
-        });
-
-        it('should expose tableLineItems', function() {
-            vm.$onInit();
-
-            expect(vm.tableLineItems).toEqual(tableLineItems);
+            expect(vm.order).toEqual({});
         });
 
     });
 
-    describe('showInDoses', function() {
-
-        beforeEach(function() {
-            vm.$onInit();
-        });
-
-        it('should return true if showing in doses', function() {
-            vm.quantityUnit = QUANTITY_UNIT.DOSES;
-
-            expect(vm.showInDoses()).toEqual(true);
-        });
-
-        it('should return false if showing in packs', function() {
-            vm.quantityUnit = QUANTITY_UNIT.PACKS;
-
-            expect(vm.showInDoses()).toEqual(false);
-        });
-
-    });
-
-    describe('getSelectedQuantityUnitKeyUnitKey', function() {
-
-        beforeEach(function() {
-            vm.$onInit();
-        });
-
-        it('should return \'shipmentView.packs\' for packs', function() {
-            vm.quantityUnit = QUANTITY_UNIT.PACKS;
-
-            expect(vm.getSelectedQuantityUnitKey()).toEqual('shipmentView.packs');
-        });
-
-        it('should return \'shipmentView.doses\' for doses', function() {
-            vm.quantityUnit = QUANTITY_UNIT.DOSES;
-
-            expect(vm.getSelectedQuantityUnitKey()).toEqual('shipmentView.doses');
-        });
-
-        it('should return undefined for undefined', function() {
-            vm.quantityUnit = undefined;
-
-            expect(vm.getSelectedQuantityUnitKey()).toEqual(undefined);
-        });
-
-    });
-
-    describe('printShipment', function() {
-
-        var popup, document;
-
-        beforeEach(function() {
-            spyOn(shipment, 'save').andReturn($q.resolve(shipment));
-
-            document = jasmine.createSpyObj('document', ['write']);
-
-            popup = {
-                document: document,
-                location: {}
+    describe('addLot method', function() {
+        it('should add two rows when group has only one row', function() {
+            var lineItem = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                productCode: '08I01',
+                productName: 'Cotrimoxazol (Sulfametazol+Trimetoprim); 480mg; Comp',
+                id: '29a53a4b-d725-47e8-959e-3e127c3348e0',
+                isKit: false,
+                lineItems: [],
+                location: null,
+                lot: null,
+                isMainGroup: true,
+                shipmentLineItem: {
+                    id: '29a53a4b-d725-47e8-959e-3e127c3348e0',
+                    orderable: {
+                        id: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
+                        href: 'http://dev.siglus.us.internal/api/orderables/e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
+                        versionNumber: 3
+                    },
+                    lot: {
+                        id: '721af237-29d3-461b-abe1-99a18993410f',
+                        href: 'http://dev.siglus.us.internal/api/lots/721af237-29d3-461b-abe1-99a18993410f'
+                    },
+                    quantityShipped: null,
+                    stockOnHand: 196
+                },
+                netContent: 1,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
+                $$hashKey: 'object:228'
             };
-
-            spyOn(messageService, 'get').andReturn('Saving and printing');
-            spyOn($window, 'open').andReturn(popup);
-        });
-
-        it('should show information when saving shipment', function() {
-            vm.printShipment();
-
-            expect($window.open).toHaveBeenCalledWith('', '_blank');
-            expect(document.write).toHaveBeenCalledWith('Saving and printing');
-            expect(messageService.get).toHaveBeenCalledWith('shipmentView.saveDraftPending');
-        });
-
-        it('should print shipment after it was saved', function() {
-            vm.printShipment();
-
-            expect(popup.location.href).toBeUndefined();
-
-            $rootScope.$apply();
-
-            expect(popup.location.href)
-                .toEqual(fulfillmentUrlFactory('/api/reports/templates/common/583ccc35-88b7-48a8-9193-6c4857d3ff60/' +
-                    'pdf?shipmentDraftId=' + shipment.id));
-        });
-
-    });
-
-    // #264: warehouse clerk can add product to orders
-    describe('addProducts', function() {
-
-        beforeEach(function() {
-            vm.$onInit();
-
-            spyOn(alertService, 'error');
-            spyOn(selectProductsModalService, 'show');
-            spyOn(shipmentViewLineItemFactory, 'createFrom');
-        });
-
-        it('should show alert if there are no available products', function() {
-            vm.order.orderLineItems = [];
-            vm.order.availableProducts = [];
-            vm.addProducts();
-            $rootScope.$apply();
-
-            expect(selectProductsModalService.show).not.toHaveBeenCalled();
-            expect(alertService.error).toHaveBeenCalledWith(
-                'shipmentView.noProductsToAdd.label',
-                'shipmentView.noProductsToAdd.message'
-            );
-        });
-
-        it('should show products in alphabetical order', function() {
-            selectProductsModalService.show.andReturn($q.resolve([]));
-
-            vm.order.orderLineItems = [];
-            vm.order.availableProducts = availableProducts;
-            vm.addProducts();
-            $rootScope.$apply();
-
-            var actualProducts = selectProductsModalService.show.calls[0].args[0];
-
-            expect(actualProducts.products.length).toEqual(3);
-            expect(actualProducts.products[0]).toEqual(availableProducts[1]);
-            expect(actualProducts.products[1]).toEqual(availableProducts[2]);
-            expect(actualProducts.products[2]).toEqual(availableProducts[0]);
-        });
-
-        it('should do nothing if modal was dismissed', function() {
-            selectProductsModalService.show.andReturn($q.reject());
-            shipmentViewLineItemFactory.createFrom.andReturn([]);
-
-            vm.order.orderLineItems = [];
-            vm.order.availableProducts = [];
-            vm.addProducts();
-            $rootScope.$apply();
-
-            expect(shipmentViewLineItemFactory.createFrom).not.toHaveBeenCalled();
-        });
-
-        it('should create new line item', function() {
-            selectProductsModalService.show.andReturn($q.resolve([
-                availableProducts[0]
-            ]));
-
-            vm.stockCardSummaries = [
-                new StockCardSummaryDataBuilder()
-                    .withCanFulfillForMeEntry(
-                        new CanFulfillForMeEntryDataBuilder()
-                            .withOrderable(availableProducts[0])
-                            .withLot(shipment.lineItems[0].lot)
-                            .buildJson()
-                    )
-                    .buildJson()
+            var lineItems = [
+                lineItem
             ];
-            vm.order.availableProducts = availableProducts;
-            vm.addProducts();
-            $rootScope.$apply();
 
-            expect(vm.tableLineItems.length).toEqual(3);
+            vm.addLot(lineItem, lineItems);
+
+            expect(lineItems.length).toEqual(3);
+            expect(lineItems[0].isMainGroup).toEqual(true);
+            expect(lineItems[1].isMainGroup).toBeUndefined();
+            expect(lineItems[2].isMainGroup).toBeUndefined();
         });
     });
-    // #264: ends here
 
-    // #287: Warehouse clerk can skip some products in order
-    describe('skipLineItems', function() {
-
-        beforeEach(function() {
-            vm.$onInit();
-
-            var json = new ShipmentLineItemDataBuilder().buildJson();
-            var shipmentLineItem = new ShipmentLineItem(json);
-
-            vm.tableLineItems[0] = {
-                productCode: 'C1',
-                lineItems: [{
-                    shipmentLineItem: shipmentLineItem,
-                    skipped: false
-                }],
+    describe('changeLot method', function() {
+        it('it should return openlmisForm.required error when clear lot', function() {
+            var lineItem = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                isKit: false,
+                location: null,
+                lot: null,
                 isMainGroup: true,
-                skipped: false
+                netContent: 1,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
-            vm.tableLineItems[1] = {
-                productCode: 'C2',
-                lineItems: [{
-                    shipmentLineItem: ShipmentLineItem,
-                    skipped: false
-                }],
+            var lineItems = [
+                lineItem
+            ];
+
+            vm.changeLot(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
+
+        });
+
+        it('it return locationShipmentView.lotExpired when select lot has expirated', function() {
+            var lineItem = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                isKit: false,
+                location: null,
+                lot: {
+                    lotCode: 'code1',
+                    expirationDate: '2020-12-12'
+                },
                 isMainGroup: true,
-                skipped: false
+                netContent: 1,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+            };
+            var lineItems = [
+                lineItem
+            ];
+
+            vm.changeLot(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.lotCodeError).toEqual('locationShipmentView.lotExpired');
+
+        });
+
+        it('it return when select lot is not first to expire', function() {
+            var lineItem = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                isKit: false,
+                location: null,
+                lot: {
+                    lotCode: 'code1',
+                    expirationDate: '2022-08-25'
+                },
+                isMainGroup: true,
+                netContent: 1,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+            };
+            var lineItems = [
+                lineItem
+            ];
+
+            vm.changeLot(lineItem, lineItems, 0);
+
+            expect(lineItem.$hint.lotCodeHint).toEqual('locationShipmentView.notFirstToExpire');
+
+        });
+    });
+
+    describe('changeLocation method', function() {
+        var lineItem;
+        beforeEach(function() {
+            lineItem = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                isKit: true,
+                location: null,
+                lot: null,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
         });
 
-        it('should the lineItems skip status should be changed when change the shipmentViewLineItems ', function() {
+        it('should return openlmisForm.required when product change lot is null', function() {
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem)
+            ];
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.locationError).toEqual('openlmisForm.required');
+        });
+
+        it('should validate location duplicate when product is kit', function() {
+            lineItem.isKit = true;
+            lineItem.location = {
+                locationCode: 'AA01'
+            };
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem)
+            ];
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.locationError).toEqual('locationShipmentView.locationDuplicated');
+        });
+
+        it('should return quantityShippedError openlmisForm.required when location has changed', function() {
+            lineItem.isKit = true;
+            lineItem.location = {
+                locationCode: 'AA01'
+            };
+            lineItem.shipmentLineItem = {
+                quantityShipped: null
+            };
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem)
+            ];
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.quantityShippedError).toEqual('openlmisForm.required');
+        });
+
+        it('should return quantityShippedError  when quantity shipped is more than soh', function() {
+            lineItem.isKit = true;
+            lineItem.orderableId = '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a';
+            lineItem.location = {
+                locationCode: 'AA28B'
+            };
+            lineItem.shipmentLineItem = {
+                quantityShipped: 334
+            };
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem)
+            ];
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.quantityShippedError).toEqual('shipment.fillQuantityCannotExceedStockOnHand');
+        });
+
+        it('should return emtpy string when quantity shipped is less than soh', function() {
+            lineItem.isKit = true;
+            lineItem.orderableId = '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a';
+            lineItem.location = {
+                locationCode: 'AA28B'
+            };
+            lineItem.shipmentLineItem = {
+                quantityShipped: 332
+            };
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem)
+            ];
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.quantityShippedError).toEqual('');
+        });
+    });
+
+    describe('removeItem method', function() {
+        var lineItem;
+        beforeEach(function() {
+            lineItem = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                isKit: true,
+                location: null,
+                lot: null,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+            };
+        });
+
+        it('should rm all product when current product is manual added', function() {
+            var lineItems = [
+                lineItem
+            ];
+
+            vm.removeItem(lineItems, 0);
+
+            expect(lineItems.length).toEqual(0);
+        });
+
+        it('should rm current item when product list is more than 3', function() {
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem),
+                _.clone(lineItem),
+                _.clone(lineItem)
+            ];
+
+            vm.removeItem(lineItems, 2);
+
+            expect(lineItems.length).toEqual(3);
+        });
+
+        it('should rm current item when product list length is equal 3', function() {
+            var lineItem2 = _.clone(lineItem);
+            lineItem2.lot = {
+                lotCode: 'test lot code'
+            };
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem),
+                lineItem2
+            ];
+
+            vm.removeItem(lineItems, 1);
+
+            expect(lineItems.length).toEqual(1);
+            expect(lineItems[0].lot.lotCode).toEqual('test lot code');
+        });
+    });
+
+    describe('getOrderQuantity method', function() {
+        it('should calculate order quantity when current index is 0', function() {
+            var lineItems = [
+                {
+                    orderQuantity: 0
+                },
+                {
+                    orderQuantity: 3
+                },
+                {
+                    orderQuantity: 5
+                }
+            ];
+
+            expect(vm.getOrderQuantity(lineItems, 0)).toEqual(8);
+        });
+
+        it('should return current order quantity when current index is not 0', function() {
+            var lineItems = [
+                {
+                    orderQuantity: 0
+                },
+                {
+                    orderQuantity: 3
+                },
+                {
+                    orderQuantity: 5
+                }
+            ];
+
+            expect(vm.getOrderQuantity(lineItems, 1)).toEqual(3);
+        });
+    });
+
+    describe('getFillQuantity method', function() {
+        it('should get FillQuantityquantity when current index is 0', function() {
+            var lineItems = [
+                {
+                    orderQuantity: 0
+                },
+                {
+                    orderQuantity: 3
+                },
+                {
+                    orderQuantity: 5
+                }
+            ];
+
+            expect(vm.getOrderQuantity(lineItems, 0)).toEqual(8);
+        });
+
+        it('should return current order quantity when current index is not 0', function() {
+            var lineItems = [
+                {
+                    orderQuantity: 0
+                },
+                {
+                    orderQuantity: 3
+                },
+                {
+                    orderQuantity: 5
+                }
+            ];
+
+            expect(vm.getOrderQuantity(lineItems, 2)).toEqual(5);
+        });
+    });
+
+    describe('getAvailableSoh method', function() {
+
+        it('should return sum availableSoh when current index is 0', function() {
+            var lineItems = [
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: null,
+                    lot: null,
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                        lotCode: 'SEM-LOTE-07A03-2508022-1',
+                        expirationDate: '2022-08-25'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                        lotCode: 'SEM-LOTE-07A03-09082022-2',
+                        expirationDate: '2022-08-09'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                }
+            ];
+
+            expect(vm.getAvailableSoh(lineItems, 0)).toEqual(2000);
+        });
+
+        it('should return availableSoh quantity when current index is not 0', function() {
+            var lineItems = [
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: null,
+                    lot: null,
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                        lotCode: 'SEM-LOTE-07A03-2508022-1',
+                        expirationDate: '2022-08-25'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                        lotCode: 'SEM-LOTE-07A03-09082022-2',
+                        expirationDate: '2022-08-09'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                }
+            ];
+
+            expect(vm.getAvailableSoh(lineItems, 1)).toEqual(1000);
+        });
+    });
+
+    describe('getRemainingSoh method', function() {
+
+        it('should return sum remaining soh when current index is 0 and result is lt 0', function() {
+            var lineItems = [
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: null,
+                    lot: null,
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 1200
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                        lotCode: 'SEM-LOTE-07A03-2508022-1',
+                        expirationDate: '2022-08-25'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 1000
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                        lotCode: 'SEM-LOTE-07A03-09082022-2',
+                        expirationDate: '2022-08-09'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                }
+            ];
+
+            expect(vm.getRemainingSoh(lineItems, 0)).toEqual(0);
+        });
+
+        it('should return sum remaining soh when current index is 0 and result is more than 0 ', function() {
+            var lineItems = [
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: null,
+                    lot: null,
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 800
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                        lotCode: 'SEM-LOTE-07A03-2508022-1',
+                        expirationDate: '2022-08-25'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 1000
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                        lotCode: 'SEM-LOTE-07A03-09082022-2',
+                        expirationDate: '2022-08-09'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                }
+            ];
+
+            expect(vm.getRemainingSoh(lineItems, 0)).toEqual(200);
+        });
+
+        it('should return availableSoh quantity when current index is not 0', function() {
+            var lineItems = [
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 0
+                    },
+                    location: null,
+                    lot: null,
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 900
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
+                        lotCode: 'SEM-LOTE-07A03-2508022-1',
+                        expirationDate: '2022-08-25'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                },
+                {
+                    shipmentLineItem: {
+                        quantityShipped: 900
+                    },
+                    location: {
+                        locationCode: 'AA25A'
+                    },
+                    lot: {
+                        id: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
+                        lotCode: 'SEM-LOTE-07A03-09082022-2',
+                        expirationDate: '2022-08-09'
+                    },
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+                }
+            ];
+
+            expect(vm.getRemainingSoh(lineItems, 1)).toEqual(100);
+        });
+    });
+
+    describe('skipAllLineItems method', function() {
+
+        it('should set skipped to true when lineItem is not checked', function() {
+            vm.shipment = {
+                order: {
+                    orderLineItems: [{
+                        orderable: {
+                            orderableId: '0001',
+                            productCode: 'A0001'
+                        }
+
+                    }]
+                }
+            };
+            vm.displayTableLineItems = [
+                [
+                    {
+                        orderableId: '0001',
+                        productCode: 'A0001',
+                        productName: 'product 1',
+                        shipmentLineItem: {
+                            quantityShipped: 0
+                        }
+                    }
+                ]
+            ];
+
             vm.skipAllLineItems();
 
+            expect(vm.displayTableLineItems[0][0].skipped).toEqual(true);
             expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(true);
-            expect(vm.shipment.order.orderLineItems[1].skipped).toEqual(true);
-
-            vm.unskipAllLineItems();
-
-            expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(false);
-            expect(vm.shipment.order.orderLineItems[1].skipped).toEqual(false);
         });
     });
-    // #287: ends here
+
+    describe('unskipAllLineItems method', function() {
+
+        it('should set skipped to false  when lineItem is checked', function() {
+            vm.shipment = {
+                order: {
+                    orderLineItems: [{
+                        orderable: {
+                            orderableId: '0001',
+                            productCode: 'A0001'
+                        },
+                        skipped: false
+
+                    }]
+                }
+            };
+            vm.displayTableLineItems = [
+                [
+                    {
+                        orderableId: '0001',
+                        productCode: 'A0001',
+                        productName: 'product 1',
+                        shipmentLineItem: {
+                            quantityShipped: 0
+                        },
+                        skipped: false
+                    }
+                ]
+            ];
+
+            vm.skipAllLineItems();
+
+            expect(vm.displayTableLineItems[0][0].skipped).toEqual(true);
+            expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(true);
+        });
+    });
+
+    describe('isEmptyRow method', function() {
+        it('should display no data row when lineItem has no location list and product is kit', function() {
+            var lineItem = {
+                productName: 'Kit',
+                isKit: true
+            };
+
+            expect(vm.isEmptyRow(lineItem)).toEqual(true);
+        });
+
+        it('should display no data row when lineItem has no location list and product is not kit', function() {
+            var lineItem = {
+                productName: 'Kit',
+                isKit: false,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
+                location: {
+                    locationCode: 'AB08C'
+                }
+            };
+
+            expect(vm.isEmptyRow(lineItem, [lineItem], 0)).toEqual(true);
+        });
+
+    });
 });

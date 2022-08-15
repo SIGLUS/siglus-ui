@@ -86,116 +86,6 @@
                         return SiglusLocationViewService.getOrderableLocationLotsInfo({
                             orderablesId: orderableIds,
                             extraData: true
-                        }).then(function() {
-                            var locations = [
-                                {
-                                    locationId: '4954457b-4331-491b-98f5-76d903a5b481',
-                                    locationCode: 'AA25A',
-                                    lots: [
-                                        {
-                                            orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                            lotCode: 'SEM-LOTE-07A03-2508022-1',
-                                            expirationDate: '2022-08-25',
-                                            stockOnHand: 1000
-                                        },
-                                        {
-                                            orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5c',
-                                            lotCode: 'SEM-LOTE-07A03-09082022-2',
-                                            expirationDate: '2022-08-09',
-                                            stockOnHand: 1000
-                                        }
-                                    ]
-                                },
-                                {
-                                    locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cd8',
-                                    locationCode: 'AA25B',
-                                    lots: [
-                                        {
-                                            orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                            lotCode: 'SEM-LOTE-07A03-2508022-1',
-                                            expirationDate: '2022-08-25',
-                                            stockOnHand: 678
-                                        },
-                                        {
-                                            orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e89',
-                                            lotCode: 'SEM-LOTE-07A03-17082022-4',
-                                            expirationDate: '2022-08-17',
-                                            stockOnHand: 8000
-                                        }
-                                    ]
-                                },
-                                {
-                                    locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cd0',
-                                    locationCode: 'AA28B',
-                                    lots: [
-                                        {
-                                            orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                            lotCode: 'SEM-LOTE-07A03-2508022-1',
-                                            expirationDate: '2022-08-25',
-                                            stockOnHand: 256
-                                        },
-                                        {
-                                            orderablesId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e67',
-                                            lotCode: 'SEM-LOTE-07A03-17082023-4',
-                                            expirationDate: '2023-08-17',
-                                            stockOnHand: 8000
-                                        }
-                                    ]
-                                },
-                                {
-                                    locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cd0',
-                                    locationCode: 'AA28B',
-                                    lots: [
-                                        {
-                                            orderablesId: '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a',
-                                            stockOnHand: 333
-                                        }
-                                    ]
-                                },
-                                {
-                                    locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cdc',
-                                    locationCode: 'AA23C',
-                                    lots: [
-                                        {
-                                            orderablesId: '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a',
-                                            stockOnHand: 567
-                                        }
-                                    ]
-                                },
-                                {
-                                    locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cdc',
-                                    locationCode: 'AA23C',
-                                    lots: [
-                                        {
-                                            orderablesId: '51d0e915-0b39-49b1-bb14-8999e9d90dad',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                            lotCode: 'SEM-LOTE-08R01-052023-3',
-                                            expirationDate: '2023-06-26',
-                                            stockOnHand: 356
-                                        }
-                                    ]
-                                },
-                                {
-                                    locationId: 'a7195103-2abc-4ebb-863b-893ac3ab0cdc',
-                                    locationCode: 'AA35C',
-                                    lots: [
-                                        {
-                                            orderablesId: '51d0e915-0b39-49b1-bb14-8999e9d90dad',
-                                            lotId: '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a',
-                                            lotCode: 'SEM-LOTE-08R01-072023-3',
-                                            expirationDate: '2023-07-18',
-                                            stockOnHand: 232
-                                        }
-                                    ]
-                                }
-                            ];
-                            return locations;
                         });
                     },
 
@@ -207,41 +97,22 @@
                         return SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations);
                     },
 
-                    lotOptions: function(stockCardSummaries) {
-                        var options = _.reduce(stockCardSummaries, function(result, summary) {
-                            var lotOption = [];
-                            _.forEach(summary.stockCardDetails, function(stockCardDetail) {
-                                if (stockCardDetail.lot) {
-                                    lotOption.push(stockCardDetail.lot);
-                                    var newLot = _.clone(stockCardDetail.lot);
-                                    newLot.lotCode = 'test lot code';
-                                    newLot.expirationDate = '2022-08-26';
-                                    newLot.id = '123123';
-                                    lotOption.push(newLot);
-                                }
-                            });
-                            var orderableId = summary.orderable.id;
-                            if (orderableId) {
-                                result[orderableId] = lotOption;
-                            }
-                            return result;
-
-                        }, {});
-                        return options;
-                    },
                     // #372: Improving Fulfilling Order performance
-                    shipment: function(siglusLocationShipmentViewService, order, stockCardSummaries, $stateParams) {
+                    shipment: function(SiglusLocationViewService, order, stockCardSummaries, $stateParams) {
                         if (!$stateParams.shipment) {
                             var orderWithoutAvailableProducts = angular.copy(order);
                             delete orderWithoutAvailableProducts.availableProducts;
-                            return siglusLocationShipmentViewService
-                                .getShipmentForOrder(orderWithoutAvailableProducts, stockCardSummaries);
+
+                            return SiglusLocationViewService.getDraftByOrderId(order, stockCardSummaries);
                         }
                         return $stateParams.shipment;
 
                     },
                     displayTableLineItems: function(paginationService, $stateParams,
-                        SiglusLocationShipmentViewLineItemFactory, shipment) {
+                        SiglusLocationShipmentViewLineItemFactory, shipment,
+                        orderableLocationLotsMap, orderableLotsLocationMap) {
+                        console.log(orderableLocationLotsMap);
+                        console.log(orderableLotsLocationMap);
                         var validator = function(group) {
                             return _.every(group, function(lineItem) {
                                 return _.chain(lineItem.$error).keys()
@@ -255,7 +126,8 @@
                         return paginationService.registerList(validator, angular.copy($stateParams), function() {
                             return $stateParams.displayTableLineItems
                                 ? $stateParams.displayTableLineItems
-                                : new SiglusLocationShipmentViewLineItemFactory().prepareGroupLineItems(shipment);
+                                : new SiglusLocationShipmentViewLineItemFactory().prepareGroupLineItems(shipment,
+                                    orderableLocationLotsMap, orderableLotsLocationMap);
                         });
                     },
                     // #264: warehouse clerk can add product to orders

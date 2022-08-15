@@ -60,16 +60,17 @@
             var result = {};
             _.forEach(locations, function(location) {
                 _.forEach(location.lots, function(lot) {
+
                     if (!result[lot.orderablesId]) {
                         result[lot.orderablesId] = {};
                     }
 
-                    if (!result[lot.orderablesId][lot.lotCode]) {
-                        result[lot.orderablesId][lot.lotCode] = [];
+                    if (!result[lot.orderablesId][lot.lotId]) {
+                        result[lot.orderablesId][lot.lotId] = [];
                     }
 
-                    result[lot.orderablesId][lot.lotCode].push({
-                        locationId: location.locationId,
+                    result[lot.orderablesId][lot.lotId].push({
+                        id: location.locationId,
                         locationCode: location.locationCode
                     });
                 });
@@ -95,9 +96,9 @@
 
         this.getLocationList = function(lineItem, orderableLotsLocationMap) {
             var orderableId = lineItem.orderableId;
-            var lotCode = _.get(lineItem, ['lot', 'lotCode']);
-            return lotCode
-                ? _.get(orderableLotsLocationMap, [orderableId, lotCode], [])
+            var lotId = _.get(lineItem, ['lot', 'id']);
+            return lotId
+                ? _.get(orderableLotsLocationMap, [orderableId, lotId], [])
                 : _.chain(orderableLotsLocationMap)
                     .get(orderableId, {})
                     .values()
