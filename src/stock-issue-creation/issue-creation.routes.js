@@ -116,6 +116,9 @@
                     }
                     return $stateParams.addedLineItems;
                 },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
                     if (_.isUndefined($stateParams.displayItems) && addedLineItems.length > 0) {
                         $stateParams.addedLineItems = addedLineItems;

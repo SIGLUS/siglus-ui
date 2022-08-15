@@ -143,7 +143,6 @@
                 },
                 selectedItem, copyDefaultValue()
             );
-            console.log('#### item', item);
             item.productCode = item.orderable.productCode;
             item.productName = item.orderable.fullProductName;
             item.lotCode = item.lot && item.lot.lotCode;
