@@ -56,7 +56,7 @@
             <!-- SIGLUS-REFACTOR: starts here -->
             <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
             <td ng-class="{'text-align-right': vm.actionType !== 'SUBMITTED'}">
-                {{vm.calculate(lineItems, 'quantity')}}
+                <span style="padding: 8px;">{{vm.calculate(lineItems, 'quantity')}}</span>
             </td>
             <td ng-if="vm.showVVMStatusColumn"></td>
             <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
