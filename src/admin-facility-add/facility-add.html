@@ -1,0 +1,18 @@
+<div class="modal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>{{'adminFacilityAdd.addFacility' | message}}</h1>
+            </div>
+            <div class="modal-body">
+                <form id="add-facility-form" ng-submit="vm.save()">
+                    <ng-include src="'admin-facility-add/facility-information.html'"></ng-include>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" ng-click="vm.goToPreviousState()">{{'adminFacilityAdd.cancel' | message}}</button>
+                <button class="primary" form="add-facility-form">{{'adminFacilityAdd.save' | message}}</button>
+            </div>
+        </div>
+    </div>
+</div>

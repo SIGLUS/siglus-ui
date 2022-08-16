@@ -18,11 +18,12 @@ describe('Group by program product category filter', function() {
         programId, oralContraceptiveCategoryDisplayName, implantableContraceptiveCategoryDisplayName,
         lineItem, lineItem1, lineItem2, programOrderable1, programOrderable2, pagedLineItem,
         PhysicalInventoryLineItemDataBuilder, ProgramOrderableDataBuilder, OrderableDataBuilder,
-        physicalInventoryFactory;
+        physicalInventoryFactory, siglusOrderableLotService;
 
     beforeEach(function() {
         module('stock-physical-inventory-draft');
         module('stock-physical-inventory');
+        module('stock-orderable-group');
 
         inject(function($injector) {
             $filter = $injector.get('$filter');
@@ -31,7 +32,9 @@ describe('Group by program product category filter', function() {
             PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
             ProgramOrderableDataBuilder = $injector.get('ProgramOrderableDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
+            siglusOrderableLotService = $injector.get('siglusOrderableLotService');
             physicalInventoryFactory = $injector.get('physicalInventoryFactory');
+            this.siglusOrderableLotService = siglusOrderableLotService;
             this.physicalInventoryFactory = physicalInventoryFactory;
             this.groupByProgramProductCategoryFilter = groupByProgramProductCategoryFilter;
             this.pagedLineItem = pagedLineItem;

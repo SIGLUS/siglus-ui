@@ -47,7 +47,6 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
@@ -58,11 +57,8 @@
                 isMerge: function() {
                     return false;
                 },
-                program: function($stateParams, programService) {
-                    if (!$stateParams.program) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                programId: function($stateParams) {
+                    return $stateParams.programId;
                 },
                 facility: function($stateParams, facilityFactory) {
                     if (!$stateParams.facility) {
@@ -73,24 +69,21 @@
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
-                initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
-                    if ($stateParams.issueToInfo) {
-                        return $stateParams.issueToInfo;
+                mergedItems: function() {
+                    return [];
+                },
+                initialDraftInfo: function($stateParams, programId, facility, siglusStockIssueService,
+                    ADJUSTMENT_TYPE) {
+                    if ($stateParams.initialDraftInfo) {
+                        return $stateParams.initialDraftInfo;
                     }
-                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
+                    return siglusStockIssueService.queryInitialDraftInfo(programId,
                         facility.id,
                         ADJUSTMENT_TYPE.RECEIVE.state);
                 },
-                // SIGLUS-REFACTOR: starts here
-                orderableGroups: function($stateParams, program, facility, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST
-                        );
-                    }
-                    return $stateParams.orderableGroups;
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
                 },
-                // SIGLUS-REFACTOR: ends here
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
@@ -100,26 +93,31 @@
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;
                 },
-                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getSourceAssignments($stateParams.programId, facility.id);
-                    }
-                    return $stateParams.srcDstAssignments;
-                },
                 // SIGLUS-REFACTOR: starts here
-                draft: function($stateParams, stockAdjustmentFactory, user, program, facility, adjustmentType) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return stockAdjustmentFactory.getDraftById(user.user_id, program.id, facility.id,
-                            adjustmentType.state, $stateParams.draftId);
+                draft: function(siglusStockIssueService, $stateParams) {
+                    if ($stateParams.draft) {
+                        return $stateParams.draft;
                     }
-                    return $stateParams.draft;
+                    return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                orderableGroups: function($stateParams, facility, draft, orderableGroupService) {
+                    if (!$stateParams.hasLoadOrderableGroups) {
+                        var allLineOrderableIds = draft.lineItems.map(function(line) {
+                            return line.orderableId;
+                        });
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
+                            $stateParams.draftId, allLineOrderableIds
+                        );
+                    }
+                    return $stateParams.orderableGroups;
+                },
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
+                                undefined, reasons);
                         }
                         return [];
                     }

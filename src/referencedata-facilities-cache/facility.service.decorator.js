@@ -67,7 +67,6 @@
                 })
             // SIGLUS-REFACTOR: starts here
                 .catch(function() {
-                    // console.log('getAllMinimal', error);
                     return [];
                 });
             // SIGLUS-REFACTOR: ends here

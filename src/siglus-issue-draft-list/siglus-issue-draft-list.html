@@ -8,7 +8,7 @@
     </button>
     <table>
         <caption ng-if="vm.drafts.length===0">
-            {{'issueDraft.selectFirst' | message}}
+            {{vm.noDataInfoMapper[vm.draftType] | message}}
         </caption>
         <thead>
         <tr>

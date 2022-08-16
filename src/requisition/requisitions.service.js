@@ -460,20 +460,23 @@
             if (requisition.createdDate) {
                 requisition.createdDate = dateUtils.toDate(requisition.createdDate);
             }
-
-            requisition.processingPeriod.startDate = dateUtils.toDate(
-                requisition.processingPeriod.startDate
-            );
-
-            requisition.processingPeriod.endDate = dateUtils.toDate(
-                requisition.processingPeriod.endDate
-            );
-
-            if (requisition.processingPeriod.processingSchedule) {
-                requisition.processingPeriod.processingSchedule.modifiedDate = dateUtils.toDate(
-                    requisition.processingPeriod.processingSchedule.modifiedDate
+            // SIGLUS-REFACTOR: handle no processingPeriod
+            if (requisition.processingPeriod) {
+                requisition.processingPeriod.startDate = dateUtils.toDate(
+                    requisition.processingPeriod.startDate
                 );
+
+                requisition.processingPeriod.endDate = dateUtils.toDate(
+                    requisition.processingPeriod.endDate
+                );
+
+                if (requisition.processingPeriod.processingSchedule) {
+                    requisition.processingPeriod.processingSchedule.modifiedDate = dateUtils.toDate(
+                        requisition.processingPeriod.processingSchedule.modifiedDate
+                    );
+                }
             }
+            // SIGLUS-REFACTOR: ends here
 
             transformRequisitionOffline(requisition);
         }

@@ -41,7 +41,8 @@
             HISTORICAL_DATA_REPORT: 'historical_data_report',
             MALARIA_CONSUMPTION_DATA_REPORT: 'malaria_consumption_data_report',
             REQUISITION_DATA_REPORT: 'requisition_data_report',
-            RAPID_TEST_CONSUMPTION_DATA_REPORT: 'rapid_test_consumption_data_report'
+            RAPID_TEST_CONSUMPTION_DATA_REPORT: 'rapid_test_consumption_data_report',
+            TRACER_DRUG_REPORT: 'tracer_drug_report'
         };
     }
 

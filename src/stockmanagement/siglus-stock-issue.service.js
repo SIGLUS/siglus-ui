@@ -28,9 +28,9 @@
         .module('stockmanagement')
         .service('siglusStockIssueService', service);
 
-    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'moment'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', '$filter', 'moment', 'siglusStockUtilsService'];
 
-    function service($resource, stockmanagementUrlFactory, $filter, moment) {
+    function service($resource, stockmanagementUrlFactory, $filter, moment, siglusStockUtilsService) {
 
         var urlBasePath = '/api/siglusapi/drafts/initial';
         var resource = $resource(stockmanagementUrlFactory(urlBasePath), {}, {
@@ -184,7 +184,7 @@
             }).$promise;
         }
 
-        function submitDraft(initialDraftId, draftId, signature, lineItems) {
+        function submitDraft(initialDraftId, draftId, signature, lineItems, draftType) {
             var drafts = _.map(lineItems, buildLine);
             return resource.submitDraft({
                 initialDraftId: initialDraftId,
@@ -192,12 +192,13 @@
             }, {
                 id: draftId,
                 signature: signature,
-                lineItems: drafts
+                lineItems: drafts,
+                draftType: draftType
             }).$promise;
         }
 
-        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo, facilityId, subDrafts) {
-
+        function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo, facilityId, subDrafts, occurredDate) {
+            var formattedOccurredDate = siglusStockUtilsService.formatDate(occurredDate);
             var params = {
 
                 subDrafts: subDrafts,
@@ -206,7 +207,7 @@
                     signature: signature,
                     facilityId: facilityId,
                     lineItems: _.map(lineItems, function(item) {
-                        return buildMergeDraftLine(item, initDraftInfo);
+                        return buildMergeDraftLine(item, initDraftInfo, formattedOccurredDate);
                     })
                 }
             };
@@ -224,8 +225,7 @@
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
-                stockOnHand: item.stockOnHand,
-                occurredDate: item.occurredDate,
+                stockOnHand: item.$previewSOH,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText', null),
                 productCode: item.orderable.productCode,
@@ -233,8 +233,17 @@
             };
         }
 
-        function buildMergeDraftLine(item, initialDraftInfo) {
-            return {
+        function buildMergeDraftLine(item, initialDraftInfo, formattedOccurredDate) {
+            var isIssue = !_.isEmpty(_.get(initialDraftInfo, 'destinationId'));
+            var data = isIssue ?
+                {
+                    destinationId: _.get(initialDraftInfo, 'destinationId'),
+                    destinationFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined
+                }  : {
+                    sourceId: _.get(initialDraftInfo, 'sourceId'),
+                    sourceFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined
+                };
+            return Object.assign({
                 orderableId: item.orderable.id,
                 lotId: _.get(item.lot, 'id', null),
                 lotCode: _.get(item.lot, 'lotCode', null),
@@ -243,15 +252,12 @@
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
-                occurredDate: item.occurredDate,
+                occurredDate: formattedOccurredDate,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText'),
                 programId: item.programId,
-                sourceFreeText: initialDraftInfo.sourceFreeText,
-                destinationId: initialDraftInfo.destinationId,
-                destinationFreeText: _.get(initialDraftInfo, 'locationFreeText', null),
                 documentationNo: initialDraftInfo.documentNumber
-            };
+            }, data);
         }
 
         function formatPayload(payload) {
@@ -261,7 +267,7 @@
                 }
                 if (!lineItem.lotId) {
                     lineItem.extraData.lotCode = lineItem.lotCode;
-                    lineItem.extraData.expirationDate = formatDate(lineItem.expirationDate);
+                    lineItem.extraData.expirationDate = siglusStockUtilsService.formatDate(lineItem.expirationDate);
                 }
                 lineItem.extraData.stockCardId = lineItem.stockCardId;
 
@@ -270,10 +276,6 @@
             });
 
             return angular.toJson(payload);
-        }
-
-        function formatDate(date) {
-            return date ? moment(date).format('YYYY-MM-DD') : date;
         }
     }
 })();

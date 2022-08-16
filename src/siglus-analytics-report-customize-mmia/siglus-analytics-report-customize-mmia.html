@@ -45,9 +45,9 @@
       <thead>
       <tr id="calcTr">
           <th class="banner-text" style="width: 30px;"></th>
-          <th class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
+          <th style="width: 100px;" class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
           <th style="width: 460px;" class="col-4" openlmis-message="view.rnr.mmia.medicine">{{ 'mmia.medicine' | message }}</th>
-          <th style="width: 60px;" style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
+          <th style="width: 80px;" style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.initialAmount">{{ 'mmia.initialAmount' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.entries">{{ 'mmia.entries' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issues">{{ 'mmia.issues' | message }}</th>
@@ -62,14 +62,7 @@
             <td>
                 <svg ng-if="item.id" style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
             </td>
-            <td
-                ng-class="{
-                    'bg-color-green': item.orderable.programs[0].orderableCategoryDisplayName === 'Children',
-                    'bg-color-lightyellow': item.orderable.programs[0].orderableCategoryDisplayName === 'Adult',
-                    'bg-color-blue': item.orderable.programs[0].orderableCategoryDisplayName === 'Solution'
-                }"
-                class="{{params[item.categoryName]['productPrimaryName']}}"
-            >{{item.orderable.fullProductName}}</td>
+            <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
             <td>{{item.orderable.dispensable.displayUnit}}</td>
             <td>{{item.beginningBalance}}</td>
             <td>{{item.totalReceivedQuantity}}</td>
@@ -148,7 +141,11 @@
                 <tr class="background-black">
                     <td class="banner-text"></td>
                     <td></td>
-                    <td>{{ 'mmia.therapeuticLines' | message }}</td>
+<<<<<<< HEAD
+                    <td style="font-size: 16px; font-style: italic; font-weight: bold;">{{ 'mmia.therapeuticLines' | message }}</td>
+=======
+                    <td style="font-weight: bold; font-style:italic; font-size: 16px;">{{ 'mmia.therapeuticLines' | message }}</td>
+>>>>>>> hotFix-bugBash
                     <td></td>
                     <td></td>
                 </tr>
@@ -158,8 +155,8 @@
                     <td ng-if="lineItem.column.label === 'Total'" style="width: 400px;"></td>
                     <td ng-if="lineItem.column.label === 'Total'" class="bg-color-darkgray" style="text-align: right; padding-right: 4px;">{{lineItem.column.label}}</td>
                     <td ng-if="lineItem.column.label !== 'Total'" colspan="2" style="text-align: right; padding-right: 4px;">{{lineItem.column.label}}</td>
-                    <td>{{ lineItem.columns.community.value }}</td>
                     <td>{{ lineItem.columns.patients.value }}</td>
+                    <td>{{ lineItem.columns.community.value }}</td>
                 </tr>
               </tbody>
       </table>
@@ -184,7 +181,7 @@
           </table>
           <table ng-if="vm.requisition.patientLineItems.length" class="patient-form-dispensed" style="width: 100%; margin-top: 8px;">
             <tr>
-              <th colspan="5" class="background-black" style="text-align: center;" openlmis-message="view.rnr.mmia.patient.header.md">
+              <th colspan="5" class="background-black" style="text-align: center; font-size: 16px;" openlmis-message="view.rnr.mmia.patient.header.md">
                 {{ 'mmia.type_of_dispense' | message }}
               </th>
             </tr>
@@ -195,7 +192,7 @@
               <td class="bg-color-darkgray">DS</td>
               <td style="border: none"></td>
               <td style="border: none"></td>
-              <td style="border: none" openlmis-message="view.rnr.mmia.patient.md.adjustment">{{ 'mmia.adjustment' | message }}</td>
+              <td style="border: none;" openlmis-message="view.rnr.mmia.patient.md.adjustment">{{ 'mmia.adjustment' | message }}</td>
           </tr>
           <tr width="30px" height="30px">
             <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.5m">{{ 'mmia.5m' | message }}</td>
@@ -239,7 +236,7 @@
                 {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 4)}}
               </td>
               <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 1)}}</td>
-              <td class="bg-color-darkgray">{{ 'mmia.dm' | message }}</td>
+              <td class="bg-color-darkgray">DM</td>
               <td style="border: none">Total</td>
           </tr>
           <tr width="30px" height="30px">
@@ -291,7 +288,7 @@
               </table>
               <div class="comment">
                   <span style="font-weight: 700;" openlmis-message="view.rnr.mmia.comments">{{ 'mmia.observations' | message }}: </span>
-                  {{ vm.requisition.draftStatusMessage }}
+                  {{ vm.historyComments }}
               </div>
           </div>
       </div>
@@ -318,8 +315,10 @@
       <div style="font-size: 15px; font-weight: 700; margin-top: 3px;">Nota: Mapa de Preenchimento Obrigatório Mensal pela Farmácia da Unidade Sanitária
       </div>
       <div style="font-size: 15px; font-weight: 700;">Versão no 12 04Nov2021 DS e TLD90 DTG10</div>
-      <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
-      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
+      <div style="display: flex;">
+        <div style="font-size: 15px; text-align: left; font-weight: 700; width: 50%;">{{ 'mmia.print_on_computer' | message }}</div>
+        <div style="font-size: 15px; text-align: right; font-weight: 700; width: 50%;">{{ vm.nowTime }}</div>
+      </div>
   </div>
 
   <div class="align-right" style="clear: both;">

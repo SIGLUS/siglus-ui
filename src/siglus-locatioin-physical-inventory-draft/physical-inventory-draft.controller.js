@@ -38,7 +38,8 @@
         // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService'
+        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
+        'allLocationAreaMap'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -50,7 +51,8 @@
                         stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService) {
+                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
+                        allLocationAreaMap) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -105,6 +107,8 @@
                 });
             });
         };
+
+        // console.log('allLocationAreaMap: ', allLocationAreaMap);
 
         // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
@@ -720,25 +724,21 @@
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 saveDraft(true);
             }
-            vm.allLocationInfo = {
-                MMI: ['DM22R', 'DM23R', 'DM24E'],
-                MMC: ['DC22R', 'DC23R', 'DC24E']
-            };
+            vm.allLocationAreaMap = allLocationAreaMap;
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
-                var areaList = _.map(Object.keys(vm.allLocationInfo), function(item) {
+                var areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
                     return {
                         code: item,
                         label: item
                     };
                 });
-
-                var locationList = _.reduce(Object.keys(vm.allLocationInfo), function(r, c) {
-                    r = r.concat(_.map(vm.allLocationInfo[c], function(_item) {
+                var locationList = _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
+                    r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
                         return {
-                            code: _item,
-                            label: _item
+                            code: _item.locationId,
+                            label: _item.locationCode
                         };
                     }));
                     return r;
@@ -760,20 +760,20 @@
 
         vm.onSelectChange = function(type, lineItem) {
             // console.log(type + ': ', lineItem);
-            // lineItem.
             if (type === 'area') {
                 lineItem.locationCode = null;
-                lineItem.locationList = _.map(vm.allLocationInfo[lineItem.areaCode], function(item) {
+                lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.areaCode], function(item) {
                     return {
-                        code: item,
-                        label: item
+                        code: item.locationId,
+                        label: item.locationCode
                     };
                 });
             } else {
-                lineItem.areaCode = _.find(Object.keys(vm.allLocationInfo), function(item) {
-                    return _.contains(vm.allLocationInfo[item], lineItem.locationCode);
-                });
+                lineItem.areaCode = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
+                    return item.locationId === lineItem.locationCode;
+                }).area;
             }
+            console.log('draft ---->>>', draft);
         };
 
         function onChange() {

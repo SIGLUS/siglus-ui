@@ -35,11 +35,11 @@
           <div class="first-step">
             <div>{{ 'physicalInventoryCreation.choose_an_option' | message }}</div>
             <div class="radio-group">
-              <input ng-model="vm.inventoryType.byProduct" type="radio" id="byProduct" name="inverntoryType">
-              <label for="byProduct">{{ 'physicalInventoryCreation.inventory_by_product' | message }}</label><br>
-              <input ng-model="vm.inventoryType.byLocation" style="margin-left: 15px;" type="radio" id="byLocation" name="inverntoryType">
-              <label for="byLocation">{{ 'physicalInventoryCreation.inventory_by_location' | message }}</label><br>
-            </div>
+              <input style="margin-top: 0;" ng-model="vm.inventoryType" value="product" type="radio" id="byProduct" name="byProduct">
+              <label style="margin-bottom: 0;" for="byProduct">{{ 'physicalInventoryCreation.inventory_by_product' | message }}</label><br>
+              <input style="margin-top: 0; margin-left: 15px;" ng-model="vm.inventoryType" value="location" style="margin-left: 15px;" type="radio" id="byLocation" name="byLocation">
+              <label style="margin-bottom: 0;" for="byLocation">{{ 'physicalInventoryCreation.inventory_by_location' | message }}</label><br>
+              </div>
           </div>
           <div class="second-step">
             <div style="margin: 16px 0;">{{ 'physicalInventoryCreation.input_user_number' | message }}</div>

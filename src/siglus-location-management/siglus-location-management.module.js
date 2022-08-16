@@ -18,20 +18,23 @@
     'use strict';
 
     /**
-    * @module siglus-location-management
-    *
-    * @description
-    * Main siglus-location-management module.
-    */
+     * @module
+     *
+     * @description
+     * Main locationManagement module.
+     */
     angular.module('siglus-location-management', [
         'ngResource',
         'ui.router',
-        'openlmis-i18n',
         'openlmis-urls',
         'openlmis-auth',
         'openlmis-i18n',
         'openlmis-modal',
-        'openlmis-offline'
+        'openlmis-table',
+        'openlmis-pagination',
+        'openlmis-rights',
+        'openlmis-date',
+        'openlmis-main-state'
     ]);
 
 })();

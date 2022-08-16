@@ -20,7 +20,12 @@
         .module('stock-issue-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = [
+        '$stateProvider',
+        'STOCKMANAGEMENT_RIGHTS',
+        'SEARCH_OPTIONS',
+        'ADJUSTMENT_TYPE'
+    ];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
@@ -45,7 +50,6 @@
                 addedLineItems: undefined,
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
@@ -90,29 +94,30 @@
                     }
                     return $stateParams.reasons;
                 },
-                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getDestinationAssignments(
-                            $stateParams.programId, facility.id
-                        );
-                    }
-                    return $stateParams.srcDstAssignments;
+                mergedItems: function() {
+                    return [];
                 },
                 // SIGLUS-REFACTOR: starts here
                 draft: function($stateParams, siglusStockIssueService) {
+                    if ($stateParams.draft) {
+                        return $stateParams.draft;
+                    }
                     return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
                         draft.lineItems = filterOutOrderable(draft, orderableGroups);
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
+                                undefined, reasons);
                         }
                         return [];
                     }
                     return $stateParams.addedLineItems;
+                },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
                 },
                 displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
                     if (_.isUndefined($stateParams.displayItems) && addedLineItems.length > 0) {

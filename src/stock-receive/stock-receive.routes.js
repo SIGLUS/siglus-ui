@@ -51,11 +51,6 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;
-                },
-                issueToInfo: function(programs, facility, adjustmentType, siglusStockIssueService) {
-                    return siglusStockIssueService.queryInitialDraftInfo(
-                        _.get(programs, [0, 'id']), facility.id, adjustmentType.state
-                    );
                 }
             }
         });

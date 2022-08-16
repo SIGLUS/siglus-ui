@@ -1,0 +1,33 @@
+<h2>{{vm.facilityName}}-{{vm.orderCode}}</h2>
+<section class="openlmis-table-container">
+    <table>
+        <thead>
+            <tr>
+                <th style="width:90px;word-break: break-word;">{{'PhysicalInventoryDraftList.draftNumber' | message}}</th>
+                <th style="min-width:172px">{{'PhysicalInventoryDraftList.status' | message}}</th>
+                <th style="min-width:125px">{{'PhysicalInventoryDraftList.operator' | message}}</th>
+                <th style="min-width:130px" class="col-sticky sticky-right">{{'PhysicalInventoryDraftList.actions' |
+                    message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-if="vm.drafts.length > 0" ng-repeat="draft in vm.drafts |orderBy:'groupNum'">
+                <td>{{draft.groupNum}}</td>
+                <td>{{vm.statusMapperMapper[draft.status] | message}}</td>
+                <td>{{draft.saver}}</td>
+                <td style="display: flex;" ng-if="draft.status === 'SUBMITTED'">
+                    <input id="issue-draft-view" type="button" ng-click="vm.proceed(draft)" style="min-width: 113px"
+                        value="{{vm.actionMapper[draft.status] | message}}" class="primary" />
+                </td>
+
+                <td style="display: flex;" ng-if="['NOT_YET_STARTED', 'DRAFT'].includes(draft.status)">
+                    <input id="issue-draft-continue" type="button" ng-click="vm.proceed(draft)" style="min-width: 113px"
+                        value="{{vm.actionMapper[draft.status] | message}}" class="primary" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <siglus-common-toolbar ng-if="vm.showToolBar" data="vm.drafts" mode="'FINALIZE_MERGE'" on-delete="vm.deleteDrafts()"
+        on-merge="vm.mergeDrafts()">
+    </siglus-common-toolbar>
+</section>

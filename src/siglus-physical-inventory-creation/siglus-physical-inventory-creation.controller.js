@@ -48,10 +48,6 @@
         vm.confirm = confirm;
         vm.showError = false;
         vm.showRequired = false;
-        vm.inventoryType = {
-            byProduct: 1,
-            byLocation: 0
-        };
         facilityFactory.getUserHomeFacility().then(function(res) {
             vm.facility = res;
         });
@@ -64,6 +60,8 @@
                 vm.showRequired = false;
             }
         };
+
+        vm.inventoryType = 'product';
 
         vm.isInitialInventory = !!programId;
 
@@ -87,8 +85,44 @@
                 loadingModalService.open();
                 var locationManagementOption = '';
                 if (vm.creationType === 'location') {
-                    locationManagementOption = vm.inventoryType.byProduct ? 'product' : 'location';
+                    locationManagementOption = vm.inventoryType;
+                    physicalInventoryService.createLocationDraft(
+                        $stateParams.programId ? $stateParams.programId : programId,
+                        vm.facility.id,
+                        vm.userInputSplitNum,
+                        !!programId,
+                        locationManagementOption
+                    ).then(function() {
+                        modalDeferred.resolve();
+                        loadingModalService.close();
+                        if (programId) {
+                            $state.go(
+                                'openlmis.stockmanagement.initialInventory', {
+                                    programId: programId
+                                }
+                            );
+                        } else {
+                            $stateParams.drafts = null;
+                            // TODO rename
+                            var stateParamsCopy = angular.copy($stateParams);
+                            stateParamsCopy.creationType = 'location';
+                            vm.creationType === 'location' ? $state.go(
+                                'openlmis.locationManagement.physicalInventory.draftList',
+                                stateParamsCopy
+                            ) : $state.go(
+                                'openlmis.stockmanagement.physicalInventory.draftList'
+                            );
+                        }
+                    })
+                        .catch(function(err) {
+                            if (err.status === 400 && err.data.isBusinessError) {
+                                loadingModalService.close();
+                                vm.showConflictStatus = true;
+                            }
+                        });
+                    return;
                 }
+                console.log('confirm: ', vm);
                 physicalInventoryService.createDraft(
                     $stateParams.programId ? $stateParams.programId : programId,
                     vm.facility.id,

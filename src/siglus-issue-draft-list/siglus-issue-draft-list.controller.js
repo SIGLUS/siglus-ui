@@ -61,6 +61,11 @@
             receive: 'issueDraft.receiveFromTitle'
         };
 
+        vm.noDataInfoMapper = {
+            issue: 'issueDraft.selectFirst',
+            receive: 'issueDraft.selectFirstForReceive'
+        };
+
         vm.draftType = $stateParams.draftType;
 
         vm.addDraft = function() {
@@ -79,7 +84,7 @@
                 })
                     .catch(function(error) {
                         if (error.data.isBusinessError
-                          && error.data.businessErrorExtraData === 'same drafts more than limitation') {
+                          && error.data.businessErrorExtraData === 'subDrafts are more than limitation') {
                             alertService.error('issueDraft.exceedTenDraftHint');
                         }
                     });
@@ -106,9 +111,8 @@
 
         vm.mergeDrafts = function() {
             if (isAllDraftSubmitted()) {
-                $state.go('openlmis.stockmanagement.issue.draft.merge', {
+                $state.go('openlmis.stockmanagement.' +  vm.draftType + '.draft.merge', {
                     programId: programId,
-                    draftId: '',
                     initialDraftInfo: vm.initialDraftInfo,
                     facility: facility
                 });
@@ -126,7 +130,7 @@
                 loadingModalService.open();
                 siglusStockIssueService.deleteAllDraft($stateParams.initialDraftId)
                     .then(function() {
-                        $state.go('openlmis.stockmanagement.issue');
+                        $state.go('openlmis.stockmanagement.' + vm.draftType);
                     })
                     .finally(function() {
                         loadingModalService.close();

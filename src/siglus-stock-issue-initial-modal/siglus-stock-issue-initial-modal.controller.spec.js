@@ -47,7 +47,7 @@ describe('SiglusInitialIssueModalController', function() {
             modalDeferred: modalDeferred,
             programId: '00000000-0000-0000-0000-000000000000',
             facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
-            adjustmentType: ADJUSTMENT_TYPE.ISSUE
+            draftType: ADJUSTMENT_TYPE.ISSUE.state
         });
 
     }
@@ -72,7 +72,7 @@ describe('SiglusInitialIssueModalController', function() {
             }]);
             $rootScope.$apply();
 
-            expect(vm.issueToList).toEqual([{
+            expect(vm.locationList).toEqual([{
                 id: 1,
                 name: 'test'
             }]);
@@ -83,16 +83,16 @@ describe('SiglusInitialIssueModalController', function() {
 
     describe('changeIssueTo method', function() {
         it('should clear destinationFacility when switch issueTo select', function() {
-            vm.destinationFacility = 'test destination facility';
+            vm.locationFreeText = 'test destination facility';
             vm.changeIssueTo();
 
-            expect(vm.destinationFacility).toEqual('');
+            expect(vm.locationFreeText).toEqual('');
         });
     });
 
     describe('submitForm method', function() {
         beforeEach(function() {
-            vm.issueTo = {
+            vm.location = {
                 id: 'afe8a536-b4ad-11eb-a394-acde48001120',
                 name: 'Banco de Socorro',
                 programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad',

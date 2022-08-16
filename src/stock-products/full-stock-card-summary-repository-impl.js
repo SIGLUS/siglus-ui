@@ -31,12 +31,13 @@
 
     // SIGLUS-REFACTOR: starts here
     FullStockCardSummaryRepositoryImpl.$inject = ['$resource', 'stockmanagementUrlFactory', 'LotResource',
-        'OrderableResource', '$q', 'SiglusStockCardSummaryResource', 'siglusArchivedProductService'];
+        'OrderableResource', '$q', 'SiglusStockCardSummaryResource', 'siglusArchivedProductService',
+        'siglusOrderableLotService'];
     // SIGLUS-REFACTOR: ends here
 
     function FullStockCardSummaryRepositoryImpl($resource, stockmanagementUrlFactory, LotResource,
                                                 OrderableResource, $q, SiglusStockCardSummaryResource,
-                                                siglusArchivedProductService) {
+                                                siglusArchivedProductService, siglusOrderableLotService) {
 
         FullStockCardSummaryRepositoryImpl.prototype.query = query;
 
@@ -77,56 +78,63 @@
             var LotResource = this.LotResource,
                 OrderableResource = this.OrderableResource;
                 // orderableFulfillsResource = this.orderableFulfillsResource;
-
+            var givenOrderableIds = params.orderableIds;
+            delete params.orderableIds;
             return this.resource.query(params)
                 .then(function(stockCardSummariesPage) {
                     return addMissingStocklessProducts(stockCardSummariesPage,
-                        LotResource, OrderableResource, params.facilityId);
+                        LotResource, OrderableResource, params.facilityId, givenOrderableIds);
+                });
+        }
+
+        function handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage) {
+            return siglusArchivedProductService.getArchivedOrderables(facilityId)
+                .then(function(archivedOrderables) {
+                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
+                    var orderableMap = mapOrderablesById(orderablePage, archivedOrderables);
+                    summaries.content.forEach(function(summary) {
+                        addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
+                        var orderableId = summary.orderable.id;
+                        lotMap[orderableId].forEach(function(lot) {
+                            if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
+                                summary.canFulfillForMe.push(createCanFulfillForMeEntry(
+                                    orderableMap[orderableId], lot
+                                ));
+                            }
+                        });
+
+                        if (!hasOrderableWithLot(summary, orderableId, null)) {
+                            summary.canFulfillForMe.push(
+                                createCanFulfillForMeEntry(orderableMap[orderableId], null)
+                            );
+                        }
+                    });
+                    return summaries;
                 });
         }
 
         function addMissingStocklessProducts(summaries, LotResource,
-                                             OrderableResource, facilityId) {
+                                             OrderableResource, facilityId, givenOrderableIds) {
             // var commodityTypeIds = summaries.content.map(function(summary) {
             //     return summary.orderable.id;
             // });
-
             var identities = summaries.content.map(function(summary) {
                 return summary.orderable;
             });
-
             return OrderableResource.getByVersionIdentities(identities)
                 .then(function(orderablePage) {
-                    var tradeItemIds = getTradeItemIdsSet(orderablePage);
-
+                    siglusOrderableLotService.setOrderables(orderablePage);
+                    if (_.isEmpty(givenOrderableIds)) {
+                        return handleMissingStocklessProducts(facilityId, summaries, orderablePage, {
+                            content: []
+                        });
+                    }
+                    var tradeItemIds = getTradeItemIdsSet(orderablePage, givenOrderableIds);
                     return LotResource.query({
                         tradeItemId: tradeItemIds
                     })
                         .then(function(lotPage) {
-                            return siglusArchivedProductService.getArchivedOrderables(facilityId)
-                                .then(function(archivedOrderables) {
-                                    var lotMap = mapLotsByTradeItems(lotPage.content, orderablePage);
-                                    var orderableMap = mapOrderablesById(orderablePage, archivedOrderables);
-                                    summaries.content.forEach(function(summary) {
-                                        addOrderableAndLotInfo(summary, orderableMap, lotPage.content);
-                                        var orderableId = summary.orderable.id;
-                                        lotMap[orderableId].forEach(function(lot) {
-                                            if (!hasOrderableWithLot(summary, orderableId, lot.id)) {
-                                                summary.canFulfillForMe.push(createCanFulfillForMeEntry(
-                                                    orderableMap[orderableId], lot
-                                                ));
-                                            }
-                                        });
-
-                                        if (!hasOrderableWithLot(summary, orderableId, null)) {
-                                            summary.canFulfillForMe.push(
-                                                createCanFulfillForMeEntry(orderableMap[orderableId], null)
-                                            );
-                                        }
-                                    });
-
-                                    return summaries;
-                                });
+                            return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
                         });
                 });
         }
@@ -223,15 +231,24 @@
                 fulfill.orderable = orderableMap[fulfill.orderable.id];
 
                 if (fulfill.lot) {
-                    fulfill.lot = lots.filter(function(lot) {
+                    var matched = lots.filter(function(lot) {
                         return lot.id === fulfill.lot.id;
                     })[0];
+                    // keep original value if no lot found
+                    if (matched) {
+                        fulfill.lot = matched;
+                    }
                 }
             });
         }
 
-        function getTradeItemIdsSet(orderables) {
-            return orderables.reduce(function(ids, orderable) {
+        function getTradeItemIdsSet(orderables, givenOrderableIds) {
+            return orderables.filter(function(orderable) {
+                if (givenOrderableIds) {
+                    return _.contains(givenOrderableIds, orderable.id);
+                }
+                return true;
+            }).reduce(function(ids, orderable) {
                 if (orderable.identifiers.tradeItem) {
                     addIfNotExist(ids, orderable.identifiers.tradeItem);
                 }

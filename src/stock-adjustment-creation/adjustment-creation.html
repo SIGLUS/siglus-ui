@@ -48,7 +48,6 @@
                 <th>{{vm.key('reasonComments') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
-                <th>{{vm.key('date') | message}}</th>
                 <th>{{vm.key('documentationNo') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
@@ -92,10 +91,6 @@
                             ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
                             placeholder="{{'stockAdjustmentCreation.selectStatus' | message}}">
                     </select>
-                </td>
-                <td class="date-cell">
-                    <input id="lineItem.occurredDate" class="min-width-date-input" type="date" ng-model="lineItem.occurredDate"
-                           ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
                 </td>
                 <td class="digit-cell">
                     <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100"/>

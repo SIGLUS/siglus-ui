@@ -52,7 +52,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="order in vm.pods">
+            <tr ng-repeat="order in vm.pods | orderBy:'-createdDate' ">
                 <td>{{order.orderCode}}</td>
                 <!-- SIGLUS-REFACTOR: starts here -->
                 <td>{{order.status | orderStatus}}</td>
@@ -66,10 +66,11 @@
                     <i ng-class="{'icon-ok': order.emergency}"></i>
                 </td>
                 <td>
-                    <button class="primary" ng-click="vm.openPod(order.id)">
-                        {{'proofOfDeliveryManage.manage' | message}}
+                    <!-- SIGLUS-REFACTOR: starts here -->
+                    <button class="primary" ng-click="vm.validatePODStatus(order)">
+                        {{vm.getStatusText(order)}}
                     </button>
-                    <button ng-click="vm.printProofOfDelivery(order.id)">
+                    <button ng-click="vm.printProofOfDelivery(order)">
                         {{'proofOfDeliveryManage.print' | message}}
                     </button>
                 </td>
@@ -78,3 +79,4 @@
     </table>
     <openlmis-pagination list="vm.pods"></openlmis-pagination>
 </section>
+<ng-include src="'siglus-pod-report/siglus-issue-or-receive-report.html'"></ng-include>

@@ -18,15 +18,12 @@
         .module('stock-adjustment-creation')
         .service('siglusAutoGenerateService', service);
 
-    service.$inject = ['dateUtils'];
-    // store postFix
-    var autoLotCodes = {};
-    // store previous generated code for product&expirationDate
+    service.$inject = ['dateUtils', 'moment', 'SIGLUS_LOT_CODE_DATE_FORMATE'];
     var dateLotMapping = {};
 
-    function service(dateUtils) {
+    function service(dateUtils, moment, SIGLUS_LOT_CODE_DATE_FORMATE) {
         this.autoGenerateLotCode = function(lineItem) {
-            var postFix, code;
+            var  code;
             var date = dateUtils.toDate(lineItem.lot.expirationDate);
             var productCode = lineItem.orderable.productCode;
             var month = ('0' + (date.getMonth() + 1)).slice(-2);
@@ -34,34 +31,17 @@
             var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
 
             var previous = dateLotMapping[productCode + lineItem.lot.expirationDate];
+
             if (previous) {
                 return previous;
             }
 
-            if (_.isUndefined(autoLotCodes[lotCodeKey])) {
-                autoLotCodes[lotCodeKey] = 0;
-                postFix = 0;
-            } else {
-                postFix = ++autoLotCodes[lotCodeKey];
-            }
-
-            code = lotCodeKey + '-' + postFix;
-            var lotOptions = lineItem.lotOptions;
-            while (isInOptions(lotOptions, code)) {
-                postFix = ++autoLotCodes[lotCodeKey];
-                code = lotCodeKey + '-' + postFix;
-            }
+            code =  lotCodeKey + moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
 
             dateLotMapping[productCode + lineItem.lot.expirationDate] = code;
 
             return code;
         };
 
-    }
-
-    function isInOptions(lotOptions, lotCode) {
-        return _.find(lotOptions, function(option) {
-            return option && option.lotCode === lotCode;
-        }) !== undefined;
     }
 })();

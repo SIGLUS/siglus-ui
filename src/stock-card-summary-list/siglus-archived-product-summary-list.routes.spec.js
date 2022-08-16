@@ -62,7 +62,9 @@ describe('openlmis.stockmanagement.archivedProductSummaries', function() {
 
         goToUrl('/stockmanagement/archivedProduct');
 
-        expect($templateCache.get).toHaveBeenCalledWith('stock-card-summary-list/stock-card-summary-list.html');
+        expect($templateCache.get).toHaveBeenCalledWith(
+            'stock-card-summary-list/siglus-archived-product-summary-list.html'
+        );
     });
 
     it('should require stock cards view right to enter', function() {

@@ -1,3 +1,6 @@
 {
-  "openlmisModal.confirm": "Confirm"
+  "openlmisModal.confirm": "Confirm",
+  "openlmisModal.today": "Today",
+  "openlmisModal.beforeToday": "Before today"
+
 }

@@ -78,9 +78,15 @@
             }
         });
         // SIGLUS-REFACTOR: ends here
-
+        var locationResource = $resource(stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'), {}, {
+            find: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
+            }
+        });
         this.getDraft = getDraft;
         this.createDraft = createDraft;
+        this.createLocationDraft = createLocationDraft;
         this.getConflictDraft = getConflictDraft;
         this.getPhysicalInventory = getPhysicalInventory;
         this.getPhysicalInventorySubDraft = getPhysicalInventorySubDraft;
@@ -90,6 +96,7 @@
         this.deleteDraftList = deleteDraftList;
         this.submitPhysicalInventory = submit;
         this.submitSubPhysicalInventory = subSubmit;
+        this.getLocationPhysicalInventorySubDraft = getLocationPhysicalInventorySubDraft;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
 
@@ -161,6 +168,16 @@
                 });
         }
 
+        function getLocationPhysicalInventorySubDraft(id) {
+            return locationResource.find({
+                subDraftIds: id
+            })
+                .$promise
+                .then(function(response) {
+                    return siglusStockEventService.formatResponse(response);
+                });
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory.physicalInventoryService
@@ -184,6 +201,26 @@
                 }).$promise;
             }
             return resource.save({
+                splitNum: Number(splitNum),
+                locationManagementOption: locationManagementOption
+            }, {
+                programId: program,
+                facilityId: facility
+            }).$promise;
+
+        }
+
+        function createLocationDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
+            if (isInitialInventory) {
+                return locationResource.save({
+                    splitNum: Number(splitNum),
+                    initialPhysicalInventory: true
+                }, {
+                    programId: program,
+                    facilityId: facility
+                }).$promise;
+            }
+            return locationResource.save({
                 splitNum: Number(splitNum),
                 locationManagementOption: locationManagementOption
             }, {

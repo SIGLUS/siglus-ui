@@ -38,6 +38,11 @@
                 FULFILLMENT_RIGHTS.SHIPMENTS_EDIT
             ],
             resolve: {
+                // SIGLUS-REFACTOR: starts here
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
+                // SIGLUS-REFACTOR: ends here
                 programs: function(programService, authorizationService) {
                     return programService.getUserPrograms(authorizationService.getUser().user_id);
                 },
@@ -52,6 +57,9 @@
                         FULFILLMENT_RIGHTS.PODS_MANAGE,
                         FULFILLMENT_RIGHTS.PODS_VIEW
                     ]);
+                },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
                 },
                 // #579: the "Supplying facility" field is automatically fille
                 pods: function(paginationService, orderRepository, $stateParams, programs) {

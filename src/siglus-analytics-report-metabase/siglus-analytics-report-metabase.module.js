@@ -26,6 +26,7 @@
     angular.module('siglus-analytics-report-metabase', [
         'ui.router',
         'openlmis-i18n',
+        'openlmis-date',
         'siglus-analytics-report'
     ]);
 
