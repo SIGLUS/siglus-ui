@@ -25,8 +25,8 @@
 <p class="note">{{'adminFacilityAdd.enabled.description.checked' | message}}</p>
 <p class="note">{{'adminFacilityAdd.enabled.description.unchecked' | message}}</p>
 
-<label for="facilityAndroid" class="checkbox">
-  <input id="facilityAndroid" type="checkbox"
+<label class="checkbox">
+  <input class="disabled-facility-view" id="checked" type="checkbox"
          ng-model="vm.facility.isAndroidDevice"
          ng-disabled="!vm.facility.isNewFacility || vm.facility.isAndroidDevice === true"/>
   {{'adminFacilityView.androidFacility' | message}}
