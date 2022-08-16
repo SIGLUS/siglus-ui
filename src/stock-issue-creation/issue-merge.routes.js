@@ -47,11 +47,11 @@
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
-                srcDstAssignments: undefined,
                 isAddProduct: undefined,
                 hasLoadOrderableGroups: undefined,
                 size: '50',
-                initialDraftInfo: undefined
+                initialDraftInfo: undefined,
+                mergedItems: undefined
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -66,6 +66,28 @@
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
+                },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
+                // SIGLUS-REFACTOR: starts here
+                mergedItems: function($stateParams, siglusStockIssueService, alertService) {
+                    if ($stateParams.mergedItems) {
+                        return $stateParams.mergedItems;
+                    }
+                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(
+                        function(error) {
+                            if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
+                                alertService.error('PhysicalInventoryDraftList.mergeError');
+                                throw 'subDrafts not all submitted';
+                            }
+                        }
+                    );
+                },
+                draft: function(mergedItems) {
+                    return {
+                        lineItems: mergedItems
+                    };
                 },
                 initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
                     if ($stateParams.initialDraftInfo) {
@@ -93,34 +115,12 @@
                     }
                     return $stateParams.reasons;
                 },
-                srcDstAssignments: function($stateParams, facility, sourceDestinationService) {
-                    if (_.isUndefined($stateParams.srcDstAssignments)) {
-                        return sourceDestinationService.getDestinationAssignments(
-                            $stateParams.programId, facility.id
-                        );
-                    }
-                    return $stateParams.srcDstAssignments;
-                },
-                // SIGLUS-REFACTOR: starts here
-                mergedItems: function($stateParams, siglusStockIssueService, alertService) {
-                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(function(error) {
-                        if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
-                            alertService.error('PhysicalInventoryDraftList.mergeError');
-                        }
-                    });
-                },
-                draft: function(mergedItems) {
-                    return {
-                        lineItems: mergedItems
-                    };
-                },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
                     if (_.isUndefined($stateParams.addedLineItems)) {
                         draft.lineItems = filterOutOrderable(draft, orderableGroups);
                         if (draft.lineItems && draft.lineItems.length > 0) {
-                            return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
+                            return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups, undefined, reasons);
                         }
                         return [];
                     }

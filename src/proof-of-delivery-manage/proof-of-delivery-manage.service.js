@@ -29,21 +29,42 @@
         .service('proofOfDeliveryManageService', service);
 
     service.$inject = [
-        'OpenLMISRepositoryImpl', 'fulfillmentUrlFactory'
+        'OpenLMISRepositoryImpl', 'fulfillmentUrlFactory', '$resource', 'ProofOfDeliveryRepositoryImpl'
     ];
 
-    function service(OpenLMISRepositoryImpl, fulfillmentUrlFactory) {
+    function service(OpenLMISRepositoryImpl, fulfillmentUrlFactory, $resource, ProofOfDeliveryRepositoryImpl) {
 
         // SIGLUS-REFACTOR: starts here
+        var PODManageService = new ProofOfDeliveryRepositoryImpl();
         var proofOfDeliveryRepositoryImpl = new OpenLMISRepositoryImpl(
             fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery')
         );
+
+        function getPodInfo(id, orderId) {
+            var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/printInfo'), {}, {
+                find: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/printInfo'),
+                    method: 'get'
+                }
+            });
+            return resource.find({
+                id: id,
+                orderId: orderId
+            }).$promise
+                .then(function(response) {
+                    return response;
+                });
+        }
         // SIGLUS-REFACTOR: ends here
 
         return {
-            getByOrderId: getByOrderId
+            getByOrderId: getByOrderId,
+            getPodInfo: getPodInfo,
+            createDraft: createDraft,
+            getDraftList: getDraftList,
+            deleteAllDraft: deleteAllDraft
         };
-
+        // SIGLUS-REFACTOR: ends here
         /**
          * @ngdoc method
          * @methodOf proof-of-delivery.proofOfDeliveryManageService
@@ -63,5 +84,18 @@
                     return page.content[0];
                 });
         }
+        // SIGLUS-REFACTOR: starts here
+        function createDraft(orderId, podId, splitNum) {
+            return PODManageService.createDraft(orderId, podId, splitNum);
+        }
+
+        function getDraftList(podId) {
+            return PODManageService.getDraftList(podId);
+        }
+
+        function deleteAllDraft(podId) {
+            return PODManageService.deleteAllDraft(podId);
+        }
+        // SIGLUS-REFACTOR: ends here
     }
 })();

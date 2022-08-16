@@ -83,9 +83,8 @@
                             var id = $stateParams.subDraftIds.length > 1
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
-                            // TODO  flag命名
                             var flag = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
+                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(id, flag)
                                 .then(function(draft) {
                                     physicalInventoryDataService.setDraft(facility.id, draft);
                                     deferred.resolve();
@@ -101,6 +100,9 @@
                         deferred.resolve();
                     }
                     return deferred.promise;
+                },
+                allLocationAreaMap: function(siglusLocationAreaFactory) {
+                    return siglusLocationAreaFactory.getAllLocationAreaInfoMap();
                 },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {

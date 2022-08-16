@@ -19,38 +19,38 @@
 
     /**
      * @ngdoc service
-     * @name siglus-location-management.locationManagementUrlFactory
+     * @name siglus-location-management.siglusLocationManagementUrlFactory
      *
      * @description
-     * Supplies application with siglus-analytics-report URL.
+     * Supplies application with siglus-location-management URL.
      */
     angular
         .module('siglus-location-management')
-        .factory('locationManagementUrlFactory', factory);
+        .factory('siglusLocationManagementUrlFactory', factory);
 
     factory.$inject = ['openlmisUrlFactory', 'pathFactory'];
 
     function factory(openlmisUrlFactory, pathFactory) {
 
-        var reportUrl = '@@REPORT_SERVICE_URL';
+        var locationManagementUrl = '@@LOCATIONMANAGEMENT_SERVICE_URL';
 
-        if (reportUrl.substr(0, 2) === '@@') {
-            reportUrl = '';
+        if (locationManagementUrl.substr(0, 2) === '@@') {
+            locationManagementUrl = '';
         }
 
         /**
          * @ngdoc method
-         * @methodOf siglus-location-management.locationManagementUrlFactory
-         * @name locationManagementUrlFactory
+         * @methodOf siglus-location-management.siglusLocationManagementUrlFactory
+         * @name siglusLocationManagementUrlFactory
          *
          * @description
-         * It parses the given URL and appends report service URL to it.
+         * It parses the given URL and appends location service URL to it.
          *
-         * @param  {String} url report URL from grunt file
-         * @return {String}     report URL
+         * @param  {String} url location URL from grunt file
+         * @return {String}     location URL
          */
         return function(url) {
-            url = pathFactory(reportUrl, url);
+            url = pathFactory(locationManagementUrl, url);
             return openlmisUrlFactory(url);
         };
     }

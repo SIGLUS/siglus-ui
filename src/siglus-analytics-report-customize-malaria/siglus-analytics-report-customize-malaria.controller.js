@@ -29,13 +29,13 @@
         .controller('siglusAnalyticsReportCustomizeMalariaController', controller);
 
     controller.$inject = [ 'requisition', 'facility', 'siglusColumnUtils',
-        'siglusTemplateConfigureService',
-        'requisitionValidator', 'SIGLUS_SECTION_TYPES', 'openlmisDateFilter'];
+        'siglusTemplateConfigureService', 'requisitionValidator',
+        'SIGLUS_SECTION_TYPES', 'siglusDownloadLoadingModalService', 'openlmisDateFilter'];
 
     function controller(requisition, facility, siglusColumnUtils, siglusTemplateConfigureService,
-                        requisitionValidator, SIGLUS_SECTION_TYPES, openlmisDateFilter) {
+                        requisitionValidator, SIGLUS_SECTION_TYPES,
+                        siglusDownloadLoadingModalService, openlmisDateFilter) {
         var vm = this;
-
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
         vm.requisition = undefined;
@@ -57,7 +57,7 @@
         vm.yearAndMonth = undefined;
         vm.processingPeriodEndDate = undefined;
         vm.submitDate = undefined;
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.requisition = requisition;
             vm.facility = facility;
@@ -110,13 +110,13 @@
             var productsMap = getProductsMap();
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
-                angular.forEach(Object.keys(lineItem.informations), function(information) {
-                    lineItem.informations[information] = angular.merge({},
-                        informationColumnsMap[information], lineItem.informations[information]);
-                    angular.forEach(Object.keys(lineItem.informations[information].orderables), function(orderableId) {
-                        lineItem.informations[information].orderables[orderableId] = angular.merge({},
+                angular.forEach(Object.keys(lineItem.informations), function(key) {
+                    lineItem.informations[key] = angular.merge({},
+                        informationColumnsMap[key], lineItem.informations[key]);
+                    angular.forEach(Object.keys(lineItem.informations[key].orderables), function(orderableId) {
+                        lineItem.informations[key].orderables[orderableId] = angular.merge({},
                             productsMap[orderableId],
-                            lineItem.informations[information].orderables[orderableId]);
+                            lineItem.informations[key].orderables[orderableId]);
                     });
                 });
             });
@@ -135,6 +135,7 @@
         }
 
         function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
             var dom = document.getElementById('malaria-form-outer');
             // eslint-disable-next-line no-undef
             domtoimage.toPng(dom)
@@ -153,6 +154,7 @@
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + '01'
                     + '.pdf');
+                    siglusDownloadLoadingModalService.close();
                 });
         }
 

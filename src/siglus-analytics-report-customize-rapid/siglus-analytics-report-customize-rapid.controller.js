@@ -33,7 +33,8 @@
         'requisition',
         'openlmisDateFilter',
         'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES'
+        'SIGLUS_SECTION_TYPES',
+        'siglusDownloadLoadingModalService'
     ];
 
     function controller(
@@ -41,7 +42,8 @@
         requisition,
         openlmisDateFilter,
         siglusTemplateConfigureService,
-        SIGLUS_SECTION_TYPES
+        SIGLUS_SECTION_TYPES,
+        siglusDownloadLoadingModalService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -55,7 +57,7 @@
         vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.requisition = {};
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -63,14 +65,18 @@
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
             services = requisition.testConsumptionLineItems;
-            vm.comments = requisition.draftStatusMessage;
+            var commentsStr = _.reduce(requisition.statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            vm.comments = commentsStr.substr(0, commentsStr.length - 1);
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
-            if (requisition.extraData.signaure) {
-                vm.signaure.approve = vm.signaure && vm.signaure.approve.length
-                    ? vm.signaure.approve.join(',')
-                    : '';
-            }
+            // if (requisition.extraData.signaure) {
+            //     vm.signaure.approve = vm.signaure && vm.signaure.approve.length
+            //         ? vm.signaure.approve.join(',')
+            //         : '';
+            // }
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
@@ -125,10 +131,11 @@
             return openlmisDateFilter(date, 'MMMM');
         }
         vm.downloadPdf = function() {
+            siglusDownloadLoadingModalService.open();
             var node = document.getElementById('test_repaid_wrap');
             var contentWidth = node.offsetWidth;
             var contentHeight = node.offsetHeight;
-            var imgWidth = 595.28;
+            var imgWidth = 585.28;
             var imgHeight = 592.28 / contentWidth * contentHeight;
             // var rate = contentWidth / 595.28;
             // var imgY = contentHeight / rate;
@@ -143,15 +150,16 @@
                 var PDF = new jsPDF('', 'pt', 'a4');
                 // 595×842 a4纸
 
-                PDF.addImage(pageData, 'JPEG', 5, 0, imgWidth - 10, imgHeight);
+                PDF.addImage(pageData, 'JPEG', 5, 0, imgWidth, imgHeight);
 
                 PDF.save(
                     getPdfName(
-                        vm.requisition.processingPeriod.startDate,
-                        vm.facility.name,
+                        requisition.processingPeriod.startDate,
+                        facility.name,
                         vm.facility.code
                     )
                 );
+                siglusDownloadLoadingModalService.close();
             });
         };
     }

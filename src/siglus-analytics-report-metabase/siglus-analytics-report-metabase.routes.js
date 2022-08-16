@@ -27,97 +27,111 @@
 
         var reportLists = [
             {
-                name: 'openlmis.analyticsReport.systemVersion',
-                label: 'analyticsReportMetabase.systemVersion.title',
-                url: '/systemVersion',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_VERSION_REPORT
-            },
-            {
-                name: 'openlmis.analyticsReport.expiringProducts',
-                label: 'analyticsReportMetabase.expiringProducts.title',
-                url: '/expiringProducts',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT
-            },
-            {
-                name: 'openlmis.analyticsReport.systemUpdate',
-                label: 'analyticsReportMetabase.systemUpdate.title',
-                url: '/systemUpdate',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT
-            },
-            {
-                name: 'openlmis.analyticsReport.expiredProducts',
-                label: 'analyticsReportMetabase.expiredProducts.title',
-                url: '/expiredProducts',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_PRODUCTS_REPORT
-            },
-            {
-                name: 'openlmis.analyticsReport.requisitionAndMonthly',
-                label: 'analyticsReportMetabase.requisitionAndMonthly.title',
-                url: '/requisitionAndMonthly',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_MONTHLY_REPORT
-            },
-            {
                 name: 'openlmis.analyticsReport.sohReportByProduct',
                 label: 'analyticsReportMetabase.sohReportByProduct.title',
                 url: '/sohReportByProduct',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_REPORT_BY_PRODUCT
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_REPORT_BY_PRODUCT,
+                priority: 99
             },
             {
                 name: 'openlmis.analyticsReport.sohByLot',
                 label: 'analyticsReportMetabase.sohByLot.title',
                 url: '/sohByLot',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT,
+                priority: 96
             },
             {
                 name: 'openlmis.analyticsReport.stockStatus',
                 label: 'analyticsReportMetabase.stockStatus.title',
                 url: '/stockStatus',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT,
+                priority: 93
             },
             {
-                name: 'openlmis.analyticsReport.mmiaRegimens',
-                label: 'analyticsReportMetabase.mmiaRegimens.title',
-                url: '/mmiaRegimens',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMIA_REGIMENS_REPORT
+                name: 'openlmis.analyticsReport.expiringProducts',
+                label: 'analyticsReportMetabase.expiringProducts.title',
+                url: '/expiringProducts',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT,
+                priority: 90
             },
             {
-                name: 'openlmis.analyticsReport.fulfillment',
-                label: 'analyticsReportMetabase.fulfillment.title',
-                url: '/fulfillment',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.FULFILLMENT_REPORT
+                name: 'openlmis.analyticsReport.expiredProducts',
+                label: 'analyticsReportMetabase.expiredProducts.title',
+                url: '/expiredProducts',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_PRODUCTS_REPORT,
+                priority: 87
             },
             {
                 name: 'openlmis.analyticsReport.historicalData',
                 label: 'analyticsReportMetabase.historicalData.title',
                 url: '/historicalData',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.HISTORICAL_DATA_REPORT
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.HISTORICAL_DATA_REPORT,
+                priority: 81
             },
             {
-                name: 'openlmis.analyticsReport.malariaConsumptionData',
-                label: 'analyticsReportMetabase.malariaConsumptionData.title',
-                url: '/malariaConsumptionData',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MALARIA_CONSUMPTION_DATA_REPORT
+                name: 'openlmis.analyticsReport.requisitionAndMonthly',
+                label: 'analyticsReportMetabase.requisitionAndMonthly.title',
+                url: '/requisitionAndMonthly',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_MONTHLY_REPORT,
+                priority: 78
             },
             {
                 name: 'openlmis.analyticsReport.requisitionData',
                 label: 'analyticsReportMetabase.requisitionData.title',
                 url: '/requisitionData',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_DATA_REPORT
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_DATA_REPORT,
+                priority: 75
+            },
+            {
+                name: 'openlmis.analyticsReport.mmiaRegimens',
+                label: 'analyticsReportMetabase.mmiaRegimens.title',
+                url: '/mmiaRegimens',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMIA_REGIMENS_REPORT,
+                priority: 72
+            },
+            {
+                name: 'openlmis.analyticsReport.malariaConsumptionData',
+                label: 'analyticsReportMetabase.malariaConsumptionData.title',
+                url: '/malariaConsumptionData',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MALARIA_CONSUMPTION_DATA_REPORT,
+                priority: 69
             },
             {
                 name: 'openlmis.analyticsReport.rapidTestConsumptionData',
                 label: 'analyticsReportMetabase.rapidTestConsumptionData.title',
                 url: '/rapidTestConsumptionData',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.RAPID_TEST_CONSUMPTION_DATA_REPORT
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.RAPID_TEST_CONSUMPTION_DATA_REPORT,
+                priority: 66
+            },
+            {
+                name: 'openlmis.analyticsReport.fulfillment',
+                label: 'analyticsReportMetabase.fulfillment.title',
+                url: '/fulfillment',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.FULFILLMENT_REPORT,
+                priority: 63
+            },
+            {
+                name: 'openlmis.analyticsReport.systemVersion',
+                label: 'analyticsReportMetabase.systemVersion.title',
+                url: '/systemVersion',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_VERSION_REPORT,
+                priority: 60
+            },
+            {
+                name: 'openlmis.analyticsReport.systemUpdate',
+                label: 'analyticsReportMetabase.systemUpdate.title',
+                url: '/systemUpdate',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT,
+                priority: 57
             }
         ];
 
-        angular.forEach(reportLists, function(item, index) {
+        angular.forEach(reportLists, function(item) {
             $stateProvider.state(item.name, {
                 url: item.url,
                 showInNavigation: true,
                 label: item.label,
-                priority: parseInt(100 - index),
+                priority: item.priority,
                 views: {
                     '@openlmis': {
                         controller: 'siglusAnalyticsReportMetabaseController',
@@ -137,6 +151,36 @@
                 }
             });
         });
-    }
 
+        $stateProvider.state('openlmis.analyticsReport.tracerDrug', {
+            url: '/tracerDrug',
+            showInNavigation: true,
+            label: 'analyticsReportMetabase.tracerDrug.title',
+            priority: 84,
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportTracerDrugController',
+                    controllerAs: 'vm',
+                    // eslint-disable-next-line max-len
+                    templateUrl: 'siglus-analytics-report-tracer-drug/siglus-analytics-report-tracer-drug.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
+                },
+                filterInfo: function(analyticsReportMetabaseService) {
+                    return analyticsReportMetabaseService
+                        .getTracerDrugFilterInfo().then(function(data) {
+                            return data;
+                        });
+                }
+            }
+        });
+    }
 })();

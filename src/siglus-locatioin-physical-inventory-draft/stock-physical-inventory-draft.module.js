@@ -41,6 +41,7 @@
         'referencedata-program',
         'ui.router',
         'openlmis',
+        'siglus-location-area',
         // SIGLUS-REFACTOR: starts here
         'siglus-requisition-date-picker',
         'siglus-physical-inventory-creation'

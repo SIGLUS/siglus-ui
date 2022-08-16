@@ -17,7 +17,7 @@ describe('SiglusStockIssueCreationController', function() {
     var vm, $q, confirmDeferred, $rootScope, confirmDiscardService, alertService,
         confirmService, siglusStockIssueService, $state,
         stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, siglusRemainingProductsModalService,
-        alertConfirmModalService;
+        alertConfirmModalService, orderablesPrice;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -113,7 +113,11 @@ describe('SiglusStockIssueCreationController', function() {
                 }
             ]
         ];
-
+        orderablesPrice = {
+            '5f655d74-1213-46e0-9009-38a01e39c503': 66.66,
+            '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': 55,
+            '0fe4e147-714e-4bf0-9e5b-921e3f6d608d': 10
+        };
         vm = $controller('SiglusStockIssueCreationController', {
             $scope: $rootScope.$new(),
             orderableGroups: orderableGroups,
@@ -127,6 +131,7 @@ describe('SiglusStockIssueCreationController', function() {
                 documentNumber: 'Number1',
                 locationFreeText: 'hdfaosdfhaidsf'
             },
+            mergedItems: [],
             displayItems: [],
             draft: {},
             user: {
@@ -138,16 +143,17 @@ describe('SiglusStockIssueCreationController', function() {
             },
             facility: {
                 id: '004f4232-cfb8-11e9-9398-0242ac130008'
-            }
+            },
+            destinationName: 'test',
+            orderablesPrice: orderablesPrice
         });
-
     }
 
     beforeEach(function() {
         module('stock-issue-creation');
         module('siglus-alert-confirm-modal');
         module('siglus-remaining-products-modal');
-
+        module('stock-orderable-group');
         prepareInjector();
         prepareSpies();
         prepareData();
@@ -156,7 +162,7 @@ describe('SiglusStockIssueCreationController', function() {
     describe('removeDraft method', function() {
         it('should call remove draft api when click confirm delete button', function() {
             // vm.remove();
-
+            vm.destinationName = 'test';
             vm.addedLineItems = [
                 {
                     lot: null,
@@ -256,6 +262,7 @@ describe('SiglusStockIssueCreationController', function() {
 
         it('should set correct selectedOrderableGroup when input key is kit ' +
           'and id is 4efcc305-fbda-401c-bc67-750a8717c3da ', function() {
+            vm.destinationName = 'test';
             vm.orderableGroups = [
                 [
                     {
@@ -345,6 +352,7 @@ describe('SiglusStockIssueCreationController', function() {
 
         it('should set correct lots when input key is kit ' +
           'and id is 4efcc305-fbda-401c-bc67-750a8717c3da ', function() {
+            vm.destinationName = 'test';
             vm.addedLineItems = [
                 {
                     lot: {
@@ -401,6 +409,7 @@ describe('SiglusStockIssueCreationController', function() {
         });
 
         it('should set correct orderableGroup when initial table has added line items', function() {
+            vm.destinationName = 'test';
             vm.addedLineItems = [
                 {
                     lot: null,

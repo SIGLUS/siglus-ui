@@ -1,0 +1,32 @@
+<h3>{{'adminFacilityView.locationManagement.instructionTitle' | message}}</h3>
+<br>
+<p>{{'adminFacilityView.locationManagement.viewLocation' | message}}</p>
+<input openlmis-download="{{vm.exportFile(facilityId)}}" type="button"
+       value="{{'adminFacilityView.export' | message}}"/>
+<br>
+<h4>{{'adminFacilityView.locationManagement.editFile' | message}}</h4>
+<p class="multiline">{{'adminFacilityView.locationManagement.uploadMessages' | message}}</p>
+<form id="catalogItemUpload" class="button-group"
+      ng-submit="vm.upload() ">
+  <fieldset openlmis-invalid="{{vm.invalidMessage}}" class="form-group">
+    <input
+        type="file"
+        id="fileupload"
+        class="file"
+        ng-model="vm.file"
+        accept=".csv"
+        required
+        ng-change="vm.selectFileChange()"
+    />
+  </fieldset>
+  <div style="margin-left: 14px; display: flex; justify-content: flex-end; margin-top: 10px;">
+    <input type="submit" value="{{'adminFacilityView.upload' | message}}"/>
+  </div>
+</form>
+<p>{{'adminFacilityView.locationManagement.enableLocation' | message}}</p>
+
+<label class="switch">
+  <input type="checkbox" value="vm.enableValue"
+         ng-click="vm.updateEnableLocationManagement()">
+  <span ng-class="{'slider round': !vm.enableValue, 'sliderChecked round': vm.enableValue}"></span>
+</label>

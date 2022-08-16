@@ -196,7 +196,7 @@ describe('stockAdjustmentCreationService', function() {
 
             service.submitAdjustments(programId, facilityId, lineItems, {
                 state: 'receive'
-            });
+            }, undefined, '2020-05-20');
             httpBackend.flush();
 
             var event = {

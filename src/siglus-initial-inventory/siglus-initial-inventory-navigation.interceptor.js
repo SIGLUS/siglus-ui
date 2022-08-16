@@ -27,16 +27,21 @@
     angular.module('siglus-initial-inventory')
         .run(siglusInitialInventoryNavigationInterceptor);
 
-    siglusInitialInventoryNavigationInterceptor.$inject = ['$q',
-        '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
+    siglusInitialInventoryNavigationInterceptor.$inject = [
+        '$q', '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
         '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService',
-        'authorizationService', 'alertService', 'SiglusPhysicalInventoryCreationService'];
+        'authorizationService', 'alertService', '$stateParams',
+        'SiglusPhysicalInventoryCreationService', 'SiglusInitialInventoryResource', 'navigationStateService'
+    ];
 
-    function siglusInitialInventoryNavigationInterceptor($q, $rootScope, loadingModalService, confirmService, $state,
-                                                         stockmanagementUrlFactory, $http, programService,
-                                                         facilityFactory, physicalInventoryFactory,
-                                                         currentUserService, authorizationService, alertService,
-                                                         SiglusPhysicalInventoryCreationService) {
+    function siglusInitialInventoryNavigationInterceptor(
+        $q, $rootScope, loadingModalService, confirmService, $state,
+        stockmanagementUrlFactory, $http, programService,
+        facilityFactory, physicalInventoryFactory,
+        currentUserService, authorizationService, alertService, $stateParams,
+        SiglusPhysicalInventoryCreationService, SiglusInitialInventoryResource, navigationStateService
+    ) {
+
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
             if (checkInitialInventoryStatus() && !toState.name.contains('initialInventory')
                 && toState.showInNavigation && toState.url !== '/home') {
@@ -65,9 +70,6 @@
         });
 
         function checkInitialInventoryStatus() {
-            currentUserService.getUserInfo().then(function() {
-                return;
-            });
             var user = currentUserService.getUserInfo().$$state.value;
             if (_.isUndefined(user) || _.isUndefined(user.canInitialInventory)) {
                 return false;
@@ -75,37 +77,65 @@
             return user.canInitialInventory;
         }
 
-        function checkDraftIsStarter(shouldNotPopComfirm) {
-            loadingModalService.open();
-            $q.all([
-                programService.getAllProductsProgram(),
-                facilityFactory.getUserHomeFacility()
-            ]).then(function(responses) {
-                physicalInventoryFactory.getDrafts([responses[0][0].id], responses[1].id).then(function(response) {
-                    if (response[0].isStarter) {
-                        loadingModalService.close();
-                        SiglusPhysicalInventoryCreationService
-                            .show(responses[0][0].id).then(function() {});
-                    } else {
-                        loadingModalService.close();
-                        if (shouldNotPopComfirm) {
-                            $state.go('openlmis.stockmanagement.initialInventory', {
-                                programId: responses[0][0].id
-                            });
-                        } else {
-                            propopConfirm(responses[0][0].id);
-                        }
+        function checkInitialInventoryStatusByQuery() {
+            var defered = $q.defer();
+            var user = currentUserService.getUserInfo().$$state.value;
 
-                    }
-                })
-                    .catch(function() {
-                        loadingModalService.close();
-                    });
-
+            new SiglusInitialInventoryResource().query({
+                facility: user.homeFacilityId
             })
-                .catch(function() {
-                    loadingModalService.close();
+                .then(function(res) {
+                    defered.resolve(res.canInitialInventory);
                 });
+
+            return defered.promise;
+        }
+
+        function checkDraftIsStarter(shouldNotPopComfirm) {
+            var promise = checkInitialInventoryStatusByQuery();
+            promise.then(function(res) {
+                if (res) {
+                    loadingModalService.open();
+                    $q.all([
+                        programService.getAllProductsProgram(),
+                        facilityFactory.getUserHomeFacility()
+                    ]).then(function(responses) {
+                        physicalInventoryFactory.
+                            getDrafts([responses[0][0].id], responses[1].id).then(function(response) {
+                                if (response[0].isStarter) {
+                                    loadingModalService.close();
+                                    SiglusPhysicalInventoryCreationService
+                                        .show(responses[0][0].id).then(function() { });
+                                } else {
+                                    loadingModalService.close();
+                                    if (shouldNotPopComfirm) {
+                                        $state.go('openlmis.stockmanagement.initialInventory', {
+                                            programId: responses[0][0].id
+                                        });
+                                    } else {
+                                        propopConfirm(responses[0][0].id);
+                                    }
+
+                                }
+                            })
+                            .catch(function() {
+                                loadingModalService.close();
+                            })
+                            .finally(loadingModalService.close);
+
+                    })
+                        .catch(function() {
+                            loadingModalService.close();
+                        })
+                        .finally(loadingModalService.close);
+                } else {
+                    currentUserService.clearCache();
+                    navigationStateService.clearStatesAvailability();
+                    $state.go('openlmis.home', {}, {
+                        reload: true
+                    });
+                }
+            });
         }
 
         function propopConfirm(programId) {

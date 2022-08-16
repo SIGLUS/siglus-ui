@@ -6,9 +6,6 @@
   .background-grey {
     background-color: grey;
   }
-  .bg-color-blue {
-    background-color: rgb(223, 234, 245);
-  }
   .hasMarginTop {
     margin-top: 4px;
   }
@@ -175,6 +172,8 @@
           }
           th {
             height: 22px;
+            font-style: italic;
+            font-size: 16px;
           }
         }
 
@@ -212,7 +211,7 @@
           th {
             height: 18.8px;
             // padding: 3px;
-            font-size: 14px;
+            font-size: 16px;
             font-style:italic;
           }
         }

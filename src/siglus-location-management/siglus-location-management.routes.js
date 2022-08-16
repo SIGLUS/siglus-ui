@@ -14,7 +14,6 @@
  */
 
 (function() {
-
     'use strict';
 
     angular
@@ -24,12 +23,11 @@
     routes.$inject = ['$stateProvider'];
 
     function routes($stateProvider) {
-
         $stateProvider.state('openlmis.locationManagement', {
-            url: '/locationManagement',
             abstract: true,
-            showInNavigation: true,
+            url: '/locationManagement',
             label: 'locationManagement.title',
+            showInNavigation: true,
             priority: 9
         });
     }

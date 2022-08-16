@@ -86,8 +86,8 @@
           </td>
         </tr>
         <tr>
-          <td class="border-all-thin"><span>{{'via.1'|message}}</span>: </td>
-          <td class="border-all-thin"><span>{{'via.consultation'|message}}</span>: </td>
+          <td class="border-all-thin"><span>{{'via.1'|message}}:</span></td>
+          <td class="border-all-thin"><span>{{'via.consultation'|message}}:</span></td>
           <td class="border-all-thin">
             <span ng-if="!vm.requisition.emergency">{{vm.requisition.consultationNumberLineItems[0].columns.consultationNumber.value}}</span>
             <span ng-if="vm.requisition.emergency"></span>
@@ -183,10 +183,10 @@
       <div class="view-table-spacing"></div>
      
 
-      <div ng-repeat="lineItems in vm.lineItemsList">
+      <!-- <div ng-repeat="lineItems in vm.lineItemsList"> -->
         <table  class="via-table-body border-all-bold view-table-cell-scrolling text-align-center">
-          <tr ng-repeat="lineItem in lineItems | orderBy: '$program.displayOrder'"
-            ng-class="{'skipped-line-item': lineItem.skipped}">
+          <tr class="calcTr" ng-repeat="lineItem in vm.lineItemsList | orderBy: '$program.displayOrder'"
+            ng-class="{'skipped-line-item': lineItem.skipped,'calcTr':true}">
             <!-- <td class="border-all-thin" width="60px" ng-repeat="(index,column) in vm.columns">
               {{lineItem.getFieldValue(column.name)}}
             </td> -->
@@ -205,9 +205,9 @@
             <td tag="col12" class="border-all-thin" width="90px">{{lineItem.getFieldValue(vm.columns[10].name)}}</td>
           </tr>
         </table>
-        <div class="view-table-spacing"></div>
-      </div>
-
+        <!--  -->
+      <!-- </div> -->
+      <div class="view-table-spacing"></div>
       <table id="via-signaure" class="border-all-bold sign-box">
         <tr>
           <td class="border-signaure" width="50%">
@@ -220,13 +220,18 @@
           </td>
         </tr>
       </table>
+      <table id="via-print" class="sign-box">
+        <tr>
+          <td width="50%" style="text-align: left; border:none;font-size: 15px; font-weight: 700;">{{ 'mmia.print_on_computer' | message }}</td>
+          <td width="50%" style="text-align: right; border:none;font-size: 15px; font-weight: 700;">{{ vm.nowTime }}</td>
+        </tr>
+      </table>
     </td>
   </tr>
   <tr>
-    <td></td>
     <td class="text-align-right">
-      <div style="font-size: 15px; font-weight: 700; float: left;">{{ 'mmia.print_on_computer' | message }}</div>
-      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div>
+      <!-- <div style="font-size: 15px; font-weight: 700; float: left;"></div>
+      <div style="font-size: 15px; font-weight: 700; float: right;">{{ vm.nowTime }}</div> -->
       <div style="clear: both;">
         <button ng-click="vm.downloadPdf()" class="btn btn-primary btn-download btn-download-pdf">{{'via.download.button'|message}}</button>
       </div>

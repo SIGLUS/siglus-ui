@@ -41,7 +41,16 @@
 
         ProofOfDeliveryRepositoryImpl.prototype.get = get;
         ProofOfDeliveryRepositoryImpl.prototype.update = update;
-
+        // SIGLUS-REFACTOR: starts here
+        ProofOfDeliveryRepositoryImpl.prototype.createDraft = createDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.getDraftList = getDraftList;
+        ProofOfDeliveryRepositoryImpl.prototype.deleteAllDraft = deleteAllDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.getSubDraft = getSubDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.updateSubDraft = updateSubDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.deleteSubDraft = deleteSubDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.mergeDraft = mergeDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.submitDraft = submitDraft;
+        // SIGLUS-REFACTOR: ends here
         return ProofOfDeliveryRepositoryImpl;
 
         /**
@@ -59,11 +68,44 @@
             this.orderableResource = new SiglusOrderableResource();
 
             this.resource = $resource(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id'), {}, {
-                // SIGLUS-REFACTOR: ends here
                 update: {
                     method: 'PUT'
+                },
+                createDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts'),
+                    method: 'POST'
+                },
+                getDraftList: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/summary'),
+                    method: 'GET'
+                },
+                deleteAllDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts'),
+                    method: 'DELETE'
+                },
+                getSubDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/:subDraftId'),
+                    method: 'GET'
+                },
+                updateSubDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/:subDraftId'),
+                    method: 'PUT'
+                },
+                deleteSubDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/:subDraftId'),
+                    method: 'DELETE'
+                },
+                mergeDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/merge'),
+                    method: 'POST'
+                },
+                submitDraft: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/submit'),
+                    method: 'POST'
                 }
+
             });
+            // SIGLUS-REFACTOR: ends here
         }
 
         /**
@@ -87,24 +129,183 @@
                 expand: 'shipment.order'
             }).$promise
                 .then(function(proofOfDeliveryJson) {
-                    var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
-                        orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
-
-                    return $q.all([
-                        lotRepositoryImpl.query({
-                            id: lotIds
-                        }),
-                        orderableResource.query({
-                            id: orderableIds
-                        })
-                    ])
+                    var copyProofOfDeliveryJson = angular.copy(_.get(proofOfDeliveryJson, 'podDto'));
+                    copyProofOfDeliveryJson.conferredBy = _.get(proofOfDeliveryJson, 'conferredBy');
+                    copyProofOfDeliveryJson.preparedBy = _.get(proofOfDeliveryJson, 'preparedBy');
+                    var lotIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'lot'),
+                        orderableIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'orderable');
+                    var promiseList = lotIds.length ?
+                        [
+                            lotRepositoryImpl.query({
+                                id: lotIds
+                            }),
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ] :
+                        [
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ];
+                    return $q.all(promiseList)
                         .then(function(responses) {
-                            var lotPage = responses[0],
-                                orderablePage = responses[1];
-                            return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
+                            var lotPage = lotIds.length ? responses[0] : {
+                                    content: []
+                                },
+                                orderablePage = lotIds.length ? responses[1] : responses[0];
+                            return combineResponses(copyProofOfDeliveryJson, lotPage.content, orderablePage.content);
                         });
                 });
         }
+        // SIGLUS-REFACTOR: starts here
+        /**
+         * @ngdoc method
+         * @methodOf proof-of-delivery.ProofOfDeliveryRepositoryImpl
+         * @name createDraft
+         *
+         * @description
+         * Retrieves a proof of delivery from the OpenLMIS server.
+         * Communicates with the GET endpoint of the Proof of Delivery REST API.
+         *
+         * @param   {orderId}    orderId  the ID of the Proof of Delivery order 
+         * @param   {splitNum}   splitNum multi-user num to get POD order
+         * @return  {Promise}       the promise resolving to server response
+         */
+        function createDraft(orderId, id, splitNum) {
+            return this.resource.createDraft({
+                id: id
+            }, {
+                orderId: orderId,
+                splitNum: splitNum
+            }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf proof-of-delivery.ProofOfDeliveryRepositoryImpl
+         * @name getDraftList
+         *
+         * @description
+         * Retrieves a proof of delivery from the OpenLMIS server.
+         * Communicates with the GET endpoint of the Proof of Delivery REST API.
+         *
+         * @param   {podId}    podId  the ID of the Proof of Delivery order 
+         * @return  {Promise}       the promise resolving to server response
+         */
+        function getDraftList(podId) {
+            return this.resource.getDraftList({
+                id: podId
+            }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf proof-of-delivery.ProofOfDeliveryRepositoryImpl
+         * @name getDraftList
+         *
+         * @description
+         * Retrieves a proof of delivery from the OpenLMIS server.
+         * Communicates with the GET endpoint of the Proof of Delivery REST API.
+         *
+         * @param   {podId}    podId  the ID of the Proof of Delivery order 
+         * @return  {Promise}       the promise resolving to server response
+         */
+        function deleteAllDraft(podId) {
+            return this.resource.deleteAllDraft({
+                id: podId
+            }).$promise;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf proof-of-delivery.ProofOfDeliveryRepositoryImpl
+         * @name getDraftList
+         *
+         * @description
+         * Retrieves a proof of delivery from the OpenLMIS server.
+         * Communicates with the GET endpoint of the Proof of Delivery REST API.
+         *
+         * @param   {podId}    podId  the ID of the Proof of Delivery order 
+         * @param   {subDraftId}    subDraftId  the ID of the Proof of Delivery sub draft 
+         * @return  {Promise}       the promise resolving to server response
+         */
+        function getSubDraft(podId, subDraftId) {
+            var lotRepositoryImpl = this.lotRepositoryImpl,
+                orderableResource = this.orderableResource;
+            return this.resource.getSubDraft({
+                id: podId,
+                subDraftId: subDraftId,
+                expand: 'shipment.order'
+            }).$promise.then(function(proofOfDeliveryJson) {
+                var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
+                    orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
+
+                return $q.all([
+                    lotRepositoryImpl.query({
+                        id: lotIds
+                    }),
+                    orderableResource.query({
+                        id: orderableIds
+                    })
+                ])
+                    .then(function(responses) {
+                        var lotPage = responses[0],
+                            orderablePage = responses[1];
+                        return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
+                    });
+            });
+        }
+
+        function updateSubDraft(podId, subDraftId, pod, type) {
+            return this.resource.updateSubDraft({
+                id: podId,
+                subDraftId: subDraftId
+            }, {
+                operateType: type,
+                podDto: pod
+            }).$promise;
+        }
+
+        function deleteSubDraft(podId, subDraftId) {
+            return this.resource.deleteSubDraft({
+                id: podId,
+                subDraftId: subDraftId
+            }).$promise;
+        }
+
+        function mergeDraft(podId) {
+            var lotRepositoryImpl = this.lotRepositoryImpl,
+                orderableResource = this.orderableResource;
+            return this.resource.mergeDraft({
+                id: podId,
+                expand: 'shipment.order'
+            }, {}).$promise.then(function(proofOfDeliveryJson) {
+                var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
+                    orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
+                return $q.all([
+                    lotRepositoryImpl.query({
+                        id: lotIds
+                    }),
+                    orderableResource.query({
+                        id: orderableIds
+                    })
+                ])
+                    .then(function(responses) {
+                        var lotPage = responses[0],
+                            orderablePage = responses[1];
+                        return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
+                    });
+            });
+        }
+
+        function submitDraft(podId, pod) {
+            return this.resource.submitDraft({
+                id: podId
+            }, pod).$promise;
+        }
+
+        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method

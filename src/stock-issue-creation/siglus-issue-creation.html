@@ -44,7 +44,6 @@
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
-                <th>{{vm.key('date') | message}}</th>
                 <th>{{vm.key('actions') | message}}</th>
             </tr>
             </thead>
@@ -60,10 +59,6 @@
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
                 </td>
-                <td class="date-cell">
-                    <input id="lineItem.occurredDate" class="min-width-date-input" type="date" ng-model="lineItem.occurredDate"
-                           ng-change="vm.validateDate(lineItem)" max-date="vm.maxDate" required/>
-                </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
                 </td>
@@ -73,56 +68,8 @@
         <openlmis-pagination list="vm.displayItems" paged-list="vm.items"/>
     </section>
 </div>
-
-<div id="waitDownload" class="wait-for-download">
-    <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td rowspan="4" class="background-black banner-text black-width">
-            <div class="banner-text text-nowrap">CMAM - Modelo 02</div>
-          </td>
-          <td  class="logo--center"><span class="view-table-logo"></span></td>
-          <td class="text__left">
-            <h6 openlmis-message="view.rnr.republic.of.mozambique">
-              {{ 'rapid.republic_of_mozambique' | message }}
-            </h6>
-            <h6 openlmis-message="view.rnr.ministry.of.health">
-              {{ 'rapid.ministry_of_health' | message }}
-            </h6>
-            <h6 openlmis-message="view.rnr.central.medicines.and.medical.arricles">
-              {{ 'rapid.central_medicines_and_medical_articles' | message }}
-            </h6>
-          </td>
-          <td class="report--title width-348">
-            <span class="report--title-font">
-              Issue Voucher Nº
-            </span>
-          </td>
-        </tr>
-        <tr>
-          <td class="text__left">Supplier</td>
-          <td class="text__left">Client</td>
-          <td rowspan="2" class="text__left">Supply</td>
-        </tr>
-        <tr>
-          <td class="text__left">District</td>
-          <td class="text__left">Requisition Nr</td>
-        </tr>
-        <tr>
-          <td class="text__left"></td>
-          <td class="text__left">Total of volume</td>
-          <td rowspan="3" class="text__left">Returned</td>
-          <td rowspan="3" class="text__left">Expired Overstocked</td>
-        </tr>
-        <tr>
-          <td class="text__left"></td>
-          <td class="text__left">Requisition date</td>
-        </tr>
-        <tr>
-          <td class="text__left">Province</td>
-          <td class="text__left">Issue voucher date</td>
-        </tr>
-      </table>
-</div>
+<!-- <ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include> -->
+<ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
 <siglus-common-toolbar
         data="vm.addedLineItems"
         mode="vm.isMerge ? 'MERGE' : 'SAVE'"

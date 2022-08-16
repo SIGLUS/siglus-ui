@@ -7,5 +7,6 @@
   "stockReceiveCreation.selectAnOption": "Select an option",
   "stockReceiveCreation.deleted": "Delete is successful",
   "stockReceiveCreation.delete": "Delete",
-  "stockReceiveCreation.deleteDraft": "Do you want to delete this draft?"
+  "stockReceiveCreation.deleteDraft": "Do you want to delete this draft?",
+  "stockReceiveCreation.itemDuplicated": "The lot under the same product cannot be repeated, please enter a new one."
 }

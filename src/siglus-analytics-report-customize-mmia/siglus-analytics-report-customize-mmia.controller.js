@@ -35,7 +35,8 @@
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
         '$timeout',
-        '$q'
+        '$q',
+        'siglusDownloadLoadingModalService'
     ];
 
     function controller(
@@ -45,13 +46,13 @@
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
         $timeout,
-        $q
+        $q,
+        siglusDownloadLoadingModalService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
-        // console.log('#### template', template);
         vm.comments = undefined;
         vm.signaure = {};
         vm.$onInit = onInit;
@@ -110,14 +111,19 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
-            if (requisition.extraData.signaure) {
+            if (requisition.extraData.signaure.approve) {
                 vm.signaure.approve = vm.signaure && vm.signaure.approve.length
                     ? vm.signaure.approve.join(',')
                     : '';
             }
+            var historyCommentsStr = _.reduce(requisition.statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            vm.historyComments = historyCommentsStr.substr(0, historyCommentsStr.length - 1);
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.startDate);
-            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
@@ -161,17 +167,16 @@
             var patients = patientTemplateFactory();
             vm.patientList = patients.normalPatientList;
             vm.mergedPatientMap = patients.mergedPatientMap;
-            // console.log('#### map', vm.mergedPatientMap);
-            console.log('#### vm', vm);
             vm.getValueByKey = function(key, index) {
-                // var innerKeys = Object.keys(vm.mergedPatientMap[key].columns);
-                // console.log('#### array', vm.mergedPatientMap[key].column.columns);
-                // console.log('#### obj', vm.mergedPatientMap[key].columns);
                 if (!vm.requisition.patientLineItems.length) {
                     return '';
                 }
-                var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
-                return vm.mergedPatientMap[key].columns[innerKey].value ;
+                var result = '';
+                if (vm.mergedPatientMap[key]) {
+                    var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
+                    result = vm.mergedPatientMap[key].columns[innerKey].value;
+                }
+                return result;
             };
         }
 
@@ -199,7 +204,6 @@
                 });
                 temp.column = c;
                 if (_.contains(jugeArray, c.label)) {
-                    // console.log('hello', c);
                     r.mergedPatientMap[c.label] = temp;
                 } else {
                     r.normalPatientList.push(temp);
@@ -224,7 +228,6 @@
             });
         }
         function getCategories(regimenLineItems) {
-            // console.log('#### regimenLineItems', regimenLineItems);
             var regimentLineItemsCopy = angular.copy(regimenLineItems);
             vm.totalItem = regimentLineItemsCopy.pop();
             return _.reduce(regimentLineItemsCopy, function(r, c) {
@@ -239,7 +242,9 @@
         function getCreationDate(date) {
             return openlmisDateFilter(date, 'MMM')
                 + ' '
-                + openlmisDateFilter(date, 'yyyy');
+                + openlmisDateFilter(date, 'yyyy')
+                + ' '
+                + openlmisDateFilter(date, 'dd');
         }
         function getPdfName(date, facilityName, id) {
             return (
@@ -270,13 +275,9 @@
         function getMonth(date) {
             return openlmisDateFilter(date, 'MMMM');
         }
-        // function translateCodeToBarcode() {
-        //     var codeNodes = document.querySelectorAll('#barCodeArea');
-        //     console.log(codeNodes);
-        //     // eslint-disable-next-line no-undef
-        //     // JsBarcode(codeNode, code);
-        // }
+
         vm.downloadPdf = function() {
+            siglusDownloadLoadingModalService.open();
             var node = document.getElementById('mmia-form');
             var secondSectionNode = document.getElementById('secondSection');
             var middleSectionNode = document.getElementById('middleSection');
@@ -287,7 +288,6 @@
             var a4Height = 1250 / 585 * 781.89;
             var leftHeight = contentHeight - secondSectionNode.offsetHeight;
             var canUseHeight = a4Height - leftHeight;
-            // console.log('#### canUseHeight', canUseHeight);
             var secondSectionTrNodes = document.querySelectorAll('#calcTr');
             var secondSectionTrNodesArray = Array.from(secondSectionTrNodes);
             // eslint-disable-next-line no-undef
@@ -346,16 +346,23 @@
                     };
                 }));
             });
+            var A4_HEIGHT = 801.89;
+            var promiseListLen = promiseList.length;
             $q.all(headerAndFooterPromiseList).then(function(reback) {
                 var offsetHeight = firstSectionNode.offsetHeight;
                 var realHeight = 0;
-                var pageNumber = 0;
+                var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
-                        console.log(index + ':', realHeight);
                         if (realHeight > canUseHeight - 30) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT - 10
+                            );
                             pageNumber = pageNumber + 1;
                             PDF.addImage(
                                 reback[1].data,
@@ -374,16 +381,26 @@
                                 reback[2].nodeHeight * rate
                             );
                             PDF.addPage();
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT - 10
+                            );
                             PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
-                            // PDF.text(
-                            //     pageNumber,
-                            //     585 / 2,
-                            //     (offsetHeight + reback[1].nodeHeight + reback[2].nodeHeight + 4) * rate
-                            // );
+
                             offsetHeight = firstSectionNode.offsetHeight;
                             realHeight = 0;
                         }
                         PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
+                        if (promiseListLen - 1 === index) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                A4_HEIGHT - 10
+                            );
+                        }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
                     PDF.addImage(
@@ -409,12 +426,9 @@
                             vm.facility.code
                         )
                     );
+                    siglusDownloadLoadingModalService.close();
                 });
             });
-            // var imgWidth = 585.28;
-            // var imgHeight = 592.28 / contentWidth * contentHeight;
-            // // var rate = contentWidth / 585.28;
-            // // var imgY = contentHeight / rate;
         };
     }
 

@@ -21,9 +21,13 @@
      * @name stockmanagement.max-string-value
      *
      * @description
-     * This is constant for max string value.
+     * This is constant for max lot code string value.
      */
     angular.module('stockmanagement')
-        .constant('SIGLUS_MAX_STRING_VALUE', 30);
+        .constant('SIGLUS_MAX_STRING_VALUE', 40)
+        .constant('SIGLUS_LOT_CODE_DATE_FORMATE', '-DD/MM/YYYY')
+        .constant('SIGLUS_LOT_CODE_REGEXP', /^.*-[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/)
+        .constant('SIGLUS_LOT_CODE_REGEXP_REPLACE', /-[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/)
+        .constant('SIGLUS_LOT_CODE_DATE_ISVALID', 'DD/MM/YYYY');
 
 })();

@@ -29,33 +29,41 @@
         .controller('SiglusStockReceiveCreationController', controller);
 
     controller.$inject = [
-        '$scope', 'initialDraftInfo', 'isMerge', '$state', '$stateParams', '$filter', 'confirmDiscardService',
-        'program', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
-        'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
+        '$scope', 'initialDraftInfo', 'mergedItems', 'isMerge', '$state', '$stateParams', '$filter',
+        'confirmDiscardService', 'openlmisDateFilter', 'localStorageFactory',
+        'programId', 'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
+        'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
         'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems',
-        'ADJUSTMENT_TYPE', 'siglusSignatureModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
-        'draft', 'siglusArchivedProductService', 'siglusStockUtilsService'
+        'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
+        'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
+        'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusOrderableLotService',
+        'siglusDownloadLoadingModalService', 'orderablesPrice'
     ];
 
-    function controller($scope, initialDraftInfo, isMerge, $state, $stateParams, $filter, confirmDiscardService,
-                        program, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
-                        srcDstAssignments, stockAdjustmentCreationService, notificationService, orderableGroupService,
+    function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
+                        confirmDiscardService, openlmisDateFilter, localStorageFactory,
+                        programId, facility, orderableGroups, reasons, confirmService, messageService, adjustmentType,
+                        stockAdjustmentCreationService, notificationService, orderableGroupService,
                         MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils, displayItems,
-                        ADJUSTMENT_TYPE, siglusSignatureModalService, siglusOrderableLotMapping, stockAdjustmentService,
-                        draft, siglusArchivedProductService, siglusStockUtilsService) {
+                        ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
+                        stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
+                        siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
+                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService, orderablesPrice) {
         var vm = this,
-            previousAdded = {};
-
+            previousAdded = {},
+            currentUser = localStorageFactory('currentUser');
+        vm.receivedBy = currentUser.getAll('username').username;
         vm.initialDraftInfo = initialDraftInfo;
-
+        vm.destinationName = '';
         vm.initialDraftName = '';
-
+        var deferred = $q.defer();
         vm.isMerge = isMerge;
 
         vm.draft = draft;
 
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
+        vm.type = 'receive';
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
@@ -84,6 +92,7 @@
 
         // first add without lot
         vm.addProductWithoutLot = function() {
+            loadingModalService.open();
             var selectedItem = orderableGroupService
                 .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
 
@@ -91,7 +100,7 @@
                 {
                     $errors: {},
                     $previewSOH: null,
-                    lotOptions: angular.copy(vm.lots),
+                    // lotOptions: angular.copy(vm.lots),
                     orderableId: vm.selectedOrderableGroup[0].orderable.id,
                     showSelect: false
                 },
@@ -109,15 +118,26 @@
                 }
             }
 
-            vm.addedLineItems.unshift(item);
+            siglusOrderableLotService.fillLotsToAddedItems([item]).then(function() {
+                item.productCode = item.orderable.productCode;
+                item.productName = item.orderable.fullProductName;
+                item.lotCode = item.lot && item.lot.lotCode;
+                item.expirationDate = item.lot && item.lot.expirationDate;
+                item.price = orderablesPrice.data[item.orderable.id];
+                vm.addedLineItems.unshift(item);
 
-            previousAdded = vm.addedLineItems[0];
+                previousAdded = vm.addedLineItems[0];
 
-            $stateParams.isAddProduct = true;
-            vm.search($state.current.name);
-            // #105: activate archived product
-            siglusArchivedProductService.alterInfo([item]);
-            // #105: ends here
+                $stateParams.isAddProduct = true;
+                vm.search($state.current.name);
+                // #105: activate archived product
+                siglusArchivedProductService.alterInfo([item]);
+                // #105: ends here
+            })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+
         };
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -172,6 +192,7 @@
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
             vm.addedLineItems.splice(index, 1);
+            vm.validateLotCodeDuplicated();
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
@@ -186,20 +207,23 @@
          * Remove all displayed line items.
          */
         vm.removeDisplayItems = function() {
-            confirmService.confirmDestroy(vm.key('deleteDraft'), vm.key('delete'))
-                .then(function() {
-                    loadingModalService.open();
-                    stockAdjustmentService.deleteDraft(draft.id).then(function() {
-                        $scope.needToConfirm = false;
-                        notificationService.success(vm.key('deleted'));
-                        $state.go('openlmis.stockmanagement.receive', $stateParams, {
-                            reload: true
-                        });
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                });
+            alertConfirmModalService.error(
+                'PhysicalInventoryDraftList.deleteDraftWarn',
+                '',
+                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+            ).then(function() {
+                loadingModalService.open();
+                siglusStockIssueService.resetDraft($stateParams.draftId).then(function() {
+                    $scope.needToConfirm = false;
+                    notificationService.success(vm.key('deleted'));
+                    $state.go('openlmis.stockmanagement.receive.draft', $stateParams, {
+                        reload: true
+                    });
+                })
+                    .catch(function() {
+                        loadingModalService.close();
+                    });
+            });
         };
 
         /**
@@ -241,35 +265,40 @@
             return lineItem;
         };
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name validateReason
-         *
-         * @description
-         * Validate line item reason and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateReason = function(lineItem) {
-            if (adjustmentType.state === 'adjustment') {
-                lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
-            }
-            return lineItem;
+        vm.validateLotCodeDuplicated = function() {
+            var groupItems = _.groupBy(vm.addedLineItems, 'orderableId');
+            _.forEach(vm.addedLineItems, function(item) {
+                var hasDupliatedItems = _.size(_.filter(groupItems[item.orderableId], function(groupItem) {
+                    var lotCode = _.get(groupItem, ['lot', 'lotCode']);
+                    return lotCode && lotCode === _.get(item, ['lot', 'lotCode']);
+                })) > 1;
+                if (item.$errors.lotCodeInvalid !== messageService.get('openlmisForm.required')) {
+                    if (hasDupliatedItems) {
+                        item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
+                    } else {
+                        item.$errors.lotCodeInvalid = false;
+                    }
+                }
+            });
         };
 
         vm.validateLot = function(lineItem) {
+            lineItem.lotCode = lineItem.lot.lotCode;
             if (!lineItem.isKit) {
+
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
                     lineItem.$errors.lotCodeInvalid = false;
                 } else {
                     lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
                 }
             }
+
+            vm.validateLotCodeDuplicated();
             return lineItem;
         };
 
         vm.validateLotDate = function(lineItem) {
+            lineItem.expirationDate = lineItem.lot.expirationDate;
             if (!lineItem.isKit) {
                 if (lineItem.lot && lineItem.lot.expirationDate) {
                     lineItem.$errors.lotDateInvalid = false;
@@ -277,21 +306,6 @@
                     lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
                 }
             }
-            return lineItem;
-        };
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name validateDate
-         *
-         * @description
-         * Validate line item occurred date and returns self.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateDate = function(lineItem) {
-            lineItem.$errors.occurredDateInvalid = isEmpty(lineItem.occurredDate);
             return lineItem;
         };
 
@@ -310,27 +324,352 @@
             obj[property] = null;
         };
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name submit
-         *
-         * @description
-         * Submit all added items.
-         */
+        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
+            generateKitConstituentLineItem(addedLineItems);
+            var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
+                return item.subDraftId;
+            }));
+
+            siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
+                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
+                .then(function() {
+                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                        facility: facility.id,
+                        program: programId
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    if (error.data.businessErrorExtraData === 'subDrafts quantity not match') {
+                        alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    }
+                });
+        }
+
+        function confirmSubmit(signature, addedLineItems) {
+            generateKitConstituentLineItem(addedLineItems);
+            siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
+                addedLineItems, $stateParams.draftType)
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success(vm.key('submitted'));
+                    $scope.needToConfirm = false;
+                    vm.returnBack();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    productDuplicatedHandler(error);
+                });
+        }
+
+        function getPdfName(facilityName, nowTime) {
+            return (
+                'Receive_'
+                + facilityName
+                + '_'
+                + nowTime
+                + '.pdf'
+            );
+        }
+        function downloadPdf() {
+            siglusDownloadLoadingModalService.open();
+            // 获取固定高度的dom节点
+            var sectionFirst = document.getElementById('sectionFirst');
+            var sectionSecond = document.getElementById('sectionSecond');
+            var sectionThird = document.getElementById('sectionThird');
+            var sectionFouth = document.getElementById('sectionFouth');
+            var subInformation = document.getElementById('subInformation');
+            // 定义常量
+            var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
+            // 计算px to a4实际单位换算比例
+            var rate = A4_WIDTH / CONTAINER_WIDTH;
+            // a4实际高度换算px
+            var a4Height2px = A4_HEIGHT / rate;
+            // 计算固定部分的高度总和
+            var fixedHeight = sectionFirst.offsetHeight
+                    + sectionSecond.offsetHeight
+                    + sectionThird.offsetHeight
+                    + sectionFouth.offsetHeight
+                    + subInformation.offsetHeight
+                    + PAGE_NUM_HEIGHT / rate;
+            // 分页部分的高度计算
+            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            // 获取分页部分每行节点
+            var needCalcTrNodes = document.querySelectorAll('#calcTr');
+            // NodeList -> 数组
+            var needCalcTrNodesArray = Array.from(needCalcTrNodes);
+            // 定义固定部分的promiseList
+            var fixedPromiseList = [
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionFirst, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionFirst.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionFirst.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionSecond, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionSecond.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionSecond.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionThird, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionThird.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionThird.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(sectionFouth, {
+                    scale: 1,
+                    width: 1250,
+                    height: sectionFouth.offsetHeight
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: sectionFouth.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(subInformation, {
+                    scale: 1,
+                    width: 1250,
+                    height: subInformation.offsetHeight + 30
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: subInformation.offsetHeight + 30
+                    };
+                })
+            ];
+            // 定义分页部分的promiseList
+            var promiseList = [];
+            // eslint-disable-next-line no-undef
+            var PDF = new jsPDF('', 'pt', 'a4');
+            _.forEach(needCalcTrNodesArray, function(item) {
+                // eslint-disable-next-line no-undef
+                promiseList.push(domtoimage.toPng(item, {
+                    scale: 1,
+                    width: 1250,
+                    height: item.offsetHeight + 1
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: 1250,
+                        nodeHeight: item.offsetHeight + 1
+                    };
+                }));
+            });
+            // 固定部分的图片转换完成后再去做分页部分的图片转换
+            $q.all(fixedPromiseList).then(function(reback) {
+                // 偏移量
+                var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                // 当前分页部分tr的累积高度
+                var realHeight = 0;
+                // 页码
+                var pageNumber = 1;
+                var promiseListLen = promiseList.length;
+                $q.all(promiseList).then(function(result) {
+                    // 添加分页部分上方的固定部分图片到PDF中
+                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
+                    PDF.addImage(
+                        reback[1].data,
+                        'JPEG',
+                        4,
+                        reback[0].nodeHeight * rate,
+                        585,
+                        reback[1].nodeHeight * rate
+                    );
+                    _.forEach(result, function(res, index) {
+                        // 计算分页部分实际高度
+                        realHeight = realHeight + result[index].nodeHeight;
+                        if (realHeight > canUseHeight) {
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT
+                            );
+                            // 遍历跟随分页部分重复的部分
+                            // PDF.addImage(
+                            //     '',
+                            //     'JPEG',
+                            //     4,
+                            //     (
+                            //         offsetHeight
+                            //     ) * rate,
+                            //     585,
+                            //     reback[2].nodeHeight * rate
+                            // );
+                            PDF.addImage(
+                                reback[3].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[3].nodeHeight * rate
+                            );
+                            PDF.addImage(
+                                reback[4].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight
+                                    + reback[2].nodeHeight
+                                    + reback[3].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[4].nodeHeight * rate
+                            );
+                            // 新开分页
+                            PDF.addPage();
+                            pageNumber = pageNumber + 1;
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString(),
+                                585 / 2,
+                                A4_HEIGHT
+                            );
+                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
+                            PDF.addImage(
+                                reback[1].data,
+                                'JPEG',
+                                4,
+                                reback[0].nodeHeight * rate, 585,
+                                reback[1].nodeHeight * rate
+                            );
+                            offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+                            realHeight = 0;
+                        }
+                        // 添加当前遍历元素的图片到PDF
+                        PDF.addImage(
+                            res.data,
+                            'JPEG',
+                            4,
+                            offsetHeight * rate,
+                            res.nodeWidth * rate,
+                            res.nodeHeight * rate
+                        );
+                        if (promiseListLen - 1 === index) {
+                            PDF.addImage(
+                                reback[2].data,
+                                'JPEG',
+                                4,
+                                (
+                                    offsetHeight + result[index].nodeHeight
+                                ) * rate,
+                                585,
+                                reback[2].nodeHeight * rate
+                            );
+                            PDF.setFontSize(10);
+                            PDF.text(
+                                pageNumber.toString() + '-END',
+                                585 / 2,
+                                A4_HEIGHT
+                            );
+                        }
+                        offsetHeight = offsetHeight + result[index].nodeHeight;
+                    });
+                    // 添加分页部分下方的固定部分图片到PDF中
+                    // PDF.addImage(
+                    //     '',
+                    //     'JPEG',
+                    //     4,
+                    //     (offsetHeight) * rate,
+                    //     585,
+                    //     reback[2].nodeHeight * rate
+                    // );
+                    PDF.addImage(
+                        reback[3].data,
+                        'JPEG',
+                        4,
+                        (offsetHeight + reback[2].nodeHeight) * rate,
+                        585,
+                        reback[3].nodeHeight * rate
+                    );
+                    PDF.addImage(
+                        reback[4].data,
+                        'JPEG',
+                        4,
+                        (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
+                        585,
+                        reback[4].nodeHeight * rate
+                    );
+                    PDF.save(
+                        getPdfName(
+                            vm.destinationName,
+                            openlmisDateFilter(new Date(), 'yyyy-MM-dd')
+                        )
+                    );
+                    siglusDownloadLoadingModalService.close();
+                    deferred.resolve('success');
+                });
+            });
+        }
+
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
-            if (validateAllAddedItems()) {
-                siglusSignatureModalService.confirm('stockUnpackKitCreation.signature').then(function(signature) {
-                    loadingModalService.open();
-                    confirmSubmit(signature);
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+            var addedLineItems = angular.copy(vm.addedLineItems);
+            addedLineItems.forEach(function(lineItem) {
+                lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                lineItem.reason = _.find(reasons, {
+                    name: capitalize($stateParams.draftType)
                 });
+            });
+            if (validateAllAddedItems()) {
+                if (vm.isMerge) {
+                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
+                        then(function(data) {
+                            vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                            vm.signature = data.signature;
+                            downloadPdf();
+                            deferred.promise.then(function() {
+                                loadingModalService.open();
+                                confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            });
+                        });
+                } else {
+                    loadingModalService.open();
+                    confirmSubmit('', addedLineItems);
+                }
+
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
                 }
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
+        };
+
+        vm.returnBack = function() {
+            $state.go('^', $stateParams);
         };
 
         /**
@@ -352,8 +691,8 @@
             $scope.productForm.$setPristine();
 
             //vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
-            vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
-            vm.selectedOrderableHasLots = vm.lots.length > 0;
+            // vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
+            // vm.selectedOrderableHasLots = vm.lots.length > 0;
         };
 
         /**
@@ -371,6 +710,26 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
+        function productDuplicatedHandler(error) {
+            if (_.get(error, ['data', 'isBusinessError'])) {
+                var data = _.map(_.get(error, ['data', 'businessErrorExtraData']), function(item) {
+                    item.conflictWith = messageService.get('stockIssue.draft') + ' ' + item.conflictWith;
+                    return item;
+                });
+                siglusRemainingProductsModalService.show(data).then(function() {
+                    var lineItems = _.clone(vm.addedLineItems);
+                    _.forEach(lineItems, function(lineItem) {
+                        var hasDuplicated = _.some(data, function(item) {
+                            return item.orderableId === lineItem.orderable.id;
+                        });
+                        if (hasDuplicated) {
+                            vm.remove(lineItem);
+                        }
+                    });
+                });
+            }
+        }
+
         vm.save = function() {
             var addedLineItems = angular.copy(vm.addedLineItems);
 
@@ -378,13 +737,20 @@
                 cancelFilter();
             }
 
-            stockAdjustmentService
-                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+            loadingModalService.open();
+
+            siglusStockIssueService.saveDraft($stateParams.draftId, addedLineItems, $stateParams.draftType)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
                     $stateParams.isAddProduct = false;
                     vm.search(true);
+                })
+                .catch(function(error) {
+                    productDuplicatedHandler(error);
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
 
         };
@@ -412,9 +778,6 @@
         function validateAllAddedItems() {
             _.each(vm.addedLineItems, function(item) {
                 vm.validateQuantity(item);
-                vm.validateDate(item);
-                vm.validateAssignment(item);
-                vm.validateReason(item);
                 vm.validateLot(item);
                 vm.validateLotDate(item);
             });
@@ -451,34 +814,6 @@
                 .value();
         }
 
-        function confirmSubmit(signature) {
-            loadingModalService.open();
-
-            var addedLineItems = angular.copy(vm.addedLineItems);
-
-            addedLineItems.forEach(function(lineItem) {
-                lineItem.programId = _.first(lineItem.orderable.programs).programId;
-                lineItem.reason = _.find(reasons, {
-                    name: 'Receive'
-                });
-            });
-
-            generateKitConstituentLineItem(addedLineItems);
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signature)
-                .then(function() {
-                    notificationService.success(vm.key('submitted'));
-
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
-                }, function(errorResponse) {
-                    loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
-                });
-        }
-
         function generateKitConstituentLineItem(addedLineItems) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 return;
@@ -506,11 +841,9 @@
         }
 
         function onInit() {
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
+            $state.current.label = isMerge
+                ? messageService.get('stockIssueCreation.mergedDraft')
+                : messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
 
             initViewModel();
             initStateParams();
@@ -534,28 +867,40 @@
 
             vm.sourceName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, adjustmentType.state);
 
-            vm.program = program;
+            vm.programId = programId;
             vm.facility = facility;
             vm.reasons = reasons;
-            vm.srcDstAssignments = srcDstAssignments;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-
+            _.forEach(vm.addedLineItems, function(item) {
+                item.price = orderablesPrice.data[item.orderable.id];
+            });
+            // calc total value
+            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                var price = c.price * 100;
+                r = r + c.quantity * price;
+                return r;
+            }, 0);
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
+            vm.client = vm.facility.name;
+            vm.supplier =
+                vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
         }
 
         function initStateParams() {
             $stateParams.page = getPageNumber();
-            $stateParams.program = program;
+            $stateParams.programId = programId;
             $stateParams.facility = facility;
             $stateParams.reasons = reasons;
-            $stateParams.srcDstAssignments = srcDstAssignments;
+            $stateParams.draft = draft;
+            $stateParams.initialDraftInfo = initialDraftInfo;
+            $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
             // $stateParams.orderableGroups = orderableGroups;
             $stateParams.hasLoadOrderableGroups = true;

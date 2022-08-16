@@ -26,6 +26,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
     beforeEach(function() {
         module('stock-card-summary');
         module('openlmis-pagination');
+        module('stock-orderable-group');
         module('stock-products', function($provide) {
             lotResourceMock = jasmine.createSpyObj('LotResource', ['query']);
             $provide.factory('LotResource', function() {
@@ -201,7 +202,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             stockCardSummaryResourceMock.query.andReturn($q.reject());
 
             var rejected;
-            fullStockCardSummaryRepositoryImpl.query()
+            fullStockCardSummaryRepositoryImpl.query({})
                 .catch(function() {
                     rejected = true;
                 });
@@ -253,7 +254,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
             var rejected;
             fullStockCardSummaryRepositoryImpl.query({
-                facilityId: 'facilityId'
+                facilityId: 'facilityId',
+                orderableIds: ['123']
             })
                 .catch(function() {
                     rejected = true;
@@ -271,7 +273,8 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             spyOn(siglusArchivedProductService, 'getArchivedOrderables').andReturn($q.resolve([]));
             var result;
             fullStockCardSummaryRepositoryImpl.query({
-                facilityId: 'facilityId'
+                facilityId: 'facilityId',
+                orderableIds: ['123']
             })
                 .then(function(response) {
                     result = response;

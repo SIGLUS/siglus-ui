@@ -42,8 +42,6 @@
 
         vm.destinationName = '';
 
-        vm.items;
-
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
@@ -106,7 +104,7 @@
         }
 
         vm.returnBack = function() {
-            $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
+            $state.go('^', $stateParams);
         };
 
         // SIGLUS-REFACTOR: starts here
