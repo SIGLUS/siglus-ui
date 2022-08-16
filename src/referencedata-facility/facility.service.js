@@ -74,6 +74,12 @@
                             '/api/siglusapi/facilities/:facilityCode/deviceInfo'
                         ),
                         method: 'DELETE'
+                    },
+                    addNewFacility: {
+                        url: referencedataUrlFactory(
+                            '/api/siglusapi/facilities/initiate'
+                        ),
+                        method: 'POST'
                     }
                     // SIGLUS-REFACTOR: ends here
                 }
@@ -87,6 +93,7 @@
         this.search = search;
         this.clearFacilitiesCache = clearFacilitiesCache;
         this.eraseDeviceInfo = eraseDeviceInfo;
+        this.addNewFacility = addNewFacility;
 
         /**
      * @ngdoc method
@@ -292,6 +299,23 @@
                 facilityCode: facilityCode
             }).$promise;
         }
+
+        /**
+     * @ngdoc method
+     * @methodOf referencedata-facility.facilityService
+     * @name addNewFacility
+     *
+     * @description
+     * add a new facility
+     *
+     * @param  {String}  facility  The facility
+     */
+        function addNewFacility(facility) {
+            return resource.addNewFacility(
+                facility
+            ).$promise;
+        }
+
     // SIGLUS-REFACTOR: ends here
     }
 })();
