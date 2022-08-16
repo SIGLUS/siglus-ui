@@ -21,7 +21,7 @@ describe('LocationPhysicalInventoryDraftController', function() {
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
         ReasonDataBuilder, LotDataBuilder, PhysicalInventoryLineItemAdjustmentDataBuilder,
         physicalInventoryDataService, siglusRemainingProductsModalService,
-        confirmDiscardService, subDraftIds, alertConfirmModalService;
+        confirmDiscardService, subDraftIds, alertConfirmModalService, allLocationAreaMap;
 
     beforeEach(function() {
 
@@ -33,6 +33,8 @@ describe('LocationPhysicalInventoryDraftController', function() {
         //SIGLUS-REFACTOR: starts here
         module('siglus-alert-confirm-modal');
         // SIGLUS-REFACTOR: ends here
+        module('stock-products');
+        module('stock-orderable-group');
 
         subDraftIds = '';
         inject(function($injector) {
@@ -47,7 +49,7 @@ describe('LocationPhysicalInventoryDraftController', function() {
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             LotDataBuilder = $injector.get('LotDataBuilder');
-
+            allLocationAreaMap = {};
             state = jasmine.createSpyObj('$state', ['go']);
             chooseDateModalService = jasmine.createSpyObj('chooseDateModalService', ['show']);
             state.current = {
@@ -562,7 +564,8 @@ describe('LocationPhysicalInventoryDraftController', function() {
             confirmService: confirmService,
             confirmDiscardService: confirmDiscardService,
             alertConfirmModalService: alertConfirmModalService,
-            subDraftIds: subDraftIds
+            subDraftIds: subDraftIds,
+            allLocationAreaMap: allLocationAreaMap
         });
     }
 

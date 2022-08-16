@@ -70,6 +70,9 @@ describe('LocationPhysicalInventoryListController', function() {
 
     beforeEach(function() {
         module('siglus-location-physical-inventory-list');
+        module('stock-physical-inventory');
+        module('stock-products');
+        module('stock-orderable-group');
         prepareInjector();
         prepareSpies();
         prepareData();

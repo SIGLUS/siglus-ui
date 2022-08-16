@@ -80,6 +80,9 @@ describe('openlmis.stock.physical.inventory.list state', function() {
 
     beforeEach(function() {
         module('siglus-location-physical-inventory-list');
+        module('stock-physical-inventory');
+        module('stock-products');
+        module('stock-orderable-group');
         prepareInjector();
         prepareSpies();
         init();
