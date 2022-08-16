@@ -71,9 +71,9 @@
             <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
             <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.lot.lotCode}}</span>
+                <span ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.lot.lotCode}}</span>
                 <siglus-stock-input-select
-                    ng-if="vm.actionType !== 'SUBMITTED'"
+                    ng-if="vm.isEmpty(lineItem.stockCardId) && vm.actionType !== 'SUBMITTED'"
                     line-item="lineItem"
                     enable-input="true">
                 </siglus-stock-input-select>
