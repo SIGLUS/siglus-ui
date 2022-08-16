@@ -34,14 +34,14 @@
         'confirmService',
         'FacilityRepository', 'stateTrackerService', '$state',
         'loadingModalService',
-        'notificationService', 'messageService'
+        'notificationService', 'messageService', 'facilityService'
     ];
 
     function FacilityAddController(facility, facilityTypes, geographicZones,
                                    facilityOperators,
                                    confirmService, FacilityRepository, stateTrackerService,
                                    $state, loadingModalService, notificationService,
-                                   messageService) {
+                                   messageService, facilityService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -95,7 +95,8 @@
 
         function doSave() {
             loadingModalService.open();
-            return new FacilityRepository().create(vm.facility)
+            return new facilityService.addNewFacility(vm.facility)
+
                 .then(function(facility) {
                     notificationService.success('adminFacilityAdd.facilityHasBeenSaved');
                     stateTrackerService.goToPreviousState();
