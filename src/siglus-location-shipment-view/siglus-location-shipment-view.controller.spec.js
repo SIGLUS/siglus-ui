@@ -368,7 +368,7 @@ describe('SiglusLocationShipmentViewController', function() {
                 location: null,
                 lot: {
                     lotCode: 'code1',
-                    expirationDate: '2022-08-25'
+                    expirationDate: '2023-04-25'
                 },
                 isMainGroup: true,
                 netContent: 1,

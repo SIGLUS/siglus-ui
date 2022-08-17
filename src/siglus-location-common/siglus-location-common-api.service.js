@@ -18,9 +18,31 @@
     'use strict';
 
     /**
-     * @module siglus-location-common
-     *
-     */
-    angular.module('siglus-location-common', ['fulfillment']);
+   * @ngdoc service
+   * @name shipment.Shipment
+   *
+   * @description
+   * Represents a single shipment (or shipment draft).
+   */
+    angular
+        .module('siglus-location-common')
+        .service('siglusLocationCommonApiService', siglusLocationCommonApiService);
+
+    siglusLocationCommonApiService.$inject = ['$resource', 'fulfillmentUrlFactory'];
+    function siglusLocationCommonApiService($resource, fulfillmentUrlFactory) {
+
+        var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/locations'), {}, {
+
+            getOrderableLocationLotsInfo: {
+                method: 'GET',
+                isArray: true
+            }
+
+        });
+
+        this.getOrderableLocationLotsInfo = function(params) {
+            return resource.getOrderableLocationLotsInfo(params).$promise;
+        };
+    }
 
 })();
