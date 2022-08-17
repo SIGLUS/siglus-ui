@@ -127,7 +127,7 @@
                 result = vm.mergedPatientMap[key].columns[innerKey].value;
             }
             return result;
-        };
+        }
 
         function getHistoryComments(statusHistory) {
             var historyCommentsStr = _.reduce(statusHistory, function(r, c) {

@@ -280,7 +280,9 @@
                     stockAdjustments: item.stockAdjustments,
                     reasonFreeText: item.reasonFreeText,
                     stockCardId: item.stockCardId,
-                    programId: item.programId
+                    programId: item.programId,
+                    area: item.areaCode,
+                    locationCode: item.locationCode
                 };
             });
             // SIGLUS-REFACTOR: ends here
