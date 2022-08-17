@@ -94,21 +94,23 @@
             <td  ng-if="!vm.isInitialInventory" class="text-align-right">
                 {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
             </td>
-            <td class="location-td">
-                <select
-                    placeholder="Area"
-                    ng-options="item.code as item.label for item in lineItem.areaList"
-                    ng-model="lineItem.areaCode"
-                    ng-change="vm.onSelectChange('area', lineItem)"
-                >
-                </select>
-                <select
-                    placeholder="Location"
-                    ng-options="item.code as item.label for item in lineItem.locationList"
-                    ng-model="lineItem.locationCode"
-                    ng-change="vm.onSelectChange('location', lineItem)"
-                >
-                </select>
+            <td>
+                <div class="location-td">
+                    <select
+                        placeholder="Area"
+                        ng-options="item.code as item.label for item in lineItem.areaList"
+                        ng-model="lineItem.area"
+                        ng-change="vm.onSelectChange('area', lineItem)"
+                    >
+                    </select>
+                    <select
+                        placeholder="Location"
+                        ng-options="item.code as item.label for item in lineItem.locationList"
+                        ng-model="lineItem.locationCode"
+                        ng-change="vm.onSelectChange('location', lineItem)"
+                    >
+                    </select>
+                </div>
             </td>
             <td class="digit-cell" >
                 <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.quantity}}</span>

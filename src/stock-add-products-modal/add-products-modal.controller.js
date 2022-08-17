@@ -165,7 +165,7 @@
 
             $scope.$broadcast('openlmis-form-submit');
 
-            var noErrors = _.all(vm.addedItems, function(item) {
+            var noErrors = vm.withLocation ? true : _.all(vm.addedItems, function(item) {
                 return !item.quantityInvalid;
             });
             if (noErrors) {

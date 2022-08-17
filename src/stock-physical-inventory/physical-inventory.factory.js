@@ -262,8 +262,6 @@
          * @return {Promise}       Saved draft
          */
         function saveDraft(draft) {
-            // eslint-disable-next-line no-debugger
-            debugger;
             var physicalInventory = angular.copy(draft);
 
             // SIGLUS-REFACTOR: Filter not added items
@@ -281,7 +279,7 @@
                     reasonFreeText: item.reasonFreeText,
                     stockCardId: item.stockCardId,
                     programId: item.programId,
-                    area: item.areaCode,
+                    area: item.area,
                     locationCode: item.locationCode
                 };
             });
@@ -301,6 +299,8 @@
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
                     orderable: summary.orderable,
+                    area: summary.area,
+                    locationCode: summary.locationCode,
                     quantity: null,
                     vvmStatus: null,
                     stockAdjustments: [],
@@ -336,12 +336,15 @@
                         stockAdjustments: item.stockAdjustments || [],
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
+                        area: item.area,
+                        locationCode: item.locationCode,
                         programId: _.first(summary.orderable.programs).programId
                     });
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
                     return !kit.stockCardId;
                 });
+                console.log('#### draftToReturn', draftToReturn);
             }
         }
 
