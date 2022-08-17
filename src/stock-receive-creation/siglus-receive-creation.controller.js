@@ -872,10 +872,11 @@
             vm.reasons = reasons;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
+            $stateParams.orderablesPrice = orderablesPrice;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
             _.forEach(vm.addedLineItems, function(item) {
-                item.price = orderablesPrice.data[item.orderable.id];
+                item.price = orderablesPrice.data[item.orderable.id] || '';
             });
             // calc total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
