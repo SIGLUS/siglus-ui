@@ -146,9 +146,8 @@
             item.productCode = item.orderable.productCode;
             item.productName = item.orderable.fullProductName;
             item.lotCode = item.lot && item.lot.lotCode;
-            // item.quantity = 
             item.expirationDate = item.lot && openlmisDateFilter(item.lot.expirationDate, 'yyyy-MM-dd');
-            item.price = orderablesPrice.data[item.orderable.id];
+            item.price = orderablesPrice.data[item.orderable.id] || '';
             vm.addedLineItems.unshift(item);
 
             if (_.get(vm.selectedLot, 'id')) {
@@ -931,6 +930,7 @@
                 return r;
             }, 0);
             $stateParams.displayItems = displayItems;
+            $stateParams.orderablesPrice = orderablesPrice;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
             vm.orderableGroups = _.clone(orderableGroups);

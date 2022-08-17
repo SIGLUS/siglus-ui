@@ -44,6 +44,7 @@
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
+                orderablesPrice: undefined,
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
@@ -89,7 +90,10 @@
                         lineItems: mergedItems
                     };
                 },
-                orderablesPrice: function(siglusOrderableLotService) {
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    if ($stateParams.orderablesPrice) {
+                        return $stateParams.orderablesPrice;
+                    }
                     return siglusOrderableLotService.getOrderablesPrice();
                 },
                 initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {

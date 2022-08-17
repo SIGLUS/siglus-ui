@@ -47,6 +47,7 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
+                orderablesPrice: undefined,
                 addedLineItems: undefined,
                 draft: undefined,
                 orderableGroups: undefined,
@@ -116,7 +117,10 @@
                     }
                     return $stateParams.addedLineItems;
                 },
-                orderablesPrice: function(siglusOrderableLotService) {
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    if ($stateParams.orderablesPrice) {
+                        return $stateParams.orderablesPrice;
+                    }
                     return siglusOrderableLotService.getOrderablesPrice();
                 },
                 displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
