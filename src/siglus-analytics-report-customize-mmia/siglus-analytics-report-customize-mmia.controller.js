@@ -53,7 +53,6 @@
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
-        vm.comments = undefined;
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
@@ -65,8 +64,94 @@
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
-            var productLineItems = _.forEach(requisition.requisitionLineItems, function(item) {
+            vm.productLineItems = getProductLineItems(requisition.requisitionLineItems);
+            services = requisition.testConsumptionLineItems;
+            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
+            vm.signaure = getSignaure(requisition.extraData.signaure);
+            vm.historyComments = getHistoryComments(requisition.statusHistory);
+            vm.creationDate = getCreationDate(requisition.createdDate);
+            vm.month = getMonth(requisition.processingPeriod.startDate);
+            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+            vm.service = siglusTemplateConfigureService.getSectionByName(
+                requisition.usageTemplate.rapidTestConsumption,
+                SIGLUS_SECTION_TYPES.SERVICE
+            );
+            vm.testProject = siglusTemplateConfigureService.getSectionByName(
+                requisition.usageTemplate.rapidTestConsumption,
+                SIGLUS_SECTION_TYPES.PROJECT
+            );
+            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(
+                requisition.usageTemplate.rapidTestConsumption,
+                SIGLUS_SECTION_TYPES.OUTCOME
+            );
+            extendLineItems();
+            vm.services = _.chain(services)
+                .sortBy('displayOrder')
+                .value();
+            vm.regimensAdults = getCategories(vm.requisition.regimenLineItems).Adults;
+            vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
+            $timeout(function() {
+                angular.forEach(vm.productLineItems, function(item) {
+                    if (item.id) {
+                        // eslint-disable-next-line no-undef
+                        JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
+                            height: 24,
+                            displayValue: true,
+                            fontSize: 10,
+                            marginTop: 10,
+                            marginBottom: 2
+                        });
+                    }
+                });
+            }, 100);
+            var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
+                return item.name === 'summary';
+            });
+            vm.regimenSummaryLineItems = lineItemsFactory(
+                vm.requisition.regimenSummaryLineItems,
+                summerySection.columns
+            );
+            var patients = patientTemplateFactory();
+            vm.patientList = patients.normalPatientList;
+            vm.mergedPatientMap = patients.mergedPatientMap;
+            vm.getValueByKey = getValueByKey;
+        }
+
+        function getValueByKey(key, index) {
+            if (!vm.requisition.patientLineItems.length) {
+                return '';
+            }
+            var result = '';
+            if (vm.mergedPatientMap[key]) {
+                var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
+                result = vm.mergedPatientMap[key].columns[innerKey].value;
+            }
+            return result;
+        };
+
+        function getHistoryComments(statusHistory) {
+            var historyCommentsStr = _.reduce(statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            return historyCommentsStr.substr(0, historyCommentsStr.length - 1);
+        }
+
+        function getSignaure(signaure) {
+            // vm.signaure = requisition.extraData.signaure;
+            var newSignaure = angular.copy(signaure);
+            if (newSignaure.approve) {
+                newSignaure.approve = newSignaure && newSignaure.approve.length
+                    ? newSignaure.approve.join(',')
+                    : '';
+            }
+            return newSignaure;
+        }
+
+        function getProductLineItems(requisitionLineItems) {
+            var productLineItems = _.map(requisitionLineItems, function(item) {
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
+                return item;
             });
             var lineItemsGroupByCategory = _.reduce(productLineItems, function(r, c) {
                 if (
@@ -106,78 +191,7 @@
                 );
                 return lineItemsGroupByCategory[item];
             });
-            vm.productLineItems = _.flatten(temp, 2);
-            services = requisition.testConsumptionLineItems;
-            vm.comments = requisition.draftStatusMessage;
-            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
-            vm.signaure =  requisition.extraData.signaure;
-            if (requisition.extraData.signaure.approve) {
-                vm.signaure.approve = vm.signaure && vm.signaure.approve.length
-                    ? vm.signaure.approve.join(',')
-                    : '';
-            }
-            var historyCommentsStr = _.reduce(requisition.statusHistory, function(r, c) {
-                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
-                return r;
-            }, '');
-            vm.historyComments = historyCommentsStr.substr(0, historyCommentsStr.length - 1);
-            vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.startDate);
-            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
-            vm.service = siglusTemplateConfigureService.getSectionByName(
-                requisition.usageTemplate.rapidTestConsumption,
-                SIGLUS_SECTION_TYPES.SERVICE
-            );
-            vm.testProject = siglusTemplateConfigureService.getSectionByName(
-                requisition.usageTemplate.rapidTestConsumption,
-                SIGLUS_SECTION_TYPES.PROJECT
-            );
-            vm.testOutcome = siglusTemplateConfigureService.getSectionByName(
-                requisition.usageTemplate.rapidTestConsumption,
-                SIGLUS_SECTION_TYPES.OUTCOME
-            );
-            extendLineItems();
-            vm.services = _.chain(services)
-                .sortBy('displayOrder')
-                .value();
-            vm.regimensAdults = getCategories(vm.requisition.regimenLineItems).Adults;
-            vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
-            $timeout(function() {
-                angular.forEach(vm.productLineItems, function(item) {
-                    if (item.id) {
-                        // eslint-disable-next-line no-undef
-                        JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
-                            height: 24,
-                            displayValue: true,
-                            fontSize: 10,
-                            marginTop: 10,
-                            marginBottom: 2
-                        });
-                    }
-                });
-            }, 100);
-            var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
-                return item.name === 'summary';
-            });
-            // vm.requisition.usageTemplate.regimen[0].columns
-            vm.regimenSummaryLineItems = lineItemsFactory(
-                vm.requisition.regimenSummaryLineItems,
-                summerySection.columns
-            );
-            var patients = patientTemplateFactory();
-            vm.patientList = patients.normalPatientList;
-            vm.mergedPatientMap = patients.mergedPatientMap;
-            vm.getValueByKey = function(key, index) {
-                if (!vm.requisition.patientLineItems.length) {
-                    return '';
-                }
-                var result = '';
-                if (vm.mergedPatientMap[key]) {
-                    var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
-                    result = vm.mergedPatientMap[key].columns[innerKey].value;
-                }
-                return result;
-            };
+            return _.flatten(temp, 2);
         }
 
         function patientTemplateFactory() {
@@ -214,6 +228,7 @@
                 normalPatientList: []
             });
         }
+
         function lineItemsFactory(lineItems, sections) {
             return _.map(lineItems, function(item) {
                 _.forEach(sections, function(_item) {
@@ -227,6 +242,7 @@
                 return item;
             });
         }
+
         function getCategories(regimenLineItems) {
             var regimentLineItemsCopy = angular.copy(regimenLineItems);
             vm.totalItem = regimentLineItemsCopy.pop();
@@ -239,6 +255,7 @@
                 return r;
             }, {});
         }
+
         function getCreationDate(date) {
             return openlmisDateFilter(date, 'MMM')
                 + ' '
@@ -246,6 +263,7 @@
                 + ' '
                 + openlmisDateFilter(date, 'dd');
         }
+
         function getPdfName(date, facilityName, id) {
             return (
                 'MIA.' + id
@@ -255,6 +273,7 @@
                 + '.pdf'
             );
         }
+
         function extendLineItems() {
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.service);
             var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
@@ -272,6 +291,7 @@
                 });
             });
         }
+
         function getMonth(date) {
             return openlmisDateFilter(date, 'MMMM');
         }
