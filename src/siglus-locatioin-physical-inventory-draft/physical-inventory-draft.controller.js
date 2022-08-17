@@ -54,7 +54,7 @@
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
                         allLocationAreaMap) {
         var vm = this;
-
+        // vm.withLocation = true;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
@@ -232,7 +232,7 @@
                 });
                 return !isInAdded;
             });
-            addProductsModalService.show(notYetAddedItems, vm.hasLot).then(function(addedItems) {
+            addProductsModalService.show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
                 draft.lineItems = draft.lineItems.concat(addedItems);
                 refreshLotOptions();
                 // $stateParams.program = vm.program;
@@ -313,6 +313,7 @@
         // SIGLUS-REFACTOR: starts here
         vm.doCancelFilter = function() {
             if ($stateParams.keyword) {
+                vm.keyword = null;
                 $stateParams.keyword = null;
                 reload($state.current.name);
             }
@@ -745,8 +746,8 @@
                 }, []);
 
                 var list = _.map(newList, function(item) {
-                    item[0].areaCode = null;
-                    item[0].locationCode = null;
+                    item[0].area = item[0].area ? item[0].area : null;
+                    item[0].locationCode = item[0].locationCode ? item[0].locationCode : null;
                     item[0].areaList = areaList;
                     item[0].locationList = locationList;
                     return item;
@@ -756,24 +757,23 @@
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 // SIGLUS-REFACTOR: ends here
             }, true);
+            console.log('draft ---->>>', draft);
         }
 
         vm.onSelectChange = function(type, lineItem) {
-            // console.log(type + ': ', lineItem);
             if (type === 'area') {
                 lineItem.locationCode = null;
-                lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.areaCode], function(item) {
+                lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
                     return {
                         code: item.locationCode,
                         label: item.locationCode
                     };
                 });
             } else {
-                lineItem.areaCode = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
+                lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
                     return item.locationCode === lineItem.locationCode;
                 }).area;
             }
-            // console.log('draft ---->>>', draft);
         };
 
         function onChange() {
