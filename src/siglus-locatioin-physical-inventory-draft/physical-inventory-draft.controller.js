@@ -737,7 +737,7 @@
                 var locationList = _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
                     r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
                         return {
-                            code: _item.locationId,
+                            code: _item.locationCode,
                             label: _item.locationCode
                         };
                     }));
@@ -764,16 +764,16 @@
                 lineItem.locationCode = null;
                 lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.areaCode], function(item) {
                     return {
-                        code: item.locationId,
+                        code: item.locationCode,
                         label: item.locationCode
                     };
                 });
             } else {
                 lineItem.areaCode = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
-                    return item.locationId === lineItem.locationCode;
+                    return item.locationCode === lineItem.locationCode;
                 }).area;
             }
-            console.log('draft ---->>>', draft);
+            // console.log('draft ---->>>', draft);
         };
 
         function onChange() {
