@@ -55,6 +55,7 @@
         vm.upload = upload;
         vm.updateEnableLocationManagement = updateEnableLocationManagement;
         vm.selectedReport = null;
+        vm.upgradeToWeb = upgradeToWeb;
         // vm.minDate = '2022-08-08';
         /**
          * @ngdoc property
@@ -161,6 +162,7 @@
             vm.isAndroid = angular.copy(
                 facility.isAndroidDevice
             );
+            vm.isNewFacility = angular.copy(facility.isNewFacility);
             vm.facilityId = angular.copy(facility.id);
             vm.facilityWithPrograms = angular.copy(facility);
             vm.facilityTypes = facilityTypes;
@@ -185,9 +187,10 @@
                     reportName: vm.reportMap[item.code]
                 }, item);
             });
-            var programCodeByReports = _.map(vm.facilityWithPrograms.reportTypes, function(item) {
-                return item.programCode;
-            });
+            var programCodeByReports = _.map(vm.facilityWithPrograms.reportTypes,
+                function(item) {
+                    return item.programCode;
+                });
             vm.reports = programsWithReportName.filter(function(item) {
                 return !_.contains(programCodeByReports, item.code);
             });
@@ -229,6 +232,7 @@
                 'adminFacilityView.saveFacility.success',
                 'adminFacilityView.saveFacility.fail');
         }
+
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.controller:FacilityViewController
@@ -280,6 +284,7 @@
 
             return $q.when();
         }
+
         vm.addReport = function() {
             vm.facilityWithPrograms.reportTypes.push(angular.merge({
                 startDate: vm.selectedStartDate,
@@ -400,7 +405,9 @@
                     new locationManagementService
                         .update(vm.facility.id, facility)
                         .then(function() {
-                            notificationService.success('adminFacilityView.disabledLocation');
+                            notificationService.success(
+                                'adminFacilityView.disabledLocation'
+                            );
                         });
                 });
                 return;
@@ -431,6 +438,23 @@
                 .then(function() {
                     notificationService.success('adminFacilityView.enableLocation');
                 });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-add.controller:FacilityAddController
+         * @name upgradeToWeb
+         *
+         * @description
+         * upgrade android device to web
+         */
+        function upgradeToWeb() {
+            alertConfirmModalService.error(
+                'adminFacilityView.upgradeMessage',
+                '',
+                ['adminFacilityView.close',
+                    'adminFacilityView.confirm']
+            );
         }
     }
 }

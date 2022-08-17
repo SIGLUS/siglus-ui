@@ -24,10 +24,17 @@
 </label>
 <p class="note">{{'adminFacilityAdd.enabled.description.checked' | message}}</p>
 <p class="note">{{'adminFacilityAdd.enabled.description.unchecked' | message}}</p>
-<label for="facilityAndroid" class="checkbox">
-  <input id="facilityAndroid" type="checkbox" ng-model="vm.facility.isAndroidDevice"/>
-  {{'adminFacilityAdd.androidFacility' | message}}
+
+<label class="checkbox">
+  <input class="disabled-facility-view" id="checked" type="checkbox"
+         ng-model="vm.facility.isAndroidDevice"
+         ng-disabled="!vm.facility.isNewFacility || vm.facility.isAndroidDevice === true"/>
+  {{'adminFacilityView.androidFacility' | message}}
 </label>
+<div>
+  <input id="upgradeToWeb" type="button" ng-click="vm.upgradeToWeb()" value="{{ 'adminFacilityView.upgradeToWeb'
+    | message}}"/>
+</div>
 <label for="geographicZone">{{'adminFacilityAdd.geographicZone' | message}}</label>
 <select id="geographicZone" ng-disabled="vm.managedExternally" ng-model="vm.facility.geographicZone"
         ng-options="geographicZone as geographicZone.name for geographicZone in vm.geographicZones track by geographicZone.id"
