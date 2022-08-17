@@ -35,5 +35,8 @@
   "adminFacilityView.locationManagement.closeSwitch": "Once you disable the feature, the facility won't be able to use location management in the system. Do you want to disable it?",
   "adminFacilityView.locationManagement.closeSwitchWithoutConfigure": "Please configure location management first.",
   "adminFacilityView.uploadSuccess": "Upload Successfully!",
-  "adminFacilityView.uploadFailed": "Upload failed!"
+  "adminFacilityView.uploadFailed": "Upload failed!",
+  "adminFacilityView.androidFacility": "Android Facility",
+  "adminFacilityView.upgradeToWeb": "Upgrade to web facility",
+  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?"
 }

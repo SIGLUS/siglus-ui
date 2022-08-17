@@ -2422,7 +2422,6 @@
   "siglusIssueOrReceiveReport.notes": "Notas",
   "siglusIssueOrReceiveReport.create_by": "Elaborado por",
   "siglusIssueOrReceiveReport.date": "Data",
-
   "siglusIssueOrReceiveReport.quantityReceived": "Quantity Received",
   "siglusIssueOrReceiveReport.totalValue": "Total value  of the issue voucher",
   "proofOfDeliveryManage.view": "Visualizar",
@@ -2430,10 +2429,14 @@
   "proofOfDeliveryManage.start": "Começar",
   "proofOfDeliveryInitialModal.label": "Por favor, insira o número de usuários disponiveis para fazer este relatório de recepção para ${orderCode}",
   "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página.",
-  "proofOfDeliveryView.fnm":"FNM",
+  "proofOfDeliveryView.fnm": "FNM",
   "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial",
   "adminFacilityView.enableLocation": "Location management enabled successfully!",
   "adminFacilityView.disabledLocation": "Location management disabled successfully!",
   "downloadModal.downloading": "Baixando...",
-  "locationmanagement.title": "Location Management"
+  "locationmanagement.title": "Location Management",
+  "adminFacilityList.android": "Android",
+  "adminFacilityView.androidFacility": "Android Facility",
+  "adminFacilityView.upgradeToWeb": "Upgrade to web facility",
+  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?"
 }
