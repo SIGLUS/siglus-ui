@@ -120,7 +120,6 @@ describe('StockAdjustmentController', function() {
             programId: '1',
             program: chooseProgram,
             facility: facility,
-            draft: draft,
             draftId: draft.id
         });
         // SIGLUS-REFACTOR: ends here
