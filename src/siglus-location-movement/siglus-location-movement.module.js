@@ -18,9 +18,15 @@
     'use strict';
 
     /**
-     * @module siglus-location-common
+     * @module stock-issue
      *
+     * @description
+     * Provides stock issue state and controller.
      */
-    angular.module('siglus-location-common', ['fulfillment']);
+    angular.module('siglus-location-movement', [
+        'referencedata-facility',
+        'siglus-location-movement-creation'
+    ]);
 
 })();
+
