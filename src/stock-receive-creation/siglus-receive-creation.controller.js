@@ -37,7 +37,7 @@
         'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
         'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusOrderableLotService',
-        'siglusDownloadLoadingModalService'
+        'siglusDownloadLoadingModalService', 'orderablesPrice'
     ];
 
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
@@ -48,7 +48,7 @@
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
                         siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
-                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService) {
+                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService, orderablesPrice) {
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -123,7 +123,7 @@
                 item.productName = item.orderable.fullProductName;
                 item.lotCode = item.lot && item.lot.lotCode;
                 item.expirationDate = item.lot && item.lot.expirationDate;
-
+                item.price = orderablesPrice.data[item.orderable.id];
                 vm.addedLineItems.unshift(item);
 
                 previousAdded = vm.addedLineItems[0];
@@ -872,11 +872,16 @@
             vm.reasons = reasons;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             $stateParams.displayItems = displayItems;
+            $stateParams.orderablesPrice = orderablesPrice;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-            // 计算total value
+            _.forEach(vm.addedLineItems, function(item) {
+                item.price = orderablesPrice.data[item.orderable.id] || '';
+            });
+            // calc total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                r = r + c.quantity * 10;
+                var price = c.price * 100;
+                r = r + c.quantity * price;
                 return r;
             }, 0);
             vm.orderableGroups = orderableGroups;
@@ -898,8 +903,8 @@
             $stateParams.initialDraftInfo = initialDraftInfo;
             $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
-            // $stateParams.orderableGroups = orderableGroups;
-            $stateParams.hasLoadOrderableGroups = true;
+            $stateParams.orderableGroups = orderableGroups;
+            // $stateParams.hasLoadOrderableGroups = true;
             // SIGLUS-REFACTOR: ends here
         }
 

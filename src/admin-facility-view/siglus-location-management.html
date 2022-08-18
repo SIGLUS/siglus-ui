@@ -11,20 +11,22 @@
   <fieldset openlmis-invalid="{{vm.invalidMessage}}" class="form-group">
     <input
         type="file"
-        id="fileupload" class="file"
+        id="fileupload"
+        class="file"
         ng-model="vm.file"
-        accept=".csv" required/>
+        accept=".csv"
+        required
+        ng-change="vm.selectFileChange()"
+    />
   </fieldset>
-  <input type="submit" value="{{'adminFacilityView.upload' | message}}"/>
+  <div style="margin-left: 14px; display: flex; justify-content: flex-end; margin-top: 10px;">
+    <input type="submit" value="{{'adminFacilityView.upload' | message}}"/>
+  </div>
 </form>
 <p>{{'adminFacilityView.locationManagement.enableLocation' | message}}</p>
 
 <label class="switch">
-  <input type="checkbox" ng-model="vm.enableValue"
+  <input type="checkbox" value="vm.enableValue"
          ng-click="vm.updateEnableLocationManagement()">
-  <span class="slider round"></span>
+  <span ng-class="{'slider round': !vm.enableValue, 'sliderChecked round': vm.enableValue}"></span>
 </label>
-<!--         ng-change="vm.updateEnableLocationManagement()"-->
-<!--ng-disabled="vm.isAndroid"-->
-<!--ng-click="vm.enableLocationManagement()"-->
-<!--         ng-change="vm.enableLocationManagement()"-->

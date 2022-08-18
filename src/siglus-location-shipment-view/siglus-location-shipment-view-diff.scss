@@ -1,0 +1,21 @@
+.quantity-unit-btn {
+  margin-bottom: -1.5em;
+}
+
+#locationShipmentForm {
+  padding-bottom: 56px;
+  margin-bottom: 0;
+}
+
+#locationShipmentForm tr:first-child>td {
+  border-top-width: 1px;
+}
+
+#locationShipmentForm input.number {
+  text-align: left;
+}
+
+
+#locationShipmentForm input[disabled] {
+  cursor: not-allowed;
+}

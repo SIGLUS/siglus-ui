@@ -40,6 +40,7 @@
             params: {
                 program: undefined,
                 facility: undefined,
+                orderablesPrice: undefined,
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
@@ -66,6 +67,12 @@
                         return facilityFactory.getUserHomeFacility();
                     }
                     return $stateParams.facility;
+                },
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    if ($stateParams.orderablesPrice) {
+                        return $stateParams.orderablesPrice;
+                    }
+                    return siglusOrderableLotService.getOrderablesPrice();
                 },
                 // SIGLUS-REFACTOR: starts here
                 mergedItems: function($stateParams, siglusStockIssueService, alertService) {

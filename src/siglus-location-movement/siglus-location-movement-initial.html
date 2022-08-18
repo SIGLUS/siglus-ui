@@ -1,0 +1,39 @@
+<h2 ng-show="vm.facility">{{ 'stockIssue.title' | message: {'facility': vm.facility.name} }}</h2>
+<section class="openlmis-table-container">
+    <table>
+        <caption ng-if="!vm.programs.length">{{'stockIssue.noProgramAvailable' | message}}
+        </caption>
+        <thead>
+        <tr>
+            <th style="min-width: 160px;">{{'stockIssue.program' | message}}</th>
+            <th style="min-width: 160px;">{{'stockIssue.status' | message}}</th>
+            <th>{{'stockIssue.action' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="program in vm.programs">
+            <td style="min-width: 160px;">{{program.name}}</td>
+            <td style="min-width: 160px;" >{{vm.hasExistInitialDraft ? 'stockIssue.draft' : 'stockIssue.notStarted' | message}}</td>
+            <td ng-if="vm.hasExistInitialDraft">
+
+                <input
+                        id="continueButton"
+                        type="button"
+                        value="{{'stockIssue.continue' | message}}"
+                        class="primary"
+                        ng-click="vm.proceedForIssue(program)"
+                />
+            </td>
+            <td ng-if="!vm.hasExistInitialDraft">
+                <input
+                        id="startButton"
+                        type="button"
+                        value="{{'stockIssue.issueStart' | message}}"
+                        class="primary"
+                        ng-click="vm.start(program)"
+                />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>

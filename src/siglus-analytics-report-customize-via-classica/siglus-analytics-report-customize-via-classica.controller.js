@@ -44,7 +44,7 @@
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
         vm.emergencyCount = '01';
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
+        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;

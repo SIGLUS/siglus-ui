@@ -44,11 +44,11 @@
                 reasons: undefined,
                 displayItems: undefined,
                 addedLineItems: undefined,
+                orderablesPrice: undefined,
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
                 isAddProduct: undefined,
-                hasLoadOrderableGroups: undefined,
                 size: '50',
                 initialDraftInfo: undefined,
                 mergedItems: undefined
@@ -90,6 +90,12 @@
                         lineItems: mergedItems
                     };
                 },
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    if ($stateParams.orderablesPrice) {
+                        return $stateParams.orderablesPrice;
+                    }
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
@@ -100,7 +106,7 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, programId, facility, mergedItems, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
+                    if (!$stateParams.orderableGroups) {
                         var allLineOrderableIds = mergedItems.map(function(line) {
                             return line.orderableId;
                         });

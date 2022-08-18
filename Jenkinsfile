@@ -29,23 +29,28 @@ pipeline {
                         fi
                     '''
                 }
-                println "test converage: check"
+                println "test coverage: check"
                 sh '''
-                    coverage_threshold=66
-                    coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -4`;
-                    echo "$coverage"
-                    echo "$coverage[1]"
-                    coverage_int=`awk -v var="$coverage[1]" 'BEGIN {print int(var)}'`
-                    echo "Current statement coverage: $coverage[0]%.";
-                    echo "Current branch coverage: $coverage[1]%.";
-                    echo "Current function coverage: $coverage[2]%.";
-                    echo "Current lines coverage: $coverage[3]%.";
-                    if [ $coverage_int -lt $coverage_threshold ];
+                    coverage_threshold=63
+
+                    statement_coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -1 | sed -n '1, 1p'`;
+                    branch_coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -2 | sed -n '2, 1p'`;
+                    function_coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -3 | sed -n '3, 1p'`;
+                    line_coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -4 | sed -n '4, 1p'`;
+
+                    branch_coverage_int=`awk -v var="$branch_coverage" 'BEGIN {print int(var)}'`
+
+                    echo "Current statement coverage: $statement_coverage%.";
+                    echo "Current branch coverage: $branch_coverage%.";
+                    echo "Current function coverage: $function_coverage%.";
+                    echo "Current line coverage: $line_coverage%.";
+
+                    if [ $branch_coverage_int -lt $coverage_threshold ];
                     then
-                        echo "Error: current test coverage is less than $coverage_threshold%, please add unit tests before push code to ensure test coverage reaches $coverage_threshold%.";
+                        echo "Error: current branch coverage is less than $coverage_threshold%, please add unit tests before push code to ensure branch coverage reaches $coverage_threshold%.";
                         exit 1
                     else
-                      echo "Congratulations! Test coverage is more than $coverage_threshold%."
+                      echo "Congratulations! Branch coverage is more than $coverage_threshold%."
                     fi;
                 '''
                 println "sonarqube: analysis"

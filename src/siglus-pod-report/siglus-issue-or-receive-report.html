@@ -242,9 +242,9 @@
               <td>{{ item.orderedQuantity }}</td>
               <td>{{ item.quantityShipped }}</td>
               <!-- price -->
-              <td></td>
+              <td>{{ item.price / 100 }}</td>
               <!-- value -->
-              <td style="width: 30px;"></td>
+              <td style="width: 30px;">{{ (item.price * item.quantityShipped) / 100 }}</td>
               <td style="border: none; border-left: 1px solid #000;"></td>
               <td>{{ item.quantityAccepted }}</td>
               <td style="border-right: 1px solid #000;">{{ item.quantityAccepted ? item.quantityAccepted - item.quantityShipped : '' }}</td>
@@ -255,7 +255,7 @@
       <section id="sectionThird" class="section-third">
         <!-- TODO should be automatically calculated -->
         <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
-        <div class="issue-voucher" style="text-align: center;">{{ vm.totalPriceValue }}</div>
+        <div class="issue-voucher" style="text-align: center;">{{ vm.totalPriceValue / 100}}</div>
       </section>
       <section id="sectionFouth" class="section-fouth">
         <!-- TODO signature of the user who submitted the merged issue draft -->

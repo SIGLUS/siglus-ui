@@ -1,0 +1,47 @@
+<label for="facilityName">{{'adminFacilityAdd.facilityName' | message}}</label>
+<input id="facilityName" type="text" ng-model="vm.facility.name" ng-disabled="vm.managedExternally"
+       required/>
+<label for="facilityCode">{{'adminFacilityAdd.facilityCode' | message}}</label>
+<input id="facilityCode" type="text" ng-model="vm.facility.code" ng-disabled="vm.managedExternally"
+       required/>
+<label for="facilityType">{{'adminFacilityAdd.facilityType' | message}}</label>
+<select id="facilityType" ng-model="vm.facility.type"
+        ng-options="type as type.name for type in vm.facilityTypes track by type.id"
+        required></select>
+<label for="operationalDate">{{'adminFacilityAdd.operationalDate' | message}}</label>
+<input id="operationalDate" type="date" ng-model="vm.facility.goLiveDate"
+       ng-required="vm.facility.id"/>
+<p class="note">{{'adminFacilityAdd.operationalDate.description' | message}}</p>
+<label for="facilityActive" class="checkbox">
+  <input id="facilityActive" type="checkbox" ng-model="vm.facility.active"
+         ng-disabled="vm.managedExternally"/>
+  {{'adminFacilityAdd.activeFacility' | message}}
+</label>
+<p class="note">{{'adminFacilityAdd.activeFacility.description' | message}}</p>
+<label for="facilityEnabled" class="checkbox">
+  <input id="facilityEnabled" type="checkbox" ng-model="vm.facility.enabled"/>
+  {{'adminFacilityAdd.enabled' | message}}
+</label>
+<p class="note">{{'adminFacilityAdd.enabled.description.checked' | message}}</p>
+<p class="note">{{'adminFacilityAdd.enabled.description.unchecked' | message}}</p>
+
+<label class="checkbox">
+  <input class="disabled-facility-view" id="checked" type="checkbox"
+         ng-model="vm.facility.isAndroidDevice"
+         ng-disabled="!vm.facility.isNewFacility || vm.facility.isAndroidDevice === true"/>
+  {{'adminFacilityView.androidFacility' | message}}
+</label>
+<div>
+  <input id="upgradeToWeb" type="button" ng-click="vm.upgradeToWeb()" value="{{ 'adminFacilityView.upgradeToWeb'
+    | message}}"/>
+</div>
+<label for="geographicZone">{{'adminFacilityAdd.geographicZone' | message}}</label>
+<select id="geographicZone" ng-disabled="vm.managedExternally" ng-model="vm.facility.geographicZone"
+        ng-options="geographicZone as geographicZone.name for geographicZone in vm.geographicZones track by geographicZone.id"
+        required></select>
+<label for="description">{{'adminFacilityAdd.description' | message}}</label>
+<textarea id="description" ng-model="vm.facility.description"
+          ng-disabled="vm.managedExternally"></textarea>
+<label for="facilityOperator">{{'adminFacilityAdd.facilityOperator' | message}}</label>
+<select id="facilityOperator" ng-model="vm.facility.operator"
+        ng-options="facilityOperator as facilityOperator.name for facilityOperator in vm.facilityOperators track by facilityOperator.id"></select>

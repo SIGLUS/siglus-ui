@@ -17,7 +17,7 @@ describe('ProofOfDeliveryManageController', function() {
 
     var proofOfDeliveryManageService, $rootScope, $state, $q, $controller, ProgramDataBuilder, FacilityDataBuilder,
         ProofOfDeliveryDataBuilder, vm, deferred, pod, stateParams, supplyingFacilities, programs, requestingFacilities,
-        loadingModalService, siglusDownloadLoadingModalService,
+        loadingModalService, siglusDownloadLoadingModalService, orderablesPrice,
         notificationService, loadingDeferred, $window, ProofOfDeliveryPrinter, order;
 
     beforeEach(function() {
@@ -69,6 +69,12 @@ describe('ProofOfDeliveryManageController', function() {
             }
         };
 
+        orderablesPrice = {
+            '5f655d74-1213-46e0-9009-38a01e39c503': 66.66,
+            '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': 55,
+            '0fe4e147-714e-4bf0-9e5b-921e3f6d608d': 10
+        };
+
         pod = new ProofOfDeliveryDataBuilder().build();
         requestingFacilities = [
             new FacilityDataBuilder().build(),
@@ -96,7 +102,8 @@ describe('ProofOfDeliveryManageController', function() {
             supplyingFacilities: supplyingFacilities,
             pods: [pod],
             $stateParams: stateParams,
-            facility: new FacilityDataBuilder().build()
+            facility: new FacilityDataBuilder().build(),
+            orderablesPrice: orderablesPrice
         });
 
         loadingDeferred = $q.defer();

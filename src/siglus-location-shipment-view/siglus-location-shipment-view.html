@@ -1,0 +1,180 @@
+<h2>{{'shipmentView.title' | message:{orderCode: vm.order.orderCode} }}</h2>
+<aside class="requisition-info">
+    <div ng-if="vm.order.emergency" class="requisition-type emergency">
+        {{'shipmentView.emergency' | message}}
+    </div>
+    <ul>
+        <li>
+            <strong>{{'shipmentView.status' | message}}</strong>
+            <!-- SIGLUS-REFACTOR: starts here -->
+            {{vm.order.status | orderStatus}}
+            <!-- SIGLUS-REFACTOR: ends here -->
+        </li>
+        <!-- #365: add requisition number-->
+        <li ng-if="vm.order.requisitionNumber">
+            <strong>{{'shipmentView.requisitionNumber' | message}}</strong>
+            {{vm.order.requisitionNumber}}
+        </li>
+        <!-- #365: ends here -->
+        <li>
+            <strong>{{'shipmentView.dateCreated' | message}}</strong>
+            {{vm.order.createdDate | openlmisDate}}
+        </li>
+        <li>
+            <strong>{{'shipmentView.program' | message}}</strong>
+            {{vm.order.program.name}}
+        </li>
+        <li>
+            <strong>{{'shipmentView.facility' | message}}</strong>
+            {{vm.order.requestingFacility.name}}
+        </li>
+        <li>
+            <strong>{{'shipmentView.facilityCceStatus' | message}}</strong>
+            <facility-cce-status facility="vm.order.requestingFacility"></facility-cce-status>
+        </li>
+    </ul>
+</aside>
+<!-- #264: warehouse clerk can add product to orders-->
+<div class="sub-heading">
+    <h3 class="title">{{'shipmentView.products' | message}}</h3>
+    <button class="add" ng-click="vm.addProducts()"
+            ng-disabled="vm.order.emergency && vm.order.orderLineItems.length >= 10">
+        {{'shipmentView.addProduct' | message}}
+    </button>
+</div>
+<!-- #264: ends here -->
+<div id="locationShipmentForm" class="openlmis-table-container">
+    <quantity-unit-toggle class="is-primary quantity-unit-btn" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
+    <!-- #287: Warehouse clerk can skip some products in order-->
+    <h4>{{'shipmentView.skip' | message}}</h4>
+    <ul>
+        <li><a ng-click="vm.skipAllLineItems()">{{'shipmentView.all' | message}}</a></li>
+        <li><a ng-click="vm.unskipAllLineItems()">{{'shipmentView.none' | message}}</a></li>
+    </ul>
+    <!-- #287: ends here-->
+    <table suppress-tr-openlmis-invalid>
+        <thead>
+        <tr>
+            <!-- #287: Warehouse clerk can skip some products in order-->
+            <th>{{'shipmentView.skip' | message}}</th>
+            <!-- #287: ends here-->
+            <th>{{'shipmentView.productCode' | message}}</th>
+            <th>{{'shipmentView.product' | message}}</th>
+            <th style="min-width: 200px;">{{'shipmentView.lotCode' | message}}</th>
+            <!-- #370: hide VVM Status-->
+            <!--<th>{{'shipmentView.vvmStatus' | message}}</th>-->
+            <!-- #370: ends here -->
+            <th style="min-width: 130px">{{'shipmentView.expiryDate' | message}}</th>
+            <th>Location</th>
+            <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
+                {{'shipmentView.orderQuantity' | message}}
+            </th>
+            <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
+            <th>{{'shipmentView.partialFulfilledQuantity' | message}}</th>
+            <!-- #400: ends here -->
+            <th>{{'shipmentView.fillQuantityInPack' | message}}</th>
+            <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
+                {{'shipmentView.availableSoh' | message}}
+            </th>
+            <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
+                {{'shipmentView.remainingSoh' | message}}
+            </th>
+            <th style="width: 140px;">{{'stockCardSummaryList.actions' | message}}</th>
+        </tr>
+
+        </thead>
+        <tbody ng-repeat="lineItems in vm.pagedLineItems">
+        <tr ng-repeat="(index, lineItem) in lineItems" empty-row="vm.isEmptyRow(lineItem, lineItems, index)" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="12">
+            <td>
+                <input type="checkbox" ng-if="lineItem.isMainGroup" ng-model="lineItem.skipped"
+                       ng-change="vm.changeSkipStatus(lineItem, lineItems)"
+                       ng-disabled="!vm.canSkip(lineItems)"/>
+            </td>
+            <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
+            <td>{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
+            <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
+            <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)"
+                openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
+                popover="{{!lineItem.$error.lotCodeError && lineItem.$hint.lotCodeHint || '' | message}}"
+            >
+                <select
+                        ng-model="lineItem.lot"
+                        no-auto-select="true"
+                        ng-disabled="lineItem.skipped"
+                        ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
+                        ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()"
+                >
+                </select>
+            </td>
+            <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
+            <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)">
+                <input type="date" ng-model="lineItem.lot.expirationDate"
+                       ng-disabled="true"
+                       autocomplete="off"/>
+            </td>
+            <td ng-if="vm.showEmptyBlock(lineItem, lineItems)"></td>
+            <td ng-if="vm.showEditableBlocks(lineItem, lineItems)"
+                openlmis-invalid="{{
+                lineItem.$error.lotCodeError === 'locationShipmentView.lotDuplicated'
+                    ? lineItem.$error.lotCodeError
+                    : (lineItem.$error.locationError || '') | message}}"
+            >
+                <select
+                        ng-model="lineItem.location"
+                        no-auto-select="true"
+                        ng-disabled="lineItem.skipped"
+                        ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
+                        ng-change="vm.changeLocation(lineItem, lineItems, index)"
+                >
+                </select>
+            </td>
+            <td>{{vm.getOrderQuantity(lineItems, index)}}</td>
+            <td>{{lineItem.partialFulfilledQuantity}}</td>
+
+            <td ng-if="vm.showEmptyBlock(lineItem, lineItems)">
+                {{vm.getFillQuantity(lineItems, index)}}
+            </td>
+            <td ng-if="vm.showEditableBlocks(lineItem, lineItems)">
+                <input positive-integer
+                       ng-model="lineItem.shipmentLineItem.quantityShipped"
+                       openlmis-invalid="{{lineItem.$error.quantityShippedError || '' | message}}"
+                       ng-change="vm.changeFillQuantity(lineItem)"
+                       ng-disabled="lineItem.skipped"/>
+            </td>
+            <td>{{vm.getAvailableSoh(lineItems, index)}}</td>
+            <td>{{vm.getRemainingSoh(lineItems, index)}}</td>
+            <td>
+                <input type="button"
+                       value="{{'locationShipmentView.addItem' | message}}"
+                       ng-if="lineItem.isMainGroup" class="stock-actions add"
+                       ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)"
+                       ng-click="vm.addLot(lineItem, lineItems)">
+                <input type="button"
+                       value="{{'stockPhysicalInventoryDraft.remove' | message}}"
+                       ng-if="!lineItem.isMainGroup || !lineItem.id"
+                       class="danger stock-actions"
+                       ng-disabled="lineItem.skipped"
+                       ng-click="vm.removeItem(lineItems, index)">
+            </td>
+        </tr>
+        </tbody>
+        <openlmis-pagination list="vm.displayTableLineItems" paged-list="vm.pagedLineItems">
+        </openlmis-pagination>
+    </table>
+</div>
+
+<div class="openlmis-toolbar">
+    <siglus-go-back/>
+    <div class="button-group primary">
+        <button type="submit" ng-click="vm.submit()" class="primary">
+            {{'shipmentView.confirmShipment' | message}}
+        </button>
+        <button ng-show="vm.shipment.id" class="danger" ng-click="vm.delete()">
+            {{'shipmentView.deleteDraft' | message}}
+        </button>
+    </div>
+    <button ng-click="vm.save()">{{'shipmentView.saveDelete' | message}}</button>
+    <button ng-click="vm.printShipment()">
+        {{'shipmentView.generatePickPackList' | message}}
+    </button>
+</div>

@@ -20,7 +20,12 @@
         .module('stock-issue-creation')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = [
+        '$stateProvider',
+        'STOCKMANAGEMENT_RIGHTS',
+        'SEARCH_OPTIONS',
+        'ADJUSTMENT_TYPE'
+    ];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
@@ -42,6 +47,7 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
+                orderablesPrice: undefined,
                 addedLineItems: undefined,
                 draft: undefined,
                 orderableGroups: undefined,
@@ -110,6 +116,12 @@
                         return [];
                     }
                     return $stateParams.addedLineItems;
+                },
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    if ($stateParams.orderablesPrice) {
+                        return $stateParams.orderablesPrice;
+                    }
+                    return siglusOrderableLotService.getOrderablesPrice();
                 },
                 displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
                     if (_.isUndefined($stateParams.displayItems) && addedLineItems.length > 0) {
