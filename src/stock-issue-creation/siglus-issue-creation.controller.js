@@ -921,11 +921,11 @@
             vm.reasons = reasons;
             vm.addedLineItems = $stateParams.addedLineItems || [];
             _.forEach(vm.addedLineItems, function(item) {
-                item.price = orderablesPrice.data[item.orderable.id];
+                item.price = orderablesPrice.data[item.orderable.id] || '';
             });
             // calc total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                var price = c.price * 100;
+                var price = c.price ? c.price * 100 : 0;
                 r = r + c.quantity * price;
                 return r;
             }, 0);

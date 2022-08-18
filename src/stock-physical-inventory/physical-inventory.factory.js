@@ -344,7 +344,6 @@
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
                     return !kit.stockCardId;
                 });
-                console.log('#### draftToReturn', draftToReturn);
             }
         }
 

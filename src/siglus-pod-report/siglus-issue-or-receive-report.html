@@ -242,9 +242,9 @@
               <td>{{ item.orderedQuantity }}</td>
               <td>{{ item.quantityShipped }}</td>
               <!-- price -->
-              <td>{{ item.price / 100 }}</td>
+              <td>{{ item.price ? item.price / 100 : '' }}</td>
               <!-- value -->
-              <td style="width: 30px;">{{ (item.price * item.quantityShipped) / 100 }}</td>
+              <td style="width: 30px;">{{ item.price ? (item.price * item.quantityShipped) / 100 : '' }}</td>
               <td style="border: none; border-left: 1px solid #000;"></td>
               <td>{{ item.quantityAccepted }}</td>
               <td style="border-right: 1px solid #000;">{{ item.quantityAccepted ? item.quantityAccepted - item.quantityShipped : '' }}</td>

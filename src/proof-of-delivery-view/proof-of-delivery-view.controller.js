@@ -812,7 +812,7 @@
                     r.push(angular.merge({
                         productCode: c.orderable.productCode,
                         productName: c.orderable.fullProductName,
-                        price: orderablesPrice.data[c.orderable.id] * 100,
+                        price: orderablesPrice.data[c.orderable.id] * 100 || '',
                         lotCode:
                             c.lot
                                 ? c.lot.lotCode
@@ -825,7 +825,8 @@
                     return r;
                 }, []);
                 vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                    r = r + c.quantityShipped * c.price;
+                    var price = c.price ? c.price : 0;
+                    r = r + c.quantityShipped * price;
                     return r;
                 }, 0);
                 vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
