@@ -1,7 +1,7 @@
 {
     "stockRemainingProductsModal.title": "The products below have been added to other drafts, are you sure you want to remove these products from your draft?",
-    "stockRemainingProductsModal.productCode": "productCode",
-    "stockRemainingProductsModal.product": "product",
+    "stockRemainingProductsModal.productCode": "Product Code",
+    "stockRemainingProductsModal.product": "Product",
     "stockRemainingProductsModal.currentStock": "currentStock",
     "stockRemainingProductsModal.conflictWith": "Conflict with",
     "stockRemainingProductsModal.confirm": "Confirm",

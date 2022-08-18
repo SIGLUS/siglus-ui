@@ -95,7 +95,8 @@ describe('ProofOfDeliveryManageController', function() {
             requestingFacilities: requestingFacilities,
             supplyingFacilities: supplyingFacilities,
             pods: [pod],
-            $stateParams: stateParams
+            $stateParams: stateParams,
+            facility: new FacilityDataBuilder().build()
         });
 
         loadingDeferred = $q.defer();
@@ -219,7 +220,6 @@ describe('ProofOfDeliveryManageController', function() {
         });
 
         it('should open loading modal', function() {
-            // console.log('podId', pod.id);
 
             vm.printProofOfDelivery(order);
 

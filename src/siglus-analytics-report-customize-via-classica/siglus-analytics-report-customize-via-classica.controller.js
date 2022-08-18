@@ -28,9 +28,9 @@
         .module('siglus-analytics-report-customize-via-classica')
         .controller('siglusAnalyticsReportCustomizeViaClassicaController', controller);
 
-    controller.$inject = [ 'requisition', 'facility', 'processingPeriod', 'siglusDownloadLoadingModalService',
-        'messageService', 'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService' ];
+    controller.$inject = [ 'requisition', 'facility', 'processingPeriod',
+        'messageService',  'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
+        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService', 'siglusDownloadLoadingModalService'];
 
     function controller(requisition, facility, processingPeriod, messageService, lineItemsList,
                         columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter,
@@ -306,7 +306,7 @@
                     }
 
                     PDF.save(reportName + '.'
-                    + vm.requisition.id.substr(0, 8) + '.'
+                    + vm.facility.code + '.'
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
                     + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
                     + vm.emergencyCount
