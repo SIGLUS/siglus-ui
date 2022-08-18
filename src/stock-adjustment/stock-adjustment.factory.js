@@ -152,7 +152,9 @@
                     return !(_.isEmpty(id));
                 })
                 .value();
-
+            if (_.isEmpty(ids)) {
+                return $q.resolve({});
+            }
             return new LotRepositoryImpl().query({
                 id: ids
             }).
