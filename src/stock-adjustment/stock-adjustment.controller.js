@@ -76,10 +76,10 @@
                                     programId: program.id,
                                     program: program,
                                     facility: facility,
-                                    draft: draft,
                                     draftId: draft && draft.id
                                 });
                             });
+                        return;
                     }
                     $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
                         programId: program.id,

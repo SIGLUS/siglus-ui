@@ -131,7 +131,6 @@
                 .then(function(proofOfDeliveryJson) {
                     var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
                         orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
-                    console.log('#### lotIds', lotIds);
                     var promiseList = lotIds.length ?
                         [
                             lotRepositoryImpl.query({

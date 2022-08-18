@@ -2164,7 +2164,7 @@
   "rapid.APEs": "APEs",
   "rapid.observations": "Observações",
   "rapid.completedBy": "Elaborado por",
-  "rapid.approvedBy": "Visto",
+  "rapid.approvedBy": "Visto por",
   "rapid.dateOfCreate": "Data de elaboração",
   "rapid.downloadPdf": "Baixar PDF",
   "malaria.title": "Testes de Malaria",
@@ -2366,7 +2366,7 @@
   "tracer.drug.report.startFrom": "Começar de",
   "tracer.drug.report.export": "Exportar",
   "tracer.drug.report.information.export": "Exportação de informações sobre medicamentos rastreados",
-  "tracer.drug.report.to": "To",
+  "tracer.drug.report.to": "Para",
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
   "analyticsReportMetabase.mmiaRegimens.title": "Relatório de Regimes MMIA",
   "adminFacilityList.eraseSuccess": "Erasing is successful.",
@@ -2427,5 +2427,7 @@
   "proofOfDeliveryManage.start": "Começar",
   "proofOfDeliveryInitialModal.label": "Por favor, insira o número de usuários disponiveis para fazer este relatório de recepção para ${orderCode}",
   "proofOfDeliveryInitialModal.conflictTips": "Um processo de Relatório de Recepção já foi iniciado, por favor atualize a página.",
-  "proofOfDeliveryView.fnm":"FNM"
+  "proofOfDeliveryView.fnm":"FNM",
+  "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial",
+  "downloadModal.downloading": "Baixando..."
 }

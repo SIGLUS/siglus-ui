@@ -143,6 +143,11 @@
                 },
                 selectedItem, copyDefaultValue()
             );
+            item.productCode = item.orderable.productCode;
+            item.productName = item.orderable.fullProductName;
+            item.lotCode = item.lot && item.lot.lotCode;
+            item.expirationDate = item.lot && openlmisDateFilter(item.lot.expirationDate, 'yyyy-MM-dd');
+
             vm.addedLineItems.unshift(item);
 
             if (_.get(vm.selectedLot, 'id')) {
@@ -686,7 +691,6 @@
                 if (vm.isMerge) {
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                         .then(function(data) {
-                            // console.log('data --->>>', data);
                             vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
