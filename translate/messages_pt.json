@@ -1350,6 +1350,8 @@
   "proofOfDeliveryView.supplyingFacility": "Unidades Sanitárias/Clientes abastecidas",
   "proofOfDeliveryView.viewProofOfDelivery": "Ver relatório de recepção",
   "proofOfDeliveryView.vvmStatus": "Estado do Monitor do Frasco de Vacina",
+  "proofOfDeliveryView.preparedBy": "Elaborado por",
+  "proofOfDeliveryView.conferredBy":"Conferido por",
   "referencedataLot.noLotDefined": "Nenhum lote foi definido",
   "referencedataRoles.administration": "Administração",
   "referencedataRoles.fulfillment": "Aviamento",

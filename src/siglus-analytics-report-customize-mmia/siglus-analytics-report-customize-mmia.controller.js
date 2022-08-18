@@ -90,6 +90,24 @@
                 .value();
             vm.regimensAdults = getCategories(vm.requisition.regimenLineItems).Adults;
             vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
+            setBarCodeDom();
+            var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
+                return item.name === 'summary';
+            });
+            vm.regimenSummaryLineItems = lineItemsFactory(
+                vm.requisition.regimenSummaryLineItems,
+                summerySection.columns
+            );
+            var patients = patientTemplateFactory();
+            vm.patientList = patients.normalPatientList;
+            vm.mergedPatientMap = patients.mergedPatientMap;
+            vm.getValueByKey = getValueByKey;
+            vm.getHistoryComments = getHistoryComments;
+            vm.getSignaure = getSignaure;
+            vm.patientTemplateFactory = patientTemplateFactory;
+            vm.setBarCodeDom = setBarCodeDom;
+        }
+        function setBarCodeDom() {
             $timeout(function() {
                 angular.forEach(vm.productLineItems, function(item) {
                     if (item.id) {
@@ -104,19 +122,7 @@
                     }
                 });
             }, 100);
-            var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
-                return item.name === 'summary';
-            });
-            vm.regimenSummaryLineItems = lineItemsFactory(
-                vm.requisition.regimenSummaryLineItems,
-                summerySection.columns
-            );
-            var patients = patientTemplateFactory();
-            vm.patientList = patients.normalPatientList;
-            vm.mergedPatientMap = patients.mergedPatientMap;
-            vm.getValueByKey = getValueByKey;
         }
-
         function getValueByKey(key, index) {
             if (!vm.requisition.patientLineItems.length) {
                 return '';
