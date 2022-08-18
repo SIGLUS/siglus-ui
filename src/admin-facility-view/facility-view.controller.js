@@ -34,7 +34,7 @@
         'programs', 'FacilityRepository', 'loadingModalService',
         'notificationService', 'locationManagementService',
         'messageService',
-        'alertConfirmModalService'
+        'alertConfirmModalService', '$stateParams'
     ];
 
     function controller($q, $state, facility, facilityTypes,
@@ -42,7 +42,7 @@
                         facilityOperators,
                         programs, FacilityRepository, loadingModalService,
                         notificationService, locationManagementService,
-                        messageService, alertConfirmModalService) {
+                        messageService, alertConfirmModalService, $stateParams) {
 
         var vm = this;
 
@@ -54,7 +54,9 @@
         vm.exportFile = exportFile;
         vm.upload = upload;
         vm.updateEnableLocationManagement = updateEnableLocationManagement;
-
+        vm.selectedReport = null;
+        vm.upgradeToWeb = upgradeToWeb;
+        // vm.minDate = '2022-08-08';
         /**
          * @ngdoc property
          * @propertyOf admin-facility-view.controller:FacilityViewController
@@ -160,6 +162,7 @@
             vm.isAndroid = angular.copy(
                 facility.isAndroidDevice
             );
+            vm.isNewFacility = angular.copy(facility.isNewFacility);
             vm.facilityId = angular.copy(facility.id);
             vm.facilityWithPrograms = angular.copy(facility);
             vm.facilityTypes = facilityTypes;
@@ -168,10 +171,29 @@
             vm.programs = programs;
             vm.selectedTab = 0;
             vm.managedExternally = facility.isManagedExternally();
-
             if (!vm.facilityWithPrograms.supportedPrograms) {
                 vm.facilityWithPrograms.supportedPrograms = [];
             }
+            var programsCopy = angular.copy(vm.programs);
+            vm.reportMap = {
+                TR: 'MMIT',
+                T: 'MMIA',
+                TB: 'MMTB',
+                VC: 'Balance Requisition',
+                ML: 'AL'
+            };
+            var programsWithReportName = _.map(programsCopy, function(item) {
+                return angular.merge({
+                    reportName: vm.reportMap[item.code]
+                }, item);
+            });
+            var programCodeByReports = _.map(vm.facilityWithPrograms.reportTypes,
+                function(item) {
+                    return item.programCode;
+                });
+            vm.reports = programsWithReportName.filter(function(item) {
+                return !_.contains(programCodeByReports, item.code);
+            });
 
             vm.facilityWithPrograms.supportedPrograms.filter(
                 function(supportedProgram) {
@@ -225,6 +247,16 @@
                 'adminFacilityView.saveFacility.fail');
         }
 
+        vm.saveFacilityWithReports = function() {
+            doSave(vm.facilityWithPrograms,
+                'adminFacilityView.saveFacility.success',
+                'adminFacilityView.saveFacility.fail');
+        };
+
+        vm.selectFileChange = function() {
+            vm.invalidMessage = null;
+        };
+
         /**
          * @ngdoc method
          * @methodOf admin-facility-view.controller:FacilityViewController
@@ -252,6 +284,21 @@
 
             return $q.when();
         }
+
+        vm.addReport = function() {
+            vm.facilityWithPrograms.reportTypes.push(angular.merge({
+                startDate: vm.selectedStartDate,
+                programCode: vm.selectedReport.code,
+                name: 'Requisition',
+                facilityId: vm.facility.id
+            }, vm.selectedReport));
+            vm.reports = _.filter(vm.reports, function(itm) {
+                return itm.code !== vm.selectedReport.code;
+            });
+            vm.selectedReport = null;
+            vm.selectedStartDate = null;
+            return $q.when();
+        };
 
         function doSave(facility, successMessage, errorMessage) {
             loadingModalService.open();
@@ -309,15 +356,20 @@
                             notificationService.success(message);
                         });
                         loadingModalService.close();
+                        new FacilityRepository().get($stateParams.id)
+                            .then(function(res) {
+                                vm.facility = res;
+                            });
                     })
                     .catch(function(error) {
                         notificationService.error(
                             'adminFacilityView.uploadFailed'
                         );
+                        vm.file = null;
                         vm.invalidMessage = error ? error.data.message
                             : undefined;
-                        vm.file = undefined;
                         loadingModalService.close();
+                        document.getElementById('fileupload').value = '';
                     });
             } else {
                 notificationService.error(
@@ -335,38 +387,74 @@
          * Uploads csv file with catalog item to the server.
          */
 
-        function updateEnableLocationManagement(facility) {
-            facility = vm.facility;
+        function updateEnableLocationManagement() {
+            var facility = vm.facility;
+            if (facility.isAndroidDevice) {
+                return;
+            }
             var enableValue = vm.enableValue;
-            vm.facility.enableLocationManagement = enableValue;
-            return new locationManagementService
+            if (enableValue) {
+                alertConfirmModalService.error(
+                    'adminFacilityView.locationManagement.closeSwitch',
+                    '',
+                    ['adminFacilityView.close',
+                        'adminFacilityView.confirm']
+                ).then(function() {
+                    vm.enableValue = !vm.enableValue;
+                    facility.enableLocationManagement = vm.enableValue;
+                    new locationManagementService
+                        .update(vm.facility.id, facility)
+                        .then(function() {
+                            notificationService.success(
+                                'adminFacilityView.disabledLocation'
+                            );
+                        });
+                });
+                return;
+            }
+            if (!enableValue && !facility.hasSuccessUploadLocations) {
+                alertConfirmModalService.error(
+                    'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
+                    '',
+                    ['adminFacilityView.close',
+                        'adminFacilityView.confirm']
+                );
+                return;
+            }
+            if (!enableValue && facility.hasSuccessUploadLocations) {
+                vm.enableValue = !vm.enableValue;
+                facility.enableLocationManagement = vm.enableValue;
+                new locationManagementService
+                    .update(vm.facility.id, facility)
+                    .then(function() {
+                        notificationService.success('adminFacilityView.enableLocation');
+                    });
+                return;
+            }
+            vm.enableValue = !vm.enableValue;
+            facility.enableLocationManagement = vm.enableValue;
+            new locationManagementService
                 .update(vm.facility.id, facility)
                 .then(function() {
-                    if (enableValue === true && !vm.file) {
-                        alertConfirmModalService.error(
-                            'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
-                            '',
-                            ['adminFacilityView.close',
-                                'adminFacilityView.confirm']
-                        );
-                        return $q.reject();
-                    } else if (enableValue === false && vm.file) {
-                        alertConfirmModalService.error(
-                            'adminFacilityView.locationManagement.closeSwitch',
-                            '',
-                            ['adminFacilityView.close',
-                                'adminFacilityView.confirm']
-                        );
-                    } else if (enableValue === false && !vm.file) {
-                        alertConfirmModalService.error(
-                            'adminFacilityView.locationManagement.closeSwitch',
-                            '',
-                            ['adminFacilityView.close',
-                                'adminFacilityView.confirm']
-                        );
-                    }
-
+                    notificationService.success('adminFacilityView.enableLocation');
                 });
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf admin-facility-add.controller:FacilityAddController
+         * @name upgradeToWeb
+         *
+         * @description
+         * upgrade android device to web
+         */
+        function upgradeToWeb() {
+            alertConfirmModalService.error(
+                'adminFacilityView.upgradeMessage',
+                '',
+                ['adminFacilityView.close',
+                    'adminFacilityView.confirm']
+            );
         }
     }
 }

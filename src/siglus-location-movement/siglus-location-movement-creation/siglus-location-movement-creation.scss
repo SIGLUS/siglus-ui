@@ -1,0 +1,25 @@
+.location-movement-area {
+  display: flex;
+}
+
+.location-movement-area .input-control:first-child {
+  width: 92px;
+  margin-right: 12px;
+}
+
+.location-movement-area .input-control:last-child {
+  min-width: 180px;
+}
+
+#locationMovementForm tr:first-child>td {
+  border-top-width: 1px;
+}
+
+#locationMovementForm input.number {
+  text-align: left;
+}
+
+
+#locationMovementForm input[disabled] {
+  cursor: not-allowed;
+}

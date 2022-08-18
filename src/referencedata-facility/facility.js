@@ -61,8 +61,11 @@
             this.location = json.location;
             this.isAndroidDevice = json.isAndroidDevice;
             this.enableLocationManagement = json.enableLocationManagement;
+            this.isNewFacility = json.isNewFacility;
             this.extraData = json.extraData;
             this.supportedPrograms = json.supportedPrograms || [];
+            this.reportTypes = json.reportTypes || [];
+            this.hasSuccessUploadLocations = json.hasSuccessUploadLocations || '';
         }
 
         /**

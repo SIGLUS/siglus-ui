@@ -43,12 +43,12 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
+                orderablesPrice: undefined,
                 addedLineItems: undefined,
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
                 isAddProduct: undefined,
-                hasLoadOrderableGroups: undefined,
                 size: '50',
                 initialDraftInfo: undefined
                 // SIGLUS-REFACTOR: ends here
@@ -81,6 +81,12 @@
                         facility.id,
                         ADJUSTMENT_TYPE.RECEIVE.state);
                 },
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    if ($stateParams.orderablesPrice) {
+                        return $stateParams.orderablesPrice;
+                    }
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
                         return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
@@ -98,7 +104,7 @@
                     return siglusStockIssueService.getDraftById($stateParams.draftId);
                 },
                 orderableGroups: function($stateParams, facility, draft, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
+                    if (!$stateParams.orderableGroups) {
                         var allLineOrderableIds = draft.lineItems.map(function(line) {
                             return line.orderableId;
                         });

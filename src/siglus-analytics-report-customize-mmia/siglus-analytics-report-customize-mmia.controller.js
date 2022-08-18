@@ -111,7 +111,7 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
-            if (requisition.extraData.signaure) {
+            if (requisition.extraData.signaure.approve) {
                 vm.signaure.approve = vm.signaure && vm.signaure.approve.length
                     ? vm.signaure.approve.join(',')
                     : '';
@@ -245,7 +245,6 @@
                 + openlmisDateFilter(date, 'yyyy')
                 + ' '
                 + openlmisDateFilter(date, 'dd');
-
         }
         function getPdfName(date, facilityName, id) {
             return (

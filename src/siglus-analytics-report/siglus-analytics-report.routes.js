@@ -30,7 +30,7 @@
             abstract: true,
             showInNavigation: true,
             label: 'analyticsReport.title',
-            priority: 9
+            priority: 8
         });
     }
 

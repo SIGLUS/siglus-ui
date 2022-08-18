@@ -15,14 +15,17 @@
 
 describe('PodViewController', function() {
 
-    var vm, $controller, ProofOfDeliveryDataBuilder, OrderDataBuilder, proofOfDelivery, order, reasons, $rootScope, $q,
-        ReasonDataBuilder, VVM_STATUS, messageService, orderLineItems, ProofOfDeliveryPrinter;
+    var vm, $controller, ProofOfDeliveryDataBuilder, OrderDataBuilder,
+        proofOfDelivery, order, reasons, $rootScope, $q,
+        ReasonDataBuilder, VVM_STATUS, messageService, orderLineItems,
+        ProofOfDeliveryPrinter, UserDataBuilder, userDataBuilder, orderablesPrice;
 
     beforeEach(function() {
         module('proof-of-delivery-view');
         module('proof-of-delivery');
         module('referencedata-orderable-fulfills');
         module('stock-confirm-discard');
+        module('referencedata-user');
 
         inject(function($injector) {
             $q = $injector.get('$q');
@@ -35,8 +38,13 @@ describe('PodViewController', function() {
             VVM_STATUS = $injector.get('VVM_STATUS');
             messageService = $injector.get('messageService');
             ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
+            UserDataBuilder = $injector.get('UserDataBuilder');
         });
-
+        orderablesPrice = {
+            '5f655d74-1213-46e0-9009-38a01e39c503': 66.66,
+            '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': 55,
+            '0fe4e147-714e-4bf0-9e5b-921e3f6d608d': 10
+        };
         proofOfDelivery = new ProofOfDeliveryDataBuilder().build();
         order = new OrderDataBuilder().build();
         reasons = [
@@ -45,6 +53,7 @@ describe('PodViewController', function() {
             new ReasonDataBuilder().build()
         ];
         // SIGLUS-REFACTOR: starts here
+        userDataBuilder = new UserDataBuilder().asNew();
         _.extend(reasons[0], {
             tags: ['rejection']
         });
@@ -76,7 +85,9 @@ describe('PodViewController', function() {
             reasons: reasons,
             orderLineItems: orderLineItems,
             canEdit: true,
-            $scope: $rootScope.$new()
+            $scope: $rootScope.$new(),
+            user: userDataBuilder.build(),
+            orderablesPrice: orderablesPrice
         });
     });
 
@@ -121,7 +132,9 @@ describe('PodViewController', function() {
             reasons: reasons,
             orderLineItems: orderLineItems,
             canEdit: false,
-            $scope: $rootScope.$new()
+            $scope: $rootScope.$new(),
+            user: userDataBuilder.build(),
+            orderablesPrice: orderablesPrice
         });
         vm.$onInit();
 

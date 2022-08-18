@@ -42,6 +42,11 @@
                         proofOfDelivery: function($stateParams, proofOfDeliveryService) {
                             return proofOfDeliveryService.get($stateParams.podId);
                         },
+                        // SIGLUS-REFACTOR: starts here : getSubDraftDetail if actionType is not Merge
+                        user: function(authorizationService) {
+                            return authorizationService.getUser();
+                        },
+                        // SIGLUS-REFACTOR: end here
                         order: function(proofOfDelivery) {
                             return proofOfDelivery.shipment.order;
                         },

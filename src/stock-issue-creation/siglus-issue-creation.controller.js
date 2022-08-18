@@ -36,7 +36,8 @@
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
-        'siglusStockUtilsService', 'localStorageFactory', '$q', 'siglusDownloadLoadingModalService'
+        'siglusStockUtilsService', 'localStorageFactory', '$q', 'siglusDownloadLoadingModalService',
+        'orderablesPrice'
     ];
 
     function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
@@ -46,7 +47,7 @@
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
                         stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
                         siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
-                        localStorageFactory, $q, siglusDownloadLoadingModalService) {
+                        localStorageFactory, $q, siglusDownloadLoadingModalService, orderablesPrice) {
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
@@ -59,7 +60,6 @@
         vm.key = function(secondaryKey) {
             return 'stockIssueCreation.' + secondaryKey;
         };
-
         /**
      * @ngdoc method
      * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
@@ -147,7 +147,7 @@
             item.productName = item.orderable.fullProductName;
             item.lotCode = item.lot && item.lot.lotCode;
             item.expirationDate = item.lot && openlmisDateFilter(item.lot.expirationDate, 'yyyy-MM-dd');
-
+            item.price = orderablesPrice.data[item.orderable.id] || '';
             vm.addedLineItems.unshift(item);
 
             if (_.get(vm.selectedLot, 'id')) {
@@ -896,6 +896,12 @@
                 return vm.addedLineItems;
             }, function(newValue, oldValue) {
                 $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, oldValue));
+                // calc total value
+                vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                    var price = c.price * 100;
+                    r = r + c.quantity * price;
+                    return r;
+                }, 0);
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
@@ -914,12 +920,17 @@
             vm.facility = facility;
             vm.reasons = reasons;
             vm.addedLineItems = $stateParams.addedLineItems || [];
-            // 计算total value
+            _.forEach(vm.addedLineItems, function(item) {
+                item.price = orderablesPrice.data[item.orderable.id];
+            });
+            // calc total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                r = r + c.quantity * 10;
+                var price = c.price * 100;
+                r = r + c.quantity * price;
                 return r;
             }, 0);
             $stateParams.displayItems = displayItems;
+            $stateParams.orderablesPrice = orderablesPrice;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
             vm.orderableGroups = _.clone(orderableGroups);
