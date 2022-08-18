@@ -88,7 +88,7 @@
                 },
                 orderableGroups: function($stateParams, program, facility, draft, orderableGroupService) {
                     if (!$stateParams.hasLoadOrderableGroups) {
-                        var allLineOrderableIds = draft.lineItems.map(function(line) {
+                        var allLineOrderableIds = _.map(draft.lineItems, function(line) {
                             return line.orderableId;
                         });
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(

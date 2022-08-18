@@ -780,7 +780,7 @@
                     summary.$errors = {};
                 }
                 if (summary.lot && summary.lot.id) {
-                    vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
+                    vm.existLotCode.push(summary.lot.id);
                 }
             });
             _.forEach(draft.lineItems, function(item) {

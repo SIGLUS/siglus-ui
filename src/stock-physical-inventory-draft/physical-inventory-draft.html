@@ -56,7 +56,7 @@
             <!-- SIGLUS-REFACTOR: starts here -->
             <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
             <td ng-class="{'text-align-right': vm.actionType !== 'SUBMITTED'}">
-                {{vm.calculate(lineItems, 'quantity')}}
+                <span style="padding: 8px;">{{vm.calculate(lineItems, 'quantity')}}</span>
             </td>
             <td ng-if="vm.showVVMStatusColumn"></td>
             <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
@@ -71,10 +71,11 @@
             <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
             <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                <span ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.displayLotMessage}}</span>
-                <siglus-stock-input-select ng-if="vm.isEmpty(lineItem.stockCardId) && vm.actionType !== 'SUBMITTED'"
-                                    line-item="lineItem"
-                                    enable-input="true">
+                <span ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.lot.lotCode}}</span>
+                <siglus-stock-input-select
+                    ng-if="vm.isEmpty(lineItem.stockCardId) && vm.actionType !== 'SUBMITTED'"
+                    line-item="lineItem"
+                    enable-input="true">
                 </siglus-stock-input-select>
             </td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
