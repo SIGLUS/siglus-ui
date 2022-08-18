@@ -6,5 +6,6 @@
   "stockIssue.status": "Status",
   "stockIssue.issueStart": "Start",
   "stockIssue.cancel": "Cancel",
-  "locationMovement.label": "Move Products"
+  "locationMovement.label": "Move Products",
+  "locationMovement.mtSoh": "Move quantity cannot be larger than SOH, please check your draft."
 }

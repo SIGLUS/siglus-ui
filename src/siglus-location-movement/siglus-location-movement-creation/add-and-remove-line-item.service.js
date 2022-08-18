@@ -36,18 +36,17 @@
 
         function getRowTemplateData(lineItem) {
             return {
-                $error: {},
-                $hint: {},
-                orderableId: lineItem.orderableId,
-                productCode: lineItem.productCode,
-                productName: lineItem.productName,
-                lot: null,
-                isKit: lineItem.isKit,
-                isMainGroup: false,
-                location: null,
-                area: null,
-                moveToLocation: null,
-                quantity: lineItem.quantity
+              $error: lineItem.$error,
+              orderableId: lineItem.orderableId,
+              productCode: lineItem.productCode,
+              productName: lineItem.productName,
+              lot: lineItem.lot,
+              isKit: lineItem.isKit,
+              isMainGroup: false,
+              location: lineItem.location,
+              area: null,
+              moveToLocation: null,
+              quantity: lineItem.quantity
             };
         }
 
@@ -61,6 +60,8 @@
             lineItem.location = null;
             lineItem.quantity = null;
             lineItem.isMainGroup = true;
+            lineItem.area = null;
+            lineItem.moveToLocation = null;
         }
 
         this.addLineItem = function(lineItem, lineItems) {
