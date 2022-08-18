@@ -28,10 +28,10 @@
         .module('siglus-location-movement')
         .controller('SiglusLocationMovementController', controller);
 
-    controller.$inject = ['$stateParams', 'facility', 'programs', '$state',
+    controller.$inject = ['$stateParams', 'user', 'facility', 'programs', '$state',
         'siglusLocationMovementService', 'loadingModalService'];
 
-    function controller($stateParams, facility, programs, $state,
+    function controller($stateParams, user, facility, programs, $state,
                         siglusLocationMovementService, loadingModalService) {
         var vm = this;
 
@@ -51,13 +51,26 @@
 
         vm.proceedForIssue = function() {
             $state.go('openlmis.locationManagement.movement.creation', {
-                draftId: _.get(vm.drafts, [0, 'id'])
+                draftId: _.get(vm.drafts, [0, 'id'], 'A000001')
             });
         };
 
         vm.start = function() {
+            // var params = {
+            //     programId: vm.programId,
+            //     facilityId: facility.id,
+            //     userId: user.user_id
+            // };
+            // siglusLocationMovementService.createMovementDraft(params).then(function(draft) {
+            //     $state.go('openlmis.locationManagement.movement.creation', {
+            //         programId: vm.programId,
+            //         draftId: draft.id
+            //     });
+            // });
+
             $state.go('openlmis.locationManagement.movement.creation', {
-                programId: vm.programId
+                programId: vm.programId,
+                draftId: 'A000001'
             });
         };
 

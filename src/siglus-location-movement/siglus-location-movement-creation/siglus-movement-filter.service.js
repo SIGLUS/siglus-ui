@@ -21,9 +21,7 @@
         .module('siglus-location-movement-creation')
         .service('siglusMovementFilterService', siglusMovementFilterService);
 
-    // #287: add alertService
     siglusMovementFilterService.inject = [];
-    // #287: ends here
 
     function siglusMovementFilterService() {
 
@@ -35,22 +33,12 @@
             } else {
                 keyword = keyword.trim();
                 result = _.map(addedLineItems, function(lineItems) {
-                    return _.filter(lineItems, function(item) {
-                        var data = {
-                            productCode: item.productCode || '',
-                            productName: item.productName || '',
-                            lotCode: _.get(item.lot, 'lotCode', ''),
-                            expirationDate: _.get(item.lot, 'expirationDate', ''),
-                            location: _.get(item.location, 'locationCode', ''),
-                            stockOnHand: _.get(item.lot, 'stockOnHand', ''),
-                            moveToArea: _.get(item.moveTo, 'area', ''),
-                            moveToLocation: _.get(item.moveTo, 'location', ''),
-                            quantity: _.get(item, 'quantity', '')
-                        };
-                        return _.some(_.values(data), function(value) {
-                            return String(value || '').includes(keyword);
+                    var isMatched = _.some(lineItems, function(item) {
+                        return _.some([item.productName, item.productCode], function(value) {
+                            return String(value).includes(keyword);
                         });
                     });
+                    return isMatched ? lineItems : [];
                 });
 
             }
