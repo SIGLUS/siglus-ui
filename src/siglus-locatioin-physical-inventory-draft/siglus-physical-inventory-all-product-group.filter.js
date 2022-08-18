@@ -14,38 +14,28 @@
  */
 
 (function() {
-
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name siglus-alert-confirm-modal.controller:AlertConfirmModalController
+     * @ngdoc filter
+     * @name siglus-locatioin-physical-inventory-draft.filter:siglusGroupByAllProductProgramProductCategory
      *
      * @description
-     * Exposes data to the alert modal view.
+     * Groups nested array of physical inventory line item by 'orderableCategoryDisplayName'
+     *
+     * @param   {Array}  List of objects to be grouped
+     * @return  {Object} Grouped products - category name as key and array of products as value
      */
     angular
-        .module('openlmis-modal')
-        .controller('AlertConfirmModalController', AlertConfirmModalController);
+        .module('siglus-locatioin-physical-inventory-draft')
+        .filter('siglusGroupByAllProductProgramProductCategory', filter);
 
-    AlertConfirmModalController.$inject = ['alertClass', 'title', 'message', 'buttonLabels', 'modalDeferred'];
-
-    function AlertConfirmModalController(alertClass, title, message, buttonLabels, modalDeferred) {
-        var vm = this;
-
-        vm.$onInit = onInit;
-        vm.close = function() {
-            modalDeferred.reject();
+    function filter() {
+        return function(items) {
+            return _.groupBy(items, function(item) {
+                return _.findWhere(item[0].orderable.programs).orderableCategoryDisplayName;
+            });
         };
-        vm.confirm = function() {
-            modalDeferred.resolve();
-        };
-        function onInit() {
-            vm.alertClass = alertClass;
-            vm.title = title;
-            vm.message = message;
-            vm.buttonLabels = buttonLabels;
-        }
     }
 
 })();

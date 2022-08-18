@@ -17,7 +17,7 @@ describe('SiglusStockReceiveCreationController', function() {
     var vm, $q, confirmDeferred, $rootScope, confirmDiscardService, alertService,
         confirmService, siglusStockIssueService, $state,
         stockAdjustmentFactory, $controller, ADJUSTMENT_TYPE, siglusRemainingProductsModalService,
-        alertConfirmModalService, orderablesPrice;
+        alertConfirmModalService, orderablesPrice, messageService;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -33,6 +33,7 @@ describe('SiglusStockReceiveCreationController', function() {
             alertService = $injector.get('alertService');
             confirmService = $injector.get('confirmService');
             $controller = $injector.get('$controller');
+            messageService = $injector.get('messageService');
         });
     }
 
@@ -214,8 +215,11 @@ describe('SiglusStockReceiveCreationController', function() {
             vm.validateLotCodeDuplicated();
 
             expect(vm.addedLineItems[0].$errors.lotCodeInvalid).toEqual(false);
-            expect(vm.addedLineItems[1].$errors.lotCodeInvalid).toEqual('stockReceiveCreation.itemDuplicated');
-            expect(vm.addedLineItems[2].$errors.lotCodeInvalid).toEqual('stockReceiveCreation.itemDuplicated');
+            expect(vm.addedLineItems[1].$errors.lotCodeInvalid)
+                .toEqual(messageService.get('stockReceiveCreation.itemDuplicated'));
+
+            expect(vm.addedLineItems[2].$errors.lotCodeInvalid)
+                .toEqual(messageService.get('stockReceiveCreation.itemDuplicated'));
         });
     });
 
@@ -241,7 +245,7 @@ describe('SiglusStockReceiveCreationController', function() {
 
             vm.validateLot(lineItem);
 
-            expect(lineItem.$errors.lotCodeInvalid).toEqual('openlmisForm.required');
+            expect(lineItem.$errors.lotCodeInvalid).toEqual(messageService.get('openlmisForm.required'));
 
         });
 

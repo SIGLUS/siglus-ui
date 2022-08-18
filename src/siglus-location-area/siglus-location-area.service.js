@@ -18,34 +18,35 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name siglus-alert-confirm-modal.controller:AlertConfirmModalController
+     * @ngdoc service
+     * @name siglus-location-area.service
      *
      * @description
-     * Exposes data to the alert modal view.
+     * Responsible for retrieving physical inventory information from server.
      */
     angular
-        .module('openlmis-modal')
-        .controller('AlertConfirmModalController', AlertConfirmModalController);
+        .module('siglus-location-area')
+        .service('siglusLocationAreaService', service);
 
-    AlertConfirmModalController.$inject = ['alertClass', 'title', 'message', 'buttonLabels', 'modalDeferred'];
+    service.$inject = [
+        '$resource', 'stockmanagementUrlFactory'
+    ];
 
-    function AlertConfirmModalController(alertClass, title, message, buttonLabels, modalDeferred) {
-        var vm = this;
-
-        vm.$onInit = onInit;
-        vm.close = function() {
-            modalDeferred.reject();
-        };
-        vm.confirm = function() {
-            modalDeferred.resolve();
-        };
-        function onInit() {
-            vm.alertClass = alertClass;
-            vm.title = title;
-            vm.message = message;
-            vm.buttonLabels = buttonLabels;
+    function service($resource, stockmanagementUrlFactory) {
+        // SIGLUS-REFACTOR: starts here
+        var resource = $resource(stockmanagementUrlFactory('api/siglusapi/locations'), {
+            extraData: false
+        }, {
+            get: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('api/siglusapi/locations'),
+                isArray: true
+            }
+        });
+        // SIGLUS-REFACTOR: ends here
+        this.getAllLocationInfo = getAllLocationInfo;
+        function getAllLocationInfo() {
+            return resource.get().$promise;
         }
     }
-
 })();

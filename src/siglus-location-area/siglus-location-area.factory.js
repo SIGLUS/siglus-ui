@@ -18,34 +18,38 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name siglus-alert-confirm-modal.controller:AlertConfirmModalController
+     * @ngdoc service
+     * @name stock-physical-inventory.physicalInventoryFactory
      *
      * @description
-     * Exposes data to the alert modal view.
+     * Allows the user to retrieve physical inventory enhanced informations.
      */
     angular
-        .module('openlmis-modal')
-        .controller('AlertConfirmModalController', AlertConfirmModalController);
+        .module('siglus-location-area')
+        .factory('siglusLocationAreaFactory', factory);
 
-    AlertConfirmModalController.$inject = ['alertClass', 'title', 'message', 'buttonLabels', 'modalDeferred'];
+    factory.$inject = [
+        '$q', 'siglusLocationAreaService'
+    ];
 
-    function AlertConfirmModalController(alertClass, title, message, buttonLabels, modalDeferred) {
-        var vm = this;
+    function factory($q, siglusLocationAreaService) {
 
-        vm.$onInit = onInit;
-        vm.close = function() {
-            modalDeferred.reject();
+        return {
+            getAllLocationAreaInfoMap: getAllLocationAreaInfoMap
         };
-        vm.confirm = function() {
-            modalDeferred.resolve();
-        };
-        function onInit() {
-            vm.alertClass = alertClass;
-            vm.title = title;
-            vm.message = message;
-            vm.buttonLabels = buttonLabels;
+
+        function getAllLocationAreaInfoMap() {
+            return siglusLocationAreaService.getAllLocationInfo()
+                .then(function(res) {
+                    return _.reduce(res, function(r, c) {
+                        if (r[c.area]) {
+                            r[c.area].push(c);
+                        } else {
+                            r[c.area] = [c];
+                        }
+                        return r;
+                    }, {});
+                });
         }
     }
-
 })();

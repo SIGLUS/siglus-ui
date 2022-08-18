@@ -18,34 +18,34 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name siglus-alert-confirm-modal.controller:AlertConfirmModalController
+     * @module siglus-locatioin-physical-inventory-draft
      *
      * @description
-     * Exposes data to the alert modal view.
+     * Responsible for initiate requisition screen.
      */
-    angular
-        .module('openlmis-modal')
-        .controller('AlertConfirmModalController', AlertConfirmModalController);
-
-    AlertConfirmModalController.$inject = ['alertClass', 'title', 'message', 'buttonLabels', 'modalDeferred'];
-
-    function AlertConfirmModalController(alertClass, title, message, buttonLabels, modalDeferred) {
-        var vm = this;
-
-        vm.$onInit = onInit;
-        vm.close = function() {
-            modalDeferred.reject();
-        };
-        vm.confirm = function() {
-            modalDeferred.resolve();
-        };
-        function onInit() {
-            vm.alertClass = alertClass;
-            vm.title = title;
-            vm.message = message;
-            vm.buttonLabels = buttonLabels;
-        }
-    }
+    angular.module('siglus-locatioin-physical-inventory-draft', [
+        'angular.filter',
+        'ngResource',
+        'requisition',
+        'requisition-constants',
+        'openlmis-i18n',
+        'openlmis-auth',
+        'openlmis-permissions',
+        'openlmis-date',
+        'openlmis-facility-program-select',
+        'openlmis-uuid',
+        'referencedata-facility',
+        'referencedata-period',
+        'openlmis-form',
+        'openlmis-modal',
+        'referencedata-program',
+        'ui.router',
+        'openlmis',
+        'siglus-location-area',
+        // SIGLUS-REFACTOR: starts here
+        'siglus-requisition-date-picker',
+        'siglus-physical-inventory-creation'
+        // SIGLUS-REFACTOR: ends here
+    ]);
 
 })();

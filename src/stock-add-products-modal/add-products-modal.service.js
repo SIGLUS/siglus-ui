@@ -18,15 +18,15 @@
     'use strict';
 
     /**
-   * @ngdoc service
-   * @name stock-choose-date-modal.chooseDateModalService
-   *
-   * @description
-   * This service will pop up a modal window for user to select occurred date and signature.
-   */
+     * @ngdoc service
+     * @name stock-add-products-modal.addProductModalService
+     *
+     * @description
+     * This service will pop up a modal window for user to select products.
+     */
     angular
-        .module('siglus-physical-inventory-creation')
-        .service('SiglusPhysicalInventoryCreationService', service);
+        .module('stock-add-products-modal')
+        .service('addProductsModalService', service);
 
     service.$inject = ['openlmisModalService'];
 
@@ -34,28 +34,31 @@
         this.show = show;
 
         /**
-     * @ngdoc method
-     * @methodOf stock-choose-date-modal.chooseDateModalService
-     * @name show
-     *
-     * @description
-     * Shows modal that allows users to input value.
-     *
-     * @return {Promise} resolved input number.
-     */
-        function show(programId, type) {
+         * @ngdoc method
+         * @methodOf stock-add-products-modal.addProductModalService
+         * @name show
+         *
+         * @description
+         * Shows modal that allows users to choose products.
+         *
+         * @return {Promise} resolved with selected products.
+         */
+        function show(items, hasLot, withLocation) {
             return openlmisModalService.createDialog(
                 {
-                    controller: 'SiglusPhysicalInventoryCreationController',
+                    controller: 'AddProductsModalController',
                     controllerAs: 'vm',
-                    templateUrl: 'siglus-physical-inventory-creation/siglus-physical-inventory-creation.html',
+                    templateUrl: 'stock-add-products-modal/add-products-modal.html',
                     show: true,
                     resolve: {
-                        programId: function() {
-                            return programId;
+                        items: function() {
+                            return items;
                         },
-                        type: function() {
-                            return type;
+                        hasLot: function() {
+                            return hasLot;
+                        },
+                        withLocation: function() {
+                            return withLocation;
                         }
                     }
                 }

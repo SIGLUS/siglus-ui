@@ -48,6 +48,7 @@
             getPhysicalInventory: getPhysicalInventory,
             getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
             saveDraft: saveDraft,
+            getLocationPhysicalInventorySubDraft: getLocationPhysicalInventorySubDraft,
             // SIGLUS-REFACTOR: starts here
             getInitialInventory: getInitialInventory
             // SIGLUS-REFACTOR: ends here
@@ -192,6 +193,28 @@
                 });
         }
 
+        function getLocationPhysicalInventorySubDraft(id, flag) {
+            return physicalInventoryService.getLocationPhysicalInventorySubDraft(id)
+                .then(function(physicalInventory) {
+                    var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
+                        return line.orderableId;
+                    });
+                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag,
+                        allLineOrderableIds)
+                        .then(function(summaries) {
+                            var draftToReturn = {
+                                programId: physicalInventory.programId,
+                                facilityId: physicalInventory.facilityId,
+                                lineItems: []
+                            };
+                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            draftToReturn.id = physicalInventory.id;
+
+                            return draftToReturn;
+                        });
+                });
+        }
+
         // SIGLUS-REFACTOR: starts here
         function getInitialInventory(programId, facilityId) {
             return physicalInventoryService.getInitialDraft(programId, facilityId)
@@ -255,7 +278,9 @@
                     stockAdjustments: item.stockAdjustments,
                     reasonFreeText: item.reasonFreeText,
                     stockCardId: item.stockCardId,
-                    programId: item.programId
+                    programId: item.programId,
+                    area: item.area,
+                    locationCode: item.locationCode
                 };
             });
             // SIGLUS-REFACTOR: ends here
@@ -274,6 +299,8 @@
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
                     orderable: summary.orderable,
+                    area: summary.area,
+                    locationCode: summary.locationCode,
                     quantity: null,
                     vvmStatus: null,
                     stockAdjustments: [],
@@ -309,12 +336,15 @@
                         stockAdjustments: item.stockAdjustments || [],
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
+                        area: item.area,
+                        locationCode: item.locationCode,
                         programId: _.first(summary.orderable.programs).programId
                     });
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
                     return !kit.stockCardId;
                 });
+                console.log('#### draftToReturn', draftToReturn);
             }
         }
 

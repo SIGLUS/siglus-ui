@@ -173,6 +173,7 @@
         vm.doCancelFilter = function() {
             if (vm.keyword) {
                 vm.keyword = null;
+                $stateParams.keyword = null;
                 reload();
             }
         };
