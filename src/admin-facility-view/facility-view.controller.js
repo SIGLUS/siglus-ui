@@ -182,15 +182,18 @@
                 VC: 'Balance Requisition',
                 ML: 'AL'
             };
-            var programsWithReportName = _.map(programsCopy, function(item) {
-                return angular.merge({
-                    reportName: vm.reportMap[item.code]
-                }, item);
-            });
-            var programCodeByReports = _.map(vm.facilityWithPrograms.reportTypes,
+            var programsWithReportName = _.map(programsCopy,
+                function(item) {
+                    return angular.merge({
+                        reportName: vm.reportMap[item.code]
+                    }, item);
+                });
+            var programCodeByReports = _.map(
+                vm.facilityWithPrograms.reportTypes,
                 function(item) {
                     return item.programCode;
-                });
+                }
+            );
             vm.reports = programsWithReportName.filter(function(item) {
                 return !_.contains(programCodeByReports, item.code);
             });
@@ -427,7 +430,9 @@
                 new locationManagementService
                     .update(vm.facility.id, facility)
                     .then(function() {
-                        notificationService.success('adminFacilityView.enableLocation');
+                        notificationService.success(
+                            'adminFacilityView.enableLocation'
+                        );
                     });
                 return;
             }
@@ -436,7 +441,9 @@
             new locationManagementService
                 .update(vm.facility.id, facility)
                 .then(function() {
-                    notificationService.success('adminFacilityView.enableLocation');
+                    notificationService.success(
+                        'adminFacilityView.enableLocation'
+                    );
                 });
         }
 
@@ -456,6 +463,7 @@
                     'adminFacilityView.confirm']
             );
         }
+
     }
 }
 )();
