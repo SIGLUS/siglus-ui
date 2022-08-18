@@ -64,7 +64,6 @@
                             return [];
                         }
                         var isDraft = true;
-                        console.log('#### $stateParams', $stateParams);
                         return siglusPhysicalInventoryDraftListService.getDraftList(
                             facility.id,
                             isDraft,

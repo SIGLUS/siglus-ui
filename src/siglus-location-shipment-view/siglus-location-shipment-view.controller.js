@@ -443,7 +443,6 @@
                         })
                     );
                     $stateParams.displayTableLineItems = _.clone(vm.displayTableLineItems);
-                    console.log(vm.displayTableLineItems);
                     $stateParams.order = vm.order;
                     reloadParams();
                 });

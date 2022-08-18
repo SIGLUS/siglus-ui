@@ -111,8 +111,6 @@
                     displayTableLineItems: function(paginationService, $stateParams,
                         SiglusLocationShipmentViewLineItemFactory, shipment,
                         orderableLocationLotsMap, orderableLotsLocationMap) {
-                        console.log(orderableLocationLotsMap);
-                        console.log(orderableLotsLocationMap);
                         var validator = function(group) {
                             return _.every(group, function(lineItem) {
                                 return _.chain(lineItem.$error).keys()

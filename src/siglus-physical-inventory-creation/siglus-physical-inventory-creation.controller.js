@@ -122,7 +122,6 @@
                         });
                     return;
                 }
-                console.log('confirm: ', vm);
                 physicalInventoryService.createDraft(
                     $stateParams.programId ? $stateParams.programId : programId,
                     vm.facility.id,

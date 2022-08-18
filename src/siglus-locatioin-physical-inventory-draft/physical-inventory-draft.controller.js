@@ -757,7 +757,6 @@
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 // SIGLUS-REFACTOR: ends here
             }, true);
-            console.log('draft ---->>>', draft);
         }
 
         vm.onSelectChange = function(type, lineItem) {

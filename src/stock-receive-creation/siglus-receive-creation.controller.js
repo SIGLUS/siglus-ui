@@ -123,7 +123,7 @@
                 item.productName = item.orderable.fullProductName;
                 item.lotCode = item.lot && item.lot.lotCode;
                 item.expirationDate = item.lot && item.lot.expirationDate;
-                item.price = orderablesPrice.data[item.orderable.id];
+                item.price = orderablesPrice.data[item.orderable.id] || '';
                 vm.addedLineItems.unshift(item);
 
                 previousAdded = vm.addedLineItems[0];
@@ -880,7 +880,7 @@
             });
             // calc total value
             vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                var price = c.price * 100;
+                var price = c.price ? c.price * 100 : 0;
                 r = r + c.quantity * price;
                 return r;
             }, 0);
