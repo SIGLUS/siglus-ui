@@ -27,11 +27,12 @@
 
 <label class="checkbox">
   <input class="disabled-facility-view" id="checked" type="checkbox"
-         ng-model="vm.facility.isAndroidDevice"
-         ng-disabled="!vm.facility.isNewFacility || vm.facility.isAndroidDevice === true"/>
+         ng-model="vm.isAndroid"
+         ng-disabled="!vm.facility.isNewFacility || vm.facility.isAndroidDevice"/>
+
   {{'adminFacilityView.androidFacility' | message}}
 </label>
-<div>
+<div ng-show="vm.facility.isAndroidDevice === true && vm.facility.isNewFacility === false">
   <input id="upgradeToWeb" type="button" ng-click="vm.upgradeToWeb()" value="{{ 'adminFacilityView.upgradeToWeb'
     | message}}"/>
 </div>
