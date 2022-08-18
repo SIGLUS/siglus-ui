@@ -35,18 +35,39 @@
         var resource = $resource('', {}, {
             getMovementDrafts: {
                 method: 'GET',
-                url: '/api/siglusapi/movementDrafts',
+                url: '/api/siglusapi/locationMovementDrafts',
                 isArray: true
             },
             getMovementDraftById: {
                 method: 'GET',
                 url: '/api/siglusapi/movementDrafts/:id',
                 isArray: false
+            },
+            getMovementLocationAreaInfo: {
+                method: 'GET',
+                url: '/api/siglusapi/locations/facility',
+                isArray: true
+            },
+            deleteMovementDraft: {
+                method: 'DELETE',
+                url: '/api/siglusapi/locationMovementDrafts/:id'
+            },
+            saveMovementDraft: {
+                method: 'PUT',
+                url: '/api/siglusapi/locationMovementDrafts/:id'
+            },
+            createMovementDraft: {
+                method: 'POST',
+                url: '/api/siglusapi/locationMovementDrafts'
             }
         });
 
         this.getMovementDrafts = getMovementDrafts;
         this.getMovementDraftById = getMovementDraftById;
+        this.getMovementLocationAreaInfo = getMovementLocationAreaInfo;
+        this.deleteMovementDraft = deleteMovementDraft;
+        this.saveMovementDraft = saveMovementDraft;
+        this.createMovementDraft = createMovementDraft;
 
         function getMovementDrafts(programId) {
             return resource.getMovementDrafts({
@@ -58,6 +79,54 @@
             return resource.getMovementDraftById({
                 id: draftId
             }).$promise;
+        }
+        function getMovementLocationAreaInfo(draftId) {
+            return resource.getMovementLocationAreaInfo({
+                id: draftId
+            }).$promise;
+        }
+
+        function deleteMovementDraft(draftId) {
+            return resource.deleteMovementDraft({
+                id: draftId
+            }).$promise;
+        }
+
+        function saveMovementDraft(baseInfo, lineItems) {
+            var params = buildSaveParams(baseInfo, lineItems);
+            return resource.saveMovementDraft({
+                id: baseInfo.id
+            }, params).$promise;
+        }
+
+        function createMovementDraft(params) {
+            return resource.createMovementDraft(params).$promise;
+        }
+
+        function bulidLineItems(lineItems) {
+
+            return _.map(lineItems, function(lineItem) {
+                return {
+                    orderableId: lineItem.orderableId,
+                    productCode: lineItem.productCode,
+                    productName: lineItem.productName,
+                    lotId: _.get(lineItem.lot, 'lotId'),
+                    lotCode: _.get(lineItem.lot, 'lotCode'),
+                    srcArea: _.get(lineItem.moveTo, 'area'),
+                    srcLocationCode: _.get(lineItem.location, 'locationCode'),
+                    destArea: _.get(lineItem.moveTo, 'area'),
+                    destLocationCode: _.get(lineItem.moveTo, 'locationCode'),
+                    createdDate: '2022-08-16',
+                    expirationDate: _.get(lineItem.lot, 'lotCode'),
+                    quantity: lineItem.quantity
+                };
+            });
+        }
+
+        function buildSaveParams(baseInfo, lineItems) {
+            return _.extend(baseInfo, {
+                lineItems: bulidLineItems(lineItems)
+            });
         }
 
     }

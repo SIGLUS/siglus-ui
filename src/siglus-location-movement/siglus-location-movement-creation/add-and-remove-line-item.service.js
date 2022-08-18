@@ -35,19 +35,21 @@
     function addAndRemoveLineItemService() {
 
         function getRowTemplateData(lineItem) {
-            return {
-              $error: lineItem.$error,
-              orderableId: lineItem.orderableId,
-              productCode: lineItem.productCode,
-              productName: lineItem.productName,
-              lot: lineItem.lot,
-              isKit: lineItem.isKit,
-              isMainGroup: false,
-              location: lineItem.location,
-              area: null,
-              moveToLocation: null,
-              quantity: lineItem.quantity
+            var rowData = {
+                $error: _.clone(lineItem.$error),
+                orderableId: lineItem.orderableId,
+                productCode: lineItem.productCode,
+                productName: lineItem.productName,
+                lot: _.clone(lineItem.lot),
+                isKit: lineItem.isKit,
+                isMainGroup: false,
+                location: _.clone(lineItem.location),
+                stockOnHand: lineItem.stockOnHand,
+                moveTo: _.clone(lineItem.moveTo),
+                moveToLocation: _.clone(lineItem.moveToLocation),
+                quantity: lineItem.quantity
             };
+            return rowData;
         }
 
         function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
@@ -60,8 +62,9 @@
             lineItem.location = null;
             lineItem.quantity = null;
             lineItem.isMainGroup = true;
-            lineItem.area = null;
+            lineItem.moveTo = null;
             lineItem.moveToLocation = null;
+            lineItem.stockOnHand = 0;
         }
 
         this.addLineItem = function(lineItem, lineItems) {

@@ -38,6 +38,7 @@
                 orderableGroups: undefined,
                 draftInfo: undefined,
                 addedLineItems: undefined,
+                areaLocationInfo: undefined,
                 page: '0',
                 size: '10',
                 keyword: ''
@@ -46,6 +47,9 @@
             resolve: {
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
+                },
+                user: function(authorizationService) {
+                    return authorizationService.getUser();
                 },
                 draftInfo: function() {
                     return {
@@ -61,14 +65,15 @@
                         var allLineOrderableIds = draftInfo.lineItems.map(function(line) {
                             return line.orderableId;
                         });
+                        // todo add draftId params
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
                             $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
-                            $stateParams.draftId, allLineOrderableIds
+                            undefined, allLineOrderableIds
                         );
                     }
                     return $stateParams.orderableGroups;
                 },
-                locations: function(SiglusLocationViewService, draftInfo) {
+                locations: function() {
                     var locations = [
                         {
                             area: 'east',
@@ -216,6 +221,79 @@
                 // orderableLotsLocationMap: function(SiglusLocationCommonUtilsService, locations) {
                 //     return SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations);
                 // }
+
+                areaLocationInfo: function($stateParams, siglusLocationMovementService) {
+                    if ($stateParams.areaLocationInfo) {
+                        return $stateParams.areaLocationInfo;
+                    }
+                    return siglusLocationMovementService.getMovementLocationAreaInfo().then(function() {
+
+                    })
+                        .catch(function() {
+                            return [
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'Frios',
+                                    locationCode: 'AA0001'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'Frios',
+                                    locationCode: 'AA0002'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'Frios',
+                                    locationCode: 'AA0003'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'West',
+                                    locationCode: 'AA101'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'West',
+                                    locationCode: 'AA102'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'West',
+                                    locationCode: 'AA103'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'East',
+                                    locationCode: 'AB101'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'East',
+                                    locationCode: 'AB102'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'East',
+                                    locationCode: 'AB103'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'East',
+                                    locationCode: 'AB104'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'north',
+                                    locationCode: 'AC203'
+                                },
+                                {
+                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
+                                    area: 'South',
+                                    locationCode: 'AD008'
+                                }
+                            ];
+                        });
+                },
                 addedLineItems: function(draftInfo, $stateParams) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
@@ -223,6 +301,9 @@
                     return [];
                 },
                 displayItems: function($stateParams, siglusMovementFilterService, addedLineItems) {
+                    console.log(
+                        siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems)
+                    );
                     return siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems);
                 }
             }

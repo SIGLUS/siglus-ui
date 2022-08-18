@@ -52,7 +52,7 @@
                             ng-model="lineItem.lot"
                             no-auto-select="true"
                             ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
-                            ng-change="vm.changeLot(lineItem);"
+                            ng-change="vm.changeLot(lineItem, lineItems);"
                     >
                     </select>
                 </td>
@@ -72,22 +72,27 @@
                             no-auto-select="true"
                             openlmis-invalid="{{lineItem.$error.locationError | message}}"
                             ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
-                            ng-change="vm.changeLocation(lineItem)"
+                            ng-change="vm.changeLocation(lineItem, lineItems)"
                     >
                     </select>
                 </td>
-                <td class="text-align-right">{{vm.getStockOnHand(lineItem)}}</td>
+                <td class="text-align-right">{{vm.getStockOnHand(lineItem, lineItems, index)}}</td>
                 <td>
                     <div class="location-movement-area" ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+
                         <select
                                 noPlaceholder
                                 placeholder="  "
-                                ng-model="lineItem.area"
+                                ng-model="lineItem.moveTo.area"
+                                openlmis-invalid="{{lineItem.$error.areaError | message}}"
+                                ng-options="area for area in vm.getAreaList(lineItem) track by area"
                                 no-auto-select="false">
 
                         </select>
                         <select
-                                ng-model="lineItem.moveToLocation"
+                                ng-model="lineItem.moveTo.locationCode"
+                                openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
+                                ng-options="locationCode for locationCode in vm.getLocationAreaList(lineItem) track by locationCode"
                                 noPlaceholder
                                 placeholder="  "
                                 no-auto-select="false">
@@ -96,13 +101,13 @@
                     </div>
 
                 </td>
-                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">{{vm.getTotalQuantity(lineItems)}}</td>
-                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
+                <td style="width: 80px;" ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">{{vm.getTotalQuantity(lineItems)}}</td>
+                <td style="width: 80px;" ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
                     <input
                             openlmis-invalid="{{lineItem.$error.quantityError | message}}"
                             class="form-control min-width-input"
                             ng-model="lineItem.quantity"
-                            ng-change="vm.changeQuantity(lineItem)"
+                            ng-change="vm.changeQuantity(lineItem, lineItems)"
                             positive-integer/>
                 </td>
                 <td style="max-width: 140px;">
@@ -127,8 +132,7 @@
 <siglus-common-toolbar
         data="vm.addedLineItems"
         mode="'SAVE'"
-        on-delete="vm.removeDisplayItems()"
+        on-delete="vm.deleteDraft()"
         on-save="vm.save()"
-        on-submit="vm.submit()"
-        on-cancel="vm.returnBack()">
+        on-submit="vm.submit()">
 </siglus-common-toolbar>

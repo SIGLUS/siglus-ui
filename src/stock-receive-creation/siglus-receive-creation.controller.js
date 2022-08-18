@@ -283,7 +283,7 @@
         };
 
         vm.validateLot = function(lineItem) {
-            lineItem.lotCode = lineItem.lot.lotCode;
+            lineItem.lotCode = _.get(lineItem.lot, 'lotCode');
             if (!lineItem.isKit) {
 
                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
