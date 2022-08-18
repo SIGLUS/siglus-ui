@@ -2445,5 +2445,6 @@
   "locationShipmentView.lotExpired": "This lot has expired, it cannot be fulfilled.",
   "locationShipmentView.notFirstToExpire": "This lot is not the first to expire.",
   "locationShipmentView.locationDuplicated": "he locations for issue Kit cannot be repeated, please enter a new one.",
-  "locationShipmentView.addItem": "Add Item"
+  "locationShipmentView.addItem": "Add Item",
+  "locationMovement.mtSoh": "Move quantity cannot be larger than SOH, please check your draft."
 }

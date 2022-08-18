@@ -8,7 +8,7 @@
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
             </fieldset>
             <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
-                   ng-click="vm.doCancelFilter()"/>
+                   ng-click="vm.cancelFilter()"/>
             <input type="submit" value="{{'stockReceiveCreation.search' | message}}"/>
         </form>
         <section class="is-primary">
@@ -40,50 +40,45 @@
                 <th>{{'stockReceiveCreation.actions' | message}}</th>
             </tr>
             </thead>
-            <tbody ng-repeat="lineItems in vm.pagedLineItems">
+            <tbody ng-repeat="(outerIndex, lineItems) in vm.pagedLineItems">
             <tr ng-repeat="(index, lineItem) in lineItems">
 
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
                 <td>{{lineItem.isMainGroup ? lineItem.productName : '' }}</td>
-                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
-                <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"
-                    openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
-                    popover="{{!lineItem.$error.lotCodeError && lineItem.$hint.lotCodeHint || '' | message}}"
-                >
+                <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
+                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"
+                    openlmis-invalid="{{lineItem.$error.lotCodeError | message}}">
                     <select
                             ng-model="lineItem.lot"
                             no-auto-select="true"
                             ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
-                            ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()"
+                            ng-change="vm.changeLot(lineItem);"
                     >
                     </select>
                 </td>
-                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
-                <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
+                <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
+                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <input
                            type="date"
-                           ng-model="lineItem.expirationDate"
+                           ng-model="lineItem.lot.expirationDate"
                            ng-disabled="true"
                            autocomplete="off"/>
                 </td>
 
-                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
+                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
                     <select
                             ng-model="lineItem.location"
-                            no-auto-select="false"
-                            openlmis-invalid="{{
-                            lineItem.$error.lotCodeError === 'locationShipmentView.lotDuplicated'
-                                    ? lineItem.$error.lotCodeError
-                                    : (lineItem.$error.locationError || '') | message}}"
+                            no-auto-select="true"
+                            openlmis-invalid="{{lineItem.$error.locationError | message}}"
                             ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
-                            ng-change="vm.changeLocation(lineItem, lineItems, index)"
+                            ng-change="vm.changeLocation(lineItem)"
                     >
                     </select>
                 </td>
-                <td class="text-align-right">{{lineItem.$previewSOH}}</td>
+                <td class="text-align-right">{{vm.getStockOnHand(lineItem)}}</td>
                 <td>
-                    <div class="location-movement-area" ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
+                    <div class="location-movement-area" ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
                         <select
                                 noPlaceholder
                                 placeholder="  "
@@ -101,12 +96,13 @@
                     </div>
 
                 </td>
-                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">{{vm.getTotalQuantity(lineItems)}}</td>
-                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)" openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
+                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">{{vm.getTotalQuantity(lineItems)}}</td>
+                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
                     <input
-                            class="form-control min-width-input" ng-model="lineItem.quantity"
-                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
-                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)"
+                            openlmis-invalid="{{lineItem.$error.quantityError | message}}"
+                            class="form-control min-width-input"
+                            ng-model="lineItem.quantity"
+                            ng-change="vm.changeQuantity(lineItem)"
                             positive-integer/>
                 </td>
                 <td style="max-width: 140px;">
@@ -119,7 +115,7 @@
                            value="{{'stockPhysicalInventoryDraft.remove' | message}}"
                            ng-if="lineItem.isMainGroup && lineItems.length === 1 || !lineItem.isMainGroup"
                            class="danger stock-actions"
-                           ng-click="vm.removeItem(lineItems, index)">
+                           ng-click="vm.removeItem(lineItems, index, outerIndex)">
                 </td>
             </tr>
             </tbody>
@@ -130,7 +126,7 @@
 <ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
 <siglus-common-toolbar
         data="vm.addedLineItems"
-        mode="vm.isMerge ? 'MERGE' : 'SAVE'"
+        mode="'SAVE'"
         on-delete="vm.removeDisplayItems()"
         on-save="vm.save()"
         on-submit="vm.submit()"
