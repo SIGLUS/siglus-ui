@@ -15,7 +15,7 @@
 
 describe('SiglusConsultationNumberViewController', function() {
 
-    var vm, $controller, program, ProgramDataBuilder, sections, lineItems, canEdit, isEmergency;
+    var vm, $controller, program, ProgramDataBuilder, sections, lineItems, canEdit, isEmergency, messageService;
 
     beforeEach(function() {
         module('siglus-requisition-view-section');
@@ -23,6 +23,7 @@ describe('SiglusConsultationNumberViewController', function() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             ProgramDataBuilder = $injector.get('ProgramDataBuilder');
+            messageService = $injector.get('messageService');
         });
 
         program = new ProgramDataBuilder().build();
@@ -174,7 +175,7 @@ describe('SiglusConsultationNumberViewController', function() {
             vm.getTotal(lineItems[0], total);
 
             expect(total.value).toBe(2147483648);
-            expect(total.$error).toBe('requisitionValidation.numberTooLarge');
+            expect(total.$error).toBe(messageService.get('requisitionValidation.numberTooLarge'));
         });
 
         it('should clear the last error message and calculate the new total value ' +

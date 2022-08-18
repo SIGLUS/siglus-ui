@@ -13,15 +13,12 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('PhysicalInventoryListController', function() {
+describe('LocationPhysicalInventoryListController', function() {
 
     var $controller, $q, $rootScope, $state, physicalInventoryService, physicalInventoryFactory,
         messageService, programs, facility, deferred,
         vm, programId, SiglusPhysicalInventoryCreationService, alertService;
 
-    beforeEach(function() {
-        module('stock-orderable-group');
-    });
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
@@ -58,7 +55,7 @@ describe('PhysicalInventoryListController', function() {
             supportedPrograms: programs
         };
 
-        vm = $controller('PhysicalInventoryListController', {
+        vm = $controller('LocationPhysicalInventoryListController', {
             facility: facility,
             programs: programs,
             programId: programId,
@@ -72,7 +69,10 @@ describe('PhysicalInventoryListController', function() {
     }
 
     beforeEach(function() {
-        module('stock-physical-inventory-list');
+        module('siglus-location-physical-inventory-list');
+        module('stock-physical-inventory');
+        module('stock-products');
+        module('stock-orderable-group');
         prepareInjector();
         prepareSpies();
         prepareData();
@@ -114,7 +114,7 @@ describe('PhysicalInventoryListController', function() {
             $rootScope.$apply();
 
             expect($state.go).toHaveBeenCalledWith(
-                'openlmis.stockmanagement.physicalInventory.draft', {
+                'openlmis.locationManagement.physicalInventory.draft', {
                     id: draft.id,
                     draft: draft,
                     program: {
@@ -175,7 +175,7 @@ describe('PhysicalInventoryListController', function() {
             });
             $rootScope.$apply();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.physicalInventory.draftList');
+            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.physicalInventory.draftList');
         });
 
         it('should alert error hint when validate is false', function() {
