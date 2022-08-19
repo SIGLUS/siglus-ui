@@ -41,7 +41,15 @@ describe('FacilityViewController', function() {
             this.alertConfirmModalService = $injector.get(
                 'alertConfirmModalService'
             );
+            this.locationManagementService = $injector.get(
+                'locationManagementService'
+            );
         });
+
+        this.file = {
+            fileName: 'file.csv',
+            content: 'file-content'
+        }, 'facility-id-1';
 
         spyOn(this.FacilityRepository.prototype, 'update').andReturn(
             this.$q.when()
@@ -166,6 +174,73 @@ describe('FacilityViewController', function() {
             expect(this.vm.originalFacilityName).not.toBe(
                 this.vm.facility.name
             );
+        });
+
+        it('should expose exportFile method', function() {
+            expect(angular.isFunction(this.vm.exportFile)).toBe(true);
+        });
+
+        it('should expose upload method', function() {
+            expect(angular.isFunction(this.vm.upload)).toBe(true);
+        });
+
+    });
+
+    describe('getExportUrl', function() {
+
+        it('should call locationManagementService and return download url',
+            function() {
+                var downloadUrl = 'some-domain/download';
+                spyOn(this.locationManagementService, 'getDownloadUrl').andReturn(
+                    downloadUrl
+                );
+
+                var result = this.vm.exportFile();
+
+                expect(result).toEqual(downloadUrl);
+                expect(
+                    this.locationManagementService.getDownloadUrl
+                ).toHaveBeenCalled();
+            });
+    });
+
+    describe('upload', function() {
+
+        beforeEach(function() {
+            this.response = {
+                amount: 2
+            };
+            this.deferred = this.$q.defer();
+
+            spyOn(this.locationManagementService, 'upload').andReturn(
+                this.deferred.promise
+            );
+        });
+
+        it('should show error notification if upload failed', function() {
+            this.vm.file = this.file;
+            this.deferred.reject();
+
+            this.vm.upload();
+            this.$rootScope.$apply();
+
+            // expect(this.locationManagementService.upload).toHaveBeenCalledWith(
+            //     this.file
+            // );
+
+            expect(this.notificationService.error).toHaveBeenCalledWith(
+                'adminFacilityView.uploadFailed'
+            );
+        });
+
+        it('should show error notification if file is not selected', function() {
+            this.vm.upload();
+
+            expect(this.notificationService.error).toHaveBeenCalledWith(
+                'adminIsaManage.fileIsNotSelected'
+            );
+
+            expect(this.locationManagementService.upload).not.toHaveBeenCalled();
         });
     });
 
