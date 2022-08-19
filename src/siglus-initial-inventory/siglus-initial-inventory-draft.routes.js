@@ -84,7 +84,6 @@
                             var id = $stateParams.subDraftIds.length > 1
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
-                            // TODO  flag命名
                             var flag = $stateParams.isMerged === 'true';
                             physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
                                 .then(function(draft) {

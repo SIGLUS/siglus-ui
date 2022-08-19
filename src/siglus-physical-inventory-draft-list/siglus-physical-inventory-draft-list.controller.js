@@ -70,7 +70,6 @@
             return messageService.get(statusMap[isStarter]);
 
         };
-        // TODO constant
         vm.actionType = function(isStarter) {
             var statusMap = {
                 NOT_YET_STARTED: 'stockPhysicalInventory.start',
@@ -120,7 +119,6 @@
         vm.mergeDrafts = function() {
             if (isAllSubDraftsSubmit(vm.draftList.subDrafts)) {
                 var stateParams = angular.copy($stateParams);
-                // TODO translate
                 stateParams.isMerged = true;
                 stateParams.subDraftIds = _.map(vm.draftList.subDrafts, function(item) {
                     return item.subDraftId[0];

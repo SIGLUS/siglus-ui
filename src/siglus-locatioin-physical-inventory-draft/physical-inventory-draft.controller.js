@@ -54,7 +54,6 @@
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
                         allLocationAreaMap) {
         var vm = this;
-        // vm.withLocation = true;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
@@ -107,8 +106,6 @@
                 });
             });
         };
-
-        // console.log('allLocationAreaMap: ', allLocationAreaMap);
 
         // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
@@ -218,10 +215,6 @@
          */
         // SIGLUS-REFACTOR: starts here
         vm.addProducts = function() {
-            // var notYetAddedItems = _.chain(draft.lineItems)
-            //     .difference(_.flatten(vm.displayLineItemsGroup))
-            //     .value();
-            // var addedLotsId = getAddedLots();
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -235,16 +228,6 @@
             addProductsModalService.show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
                 draft.lineItems = draft.lineItems.concat(addedItems);
                 refreshLotOptions();
-                // $stateParams.program = vm.program;
-                // $stateParams.facility = vm.facility;
-                // $stateParams.draft = draft;
-                //
-                // $stateParams.isAddProduct = true;
-                //
-                // //Only reload current state and avoid reloading parent state
-                // $state.go($state.current.name, $stateParams, {
-                //     reload: $state.current.name
-                // });
                 $stateParams.isAddProduct = true;
                 reload($state.current.name);
 
@@ -332,14 +315,14 @@
         // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
-        function reload(reload) {
+        function reload(flag) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
                 return $state.go($state.current.name, $stateParams, {
-                    reload: reload
+                    reload: flag
                 });
             });
         }
@@ -354,7 +337,6 @@
          * Save physical inventory draft.
          */
         // SIGLUS-REFACTOR: starts here
-        // TODO name
         var openRemainingModal = function(type, data) {
             siglusRemainingProductsModalService.show(data).then(function() {
                 saveOrSubmit(type, data);
@@ -392,13 +374,6 @@
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;
-                // $stateParams.program = vm.program;
-                // $stateParams.facility = vm.facility;
-                // $stateParams.draft = draft;
-                // //Reload parent state and current state to keep data consistency.
-                // $state.go($state.current.name, $stateParams, {
-                //     reload: true
-                // });
                 loadingModalService.close();
                 if (notReload) {
                     var stateParams = angular.copy($stateParams);
@@ -452,7 +427,6 @@
          * Delete physical inventory draft.
          */
 
-        // todo wait for #56
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
                 // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
@@ -514,12 +488,6 @@
                     $state.go('^', {}, {
                         reload: true
                     });
-                    // $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
-                    //     program: program.id,
-                    //     facility: facility.id
-                    // }, {
-                    //     reload: true
-                    // });
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -532,7 +500,6 @@
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
                     $stateParams.keyword = null;
-                    // reload($state.current.name);
                 }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
@@ -549,7 +516,6 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
-                    // TODO merge \ subDraft Submit
 
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                         summaries: []
@@ -603,7 +569,6 @@
             }
             return lineItem.$errors.quantityInvalid;
         };
-        // TODO 校验form表单的Lot Code的地方;
         vm.validateLotCode = function(lineItem) {
             if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
@@ -781,12 +746,6 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
-            // if (!vm.isInitialInventory) {
-            // var data = messageService.get('stockPhysicalInventoryDraft.title', {
-            //     facilityCode: facility.code,
-            //     facilityName: facility.name,
-            //     program: program.name
-            // });
             if ($stateParams.isMerged === 'true') {
                 $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
             } else {
@@ -795,7 +754,6 @@
                         + ' '
                         + $stateParams.draftNum;
             }
-            // }
         }
 
         function initiateLineItems() {
@@ -972,12 +930,12 @@
             }
             var reason;
             if (diff > 0) {
-                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
-                    return reason.reasonType === REASON_TYPES.CREDIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(reasonItem) {
+                    return reasonItem.reasonType === REASON_TYPES.CREDIT;
                 });
             } else {
-                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
-                    return reason.reasonType === REASON_TYPES.DEBIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(reasonItem) {
+                    return reasonItem.reasonType === REASON_TYPES.DEBIT;
                 });
             }
             var adjustment = {
@@ -1044,32 +1002,6 @@
          *
          * @return {String} the prepared URL
          */
-        /*function getPrintUrl(id) {
-            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
-        }*/
-
-        /*
-        function reorderItems() {
-            var sorted = $filter('orderBy')(vm.draft.lineItems, ['orderable.productCode', '-occurredDate']);
-            var groups = _.chain(sorted).groupBy(function(item) {
-                return item.orderable.id;
-            })
-                .sortBy(function(group) {
-                    return _.every(group, function(item) {
-                        return !item.$errors.quantityInvalid;
-                    });
-                })
-                .values()
-                .value();
-
-            groups.forEach(function(group) {
-                group.forEach(function(lineItem) {
-                    orderableGroupService.determineLotMessage(lineItem, group);
-                });
-            });
-            vm.displayLineItemsGroup = groups;
-        }
-        */
         function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {

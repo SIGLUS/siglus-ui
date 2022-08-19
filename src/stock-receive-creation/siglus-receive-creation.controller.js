@@ -509,17 +509,6 @@
                                 585 / 2,
                                 A4_HEIGHT
                             );
-                            // 遍历跟随分页部分重复的部分
-                            // PDF.addImage(
-                            //     '',
-                            //     'JPEG',
-                            //     4,
-                            //     (
-                            //         offsetHeight
-                            //     ) * rate,
-                            //     585,
-                            //     reback[2].nodeHeight * rate
-                            // );
                             PDF.addImage(
                                 reback[3].data,
                                 'JPEG',
@@ -592,15 +581,6 @@
                         }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
-                    // 添加分页部分下方的固定部分图片到PDF中
-                    // PDF.addImage(
-                    //     '',
-                    //     'JPEG',
-                    //     4,
-                    //     (offsetHeight) * rate,
-                    //     585,
-                    //     reback[2].nodeHeight * rate
-                    // );
                     PDF.addImage(
                         reback[3].data,
                         'JPEG',

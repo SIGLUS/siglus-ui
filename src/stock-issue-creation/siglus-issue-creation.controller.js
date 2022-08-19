@@ -51,7 +51,6 @@
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
-        // vm.nowDate = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss');
         vm.initialDraftInfo = initialDraftInfo;
         var deferred = $q.defer();
         vm.destinationName = '';
@@ -483,7 +482,6 @@
                     };
                 }));
             });
-            // var totalPage = getTotalPaginationNum(promiseList, canUseHeight);
             // 固定部分的图片转换完成后再去做分页部分的图片转换
             $q.all(fixedPromiseList).then(function(reback) {
                 // 偏移量
@@ -587,15 +585,6 @@
                         }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
-                    // 添加分页部分下方的固定部分图片到PDF中
-                    // PDF.addImage(
-                    //     '',
-                    //     'JPEG',
-                    //     4,
-                    //     (offsetHeight) * rate,
-                    //     585,
-                    //     reback[2].nodeHeight * rate
-                    // );
                     PDF.addImage(
                         reback[3].data,
                         'JPEG',
@@ -623,21 +612,6 @@
                 });
             });
         }
-
-        // function getTotalPaginationNum(promiseList, canUseHeight) {
-        //     // return 'hello';
-        //     var totalNum = 0;
-        //     $q.all(promiseList).then(function(res) {
-        //         var realHeight = 0;
-        //         _.forEach(res, function(itm) {
-        //             realHeight = realHeight + itm.nodeHeight;
-        //             if (canUseHeight < realHeight) {
-        //                 totalNum = totalNum + 1;
-        //             }
-        //         });
-        //     });
-        //     return totalNum;
-        // }
 
         function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
@@ -694,7 +668,6 @@
                             vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            // loadingModalService.open();
                             downloadPdf();
                             deferred.promise.then(function() {
                                 loadingModalService.open();

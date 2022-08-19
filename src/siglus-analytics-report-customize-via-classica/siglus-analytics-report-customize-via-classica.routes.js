@@ -61,14 +61,12 @@
                             }
                         };
                     var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
-                    var lineItemsOrigin = $filter('orderBy')(fullSupplyLineItems, [
+                    return $filter('orderBy')(fullSupplyLineItems, [
                         '$program.orderableCategoryDisplayOrder',
                         '$program.orderableCategoryDisplayName',
                         '$program.displayOrder',
                         'orderable.fullProductName'
                     ]);
-                    return lineItemsOrigin;
-
                 },
                 columns: function(requisition) {
                     var columnsList = ['orderable.productCode', 'orderable.fullProductName',

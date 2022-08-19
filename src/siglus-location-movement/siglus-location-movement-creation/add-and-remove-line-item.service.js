@@ -35,7 +35,7 @@
     function addAndRemoveLineItemService() {
 
         function getRowTemplateData(lineItem) {
-            var rowData = {
+            return {
                 $error: {},
                 $hint: {},
                 orderableId: lineItem.orderableId,
@@ -49,7 +49,6 @@
                 moveToLocation: null,
                 quantity: lineItem.quantity
             };
-            return rowData;
         }
 
         function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
