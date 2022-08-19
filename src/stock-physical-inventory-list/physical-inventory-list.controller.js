@@ -162,8 +162,8 @@
      * @param {Object} draft Physical inventory draft
      */
         function editDraft(draft) {
-            var program = _.find(vm.programs, function(program) {
-                return program.id === draft.programId;
+            var program = _.find(vm.programs, function(programItem) {
+                return programItem.id === draft.programId;
             });
             return physicalInventoryFactory.getDraft(draft.programId,
                 draft.facilityId).then(function(draft) {

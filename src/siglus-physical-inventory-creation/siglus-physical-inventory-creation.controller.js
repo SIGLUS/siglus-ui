@@ -103,7 +103,6 @@
                             );
                         } else {
                             $stateParams.drafts = null;
-                            // TODO rename
                             var stateParamsCopy = angular.copy($stateParams);
                             stateParamsCopy.creationType = 'location';
                             vm.creationType === 'location' ? $state.go(
@@ -115,10 +114,7 @@
                         }
                     })
                         .catch(function(err) {
-                            if (err.status === 400 && err.data.isBusinessError) {
-                                loadingModalService.close();
-                                vm.showConflictStatus = true;
-                            }
+                            catchError(err);
                         });
                     return;
                 }
@@ -139,7 +135,6 @@
                         );
                     } else {
                         $stateParams.drafts = null;
-                        // TODO rename
                         var stateParamsCopy = angular.copy($stateParams);
                         stateParamsCopy.creationType = 'location';
                         vm.creationType === 'location' ? $state.go(
@@ -151,15 +146,19 @@
                     }
                 })
                     .catch(function(err) {
-                        if (err.status === 400 && err.data.isBusinessError) {
-                            loadingModalService.close();
-                            vm.showConflictStatus = true;
-                        }
+                        catchError(err);
                     });
             } else {
                 vm.showError = true;
             }
         };
+
+        function catchError(err) {
+            if (err.status === 400 && err.data.isBusinessError) {
+                loadingModalService.close();
+                vm.showConflictStatus = true;
+            }
+        }
     }
 
 })();

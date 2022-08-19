@@ -144,7 +144,6 @@
         }
 
         function getSignaure(signaure) {
-            // vm.signaure = requisition.extraData.signaure;
             var newSignaure = angular.copy(signaure);
             if (newSignaure.approve) {
                 newSignaure.approve = newSignaure && newSignaure.approve.length

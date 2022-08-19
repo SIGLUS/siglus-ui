@@ -171,7 +171,6 @@
                                 }
                             }
                         };
-                        // todo _.get lot information
 
                         // eslint-disable-next-line complexity
                         $scope.fillLotCode = function() {
