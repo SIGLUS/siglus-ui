@@ -309,8 +309,6 @@
 
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
-            // eslint-disable-next-line no-debugger
-            debugger;
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
