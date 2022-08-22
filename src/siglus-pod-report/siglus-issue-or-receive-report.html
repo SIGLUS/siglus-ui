@@ -30,7 +30,6 @@
               </h6>
             </td>
             <td colspan="3" style="border-right: 1px solid #000;" class="report--title">
-              <!-- TODO the Documentation No. input by the user -->
               <span class="report--title-font">
                 <!-- Issue Voucher Nº -->
                 {{vm.orderCode}}
@@ -41,7 +40,6 @@
             <td class="text__left" colspan="2">
               {{ 'siglusIssueOrReceiveReport.supplier' | message }}: {{ vm.supplier }}
             </td>
-            <!-- TODO issue destination. If the user chooses “Others”, then show the manually input destination  -->
             <td class="text__left" colspan="3">
               {{ 'siglusIssueOrReceiveReport.client' | message }}: {{ vm.client }}
             </td>
@@ -133,7 +131,6 @@
           </tr>
           <tr>
             <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.supplierProvince }}</td>
-            <!-- TODO the date that the user submits the merged draft -->
             <td class="text__left" colspan="2">{{ 'siglusIssueOrReceiveReport.issueVoucherDate' | message }}: {{ vm.issueVoucherDate }}</td>
           </tr>
         </table>
@@ -187,7 +184,6 @@
               <!-- <td>123</td> -->
             </tr>
             <tr>
-              <!-- TODO product code -->
               <td class="background-black black-width"></td>
               <td style="width: 80px; height: 90px; border-top: none;" class="report--subtitle" rowspan="2">{{ 'siglusIssueOrReceiveReport.fnm' | message }}</td>
               <td style="width: 362px; height: 60px; border-top: none; border-bottom: none;" class="report--subtitle" colspan="3">{{ 'siglusIssueOrReceiveReport.destinationOfProduct' | message }}
@@ -199,7 +195,6 @@
               <!-- keep blank -->
               <td style="width: 73px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.quantityOrdered' | message }}
               </td>
-              <!-- TODO issue quantity -->
               <td style="width: 73px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.suppliedQuantity' | message }}
               </td>
               <td style="width: 50px; border-top: none; border-bottom: none;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.price' | message }}</td>
@@ -253,12 +248,10 @@
         </table>
       </section>
       <section id="sectionThird" class="section-third">
-        <!-- TODO should be automatically calculated -->
         <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
         <div class="issue-voucher" style="text-align: center;">{{ vm.totalPriceValue / 100}}</div>
       </section>
       <section id="sectionFouth" class="section-fouth">
-        <!-- TODO signature of the user who submitted the merged issue draft -->
         <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.preparedBy }}</div>
         <!-- keep blank -->
         <div class="fouth-conferred">{{ 'siglusIssueOrReceiveReport.conferredBy' | message }}: {{ vm.conferredBy }}</div>
@@ -306,7 +299,6 @@
             </h6>
           </td>
           <td colspan="8" style="border-right: 1px solid #000;" class="report--title">
-            <!-- TODO the Documentation No. input by the user -->
             <span class="report--title-font">
               <!-- Issue Voucher Nº -->
               INCOSISTENCIES REPORT

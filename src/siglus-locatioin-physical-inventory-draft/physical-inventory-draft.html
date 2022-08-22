@@ -1,6 +1,11 @@
-<h2>
-    {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
-</h2>
+<div style="display: flex; justify-content: space-between; border-bottom: 1px solid #BEBEBE; padding-bottom: 11px;">
+    <h2>
+        {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+    </h2>
+    <button class="primary" ng-click="vm.print()">
+        Print
+    </button>
+</div>
 
 <section class="openlmis-table-container">
     <form ng-submit="vm.search()">
