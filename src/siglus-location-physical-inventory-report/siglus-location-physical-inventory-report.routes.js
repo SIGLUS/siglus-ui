@@ -24,7 +24,8 @@
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS'];
 
     function routes($stateProvider) {
-        $stateProvider.state('openlmis.locationManagement.physicalInventory.draftList.draft.report', {
+        // console.log(document.body.);
+        $stateProvider.state('openlmis.locationManagement.physicalInventory.report', {
             url: '/report',
             showInNavigation: false,
             label: 'printTemplate.title',
@@ -37,7 +38,11 @@
                     templateUrl: 'siglus-location-physical-inventory-report/siglus-location-physical-inventory-report.html'
                 }
             },
-            resolve: {}
+            resolve: {
+                hideBreadcrumb: function() {
+                    console.log(document.getElementsByClassName('breadcrumb')[0]);
+                }
+            }
         });
     }
 

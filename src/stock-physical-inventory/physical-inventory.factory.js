@@ -266,6 +266,25 @@
 
             // SIGLUS-REFACTOR: Filter not added items
             physicalInventory.lineItems = _.map(draft.lineItems, function(item) {
+                if (item.id) {
+                    return {
+                        id: item.id,
+                        orderableId: item.orderable.id,
+                        lotId: item.lot ? item.lot.id : null,
+                        lotCode: item.lot ? item.lot.lotCode : null,
+                        expirationDate: item.lot ? item.lot.expirationDate : null,
+                        quantity: item.quantity,
+                        extraData: {
+                            vvmStatus: item.vvmStatus
+                        },
+                        stockAdjustments: item.stockAdjustments,
+                        reasonFreeText: item.reasonFreeText,
+                        stockCardId: item.stockCardId,
+                        programId: item.programId,
+                        area: item.area,
+                        locationCode: item.locationCode
+                    };
+                }
                 return {
                     orderableId: item.orderable.id,
                     lotId: item.lot ? item.lot.id : null,
@@ -290,6 +309,8 @@
 
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(physicalInventory, summaries, draftToReturn) {
+            // eslint-disable-next-line no-debugger
+            debugger;
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -337,6 +358,7 @@
                         reasonFreeText: item.reasonFreeText,
                         stockCardId: item.stockCardId,
                         area: item.area,
+                        id: item.id,
                         locationCode: item.locationCode,
                         programId: _.first(summary.orderable.programs).programId
                     });

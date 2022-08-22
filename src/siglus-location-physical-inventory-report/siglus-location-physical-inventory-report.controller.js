@@ -21,9 +21,25 @@
         .module('siglus-location-physical-inventory-report')
         .controller('siglusLocationPhysicalInventoryReport', controller);
 
-    controller.$inject = [];
+    controller.$inject = ['$scope'];
 
-    function controller() {
+    function controller($scope) {
+        var vm = this;
+        // vm.withLocation = true;
+        vm.$onInit = onInit;
+
+        var onInit = function() {
+            console.log('init');
+            document.getElementsByClassName('header')[0].style.display = 'none';
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        };
+        onInit();
+        $scope.$on('$stateChangeStart', function(event, toState) {
+            if (toState) {
+                document.getElementsByClassName('header')[0].style.display = 'block';
+                document.getElementsByClassName('page')[0].childNodes[1].style.display = 'block';
+            }
+        });
     }
 
 })();
