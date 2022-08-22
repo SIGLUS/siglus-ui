@@ -602,16 +602,17 @@
             return lineItem.$errors.quantityInvalid;
         };
         vm.print = function() {
-            // $state.go('openlmis.locationManagement.physicalInventory.draftList.draft.report');
-            var printDom = document.getElementById('printContent');
-            console.log('#### printDom', printDom);
-            var tb = $window.open('test', '_blank');
-            var secScript = document.createElement('script');
-            secScript.setAttribute('type', 'text/javascript');
-            secScript.setAttribute('src', '');
-            tb.document.body.insertBefore(secScript, tb.document.body.lastChild);
-            tb.document.body.appendChild(printDom);
-            console.log(tb.document.body);
+            $window.open('/webapp/#!/locationManagement/physicalInventory/report', '_blank');
+            // $state.go('openlmis.locationManagement.physicalInventory.report', {});
+            // var printDom = document.getElementById('printContent');
+            // console.log('#### printDom', printDom);
+            // var tb = $window.open('test', '_blank');
+            // var secScript = document.createElement('script');
+            // secScript.setAttribute('type', 'text/javascript');
+            // secScript.setAttribute('src', '');
+            // tb.document.body.insertBefore(secScript, tb.document.body.lastChild);
+            // tb.document.body.appendChild(printDom);
+            // console.log(tb.document.body);
         };
 
         // 校验form表单的Lot Code的地方;
