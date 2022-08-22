@@ -406,7 +406,7 @@
                     vm.enableValue = !vm.enableValue;
                     facility.enableLocationManagement = vm.enableValue;
                     new locationManagementService
-                        .update(vm.facility.id, facility)
+                        .update(vm.facility.id, facility, 'locationManagement')
                         .then(function() {
                             notificationService.success(
                                 'adminFacilityView.disabledLocation'
@@ -428,7 +428,7 @@
                 vm.enableValue = !vm.enableValue;
                 facility.enableLocationManagement = vm.enableValue;
                 new locationManagementService
-                    .update(vm.facility.id, facility)
+                    .update(vm.facility.id, facility, 'locationManagement')
                     .then(function() {
                         notificationService.success(
                             'adminFacilityView.enableLocation'
@@ -439,7 +439,7 @@
             vm.enableValue = !vm.enableValue;
             facility.enableLocationManagement = vm.enableValue;
             new locationManagementService
-                .update(vm.facility.id, facility)
+                .update(vm.facility.id, facility, 'locationManagement')
                 .then(function() {
                     notificationService.success(
                         'adminFacilityView.enableLocation'

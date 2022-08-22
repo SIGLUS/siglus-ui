@@ -112,11 +112,13 @@
      * @param  {Object}  file the csv file that will be uploaded
      * @return {Promise}      the number of uploaded items
      */
-        function update(id, facility) {
+        function update(id, facility, tb) {
             return resource.update({
                 id: id
             },
-            facility)
+            angular.merge(facility, {
+                tb: tb
+            }))
                 .$promise;
         }
     }
