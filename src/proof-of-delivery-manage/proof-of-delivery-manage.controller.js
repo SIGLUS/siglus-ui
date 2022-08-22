@@ -709,8 +709,6 @@
         }
 
         vm.getReason = function(reasonId) {
-            // return 
-            // TODO  vm
             var reasonMap = _.reduce(vm.reasons, function(r, c) {
                 r[c.id] = c.name;
                 return r;

@@ -353,7 +353,6 @@
          * Save physical inventory draft.
          */
         // SIGLUS-REFACTOR: starts here
-        // TODO name
         var openRemainingModal = function(type, data) {
             siglusRemainingProductsModalService.show(data).then(function() {
                 saveOrSubmit(type, data);
@@ -550,7 +549,6 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
-                    // TODO merge \ subDraft Submit
 
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                         summaries: []

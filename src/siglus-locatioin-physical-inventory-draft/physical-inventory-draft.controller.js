@@ -569,6 +569,16 @@
             }
             return lineItem.$errors.quantityInvalid;
         };
+<<<<<<< Updated upstream
+=======
+        vm.print = function() {
+            // $state.go('openlmis.locationManagement.physicalInventory.draftList.draft.report');
+            var tb = $window.open('', '_blank');
+            console.log('#### tb', tb);
+        };
+
+        // 校验form表单的Lot Code的地方;
+>>>>>>> Stashed changes
         vm.validateLotCode = function(lineItem) {
             if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
