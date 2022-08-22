@@ -54,6 +54,7 @@
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
                         allLocationAreaMap) {
         var vm = this;
+        // vm.withLocation = true;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
@@ -106,6 +107,8 @@
                 });
             });
         };
+
+        // console.log('allLocationAreaMap: ', allLocationAreaMap);
 
         // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
@@ -215,6 +218,10 @@
          */
         // SIGLUS-REFACTOR: starts here
         vm.addProducts = function() {
+            // var notYetAddedItems = _.chain(draft.lineItems)
+            //     .difference(_.flatten(vm.displayLineItemsGroup))
+            //     .value();
+            // var addedLotsId = getAddedLots();
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -228,6 +235,16 @@
             addProductsModalService.show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
                 draft.lineItems = draft.lineItems.concat(addedItems);
                 refreshLotOptions();
+                // $stateParams.program = vm.program;
+                // $stateParams.facility = vm.facility;
+                // $stateParams.draft = draft;
+                //
+                // $stateParams.isAddProduct = true;
+                //
+                // //Only reload current state and avoid reloading parent state
+                // $state.go($state.current.name, $stateParams, {
+                //     reload: $state.current.name
+                // });
                 $stateParams.isAddProduct = true;
                 reload($state.current.name);
 
@@ -315,14 +332,14 @@
         // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
-        function reload(flag) {
+        function reload(reload) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
                 return $state.go($state.current.name, $stateParams, {
-                    reload: flag
+                    reload: reload
                 });
             });
         }
@@ -374,6 +391,13 @@
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;
+                // $stateParams.program = vm.program;
+                // $stateParams.facility = vm.facility;
+                // $stateParams.draft = draft;
+                // //Reload parent state and current state to keep data consistency.
+                // $state.go($state.current.name, $stateParams, {
+                //     reload: true
+                // });
                 loadingModalService.close();
                 if (notReload) {
                     var stateParams = angular.copy($stateParams);
@@ -427,6 +451,7 @@
          * Delete physical inventory draft.
          */
 
+        // todo wait for #56
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
                 // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
@@ -488,6 +513,12 @@
                     $state.go('^', {}, {
                         reload: true
                     });
+                    // $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
+                    //     program: program.id,
+                    //     facility: facility.id
+                    // }, {
+                    //     reload: true
+                    // });
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -500,6 +531,7 @@
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
                     $stateParams.keyword = null;
+                    // reload($state.current.name);
                 }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
@@ -569,16 +601,20 @@
             }
             return lineItem.$errors.quantityInvalid;
         };
-<<<<<<< Updated upstream
-=======
         vm.print = function() {
             // $state.go('openlmis.locationManagement.physicalInventory.draftList.draft.report');
-            var tb = $window.open('', '_blank');
-            console.log('#### tb', tb);
+            var printDom = document.getElementById('printContent');
+            console.log('#### printDom', printDom);
+            var tb = $window.open('test', '_blank');
+            var secScript = document.createElement('script');
+            secScript.setAttribute('type', 'text/javascript');
+            secScript.setAttribute('src', '');
+            tb.document.body.insertBefore(secScript, tb.document.body.lastChild);
+            tb.document.body.appendChild(printDom);
+            console.log(tb.document.body);
         };
 
         // 校验form表单的Lot Code的地方;
->>>>>>> Stashed changes
         vm.validateLotCode = function(lineItem) {
             if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
                 if (!hasLot(lineItem)) {
@@ -730,6 +766,7 @@
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(list);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
+                // console.log('#### vm.groupedCategories', vm.groupedCategories);
                 // SIGLUS-REFACTOR: ends here
             }, true);
         }
@@ -756,6 +793,12 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
+            // if (!vm.isInitialInventory) {
+            // var data = messageService.get('stockPhysicalInventoryDraft.title', {
+            //     facilityCode: facility.code,
+            //     facilityName: facility.name,
+            //     program: program.name
+            // });
             if ($stateParams.isMerged === 'true') {
                 $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
             } else {
@@ -764,6 +807,7 @@
                         + ' '
                         + $stateParams.draftNum;
             }
+            // }
         }
 
         function initiateLineItems() {
@@ -781,7 +825,8 @@
                 if (!summary.$errors) {
                     summary.$errors = {};
                 }
-                if (summary.lot && summary.lot.id) {
+                // TODO 报错了 改动
+                if (summary.lot && summary.lot.id && summary.lot.lotCode) {
                     vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
                 }
             });
@@ -940,12 +985,12 @@
             }
             var reason;
             if (diff > 0) {
-                reason = _.find(vm.reasons[lineItem.programId], function(reasonItem) {
-                    return reasonItem.reasonType === REASON_TYPES.CREDIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
+                    return reason.reasonType === REASON_TYPES.CREDIT;
                 });
             } else {
-                reason = _.find(vm.reasons[lineItem.programId], function(reasonItem) {
-                    return reasonItem.reasonType === REASON_TYPES.DEBIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
+                    return reason.reasonType === REASON_TYPES.DEBIT;
                 });
             }
             var adjustment = {
@@ -969,7 +1014,9 @@
                 $errors: {},
                 reasonFreeText: undefined
             });
+            console.log('#### newLineItem', newLineItem);
             draft.lineItems.push(newLineItem);
+            console.log('draft.lineItems', draft.lineItems);
             $stateParams.isAddProduct = true;
             reload($state.current.name);
         }
@@ -1012,6 +1059,32 @@
          *
          * @return {String} the prepared URL
          */
+        /*function getPrintUrl(id) {
+            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
+        }*/
+
+        /*
+        function reorderItems() {
+            var sorted = $filter('orderBy')(vm.draft.lineItems, ['orderable.productCode', '-occurredDate']);
+            var groups = _.chain(sorted).groupBy(function(item) {
+                return item.orderable.id;
+            })
+                .sortBy(function(group) {
+                    return _.every(group, function(item) {
+                        return !item.$errors.quantityInvalid;
+                    });
+                })
+                .values()
+                .value();
+
+            groups.forEach(function(group) {
+                group.forEach(function(lineItem) {
+                    orderableGroupService.determineLotMessage(lineItem, group);
+                });
+            });
+            vm.displayLineItemsGroup = groups;
+        }
+        */
         function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {

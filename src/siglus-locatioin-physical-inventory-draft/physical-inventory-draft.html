@@ -1,4 +1,4 @@
-<div style="display: flex; justify-content: space-between; border-bottom: 1px solid #BEBEBE; padding-bottom: 11px;">
+<div style="display: flex; justify-content: space-between; border-bottom: 1px solid #bebebe;">
     <h2>
         {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
     </h2>
@@ -64,6 +64,7 @@
             <td ng-class="{'text-align-right': vm.actionType !== 'SUBMITTED'}">
                 {{vm.calculate(lineItems, 'quantity')}}
             </td>
+            <td></td>
             <td ng-if="vm.showVVMStatusColumn"></td>
             <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
             <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
@@ -99,6 +100,7 @@
             <td  ng-if="!vm.isInitialInventory" class="text-align-right">
                 {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
             </td>
+            <!-- area - location -->
             <td>
                 <div class="location-td">
                     <select
