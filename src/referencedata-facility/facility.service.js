@@ -45,7 +45,9 @@
                 {},
                 {
                     query: {
-                        url: referencedataUrlFactory('/api/siglusapi/facilities/'),
+                        url: referencedataUrlFactory(
+                            '/api/siglusapi/facilities/'
+                        ),
                         method: 'GET'
                     },
                     getAllMinimal: {
@@ -65,10 +67,14 @@
                         ),
                         method: 'POST'
                     },
+                    // SIGLUS-REFACTOR: starts here
                     update: {
+                        url: referencedataUrlFactory(
+                            '/api/siglusapi/facilities/:id'
+                        ),
                         method: 'PUT'
                     },
-                    // SIGLUS-REFACTOR: starts here
+
                     eraseDeviceInfo: {
                         url: referencedataUrlFactory(
                             '/api/siglusapi/facilities/:facilityCode/deviceInfo'
@@ -91,6 +97,7 @@
         this.getUserFacilitiesForRight = getUserFacilitiesForRight;
         this.getFulfillmentFacilities = getFulfillmentFacilities;
         this.search = search;
+        this.update = update;
         this.clearFacilitiesCache = clearFacilitiesCache;
         this.eraseDeviceInfo = eraseDeviceInfo;
         this.addNewFacility = addNewFacility;
@@ -168,6 +175,25 @@
      */
         function search(paginationParams, queryParams) {
             return resource.search(paginationParams, queryParams).$promise;
+        }
+
+        /**
+     * @ngdoc method
+     * @methodOf referencedata-facility.facilityService
+     * @name search
+     *
+     * @description
+     * Searches facilities using given parameters.
+     *
+     * @param  {Object}  paginationParams the pagination parameters
+     * @param  {Object}  queryParams      the search parameters
+     * @return {Promise}                  the requested page of filtered facilities.
+     */
+        function update(facility) {
+            return resource.update({
+                id: facility.id
+            },
+            facility).$promise;
         }
 
         /**

@@ -34,7 +34,7 @@
         'programs', 'FacilityRepository', 'loadingModalService',
         'notificationService', 'locationManagementService',
         'messageService',
-        'alertConfirmModalService', '$stateParams'
+        'alertConfirmModalService', '$stateParams', 'facilityService'
     ];
 
     function controller($q, $state, facility, facilityTypes,
@@ -42,7 +42,8 @@
                         facilityOperators,
                         programs, FacilityRepository, loadingModalService,
                         notificationService, locationManagementService,
-                        messageService, alertConfirmModalService, $stateParams) {
+                        messageService, alertConfirmModalService,
+                        $stateParams, facilityService) {
 
         var vm = this;
 
@@ -305,7 +306,7 @@
 
         function doSave(facility, successMessage, errorMessage) {
             loadingModalService.open();
-            return new FacilityRepository().update(facility)
+            return new facilityService.update(vm.facility)
                 .then(function(facility) {
                     notificationService.success(successMessage);
                     goToFacilityList();

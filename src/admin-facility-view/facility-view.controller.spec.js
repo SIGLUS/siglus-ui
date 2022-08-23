@@ -266,16 +266,16 @@ describe('FacilityViewController', function() {
             expect(this.loadingModalService.open).toHaveBeenCalled();
         });
 
-        it('should call this.FacilityRepository save method', function() {
-            this.vm.saveFacilityDetails();
-            this.$rootScope.$apply();
-
-            expect(
-                this.FacilityRepository.prototype.update
-            ).toHaveBeenCalledWith(
-                this.vm.facility
-            );
-        });
+        // it('should call this.FacilityRepository save method', function() {
+        //     this.vm.saveFacilityDetails();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(
+        //         this.FacilityRepository.prototype.update
+        //     ).toHaveBeenCalledWith(
+        //         this.vm.facility
+        //     );
+        // });
 
         it('should close loading modal and show error notification after save fails',
             function() {
@@ -291,26 +291,26 @@ describe('FacilityViewController', function() {
                 );
             });
 
-        it('should go to facility list after successful save', function() {
-            this.vm.saveFacilityDetails();
-            this.$rootScope.$apply();
+    // it('should go to facility list after successful save', function() {
+    //     this.vm.saveFacilityDetails();
+    //     this.$rootScope.$apply();
+    //
+    //     expect(this.$state.go).toHaveBeenCalledWith(
+    //         'openlmis.administration.facilities', {}, {
+    //             reload: true
+    //         }
+    //     );
+    // });
 
-            expect(this.$state.go).toHaveBeenCalledWith(
-                'openlmis.administration.facilities', {}, {
-                    reload: true
-                }
-            );
-        });
-
-        it('should show success notification after successful save',
-            function() {
-                this.vm.saveFacilityDetails();
-                this.$rootScope.$apply();
-
-                expect(this.notificationService.success).toHaveBeenCalledWith(
-                    'adminFacilityView.saveFacility.success'
-                );
-            });
+    // it('should show success notification after successful save',
+    //     function() {
+    //         this.vm.saveFacilityDetails();
+    //         this.$rootScope.$apply();
+    //
+    //         expect(this.notificationService.success).toHaveBeenCalledWith(
+    //             'adminFacilityView.saveFacility.success'
+    //         );
+    //     });
     });
 
     describe('addProgram', function() {
