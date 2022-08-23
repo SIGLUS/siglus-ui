@@ -1,3 +1,39 @@
 <div class="location-physical-container">
-    hello world
+    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #bebebe;">
+        <h2>
+            {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
+        </h2>
+        <div></div>
+    </div>
+    
+    <section class="openlmis-table-container">
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <!-- SIGLUS-REFACTOR: starts here -->
+                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.location' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
+                <th ng-if="!vm.isInitialInventory" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
+                <!-- SIGLUS-REFACTOR: ends here -->
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in vm.draft">
+                    <td>{{ item.productCode }}</td>
+                    <td>{{ item.product }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- SIGLUS-REFACTOR: ends here -->
+    </section>
 </div>

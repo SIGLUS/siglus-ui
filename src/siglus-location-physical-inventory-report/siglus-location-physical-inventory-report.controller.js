@@ -21,19 +21,84 @@
         .module('siglus-location-physical-inventory-report')
         .controller('siglusLocationPhysicalInventoryReport', controller);
 
-    controller.$inject = ['$scope'];
+    controller.$inject = [
+        '$scope',
+        '$window',
+        'draft',
+        'facility',
+        'program'
+    ];
 
-    function controller($scope) {
+    function controller(
+        $scope,
+        $window,
+        draft,
+        facility,
+        program
+    ) {
         var vm = this;
-        // vm.withLocation = true;
         vm.$onInit = onInit;
 
         var onInit = function() {
-            console.log('init');
             document.getElementsByClassName('header')[0].style.display = 'none';
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+            $window.onunload = function() {
+                // eslint-disable-next-line no-debugger
+                debugger;
+            };
+            vm.draft = getTbDataSource(JSON.parse(draft));
+            vm.facility = facility;
+            vm.program = program;
         };
+
+        var getTbDataSource = function(data) {
+            var tempArray = [];
+            _.forEach(Object.keys(data), function(key) {
+                _.forEach(data[key], function(item) {
+                    tempArray.push(item);
+                });
+            });
+
+            return _.reduce(tempArray, function(r, c) {
+                if (c.length > 1) {
+                    var temp = _.map(c, function(item, i) {
+                        var result = {
+                            productCode: '',
+                            product: ''
+                        };
+                        if (i === 0) {
+                            result = {
+                                productCode: c[0].orderable.productCode,
+                                product: c[0].orderable.fullProductName
+                            };
+                        }
+                        return result;
+                    });
+                    // [
+                    //     {
+                    //         productCode: c[0].orderable.productCode,
+                    //         product: c[0].orderable.fullProductName
+                    //     },
+                    //     {
+                    //         productCode: '',
+                    //         product: ''
+                    //     }
+                    // ];
+                    r = r.concat(temp);
+                } else {
+                    r.push({
+                        productCode: c[0].orderable.productCode,
+                        product: c[0].orderable.fullProductName
+                    });
+                }
+                return r;
+            }, []);
+        };
+
         onInit();
+        $scope.$on('$destroy', function() {
+            $window.onunload = null;
+        });
         $scope.$on('$stateChangeStart', function(event, toState) {
             if (toState) {
                 document.getElementsByClassName('header')[0].style.display = 'block';

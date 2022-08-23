@@ -39,7 +39,7 @@
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
         'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'allLocationAreaMap'
+        'allLocationAreaMap', 'localStorageService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -52,7 +52,7 @@
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-                        allLocationAreaMap) {
+                        allLocationAreaMap, localStorageService) {
         var vm = this;
         // vm.withLocation = true;
         vm.$onInit = onInit;
@@ -107,8 +107,6 @@
                 });
             });
         };
-
-        // console.log('allLocationAreaMap: ', allLocationAreaMap);
 
         // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
@@ -603,16 +601,6 @@
         };
         vm.print = function() {
             $window.open('/webapp/#!/locationManagement/physicalInventory/report', '_blank');
-            // $state.go('openlmis.locationManagement.physicalInventory.report', {});
-            // var printDom = document.getElementById('printContent');
-            // console.log('#### printDom', printDom);
-            // var tb = $window.open('test', '_blank');
-            // var secScript = document.createElement('script');
-            // secScript.setAttribute('type', 'text/javascript');
-            // secScript.setAttribute('src', '');
-            // tb.document.body.insertBefore(secScript, tb.document.body.lastChild);
-            // tb.document.body.appendChild(printDom);
-            // console.log(tb.document.body);
         };
 
         // 校验form表单的Lot Code的地方;
@@ -767,7 +755,7 @@
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(list);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
-                // console.log('#### vm.groupedCategories', vm.groupedCategories);
+                localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
             }, true);
         }
@@ -1013,11 +1001,10 @@
                 stockOnHand: null,
                 unaccountedQuantity: undefined,
                 $errors: {},
-                reasonFreeText: undefined
+                reasonFreeText: undefined,
+                id: null
             });
-            console.log('#### newLineItem', newLineItem);
             draft.lineItems.push(newLineItem);
-            console.log('draft.lineItems', draft.lineItems);
             $stateParams.isAddProduct = true;
             reload($state.current.name);
         }

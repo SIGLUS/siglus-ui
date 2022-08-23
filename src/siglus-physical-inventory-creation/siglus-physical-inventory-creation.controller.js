@@ -122,8 +122,7 @@
                     $stateParams.programId ? $stateParams.programId : programId,
                     vm.facility.id,
                     vm.userInputSplitNum,
-                    !!programId,
-                    locationManagementOption
+                    !!programId
                 ).then(function() {
                     modalDeferred.resolve();
                     loadingModalService.close();

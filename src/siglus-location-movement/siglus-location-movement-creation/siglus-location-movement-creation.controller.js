@@ -86,7 +86,6 @@
                     quantity: null
                 };
                 vm.displayItems.unshift([rowData]);
-                console.log(vm.displayItems);
             }
         };
 

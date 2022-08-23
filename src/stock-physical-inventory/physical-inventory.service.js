@@ -342,6 +342,7 @@
             draft.lineItems = _.map(physicalInventory.lineItems, function(item) {
                 return {
                     orderableId: item.orderable.id,
+                    id: item.id ? item.id : null,
                     lotId: item.lot ? item.lot.id : null,
                     lotCode: item.lot ? item.lot.lotCode : null,
                     expirationDate: item.lot ? item.lot.expirationDate : null,
