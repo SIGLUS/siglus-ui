@@ -26,7 +26,7 @@
                     </fieldset>
 
                     <fieldset ng-if="vm.location && vm.location.name === 'Outros'">
-                        <input type="text" placeholder="{{'stockIssueInitialModal.inputDestination' | message}}"
+                        <input type="text" placeholder="{{vm.placeholderMapper[vm.draftType] | message}}"
                                    ng-model="vm.locationFreeText" id="destinationFacility" required/>
                     </fieldset>
                     <fieldset style="margin-bottom: 6px;">

@@ -2295,6 +2295,7 @@
   "stockIssueInitialModal.cancel": "Cancelar",
   "stockIssueInitialModal.confirm": "Confirme",
   "stockIssueInitialModal.inputDestination": "Insira o destino",
+  "stockIssueInitialModal.inputSource": "Insira a origem",
   "stockIssueInitialModal.hasStartedError": "Um processo de aviamento já foi iniciado, finalize primeiro.",
   "stockIssueInitialModal.receiveFrom": "Receber de",
   "stockIssueInitialModal.hasReceiveStartedError": "Um processo de receber já foi iniciado, finalize primeiro.",

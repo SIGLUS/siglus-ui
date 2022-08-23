@@ -68,6 +68,11 @@
             receive: 'stockIssueInitialModal.hasReceiveStartedError'
         };
 
+        vm.placeholderMapper = {
+            issue: 'stockIssueInitialModal.inputDestination',
+            receive: 'stockIssueInitialModal.inputSource'
+        };
+
         vm.submitForm = function() {
             if (vm.hasError) {
                 modalDeferred.resolve(true);
