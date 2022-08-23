@@ -41,6 +41,7 @@
                 lot: _.clone(lineItem.lot),
                 isKit: lineItem.isKit,
                 isMainGroup: false,
+                programId: lineItem.programId,
                 location: _.clone(lineItem.location),
                 stockOnHand: lineItem.stockOnHand,
                 moveTo: _.clone(lineItem.moveTo),
@@ -113,6 +114,7 @@
                 isKit: orderable.isKit,
                 isMainGroup: true,
                 location: null,
+                programId: _.get(orderable.programs, [0, 'programId'], ''),
                 moveTo: null,
                 quantity: null
             };
@@ -135,7 +137,14 @@
 
         }
 
-        function mapDataToDisplay(group, isMainGroup, locations) {
+        function getProgramId(orderableGroups, lineItem) {
+            var items = _.find(orderableGroups, function(group) {
+                return _.get(_.first(group), ['orderable', 'id']) === lineItem.orderableId;
+            });
+            return _.get(_.first(items), ['orderable', 'programs', 0, 'programId'], '');
+        }
+
+        function mapDataToDisplay(group, isMainGroup, locations, orderableGroups) {
             return _.map(group, function(item) {
                 var lot = item.lotCode ? {
                     id: item.lotId,
@@ -158,26 +167,27 @@
                     $error: {},
                     lot: lot,
                     isMainGroup: isMainGroup,
+                    programId: getProgramId(orderableGroups, item),
                     location: location,
                     moveTo: moveTo
                 });
             });
         }
 
-        this.prepareAddedLineItems = function(draftInfo) {
+        this.prepareAddedLineItems = function(draftInfo, locations,  orderableGroups) {
             var $this = this;
             return _.chain(_.get(draftInfo, 'lineItems', []))
                 .groupBy('orderableId')
                 .values()
                 .map(function(group) {
                     if (group.length === 1) {
-                        return mapDataToDisplay(group, true);
+                        return mapDataToDisplay(group, true, locations, orderableGroups);
                     }
                     var firstRow = $this.getMainGroupRow(group[0]);
                     var result = [];
                     result.push(firstRow);
 
-                    var childrenLineItems = mapDataToDisplay(group, false);
+                    var childrenLineItems = mapDataToDisplay(group, false, locations, orderableGroups);
                     return result.concat(childrenLineItems);
 
                 })
