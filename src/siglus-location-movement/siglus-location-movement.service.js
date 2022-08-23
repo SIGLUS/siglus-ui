@@ -56,6 +56,10 @@
                 method: 'PUT',
                 url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id'
             },
+            submitMovementDraft: {
+                method: 'POST',
+                url: '/openlmisServer/api/siglusapi/locationMovements'
+            },
             createMovementDraft: {
                 method: 'POST',
                 url: '/openlmisServer/api/siglusapi/locationMovementDrafts'
@@ -68,6 +72,7 @@
         this.deleteMovementDraft = deleteMovementDraft;
         this.saveMovementDraft = saveMovementDraft;
         this.createMovementDraft = createMovementDraft;
+        this.submitMovementDraft = submitMovementDraft;
 
         function getMovementDrafts(programId) {
             return resource.getMovementDrafts({
@@ -99,6 +104,11 @@
             }, params).$promise;
         }
 
+        function submitMovementDraft(baseInfo, lineItems, locations) {
+            var params = buildSubmitParams(baseInfo, lineItems, locations);
+            return resource.submitMovementDraft(params).$promise;
+        }
+
         function createMovementDraft(params) {
             return resource.createMovementDraft(params).$promise;
         }
@@ -128,8 +138,24 @@
                     srcLocationCode: _.get(lineItem.location, 'locationCode'),
                     destArea: _.get(lineItem.moveTo, 'area'),
                     destLocationCode: _.get(lineItem.moveTo, 'locationCode'),
-                    occurredDate: '',
                     expirationDate: _.get(lineItem.lot, 'expirationDate'),
+                    quantity: lineItem.quantity,
+                    stockOnHand: lineItem.stockOnHand
+                };
+            });
+        }
+        function buildSubmitLineItems(lineItems, locations) {
+
+            return _.map(lineItems, function(lineItem) {
+                return {
+                    programId: lineItem.programId,
+                    orderableId: lineItem.orderableId,
+                    lotId: _.get(lineItem.lot, 'id'),
+                    isKit: lineItem.isKit,
+                    srcArea: getSrcArea(lineItem, locations),
+                    srcLocationCode: _.get(lineItem.location, 'locationCode'),
+                    destArea: _.get(lineItem.moveTo, 'area'),
+                    destLocationCode: _.get(lineItem.moveTo, 'locationCode'),
                     quantity: lineItem.quantity,
                     stockOnHand: lineItem.stockOnHand
                 };
@@ -139,6 +165,12 @@
         function buildSaveParams(baseInfo, lineItems, locations) {
             return _.extend(baseInfo, {
                 lineItems: buildLineItems(lineItems, locations)
+            });
+        }
+
+        function buildSubmitParams(baseInfo, lineItems, locations) {
+            return _.extend(baseInfo, {
+                movementLineItems: buildSubmitLineItems(lineItems, locations)
             });
         }
 

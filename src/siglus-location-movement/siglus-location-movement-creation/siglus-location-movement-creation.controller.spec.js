@@ -15,12 +15,19 @@
 
 describe('SiglusLocationMovementCreationController', function() {
 
-    var vm, facility, programs, $controller, $q, loadingModalService;
+    var vm, programs, $controller, $q, loadingModalService, $rootScope, $scope,
+        siglusSignatureWithDateModalService, $state, $stateParams, siglusLocationMovementService;
 
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             loadingModalService = $injector.get('loadingModalService');
+            siglusSignatureWithDateModalService = $injector.get('siglusSignatureWithDateModalService');
+            siglusLocationMovementService = $injector.get('siglusLocationMovementService');
+            $rootScope = $injector.get('$rootScope');
+            $state = $injector.get('$state');
+            $stateParams = $injector.get('$stateParams');
+            $scope = $rootScope.$new();
             $q = $injector.get('$q');
         });
     }
@@ -28,19 +35,30 @@ describe('SiglusLocationMovementCreationController', function() {
     function prepareSpies() {
         spyOn(loadingModalService, 'open').andReturn($q.resolve());
         spyOn(loadingModalService, 'close').andReturn($q.resolve());
+        spyOn(siglusSignatureWithDateModalService, 'confirm').andReturn($q.resolve());
+        spyOn(siglusLocationMovementService, 'saveMovementDraft').andReturn($q.resolve());
+        spyOn($state, 'go').andReturn();
     }
 
     function prepareData() {
         vm = $controller('SiglusLocationMovementCreationController', {
-            facility: facility,
+            facility: {
+                id: 'asdfafds-123123djks-123123dafkfs'
+            },
             programs: programs,
-            draftInfo: {},
-            user: {},
+            draftInfo: {
+                id: '45bc8df6-e9e7-48f3-a749-fe9913cdc17'
+            },
+            user: {
+                // eslint-disable-next-line camelcase
+                user_id: 'DPM_MP_Role2'
+            },
             orderableGroups: [],
             areaLocationInfo: [],
             addedLineItems: [],
             displayItems: [],
-            locations: []
+            locations: [],
+            $scope: $scope
         });
     }
 
@@ -153,6 +171,27 @@ describe('SiglusLocationMovementCreationController', function() {
             var lineItem = {
                 $error: {},
                 isKit: false,
+                lot: {
+                    stockOnHand: 100
+                },
+                location: {
+                    locationCode: 'AA025'
+                },
+                orderableId: 'A00001',
+                quantity: 120
+            };
+            var lineItems = [
+                lineItem
+            ];
+            vm.changeLot(lineItem, lineItems);
+
+            expect(lineItem.$error.quantityError).toEqual('locationMovement.mtSoh');
+        });
+
+        it('should validate soh mt quantity for kit', function() {
+            var lineItem = {
+                $error: {},
+                isKit: true,
                 lot: {
                     stockOnHand: 100
                 },
@@ -406,6 +445,303 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
 
             expect(vm.getTotalQuantity(lineItems)).toEqual(100);
+        });
+    });
+
+    describe('submit method', function() {
+        it('should validate all', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: null,
+                location: null,
+                quantity: null,
+                moveTo: {
+                    area: '',
+                    locationCode: ''
+                }
+            };
+            vm.addedLineItems = [
+                [
+                    lineItem
+                ]
+            ];
+            vm.submit();
+
+            var result = {
+                lotCodeError: 'openlmisForm.required',
+                locationError: 'openlmisForm.required',
+                quantityError: 'openlmisForm.required',
+                areaError: 'openlmisForm.required',
+                moveToLocationError: 'openlmisForm.required'
+            };
+
+            expect(lineItem.$error).toEqual(result);
+        });
+
+        it('should validate except first row when has multi rows', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: null,
+                location: null,
+                quantity: null,
+                moveTo: {
+                    area: '',
+                    locationCode: ''
+                }
+            };
+            var lineItem1 = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: null,
+                moveTo: {
+                    area: '',
+                    locationCode: ''
+                }
+            };
+            vm.addedLineItems = [
+                [
+                    lineItem,
+                    lineItem1,
+                    lineItem1
+                ]
+            ];
+            vm.submit();
+
+            expect(lineItem.$error).toEqual({});
+        });
+
+        it('should show date picker confirm when passed all validator', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 3,
+                moveTo: {
+                    area: 'Armazem Principal',
+                    locationCode: 'AA25A'
+                }
+            };
+            vm.addedLineItems = [
+                [
+                    lineItem
+                ]
+            ];
+            vm.submit();
+
+            expect(siglusSignatureWithDateModalService.confirm).toHaveBeenCalledWith(
+                'stockUnpackKitCreation.signature', null, null, true
+            );
+        });
+    });
+
+    describe('save method', function() {
+        it('should save data without first row data when lineItems has multiple rows', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: null,
+                location: null,
+                quantity: null,
+                moveTo: {
+                    area: '',
+                    locationCode: ''
+                }
+            };
+            var lineItem1 = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 2,
+                moveTo: {
+                    area: 'Armazem Principal',
+                    locationCode: 'AA25A'
+                }
+            };
+            vm.addedLineItems = [
+                [
+                    lineItem,
+                    lineItem1,
+                    lineItem1
+                ]
+            ];
+            vm.save();
+
+            var param1 = {
+                id: '45bc8df6-e9e7-48f3-a749-fe9913cdc17',
+                programId: undefined,
+                facilityId: 'asdfafds-123123djks-123123dafkfs',
+                userId: 'DPM_MP_Role2'
+            };
+
+            var param2 = [lineItem1, lineItem1];
+
+            expect(siglusLocationMovementService.saveMovementDraft).toHaveBeenCalledWith(
+                param1, param2, []
+            );
+        });
+
+        it('should save first row when lineItems has only one row', function() {
+            var lineItem1 = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 2,
+                moveTo: {
+                    area: 'Armazem Principal',
+                    locationCode: 'AA25A'
+                }
+            };
+            vm.addedLineItems = [
+                [
+                    lineItem1
+                ]
+            ];
+            vm.save();
+
+            var param1 = {
+                id: '45bc8df6-e9e7-48f3-a749-fe9913cdc17',
+                programId: undefined,
+                facilityId: 'asdfafds-123123djks-123123dafkfs',
+                userId: 'DPM_MP_Role2'
+            };
+
+            var param2 = [lineItem1];
+
+            expect(siglusLocationMovementService.saveMovementDraft).toHaveBeenCalledWith(
+                param1, param2, []
+            );
+        });
+    });
+
+    describe('watch keyword', function() {
+        it('should reload page when keyword change to empty', function() {
+            $stateParams.keyword = 'Rifampicina';
+            vm.keyword = 'Rifampicina';
+            $rootScope.$apply();
+            vm.keyword = '';
+            $rootScope.$apply();
+
+            expect($state.go).toHaveBeenCalled();
+
+        });
+    });
+
+    describe('changeMoveToLocation keyword', function() {
+        it('should empty move to location error when move to location has value', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 2,
+                moveTo: {
+                    area: 'Armazem Principal',
+                    locationCode: 'AA25A'
+                }
+            };
+
+            vm.changeMoveToLocation(lineItem);
+
+            expect(lineItem.$error.moveToLocationError).toEqual('');
+
+        });
+
+        it('should validate move to location when move to location has no value', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 2,
+                moveTo: {
+                    area: 'Armazem Principal',
+                    locationCode: ''
+                }
+            };
+
+            vm.changeMoveToLocation(lineItem);
+
+            expect(lineItem.$error.moveToLocationError).toEqual('openlmisForm.required');
+
+        });
+    });
+
+    describe('changeArea keyword', function() {
+        it('should empty move to location error when move to location has value', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 2,
+                moveTo: {
+                    area: 'Armazem Principal',
+                    locationCode: 'AA25A'
+                }
+            };
+
+            vm.changeArea(lineItem);
+
+            expect(lineItem.$error.areaError).toEqual('');
+
+        });
+
+        it('should validate move to location when move to location has no value', function() {
+            var lineItem = {
+                $error: {},
+                productName: 'Kanamicina sulfato; 1g/3mL-ampola; Inj ',
+                lot: {
+                    lotCode: 'FAKE-LOTE-08D05-122023-31/1'
+                },
+                location: {
+                    locationCode: 'DC20C'
+                },
+                quantity: 2,
+                moveTo: {
+                    area: '',
+                    locationCode: ''
+                }
+            };
+
+            vm.changeArea(lineItem);
+
+            expect(lineItem.$error.areaError).toEqual('openlmisForm.required');
+
         });
     });
 

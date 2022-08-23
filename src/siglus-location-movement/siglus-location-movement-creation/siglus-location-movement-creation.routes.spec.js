@@ -14,23 +14,19 @@
  */
 
 describe('openlmis.locationManagement.movement.creation', function() {
-    var $state, $q, $rootScope, $location, siglusLocationMovementService, $stateParams;
+    var $state, $q, $rootScope, $location, siglusLocationMovementService;
 
     function prepareInjector() {
         inject(function($injector) {
             $state = $injector.get('$state');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
-            $stateParams = $injector.get('$stateParams');
             $location = $injector.get('$location');
             siglusLocationMovementService = $injector.get('siglusLocationMovementService');
         });
     }
 
     function prepareSpies() {
-        $stateParams.draftInfo = {
-            a: 123
-        };
         spyOn(siglusLocationMovementService, 'getMovementDraftById').andReturn($q.resolve({
             id: 12311
         }));
@@ -106,6 +102,30 @@ describe('openlmis.locationManagement.movement.creation', function() {
         });
     });
 
+    describe('orderableGroups resolve', function() {
+        it('should return orderableGroups', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    orderableGroups: undefined
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('orderableGroups')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    orderableGroups: []
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('orderableGroups')).toBeUndefined();
+        });
+    });
+
     describe('draftInfo resolve', function() {
         it('should return draftInfo', function() {
             goToUrl('/locationManagement/movement/a24f19a8-3743-4a1a-a919-e8f97b5719/creation');
@@ -125,6 +145,78 @@ describe('openlmis.locationManagement.movement.creation', function() {
             $rootScope.$apply();
 
             expect(getResolvedValue('draftInfo')).toBeUndefined();
+        });
+    });
+
+    describe('locations resolve', function() {
+        it('should return locations', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    locations: undefined
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('locations')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    locations: []
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('locations')).toBeUndefined();
+        });
+    });
+
+    describe('areaLocationInfo resolve', function() {
+        it('should return locations', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    areaLocationInfo: undefined
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('areaLocationInfo')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    areaLocationInfo: []
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('areaLocationInfo')).toBeUndefined();
+        });
+    });
+
+    describe('addedLineItems resolve', function() {
+        it('should return locations', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    addedLineItems: undefined
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('addedLineItems')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    addedLineItems: []
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('addedLineItems')).toBeUndefined();
         });
     });
 });

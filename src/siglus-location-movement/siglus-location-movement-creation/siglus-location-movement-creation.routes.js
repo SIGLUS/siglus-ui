@@ -100,17 +100,16 @@
                     }
                     return siglusLocationMovementService.getMovementLocationAreaInfo();
                 },
-                addedLineItems: function(draftInfo, $stateParams, addAndRemoveLineItemService) {
+                addedLineItems: function(draftInfo, $stateParams, locations, addAndRemoveLineItemService,
+                    orderableGroups) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
                     }
 
-                    return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo);
+                    return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, orderableGroups);
                 },
                 displayItems: function($stateParams, siglusMovementFilterService, addedLineItems) {
-                    if ($stateParams.displayItems) {
-                        return $stateParams.displayItems;
-                    }
+                    console.log(addedLineItems);
                     return siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems);
                 }
             }

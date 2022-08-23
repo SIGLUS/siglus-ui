@@ -174,7 +174,8 @@
             } else if (lineItem.location && lineItem.isKit) {
                 lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
                 var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
-                lineItem.stockOnHand = map[lineItem.orderableId][lineItem.location.locationCode][0].stockOnHand;
+                lineItem.stockOnHand = _.get(map[lineItem.orderableId],
+                    [lineItem.location.locationCode, 0, 'stockOnHand'], 0);
                 vm.changeQuantity(lineItem, lineItems);
             } else {
                 lineItem.stockOnHand = 0;
@@ -300,7 +301,7 @@
         });
 
         function validateRequiredFields(lineItem) {
-            if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
+            if (_.isEmpty(_.get(lineItem.lot, 'lotCode')) && !lineItem.isKit) {
                 lineItem.$error.lotCodeError = 'openlmisForm.required';
             }
 
@@ -373,17 +374,24 @@
                 .value();
         }
 
-        vm.save = function() {
-            var baseInfo = {
+        function getBaseInfo() {
+            return {
                 id: draftInfo.id,
                 programId: $stateParams.programId,
                 facilityId: facility.id,
                 userId: user.user_id
             };
+        }
 
-            siglusLocationMovementService.saveMovementDraft(baseInfo, getLineItems(), locations).then(function() {
-                notificationService.success('stockIssueCreation.saved');
-            });
+        vm.save = function() {
+            loadingModalService.open();
+            siglusLocationMovementService.saveMovementDraft(getBaseInfo(), getLineItems(), locations)
+                .then(function() {
+                    notificationService.success('stockIssueCreation.saved');
+                })
+                .finally(function() {
+                    loadingModalService.close();
+                });
         };
 
         vm.submit = function() {
@@ -391,7 +399,22 @@
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
                     then(function(data) {
-                        console.log(data);
+                        var baseInfo = _.extend(getBaseInfo(), {
+                            occurredDate: data.occurredDate,
+                            signature: data.signature
+                        });
+                        loadingModalService.open();
+                        siglusLocationMovementService.submitMovementDraft(baseInfo, getLineItems(), locations)
+                            .then(function() {
+                                $state.go('^', $stateParams, {
+                                    reload: true
+                                });
+                                loadingModalService.close();
+                            })
+                            .catch(function() {
+                                loadingModalService.close();
+                            });
+
                     });
             }
         };
