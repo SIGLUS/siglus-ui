@@ -33,7 +33,7 @@
     function addAndRemoveLineItemService($filter) {
 
         function getRowTemplateData(lineItem) {
-            var rowData = {
+            return  {
                 $error: _.clone(lineItem.$error),
                 orderableId: lineItem.orderableId,
                 productCode: lineItem.productCode,
@@ -47,7 +47,6 @@
                 moveToLocation: _.clone(lineItem.moveToLocation),
                 quantity: lineItem.quantity
             };
-            return rowData;
         }
 
         function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
@@ -127,7 +126,7 @@
                         if (lineItem.lot && lineItem.location
                           && lot.lotCode === lineItem.lot.lotCode
                           && loc.locationCode === lineItem.location.locationCode) {
-                            stockOnHand = loc.area;
+                            stockOnHand = lot.stockOnHand;
                         }
                     });
                 });

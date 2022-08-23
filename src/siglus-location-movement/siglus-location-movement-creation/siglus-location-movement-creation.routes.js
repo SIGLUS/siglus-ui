@@ -62,7 +62,6 @@
                 },
                 draftInfo: function(siglusLocationMovementService, $stateParams) {
                     if ($stateParams.draftInfo) {
-                        console.log($stateParams.draftInfo);
                         return $stateParams.draftInfo;
                     }
                     return siglusLocationMovementService.getMovementDraftById($stateParams.draftId);
@@ -109,8 +108,6 @@
                     return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo);
                 },
                 displayItems: function($stateParams, siglusMovementFilterService, addedLineItems) {
-                    console.log(addedLineItems);
-
                     if ($stateParams.displayItems) {
                         return $stateParams.displayItems;
                     }
