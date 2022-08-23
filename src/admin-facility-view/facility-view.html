@@ -2,12 +2,14 @@
 <nav class="facility-edit">
   <ul bs-active-pane="vm.selectedTab" bs-tabs>
     <li bs-pane data-title="{{'adminFacilityView.facilityInformation' | message}}">
-      <form id="facility-edit=form" name="facilityEdit" ng-submit="vm.saveFacilityDetails()">
+      <form id="facility-edit=form" name="facilityEdit"
+            ng-submit="vm.saveFacilityDetails()">
         <ng-include src="'admin-facility-view/siglus-facility-information.html'"></ng-include>
         <div class="button-group">
           <button class="primary" type="submit">{{'adminFacilityView.save' | message}}</button>
-          <button ui-sref="openlmis.administration.facilities" ui-sref-opts="{reload: true}">{{'adminFacilityView.cancel'
-          | message}}
+          <button ui-sref="openlmis.administration.facilities" ui-sref-opts="{reload: true}">
+            {{'adminFacilityView.cancel'
+            | message}}
           </button>
         </div>
       </form>
@@ -16,8 +18,9 @@
         data-title="{{'adminFacilityView.associatedPrograms' | message}}">
       <ng-include src="'admin-facility-view/associated-programs.html'"></ng-include>
       <div class="button-group">
-        <button class="primary" form="associatedPrograms" type="submit">{{'adminFacilityView.savePrograms'
-        | message}}
+        <button class="primary" form="associatedPrograms" type="submit">
+          {{'adminFacilityView.savePrograms'
+          | message}}
         </button>
         <button ng-click="vm.goToFacilityList()">{{'adminFacilityView.cancel' | message}}</button>
       </div>
@@ -27,8 +30,9 @@
       <ng-include src="'admin-facility-view/associated-reports.html'"></ng-include>
       <div class="button-group">
         <button ng-click="vm.goToFacilityList()">{{'adminFacilityView.cancel' | message}}</button>
-        <button class="primary" form="associatedReports" type="submit">{{'adminFacilityView.saveReports'
-        | message}}
+        <button class="primary" form="associatedReports" type="submit">
+          {{'adminFacilityView.saveReports'
+          | message}}
         </button>
       </div>
     </li>

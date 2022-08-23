@@ -25,10 +25,10 @@
 <p class="note">{{'adminFacilityAdd.enabled.description.checked' | message}}</p>
 <p class="note">{{'adminFacilityAdd.enabled.description.unchecked' | message}}</p>
 
-<label class="checkbox">
-  <input class="disabled-facility-view" id="checked" type="checkbox"
-         ng-model="vm.isAndroid"
-         ng-disabled="vm.facility.isNewFacility === false"/>
+<label for="facilityAndroid" class="checkbox">
+  <input class="disabled-facility-view" id="facilityAndroid" type="checkbox"
+         ng-model="vm.facility.isAndroidDevice"
+         ng-disabled="!vm.facility.isNewFacility"/>
   {{'adminFacilityView.androidFacility' | message}}
 </label>
 <div ng-show="vm.facility.isAndroidDevice === true && vm.facility.isNewFacility === false">
