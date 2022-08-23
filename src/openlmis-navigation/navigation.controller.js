@@ -64,10 +64,8 @@
 
         function setStates() {
             if (!$scope.rootState && !$scope.states) {
-
                 vm.states = navigationStateService.roots[''];
             } else if ($scope.rootState) {
-
                 var states = navigationStateService.roots[$scope.rootState];
                 var promise = getLocationManagementEnable();
                 promise.then(function(flag) {
@@ -78,18 +76,19 @@
                         return !_.get(stateItem, ['name']).contains('openlmis.locationManagement');
                     });
                 });
-
             } else {
                 vm.states = $scope.states;
             }
         }
 
         function getLocationManagementEnable() {
-
             var defered = $q.defer();
             facilityFactory.getUserHomeFacility().then(function(res) {
                 defered.resolve(res.enableLocationManagement);
-            });
+            })
+                .catch(function() {
+                    defered.resolve(false);
+                });
             return defered.promise;
         }
 
