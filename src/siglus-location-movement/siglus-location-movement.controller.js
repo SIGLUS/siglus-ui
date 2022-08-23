@@ -49,8 +49,7 @@
             return 'stockIssue' + '.' + secondaryKey;
         };
 
-        vm.proceedForIssue = function() {
-            console.log(vm.drafts);
+        vm.proceed = function() {
             $state.go('openlmis.locationManagement.movement.creation', {
                 draftId: _.get(vm.drafts, [0, 'id']),
                 programId: vm.programId

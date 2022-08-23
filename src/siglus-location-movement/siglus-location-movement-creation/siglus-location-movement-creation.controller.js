@@ -28,14 +28,14 @@
         .module('siglus-location-movement-creation')
         .controller('SiglusLocationMovementCreationController', controller);
 
-    controller.$inject = ['draftInfo', 'areaLocationInfo', 'addedLineItems', '$state', 'orderableGroups', '$filter',
-        'paginationService', '$stateParams',
+    controller.$inject = ['draftInfo', 'areaLocationInfo', '$scope', 'addedLineItems', '$state', 'orderableGroups',
+        '$filter', 'paginationService', '$stateParams',
         'addAndRemoveLineItemService', 'displayItems', 'locations', 'siglusMovementFilterService',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
         'siglusSignatureWithDateModalService'];
 
-    function controller(draftInfo, areaLocationInfo, addedLineItems, $state, orderableGroups,
+    function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
                         addAndRemoveLineItemService, displayItems, locations, siglusMovementFilterService,
                         SiglusLocationCommonUtilsService,
@@ -101,8 +101,9 @@
         vm.$onInit = function() {
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
+            vm.keyword = $stateParams.keyword;
             filterOrderableGroups();
-
+            updateStateParams();
             return paginationService.registerList(isValid, angular.copy($stateParams), function() {
                 return vm.addedLineItems;
             });
@@ -146,24 +147,34 @@
 
         };
 
-        function searchList() {
-            // vm.displayItems = siglusMovementFilterService.filterMovementList(vm.keyword, vm.addedLineItems);
+        function updateStateParams() {
             $stateParams.locations = locations;
             $stateParams.areaLocationInfo = areaLocationInfo;
             $stateParams.keyword = vm.keyword;
             $stateParams.addedLineItems = vm.addedLineItems;
-            console.log(vm.addedLineItems);
             $stateParams.orderableGroups = orderableGroups;
             $stateParams.draftInfo = draftInfo;
             $stateParams.user = user;
             $stateParams.facility = facility;
-            // $stateParams.displayItems = vm.displayItems;
+        }
+
+        function searchList() {
+            updateStateParams();
             reloadPage();
         }
+
+        vm.search = function() {
+            searchList();
+        };
 
         function emitQuantityChange(lineItem, lineItems) {
             if (lineItem.lot && lineItem.location) {
                 lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
+                vm.changeQuantity(lineItem, lineItems);
+            } else if (lineItem.location && lineItem.isKit) {
+                lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
+                var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
+                lineItem.stockOnHand = map[lineItem.orderableId][lineItem.location.locationCode][0].stockOnHand;
                 vm.changeQuantity(lineItem, lineItems);
             } else {
                 lineItem.stockOnHand = 0;
@@ -186,7 +197,7 @@
         };
 
         vm.changeMoveToLocation = function(lineItem) {
-            lineItem.$error.moveToLocationArea = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
+            lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
         };
 
@@ -215,7 +226,7 @@
             lineItem.$error.quantityError = isNumberEmpty ? 'openlmisForm.required' : '';
 
             if (!lineItem.$error.quantityError) {
-                validateQuantityMtSoh(lineItem, lineItems);
+                validateQuantityGtSoh(lineItem, lineItems);
             }
 
         };
@@ -235,7 +246,7 @@
             searchList();
         };
 
-        function validateQuantityMtSoh(lineItem, lineItems) {
+        function validateQuantityGtSoh(lineItem, lineItems) {
             _.forEach(lineItems, function(item) {
                 var filterLineItems = _.filter(lineItems, function(data) {
                     return _.get(item, ['lot', 'lotCode']) === _.get(data.lot, 'lotCode')
@@ -244,18 +255,20 @@
                 var totalQuantity = _.reduce(filterLineItems, function(result, row) {
                     return result + _.get(row, 'quantity', 0);
                 }, 0);
-                if (totalQuantity > item.stockOnHand) {
-                    item.$error.quantityError = 'locationMovement.mtSoh';
-                } else {
+
+                if (item.$error.quantityError === 'locationMovement.mtSoh') {
                     item.$error.quantityError = '';
                 }
 
+                if (totalQuantity > item.stockOnHand) {
+                    item.$error.quantityError = 'locationMovement.mtSoh';
+                }
             });
         }
 
         function reloadPage() {
             $state.go($state.current.name, $stateParams, {
-                reload: false
+                reload: true
             });
         }
 
@@ -273,45 +286,38 @@
             return (lineItems.length > 1 && index === 0);
         };
 
-        vm.search = function() {
-            searchList();
-        };
-
         vm.cancelFilter = function() {
             vm.keyword = '';
             searchList();
-            $stateParams.keyword = '';
-            $stateParams.addedLineItems = vm.addedLineItems;
-            reloadPage();
         };
 
-        function validateLotCodeRequired(lineItem) {
-            if (_.isEmpty(lineItem.lot)) {
+        $scope.$watch(function() {
+            return vm.keyword;
+        }, function(newValue, oldValue) {
+            if (oldValue && !newValue && $stateParams.keyword) {
+                searchList();
+            }
+        });
+
+        function validateRequiredFields(lineItem) {
+            if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
                 lineItem.$error.lotCodeError = 'openlmisForm.required';
             }
-        }
 
-        function validateLocationRequired(lineItem) {
             if (_.isEmpty(lineItem.location)) {
                 lineItem.$error.locationError = 'openlmisForm.required';
             }
-        }
 
-        function validateQuantity(lineItem) {
-            if (_.isEmpty(lineItem.quantity)) {
+            if (!_.isNumber(lineItem.quantity)) {
                 lineItem.$error.quantityError = 'openlmisForm.required';
             }
-        }
 
-        function validateMoveToLocationRequired(lineItem) {
             if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
                 lineItem.$error.moveToLocationError = 'openlmisForm.required';
             }
-        }
 
-        function validateMoveToAreaRequired(lineItem) {
             if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
-                lineItem.$error.moveToAreaError = 'openlmisForm.required';
+                lineItem.$error.areaError = 'openlmisForm.required';
             }
         }
 
@@ -322,12 +328,8 @@
                     if (lineItems.length > 1 && index === 0) {
                         return;
                     }
-                    validateLotCodeRequired(lineItem);
-                    validateLocationRequired(lineItem);
-                    validateQuantity(lineItem);
-                    validateMoveToAreaRequired(lineItem);
-                    validateMoveToLocationRequired(lineItem);
-                    validateQuantityMtSoh(lineItem, lineItems);
+                    validateRequiredFields(lineItem);
+                    validateQuantityGtSoh(lineItem, lineItems);
                 });
             });
             return _.every(vm.addedLineItems, function(lineItems) {
@@ -381,15 +383,13 @@
 
             siglusLocationMovementService.saveMovementDraft(baseInfo, getLineItems(), locations).then(function() {
                 notificationService.success('stockIssueCreation.saved');
-                // draftInfo = null;
-                // searchList();
             });
         };
 
         vm.submit = function() {
             validateForm();
             if (isValid()) {
-                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
+                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
                     then(function(data) {
                         console.log(data);
                     });

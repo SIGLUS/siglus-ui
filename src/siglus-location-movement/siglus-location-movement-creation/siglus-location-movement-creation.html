@@ -2,14 +2,17 @@
 
 <div>
     <section id="locationMovementForm" class="openlmis-table-container">
-        <form ng-submit="vm.searchList()">
+        <form>
             <fieldset>
                 <label for="search">{{'stockReceiveCreation.keyword' | message}}</label>
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
             </fieldset>
             <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
                    ng-click="vm.cancelFilter()"/>
-            <input type="submit" value="{{'stockReceiveCreation.search' | message}}"/>
+            <input type="submit"
+                   ng-click="vm.search()"
+                   ng-keydown="$event.keyCode === 13 && vm.search()"
+                   value="{{'stockReceiveCreation.search' | message}}"/>
         </form>
         <section class="is-primary">
             <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
@@ -33,9 +36,9 @@
                 <th>{{'stockReceiveCreation.productName' | message}}</th>
                 <th>{{'stockReceiveCreation.lotCode' | message}}</th>
                 <th>{{'stockReceiveCreation.expiryDate' | message}}</th>
-                <th>{{'Location'}}</th>
+                <th>{{'stockPhysicalInventoryDraft.location' | message}}</th>
                 <th>{{'stockReceiveCreation.soh' | message}}</th>
-                <th>{{'Move to'}}</th>
+                <th>{{'locationMovement.moveTo' | message}}</th>
                 <th>{{'stockReceiveCreation.quantity' | message}}</th>
                 <th>{{'stockReceiveCreation.actions' | message}}</th>
             </tr>
@@ -48,7 +51,7 @@
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <select
-                            ng-required
+                            openlmis-invalid="{{lineItem.$error.lotCodeError | message}}"
                             ng-model="lineItem.lot"
                             no-auto-select="true"
                             ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
@@ -83,20 +86,21 @@
                         <select
                                 noPlaceholder
                                 placeholder="  "
+                                no-auto-select="false"
                                 ng-model="lineItem.moveTo.area"
                                 openlmis-invalid="{{lineItem.$error.areaError | message}}"
                                 ng-options="area for area in vm.getAreaList(lineItem) track by area"
-                                no-auto-select="false">
-
+                                ng-change="vm.changeArea(lineItem)">
                         </select>
                         <select
+                                noPlaceholder
+                                placeholder="  "
+                                no-auto-select="false"
                                 ng-model="lineItem.moveTo.locationCode"
                                 openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
                                 ng-options="locationCode for locationCode in vm.getLocationAreaList(lineItem) track by locationCode"
-                                noPlaceholder
-                                placeholder="  "
-                                no-auto-select="false">
-
+                                ng-change="vm.changeMoveToLocation(lineItem)"
+                               >
                         </select>
                     </div>
 
@@ -113,11 +117,12 @@
                             positive-integer/>
                 </td>
                 <td style="max-width: 140px;">
-                    <input type="button"
-                           value="{{'locationShipmentView.addItem' | message}}"
-                           ng-if="lineItem.isMainGroup"
-                           class="stock-actions add"
-                           ng-click="vm.addItem(lineItem, lineItems)">
+                    <button style="padding: 8px;"
+                            ng-if="lineItem.isMainGroup"
+                            class="stock-actions add add-item"
+                            ng-click="vm.addItem(lineItem, lineItems)">
+                        {{'locationShipmentView.addItem' | message}}
+                    </button>
                     <input type="button"
                            value="{{'stockPhysicalInventoryDraft.remove' | message}}"
                            ng-if="lineItem.isMainGroup && lineItems.length === 1 || !lineItem.isMainGroup"
@@ -132,26 +137,10 @@
 
 </div>
 <ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
-
-<div class="openlmis-toolbar">
-    <div class="siglus-common-bar-container">
-        <div class="button-group">
-            <button class="danger" ng-click="vm.deleteDraft()">
-                {{'stockIssueCreation.delete' | message}}
-            </button>
-        </div>
-
-        <div class="button-group primary">
-            <div ng-class="{'siglus-btn-disable': vm.addedLineItems.length === 0}">
-                <button ng-click="vm.save()">
-                    {{'stockIssueCreation.save' | message}}
-                </button>
-            </div>
-            <div ng-class="{'siglus-btn-disable': vm.addedLineItems.length === 0}">
-                <button class="primary" type="submit" ng-click="vm.submit()">
-                    {{'stockIssueCreation.submit' | message}}
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<siglus-common-toolbar
+        data="vm.addedLineItems"
+        mode="'SAVE'"
+        on-delete="vm.deleteDraft()"
+        on-save="vm.save()"
+        on-submit="vm.submit()">
+</siglus-common-toolbar>

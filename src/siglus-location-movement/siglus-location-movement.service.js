@@ -106,13 +106,9 @@
         function getSrcArea(lineItem, locations) {
             var srcArea = '';
             _.forEach(locations, function(loc) {
-                _.forEach(loc.lots, function(lot) {
-                    if (lineItem.lot && lineItem.location
-                      && lot.lotCode === lineItem.lot.lotCode
-                      && loc.locationCode === lineItem.location.locationCode) {
-                        srcArea = loc.area;
-                    }
-                });
+                if (lineItem.location && loc.locationCode === lineItem.location.locationCode) {
+                    srcArea = loc.area;
+                }
             });
             return srcArea;
 
