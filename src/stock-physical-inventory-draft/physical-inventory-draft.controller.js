@@ -963,7 +963,8 @@
                 stockOnHand: null,
                 unaccountedQuantity: undefined,
                 $errors: {},
-                reasonFreeText: undefined
+                reasonFreeText: undefined,
+                id: null
             });
             draft.lineItems.push(newLineItem);
             $stateParams.isAddProduct = true;
