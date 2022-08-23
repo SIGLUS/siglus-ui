@@ -28,8 +28,7 @@
 <label class="checkbox">
   <input class="disabled-facility-view" id="checked" type="checkbox"
          ng-model="vm.isAndroid"
-         ng-disabled="!vm.facility.isNewFacility || vm.facility.isAndroidDevice"/>
-
+         ng-disabled="vm.facility.isNewFacility === false"/>
   {{'adminFacilityView.androidFacility' | message}}
 </label>
 <div ng-show="vm.facility.isAndroidDevice === true && vm.facility.isNewFacility === false">
