@@ -39,33 +39,39 @@
                 draftInfo: undefined,
                 addedLineItems: undefined,
                 areaLocationInfo: undefined,
+                locations: undefined,
+                user: undefined,
+                facility: undefined,
                 page: '0',
                 size: '10',
                 keyword: ''
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
             resolve: {
-                facility: function(facilityFactory) {
+                facility: function(facilityFactory, $stateParams) {
+                    if ($stateParams.facility) {
+                        return $stateParams.facility;
+                    }
                     return facilityFactory.getUserHomeFacility();
                 },
-                user: function(authorizationService) {
+                user: function(authorizationService, $stateParams) {
+                    if ($stateParams.user) {
+                        return $stateParams.user;
+                    }
                     return authorizationService.getUser();
                 },
-                draftInfo: function() {
-                    return {
-                        lineItems: []
-                    };
-                    // return siglusLocationMovementService.getMovementDraftById($stateParams.draftId)
-                    //     .finally(function() {
-                    //         return {};
-                    //     });
+                draftInfo: function(siglusLocationMovementService, $stateParams) {
+                    if ($stateParams.draftInfo) {
+                        console.log($stateParams.draftInfo);
+                        return $stateParams.draftInfo;
+                    }
+                    return siglusLocationMovementService.getMovementDraftById($stateParams.draftId);
                 },
                 orderableGroups: function($stateParams, facility, draftInfo, orderableGroupService) {
                     if (!$stateParams.orderableGroups) {
                         var allLineOrderableIds = draftInfo.lineItems.map(function(line) {
                             return line.orderableId;
                         });
-                        // todo add draftId params
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
                             $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
                             undefined, allLineOrderableIds
@@ -73,237 +79,41 @@
                     }
                     return $stateParams.orderableGroups;
                 },
-                locations: function() {
-                    var locations = [
-                        {
-                            area: 'east',
-                            locationCode: 'AA25D',
-                            lots: [
-                                {
-                                    orderablesId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210a',
-                                    stockOnHand: 300,
-                                    lotCode: 'SEM-LOTE-08I01-07182023',
-                                    expirationDate: '2023-07-18'
-                                }
-                            ]
-
-                        },
-                        {
-                            area: 'east',
-                            locationCode: 'AA25D',
-                            lots: [
-                                {
-                                    orderablesId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210x',
-                                    stockOnHand: 111,
-                                    lotCode: 'SEM-LOTE-08I01-05202024',
-                                    expirationDate: '2024-05-20'
-                                }
-                            ]
-
-                        },
-
-                        {
-                            area: 'east',
-                            locationCode: 'AA25D',
-                            lots: [
-                                {
-                                    orderablesId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210y',
-                                    stockOnHand: 222,
-                                    lotCode: 'SEM-LOTE-08I01-09202024',
-                                    expirationDate: '2024-09-20'
-                                }
-                            ]
-
-                        },
-                        {
-                            area: 'east',
-                            locationCode: 'AA25D',
-                            lots: [
-                                {
-                                    orderablesId: 'ba08a234-4881-472f-af02-fcc0c7ab5d04',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210c',
-                                    stockOnHand: 256,
-                                    lotCode: 'SEM-LOTE-08I01-07272022',
-                                    expirationDate: '2022-07-27'
-                                }
-                            ]
-
-                        },
-
-                        {
-                            area: 'east',
-                            locationCode: 'AA46A',
-                            lots: [
-                                {
-                                    orderablesId: 'c965909b-431b-4cfd-98ae-1bf475420560',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210ab',
-                                    stockOnHand: 256,
-                                    lotCode: 'SEM-LOTE-08I01-09292022',
-                                    expirationDate: '2022-09-29'
-                                }
-                            ]
-
-                        },
-                        {
-                            area: 'east',
-                            locationCode: 'AA46A',
-                            lots: [
-                                {
-                                    orderablesId: 'c965909b-431b-4cfd-98ae-1bf475420560',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210au',
-                                    stockOnHand: 333,
-                                    lotCode: 'SEM-LOTE-08I01-12292022',
-                                    expirationDate: '2022-12-29'
-                                }
-                            ]
-
-                        },
-                        {
-                            area: 'west',
-                            locationCode: 'AB12C',
-                            lots: [
-                                {
-                                    orderablesId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210a',
-                                    stockOnHand: 200,
-                                    lotCode: 'SEM-LOTE-08I01-07182023',
-                                    expirationDate: '2023-07-18'
-                                }
-                            ]
-
-                        },
-                        {
-                            area: 'north',
-                            locationCode: 'AC33D',
-                            lots: [
-                                {
-                                    orderablesId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210a',
-                                    stockOnHand: 126,
-                                    lotCode: 'SEM-LOTE-08I01-07182023',
-                                    expirationDate: '2023-07-18'
-                                }
-                            ]
-
-                        },
-                        {
-                            area: 'north',
-                            locationCode: 'AC10B',
-                            lots: [
-                                {
-                                    orderablesId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
-                                    lotId: '2992611b-66f8-4443-9096-8fa3f79f210a',
-                                    stockOnHand: 126,
-                                    lotCode: 'SEM-LOTE-08I01-07182023',
-                                    expirationDate: '2023-07-18'
-                                }
-                            ]
-
-                        }
-                    ];
-                    return locations;
-                    // var orderableIds = _.map(draftInfo.lineItems, function(lineItem) {
-                    //     return lineItem.orderable.id;
-                    // });
-                    // return SiglusLocationViewService.getOrderableLocationLotsInfo({
-                    //     orderablesId: orderableIds,
-                    //     extraData: false
-                    // });
+                locations: function(draftInfo, SiglusLocationViewService, $stateParams) {
+                    if ($stateParams.locations) {
+                        return $stateParams.locations;
+                    }
+                    var orderableIds = _.map(draftInfo.lineItems, function(lineItem) {
+                        return lineItem.orderableId;
+                    });
+                    if (_.isEmpty(orderableIds)) {
+                        return [];
+                    }
+                    return SiglusLocationViewService.getOrderableLocationLotsInfo({
+                        orderableIds: orderableIds,
+                        extraData: true
+                    });
                 },
-                //
-                // orderableLocationLotsMap: function(locations, SiglusLocationCommonUtilsService) {
-                //     return SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
-                // },
-                //
-                // orderableLotsLocationMap: function(SiglusLocationCommonUtilsService, locations) {
-                //     return SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations);
-                // }
 
                 areaLocationInfo: function($stateParams, siglusLocationMovementService) {
                     if ($stateParams.areaLocationInfo) {
                         return $stateParams.areaLocationInfo;
                     }
-                    return siglusLocationMovementService.getMovementLocationAreaInfo().then(function() {
-
-                    })
-                        .catch(function() {
-                            return [
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'Frios',
-                                    locationCode: 'AA0001'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'Frios',
-                                    locationCode: 'AA0002'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'Frios',
-                                    locationCode: 'AA0003'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'West',
-                                    locationCode: 'AA101'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'West',
-                                    locationCode: 'AA102'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'West',
-                                    locationCode: 'AA103'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'East',
-                                    locationCode: 'AB101'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'East',
-                                    locationCode: 'AB102'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'East',
-                                    locationCode: 'AB103'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'East',
-                                    locationCode: 'AB104'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'north',
-                                    locationCode: 'AC203'
-                                },
-                                {
-                                    facilityId: '004f4232-cfb8-11e9-9398-0242ac130008',
-                                    area: 'South',
-                                    locationCode: 'AD008'
-                                }
-                            ];
-                        });
+                    return siglusLocationMovementService.getMovementLocationAreaInfo();
                 },
-                addedLineItems: function(draftInfo, $stateParams) {
+                addedLineItems: function(draftInfo, $stateParams, addAndRemoveLineItemService) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
                     }
-                    return [];
+
+                    return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo);
                 },
                 displayItems: function($stateParams, siglusMovementFilterService, addedLineItems) {
-                    console.log(
-                        siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems)
-                    );
+                    console.log(addedLineItems);
+
+                    if ($stateParams.displayItems) {
+                        return $stateParams.displayItems;
+                    }
                     return siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems);
                 }
             }

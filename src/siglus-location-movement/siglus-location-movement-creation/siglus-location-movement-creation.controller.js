@@ -32,14 +32,16 @@
         'paginationService', '$stateParams',
         'addAndRemoveLineItemService', 'displayItems', 'locations', 'siglusMovementFilterService',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
-        'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user'];
+        'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
+        'siglusSignatureWithDateModalService'];
 
     function controller(draftInfo, areaLocationInfo, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
                         addAndRemoveLineItemService, displayItems, locations, siglusMovementFilterService,
                         SiglusLocationCommonUtilsService,
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
-                        notificationService, siglusLocationCommonApiService, facility, user) {
+                        notificationService, siglusLocationCommonApiService, facility, user,
+                        siglusSignatureWithDateModalService) {
         var vm = this;
 
         vm.orderableGroups = null;
@@ -47,6 +49,8 @@
         vm.selectedOrderableGroup = null;
 
         vm.addedLineItems = [];
+
+        vm.facility = facility;
 
         vm.displayItems = displayItems || [];
 
@@ -95,11 +99,9 @@
         };
 
         vm.$onInit = function() {
-            $stateParams.draftInfo = draftInfo;
-            $stateParams.addedLineItems = vm.addedLineItems;
-            $stateParams.areaLocationInfo = areaLocationInfo;
+            vm.addedLineItems = addedLineItems;
+            vm.displayItems = displayItems;
             filterOrderableGroups();
-            $stateParams.orderableGroups = orderableGroups;
 
             return paginationService.registerList(isValid, angular.copy($stateParams), function() {
                 return vm.addedLineItems;
@@ -107,6 +109,7 @@
         };
 
         function filterOrderableGroups() {
+
             var addedOrderableIds = _.map(vm.addedLineItems, function(group) {
                 return _.first(group).orderableId;
             });
@@ -125,31 +128,17 @@
         };
 
         vm.addProduct = function() {
+            var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
-            siglusLocationCommonApiService.getOrderableLocationLotsInfo()
+            siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                orderableIds: [orderable.id],
+                extraData: true
+            })
                 .then(function(locationsInfo) {
                     locations = locations.concat(locationsInfo);
-                    var orderable = vm.selectedOrderableGroup.orderable;
-
-                    var rowData = {
-                        $error: {},
-                        $hint: {},
-                        orderableId: orderable.id,
-                        productCode: orderable.productCode,
-                        productName: $filter('productName')(vm.selectedOrderableGroup.orderable),
-                        lot: null,
-                        stockOnHand: 0,
-                        isKit: orderable.isKit,
-                        isMainGroup: true,
-                        location: null,
-                        moveTo: null,
-                        quantity: null
-                    };
-                    vm.addedLineItems.unshift([rowData]);
-
-                    vm.displayItems = siglusMovementFilterService
-                        .filterMovementList(vm.keyword, vm.addedLineItems);
-                    filterOrderableGroups();
+                    var firstRow = addAndRemoveLineItemService.getAddProductRow(orderable);
+                    vm.addedLineItems.unshift([firstRow]);
+                    searchList();
                 })
                 .finally(function() {
                     loadingModalService.close();
@@ -158,32 +147,38 @@
         };
 
         function searchList() {
+            // vm.displayItems = siglusMovementFilterService.filterMovementList(vm.keyword, vm.addedLineItems);
             $stateParams.locations = locations;
+            $stateParams.areaLocationInfo = areaLocationInfo;
             $stateParams.keyword = vm.keyword;
             $stateParams.addedLineItems = vm.addedLineItems;
-            vm.displayItems = siglusMovementFilterService.filterMovementList(vm.keyword, vm.addedLineItems);
+            console.log(vm.addedLineItems);
+            $stateParams.orderableGroups = orderableGroups;
+            $stateParams.draftInfo = draftInfo;
+            $stateParams.user = user;
+            $stateParams.facility = facility;
+            // $stateParams.displayItems = vm.displayItems;
             reloadPage();
+        }
+
+        function emitQuantityChange(lineItem, lineItems) {
+            if (lineItem.lot && lineItem.location) {
+                lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
+                vm.changeQuantity(lineItem, lineItems);
+            } else {
+                lineItem.stockOnHand = 0;
+            }
         }
 
         vm.changeLot = function(lineItem, lineItems) {
             lineItem.$error.lotCodeError = _.isEmpty(lineItem.lot) ? 'openlmisForm.required' : '';
+            emitQuantityChange(lineItem, lineItems);
 
-            if (lineItem.lot && lineItem.location) {
-                lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
-                vm.changeQuantity(lineItem, lineItems);
-            } else {
-                lineItem.stockOnHand = 0;
-            }
         };
 
         vm.changeLocation = function(lineItem, lineItems) {
             lineItem.$error.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : '';
-            if (lineItem.lot && lineItem.location) {
-                lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
-                vm.changeQuantity(lineItem, lineItems);
-            } else {
-                lineItem.stockOnHand = 0;
-            }
+            emitQuantityChange(lineItem, lineItems);
         };
 
         vm.changeArea = function(lineItem) {
@@ -197,8 +192,16 @@
 
         vm.getStockOnHand = function(lineItem, lineItems, index) {
             if (index === 0) {
-                var filerLineItems = _.uniq(_.clone(lineItems), function(item) {
-                    return _.get(item.lot, 'id') && _.get(item.location, 'locationCode');
+                var mappedData = _.map(lineItems, function(item) {
+                    return {
+                        lotCode: _.get(item.lot, 'lotCode', ''),
+                        locationCode: _.get(item.location, 'locationCode', ''),
+                        lotLocationCode: _.get(item.lot, 'lotCode') + _.get(item.location, 'locationCode'),
+                        stockOnHand: item.stockOnHand
+                    };
+                });
+                var filerLineItems = _.uniq(mappedData, false, function(item) {
+                    return item.lotLocationCode;
                 });
                 return _.reduce(filerLineItems, function(sum, item) {
                     return sum + item.stockOnHand;
@@ -238,8 +241,8 @@
                     return _.get(item, ['lot', 'lotCode']) === _.get(data.lot, 'lotCode')
                       && _.get(item, ['location', 'locationCode']) === _.get(data.location, 'locationCode');
                 });
-                var totalQuantity = _.reduce(filterLineItems, function(result, item) {
-                    return result + (item.quantity || 0);
+                var totalQuantity = _.reduce(filterLineItems, function(result, row) {
+                    return result + _.get(row, 'quantity', 0);
                 }, 0);
                 if (totalQuantity > item.stockOnHand) {
                     item.$error.quantityError = 'locationMovement.mtSoh';
@@ -252,7 +255,7 @@
 
         function reloadPage() {
             $state.go($state.current.name, $stateParams, {
-                reload: true
+                reload: false
             });
         }
 
@@ -268,10 +271,6 @@
 
         vm.showEmptyBlock = function(lineItem, lineItems, index) {
             return (lineItems.length > 1 && index === 0);
-        };
-
-        vm.save = function() {
-
         };
 
         vm.search = function() {
@@ -356,6 +355,22 @@
             });
         }
 
+        function getLineItems() {
+            return _.chain(vm.addedLineItems)
+                .map(function(group) {
+                    if (group.length === 1) {
+                        return group;
+                    }
+                    if (group.length > 1) {
+                        var cloneGroup = _.clone(group);
+                        cloneGroup.splice(0, 1);
+                        return cloneGroup;
+                    }
+                })
+                .flatten()
+                .value();
+        }
+
         vm.save = function() {
             var baseInfo = {
                 id: draftInfo.id,
@@ -363,15 +378,21 @@
                 facilityId: facility.id,
                 userId: user.user_id
             };
-            siglusLocationMovementService.saveMovementDraft(baseInfo, vm.addedLineItems).then(function() {
+
+            siglusLocationMovementService.saveMovementDraft(baseInfo, getLineItems(), locations).then(function() {
                 notificationService.success('stockIssueCreation.saved');
+                // draftInfo = null;
+                // searchList();
             });
         };
 
         vm.submit = function() {
             validateForm();
             if (isValid()) {
-                return;
+                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
+                    then(function(data) {
+                        console.log(data);
+                    });
             }
         };
 
@@ -384,8 +405,7 @@
                 loadingModalService.open();
                 siglusLocationMovementService.deleteMovementDraft($stateParams.draftId)
                     .then(function() {
-                    // $scope.needToConfirm = false;
-                        notificationService.success(vm.key('deleted'));
+                        notificationService.success('stockIssueCreation.deleted');
                         $state.go('^', $stateParams, {
                             reload: true
                         });
