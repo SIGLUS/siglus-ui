@@ -27,6 +27,7 @@
 
 <label class="switch">
   <input type="checkbox" value="vm.enableValue"
-         ng-click="vm.updateEnableLocationManagement()">
+         ng-click="vm.updateEnableLocationManagement()"
+         ng-disabled="vm.isAndroidDevice">
   <span ng-class="{'slider round': !vm.enableValue, 'sliderChecked round': vm.enableValue}"></span>
 </label>
