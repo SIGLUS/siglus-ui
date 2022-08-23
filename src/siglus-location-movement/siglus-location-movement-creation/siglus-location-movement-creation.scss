@@ -3,7 +3,7 @@
 }
 
 .location-movement-area .input-control:first-child {
-  width: 92px;
+  min-width: 92px;
   margin-right: 12px;
 }
 
@@ -11,13 +11,14 @@
   min-width: 180px;
 }
 
-#locationMovementForm tr:first-child>td {
+#locationMovementForm  tr:first-child>td {
   border-top-width: 1px;
 }
 
-#locationMovementForm input.number {
+#locationMovementForm  input.number {
   text-align: left;
 }
+
 
 
 #locationMovementForm input[disabled] {

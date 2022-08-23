@@ -50,27 +50,24 @@
         };
 
         vm.proceedForIssue = function() {
+            console.log(vm.drafts);
             $state.go('openlmis.locationManagement.movement.creation', {
-                draftId: _.get(vm.drafts, [0, 'id'], 'A000001')
+                draftId: _.get(vm.drafts, [0, 'id']),
+                programId: vm.programId
             });
         };
 
         vm.start = function() {
-            // var params = {
-            //     programId: vm.programId,
-            //     facilityId: facility.id,
-            //     userId: user.user_id
-            // };
-            // siglusLocationMovementService.createMovementDraft(params).then(function(draft) {
-            //     $state.go('openlmis.locationManagement.movement.creation', {
-            //         programId: vm.programId,
-            //         draftId: draft.id
-            //     });
-            // });
-
-            $state.go('openlmis.locationManagement.movement.creation', {
+            var params = {
                 programId: vm.programId,
-                draftId: 'A000001'
+                facilityId: facility.id,
+                userId: user.user_id
+            };
+            siglusLocationMovementService.createMovementDraft(params).then(function(draft) {
+                $state.go('openlmis.locationManagement.movement.creation', {
+                    programId: vm.programId,
+                    draftId: draft.id
+                });
             });
         };
 
@@ -82,19 +79,7 @@
                     vm.drafts = data;
                     vm.hasExistInitialDraft = data.length > 0;
                 })
-                .catch(function() {
-                })
                 .finally(function() {
-                    vm.drafts = [
-                        {
-                            id: 'A00001',
-                            facilityId: '',
-                            createdDate: null,
-                            signature: null,
-                            userId: '',
-                            lineItems: []
-                        }
-                    ];
                     loadingModalService.close();
                 });
         };

@@ -35,30 +35,30 @@
         var resource = $resource('', {}, {
             getMovementDrafts: {
                 method: 'GET',
-                url: '/api/siglusapi/locationMovementDrafts',
+                url: '/openlmisServer/api/siglusapi/locationMovementDrafts',
                 isArray: true
             },
             getMovementDraftById: {
                 method: 'GET',
-                url: '/api/siglusapi/movementDrafts/:id',
+                url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id',
                 isArray: false
             },
             getMovementLocationAreaInfo: {
                 method: 'GET',
-                url: '/api/siglusapi/locations/facility',
+                url: '/openlmisServer/api/siglusapi/locations/facility',
                 isArray: true
             },
             deleteMovementDraft: {
                 method: 'DELETE',
-                url: '/api/siglusapi/locationMovementDrafts/:id'
+                url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id'
             },
             saveMovementDraft: {
                 method: 'PUT',
-                url: '/api/siglusapi/locationMovementDrafts/:id'
+                url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id'
             },
             createMovementDraft: {
                 method: 'POST',
-                url: '/api/siglusapi/locationMovementDrafts'
+                url: '/openlmisServer/api/siglusapi/locationMovementDrafts'
             }
         });
 
@@ -92,8 +92,8 @@
             }).$promise;
         }
 
-        function saveMovementDraft(baseInfo, lineItems) {
-            var params = buildSaveParams(baseInfo, lineItems);
+        function saveMovementDraft(baseInfo, lineItems, locations) {
+            var params = buildSaveParams(baseInfo, lineItems, locations);
             return resource.saveMovementDraft({
                 id: baseInfo.id
             }, params).$promise;
@@ -103,29 +103,46 @@
             return resource.createMovementDraft(params).$promise;
         }
 
-        function bulidLineItems(lineItems) {
+        function getSrcArea(lineItem, locations) {
+            var srcArea = '';
+            _.forEach(locations, function(loc) {
+                _.forEach(loc.lots, function(lot) {
+                    if (lineItem.lot && lineItem.location
+                      && lot.lotCode === lineItem.lot.lotCode
+                      && loc.locationCode === lineItem.location.locationCode) {
+                        srcArea = loc.area;
+                    }
+                });
+            });
+            return srcArea;
+
+        }
+
+        function buildLineItems(lineItems, locations) {
 
             return _.map(lineItems, function(lineItem) {
                 return {
                     orderableId: lineItem.orderableId,
                     productCode: lineItem.productCode,
                     productName: lineItem.productName,
-                    lotId: _.get(lineItem.lot, 'lotId'),
+                    lotId: _.get(lineItem.lot, 'id'),
                     lotCode: _.get(lineItem.lot, 'lotCode'),
-                    srcArea: _.get(lineItem.moveTo, 'area'),
+                    isKit: lineItem.isKit,
+                    srcArea: getSrcArea(lineItem, locations),
                     srcLocationCode: _.get(lineItem.location, 'locationCode'),
                     destArea: _.get(lineItem.moveTo, 'area'),
                     destLocationCode: _.get(lineItem.moveTo, 'locationCode'),
-                    createdDate: '2022-08-16',
-                    expirationDate: _.get(lineItem.lot, 'lotCode'),
-                    quantity: lineItem.quantity
+                    occurredDate: '',
+                    expirationDate: _.get(lineItem.lot, 'expirationDate'),
+                    quantity: lineItem.quantity,
+                    stockOnHand: lineItem.stockOnHand
                 };
             });
         }
 
-        function buildSaveParams(baseInfo, lineItems) {
+        function buildSaveParams(baseInfo, lineItems, locations) {
             return _.extend(baseInfo, {
-                lineItems: bulidLineItems(lineItems)
+                lineItems: buildLineItems(lineItems, locations)
             });
         }
 

@@ -28,11 +28,9 @@
         .module('siglus-location-movement-creation')
         .service('addAndRemoveLineItemService', addAndRemoveLineItemService);
 
-    // #287: add alertService
-    addAndRemoveLineItemService.inject = [];
-    // #287: ends here
+    addAndRemoveLineItemService.inject = ['$filter'];
 
-    function addAndRemoveLineItemService() {
+    function addAndRemoveLineItemService($filter) {
 
         function getRowTemplateData(lineItem) {
             var rowData = {
@@ -87,6 +85,104 @@
             } else if (lineItems.length > 3) {
                 lineItems.splice(index, 1);
             }
+        };
+
+        this.getMainGroupRow = function(lineItem) {
+            return {
+                $error: {},
+                orderableId: lineItem.orderableId,
+                productCode: lineItem.productCode,
+                productName: lineItem.productName,
+                lot: null,
+                stockOnHand: 0,
+                isKit: lineItem.isKit,
+                isMainGroup: true,
+                location: null,
+                moveTo: null,
+                quantity: null
+            };
+        };
+
+        this.getAddProductRow = function(orderable) {
+            return {
+                $error: {},
+                orderableId: orderable.id,
+                productCode: orderable.productCode,
+                productName: $filter('productName')(orderable),
+                lot: null,
+                stockOnHand: 0,
+                isKit: orderable.isKit,
+                isMainGroup: true,
+                location: null,
+                moveTo: null,
+                quantity: null
+            };
+        };
+
+        function updateStockOnHand(locations, lineItem) {
+            var stockOnHand = 0;
+            if (lineItem.lot && lineItem.location) {
+                _.forEach(locations, function(loc) {
+                    _.forEach(loc.lots, function(lot) {
+                        if (lineItem.lot && lineItem.location
+                          && lot.lotCode === lineItem.lot.lotCode
+                          && loc.locationCode === lineItem.location.locationCode) {
+                            stockOnHand = loc.area;
+                        }
+                    });
+                });
+            }
+            return stockOnHand;
+
+        }
+
+        function mapDataToDisplay(group, isMainGroup, locations) {
+            return _.map(group, function(item) {
+                var lot = item.lotCode ? {
+                    id: item.lotId,
+                    lotCode: item.lotCode,
+                    expirationDate: item.expirationDate,
+                    stockOnHand: updateStockOnHand(locations, item)
+                } : null;
+                var location = item.srcLocationCode ? {
+                    locationCode: item.srcLocationCode
+                } : null;
+
+                var moveTo = {
+                    area: item.destArea,
+                    locationCode: item.destLocationCode
+                };
+
+                var baseInfo = _.omit(item, ['lotCode', 'lotId', 'expirationDate', '' +
+                'srcArea', 'srcLocationCode']);
+                return _.extend(baseInfo, {
+                    $error: {},
+                    lot: lot,
+                    isMainGroup: isMainGroup,
+                    location: location,
+                    moveTo: moveTo
+                });
+            });
+        }
+
+        this.prepareAddedLineItems = function(draftInfo) {
+            var $this = this;
+            return _.chain(_.get(draftInfo, 'lineItems', []))
+                .groupBy('orderableId')
+                .values()
+                .map(function(group) {
+                    if (group.length === 1) {
+                        return mapDataToDisplay(group, true);
+                    }
+                    var firstRow = $this.getMainGroupRow(group[0]);
+                    var result = [];
+                    result.push(firstRow);
+
+                    var childrenLineItems = mapDataToDisplay(group, false);
+                    return result.concat(childrenLineItems);
+
+                })
+                .value();
         };
     }
 

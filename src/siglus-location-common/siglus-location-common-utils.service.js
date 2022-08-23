@@ -36,15 +36,15 @@
             var result = {};
             _.forEach(locations, function(location) {
                 _.forEach(location.lots, function(lot) {
-                    if (!result[lot.orderablesId]) {
-                        result[lot.orderablesId] = {};
+                    if (!result[lot.orderableId]) {
+                        result[lot.orderableId] = {};
                     }
 
-                    if (!result[lot.orderablesId][location.locationCode]) {
-                        result[lot.orderablesId][location.locationCode] = [];
+                    if (!result[lot.orderableId][location.locationCode]) {
+                        result[lot.orderableId][location.locationCode] = [];
                     }
 
-                    result[lot.orderablesId][location.locationCode].push({
+                    result[lot.orderableId][location.locationCode].push({
                         id: lot.lotId,
                         lotCode: lot.lotCode,
                         expirationDate: lot.expirationDate,
@@ -61,15 +61,15 @@
             _.forEach(locations, function(location) {
                 _.forEach(location.lots, function(lot) {
 
-                    if (!result[lot.orderablesId]) {
-                        result[lot.orderablesId] = {};
+                    if (!result[lot.orderableId]) {
+                        result[lot.orderableId] = {};
                     }
 
-                    if (!result[lot.orderablesId][lot.lotId]) {
-                        result[lot.orderablesId][lot.lotId] = [];
+                    if (!result[lot.orderableId][lot.lotId]) {
+                        result[lot.orderableId][lot.lotId] = [];
                     }
 
-                    result[lot.orderablesId][lot.lotId].push({
+                    result[lot.orderableId][lot.lotId].push({
                         id: location.locationId,
                         locationCode: location.locationCode
                     });

@@ -1,8 +1,8 @@
-<h2>010810109 - Centro de saude de Man</h2>
+<h2>{{vm.facility.code}} - {{vm.facility.name}} - Todos os produtos</h2>
 
 <div>
     <section id="locationMovementForm" class="openlmis-table-container">
-        <form ng-submit="vm.search()">
+        <form ng-submit="vm.searchList()">
             <fieldset>
                 <label for="search">{{'stockReceiveCreation.keyword' | message}}</label>
                 <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
@@ -46,9 +46,9 @@
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
                 <td>{{lineItem.isMainGroup ? lineItem.productName : '' }}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
-                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"
-                    openlmis-invalid="{{lineItem.$error.lotCodeError | message}}">
+                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <select
+                            ng-required
                             ng-model="lineItem.lot"
                             no-auto-select="true"
                             ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
@@ -59,10 +59,10 @@
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <input
-                           type="date"
-                           ng-model="lineItem.lot.expirationDate"
-                           ng-disabled="true"
-                           autocomplete="off"/>
+                            type="date"
+                            ng-model="lineItem.lot.expirationDate"
+                            ng-disabled="true"
+                            autocomplete="off"/>
                 </td>
 
                 <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
@@ -101,7 +101,9 @@
                     </div>
 
                 </td>
-                <td style="width: 80px;" ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">{{vm.getTotalQuantity(lineItems)}}</td>
+                <td style="width: 80px;" ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
+                    {{vm.getTotalQuantity(lineItems)}}
+                </td>
                 <td style="width: 80px;" ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
                     <input
                             openlmis-invalid="{{lineItem.$error.quantityError | message}}"
@@ -124,15 +126,32 @@
                 </td>
             </tr>
             </tbody>
+            <openlmis-pagination list="vm.displayItems" paged-list="vm.pagedLineItems"/>
         </table>
-        <openlmis-pagination list="vm.displayItems" paged-list="vm.pagedLineItems"/>
     </section>
+
 </div>
 <ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
-<siglus-common-toolbar
-        data="vm.addedLineItems"
-        mode="'SAVE'"
-        on-delete="vm.deleteDraft()"
-        on-save="vm.save()"
-        on-submit="vm.submit()">
-</siglus-common-toolbar>
+
+<div class="openlmis-toolbar">
+    <div class="siglus-common-bar-container">
+        <div class="button-group">
+            <button class="danger" ng-click="vm.deleteDraft()">
+                {{'stockIssueCreation.delete' | message}}
+            </button>
+        </div>
+
+        <div class="button-group primary">
+            <div ng-class="{'siglus-btn-disable': vm.addedLineItems.length === 0}">
+                <button ng-click="vm.save()">
+                    {{'stockIssueCreation.save' | message}}
+                </button>
+            </div>
+            <div ng-class="{'siglus-btn-disable': vm.addedLineItems.length === 0}">
+                <button class="primary" type="submit" ng-click="vm.submit()">
+                    {{'stockIssueCreation.submit' | message}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

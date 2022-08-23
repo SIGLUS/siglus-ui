@@ -14,19 +14,23 @@
  */
 
 describe('openlmis.locationManagement.movement.creation', function() {
-    var $state, $q, $rootScope, $location, siglusLocationMovementService;
+    var $state, $q, $rootScope, $location, siglusLocationMovementService, $stateParams;
 
     function prepareInjector() {
         inject(function($injector) {
             $state = $injector.get('$state');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
+            $stateParams = $injector.get('$stateParams');
             $location = $injector.get('$location');
             siglusLocationMovementService = $injector.get('siglusLocationMovementService');
         });
     }
 
     function prepareSpies() {
+        $stateParams.draftInfo = {
+            a: 123
+        };
         spyOn(siglusLocationMovementService, 'getMovementDraftById').andReturn($q.resolve({
             id: 12311
         }));
@@ -58,9 +62,66 @@ describe('openlmis.locationManagement.movement.creation', function() {
         init();
     });
 
+    describe('facility resolve', function() {
+        it('should return facility', function() {
+            goToUrl('/locationManagement/movement/a24f19a8-3743-4a1a-a919-e8f97b5719/creation');
+            $rootScope.$apply();
+
+            expect(getResolvedValue('facility')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    facility: {
+                        id: 'c9203423-123123-234234'
+                    }
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('facility')).toBeUndefined();
+        });
+    });
+
+    describe('user resolve', function() {
+        it('should return user', function() {
+            goToUrl('/locationManagement/movement/a24f19a8-3743-4a1a-a919-e8f97b5719/creation');
+            $rootScope.$apply();
+
+            expect(getResolvedValue('user')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    user: {
+                        id: 'c9203423-123123-234234'
+                    }
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('user')).toBeUndefined();
+        });
+    });
+
     describe('draftInfo resolve', function() {
         it('should return draftInfo', function() {
-            goToUrl('/locationManagement/movement/creation');
+            goToUrl('/locationManagement/movement/a24f19a8-3743-4a1a-a919-e8f97b5719/creation');
+            $rootScope.$apply();
+
+            expect(getResolvedValue('draftInfo')).toBeUndefined();
+        });
+
+        it('should return $stateParams value', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    draftInfo: {
+                        id: 'A000001'
+                    }
+                });
             $rootScope.$apply();
 
             expect(getResolvedValue('draftInfo')).toBeUndefined();
