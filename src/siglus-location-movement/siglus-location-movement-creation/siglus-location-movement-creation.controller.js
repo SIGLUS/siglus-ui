@@ -33,7 +33,7 @@
         'addAndRemoveLineItemService', 'displayItems', 'locations', 'siglusMovementFilterService',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
-        'siglusSignatureWithDateModalService'];
+        'siglusSignatureWithDateModalService', 'confirmDiscardService'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
@@ -41,7 +41,7 @@
                         SiglusLocationCommonUtilsService,
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,
-                        siglusSignatureWithDateModalService) {
+                        siglusSignatureWithDateModalService, confirmDiscardService) {
         var vm = this;
 
         vm.orderableGroups = null;
@@ -104,7 +104,16 @@
             vm.keyword = $stateParams.keyword;
             filterOrderableGroups();
             updateStateParams();
-            return paginationService.registerList(isValid, angular.copy($stateParams), function() {
+
+            $scope.$watch(function() {
+                return vm.addedLineItems;
+            }, function(newValue, oldValue) {
+                $scope.needToConfirm = !angular.equals(newValue, oldValue);
+            }, true);
+
+            confirmDiscardService.register($scope, 'openlmis.locationManagement.movement.creation');
+
+            paginationService.registerList(isValid, angular.copy($stateParams), function() {
                 return vm.addedLineItems;
             });
         };
@@ -397,6 +406,7 @@
             loadingModalService.open();
             siglusLocationMovementService.saveMovementDraft(getBaseInfo(), getLineItems(), locations)
                 .then(function() {
+                    $scope.needToConfirm = false;
                     notificationService.success('stockIssueCreation.saved');
                 })
                 .finally(function() {
@@ -416,6 +426,7 @@
                         loadingModalService.open();
                         siglusLocationMovementService.submitMovementDraft(baseInfo, getLineItems(), locations)
                             .then(function() {
+                                $scope.needToConfirm = false;
                                 $state.go('^', $stateParams, {
                                     reload: true
                                 });
@@ -431,13 +442,14 @@
 
         vm.deleteDraft = function() {
             alertConfirmModalService.error(
-                'locationMovement.deleteWarning',
+                'locationMovement.deleteMovementWarning',
                 '',
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
                 siglusLocationMovementService.deleteMovementDraft($stateParams.draftId)
                     .then(function() {
+                        $scope.needToConfirm = false;
                         notificationService.success('stockIssueCreation.deleted');
                         $state.go('^', $stateParams, {
                             reload: true
