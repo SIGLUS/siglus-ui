@@ -7,6 +7,7 @@
   "stockIssue.issueStart": "Start",
   "stockIssue.cancel": "Cancel",
   "locationMovement.label": "Move Products",
-  "locationMovement.mtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
-  "locationMovement.moveTo": "Move to"
+  "locationMovement.gtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
+  "locationMovement.moveTo": "Move to",
+  "locationMovement.deleteWarning": "Once delete the draft, the existing process will lose and cannot be recovered."
 }

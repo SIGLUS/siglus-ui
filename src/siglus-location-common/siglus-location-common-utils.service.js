@@ -82,23 +82,28 @@
         this.getLotList = function(lineItem, orderableLocationLotsMap) {
             var orderableId = lineItem.orderableId;
             var locationCode = _.get(lineItem, ['location', 'locationCode']);
-            return locationCode
-                ? _.get(orderableLocationLotsMap, [orderableId, locationCode], [])
+            var data = locationCode
+                ? _.uniq(_.get(orderableLocationLotsMap, [orderableId, locationCode], []), function(item) {
+                    return item.lotCode;
+                })
                 : _.chain(orderableLocationLotsMap)
                     .get(orderableId, {})
                     .values()
                     .flatten()
-                    .uniq(false, function(item) {
+                    .uniq(function(item) {
                         return item.lotCode;
                     })
                     .value();
+            return data;
         };
 
         this.getLocationList = function(lineItem, orderableLotsLocationMap) {
             var orderableId = lineItem.orderableId;
             var lotId = _.get(lineItem, ['lot', 'id']);
             return lotId
-                ? _.get(orderableLotsLocationMap, [orderableId, lotId], [])
+                ? _.uniq(_.get(orderableLotsLocationMap, [orderableId, lotId], []), function(item) {
+                    return item.locationCode;
+                })
                 : _.chain(orderableLotsLocationMap)
                     .get(orderableId, {})
                     .values()

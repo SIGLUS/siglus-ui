@@ -28,41 +28,41 @@
         .module('siglus-location-movement')
         .service('siglusLocationMovementService', service);
 
-    service.$inject = ['$resource'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory'];
 
-    function service($resource) {
+    function service($resource, stockmanagementUrlFactory) {
 
         var resource = $resource('', {}, {
             getMovementDrafts: {
                 method: 'GET',
-                url: '/openlmisServer/api/siglusapi/locationMovementDrafts',
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts'),
                 isArray: true
             },
             getMovementDraftById: {
                 method: 'GET',
-                url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id',
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts/:id'),
                 isArray: false
             },
             getMovementLocationAreaInfo: {
                 method: 'GET',
-                url: '/openlmisServer/api/siglusapi/locations/facility',
+                url: stockmanagementUrlFactory('/api/siglusapi/locations/facility'),
                 isArray: true
             },
             deleteMovementDraft: {
                 method: 'DELETE',
-                url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id'
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts/:id')
             },
             saveMovementDraft: {
                 method: 'PUT',
-                url: '/openlmisServer/api/siglusapi/locationMovementDrafts/:id'
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts/:id')
             },
             submitMovementDraft: {
                 method: 'POST',
-                url: '/openlmisServer/api/siglusapi/locationMovements'
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovements')
             },
             createMovementDraft: {
                 method: 'POST',
-                url: '/openlmisServer/api/siglusapi/locationMovementDrafts'
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts')
             }
         });
 

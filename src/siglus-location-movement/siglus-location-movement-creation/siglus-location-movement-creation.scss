@@ -3,12 +3,12 @@
 }
 
 .location-movement-area .input-control:first-child {
-  min-width: 120px;
+  flex: 1;
   margin-right: 12px;
 }
 
 .location-movement-area .input-control:last-child {
-  min-width: 92px;
+  min-width: 110px;
 }
 
 #locationMovementForm  tr:first-child>td {
