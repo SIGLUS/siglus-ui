@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.movement.creation', {
             url: '/:draftId/creation?programId&keyword&page&size',
-            label: 'locationMovement.label',
+            label: 'locationMovement.movement',
             views: {
                 '@openlmis': {
                     controller: 'SiglusLocationMovementCreationController',

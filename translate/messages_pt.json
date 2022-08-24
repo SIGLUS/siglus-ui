@@ -2453,5 +2453,8 @@
   "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered.",
   "printTemplate.title": "report",
   "printTemplate.breadcrumbName.subDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Draft ${number} / Report",
-  "printTemplate.breadcrumbName.mergedDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Merged / Report"
+  "printTemplate.breadcrumbName.mergedDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Merged / Report",
+  "locationMovement.label": "Mover produtos",
+  "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
+  "locationMovement.movement": "Movement"
 }

@@ -298,7 +298,7 @@
         };
 
         vm.validateLotDate = function(lineItem) {
-            lineItem.expirationDate = lineItem.lot.expirationDate;
+            lineItem.expirationDate = _.get(lineItem.lot, 'expirationDate');
             if (!lineItem.isKit) {
                 if (lineItem.lot && lineItem.lot.expirationDate) {
                     lineItem.$errors.lotDateInvalid = false;
