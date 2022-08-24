@@ -2450,6 +2450,8 @@
   "locationShipmentView.addItem": "Adicionar Item",
   "locationMovement.gtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
   "locationMovement.moveTo": "Mover para",
-  "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered."
-
+  "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered.",
+  "locationMovement.label": "Mover produtos",
+  "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
+  "locationMovement.movement": "Movement"
 }

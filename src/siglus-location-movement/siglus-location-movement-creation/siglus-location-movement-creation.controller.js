@@ -112,9 +112,19 @@
             }, true);
 
             confirmDiscardService.register($scope, 'openlmis.locationManagement.movement.creation');
+            var validator = function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$error)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$error[key]);
+                        })
+                        .value();
+                });
+            };
 
-            paginationService.registerList(isValid, angular.copy($stateParams), function() {
-                return vm.addedLineItems;
+            paginationService.registerList(validator, angular.copy($stateParams), function() {
+                return vm.displayItems;
             });
         };
 
@@ -176,16 +186,15 @@
         function emitQuantityChange(lineItem, lineItems) {
             if (lineItem.lot && lineItem.location) {
                 lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
-                vm.changeQuantity(lineItem, lineItems);
             } else if (lineItem.location && lineItem.isKit) {
-                lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
                 var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
                 lineItem.stockOnHand = _.get(map[lineItem.orderableId],
                     [lineItem.location.locationCode, 0, 'stockOnHand'], 0);
-                vm.changeQuantity(lineItem, lineItems);
             } else {
                 lineItem.stockOnHand = 0;
             }
+            lineItem.quantity = lineItem.stockOnHand;
+            vm.changeQuantity(lineItem, lineItems);
         }
 
         vm.changeLot = function(lineItem, lineItems) {
@@ -437,6 +446,9 @@
                             });
 
                     });
+            } else {
+                vm.keyword = '';
+                searchList();
             }
         };
 
