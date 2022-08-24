@@ -253,6 +253,7 @@
                 vm.displayItems = _.filter(vm.displayItems, function(item) {
                     return !_.isEmpty(item);
                 });
+                filterOrderableGroups();
             }
         };
 
