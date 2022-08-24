@@ -16,5 +16,12 @@
 (function() {
     'use strict';
 
-    angular.module('siglus-location-physical-inventory-report', []);
+    angular.module('siglus-location-physical-inventory-report', [
+        'angular.filter',
+        'ngResource',
+        'referencedata-facility',
+        'referencedata-program',
+        'ui.router',
+        'openlmis'
+    ]);
 })();

@@ -1,3 +1,5 @@
 {
-    "printTemplate.title": "hello"
+    "printTemplate.title": "report",
+    "printTemplate.breadcrumbName.subDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Draft ${number} / Report",
+    "printTemplate.breadcrumbName.mergedDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Merged / Report"
 }

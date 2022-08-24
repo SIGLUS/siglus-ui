@@ -24,14 +24,14 @@
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS'];
 
     function routes($stateProvider) {
-        $stateProvider.state('openlmis.locationManagement.physicalInventory.report', {
+        $stateProvider.state('openlmis.locationManagement.physicalInventory.draftList.draft.report', {
             url: '/report',
             showInNavigation: false,
             label: 'printTemplate.title',
             priority: 1,
             views: {
                 '@openlmis': {
-                    controller: 'siglusLocationPhysicalInventoryReport',
+                    controller: 'SiglusLocationPhysicalInventoryReport',
                     controllerAs: 'vm',
                     // eslint-disable-next-line max-len
                     templateUrl: 'siglus-location-physical-inventory-report/siglus-location-physical-inventory-report.html'

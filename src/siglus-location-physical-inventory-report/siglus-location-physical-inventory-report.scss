@@ -1,12 +1,21 @@
-.location-physical-container {
+.location-physical-container {  
     table {
-        border: 1px solid black !important;
+        border: 1px solid #343434 !important;
+        border-collapse: collapse !important; 
         td {
-            height: 30px !important;
-            border: 1px solid black;
+            height: 30px;
+            border: 1px solid #343434;
+            font-size: 12px;
+            padding-left: 2px;
+            padding-right: 2px;
         }
         th {
-            border: 1px solid black;
+            font-size: 14px;
+            border: 1px solid #343434;
+            background-color: #343434;
+            color: #fff;
+            font-weight: 700;
+            padding: 4px;
         }
     }
 }

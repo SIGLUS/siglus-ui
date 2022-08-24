@@ -108,6 +108,7 @@
                         ng-options="item.code as item.label for item in lineItem.areaList"
                         ng-model="lineItem.area"
                         ng-change="vm.onSelectChange('area', lineItem)"
+                        ng-required="lineItem.$errors.locationInvalid"
                     >
                     </select>
                     <select
@@ -115,6 +116,7 @@
                         ng-options="item.code as item.label for item in lineItem.locationList"
                         ng-model="lineItem.locationCode"
                         ng-change="vm.onSelectChange('location', lineItem)"
+                        ng-required="lineItem.$errors.locationInvalid"
                     >
                     </select>
                 </div>

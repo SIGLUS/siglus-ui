@@ -19,14 +19,17 @@
 
     angular
         .module('siglus-location-physical-inventory-report')
-        .controller('siglusLocationPhysicalInventoryReport', controller);
+        .controller('SiglusLocationPhysicalInventoryReport', controller);
 
     controller.$inject = [
         '$scope',
         '$window',
         'draft',
         'facility',
-        'program'
+        'program',
+        '$stateParams',
+        'localStorageService',
+        'messageService'
     ];
 
     function controller(
@@ -34,24 +37,41 @@
         $window,
         draft,
         facility,
-        program
+        program,
+        $stateParams,
+        localStorageService,
+        messageService
     ) {
         var vm = this;
         vm.$onInit = onInit;
 
-        var onInit = function() {
-            document.getElementsByClassName('header')[0].style.display = 'none';
-            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        function onInit() {
+            hideLayoutAndBreadcrumb();
             $window.onunload = function() {
-                // eslint-disable-next-line no-debugger
-                debugger;
+                localStorageService.remove('physicalInventoryCategories');
             };
-            vm.draft = getTbDataSource(JSON.parse(draft));
+            vm.draft = vm.getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
             vm.program = program;
+            vm.breadcrumb = vm.getBreadcrumbName($stateParams);
+        }
+
+        var hideLayoutAndBreadcrumb = function() {
+            document.getElementsByClassName('header')[0].style.display = 'none';
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
         };
 
-        var getTbDataSource = function(data) {
+        vm.getBreadcrumbName = function(stateParams) {
+            var result = messageService.get('printTemplate.breadcrumbName.subDraft', {
+                number: stateParams.draftNum
+            });
+            if (stateParams.isMerged === 'true') {
+                result =  messageService.get('printTemplate.breadcrumbName.mergedDraft');
+            }
+            return result;
+        };
+
+        vm.getTbDataSource = function(data) {
             var tempArray = [];
             _.forEach(Object.keys(data), function(key) {
                 _.forEach(data[key], function(item) {
@@ -74,16 +94,6 @@
                         }
                         return result;
                     });
-                    // [
-                    //     {
-                    //         productCode: c[0].orderable.productCode,
-                    //         product: c[0].orderable.fullProductName
-                    //     },
-                    //     {
-                    //         productCode: '',
-                    //         product: ''
-                    //     }
-                    // ];
                     r = r.concat(temp);
                 } else {
                     r.push({
@@ -95,7 +105,6 @@
             }, []);
         };
 
-        onInit();
         $scope.$on('$destroy', function() {
             $window.onunload = null;
         });

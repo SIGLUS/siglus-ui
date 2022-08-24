@@ -2450,6 +2450,8 @@
   "locationShipmentView.addItem": "Adicionar Item",
   "locationMovement.gtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
   "locationMovement.moveTo": "Mover para",
-  "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered."
-
+  "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered.",
+  "printTemplate.title": "report",
+  "printTemplate.breadcrumbName.subDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Draft ${number} / Report",
+  "printTemplate.breadcrumbName.mergedDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Merged / Report"
 }
