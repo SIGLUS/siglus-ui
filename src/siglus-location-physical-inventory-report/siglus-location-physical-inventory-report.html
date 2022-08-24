@@ -1,4 +1,7 @@
 <div class="location-physical-container">
+    <div class="breadcrumb">
+        {{ vm.breadcrumb }}
+    </div>
     <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #bebebe;">
         <h2>
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
@@ -6,15 +9,15 @@
         <div></div>
     </div>
     
-    <section class="openlmis-table-container">
+    <section>
         <!-- SIGLUS-REFACTOR: starts here -->
         <table cellpadding="0" cellspacing="0">
             <thead>
             <tr>
-                <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
-                <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <th style="width: 60px;">{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+                <th style="width: 135px;">{{'stockPhysicalInventoryDraft.product' | message}}</th>
                 <!-- SIGLUS-REFACTOR: starts here -->
-                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th style="width: 243px;">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.location' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>

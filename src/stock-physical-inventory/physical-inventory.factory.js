@@ -207,7 +207,7 @@
                                 facilityId: physicalInventory.facilityId,
                                 lineItems: []
                             };
-                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            prepareLineItems(physicalInventory, summaries, draftToReturn, true);
                             draftToReturn.id = physicalInventory.id;
 
                             return draftToReturn;
@@ -308,7 +308,7 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function prepareLineItems(physicalInventory, summaries, draftToReturn) {
+        function prepareLineItems(physicalInventory, summaries, draftToReturn, isWithLocation) {
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -331,7 +331,7 @@
                 summary.programId = programId;
             });
             draftToReturn.summaries = summaries;
-            if (_.isEmpty(draftLineItems)) {
+            if (!isWithLocation && _.isEmpty(draftLineItems)) {
                 draftToReturn.lineItems = _.filter(stockCardLineItems, function(item) {
                     return item.stockCardId && !item.orderable.archived;
                 });

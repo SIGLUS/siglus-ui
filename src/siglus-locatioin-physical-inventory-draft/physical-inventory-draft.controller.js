@@ -600,7 +600,14 @@
             return lineItem.$errors.quantityInvalid;
         };
         vm.print = function() {
-            $window.open('/webapp/#!/locationManagement/physicalInventory/report', '_blank');
+            var PRINT_URL = $window.location.href.split('/?')[0]
+                + '/draft/report'
+                + '?'
+                + $window.location.href.split('/?')[1];
+            $window.open(
+                PRINT_URL,
+                '_blank'
+            );
         };
 
         // 校验form表单的Lot Code的地方;
@@ -620,6 +627,15 @@
                 lineItem.$errors.lotCodeInvalid = false;
             }
             return lineItem.$errors.lotCodeInvalid;
+        };
+
+        vm.validateLocation = function(lineItem) {
+            if (lineItem.locationCode === null && lineItem.area === null) {
+                lineItem.$errors.locationInvalid = true;
+            } else {
+                lineItem.$errors.locationInvalid = false;
+            }
+            return lineItem.$errors.locationInvalid;
         };
 
         vm.validExpirationDate = function(lineItem) {
@@ -676,6 +692,7 @@
                     }
                     anyError = vm.validateReasonFreeText(item) || anyError;
                     anyError = vm.validateQuantity(item) || anyError;
+                    anyError = vm.validateLocation(item) || anyError;
                 });
             return anyError;
         }
@@ -745,15 +762,16 @@
                     return r;
                 }, []);
 
-                var list = _.map(newList, function(item) {
-                    item[0].area = item[0].area ? item[0].area : null;
-                    item[0].locationCode = item[0].locationCode ? item[0].locationCode : null;
-                    item[0].areaList = areaList;
-                    item[0].locationList = locationList;
-                    return item;
+                _.forEach(newList, function(item) {
+                    _.forEach(item, function(itm) {
+                        itm.area = itm.area ? itm.area : null;
+                        itm.locationCode = itm.locationCode ? itm.locationCode : null;
+                        itm.areaList = areaList;
+                        itm.locationList = locationList;
+                    });
                 });
                 // SIGLUS-REFACTOR: starts here
-                var categories = $filter('siglusGroupByAllProductProgramProductCategory')(list);
+                var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
@@ -1026,6 +1044,7 @@
             refreshLotOptions();
             vm.validateLotCode(lineItem);
             vm.validExpirationDate(lineItem);
+            vm.validateLocation(lineItem);
             vm.updateProgress();
         });
 

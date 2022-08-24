@@ -353,6 +353,8 @@
                     stockAdjustments: item.stockAdjustments,
                     reasonFreeText: item.reasonFreeText,
                     stockCardId: item.stockCardId,
+                    area: item.area,
+                    locationCode: item.locationCode,
                     programId: item.programId
                 };
             });
