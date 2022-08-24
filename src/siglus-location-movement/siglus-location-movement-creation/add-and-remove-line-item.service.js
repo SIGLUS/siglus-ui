@@ -58,7 +58,7 @@
         function resetFirstRow(lineItem) {
             lineItem.lot = null;
             lineItem.location = null;
-            lineItem.quantity = null;
+            lineItem.quantity = 0;
             lineItem.isMainGroup = true;
             lineItem.moveTo = null;
             lineItem.moveToLocation = null;
@@ -99,7 +99,7 @@
                 isMainGroup: true,
                 location: null,
                 moveTo: null,
-                quantity: null
+                quantity: 0
             };
         };
 
@@ -116,7 +116,7 @@
                 location: null,
                 programId: _.get(orderable.programs, [0, 'programId'], ''),
                 moveTo: null,
-                quantity: null
+                quantity: 0
             };
         };
 
