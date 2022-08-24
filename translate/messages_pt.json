@@ -2448,5 +2448,7 @@
   "locationShipmentView.locationDuplicated": "The locations for issue Kit cannot be repeated, please enter a new one.",
   "locationShipmentView.addItem": "Adicionar Item",
   "locationMovement.gtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
-  "locationMovement.moveTo": "Mover para"
+  "locationMovement.moveTo": "Mover para",
+  "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered."
+
 }
