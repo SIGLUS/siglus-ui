@@ -133,10 +133,6 @@
                 .value();
         }
 
-        vm.orderableSelectionChanged = function() {
-
-        };
-
         vm.addProduct = function() {
             var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
@@ -253,7 +249,10 @@
                 vm.addedLineItems = _.filter(vm.addedLineItems, function(item) {
                     return !_.isEmpty(item);
                 });
-                searchList();
+                $stateParams.addedLineItems = vm.addedLineItems;
+                vm.displayItems = _.filter(vm.displayItems, function(item) {
+                    return !_.isEmpty(item);
+                });
             }
         };
 

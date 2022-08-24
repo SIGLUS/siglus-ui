@@ -31,11 +31,11 @@
             if (_.isEmpty(keyword)) {
                 result = addedLineItems;
             } else {
-                keyword = keyword.trim();
+                keyword = keyword.trim().toLowerCase();
                 result = _.map(addedLineItems, function(lineItems) {
                     var isMatched = _.some(lineItems, function(item) {
                         return _.some([item.productName, item.productCode], function(value) {
-                            return String(value).includes(keyword);
+                            return String(value.toLowerCase()).includes(keyword);
                         });
                     });
                     return isMatched ? lineItems : [];
