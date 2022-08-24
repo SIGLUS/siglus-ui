@@ -1,4 +1,4 @@
-<h2 ng-show="vm.facility">{{ 'stockIssue.title' | message: {'facility': vm.facility.name} }}</h2>
+<h2>{{vm.facility.code}} - {{vm.facility.name}} - Todos os produtos</h2>
 <section class="openlmis-table-container">
     <table>
         <caption ng-if="!vm.programs.length">{{'stockIssue.noProgramAvailable' | message}}

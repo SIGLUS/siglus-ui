@@ -228,7 +228,7 @@
             lineItem.$error.quantityError = isNumberEmpty ? 'openlmisForm.required' : '';
 
             if (!lineItem.$error.quantityError) {
-                validateQuantityGtSoh(lineItem, lineItems);
+                validateQuantityGtSoh(lineItems);
             }
 
         };
@@ -239,6 +239,7 @@
 
         vm.removeItem = function(lineItems, index) {
             addAndRemoveLineItemService.removeItem(lineItems, index);
+            validateQuantityGtSoh(lineItems);
             if (lineItems.length === 0) {
                 vm.addedLineItems = _.filter(vm.addedLineItems, function(item) {
                     return !_.isEmpty(item);
@@ -247,7 +248,7 @@
             }
         };
 
-        function validateQuantityGtSoh(lineItem, lineItems) {
+        function validateQuantityGtSoh(lineItems) {
             _.forEach(lineItems, function(item) {
                 var filterLineItems = _.filter(lineItems, function(data) {
                     return _.get(item, ['lot', 'lotCode']) === _.get(data.lot, 'lotCode')
@@ -257,12 +258,12 @@
                     return result + _.get(row, 'quantity', 0);
                 }, 0);
 
-                if (item.$error.quantityError === 'locationMovement.mtSoh') {
+                if (item.$error.quantityError === 'locationMovement.gtSoh') {
                     item.$error.quantityError = '';
                 }
 
                 if (totalQuantity > item.stockOnHand) {
-                    item.$error.quantityError = 'locationMovement.mtSoh';
+                    item.$error.quantityError = 'locationMovement.gtSoh';
                 }
             });
         }
@@ -330,7 +331,7 @@
                         return;
                     }
                     validateRequiredFields(lineItem);
-                    validateQuantityGtSoh(lineItem, lineItems);
+                    validateQuantityGtSoh(lineItems);
                 });
             });
             return _.every(vm.addedLineItems, function(lineItems) {
@@ -430,7 +431,7 @@
 
         vm.deleteDraft = function() {
             alertConfirmModalService.error(
-                'PhysicalInventoryDraftList.deleteDraftWarn',
+                'locationMovement.deleteWarning',
                 '',
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {

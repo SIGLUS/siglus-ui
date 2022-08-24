@@ -185,7 +185,7 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('locationMovement.mtSoh');
+            expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
         });
 
         it('should validate soh mt quantity for kit', function() {
@@ -206,10 +206,10 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('locationMovement.mtSoh');
+            expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
         });
 
-        it('should return locationMovement.mtSoh when has duplicated rows and total quantity exceeds stock on hand',
+        it('should return locationMovement.gtSoh when has duplicated rows and total quantity exceeds stock on hand',
             function() {
                 var lineItem = {
                     $error: {},
@@ -245,7 +245,7 @@ describe('SiglusLocationMovementCreationController', function() {
                 ];
                 vm.changeLot(lineItem, lineItems);
 
-                expect(lineItem.$error.quantityError).toEqual('locationMovement.mtSoh');
+                expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
             });
 
         it('should has not error when has duplicated rows and total quantity lt stock on hand',
@@ -346,10 +346,10 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('locationMovement.mtSoh');
+            expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
         });
 
-        it('should return locationMovement.mtSoh when has duplicated rows and total quantity exceeds stock on hand',
+        it('should return locationMovement.gtSoh when has duplicated rows and total quantity exceeds stock on hand',
             function() {
                 var lineItem = {
                     $error: {},
@@ -385,7 +385,7 @@ describe('SiglusLocationMovementCreationController', function() {
                 ];
                 vm.changeLot(lineItem, lineItems);
 
-                expect(lineItem.$error.quantityError).toEqual('locationMovement.mtSoh');
+                expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
             });
 
         it('should has not error when has duplicated rows and total quantity lt stock on hand',

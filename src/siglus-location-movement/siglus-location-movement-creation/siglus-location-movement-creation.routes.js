@@ -109,7 +109,6 @@
                     return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, orderableGroups);
                 },
                 displayItems: function($stateParams, siglusMovementFilterService, addedLineItems) {
-                    console.log(addedLineItems);
                     return siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems);
                 }
             }
