@@ -143,13 +143,14 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
             expect(lineItem.stockOnHand).toEqual(0);
         });
 
         it('should emit stock on hand  when selected lot and location', function() {
             var lineItem = {
-                $error: {},
+                $error: {
+                    quantityError: 'openlmisForm.required'
+                },
                 isKit: false,
                 lot: {
                     stockOnHand: 100
@@ -165,12 +166,15 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('openlmisForm.required');
+            expect(lineItem.$error.quantityError).toEqual('');
+            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should validate soh mt quantity', function() {
             var lineItem = {
-                $error: {},
+                $error: {
+                    quantityError: 'locationMovement.gtSoh'
+                },
                 isKit: false,
                 lot: {
                     stockOnHand: 100
@@ -186,12 +190,15 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
+            expect(lineItem.$error.quantityError).toEqual('');
+            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should validate soh mt quantity for kit', function() {
             var lineItem = {
-                $error: {},
+                $error: {
+                    quantityError: 'locationMovement.gtSoh'
+                },
                 isKit: true,
                 lot: {
                     stockOnHand: 100
@@ -207,7 +214,8 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
+            expect(lineItem.$error.quantityError).toEqual('');
+            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should return locationMovement.gtSoh when has duplicated rows and total quantity exceeds stock on hand',
@@ -252,7 +260,9 @@ describe('SiglusLocationMovementCreationController', function() {
         it('should has not error when has duplicated rows and total quantity lt stock on hand',
             function() {
                 var lineItem = {
-                    $error: {},
+                    $error: {
+                        quantityError: 'locationMovement.gtSoh'
+                    },
                     isKit: false,
                     lot: {
                         lotCode: 'LTE-202208-01',
@@ -285,7 +295,8 @@ describe('SiglusLocationMovementCreationController', function() {
                 ];
                 vm.changeLot(lineItem, lineItems);
 
-                expect(lineItem.$error.quantityError).toEqual('');
+                expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
+                expect(lineItem.quantity).toEqual(100);
             });
     });
 
@@ -310,7 +321,9 @@ describe('SiglusLocationMovementCreationController', function() {
 
         it('should emit stock on hand  when selected lot and location', function() {
             var lineItem = {
-                $error: {},
+                $error: {
+                    quantityError: 'openlmisForm.required'
+                },
                 isKit: false,
                 lot: {
                     stockOnHand: 100
@@ -326,7 +339,8 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('openlmisForm.required');
+            expect(lineItem.$error.quantityError).toEqual('');
+            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should validate soh mt quantity', function() {
@@ -347,7 +361,8 @@ describe('SiglusLocationMovementCreationController', function() {
             ];
             vm.changeLot(lineItem, lineItems);
 
-            expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
+            expect(lineItem.$error.quantityError).toEqual('');
+            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should return locationMovement.gtSoh when has duplicated rows and total quantity exceeds stock on hand',
@@ -392,7 +407,9 @@ describe('SiglusLocationMovementCreationController', function() {
         it('should has not error when has duplicated rows and total quantity lt stock on hand',
             function() {
                 var lineItem = {
-                    $error: {},
+                    $error: {
+                        quantityError: 'locationMovement.gtSoh'
+                    },
                     isKit: false,
                     lot: {
                         lotCode: 'LTE-202208-01',
@@ -425,7 +442,8 @@ describe('SiglusLocationMovementCreationController', function() {
                 ];
                 vm.changeLot(lineItem, lineItems);
 
-                expect(lineItem.$error.quantityError).toEqual('');
+                expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
+                expect(lineItem.quantity).toEqual(100);
             });
     });
 
