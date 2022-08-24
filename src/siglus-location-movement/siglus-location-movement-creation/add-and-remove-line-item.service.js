@@ -122,12 +122,10 @@
 
         function updateStockOnHand(locations, lineItem) {
             var stockOnHand = 0;
-            if (lineItem.lot && lineItem.location) {
+            if (lineItem.lotCode && lineItem.srcLocationCode) {
                 _.forEach(locations, function(loc) {
                     _.forEach(loc.lots, function(lot) {
-                        if (lineItem.lot && lineItem.location
-                          && lot.lotCode === lineItem.lot.lotCode
-                          && loc.locationCode === lineItem.location.locationCode) {
+                        if (lot.lotCode === lineItem.lotCode && loc.locationCode === lineItem.srcLocationCode) {
                             stockOnHand = lot.stockOnHand;
                         }
                     });
@@ -146,11 +144,12 @@
 
         function mapDataToDisplay(group, isMainGroup, locations, orderableGroups) {
             return _.map(group, function(item) {
+                var stockOnHand = updateStockOnHand(locations, item);
                 var lot = item.lotCode ? {
                     id: item.lotId,
                     lotCode: item.lotCode,
                     expirationDate: item.expirationDate,
-                    stockOnHand: updateStockOnHand(locations, item)
+                    stockOnHand: stockOnHand
                 } : null;
                 var location = item.srcLocationCode ? {
                     locationCode: item.srcLocationCode
@@ -166,6 +165,7 @@
                 return _.extend(baseInfo, {
                     $error: {},
                     lot: lot,
+                    stockOnHand: stockOnHand,
                     isMainGroup: isMainGroup,
                     programId: getProgramId(orderableGroups, item),
                     location: location,

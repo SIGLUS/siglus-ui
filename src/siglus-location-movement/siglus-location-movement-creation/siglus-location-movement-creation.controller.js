@@ -156,6 +156,7 @@
             $stateParams.draftInfo = draftInfo;
             $stateParams.user = user;
             $stateParams.facility = facility;
+            $stateParams.page = getPageNumber();
         }
 
         function searchList() {
@@ -242,9 +243,8 @@
                 vm.addedLineItems = _.filter(vm.addedLineItems, function(item) {
                     return !_.isEmpty(item);
                 });
-                filterOrderableGroups();
+                searchList();
             }
-            searchList();
         };
 
         function validateQuantityGtSoh(lineItem, lineItems) {
@@ -381,6 +381,15 @@
                 facilityId: facility.id,
                 userId: user.user_id
             };
+        }
+
+        function getPageNumber() {
+            var totalPages = Math.ceil(vm.displayItems.length / parseInt($stateParams.size));
+            var pageNumber = parseInt($stateParams.page || 0);
+            if (pageNumber > totalPages - 1) {
+                return totalPages > 0 ? totalPages - 1 : 0;
+            }
+            return pageNumber;
         }
 
         vm.save = function() {
