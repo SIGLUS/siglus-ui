@@ -2016,6 +2016,7 @@
   "stockPhysicalInventoryDraft.unaccountedQuantity": "Quantidade não contabilizada",
   "stockPhysicalInventoryDraft.VVMStatus": "Estado do Monitor do Frasco de Vacina",
   "stockPhysicalInventory.conflictProgram": "Termine o inventário físico de ${programName} primeiro.",
+  "stockPhysicalInventoryDraft.location": "Localização",
   "stockProductName.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
   "stockReasonsModal.addReasons": "Adicionar motivos",
   "stockReasonsModal.addReasonsToTheDifference": "Adicione motivos para a diferença de ${difference}.",
