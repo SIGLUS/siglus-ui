@@ -2445,8 +2445,8 @@
   "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?",
   "locationShipmentView.lotExpired": "This lot has expired, it cannot be fulfilled.",
   "locationShipmentView.notFirstToExpire": "This lot is not the first to expire.",
-  "locationShipmentView.locationDuplicated": "he locations for issue Kit cannot be repeated, please enter a new one.",
-  "locationShipmentView.addItem": "Add Item",
+  "locationShipmentView.locationDuplicated": "The locations for issue Kit cannot be repeated, please enter a new one.",
+  "locationShipmentView.addItem": "Adicionar Item",
   "locationMovement.mtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
-  "locationMovement.moveTo": "Move to"
+  "locationMovement.moveTo": "Mover para"
 }
