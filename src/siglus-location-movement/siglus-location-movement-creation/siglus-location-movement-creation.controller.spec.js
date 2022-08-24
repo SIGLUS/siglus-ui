@@ -68,6 +68,7 @@ describe('SiglusLocationMovementCreationController', function() {
         module('siglus-location-movement');
         module('siglus-alert-confirm-modal');
         module('siglus-location-movement-creation');
+        module('stock-confirm-discard');
 
         prepareInjector();
         prepareSpies();
