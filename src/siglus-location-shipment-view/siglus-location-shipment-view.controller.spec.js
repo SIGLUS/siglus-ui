@@ -368,14 +368,34 @@ describe('SiglusLocationShipmentViewController', function() {
                 location: null,
                 lot: {
                     lotCode: 'code1',
-                    expirationDate: '2023-04-25'
+                    expirationDate: '2098-04-25'
                 },
                 isMainGroup: true,
                 netContent: 1,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
+
+            var lineItem1 = {
+                $error: {
+                    lotCodeError: ''
+                },
+                $hint: {
+                    lotCodeHint: ''
+                },
+                isKit: false,
+                location: null,
+                lot: {
+                    lotCode: 'code2',
+                    expirationDate: '2096-04-25'
+                },
+                isMainGroup: true,
+                netContent: 1,
+                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
+            };
+
             var lineItems = [
-                lineItem
+                lineItem,
+                lineItem1
             ];
 
             vm.changeLot(lineItem, lineItems, 0);
