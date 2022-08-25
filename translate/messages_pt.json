@@ -115,7 +115,7 @@
   "adminFacilityView.locationManagement.instructionTitle": "Siga as etapas abaixo para definir a gestao de localização:",
   "adminFacilityView.locationManagement.viewLocation": "1. Ver informações de localização corrente CSV.",
   "adminFacilityView.locationManagement.editFile": "2. Editar o ficheiro CSV e exportar.",
-  "adminFacilityView.locationManagement.uploadMessages": "Se a exportaçao do arquivo for bem-sucedida, as alterações no sistema serão aceitas.\nSe a exportaçao do arquivo for bem-sucedida, as alterações no sistema serão aceitas.",
+  "adminFacilityView.locationManagement.uploadMessages": "Se a exportaçao do arquivo for bem-sucedida, as alterações no sistema serão aceitas.\nSe a exportaçao do arquivo não for bem-sucedido, os erros serão apresentados na página.",
   "adminFacilityView.locationManagement.enableLocation": "3. Activar gestao de localização",
   "adminFacilityView.locationManagement.closeSwitch": "Depois de desactivar a funcionalidade, o Deposito não poderá usar a gestão de localização no sistema. Deseja desactivá-lo?",
   "adminFacilityView.locationManagement.closeSwitchWithoutConfigure": "Configure primeiro a gestão de localização, por favor.",
@@ -2457,5 +2457,5 @@
   "locationMovement.label": "Mover produtos",
   "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
   "locationMovement.movement": "Movement",
-  "locationManagement.title":"Gestão de localização"
+  "locationManagement.title": "Gestão de localização"
 }
