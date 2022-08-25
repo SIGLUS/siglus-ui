@@ -2456,5 +2456,6 @@
   "printTemplate.breadcrumbName.mergedDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Merged / Report",
   "locationMovement.label": "Mover produtos",
   "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
-  "locationMovement.movement": "Movement"
+  "locationMovement.movement": "Movement",
+  "locationManagement.title":"Gestão de localização"
 }

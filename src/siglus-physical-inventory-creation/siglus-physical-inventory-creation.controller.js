@@ -42,10 +42,11 @@
         type
     ) {
         var vm = this;
+        var debounceTime = 50;
         vm.creationType = type;
         vm.showConflictStatus = false;
         vm.userInputSplitNum = null;
-        vm.confirm = confirm;
+        vm.confirm = _.throttle(confirm, debounceTime);
         vm.showError = false;
         vm.showRequired = false;
         facilityFactory.getUserHomeFacility().then(function(res) {
@@ -69,7 +70,7 @@
             return val > 0 && val <= 10;
         };
 
-        vm.confirm = function() {
+        function confirm() {
             if (vm.showConflictStatus) {
                 $state.reload();
                 modalDeferred.reject();
@@ -150,7 +151,7 @@
             } else {
                 vm.showError = true;
             }
-        };
+        }
 
         function catchError(err) {
             if (err.status === 400 && err.data.isBusinessError) {
