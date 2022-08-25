@@ -309,7 +309,7 @@
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
             } else if ((!_.isNull(lineItem.quantity)) && lineItem.quantity >= 0) {
                 lineItem.$errors.quantityInvalid = false;
-            }  else {
+            } else {
                 lineItem.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
             }
             return lineItem;
@@ -350,22 +350,21 @@
             }
             vm.selectedOrderableGroup =
                 siglusOrderableLotMapping.findSelectedOrderableGroupsByOrderableId(lineItem.orderableId);
-            // vm.lots = orderableGroupService.lotsOfWithNull(vm.selectedOrderableGroup);
-            // lineItem.lotOptions = angular.copy(vm.lots);
-            if (lineItem.reason.reasonType === REASON_TYPES.DEBIT) {
-                var hasStockLotCodes = _.chain(vm.selectedOrderableGroup)
-                    .filter(function(item) {
-                        return item.lot && item.stockOnHand > 0;
-                    })
-                    .map(function(item) {
-                        return item.lot.lotCode;
-                    })
-                    .value();
-                lineItem.lotOptions = _.filter(lineItem.lotOptions, function(item) {
-                    return item === null || _.contains(hasStockLotCodes, item.lotCode);
-                });
-            }
-            return lineItem;
+            siglusOrderableLotService.fillLotsToAddedItems([lineItem]).then(function() {
+                if (_.get(lineItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
+                    var hasStockLotCodes = _.chain(vm.selectedOrderableGroup)
+                        .filter(function(item) {
+                            return item.lot && item.stockOnHand > 0;
+                        })
+                        .map(function(item) {
+                            return item.lot.id;
+                        })
+                        .value();
+                    lineItem.lotOptions = _.filter(lineItem.lotOptions, function(item) {
+                        return item === null || _.contains(hasStockLotCodes, item.id);
+                    });
+                }
+            });
         };
 
         // SIGLUS-REFACTOR: starts here
@@ -401,7 +400,7 @@
          */
         vm.validateLot = function(lineItem) {
             if (lineItem.isKit) {
-                return ;
+                return;
             }
             if (lineItem.lotId) {
                 lineItem.$errors.lotCodeInvalid = false;
