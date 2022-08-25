@@ -374,7 +374,6 @@ describe('SiglusLocationShipmentViewController', function() {
                 netContent: 1,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
-
             var lineItem1 = {
                 $error: {
                     lotCodeError: ''
@@ -392,7 +391,6 @@ describe('SiglusLocationShipmentViewController', function() {
                 netContent: 1,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
-
             var lineItems = [
                 lineItem,
                 lineItem1
