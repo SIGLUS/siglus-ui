@@ -2437,8 +2437,8 @@
   "proofOfDeliveryView.fnm": "FNM",
   "stockInitialInventoryDraft.submitFailed": "Falha ao submeter inventário inicial",
   "printTemplate.title": "Relatório",
-  "printTemplate.breadcrumbName.subDraft": "Início / Gestão de localização / Inventário físico / Todos os produtos / Rascunho ${number} / Relatório",
-  "printTemplate.breadcrumbName.mergedDraft": "Início / Gestão de localização /Inventário físico / Todos os produtos / Mesclar / Relatório",
+  "printTemplate.breadcrumbName.subDraft": "Início / Gestão de localização / Inventário físico / Todos os produtos / Rascunho ${number}",
+  "printTemplate.breadcrumbName.mergedDraft": "Início / Gestão de localização /Inventário físico / Todos os produtos / Mesclar Rascunho",
 
   "adminFacilityView.enableLocation": "Location management enabled successfully!",
   "adminFacilityView.disabledLocation": "Location management disabled successfully!",

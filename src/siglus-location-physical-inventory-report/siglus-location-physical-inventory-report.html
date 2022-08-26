@@ -1,12 +1,12 @@
 <div class="location-physical-container">
-    <div class="breadcrumb">
+    <div class="breadcrumb" style="font-size: 13px;">
         {{ vm.breadcrumb }}
     </div>
-    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #bebebe;">
-        <h2>
+    <div>
+        <span style="font-size: 17px;">
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
-        </h2>
-        <div></div>
+        </span>
+        <span style="font-weight: 600;">(ctrl + p to print)</span>
     </div>
     
     <section>
@@ -25,7 +25,7 @@
                 <!-- SIGLUS-REFACTOR: ends here -->
             </tr>
             </thead>
-            <tbody>
+            <tbody ng-if="!vm.isMerged">
                 <tr ng-repeat="item in vm.draft">
                     <td>{{ item.productCode }}</td>
                     <td>{{ item.product }}</td>
@@ -34,6 +34,17 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                </tr>
+            </tbody>
+            <tbody ng-if="vm.isMerged">
+                <tr ng-repeat="item in vm.categories">
+                    <td>{{ item.orderable.productCode }}</td>
+                    <td>{{ item.orderable.fullProductName }}</td>
+                    <td>{{ item.lot.lotCode }}</td>
+                    <td>{{ item.lot.expirationDate }}</td>
+                    <td>{{ item.area }} - {{ item.locationCode }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.reasonFreeText }}</td>
                 </tr>
             </tbody>
         </table>
