@@ -47,12 +47,15 @@
 
         function onInit() {
             hideLayoutAndBreadcrumb();
-            $window.onunload = function() {
-                localStorageService.remove('physicalInventoryCategories');
-            };
+            // $window.onunload = function() {
+            //     localStorageService.remove('physicalInventoryCategories');
+            // };
+            vm.categories = _.flatten(Object.values(JSON.parse(draft)));
+            console.log(vm.categories);
             vm.draft = vm.getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
             vm.program = program;
+            vm.isMerged = $stateParams.isMerged === 'true';
             vm.breadcrumb = vm.getBreadcrumbName($stateParams);
         }
 

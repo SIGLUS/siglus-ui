@@ -1,8 +1,8 @@
-<div style="display: flex; justify-content: space-between; border-bottom: 1px solid #bebebe;">
+<div style="display: flex; justify-content: space-between; padding-bottom: 2px; border-bottom: 1px solid #bebebe;">
     <h2>
         {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
     </h2>
-    <button class="primary" ng-click="vm.print()">
+    <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" ng-click="vm.print()">
         Print
     </button>
 </div>
