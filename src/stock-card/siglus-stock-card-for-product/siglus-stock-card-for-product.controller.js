@@ -28,9 +28,11 @@
         .module('siglus-stock-card-for-product')
         .controller('StockCardForProductController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', '$stateParams', 'paginationService'];
+    controller.$inject = ['stockCard', '$state', 'stockCardService', 'confirmService', 'loadingModalService',
+        'notificationService', '$stateParams', 'paginationService'];
 
-    function controller(stockCard, $state, stockCardService, $stateParams, paginationService) {
+    function controller(stockCard, $state, stockCardService, confirmService, loadingModalService,
+                        notificationService, $stateParams, paginationService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -38,6 +40,8 @@
         vm.stockCard = [];
 
         vm.displayItems = [];
+
+        vm.canArchive = false;
 
         vm.print = function() {
             stockCardService.printByProduct(vm.stockCard.orderableId);
@@ -48,11 +52,29 @@
             return _.isEmpty(unit) ? vm.stockCard.productName : vm.stockCard.productName + ' - ' + unit;
         };
 
+        vm.archive = function() {
+            confirmService.confirmDestroy('stockCard.archiveProduct', 'stockCard.archive', 'stockCard.cancel')
+                .then(function() {
+                    loadingModalService.open();
+                    stockCardService.archiveProduct(stockCard.orderableId).then(function() {
+                        notificationService.success('stockCard.archiveProduct.success');
+                        $state.go('openlmis.stockmanagement.archivedProductSummaries', Object.assign($state.params, {
+                            program: stockCard.programId,
+                            page: 0
+                        }));
+                    }, function() {
+                        loadingModalService.close();
+                        notificationService.error('stockCard.archiveProduct.failure');
+                    });
+                });
+        };
+
         function onInit() {
             $state.current.label = stockCard.productName;
             vm.stockCard = stockCard;
             vm.displayItems = stockCard.lineItems;
             $stateParams.stockCard = vm.stockCard;
+            vm.canArchive = stockCard.stockOnHand === 0 && stockCard.lineItems[0].productSoh === 0 && !stockCard.inKit;
             paginationService.registerList(null, angular.copy($stateParams), function() {
                 return vm.displayItems;
             });

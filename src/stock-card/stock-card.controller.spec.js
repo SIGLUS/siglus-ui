@@ -155,23 +155,20 @@ describe('StockCardController', function() {
         });
 
         it('should set binCardName to fullProductName when is not archived', function() {
-            vm.isArchived = false;
             vm.$onInit();
 
             expect(vm.binCardName).toBe('Glibenclamide');
         });
 
         it('should set binCardName to program name when is archived', function() {
-            vm.isArchived = true;
-            $state.params.isViewProductCard = false;
+            $state.params.isArchivedProducts = true;
             vm.$onInit();
 
             expect(vm.binCardName).toBe('MTB');
         });
 
         it('should set binCardName to fullProductName when is archived and isViewProductCard', function() {
-            vm.isArchived = true;
-            $state.params.isViewProductCard = true;
+            $state.params.isArchivedProducts = false;
             vm.$onInit();
 
             expect(vm.binCardName).toBe('Glibenclamide');

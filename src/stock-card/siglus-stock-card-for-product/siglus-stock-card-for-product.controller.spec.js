@@ -37,8 +37,12 @@ describe('StockCardForProductController', function() {
                 productCode: '07A02',
                 facilityName: 'Centro de Saude de Macucune',
                 displayUnit: 'each',
+                inKit: false,
                 orderableId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
-                lineItems: []
+                stockOnHand: 0,
+                lineItems: [{
+                    productSoh: 0
+                }]
             }
         });
     }
