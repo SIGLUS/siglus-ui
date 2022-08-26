@@ -3,7 +3,7 @@
         {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
     </h2>
     <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" ng-click="vm.print()">
-        Print
+        {{ 'stockPhysicalInventoryDraft.print' | message }}
     </button>
 </div>
 

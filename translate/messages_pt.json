@@ -1977,6 +1977,7 @@
   "stockPhysicalInventory.selectProgram": "Selecionar o programa",
   "stockPhysicalInventory.search": "Pesquisar",
   "stockPhysicalInventoryDraft.actions": "Acções",
+  "stockPhysicalInventoryDraft.print": "Imprimir",
   "stockPhysicalInventoryDraft.addLot": "Adicionar lote",
   "stockPhysicalInventoryDraft.addProduct": "Adicionar produto",
   "stockPhysicalInventoryDraft.currentStock": "Stock actual",
