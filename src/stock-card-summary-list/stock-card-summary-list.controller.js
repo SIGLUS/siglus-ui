@@ -145,6 +145,13 @@
         }
 
         function viewProductStockCard(orderableId) {
+            if (!vm.isArchivedProducts) {
+                $state.go('openlmis.stockmanagement.stockCardSummaries.productCard', {
+                    orderable: orderableId,
+                    page: 0
+                });
+                return;
+            }
             $state.go(
                 vm.isArchivedProducts
                     ? 'openlmis.stockmanagement.archivedProductSummaries.singleCard'
