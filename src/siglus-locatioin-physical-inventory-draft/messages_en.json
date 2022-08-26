@@ -4,7 +4,7 @@
   "stockPhysicalInventoryDraft.addLot": "Add Lot",
   "stockPhysicalInventoryDraft.remove": "Remove",
   "stockPhysicalInventoryDraft.lotCodeTooLong": "Must be at most 30 characters lot code",
-  "stockPhysicalInventoryDraft.lotCodeDuplicate": "The lot code has been used, please enter a new lot",
+  "stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate": "The lot and location under the same product cannot be repeated, please enter a new one.",
   "stockPhysicalInventoryDraft.PositiveAdjustment": "Positive adjustment of ${diff} will be made",
   "stockPhysicalInventoryDraft.NegativeAdjustment": "Negative adjustment of ${diff} will be made",
   "stockPhysicalInventoryDraft.draftList": "Draft List",
@@ -18,5 +18,6 @@
   "stockPhysicalInventoryDraft.mergeDraft": "Merged Draft",
   "stockInitialInventory.goBack": "Back to previous",
   "stockInitialInventoryDraft.submitted": "Initial inventory has successfully been submitted",
-  "stockPhysicalInventoryDraft.location": "Location"
+  "stockPhysicalInventoryDraft.location": "Location",
+  "stockPhysicalInventoryDraft.required": "This field is required"
 }

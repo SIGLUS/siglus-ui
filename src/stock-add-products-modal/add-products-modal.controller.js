@@ -109,6 +109,8 @@
             }
             var selectedItem = vm.selectedOrderableGroup[0];
             selectedItem.lot = undefined;
+            // set stockCardId undefined
+            selectedItem.stockCardId = undefined;
             // SIGLUS-REFACTOR: ends here -->
 
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);

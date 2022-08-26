@@ -82,6 +82,10 @@
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
+            },
+            getSOH: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/locations')
             }
         });
         this.getDraft = getDraft;
@@ -99,7 +103,7 @@
         this.getLocationPhysicalInventorySubDraft = getLocationPhysicalInventorySubDraft;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
-
+        this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
         // SIGLUS-REFACTOR: ends here
 
@@ -125,6 +129,17 @@
                 .then(function(response) {
                     siglusStockEventService.formatResponse(response);
                     return response;
+                });
+        }
+
+        function getSohByLocation(ids) {
+            return locationResource.getSOH({
+                extraData: true,
+                orderableIds: ids
+            })
+                .$promise
+                .then(function(response) {
+                    return siglusStockEventService.formatResponse(response);
                 });
         }
 
@@ -365,8 +380,11 @@
             // SIGLUS-REFACTOR: ends here
         }
 
-        function submit(physicalInventory) {
-            var event = stockEventFactory.createFromPhysicalInventory(physicalInventory);
+        function submit(physicalInventory, withLocation) {
+            var event = stockEventFactory.createFromPhysicalInventory(physicalInventory, withLocation);
+            if (withLocation) {
+                return siglusStockEventService.locationSubmit(event);
+            }
             // SIGLUS-REFACTOR: starts here
             return siglusStockEventService.submit(event);
             // SIGLUS-REFACTOR: ends here

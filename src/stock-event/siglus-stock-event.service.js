@@ -28,8 +28,16 @@
             }
         });
 
+        var locationResource = $resource(stockmanagementUrlFactory('/api/siglusapi/stockEvents/location'), {}, {
+            save: {
+                method: 'POST',
+                transformRequest: formatPayload
+            }
+        });
+
         return {
             submit: submitStockEvent,
+            locationSubmit: locationSubmitStockEvent,
             formatPayload: formatPayload,
             formatResponse: formatResponse
         };
@@ -38,6 +46,14 @@
             var newDraft = _.omit(event, ['subDraftIds']);
             var subDraftIds = _.pick(event, ['subDraftIds']).subDraftIds;
             return resource.save({
+                subDraftIds: subDraftIds
+            }, newDraft).$promise;
+        }
+
+        function locationSubmitStockEvent(event) {
+            var newDraft = _.omit(event, ['subDraftIds']);
+            var subDraftIds = _.pick(event, ['subDraftIds']).subDraftIds;
+            return locationResource.save({
                 subDraftIds: subDraftIds
             }, newDraft).$promise;
         }

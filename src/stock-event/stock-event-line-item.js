@@ -49,7 +49,8 @@
          * @return {StockEventLineItem}            the Stock Event Line Item object
          */
         function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments,
-                                    reasonFreeText, lotCode, expirationDate, stockCardId, programId) {
+                                    reasonFreeText, lotCode, expirationDate, stockCardId,
+                                    programId, area, locationCode) {
             this.orderableId = orderableId;
             this.lotId = lotId;
             this.quantity = quantity;
@@ -62,6 +63,8 @@
             this.expirationDate = expirationDate;
             this.stockCardId = stockCardId;
             this.programId = programId;
+            this.area = area;
+            this.locationCode = locationCode;
             // SIGLUS-REFACTOR: ends here
         }
     }
