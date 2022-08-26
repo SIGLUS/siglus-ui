@@ -158,9 +158,10 @@ describe('StockCardSummaryListController', function() {
         it('should call state go with openlmis.stockmanagement.stockCardSummaries.singleCard', function() {
             vm.viewProductStockCard('orderable-id');
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+            vm.isArchivedProducts = false;
+
+            expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries.productCard', {
                 orderable: 'orderable-id',
-                isViewProductCard: true,
                 page: 0
             });
         });
