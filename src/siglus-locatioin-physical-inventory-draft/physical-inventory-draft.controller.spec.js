@@ -34,6 +34,7 @@ describe('LocationPhysicalInventoryDraftController', function() {
         module('siglus-alert-confirm-modal');
         // SIGLUS-REFACTOR: ends here
         module('stock-products');
+        module('stock-choose-date-modal');
         module('stock-orderable-group');
 
         subDraftIds = '';
@@ -320,7 +321,7 @@ describe('LocationPhysicalInventoryDraftController', function() {
 
         vm.submit();
 
-        expect(chooseDateModalService.show).toHaveBeenCalled();
+        expect(chooseDateModalService.show).not.toHaveBeenCalled();
     });
 
     describe('when submit pass validations', function() {
