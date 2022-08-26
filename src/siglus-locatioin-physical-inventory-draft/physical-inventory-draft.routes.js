@@ -71,7 +71,8 @@
                     physicalInventoryFactory,
                     physicalInventoryDataService,
                     $q,
-                    program
+                    program,
+                    physicalInventoryService
                 ) {
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
@@ -86,6 +87,12 @@
                             var flag = $stateParams.isMerged === 'true';
                             physicalInventoryFactory.getLocationPhysicalInventorySubDraft(id, flag)
                                 .then(function(draft) {
+                                    var orderableIds = _.map(draft.lineItems, function(item) {
+                                        return item.orderable.id;
+                                    });
+                                    if (orderableIds.length) {
+                                        physicalInventoryService.getSohByLocation(orderableIds);
+                                    }
                                     physicalInventoryDataService.setDraft(facility.id, draft);
                                     deferred.resolve();
                                 });

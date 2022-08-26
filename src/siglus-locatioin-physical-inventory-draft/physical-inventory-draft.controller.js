@@ -549,7 +549,7 @@
 
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                         summaries: []
-                    }))
+                    }), true)
                         .then(function() {
                             // rep logic
                             if (vm.isInitialInventory) {
@@ -619,7 +619,7 @@
                     lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
                 } else if (hasDuplicateLotCode(lineItem)) {
                     lineItem.$errors.lotCodeInvalid = messageService
-                        .get('stockPhysicalInventoryDraft.lotCodeDuplicate');
+                        .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
                 } else {
                     lineItem.$errors.lotCodeInvalid = false;
                 }
@@ -630,10 +630,16 @@
         };
 
         vm.validateLocation = function(lineItem) {
-            if (lineItem.locationCode === null && lineItem.area === null) {
-                lineItem.$errors.locationInvalid = true;
-            } else {
-                lineItem.$errors.locationInvalid = false;
+            if (Boolean(lineItem.area) * Boolean(lineItem.locationCode) === 0) {
+                lineItem.$errors.locationInvalid = messageService
+                    .get('stockPhysicalInventoryDraft.required');
+            }
+            if (hasDuplicateLotCode(lineItem)) {
+                lineItem.$errors.locationInvalid = messageService
+                    .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+            }
+            if (!hasDuplicateLotCode(lineItem) && lineItem.locationCode && lineItem.area) {
+                lineItem.$errors.locationInvalid = '';
             }
             return lineItem.$errors.locationInvalid;
         };
@@ -675,7 +681,7 @@
         }
 
         function hasDuplicateLotCode(lineItem) {
-            var allLots = getAllLotCode(lineItem.orderable.id);
+            var allLots = getAllLotCode(lineItem.orderable.id, lineItem.area, lineItem.locationCode);
             var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function(lot) {
                 return lot === lineItem.lot.lotCode.toUpperCase();
             }) : [];
@@ -697,10 +703,16 @@
             return anyError;
         }
 
-        function getAllLotCode(orderableId) {
+        function getAllLotCode(orderableId, area, locationCode) {
             var draftLots = [];
             _.each(draft.lineItems, function(item) {
-                if (item.orderable.id === orderableId && item.lot && item.lot.lotCode) {
+                if (
+                    item.orderable.id === orderableId
+                        && item.lot
+                        && item.lot.lotCode
+                        && item.area === area
+                        && item.locationCode === locationCode
+                ) {
                     draftLots.push(item.lot.lotCode.toUpperCase());
                 }
             });
@@ -787,10 +799,16 @@
                         label: item.locationCode
                     };
                 });
+                vm.validateLotCode(lineItem);
+                vm.validateLocation(lineItem);
             } else {
-                lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
-                    return item.locationCode === lineItem.locationCode;
-                }).area;
+                if (!lineItem.area) {
+                    lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
+                        return item.locationCode === lineItem.locationCode;
+                    }).area;
+                }
+                vm.validateLotCode(lineItem);
+                vm.validateLocation(lineItem);
             }
         };
 
@@ -1009,6 +1027,21 @@
         }
 
         function addLot(lineItem) {
+            var areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
+                return {
+                    code: item,
+                    label: item
+                };
+            });
+            var locationList = _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
+                r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
+                    return {
+                        code: _item.locationCode,
+                        label: _item.locationCode
+                    };
+                }));
+                return r;
+            }, []);
             var newLineItem = _.assign({}, angular.copy(lineItem), {
                 stockCardId: null,
                 displayLotMessage: undefined,
@@ -1020,7 +1053,11 @@
                 unaccountedQuantity: undefined,
                 $errors: {},
                 reasonFreeText: undefined,
-                id: null
+                id: null,
+                areaList: areaList,
+                locationList: locationList,
+                area: null,
+                locationCode: null
             });
             draft.lineItems.push(newLineItem);
             $stateParams.isAddProduct = true;

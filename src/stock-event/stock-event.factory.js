@@ -75,7 +75,9 @@
                         item.reasonFreeText,
                         item.lot ? item.lot.lotCode : null,
                         item.lot ? item.lot.expirationDate : null, item.stockCardId,
-                        item.programId
+                        item.programId,
+                        item.area,
+                        item.locationCode
                         // SIGLUS-REFACTOR: ends here
                     );
                 });
