@@ -1865,6 +1865,7 @@
   "stockCard.soh": "Stock existente",
   "stockCard.srcDstAndFreeText": "${name}: ${freeText}",
   "stockCard.to": "Saída para",
+  "stockCard.inventory": "Inventário",
   "stockCard.viewProductStockCard.failure": "Há problemas de cálculos, Por favor recarregue a página",
   "stockCardSummaryList.actions": "Acções",
   "stockCardSummaryList.archivedProduct": "Produtos Arquivados",

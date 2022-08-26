@@ -84,7 +84,7 @@
                             return orderable.id;
                         });
                         return SiglusLocationViewService.getOrderableLocationLotsInfo({
-                            orderablesId: orderableIds,
+                            orderableIds: orderableIds,
                             extraData: true
                         });
                     },
