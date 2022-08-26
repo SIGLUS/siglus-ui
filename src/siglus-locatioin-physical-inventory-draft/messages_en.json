@@ -19,5 +19,6 @@
   "stockInitialInventory.goBack": "Back to previous",
   "stockInitialInventoryDraft.submitted": "Initial inventory has successfully been submitted",
   "stockPhysicalInventoryDraft.location": "Location",
-  "stockPhysicalInventoryDraft.required": "This field is required"
+  "stockPhysicalInventoryDraft.required": "This field is required",
+  "stockPhysicalInventoryDraft.print": "Print"
 }
