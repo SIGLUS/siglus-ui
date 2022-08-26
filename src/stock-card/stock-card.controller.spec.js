@@ -72,7 +72,9 @@ describe('StockCardController', function() {
                     }
                 ],
                 // SIGLUS-REFACTOR: starts here
-                program: {}
+                program: {
+                    name: 'MTB'
+                }
             };
 
             $scope = {
@@ -133,7 +135,9 @@ describe('StockCardController', function() {
                     }
                 ],
                 // SIGLUS-REFACTOR: starts here
-                program: {}
+                program: {
+                    name: 'MTB'
+                }
                 // SIGLUS-REFACTOR: ends here
             };
         });
@@ -148,6 +152,29 @@ describe('StockCardController', function() {
             vm.$onInit();
 
             expect($state.current.label).toBe(stockCard.orderable.fullProductName);
+        });
+
+        it('should set binCardName to fullProductName when is not archived', function() {
+            vm.isArchived = false;
+            vm.$onInit();
+
+            expect(vm.binCardName).toBe('Glibenclamide');
+        });
+
+        it('should set binCardName to program name when is archived', function() {
+            vm.isArchived = true;
+            $state.params.isViewProductCard = false;
+            vm.$onInit();
+
+            expect(vm.binCardName).toBe('MTB');
+        });
+
+        it('should set binCardName to fullProductName when is archived and isViewProductCard', function() {
+            vm.isArchived = true;
+            $state.params.isViewProductCard = true;
+            vm.$onInit();
+
+            expect(vm.binCardName).toBe('Glibenclamide');
         });
     });
 

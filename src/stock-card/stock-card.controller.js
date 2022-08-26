@@ -131,9 +131,14 @@
             vm.stockCard = stockCard;
             vm.stockCard.lineItems = items;
             // SIGLUS-REFACTOR: starts here
-            vm.binCardName = $state.params.isViewProductCard
-                ? stockCard.orderable.fullProductName
-                : stockCard.program.name;
+            if (vm.isArchived) {
+                vm.binCardName = $state.params.isViewProductCard
+                    ? stockCard.orderable.fullProductName
+                    : stockCard.program.name;
+            } else {
+                vm.binCardName = stockCard.orderable.fullProductName;
+            }
+
             vm.isSOHCorrect = stockCard.lineItems[0].stockOnHand === stockCard.stockOnHand;
             vm.isArchived = stockCard.orderable.archived;
             vm.canArchive = !vm.isArchived && $state.params.isViewProductCard && stockCard.stockOnHand === 0
