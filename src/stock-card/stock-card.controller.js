@@ -130,8 +130,7 @@
 
             vm.stockCard = stockCard;
             vm.stockCard.lineItems = items;
-            // SIGLUS-REFACTOR: starts here
-            if (vm.isArchived) {
+            if ($state.params.isArchivedProducts) {
                 vm.binCardName = $state.params.isViewProductCard
                     ? stockCard.orderable.fullProductName
                     : stockCard.program.name;
