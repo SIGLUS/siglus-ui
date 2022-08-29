@@ -50,7 +50,7 @@
             // $window.onunload = function() {
             //     localStorageService.remove('physicalInventoryCategories');
             // };
-            vm.categories = _.flatten(Object.values(JSON.parse(draft)));
+            vm.categories = _.flatten(Object.values(JSON.parse(draft)), true);
             console.log(vm.categories);
             vm.draft = vm.getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
@@ -62,6 +62,28 @@
         var hideLayoutAndBreadcrumb = function() {
             document.getElementsByClassName('header')[0].style.display = 'none';
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        };
+
+        function isEmpty(value) {
+            return value === '' || value === undefined || value === null;
+        }
+
+        vm.calculate = function(lineItems, field) {
+            var allEmpty = _.every(lineItems, function(lineItem) {
+                return isEmpty(lineItem[field]);
+            });
+            if (allEmpty) {
+                return undefined;
+            }
+
+            return _.chain(lineItems).map(function(lineItem) {
+                return lineItem[field];
+            })
+                .compact()
+                .reduce(function(memo, num) {
+                    return parseInt(num) + memo;
+                }, 0)
+                .value();
         };
 
         vm.getBreadcrumbName = function(stateParams) {

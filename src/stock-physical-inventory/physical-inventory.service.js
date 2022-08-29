@@ -85,7 +85,8 @@
             },
             getSOH: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/locations')
+                url: stockmanagementUrlFactory('/api/siglusapi/locations'),
+                isArray: true
             }
         });
         this.getDraft = getDraft;
@@ -136,11 +137,7 @@
             return locationResource.getSOH({
                 extraData: true,
                 orderableIds: ids
-            })
-                .$promise
-                .then(function(response) {
-                    return siglusStockEventService.formatResponse(response);
-                });
+            }).$promise;
         }
 
         function validateConflictProgram(program, facility) {
