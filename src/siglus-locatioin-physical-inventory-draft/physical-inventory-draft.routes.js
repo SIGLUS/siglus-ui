@@ -87,11 +87,34 @@
                             var flag = $stateParams.isMerged === 'true';
                             physicalInventoryFactory.getLocationPhysicalInventorySubDraft(id, flag)
                                 .then(function(draft) {
-                                    var orderableIds = _.map(draft.lineItems, function(item) {
+                                    var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
                                         return item.orderable.id;
-                                    });
+                                    }));
                                     if (orderableIds.length) {
-                                        physicalInventoryService.getSohByLocation(orderableIds);
+                                        physicalInventoryService.getSohByLocation(orderableIds)
+                                            .then(function(lotsDataByLocation) {
+                                            // console.log('#### lotsDataByLocation', lotsDataByLocation);
+                                                var lotsDataByLocationMap = _.reduce(
+                                                    lotsDataByLocation,
+                                                    function(r, c) {
+                                                        r[c.locationCode] = c.lots;
+                                                        return r;
+                                                    }, {}
+                                                );
+                                                draft.lineItems = _.map(draft.lineItems, function(lineItem) {
+                                                    return angular.merge(lineItem, {
+                                                        stockOnHand: lotsDataByLocationMap[lineItem.locationCode] ?
+                                                            _.find(
+                                                                lotsDataByLocationMap[lineItem.locationCode],
+                                                                function(item) {
+                                                                    return item.lotCode === lineItem.lot.lotCode;
+                                                                }
+                                                            ).stockOnHand :
+                                                            ''
+                                                    });
+                                                });
+                                                console.log('draft --->>>', draft);
+                                            });
                                     }
                                     physicalInventoryDataService.setDraft(facility.id, draft);
                                     deferred.resolve();
@@ -99,6 +122,35 @@
                         } else {
                             physicalInventoryFactory.getInitialInventory(program.id, facility.id)
                                 .then(function(draft) {
+                                    var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
+                                        return item.orderable.id;
+                                    }));
+                                    if (orderableIds.length) {
+                                        physicalInventoryService.getSohByLocation(orderableIds)
+                                            .then(function(lotsDataByLocation) {
+                                            // console.log('#### lotsDataByLocation', lotsDataByLocation);
+                                                var lotsDataByLocationMap = _.reduce(
+                                                    lotsDataByLocation,
+                                                    function(r, c) {
+                                                        r[c.locationCode] = c.lots;
+                                                        return r;
+                                                    }, {}
+                                                );
+                                                draft.lineItems = _.map(draft.lineItems, function(lineItem) {
+                                                    return angular.merge(lineItem, {
+                                                        stockOnHand: lotsDataByLocationMap[lineItem.locationCode] ?
+                                                            _.find(
+                                                                lotsDataByLocationMap[lineItem.locationCode],
+                                                                function(item) {
+                                                                    return item.lotCode === lineItem.lot.lotCode;
+                                                                }
+                                                            ).stockOnHand :
+                                                            ''
+                                                    });
+                                                });
+                                                console.log('draft merged --->>>', draft);
+                                            });
+                                    }
                                     physicalInventoryDataService.setDraft(facility.id, draft);
                                     deferred.resolve();
                                 });

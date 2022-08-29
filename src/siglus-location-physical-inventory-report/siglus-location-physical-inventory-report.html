@@ -2,11 +2,11 @@
     <div class="breadcrumb" style="font-size: 13px;">
         {{ vm.breadcrumb }}
     </div>
-    <div>
-        <span style="font-size: 17px;">
+    <div style="display: flex; align-items: center;">
+        <span style="font-size: 18px;">
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }}
         </span>
-        <span style="font-weight: 600;">(ctrl + p to print)</span>
+        <span style="font-weight: 600; margin-left: 8px;">(ctrl + p to print)</span>
     </div>
     
     <section>
@@ -20,6 +20,7 @@
                 <th style="width: 243px;">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.location' | message}}</th>
+                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="!vm.isInitialInventory" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
                 <!-- SIGLUS-REFACTOR: ends here -->
@@ -34,17 +35,41 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                 </tr>
             </tbody>
-            <tbody ng-if="vm.isMerged">
-                <tr ng-repeat="item in vm.categories">
-                    <td>{{ item.orderable.productCode }}</td>
-                    <td>{{ item.orderable.fullProductName }}</td>
+            <tbody ng-repeat="groups in vm.categories" ng-if="groups.length > 1 && vm.isMerged">
+                <tr>
+                    <td>{{ groups[0].orderable.productCode }}</td>
+                    <td>{{ groups[0].orderable.fullProductName }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ vm.calculate(groups, 'stockOnHand') }}</td>
+                    <td>{{ vm.calculate(groups, 'quantity') }}</td>
+                    <td></td>
+                </tr>
+                <tr ng-repeat="item in groups">
+                    <td></td>
+                    <td></td>
                     <td>{{ item.lot.lotCode }}</td>
                     <td>{{ item.lot.expirationDate }}</td>
                     <td>{{ item.area }} - {{ item.locationCode }}</td>
+                    <td>{{ item.stockOnHand }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.reasonFreeText }}</td>
+                </tr>
+            </tbody>
+            <tbody ng-repeat="groups in vm.categories" ng-if="groups.length === 1 && vm.isMerged">
+                <tr>
+                    <td>{{ groups[0].orderable.productCode }}</td>
+                    <td>{{ groups[0].orderable.fullProductName }}</td>
+                    <td>{{ groups[0].lot.lotCode }}</td>
+                    <td>{{ groups[0].lot.expirationDate }}</td>
+                    <td>{{ groups[0].area }} - {{ groups[0].locationCode }}</td>
+                    <td></td>
+                    <td>{{ groups[0].quantity }}</td>
+                    <td>{{ groups[0].reasonFreeText }}</td>
                 </tr>
             </tbody>
         </table>
