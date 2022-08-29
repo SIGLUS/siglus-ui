@@ -167,7 +167,6 @@ describe('SiglusLocationMovementCreationController', function() {
             vm.changeLot(lineItem, lineItems);
 
             expect(lineItem.$error.quantityError).toEqual('');
-            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should validate soh mt quantity', function() {
@@ -191,7 +190,6 @@ describe('SiglusLocationMovementCreationController', function() {
             vm.changeLot(lineItem, lineItems);
 
             expect(lineItem.$error.quantityError).toEqual('');
-            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should validate soh mt quantity for kit', function() {
@@ -215,7 +213,6 @@ describe('SiglusLocationMovementCreationController', function() {
             vm.changeLot(lineItem, lineItems);
 
             expect(lineItem.$error.quantityError).toEqual('');
-            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should return locationMovement.gtSoh when has duplicated rows and total quantity exceeds stock on hand',
@@ -296,7 +293,6 @@ describe('SiglusLocationMovementCreationController', function() {
                 vm.changeLot(lineItem, lineItems);
 
                 expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
-                expect(lineItem.quantity).toEqual(100);
             });
     });
 
@@ -340,7 +336,6 @@ describe('SiglusLocationMovementCreationController', function() {
             vm.changeLot(lineItem, lineItems);
 
             expect(lineItem.$error.quantityError).toEqual('');
-            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should validate soh mt quantity', function() {
@@ -362,7 +357,6 @@ describe('SiglusLocationMovementCreationController', function() {
             vm.changeLot(lineItem, lineItems);
 
             expect(lineItem.$error.quantityError).toEqual('');
-            expect(lineItem.quantity).toEqual(100);
         });
 
         it('should return locationMovement.gtSoh when has duplicated rows and total quantity exceeds stock on hand',
@@ -443,7 +437,6 @@ describe('SiglusLocationMovementCreationController', function() {
                 vm.changeLot(lineItem, lineItems);
 
                 expect(lineItem.$error.quantityError).toEqual('locationMovement.gtSoh');
-                expect(lineItem.quantity).toEqual(100);
             });
     });
 
