@@ -262,7 +262,6 @@
          * @return {Array} result    search result
          */
         function search(keyword, lineItems) {
-            console.log('#### lineItems', lineItems);
             var result = lineItems;
             // var hasLot = _.any(lineItems, function(item) {
             //     return item.lot;
@@ -389,11 +388,11 @@
             // SIGLUS-REFACTOR: ends here
         }
 
-        function getLot(item, hasLot) {
-            return item.lot ?
-                item.lot.lotCode :
-                (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
-        }
+        // function getLot(item, hasLot) {
+        //     return item.lot ?
+        //         item.lot.lotCode :
+        //         (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
+        // }
 
         // SIGLUS-REFACTOR: starts here
         function getInitialDraft(program, facility) {

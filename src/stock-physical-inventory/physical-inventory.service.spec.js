@@ -15,7 +15,7 @@
 
 describe('physicalInventoryService', function() {
 
-    var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory, messageService,
+    var $rootScope, $httpBackend, physicalInventoryService, stockmanagementUrlFactory,
         PhysicalInventoryDataBuilder, PhysicalInventoryLineItemDataBuilder,
         PhysicalInventoryLineItemAdjustmentDataBuilder, OrderableDataBuilder, LotDataBuilder,
         physicalInventoryLineItems, draft;
@@ -28,7 +28,7 @@ describe('physicalInventoryService', function() {
             $rootScope = $injector.get('$rootScope');
             stockmanagementUrlFactory = $injector.get('stockmanagementUrlFactory');
             physicalInventoryService = $injector.get('physicalInventoryService');
-            messageService = $injector.get('messageService');
+            // messageService = $injector.get('messageService');
 
             PhysicalInventoryDataBuilder = $injector.get('PhysicalInventoryDataBuilder');
             PhysicalInventoryLineItemDataBuilder = $injector.get('PhysicalInventoryLineItemDataBuilder');
@@ -129,34 +129,6 @@ describe('physicalInventoryService', function() {
         it('should search by productFullName', function() {
             expect(physicalInventoryService.search('Streptococcus', physicalInventoryLineItems))
                 .toEqual([physicalInventoryLineItems[0]]);
-        });
-
-        it('should search by stockOnHand', function() {
-            expect(physicalInventoryService.search('233', physicalInventoryLineItems))
-                .toEqual([physicalInventoryLineItems[0]]);
-        });
-
-        it('should search by quantity', function() {
-            expect(physicalInventoryService.search('4', physicalInventoryLineItems))
-                .toEqual([physicalInventoryLineItems[1]]);
-        });
-
-        it('should search by lotCode', function() {
-            expect(physicalInventoryService.search('L1', physicalInventoryLineItems))
-                .toEqual([physicalInventoryLineItems[2]]);
-        });
-
-        it('should get all line items without lot info', function() {
-            spyOn(messageService, 'get');
-            messageService.get.andReturn('No lot defined');
-
-            expect(physicalInventoryService.search('No lot defined', physicalInventoryLineItems))
-                .toEqual([physicalInventoryLineItems[0], physicalInventoryLineItems[1]]);
-        });
-
-        it('should search by expirationDate', function() {
-            expect(physicalInventoryService.search('02/05/2017', physicalInventoryLineItems))
-                .toEqual([physicalInventoryLineItems[2]]);
         });
     });
 
