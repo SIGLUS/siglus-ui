@@ -184,9 +184,7 @@
         };
 
         function emitQuantityChange(lineItem, lineItems) {
-            if (lineItem.lot && lineItem.location) {
-                lineItem.stockOnHand = _.get(lineItem.lot, 'stockOnHand', 0);
-            } else if (lineItem.location && lineItem.isKit) {
+            if (lineItem.lot && lineItem.location || (lineItem.location && lineItem.isKit)) {
                 var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
                 lineItem.stockOnHand = _.get(map[lineItem.orderableId],
                     [lineItem.location.locationCode, 0, 'stockOnHand'], 0);
