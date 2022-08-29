@@ -262,25 +262,27 @@
          * @return {Array} result    search result
          */
         function search(keyword, lineItems) {
+            console.log('#### lineItems', lineItems);
             var result = lineItems;
-            var hasLot = _.any(lineItems, function(item) {
-                return item.lot;
-            });
+            // var hasLot = _.any(lineItems, function(item) {
+            //     return item.lot;
+            // });
 
             if (!_.isEmpty(keyword)) {
                 keyword = keyword.trim();
                 result = _.filter(lineItems, function(item) {
-                    var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
-                    var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
-                        item.quantity !== -1;
+                    // var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
+                    // var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
+                    //     item.quantity !== -1;
 
                     var searchableFields = [
-                        item.orderable.productCode, productNameFilter(item.orderable),
-                        hasStockOnHand ? item.stockOnHand.toString() : '',
-                        hasQuantity ? item.quantity.toString() : '',
-                        getLot(item, hasLot),
+                        item.orderable.productCode,
+                        productNameFilter(item.orderable)
+                        // hasStockOnHand ? item.stockOnHand.toString() : '',
+                        // hasQuantity ? item.quantity.toString() : '',
+                        // getLot(item, hasLot),
                         // SIGLUS-REFACTOR: starts here
-                        item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
+                        // item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
                         // SIGLUS-REFACTOR: ends here
                     ];
                     return _.any(searchableFields, function(field) {
