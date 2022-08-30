@@ -310,7 +310,6 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.doCancelFilter = function() {
-            console.log('执行了!', $stateParams.keyword);
             if ($stateParams.keyword) {
                 vm.keyword = null;
                 $stateParams.keyword = null;
@@ -790,11 +789,9 @@
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
             }, true);
-            console.log('#### vm', vm);
         }
 
         vm.onSelectChange = function(type, lineItem) {
-            // console.log(type, lineItem);
             if (type === 'area') {
                 lineItem.locationCode = null;
                 lineItem.locationList = lineItem.area ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
