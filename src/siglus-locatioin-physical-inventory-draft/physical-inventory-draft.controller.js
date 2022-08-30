@@ -792,7 +792,6 @@
         }
 
         vm.onSelectChange = function(type, lineItem) {
-            console.log(type, lineItem);
             if (type === 'area') {
                 lineItem.locationCode = null;
                 lineItem.locationList = lineItem.area ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
@@ -833,20 +832,21 @@
                         label: lineItem.area
                     }];
                 } else {
-                    lineItem.locationList =  lineItem.area ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
-                        return {
-                            code: item.locationCode,
-                            label: item.locationCode
-                        };
-                    }) : _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
-                        r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
+                    lineItem.locationList =  lineItem.area
+                        ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
                             return {
-                                code: _item.locationCode,
-                                label: _item.locationCode
+                                code: item.locationCode,
+                                label: item.locationCode
                             };
-                        }));
-                        return r;
-                    }, []);
+                        }) : _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
+                            r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
+                                return {
+                                    code: _item.locationCode,
+                                    label: _item.locationCode
+                                };
+                            }));
+                            return r;
+                        }, []);
                     lineItem.areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
                         return {
                             code: item,
@@ -854,7 +854,6 @@
                         };
                     });
                 }
-                console.log('#### lineItem', lineItem);
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             }
