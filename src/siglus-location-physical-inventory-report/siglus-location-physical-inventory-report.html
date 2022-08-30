@@ -20,7 +20,7 @@
                 <th style="width: 243px;">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.location' | message}}</th>
-                <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
+                <th ng-if="vm.isMerged" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th ng-if="!vm.isInitialInventory" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
                 <!-- SIGLUS-REFACTOR: ends here -->
@@ -35,7 +35,6 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                 </tr>
             </tbody>
             <tbody ng-repeat="groups in vm.categories" ng-if="groups.length > 1 && vm.isMerged">
@@ -45,7 +44,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ vm.calculate(groups, 'stockOnHand') }}</td>
+                    <td ng-if="vm.isMerged">{{ vm.calculate(groups, 'stockOnHand') }}</td>
                     <td>{{ vm.calculate(groups, 'quantity') }}</td>
                     <td></td>
                 </tr>
@@ -55,7 +54,7 @@
                     <td>{{ item.lot.lotCode }}</td>
                     <td>{{ item.lot.expirationDate }}</td>
                     <td>{{ item.area }} - {{ item.locationCode }}</td>
-                    <td>{{ item.stockOnHand }}</td>
+                    <td ng-if="vm.isMerged">{{ item.stockOnHand }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.reasonFreeText }}</td>
                 </tr>
@@ -67,7 +66,7 @@
                     <td>{{ groups[0].lot.lotCode }}</td>
                     <td>{{ groups[0].lot.expirationDate }}</td>
                     <td>{{ groups[0].area }} - {{ groups[0].locationCode }}</td>
-                    <td></td>
+                    <td>{{ groups[0].stockOnHand }}</td>
                     <td>{{ groups[0].quantity }}</td>
                     <td>{{ groups[0].reasonFreeText }}</td>
                 </tr>
