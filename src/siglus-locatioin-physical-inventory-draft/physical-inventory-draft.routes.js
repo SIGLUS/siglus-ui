@@ -129,7 +129,6 @@
                                     if (orderableIds.length) {
                                         physicalInventoryService.getSohByLocation(orderableIds)
                                             .then(function(lotsDataByLocation) {
-                                                console.log('#### lotsDataByLocation', lotsDataByLocation);
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
@@ -137,7 +136,6 @@
                                                         return r;
                                                     }, {}
                                                 );
-                                                // console.log('000000', draft);
                                                 draft.lineItems = _.map(draft.lineItems, function(lineItem) {
                                                     var tempSoh = _.get(_.find(
                                                         lotsDataByLocationMap[lineItem.locationCode],
@@ -151,7 +149,6 @@
                                                             ''
                                                     });
                                                 });
-                                                console.log('111111', draft);
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();
                                             });
