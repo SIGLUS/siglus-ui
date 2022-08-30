@@ -792,6 +792,7 @@
         }
 
         vm.onSelectChange = function(type, lineItem) {
+            console.log(type, lineItem);
             if (type === 'area') {
                 lineItem.locationCode = null;
                 lineItem.locationList = lineItem.area ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
@@ -811,11 +812,9 @@
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             } else {
-                if (!lineItem.area) {
-                    lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
-                        return item.locationCode === lineItem.locationCode;
-                    }).area;
-                }
+                lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
+                    return item.locationCode === lineItem.locationCode;
+                }).area;
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             }
