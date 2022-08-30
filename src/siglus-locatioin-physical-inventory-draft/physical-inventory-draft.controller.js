@@ -809,12 +809,52 @@
                     }));
                     return r;
                 }, []);
+                lineItem.areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
+                    return {
+                        code: item,
+                        label: item
+                    };
+                });
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             } else {
-                lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
-                    return item.locationCode === lineItem.locationCode;
-                }).area;
+                if (lineItem.locationCode) {
+                    lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
+                        return item.locationCode === lineItem.locationCode;
+                    }).area;
+                    lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
+                        return {
+                            code: item.locationCode,
+                            label: item.locationCode
+                        };
+                    });
+                    lineItem.areaList = [{
+                        code: lineItem.area,
+                        label: lineItem.area
+                    }];
+                } else {
+                    lineItem.locationList =  lineItem.area ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
+                        return {
+                            code: item.locationCode,
+                            label: item.locationCode
+                        };
+                    }) : _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
+                        r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
+                            return {
+                                code: _item.locationCode,
+                                label: _item.locationCode
+                            };
+                        }));
+                        return r;
+                    }, []);
+                    lineItem.areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
+                        return {
+                            code: item,
+                            label: item
+                        };
+                    });
+                }
+                console.log('#### lineItem', lineItem);
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             }
