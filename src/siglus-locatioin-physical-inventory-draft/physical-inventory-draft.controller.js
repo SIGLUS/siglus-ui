@@ -799,7 +799,15 @@
                         code: item.locationCode,
                         label: item.locationCode
                     };
-                }) : lineItem.locationList;
+                }) : _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
+                    r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
+                        return {
+                            code: _item.locationCode,
+                            label: _item.locationCode
+                        };
+                    }));
+                    return r;
+                }, []);
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             } else {
