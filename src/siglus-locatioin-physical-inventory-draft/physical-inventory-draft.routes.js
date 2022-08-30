@@ -101,14 +101,15 @@
                                                     }, {}
                                                 );
                                                 draft.lineItems = _.map(draft.lineItems, function(lineItem) {
+                                                    var tempSoh = _.get(_.find(
+                                                        lotsDataByLocationMap[lineItem.locationCode],
+                                                        function(item) {
+                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                        }
+                                                    ), 'stockOnHand', '');
                                                     return angular.merge(lineItem, {
                                                         stockOnHand: lotsDataByLocationMap[lineItem.locationCode] ?
-                                                            _.find(
-                                                                lotsDataByLocationMap[lineItem.locationCode],
-                                                                function(item) {
-                                                                    return item.lotCode === lineItem.lot.lotCode;
-                                                                }
-                                                            ).stockOnHand :
+                                                            tempSoh :
                                                             ''
                                                     });
                                                 });
