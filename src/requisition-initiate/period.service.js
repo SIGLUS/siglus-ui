@@ -75,6 +75,12 @@
                             'requisitionInitiate.programNotSupported.message'
                         );
                     }
+                    if (data.messageKey === 'requisition.error.validation.noFirstStockMovement') {
+                        alertService.error('requisitionInitiate.noFirstStockMovement');
+                    }
+                    if (data.messageKey === 'requisition.error.validation.noReportTypeStartDate') {
+                        alertService.error('requisitionInitiate.noReportTypeStartDate');
+                    }
                 }
                 $q.reject(response);
             });
