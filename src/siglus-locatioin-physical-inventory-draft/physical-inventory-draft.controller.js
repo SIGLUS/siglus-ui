@@ -310,6 +310,7 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.doCancelFilter = function() {
+            console.log('执行了!', $stateParams.keyword);
             if ($stateParams.keyword) {
                 vm.keyword = null;
                 $stateParams.keyword = null;
@@ -527,10 +528,10 @@
         var submit = function() {
             if (validate()) {
                 // SIGLUS-REFACTOR: starts here
-                if ($stateParams.keyword) {
-                    $stateParams.keyword = null;
-                    // reload($state.current.name);
-                }
+                // if ($stateParams.keyword) {
+                //     $stateParams.keyword = null;
+                //     // reload($state.current.name);
+                // }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
@@ -789,17 +790,19 @@
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
             }, true);
+            console.log('#### vm', vm);
         }
 
         vm.onSelectChange = function(type, lineItem) {
+            // console.log(type, lineItem);
             if (type === 'area') {
                 lineItem.locationCode = null;
-                lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
+                lineItem.locationList = lineItem.area ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
                     return {
                         code: item.locationCode,
                         label: item.locationCode
                     };
-                });
+                }) : lineItem.locationList;
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             } else {

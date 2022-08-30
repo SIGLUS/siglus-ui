@@ -93,7 +93,6 @@
                                     if (orderableIds.length) {
                                         physicalInventoryService.getSohByLocation(orderableIds)
                                             .then(function(lotsDataByLocation) {
-                                            // console.log('#### lotsDataByLocation', lotsDataByLocation);
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
@@ -113,11 +112,13 @@
                                                             ''
                                                     });
                                                 });
-                                                console.log('draft --->>>', draft);
+                                                physicalInventoryDataService.setDraft(facility.id, draft);
+                                                deferred.resolve();
                                             });
+                                    } else {
+                                        physicalInventoryDataService.setDraft(facility.id, draft);
+                                        deferred.resolve();
                                     }
-                                    physicalInventoryDataService.setDraft(facility.id, draft);
-                                    deferred.resolve();
                                 });
                         } else {
                             physicalInventoryFactory.getInitialInventory(program.id, facility.id)
@@ -128,7 +129,7 @@
                                     if (orderableIds.length) {
                                         physicalInventoryService.getSohByLocation(orderableIds)
                                             .then(function(lotsDataByLocation) {
-                                            // console.log('#### lotsDataByLocation', lotsDataByLocation);
+                                                console.log('#### lotsDataByLocation', lotsDataByLocation);
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
@@ -136,23 +137,28 @@
                                                         return r;
                                                     }, {}
                                                 );
+                                                // console.log('000000', draft);
                                                 draft.lineItems = _.map(draft.lineItems, function(lineItem) {
+                                                    var tempSoh = _.get(_.find(
+                                                        lotsDataByLocationMap[lineItem.locationCode],
+                                                        function(item) {
+                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                        }
+                                                    ), 'stockOnHand', '');
                                                     return angular.merge(lineItem, {
                                                         stockOnHand: lotsDataByLocationMap[lineItem.locationCode] ?
-                                                            _.find(
-                                                                lotsDataByLocationMap[lineItem.locationCode],
-                                                                function(item) {
-                                                                    return item.lotCode === lineItem.lot.lotCode;
-                                                                }
-                                                            ).stockOnHand :
+                                                            tempSoh :
                                                             ''
                                                     });
                                                 });
-                                                console.log('draft merged --->>>', draft);
+                                                console.log('111111', draft);
+                                                physicalInventoryDataService.setDraft(facility.id, draft);
+                                                deferred.resolve();
                                             });
+                                    } else {
+                                        physicalInventoryDataService.setDraft(facility.id, draft);
+                                        deferred.resolve();
                                     }
-                                    physicalInventoryDataService.setDraft(facility.id, draft);
-                                    deferred.resolve();
                                 });
                         }
                     } else {

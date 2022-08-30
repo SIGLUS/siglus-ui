@@ -51,7 +51,6 @@
             //     localStorageService.remove('physicalInventoryCategories');
             // };
             vm.categories = _.flatten(Object.values(JSON.parse(draft)), true);
-            console.log(vm.categories);
             vm.draft = vm.getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
             vm.program = program;

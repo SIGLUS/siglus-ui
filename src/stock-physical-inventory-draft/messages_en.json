@@ -2,6 +2,7 @@
   "stockPhysicalInventoryDraft.reasonComments": "Comments",
   "stockPhysicalInventoryDraft.actions": "Actions",
   "stockPhysicalInventoryDraft.addLot": "Add Lot",
+  "stockPhysicalInventoryDraft.addItem": "Add Item",
   "stockPhysicalInventoryDraft.remove": "Remove",
   "stockPhysicalInventoryDraft.lotCodeTooLong": "Must be at most 30 characters lot code",
   "stockPhysicalInventoryDraft.lotCodeDuplicate": "The lot code has been used, please enter a new lot",
