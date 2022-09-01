@@ -64,8 +64,9 @@ describe('SiglusLocationMovementCreationController', function() {
 
     beforeEach(function() {
 
-        module('openlmis-table-form');
+        module('siglus-location-common');
         module('siglus-location-movement');
+        module('openlmis-table-form');
         module('siglus-alert-confirm-modal');
         module('siglus-location-movement-creation');
         module('stock-confirm-discard');

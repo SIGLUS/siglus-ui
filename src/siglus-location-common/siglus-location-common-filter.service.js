@@ -18,14 +18,14 @@
     'use strict';
 
     angular
-        .module('siglus-location-movement-creation')
-        .service('siglusMovementFilterService', siglusMovementFilterService);
+        .module('siglus-location-common')
+        .service('siglusLocationCommonFilterService', siglusLocationCommonFilterService);
 
-    siglusMovementFilterService.inject = [];
+    siglusLocationCommonFilterService.inject = [];
 
-    function siglusMovementFilterService() {
+    function siglusLocationCommonFilterService() {
 
-        this.filterMovementList = function(keyword, addedLineItems) {
+        this.filterList = function(keyword, addedLineItems) {
             var result = [];
 
             if (_.isEmpty(keyword)) {

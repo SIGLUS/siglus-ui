@@ -1,0 +1,82 @@
+<header>
+    <h2>
+        {{'sohLocation.binCardForLocationLevel' | message: {'name': vm.stockCard.productName} }}
+    </h2>
+    <button class="primary" ng-click="vm.print()">{{'stockCard.print' | message}}</button>
+</header>
+
+<aside class="stock-card-info">
+    <div class="product-name-header">
+        <span>{{vm.getProductName()}}</span>
+    </div>
+    <ul>
+        <li>
+            <strong>{{'stockCard.productCode'|message}}</strong>
+            {{vm.stockCard.productCode}}
+        </li>
+        <li>
+            <strong>{{'stockCard.facilityName' | message}}</strong>
+            {{vm.stockCard.facilityName}}
+        </li>
+        <li>
+            <strong>{{'stockCard.program' | message}}</strong>
+            {{vm.stockCard.program}}
+        </li>
+        <li class="text-align-right">
+            <strong>{{'stockCard.soh' | message}}</strong>
+            {{vm.stockCard.stockOnHand}}
+        </li>
+        <li ng-if="vm.stockCard.lot">
+            <strong>{{'stockCard.lot' | message}}</strong>
+            {{vm.stockCard.lotCode}}
+        </li>
+        <li ng-if="vm.stockCard.lot">
+            <strong>{{'stockCard.expiryDate' | message}}</strong>
+            {{vm.stockCard.expirationDate | openlmisDate}}
+        </li>
+        <li style="width: 224px;">
+            <strong>{{'stockPhysicalInventoryDraft.location' | message}}</strong>
+            {{vm.stockCard.locationCode}}
+        </li>
+    </ul>
+</aside>
+
+<section class="openlmis-table-container">
+    <table>
+        <thead>
+        <tr>
+            <th>{{'stockCard.date' | message}}</th>
+            <th>{{'stockCard.from' | message}}</th>
+            <th>{{'stockCard.to' | message}}</th>
+            <th>{{'stockCard.reason' | message}}</th>
+            <th>{{'stockCard.adjustment' | message}}</th>
+            <th>{{'stockCard.soh' | message}}</th>
+            <th>{{'stockCard.documentNumber' | message}}</th>
+            <th>{{'stockCard.signature' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="lineItem in vm.displayedLineItems track by $index">
+            <td>{{lineItem.occurredDate | openlmisDate}}</td>
+            <td>
+                {{lineItem.source}}
+            </td>
+            <td>
+                {{lineItem.destination}}
+            </td>
+            <td>
+                {{ lineItem.adjustment}}
+            </td>
+            <td class="text-align-right">{{lineItem.quantity}}</td>
+            <td class="text-align-right">{{lineItem.soh}}</td>
+            <td>{{lineItem.documentNumber}}</td>
+            <td>{{lineItem.signature}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <openlmis-pagination
+            list="vm.stockCard.lineItems"
+            paged-list="vm.displayedLineItems">
+    </openlmis-pagination>
+</section>
