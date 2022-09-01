@@ -98,7 +98,7 @@
         }
 
         function getPageNumber() {
-            var items = siglusLocationCommonFilterService.filterMovementList(vm.keyword, stockCardLineItems);
+            var items = siglusLocationCommonFilterService.filterList(vm.keyword, stockCardLineItems);
             var totalPages = Math.ceil(items.length / parseInt($stateParams.pageSize));
             var pageNumber = parseInt($stateParams.pageNumber || 0);
             if (pageNumber > totalPages - 1) {

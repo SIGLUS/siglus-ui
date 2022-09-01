@@ -25,7 +25,7 @@
 
     function siglusLocationCommonFilterService() {
 
-        this.filterMovementList = function(keyword, addedLineItems) {
+        this.filterList = function(keyword, addedLineItems) {
             var result = [];
 
             if (_.isEmpty(keyword)) {

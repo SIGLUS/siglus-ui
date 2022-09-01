@@ -108,8 +108,8 @@
 
                     return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, orderableGroups);
                 },
-                displayItems: function($stateParams, siglusMovementFilterService, addedLineItems) {
-                    return siglusMovementFilterService.filterMovementList($stateParams.keyword || '', addedLineItems);
+                displayItems: function($stateParams, siglusLocationCommonFilterService, addedLineItems) {
+                    return siglusLocationCommonFilterService.filterList($stateParams.keyword || '', addedLineItems);
                 }
             }
         });

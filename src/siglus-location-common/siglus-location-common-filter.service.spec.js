@@ -13,19 +13,18 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('siglusMovementFilterService', function() {
+describe('siglusLocationCommonFilterService', function() {
 
-    var siglusMovementFilterService;
+    var siglusLocationCommonFilterService;
 
     function prepareInjector() {
         inject(function($injector) {
-            siglusMovementFilterService = $injector.get('siglusMovementFilterService');
+            siglusLocationCommonFilterService = $injector.get('siglusLocationCommonFilterService');
         });
     }
 
     beforeEach(function() {
-        module('siglus-location-movement');
-
+        module('siglus-location-common');
         prepareInjector();
     });
 
@@ -56,7 +55,7 @@ describe('siglusMovementFilterService', function() {
                 kitItem
             ];
 
-            expect(siglusMovementFilterService.filterMovementList('KIT AL/APE', addedLineItems)).toEqual([kitItem]);
+            expect(siglusLocationCommonFilterService.filterList('KIT AL/APE', addedLineItems)).toEqual([kitItem]);
         });
 
         it('should return origin addedLineItems when keyword is empty', function() {
@@ -85,7 +84,7 @@ describe('siglusMovementFilterService', function() {
                 kitItem
             ];
 
-            expect(siglusMovementFilterService.filterMovementList('', addedLineItems)).toEqual(addedLineItems);
+            expect(siglusLocationCommonFilterService.filterList('', addedLineItems)).toEqual(addedLineItems);
         });
 
         it('should return empty array when keyword  not match items', function() {
@@ -114,7 +113,7 @@ describe('siglusMovementFilterService', function() {
                 kitItem
             ];
 
-            expect(siglusMovementFilterService.filterMovementList('ac2632', addedLineItems)).toEqual([]);
+            expect(siglusLocationCommonFilterService.filterList('ac2632', addedLineItems)).toEqual([]);
         });
 
     });
