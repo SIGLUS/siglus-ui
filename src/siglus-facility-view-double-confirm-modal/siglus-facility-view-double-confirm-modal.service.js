@@ -19,20 +19,22 @@
 
     /**
    * @ngdoc service
-   * @name siglus-alert-confirm-modal.alertConfirmModalService
+   * @name siglus-double-confirm-modal.alertConfirmModalService
    *
    * @description
    * Service allows to display alert modal with custom message.
    */
     angular
-        .module('siglus-alert-confirm-modal')
-        .service('alertConfirmModalService', alertConfirmModalService);
+        .module('siglus-facility-view-double-confirm-modal')
+        .service('siglusFacilityViewDoubleConfirmModalService',
+            siglusFacilityViewDoubleConfirmModalService);
 
-    alertConfirmModalService.$inject = [
+    siglusFacilityViewDoubleConfirmModalService.$inject = [
         '$q', 'openlmisModalService'
     ];
 
-    function alertConfirmModalService($q, openlmisModalService) {
+    function siglusFacilityViewDoubleConfirmModalService($q,
+                                                         openlmisModalService) {
 
         var modal;
 
@@ -67,9 +69,9 @@
             }
 
             modal = openlmisModalService.createDialog({
-                controller: 'alertConfirmModalController',
+                controller: 'doubleConfirmModalController',
                 controllerAs: 'vm',
-                templateUrl: 'siglus-alert-confirm-modal/siglus-alert-confirm-modal.html',
+                templateUrl: 'siglus-facility-view-double-confirm-modal/siglus-facility-view-double-confirm-modal.html',
                 show: true,
                 resolve: {
                     alertClass: function() {

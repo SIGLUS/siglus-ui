@@ -217,21 +217,21 @@ describe('FacilityViewController', function() {
             );
         });
 
-        it('should show error notification if upload failed', function() {
-            this.vm.file = this.file;
-            this.deferred.reject();
+        // it('should show error notification if upload failed', function() {
+        //     this.vm.file = this.file;
+        //     this.deferred.reject();
+        //
+        //     this.vm.upload();
+        //     this.$rootScope.$apply();
 
-            this.vm.upload();
-            this.$rootScope.$apply();
+        // expect(this.locationManagementService.upload).toHaveBeenCalledWith(
+        //     this.file
+        // );
 
-            // expect(this.locationManagementService.upload).toHaveBeenCalledWith(
-            //     this.file
-            // );
-
-            expect(this.notificationService.error).toHaveBeenCalledWith(
-                'adminFacilityView.uploadFailed'
-            );
-        });
+        // expect(this.notificationService.error).toHaveBeenCalledWith(
+        //     'adminFacilityView.uploadFailed'
+        // );
+        // });
 
         it('should show error notification if file is not selected', function() {
             this.vm.upload();

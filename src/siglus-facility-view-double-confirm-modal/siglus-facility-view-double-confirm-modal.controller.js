@@ -19,28 +19,34 @@
 
     /**
    * @ngdoc controller
-   * @name siglus-alert-confirm-modal.controller:AlertConfirmModalController
+   * @name siglus-double-confirm-modal.controller:DoubleConfirmModalController
    *
    * @description
    * Exposes data to the alert modal view.
    */
     angular
-        .module('openlmis-modal')
-        .controller('alertConfirmModalController', alertConfirmModalController);
+        .module('siglus-facility-view-double-confirm-modal')
+        .controller('doubleConfirmModalController', doubleConfirmModalController);
 
-    alertConfirmModalController.$inject = ['alertClass', 'title', 'message',
-        'buttonLabels', 'modalDeferred'];
+    doubleConfirmModalController.$inject = ['alertClass', 'title', 'message',
+        'buttonLabels', 'modalDeferred', 'alertConfirmModalService'];
 
-    function alertConfirmModalController(alertClass, title, message, buttonLabels,
-                                         modalDeferred) {
+    function doubleConfirmModalController(alertClass, title, message,
+                                          buttonLabels, modalDeferred,
+                                          alertConfirmModalService) {
         var vm = this;
-
         vm.$onInit = onInit;
         vm.close = function() {
             modalDeferred.reject();
         };
-        vm.confirm = function() {
-            modalDeferred.resolve();
+        vm.doubleConfirm = function() {
+            modalDeferred.reject();
+            alertConfirmModalService.error(
+                'siglusFacilityViewDoubleConfirmModal.doubleConfirmMessage',
+                '',
+                ['siglusFacilityViewDoubleConfirmModal.close',
+                    'siglusFacilityViewDoubleConfirmModal.confirm']
+            );
         };
 
         function onInit() {

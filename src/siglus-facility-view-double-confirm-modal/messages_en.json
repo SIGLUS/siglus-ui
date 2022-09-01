@@ -1,0 +1,6 @@
+{
+  "siglusFacilityViewDoubleConfirmModal.doubleConfirm": "Double Confirm",
+  "siglusFacilityViewDoubleConfirmModal.doubleConfirmMessage": "Once you disable the feature, the facility's current location data will be cleared. The virtual location will be applied. Are you sure you want to disable it?",
+  "siglusFacilityViewDoubleConfirmModal.close": "Close",
+  "siglusFacilityViewDoubleConfirmModal.confirm": "Confirm"
+}

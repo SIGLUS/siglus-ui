@@ -2442,7 +2442,6 @@
   "printTemplate.title": "Relatório",
   "printTemplate.breadcrumbName.subDraft": "Início / Gestão de localização / Inventário físico / Todos os produtos / Rascunho ${number}",
   "printTemplate.breadcrumbName.mergedDraft": "Início / Gestão de localização /Inventário físico / Todos os produtos / Mesclar Rascunho",
-
   "adminFacilityView.enableLocation": "Location management enabled successfully!",
   "adminFacilityView.disabledLocation": "Location management disabled successfully!",
   "downloadModal.downloading": "Baixando...",
@@ -2463,7 +2462,13 @@
   "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
   "locationMovement.movement": "Movement",
   "locationManagement.title": "Gestão de localização",
-  "sohLocation.binCardForProductLevel":"Ficha de stock ${name} - Nível do produto",
-  "sohLocation.binCardForLotLevel":"Ficha de stock ${name} - Nível do lote",
-  "sohLocation.binCardForLocationLevel":"Ficha de stock ${name} - Nível de localização"
+  "sohLocation.binCardForProductLevel": "Ficha de stock ${name} - Nível do produto",
+  "sohLocation.binCardForLotLevel": "Ficha de stock ${name} - Nível do lote",
+  "sohLocation.binCardForLocationLevel": "Ficha de stock ${name} - Nível de localização",
+  "adminFacilityView.siglusapi.error.upload.header.invalid": "Invalid headers in the uploaded file: ${lastNumber}",
+  "adminFacilityView.siglusapi.error.upload.file.format.incorrect": "File format incorrect.",
+  "adminFacilityView.siglusapi.error.upload.file.empty": "File empty.",
+  "adminFacilityView.siglusapi.error.upload.header.missing": "Header for column ${lastNumber} is missing.",
+  "adminFacilityView.siglusapi.error.upload.row.missing": "${firstEle} values in row ${lastNumber} is missing.",
+  "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting."
 }

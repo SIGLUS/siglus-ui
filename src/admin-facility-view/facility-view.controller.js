@@ -34,7 +34,8 @@
         'programs', 'FacilityRepository', 'loadingModalService',
         'notificationService', 'locationManagementService',
         'messageService',
-        'alertConfirmModalService', '$stateParams', 'facilityService'
+        'alertConfirmModalService', '$stateParams', 'facilityService',
+        'siglusFacilityViewDoubleConfirmModalService'
     ];
 
     function controller($q, $state, facility, facilityTypes,
@@ -43,7 +44,8 @@
                         programs, FacilityRepository, loadingModalService,
                         notificationService, locationManagementService,
                         messageService, alertConfirmModalService,
-                        $stateParams, facilityService) {
+                        $stateParams, facilityService,
+                        siglusFacilityViewDoubleConfirmModalService) {
 
         var vm = this;
 
@@ -145,6 +147,7 @@
          * Holds form error message.
          */
         vm.invalidMessage = undefined;
+        vm.rowNumber = undefined;
 
         /**
          * @ngdoc method
@@ -345,6 +348,7 @@
         function upload(facilityId) {
             facilityId = vm.facilityId;
             vm.invalidMessage = undefined;
+            vm.rowNumber = undefined;
 
             if (vm.file) {
                 var loadingPromise = loadingModalService.open();
@@ -365,21 +369,77 @@
                                 vm.facility = res;
                             });
                     })
-                    .catch(function(error) {
-                        notificationService.error(
-                            'adminFacilityView.uploadFailed'
-                        );
-                        vm.file = null;
-                        vm.invalidMessage = error ? error.data.message
-                            : undefined;
-                        loadingModalService.close();
-                        document.getElementById('fileupload').value = '';
-                    });
+                    .catch(handleError);
             } else {
                 notificationService.error(
                     'adminIsaManage.fileIsNotSelected'
                 );
             }
+        }
+
+        function handleError(error) {
+            var businessErrorExtraData = error.data.businessErrorExtraData;
+            var numberSplit = businessErrorExtraData.split('');
+            var lastNumber = numberSplit.slice(-1);
+            var firstEle = businessErrorExtraData[0];
+            console.log('ln', lastNumber);
+            console.log('fe', firstEle);
+            //改成对象的形式 加isbusiness error的判断 写一个handleerror的方法
+            notificationService.error(
+                'adminFacilityView.uploadFailed'
+            );
+            vm.file = null;
+            var messageKey = error.data.messageKey;
+            var errorMessage = {
+                headerMissing: 'siglusapi.error.upload.header.missing',
+                headerInvalid: 'siglusapi.error.upload.header.invalid',
+                formatIncorrect: 'siglusapi.error.upload.file.format.incorrect',
+                fileEmpty: 'siglusapi.error.upload.file.empty',
+                rowMissing: 'siglusapi.error.upload.row.missing',
+                duplicateLocationCode: 'siglusapi.error.upload.duplicate.locationCode'
+            };
+            if (messageKey === errorMessage.headerMissing) {
+                vm.invalidMessage = messageService.get(
+                    'adminFacilityView.siglusapi.error.upload.header.missing',
+                    {
+                        lastNumber: lastNumber
+                    }
+                );
+            }
+            if (messageKey === errorMessage.headerInvalid) {
+                vm.invalidMessage = messageService.get(
+                    'adminFacilityView.siglusapi.error.upload.header.invalid'
+                );
+            }
+            if (messageKey === errorMessage.formatIncorrect) {
+                vm.invalidMessage = messageService.get(
+                    'adminFacilityView.siglusapi.error.upload.file.format.incorrect'
+                );
+            }
+            if (messageKey === errorMessage.fileEmpty) {
+                vm.invalidMessage = messageService.get(
+                    'adminFacilityView.siglusapi.error.upload.file.empty'
+                );
+            }
+            if (messageKey === errorMessage.rowMissing) {
+                vm.invalidMessage = messageService.get(
+                    'adminFacilityView.siglusapi.error.upload.row.missing',
+                    {
+                        lastNumber: lastNumber
+                    }
+                );
+            }
+            if (messageKey === errorMessage.duplicateLocationCode) {
+                vm.invalidMessage = messageService.get(
+                    'adminFacilityView.siglusapi.error.upload.duplicate.locationCode',
+                    {
+                        lastNumber: lastNumber,
+                        firstEle: firstEle
+                    }
+                );
+            }
+            loadingModalService.close();
+            document.getElementById('fileupload').value = '';
         }
 
         /**
@@ -398,7 +458,7 @@
             }
             var enableValue = vm.enableValue;
             if (enableValue) {
-                alertConfirmModalService.error(
+                siglusFacilityViewDoubleConfirmModalService.error(
                     'adminFacilityView.locationManagement.closeSwitch',
                     '',
                     ['adminFacilityView.close',
@@ -434,6 +494,16 @@
                         notificationService.success(
                             'adminFacilityView.enableLocation'
                         );
+                    })
+                    .catch(function(error) {
+                        if (error.status === 500) {
+                            alertConfirmModalService.error(
+                                'adminFacilityView.uploadFailed',
+                                '',
+                                ['adminFacilityView.close',
+                                    'adminFacilityView.confirm']
+                            );
+                        }
                     });
                 return;
             }

@@ -38,5 +38,11 @@
   "adminFacilityView.uploadFailed": "Upload failed!",
   "adminFacilityView.androidFacility": "Android Facility",
   "adminFacilityView.upgradeToWeb": "Upgrade to web facility",
-  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?"
+  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?",
+  "adminFacilityView.siglusapi.error.upload.header.invalid": "Invalid headers in the uploaded file: ${lastNumber}",
+  "adminFacilityView.siglusapi.error.upload.file.format.incorrect": "File format incorrect.",
+  "adminFacilityView.siglusapi.error.upload.file.empty": "File empty.",
+  "adminFacilityView.siglusapi.error.upload.header.missing": "Header for column ${lastNumber} is missing.",
+  "adminFacilityView.siglusapi.error.upload.row.missing": "${firstEle} values in row ${lastNumber} is missing.",
+  "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting."
 }
