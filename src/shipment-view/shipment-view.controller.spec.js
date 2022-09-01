@@ -23,7 +23,7 @@ describe('ShipmentViewController', function() {
         CanFulfillForMeEntryDataBuilder,
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        ShipmentLineItem, ShipmentLineItemDataBuilder;
+        ShipmentLineItem, ShipmentLineItemDataBuilder, suggestedQuatity;
         // #287: ends here
 
     beforeEach(function() {
@@ -62,7 +62,10 @@ describe('ShipmentViewController', function() {
         shipment = new ShipmentDataBuilder().build();
         order = new OrderDataBuilder().build();
         tableLineItems = [{}, {}];
-
+        suggestedQuatity = {
+            orderableIdToSuggestedQuantity: null,
+            showSuggestedQuantity: true
+        };
         // #264: warehouse clerk can add product to orders
         availableProducts = [
             new OrderableDataBuilder()
@@ -88,7 +91,8 @@ describe('ShipmentViewController', function() {
             shipment: shipment,
             tableLineItems: tableLineItems,
             updatedOrder: order,
-            stockCardSummaries: stockCardSummaries
+            stockCardSummaries: stockCardSummaries,
+            suggestedQuatity: suggestedQuatity
         });
         // #264: ends here
     });

@@ -37,7 +37,7 @@
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup'
+        'ShipmentViewLineItemGroup', 'suggestedQuatity'
         // #287: ends here
     ];
 
@@ -46,7 +46,7 @@
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-                                    ShipmentLineItem, ShipmentViewLineItemGroup) {
+                                    ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -120,7 +120,21 @@
         function onInit() {
             vm.order = updatedOrder;
             vm.shipment = shipment;
-            vm.tableLineItems = tableLineItems;
+            vm.tableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
+                setSuggestedQuantiry(tableLineItems) :
+                tableLineItems;
+            vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
+            vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
+        }
+
+        function setSuggestedQuantiry(items) {
+            var itemsCopy = angular.copy(items);
+            var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
+            return _.map(itemsCopy, function(item) {
+                return angular.merge(item, {
+                    suggestedQuantity: suggestedQuatityMap[item.id] ? suggestedQuatityMap[item.id] : ''
+                });
+            });
         }
 
         /**

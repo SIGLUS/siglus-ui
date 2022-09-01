@@ -33,18 +33,19 @@
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
-        'messageService', 'orderService'
+        'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory'
         // #400: ends here
     ];
     // #287: ends here
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
                                  $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
-                                 messageService, orderService) {
+                                 messageService, orderService, $resource, fulfillmentUrlFactory) {
 
         var shipmentRepository = new ShipmentRepository();
 
         this.getShipmentForOrder = getShipmentForOrder;
+        this.getSuggestedQuantity = getSuggestedQuantity;
 
         /**
          * @ngdoc method
@@ -74,6 +75,18 @@
 
                     return shipment;
                 });
+        }
+
+        function getSuggestedQuantity(id) {
+            var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/orders/:id/suggestedQuantity'), {}, {
+                find: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/orders/:id/suggestedQuantity'),
+                    method: 'get'
+                }
+            });
+            return resource.find({
+                id: id
+            }).$promise;
         }
 
         // #372: Improving Fulfilling Order performance

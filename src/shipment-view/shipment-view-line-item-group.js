@@ -58,6 +58,7 @@
             this.isMainGroup = config.isMainGroup;
             this.noStockAvailable = this.getAvailableSoh() === 0;
             this.isLot = false;
+            this.id = config.id;
             // #400: Facility user partially fulfill an order and create sub-order for an requisition
             this.partialFulfilledQuantity = config.partialFulfilledQuantity;
             // #400: ends here

@@ -61,22 +61,46 @@
         function onInit() {
             vm.requisition = requisition;
             vm.facility = facility;
-            vm.completedBy = vm.requisition.extraData.signaure.submit ? vm.requisition.extraData.signaure.submit : '';
-            vm.approvedBy = vm.requisition.extraData.signaure.approve && vm.requisition.extraData.signaure.approve[0] ?
-                vm.requisition.extraData.signaure.approve[0] : '';
+            vm.completedBy = vm.getCompletedBy(vm.requisition.extraData.signaure);
+            vm.approvedBy = vm.getApprovedBy(vm.requisition.extraData.signaure);
+            // vm.requisition.extraData.signaure.approve && vm.requisition.extraData.signaure.approve[0] ?
+            //     vm.requisition.extraData.signaure.approve[0] : '';
             vm.sections = vm.requisition.usageTemplate.usageInformation;
             vm.lineItems = vm.requisition.usageInformationLineItems;
             vm.availableProducts = vm.requisition.availableFullSupplyProducts;
             vm.addedProducts = vm.requisition.requisitionLineItems;
             vm.processingPeriodEndDate = vm.requisition.processingPeriod.endDate;
-            vm.submitDate = vm.requisition.statusChanges.SUBMITTED.changeDate ?
-                vm.requisition.statusChanges.SUBMITTED.changeDate : '';
+            vm.submitDate = vm.getSubmitDate(vm.requisition.statusChanges.SUBMITTED.changeDate);
             extendLineItems();
             vm.firstService = _.first(vm.lineItems);
             angular.forEach(Object.keys(vm.firstService.informations), function(informationItem) {
                 vm.informationColspan = Object.keys(vm.firstService.informations[informationItem].orderables).length;
             });
         }
+
+        vm.getSubmitDate = function(changeDate) {
+            var result = '';
+            if (changeDate) {
+                result = changeDate;
+            }
+            return result;
+        };
+
+        vm.getApprovedBy = function(signaure) {
+            var result = '';
+            if (signaure.approve && signaure.approve[0]) {
+                result = signaure.approve[0];
+            }
+            return result;
+        };
+
+        vm.getCompletedBy = function(signaure) {
+            var result = '';
+            if (signaure.submit) {
+                result = signaure.submit;
+            }
+            return result;
+        };
 
         function getOrderNumber(index, last) {
             if (last) {

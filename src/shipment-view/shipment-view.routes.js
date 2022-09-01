@@ -64,6 +64,10 @@
                     delete orderWithoutAvailableProducts.availableProducts;
                     return shipmentViewService.getShipmentForOrder(orderWithoutAvailableProducts, stockCardSummaries);
                 },
+                suggestedQuatity: function(shipmentViewService, $stateParams) {
+                    var id = $stateParams.id;
+                    return shipmentViewService.getSuggestedQuantity(id);
+                },
                 // #372: ends here
                 tableLineItems: function(ShipmentViewLineItemFactory, shipment, stockCardSummaries) {
                     return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);

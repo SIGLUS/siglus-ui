@@ -71,6 +71,7 @@
 
                     if (isForGenericOrderable(summary) && shipmentLineItem && !summary.orderable.isKit) {
                         return new ShipmentViewLineItem({
+                            id: orderLineItem.orderable.id,
                             productCode: orderLineItem.orderable.productCode,
                             productName: orderLineItem.orderable.fullProductName,
                             shipmentLineItem: shipmentLineItem,
@@ -85,6 +86,7 @@
                     var tradeItemLineItems = summary ?
                         buildTradeItems(summary, shipmentLineItemMap, orderLineItem.skipped) : [];
                     return new ShipmentViewLineItemGroup({
+                        id: orderLineItem.orderable.id,
                         productCode: orderLineItem.orderable.productCode,
                         productName: orderLineItem.orderable.fullProductName,
                         lineItems: tradeItemLineItems,
@@ -99,7 +101,6 @@
                         // #400: ends here
                     });
                 });
-
             sortLotLineItems(shipmentViewLineItemGroups);
 
             return flatten(shipmentViewLineItemGroups);
