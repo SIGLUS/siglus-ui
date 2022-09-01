@@ -14,24 +14,14 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-   * @module admin-facility-view
-   *
-   * @description
-   * Provides facility view screen for administrator.
-   */
-    angular.module('admin-facility-view', [
-        'openlmis-rights',
-        'openlmis-modal',
-        'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-geographic-zone',
-        'referencedata-program',
+    angular.module('siglus-facility-view-double-confirm-modal', [
         'ui.router',
-        'siglus-admin-facility-view-location-management',
-        'siglus-facility-view-double-confirm-modal'
+        'openlmis-modal',
+        'siglus-physical-inventory-draft-list',
+        'referencedata-facility',
+        'requisition',
+        'siglus-alert-confirm-modal'
     ]);
 })();
