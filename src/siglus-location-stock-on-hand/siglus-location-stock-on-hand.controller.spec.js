@@ -57,7 +57,7 @@ describe('SiglusLocationStockOnHandController', function() {
         it('should return to prev page when total page is 2 and to page is 1', function() {
             $stateParams.pageNumber = 1;
             $stateParams.pageSize = 2;
-            spyOn(siglusLocationCommonFilterService, 'filterMovementList').andReturn([1, 2, 3]);
+            spyOn(siglusLocationCommonFilterService, 'filterList').andReturn([1, 2, 3]);
             vm.$onInit();
 
             expect($stateParams.pageNumber).toEqual(1);
@@ -66,7 +66,7 @@ describe('SiglusLocationStockOnHandController', function() {
         it('should return to first page when total page is 0 and to page is 2', function() {
             $stateParams.pageNumber = 2;
             $stateParams.pageSize = 2;
-            spyOn(siglusLocationCommonFilterService, 'filterMovementList').andReturn([1, 2, 3]);
+            spyOn(siglusLocationCommonFilterService, 'filterList').andReturn([1, 2, 3]);
             vm.$onInit();
 
             expect($stateParams.pageNumber).toEqual(1);
@@ -75,7 +75,7 @@ describe('SiglusLocationStockOnHandController', function() {
         it('should return to first page when total page is 1', function() {
             $stateParams.pageNumber = 1;
             $stateParams.pageSize = 10;
-            spyOn(siglusLocationCommonFilterService, 'filterMovementList').andReturn([1, 2, 3]);
+            spyOn(siglusLocationCommonFilterService, 'filterList').andReturn([1, 2, 3]);
             vm.$onInit();
 
             expect($stateParams.pageNumber).toEqual(0);

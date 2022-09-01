@@ -89,7 +89,7 @@
                     $stateParams, paginationService) {
                     return paginationService.registerList(null, $stateParams, function() {
                         return  siglusLocationCommonFilterService
-                            .filterMovementList($stateParams.keyword, stockCardLineItems);
+                            .filterList($stateParams.keyword, stockCardLineItems);
                     }, {
                         customPageParamName: 'pageNumber',
                         customSizeParamName: 'pageSize'
