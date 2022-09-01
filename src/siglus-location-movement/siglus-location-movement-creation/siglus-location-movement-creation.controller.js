@@ -30,14 +30,14 @@
 
     controller.$inject = ['draftInfo', 'areaLocationInfo', '$scope', 'addedLineItems', '$state', 'orderableGroups',
         '$filter', 'paginationService', '$stateParams',
-        'addAndRemoveLineItemService', 'displayItems', 'locations', 'siglusMovementFilterService',
+        'addAndRemoveLineItemService', 'displayItems', 'locations',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
         'siglusSignatureWithDateModalService', 'confirmDiscardService'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
-                        addAndRemoveLineItemService, displayItems, locations, siglusMovementFilterService,
+                        addAndRemoveLineItemService, displayItems, locations,
                         SiglusLocationCommonUtilsService,
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,

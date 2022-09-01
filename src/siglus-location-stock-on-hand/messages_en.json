@@ -1,0 +1,5 @@
+{
+    "sohLocation.binCardForProductLevel":"Bin Card for ${name} - Product Level",
+    "sohLocation.binCardForLotLevel":"Bin Card for ${name} - Lot Level",
+    "sohLocation.binCardForLocationLevel":"Bin Card for ${name} - Location Level"
+}
