@@ -78,7 +78,7 @@
                     }
                     return $stateParams.orderableGroups;
                 },
-                locations: function(draftInfo, SiglusLocationViewService, $stateParams) {
+                locations: function(draftInfo, siglusLocationCommonApiService, $stateParams) {
                     if ($stateParams.locations) {
                         return $stateParams.locations;
                     }
@@ -88,10 +88,9 @@
                     if (_.isEmpty(orderableIds)) {
                         return [];
                     }
-                    return SiglusLocationViewService.getOrderableLocationLotsInfo({
-                        orderableIds: orderableIds,
+                    return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                         extraData: true
-                    });
+                    }, orderableIds);
                 },
 
                 areaLocationInfo: function($stateParams, siglusLocationMovementService) {

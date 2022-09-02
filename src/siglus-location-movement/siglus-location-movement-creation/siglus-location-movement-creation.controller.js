@@ -147,9 +147,8 @@
             var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                orderableIds: [orderable.id],
                 extraData: true
-            })
+            }, [orderable.id])
                 .then(function(locationsInfo) {
                     locations = locations.concat(locationsInfo);
                     var firstRow = addAndRemoveLineItemService.getAddProductRow(orderable);
