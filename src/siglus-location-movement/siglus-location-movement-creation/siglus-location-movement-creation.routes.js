@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.movement.creation', {
-            url: '/:draftId/creation?programId&keyword&page&size',
+            url: '/:draftId/creation?programId&keyword&isVirtual&page&size',
             label: 'locationMovement.movement',
             views: {
                 '@openlmis': {
@@ -35,6 +35,7 @@
                 }
             },
             params: {
+                isVirtual: undefined,
                 orderableGroups: undefined,
                 draftInfo: undefined,
                 addedLineItems: undefined,
@@ -103,6 +104,10 @@
                     orderableGroups) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
+                    }
+                    if ($stateParams.isVirtual) {
+                        return addAndRemoveLineItemService
+                            .prepareAddedLineItemsForVirtual(draftInfo, locations, orderableGroups);
                     }
 
                     return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, orderableGroups);

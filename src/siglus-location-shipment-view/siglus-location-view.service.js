@@ -45,7 +45,7 @@
                 isArray: false
             },
             getOrderableLocationLotsInfo: {
-                method: 'GET',
+                method: 'POST',
                 isArray: true
             },
             deleteDraft: {
@@ -78,7 +78,9 @@
         };
 
         this.getOrderableLocationLotsInfo = function(params) {
-            return resource.getOrderableLocationLotsInfo(params).$promise;
+            return resource.getOrderableLocationLotsInfo({
+                extraData: params.extraData
+            }, params.orderableIds).$promise;
         };
 
         function combineResponses(shipment, order, stockCardDetailMap) {

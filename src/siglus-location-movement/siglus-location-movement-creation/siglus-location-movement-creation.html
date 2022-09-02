@@ -44,13 +44,14 @@
             </tr>
             </thead>
             <tbody ng-repeat="(outerIndex, lineItems) in vm.pagedLineItems">
-            <tr ng-repeat="(index, lineItem) in lineItems">
-
+            <tr ng-repeat="(index, lineItem) in lineItems" ng-repeat-end>
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
                 <td>{{lineItem.isMainGroup ? lineItem.productName : '' }}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
+                    <div ng-if="vm.isVirtual">{{lineItem.lot.lotCode}}</div>
                     <select
+                            ng-if="!vm.isVirtual"
                             openlmis-invalid="{{lineItem.$error.lotCodeError | message}}"
                             ng-model="lineItem.lot"
                             no-auto-select="true"
@@ -61,7 +62,9 @@
                 </td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
+                    <div ng-if="vm.isVirtual">{{lineItem.lot.expirationDate}}</div>
                     <input
+                            ng-if="!vm.isVirtual"
                             type="date"
                             ng-model="lineItem.lot.expirationDate"
                             ng-disabled="true"
@@ -70,7 +73,9 @@
 
                 <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+                    <div ng-if="vm.isVirtual">N/A</div>
                     <select
+                            ng-if="!vm.isVirtual"
                             ng-model="lineItem.location"
                             no-auto-select="true"
                             openlmis-invalid="{{lineItem.$error.locationError | message}}"
@@ -115,7 +120,7 @@
                             ng-change="vm.changeQuantity(lineItem, lineItems)"
                             positive-integer/>
                 </td>
-                <td style="max-width: 160px;">
+                <td style="max-width: 160px;" ng-if="!vm.isVirtual">
                     <button style="padding: 8px;"
                             ng-if="lineItem.isMainGroup"
                             class="stock-actions add add-item"
@@ -125,6 +130,19 @@
                     <input type="button"
                            value="{{'stockPhysicalInventoryDraft.remove' | message}}"
                            ng-if="lineItem.isMainGroup && lineItems.length === 1 || !lineItem.isMainGroup"
+                           class="danger stock-actions"
+                           ng-click="vm.removeItem(lineItems, index, outerIndex)">
+                </td>
+                <td style="max-width: 160px;" ng-if="vm.isVirtual">
+                    <button style="padding: 8px;"
+                            ng-if="lineItem.isFirst && !lineItem.isMainGroup"
+                            class="stock-actions add add-item"
+                            ng-click="vm.addItem(lineItem, lineItems)">
+                        {{'locationShipmentView.addItem' | message}}
+                    </button>
+                    <input type="button"
+                           value="{{'stockPhysicalInventoryDraft.remove' | message}}"
+                           ng-if="!lineItem.isFirst && !lineItem.isMainGroup"
                            class="danger stock-actions"
                            ng-click="vm.removeItem(lineItems, index, outerIndex)">
                 </td>

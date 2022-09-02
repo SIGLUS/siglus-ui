@@ -54,6 +54,8 @@
 
         vm.displayItems = displayItems || [];
 
+        vm.isVirtual = false;
+
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(
                 lineItem,
@@ -99,6 +101,7 @@
         };
 
         vm.$onInit = function() {
+            vm.isVirtual = $stateParams.isVirtual;
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
@@ -245,7 +248,11 @@
         };
 
         vm.addItem = function(lineItem, lineItems) {
-            addAndRemoveLineItemService.addLineItem(lineItem, lineItems);
+            if (vm.isVirtual) {
+                addAndRemoveLineItemService.addRowForVirtual(lineItem, lineItems);
+            } else {
+                addAndRemoveLineItemService.addLineItem(lineItem, lineItems);
+            }
         };
 
         vm.removeItem = function(lineItems, index) {
@@ -280,6 +287,28 @@
                 if (totalQuantity > item.stockOnHand) {
                     item.$error.quantityError = 'locationMovement.gtSoh';
                 }
+                if (totalQuantity < item.stockOnHand && vm.isVirtual) {
+                    item.$error.quantityError = 'locationMovement.ltSoh';
+                }
+
+            });
+        }
+
+        function validateDuplicateDesLocation(lineItems) {
+            _.forEach(lineItems, function(item) {
+                var filterLineItems = _.filter(lineItems, function(data) {
+                    return _.get(item, ['lot', 'id']) === _.get(data.lot, 'id')
+                        && (_.get(data.moveTo, 'locationCode')
+                            && _.get(item, ['moveTo', 'locationCode']) === _.get(data.moveTo, 'locationCode'))
+                        && (_.get(data.moveTo, 'area')
+                            && _.get(item, ['moveTo', 'area']) === _.get(data.moveTo, 'area'));
+                });
+
+                if (filterLineItems.length > 0) {
+                    item.$error.moveToLocationError = 'locationMovement.duplicateDesLocation';
+                    item.$error.areaError = 'locationMovement.duplicateDesLocation';
+                }
+
             });
         }
 
@@ -347,6 +376,9 @@
                     }
                     validateRequiredFields(lineItem);
                     validateQuantityGtSoh(lineItems);
+                    if (vm.isVirtual) {
+                        validateDuplicateDesLocation(lineItems);
+                    }
                 });
             });
             return _.every(vm.addedLineItems, function(lineItems) {
@@ -421,6 +453,9 @@
         };
 
         vm.submit = function() {
+            // TODO not working
+            // facilityService.clearFacilitiesCache()
+            // $state.go('openlmis.home');
             validateForm();
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
@@ -433,9 +468,13 @@
                         siglusLocationMovementService.submitMovementDraft(baseInfo, getLineItems(), locations)
                             .then(function() {
                                 $scope.needToConfirm = false;
-                                $state.go('^', $stateParams, {
-                                    reload: true
-                                });
+                                if (vm.isVirtual) {
+                                    $state.go('openlmis.home');
+                                } else {
+                                    $state.go('^', $stateParams, {
+                                        reload: true
+                                    });
+                                }
                                 loadingModalService.close();
                             })
                             .catch(function() {
@@ -460,9 +499,13 @@
                     .then(function() {
                         $scope.needToConfirm = false;
                         notificationService.success('stockIssueCreation.deleted');
-                        $state.go('^', $stateParams, {
-                            reload: true
-                        });
+                        if (vm.isVirtual) {
+                            $state.go('openlmis.home');
+                        } else {
+                            $state.go('^', $stateParams, {
+                                reload: true
+                            });
+                        }
                     })
                     .finally(function() {
                         loadingModalService.close();
