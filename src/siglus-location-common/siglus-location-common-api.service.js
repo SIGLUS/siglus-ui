@@ -34,14 +34,13 @@
         var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/locations'), {}, {
 
             getOrderableLocationLotsInfo: {
-                method: 'GET',
+                method: 'POST',
                 isArray: true
             }
-
         });
 
-        this.getOrderableLocationLotsInfo = function(params) {
-            return resource.getOrderableLocationLotsInfo(params).$promise;
+        this.getOrderableLocationLotsInfo = function(params, orderableIds) {
+            return resource.getOrderableLocationLotsInfo(params, orderableIds ? orderableIds : []).$promise;
         };
     }
 
