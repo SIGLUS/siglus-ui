@@ -208,6 +208,18 @@ describe('openlmis.locationManagement.movement.creation', function() {
             expect(getResolvedValue('addedLineItems')).toBeUndefined();
         });
 
+        it('should return locations isVirtual', function() {
+            $state.go('openlmis.locationManagement.movement.creation',
+                {
+                    draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
+                    addedLineItems: undefined,
+                    isVirtual: true
+                });
+            $rootScope.$apply();
+
+            expect(getResolvedValue('addedLineItems')).toBeUndefined();
+        });
+
         it('should return $stateParams value', function() {
             $state.go('openlmis.locationManagement.movement.creation',
                 {

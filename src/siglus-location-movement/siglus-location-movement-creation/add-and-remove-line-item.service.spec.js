@@ -57,6 +57,46 @@ describe('addAndRemoveLineItemService', function() {
             expect(lineItems[1].isMainGroup).toEqual(false);
             expect(lineItems[2].lot.lotCode).toEqual('SEM-LOTE-2011-12');
         });
+
+        it('should prepareAddedLineItemsForVirtual group by orderable then sort by lot ', function() {
+            var lineItem1 = {
+                destArea: null,
+                destLocationCode: null,
+                expirationDate: '2023-04-21',
+                isKit: null,
+                lotCode: 'SEM-LOTE-08K04-042023-2-21/04/2023',
+                lotId: '47d1bc2f-777f-4e37-a47e-bf3e2d6ec247',
+                orderableId: '99b7f370-affc-4851-b40c-5f005683a491',
+                productCode: '08K04',
+                productName: 'Metronidazol; 250mg; Comp',
+                quantity: 100,
+                srcArea: 'virtual location',
+                srcLocationCode: '00000',
+                stockOnHand: 100
+            };
+            var lineItem2 = angular.copy(lineItem1);
+            lineItem2.quantity = 20;
+            var lineItems = [
+                lineItem1,
+                lineItem2
+            ];
+            var draftInfo = {
+                facilityId: 'b889bb10-cfb4-11e9-9398-0242ac130008',
+                id: '67d435b8-9136-416c-a4e9-af9a2d45aa67',
+                programId: '00000000-0000-0000-0000-000000000000',
+                userId: '5af58c84-eeba-4b33-bdb5-62343fd06606',
+                lineItems: lineItems
+            };
+
+            var result = addAndRemoveLineItemService.prepareAddedLineItemsForVirtual(draftInfo, [], []);
+
+            expect(result.length).toEqual(1);
+            expect(result[0][0].isMainGroup).toEqual(true);
+            expect(result[0][1].isFirst).toEqual(true);
+            expect(result[0][2].isFirst).toBeUndefined();
+
+        });
+
     });
 
 });
