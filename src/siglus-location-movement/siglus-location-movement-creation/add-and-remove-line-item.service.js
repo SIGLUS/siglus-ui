@@ -49,11 +49,31 @@
                 quantity: lineItem.quantity
             };
         }
+        function getRowTemplateDataForVirtualMovement(lineItem) {
+            return  {
+                $error: _.clone(lineItem.$error),
+                orderableId: lineItem.orderableId,
+                productCode: lineItem.productCode,
+                productName: lineItem.productName,
+                lot: _.clone(lineItem.lot),
+                isKit: lineItem.isKit,
+                isMainGroup: false,
+                programId: lineItem.programId,
+                location: _.clone(lineItem.location),
+                stockOnHand: lineItem.stockOnHand,
+                moveTo: _.clone(lineItem.moveTo),
+                moveToLocation: _.clone(lineItem.moveToLocation),
+                quantity: undefined
+            };
+        }
 
         function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
             lineItems.splice(1, 0,
                 getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
+        this.addRowForVirtual = function(tableLineItem, lineItems) {
+            lineItems.push(getRowTemplateDataForVirtualMovement(tableLineItem));
+        };
 
         function resetFirstRow(lineItem) {
             lineItem.lot = null;
@@ -188,6 +208,39 @@
                     result.push(firstRow);
 
                     var childrenLineItems = mapDataToDisplay(group, false, locations, orderableGroups);
+                    return result.concat(childrenLineItems);
+
+                })
+                .value();
+        };
+
+        this.prepareAddedLineItemsForVirtual = function(draftInfo, locations,  orderableGroups) {
+            var $this = this;
+            return _.chain(_.get(draftInfo, 'lineItems', []))
+                .groupBy('orderableId')
+                .values()
+                .map(function(group) {
+                    if (group.length === 1) {
+                        return mapDataToDisplay(group, true, locations, orderableGroups);
+                    }
+                    var firstRow = $this.getMainGroupRow(group[0]);
+                    var result = [];
+                    result.push(firstRow);
+
+                    var childrenLineItems = mapDataToDisplay(group, false, locations, orderableGroups);
+                    if (childrenLineItems.length > 1 && childrenLineItems[0].lot && childrenLineItems[0].lot.id) {
+                        childrenLineItems.sort(function(i1, i2) {
+                            return i2.lot.lotCode.localeCompare(i1.lot.lotCode);
+                        });
+                        childrenLineItems[0].isFirst = true;
+                        for (var i = 1; i < childrenLineItems.length; i++) {
+                            if (childrenLineItems[i].lot.id !== childrenLineItems[i - 1].lot.id) {
+                                childrenLineItems[i].isFirst = true;
+                            }
+                        }
+                    } else {
+                        childrenLineItems[0].isFirst = true;
+                    }
                     return result.concat(childrenLineItems);
 
                 })

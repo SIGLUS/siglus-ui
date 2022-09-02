@@ -11,5 +11,8 @@
   "locationMovement.moveTo": "Move to",
   "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered.",
   "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
-  "locationMovement.movement": "Movement"
+  "locationMovement.movement": "Movement",
+  "locationMovement.ltSoh": "All the stock on hand need to be moved to real locations.",
+  "locationMovement.duplicateDesLocation": "The location under the same lot cannot be repeated, please select a new one",
+  "locationMovement.upgradePopup": "Your account has been updated the location feature, please configure it first."
 }

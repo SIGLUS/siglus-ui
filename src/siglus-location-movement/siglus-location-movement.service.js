@@ -38,6 +38,10 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts'),
                 isArray: true
             },
+            initVirtualMovementDrafts: {
+                method: 'PUT',
+                url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts/:id/virtualLocationDrafts')
+            },
             getMovementDraftById: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/locationMovementDrafts/:id'),
@@ -66,6 +70,7 @@
             }
         });
 
+        this.initVirtualMovementDrafts = initVirtualMovementDrafts;
         this.getMovementDrafts = getMovementDrafts;
         this.getMovementDraftById = getMovementDraftById;
         this.getMovementLocationAreaInfo = getMovementLocationAreaInfo;
@@ -73,6 +78,12 @@
         this.saveMovementDraft = saveMovementDraft;
         this.createMovementDraft = createMovementDraft;
         this.submitMovementDraft = submitMovementDraft;
+
+        function initVirtualMovementDrafts(emptyDraft) {
+            return resource.initVirtualMovementDrafts({
+                id: emptyDraft.id
+            }, emptyDraft).$promise;
+        }
 
         function getMovementDrafts(programId) {
             return resource.getMovementDrafts({
