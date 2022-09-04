@@ -1,0 +1,132 @@
+<h2>
+    {{'stockAdjustmentCreation.title' | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
+    vm.program.name} }}
+</h2>
+
+<div>
+    <section id="locationAdjustmentForm" class="openlmis-table-container">
+        <form>
+            <fieldset>
+                <label for="search">{{'stockAdjustmentCreation.keyword' | message}}</label>
+                <input id="search" type="text" ng-model="vm.keyword" maxlength="50" />
+            </fieldset>
+            <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
+                ng-click="vm.cancelFilter()" />
+            <input type="submit" ng-click="vm.search()" ng-keydown="$event.keyCode === 13 && vm.search()"
+                value="{{'stockAdjustmentCreation.search' | message}}" />
+        </form>
+     
+        <section class="is-primary">
+            <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
+                <div>
+                    <label for="productSelect">{{'stockAdjustmentCreation.product' | message}}</label>
+                    <select 
+                        id="productSelect" 
+                        ng-model="vm.selectedOrderableGroup"
+                        ng-options="(orderable.orderable | siglusArchivedProductName) for orderable in (vm.orderableGroups)"
+                        ng-change="vm.orderableSelectionChanged()"
+                        required>
+                    </select>
+                </div>
+                <button type="submit" class="add">{{'stockAdjustmentCreation.add' | message}}</button>
+            </form>
+        </section>
+        <table suppress-tr-openlmis-invalid>
+            <caption ng-if="!vm.displayItems.length">{{'stockAdjustmentCreation.noProducts' | message}}</caption>
+            <thead>
+                <tr>
+                    <th>{{'stockAdjustmentCreation.productCode' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.product' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.lotCode' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.expiryDate' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.location' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.soh' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.reason' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.reasonComments' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.quantity' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.documentationNo' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.actions' | message}}</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="(outerIndex, lineItems) in vm.pagedLineItems">
+                <tr ng-repeat="(index, lineItem) in lineItems">
+                    <td>{{lineItem.isMainGroup ? lineItem.orderable.productCode : ''}}</td>
+                    <td>{{vm.getProductName(lineItem)}}</td>
+                    <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
+                        <siglus-stock-input-select line-items="lineItems" line-item="lineItem" enable-input="true">
+                        </siglus-stock-input-select>
+                    </td>
+                    <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"
+                        openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
+                        <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input"
+                            type="date" ng-model="lineItem.lot.expirationDate" ng-disabled="lineItem.lot.id" />
+                    </td>
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+                        <select ng-model="lineItem.location" no-auto-select="true"
+                            openlmis-invalid="{{lineItem.$errors.locationError | message}}"
+                            ng-options="location.locationCode for location in lineItem.locationOptions track by location.locationCode"
+                            ng-change="vm.changeLocation(lineItem, lineItems)">
+                        </select>
+                    </td>
+                    <td class="text-align-right">{{vm.getStockOnHand(lineItem, lineItems, index)}}</td>
+
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}"
+                        class="digit-cell">
+                        <select ng-model="lineItem.reason"
+                            ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
+                            ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.orderable.programs) track by reason.id"
+                            autofocus>
+                        </select>
+                    </td>
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                    <td
+                        ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                        openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
+                        <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
+                            ng-change="vm.validateReasonFreeText(lineItem)" ng-model="lineItem.reasonFreeText" rows="1"
+                            cols="15" maxlength="100" ng-class="{'error': lineItem.$errors.reasonFreeTextInvalid}"
+                            ng-blur="vm.validateReasonFreeText(lineItem)" />
+                    </td>
+                    <td 
+                    ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
+                        {{vm.getTotalQuantity(lineItems)}}
+                    </td>
+                    <td 
+                        ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                        openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
+                        <input class="form-control min-width-input" ng-model="lineItem.quantity"
+                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
+                            ng-change="vm.validateQuantity(lineItems)" ng-blur="vm.validateQuantity(lineItems)"
+                            positive-integer />
+                    </td>
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
+                        <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100" />
+                    </td>
+                    <td style="max-width: 140px;">
+                        <button style="padding: 8px;" ng-if="lineItem.isMainGroup" class="stock-actions add add-item"
+                            ng-click="vm.addItem(lineItem, lineItems)">
+                            {{'locationShipmentView.addItem' | message}}
+                        </button>
+                        <input type="button" value="{{'stockPhysicalInventoryDraft.remove' | message}}"
+                            ng-if="lineItem.isMainGroup && lineItems.length === 1 || !lineItem.isMainGroup"
+                            class="danger stock-actions" ng-click="vm.removeItem(lineItems, index, outerIndex)">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <openlmis-pagination list="vm.displayItems" paged-list="vm.pagedLineItems" />
+    </section>
+</div>
+
+<siglus-common-toolbar
+        data="vm.addedLineItems"
+        mode="'SAVE'"
+        on-delete="vm.deleteDraft()"
+        on-save="vm.save()"
+        on-submit="vm.submit()">
+</siglus-common-toolbar>

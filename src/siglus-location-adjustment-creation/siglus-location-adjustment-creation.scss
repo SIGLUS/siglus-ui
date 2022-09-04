@@ -1,0 +1,12 @@
+    #locationAdjustmentForm  tr:first-child>td {
+    border-top-width: 1px;
+  }
+  
+  #locationAdjustmentForm  input.number {
+    text-align: left;
+  }
+  
+  #locationAdjustmentForm input[disabled] {
+    cursor: not-allowed;
+  }
+  

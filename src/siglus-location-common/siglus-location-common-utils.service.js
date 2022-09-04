@@ -71,6 +71,7 @@
 
                     result[lot.orderableId][lot.lotId].push({
                         id: location.locationId,
+                        area: location.area,
                         locationCode: location.locationCode
                     });
                 });

@@ -16,20 +16,20 @@
 (function() {
     'use strict';
 
-    /**
-   * @module siglus-location-adjustment
-   *
-   * @description
-   * Responsible for make location adjustment list screen.
-   */
-    angular.module('siglus-location-adjustment', [
-        'stock-adjustment',
-        'siglus-location-management',
-        'siglus-location-common',
-        'stockmanagement',
-        'stock-program-util',
-        'referencedata-facility',
+    angular.module('siglus-location-adjustment-creation', [
+        'openlmis-date',
+        'siglus-location-adjustment',
+        'stock-confirm-discard',
+        'stock-orderable-group',
+        'stock-product-name',
+        'stock-constants',
+        'stock-valid-reason',
         'referencedata-program',
-        'siglus-location-area'
+        'referencedata-facility',
+        'stock-reasons-modal',
+        'referencedata-lot',
+        'siglus-stock-input-select',
+        'stock-event',
+        'siglus-stock-archived-product'
     ]);
 })();

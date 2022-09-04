@@ -28,43 +28,56 @@
         .module('siglus-location-adjustment')
         .controller('SiglusLocationAdjustmentController', controller);
 
-    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state'];
+    controller.$inject = ['facility', 'programs', 'adjustmentType', '$state', 'user',
+        'siglusLocationAdjustmentService', 'loadingModalService'];
 
-    function controller(facility, programs, adjustmentType, $state) {
+    function controller(facility, programs, adjustmentType, $state, user, siglusLocationAdjustmentService,
+                        loadingModalService) {
         var vm = this;
 
-        /**
-         * @ngdoc property
-         * @propertyOf siglus-location-adjustment.controller:SiglusLocationAdjustmentController
-         * @name facility
-         * @type {Object}
-         *
-         * @description
-         * Holds user's home facility.
-         */
         vm.facility = facility;
 
-        /**
-         * @ngdoc property
-         * @propertyOf siglus-location-adjustment.controller:SiglusLocationAdjustmentController
-         * @name programs
-         * @type {Array}
-         *
-         * @description
-         * Holds available programs for home facility.
-         */
+        vm.user = user;
+
         vm.programs = programs;
 
-        vm.key = function(secondaryKey) {
-            return adjustmentType.prefix + '.' + secondaryKey;
+        vm.drafts = [];
+
+        vm.programId = undefined;
+
+        vm.adjustmentType = adjustmentType.state;
+
+        vm.hasExistInitialDraft = false;
+
+        vm.proceed = function() {
+            $state.go('openlmis.locationManagement.adjustment.creation', {
+                draftId: _.get(vm.drafts, [0, 'id']),
+                programId: vm.programId
+            });
         };
 
-        vm.proceed = function(program) {
-            $state.go('openlmis.stockmanagement.' + adjustmentType.state + '.creation', {
-                programId: program.id,
-                program: program,
-                facility: facility
-            });
+        vm.start = function() {
+            siglusLocationAdjustmentService
+                .createDraft(vm.programId, vm.adjustmentType, vm.facility.id, vm.user.user_id)
+                .then(function(draft) {
+                    $state.go('openlmis.locationManagement.adjustment.creation', {
+                        programId: vm.programId,
+                        draftId: draft.id
+                    });
+                });
+        };
+
+        vm.$onInit = function() {
+            loadingModalService.open();
+            vm.programId = _.get(programs, [0, 'id']);
+            siglusLocationAdjustmentService.getDraft(vm.programId, vm.adjustmentType, vm.facility.id, vm.user.user_id)
+                .then(function(data) {
+                    vm.drafts = data;
+                    vm.hasExistInitialDraft = data.length > 0;
+                })
+                .finally(function() {
+                    loadingModalService.close();
+                });
         };
     }
 })();
