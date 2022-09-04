@@ -1,21 +1,37 @@
-<h2 ng-show="vm.facility">{{ vm.key('title') | message: {'facility': vm.facility.name} }}</h2>
+<h2 ng-show="vm.facility">{{ 'stockAdjustment.title' | message: {'facility': vm.facility.name} }}</h2>
 
 <section class="openlmis-table-container">
     <table>
-        <caption ng-if="!vm.programs.length">{{vm.key('noProgramAvailable') | message}}
+        <caption ng-if="!vm.programs.length">{{'stockAdjustment.noProgramAvailable' | message}}
         </caption>
         <thead>
             <tr>
-                <th>{{vm.key('program') | message}}</th>
-                <th>{{vm.key('action') | message}}</th>
+                <th style="min-width: 160px;">{{'stockAdjustment.program' | message}}</th>
+                <th style="min-width: 160px;">{{'stockIssue.status' | message}}</th>
+                <th>{{'stockAdjustment.action' | message}}</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="program in vm.programs">
-                <td>{{program.name}}</td>
-                <td>
-                    <input id="proceedButton" type="button" ng-click="vm.proceed(program)"
-                        value="{{vm.key('proceed') | message}}" class="primary"/>
+                <td style="min-width: 160px;">{{program.name}}</td>
+                <td style="min-width: 160px;" >{{vm.hasExistInitialDraft ? 'stockIssue.draft' : 'stockIssue.notStarted' | message}}</td>
+                <td ng-if="vm.hasExistInitialDraft">
+                    <input
+                            id="continueButton"
+                            type="button"
+                            value="{{'stockAdjustment.continue' | message}}"
+                            class="primary"
+                            ng-click="vm.proceed(program)"
+                    />
+                </td>
+                <td ng-if="!vm.hasExistInitialDraft">
+                    <input
+                            id="startButton"
+                            type="button"
+                            value="{{'stockAdjustment.start' | message}}"
+                            class="primary"
+                            ng-click="vm.start(program)"
+                    />
                 </td>
             </tr>
         </tbody>

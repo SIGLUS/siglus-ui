@@ -79,14 +79,13 @@
                             });
 
                     },
-                    locations: function(SiglusLocationViewService, order) {
+                    locations: function(siglusLocationCommonApiService, order) {
                         var orderableIds = order.availableProducts.map(function(orderable) {
                             return orderable.id;
                         });
-                        return SiglusLocationViewService.getOrderableLocationLotsInfo({
-                            orderableIds: orderableIds,
+                        return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                             extraData: true
-                        });
+                        }, orderableIds);
                     },
 
                     orderableLocationLotsMap: function(locations, SiglusLocationCommonUtilsService) {
