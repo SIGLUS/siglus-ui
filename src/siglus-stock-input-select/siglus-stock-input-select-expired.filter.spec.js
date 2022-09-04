@@ -13,7 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('expired lot filter', function() {
+describe('Expired lot filter', function() {
 
     beforeEach(function() {
         module('siglus-stock-input-select');
@@ -37,17 +37,17 @@ describe('expired lot filter', function() {
         expect(this.siglusExpiredLotCodeFilter()).toBeUndefined();
     });
 
-    it('should return a lotcode with  [expired] tag  when expirationDate is before the moment', function() {
+    it('should return a lotcode with  [Expired] tag  when expirationDate is before the moment', function() {
         var filteredLot = this.siglusExpiredLotCodeFilter(this.expiredLot);
 
-        expect(filteredLot).toEqual('[expired]testLostCode1');
+        expect(filteredLot).toEqual('[Expired]testLostCode1');
         expect(filteredLot).not.toEqual('testLostCode1');
     });
 
-    it('should not return a lotcode with  [expired] tag  when expirationDate is after the moment', function() {
+    it('should not return a lotcode with  [Expired] tag  when expirationDate is after the moment', function() {
         var filteredLot = this.siglusExpiredLotCodeFilter(this.unExpiredLot);
 
-        expect(filteredLot).not.toEqual('[expired]testLostCode2');
+        expect(filteredLot).not.toEqual('[Expired]testLostCode2');
         expect(filteredLot).toEqual('testLostCode2');
     });
 

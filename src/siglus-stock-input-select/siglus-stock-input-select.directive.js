@@ -38,7 +38,8 @@
                         $scope.$watch('lineItem.lot', function(newLot, oldLot) {
                             if ((!_.isEqual(newLot, oldLot))) {
                                 $scope.$emit('lotCodeChange', {
-                                    lineItem: $scope.lineItem
+                                    lineItem: $scope.lineItem,
+                                    lineItems: $scope.lineItems
                                 });
                             }
                         }, true);
@@ -67,7 +68,7 @@
                         });
 
                         $scope.select = function(lotCode) {
-                            lotCode = lotCode.replace(/^\[expired\]/, '');
+                            lotCode = lotCode.replace(/^\[Expired\]|\[Expirado\]/, '');
                             var lineItem = $scope.lineItem;
                             var option = findLotOptionByCode(lineItem.lotOptions, lotCode);
                             lineItem.lot = angular.copy(option);
@@ -196,7 +197,21 @@
                                     moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID)
                                         .format('YYYY-MM-DD');
                                 }
+                            } else if (
+                                _.get(lineItem, ['lot', 'lotCode']) &&
+                                _.get(lineItem, ['lot', 'expirationDate']) &&
+                                _.get(lineItem, ['lot', 'id'])) {
+                                lineItem.lot.lotCode =
+                                lineItem.lot.lotCode
+                                +
+                                moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
+                            }
+                        };
 
+                        $scope.showExpired = function() {
+                            var lineItem = $scope.lineItem;
+                            if (moment().isAfter(_.get(lineItem, ['lot', 'expirationDate']))) {
+                                return messageService.get('siglusIssueOrReceiveReport.expired');
                             }
                         };
 
