@@ -31,16 +31,16 @@
         .module('siglus-stock-input-select')
         .filter('siglusExpiredLotCode', expiredLotCodeFilter);
 
-    expiredLotCodeFilter.$inject = ['moment'];
+    expiredLotCodeFilter.$inject = ['moment', 'messageService'];
 
-    function expiredLotCodeFilter(moment) {
+    function expiredLotCodeFilter(moment, messageService) {
         return function(option) {
             if (!option) {
                 return undefined;
             }
 
             if (moment() > moment(option.expirationDate)) {
-                return '[expired]' + option.lotCode;
+                return '[' + messageService.get('siglusIssueOrReceiveReport.expired') + ']' + option.lotCode;
             }
             return option.lotCode;
         };
