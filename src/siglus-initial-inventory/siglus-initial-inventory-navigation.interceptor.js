@@ -63,32 +63,32 @@
             }
         });
 
-        $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-            // TODO RENAME FILE, NOT JUST FOR INITIAL INVENTORY
-            if ((!toState.name.contains('movement.creation')
-                && toState.showInNavigation
-                && toState.url !== '/home'
-                && !toParams.hasCheckedMoveProduct)) {
-
-                // check async first disable then continue
-                event.preventDefault();
-                checkUpgradeMoveProduct().then(function(shouldUpgradeMoveProduct) {
-                    if (shouldUpgradeMoveProduct) {
-                        loadingModalService.close();
-                        if (toState.name === 'openlmis.locationManagement.movement') {
-                            return startVirtualMovement();
-                        }
-                        return confirmService.confirm('locationMovement.upgradePopup')
-                            .then(function() {
-                                return startVirtualMovement();
-                            });
-                    }
-                    var params = angular.copy(toParams);
-                    params.hasCheckedMoveProduct = true;
-                    $state.go(toState.name, params);
-                });
-            }
-        });
+        // $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+        //     // TODO RENAME FILE, NOT JUST FOR INITIAL INVENTORY
+        //     if ((!toState.name.contains('movement.creation')
+        //         && toState.showInNavigation
+        //         && toState.url !== '/home'
+        //         && !toParams.hasCheckedMoveProduct)) {
+        //
+        //         // check async first disable then continue
+        //         event.preventDefault();
+        //         checkUpgradeMoveProduct().then(function(shouldUpgradeMoveProduct) {
+        //             if (shouldUpgradeMoveProduct) {
+        //                 loadingModalService.close();
+        //                 if (toState.name === 'openlmis.locationManagement.movement') {
+        //                     return startVirtualMovement();
+        //                 }
+        //                 return confirmService.confirm('locationMovement.upgradePopup')
+        //                     .then(function() {
+        //                         return startVirtualMovement();
+        //                     });
+        //             }
+        //             var params = angular.copy(toParams);
+        //             params.hasCheckedMoveProduct = true;
+        //             $state.go(toState.name, params);
+        //         });
+        //     }
+        // });
 
         function startVirtualMovement() {
             loadingModalService.open();
@@ -130,15 +130,15 @@
                     event.preventDefault();
                     checkDraftIsStarter();
                 } else {
-                    checkUpgradeMoveProduct().then(function(shouldUpgradeMoveProduct) {
-                        if (shouldUpgradeMoveProduct) {
-                            loadingModalService.close();
-                            return confirmService.confirm('locationMovement.upgradePopup')
-                                .then(function() {
-                                    return startVirtualMovement();
-                                });
-                        }
-                    });
+                    // checkUpgradeMoveProduct().then(function(shouldUpgradeMoveProduct) {
+                    //     if (shouldUpgradeMoveProduct) {
+                    //         loadingModalService.close();
+                    //         return confirmService.confirm('locationMovement.upgradePopup')
+                    //             .then(function() {
+                    //                 return startVirtualMovement();
+                    //             });
+                    //     }
+                    // });
                 }
             }
 
