@@ -48,7 +48,8 @@
                         id: lot.lotId,
                         lotCode: lot.lotCode,
                         expirationDate: lot.expirationDate,
-                        stockOnHand: lot.stockOnHand
+                        stockOnHand: lot.stockOnHand,
+                        area: location.area
                     });
                 });
             });
@@ -78,6 +79,18 @@
             });
 
             return result;
+        };
+
+        this.getLotByLotId = function(locations, lotId) {
+            return _.chain(locations)
+                .map(function(location) {
+                    return location.lots;
+                })
+                .flatten()
+                .find(function(item) {
+                    return item.lotId === lotId;
+                })
+                .value();
         };
 
         this.getLotList = function(lineItem, orderableLocationLotsMap) {
@@ -113,6 +126,38 @@
                         return item.locationCode;
                     })
                     .value();
+        };
+
+        this.getOrderableLotsMapper = function(locations) {
+            return _.chain(locations)
+                .map(function(location) {
+                    return location.lots;
+                })
+                .flatten()
+                .groupBy(function(lot) {
+                    return lot.orderableId;
+                })
+                .value();
+        };
+
+        this.getLotsByOrderableId = function(locations, id) {
+            return this.getOrderableLotsMapper(locations)[id];
+        };
+
+        this.mapStockCardDetail = function(summaries, key) {
+            key = _.isEmpty(key) ? 'canFulfillForMe' : key;
+            var stockCardDetailMap = {};
+            _.forEach(summaries, function(summary) {
+                _.forEach(summary[key], function(stockCardDetail) {
+                    var orderableId = stockCardDetail.orderable.id,
+                        lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
+                    if (!stockCardDetailMap[orderableId]) {
+                        stockCardDetailMap[orderableId] = {};
+                    }
+                    stockCardDetailMap[orderableId][lotId] = stockCardDetail;
+                });
+            });
+            return stockCardDetailMap;
         };
     }
 

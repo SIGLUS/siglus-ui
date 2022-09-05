@@ -30,85 +30,55 @@
 
     SiglusLocationShipmentViewController.$inject = [
         '$scope',
-        'shipment', 'loadingModalService', '$state', '$window', 'fulfillmentUrlFactory',
-        'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT',
-        'VVM_STATUS',
+        'shipment', 'loadingModalService', '$state', 'fulfillmentUrlFactory',
+        'messageService', 'updatedOrder', 'QUANTITY_UNIT',
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
-        'stockCardSummaries', 'SiglusLocationShipmentViewLineItemFactory', 'orderService',
+        'stockCardSummaries', 'orderService',
         'displayTableLineItems',
         '$stateParams', 'order', 'moment', 'SiglusLocationViewService',
-        'orderableLotsLocationMap', 'orderableLocationLotsMap', 'SiglusLocationCommonUtilsService'
+        'prepareRowDataService', 'SiglusLocationCommonUtilsService',
+        'notificationService', 'confirmService',
+        'locations', 'siglusLocationCommonApiService'
     ];
 
-    function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state, $window,
-                                                  fulfillmentUrlFactory, messageService, accessTokenFactory,
-                                                  updatedOrder, QUANTITY_UNIT, VVM_STATUS,
+    function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
+                                                  fulfillmentUrlFactory, messageService,
+                                                  updatedOrder, QUANTITY_UNIT,
                                                   selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-                                                  stockCardSummaries, SiglusLocationShipmentViewLineItemFactory,
+                                                  stockCardSummaries,
                                                   orderService,
                                                   displayTableLineItems, $stateParams,
                                                   order, moment,
-                                                  SiglusLocationViewService, orderableLotsLocationMap,
-                                                  orderableLocationLotsMap,
-                                                  SiglusLocationCommonUtilsService) {
+                                                  SiglusLocationViewService,
+                                                  prepareRowDataService,
+                                                  SiglusLocationCommonUtilsService,
+                                                  notificationService, confirmService,
+                                                  locations, siglusLocationCommonApiService) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.showInDoses = showInDoses;
-
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
-
-        // #264: warehouse clerk can add product to orders
         vm.addProducts = addProducts;
-        // #264: ends here
-        // #287: Warehouse clerk can skip some products in order
         vm.changeSkipStatus = changeSkipStatus;
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
         vm.canSkip = canSkip;
-        // #287: ends here
-
-        /**
-         * @ngdoc property
-         * @propertyOf shipment-view.controller:ShipmentViewController
-         * @name order
-         * @type {Object}
-         *
-         * @description
-         * Holds order that will be displayed on the screen.
-         */
         vm.order = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf shipment-view.controller:ShipmentViewController
-         * @name shipment
-         * @type {Object}
-         *
-         * @description
-         * Holds shipment that will be displayed on the screen.
-         */
         vm.shipment = undefined;
-
-        /**
-         * @ngdoc property
-         * @propertyOf shipment-view.controller:ShipmentViewController
-         * @name quantityUnit
-         * @type {Object}
-         *
-         * @description
-         * Holds quantity unit.
-         */
         vm.quantityUnit = undefined;
 
         vm.displayTableLineItems = undefined;
 
         vm.getLotList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getLotList(lineItem, orderableLocationLotsMap);
+            return SiglusLocationCommonUtilsService.getLotList(lineItem,
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
         };
 
         vm.getLocationList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getLocationList(lineItem, orderableLotsLocationMap);
+            return SiglusLocationCommonUtilsService.getLocationList(lineItem,
+                SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations));
         };
 
         function onInit() {
@@ -120,45 +90,6 @@
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
             $stateParams.displayTableLineItems = vm.displayTableLineItems;
-        }
-
-        function resetFirstRow(currentItem) {
-            currentItem.lot = null;
-            currentItem.shipmentLineItem = {};
-            currentItem.location = null;
-        }
-
-        function getRowTemplateData(currentItem, lineItems, isFirstRowToLineItem) {
-            var lot = lineItems.length === 1 && currentItem.lot;
-            var location = lineItems.length === 1 && currentItem.location;
-            var shipmentLineItem =  _.clone(_.find(shipment.lineItems, function(item) {
-                return item.orderable.id === currentItem.orderableId;
-            }) || {});
-            shipmentLineItem.quantityShipped = isFirstRowToLineItem
-                ? currentItem.shipmentLineItem.quantityShipped : null;
-
-            return {
-                $error: isFirstRowToLineItem ? currentItem.$error : {},
-                $hint: isFirstRowToLineItem ? currentItem.$hint : {},
-                productCode: currentItem.productCode,
-                productName: currentItem.fullProductName,
-                id: currentItem.id,
-                shipmentLineItem: shipmentLineItem,
-                orderQuantity: 0,
-                lot: lot,
-                isKit: currentItem.isKit,
-                location: location,
-                netContent: currentItem.netContent,
-                // #287: Warehouse clerk can skip some products in order
-                skipped: currentItem.skipped,
-                orderableId: currentItem.orderableId
-                // #287: ends here
-            };
-        }
-
-        function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
-            lineItems.splice(1, 0,
-                getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
 
         function validateLotExpired(item) {
@@ -173,7 +104,7 @@
         function validateNotFirstToExpire(item) {
             if (!item.$error.lotCodeError) {
                 var lotOptions = _.filter(SiglusLocationCommonUtilsService.getLotList(item,
-                    orderableLocationLotsMap), function(lot) {
+                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)), function(lot) {
                     return moment().isBefore(moment(lot.expirationDate));
                 });
 
@@ -248,9 +179,7 @@
         }
 
         vm.changeLocation = function(lineItem, lineItems, index) {
-
             lineItem.$error.locationError = '';
-
             if (lineItem.isKit) {
                 if (_.isEmpty(lineItem.location)) {
                     lineItem.$error.locationError = 'openlmisForm.required';
@@ -269,15 +198,13 @@
                     }
                 });
             }
-
             validateFillQuantity(lineItem);
-
         };
 
         function validateFillQuantity(currentItem) {
             currentItem.$error.quantityShippedError = '';
-            var quantityShipped = _.get(currentItem.shipmentLineItem, 'quantityShipped');
-            if (isEmpty(quantityShipped)) {
+            var quantityShipped = currentItem.quantityShipped;
+            if (!_.isNumber(currentItem.quantityShipped)) {
                 currentItem.$error.quantityShippedError = 'openlmisForm.required';
                 return;
             }
@@ -288,10 +215,12 @@
         }
 
         function getSohByOrderableLocation(lineItem) {
+            var orderableLocationLotsMap = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
             var lot = _.chain(orderableLocationLotsMap[lineItem.orderableId])
                 .get(_.get(lineItem.location, 'locationCode'))
                 .find(function(item) {
-                    return item.lotCode === _.get(lineItem.lot, 'lotCode');
+                    return lineItem.isKit ? _.isEmpty(item.lotCode)
+                        : item.lotCode === _.get(lineItem.lot, 'lotCode');
                 })
                 .value();
             return _.get(lot, 'stockOnHand', 0);
@@ -300,15 +229,14 @@
         vm.changeFillQuantity = validateFillQuantity;
 
         vm.addLot = function(currentItem, lineItems) {
-            if (lineItems.length === 1) {
-                addRow(currentItem, lineItems, true);
-                resetFirstRow(currentItem);
-            }
-            addRow(currentItem, lineItems, false);
+            prepareRowDataService.addLot(currentItem, lineItems);
         };
 
         vm.removeItem = function(lineItems, index) {
             if (lineItems.length === 1) {
+                vm.order.orderLineItems = _.filter(vm.order.orderLineItems, function(orderLineItem) {
+                    return orderLineItem.orderable.id !== lineItems[0].orderableId;
+                });
                 lineItems.splice(0, 1);
             } else if (lineItems.length === 3) {
                 var remainRowData = index > 1 ? lineItems[1] : lineItems[2];
@@ -362,10 +290,10 @@
         vm.getFillQuantity = function(lineItems, index) {
             if (index === 0) {
                 return _.reduce(lineItems, function(fillQuantity, item) {
-                    return fillQuantity + _.get(item.shipmentLineItem, 'quantityShipped', 0);
+                    return fillQuantity + _.get(item, 'quantityShipped', 0);
                 }, 0);
             }
-            return _.get(lineItems[index], ['shipmentLineItem', 'quantityShipped'], 0);
+            return _.get(lineItems[index], 'quantityShipped', 0);
 
         };
 
@@ -389,33 +317,14 @@
             return quantity < 0 ? 0 : quantity;
         };
 
-        /**
-         * @ngdoc method
-         * @methodOf shipment-view.controller:ShipmentViewController
-         * @name showInDoses
-         *
-         * @description
-         * Returns whether the screen is showing quantities in doses.
-         *
-         * @return {boolean} true if the quantities are in doses, false otherwise
-         */
         function showInDoses() {
             return vm.quantityUnit === QUANTITY_UNIT.DOSES;
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf shipment-view.controller:ShipmentViewController
-         * @name getSelectedQuantityUnitKey
-         *
-         * @description
-         * Returns message key for selected quantity unit.
-         */
         function getSelectedQuantityUnitKey() {
             return QUANTITY_UNIT.$getDisplayName(vm.quantityUnit);
         }
 
-        // #264: warehouse clerk can add product to orders
         function addProducts() {
             var availableProducts = getAvailableProducts();
             selectProducts({
@@ -423,28 +332,34 @@
             })
                 .then(function(selectedProducts) {
 
-                    var addedShipmentLineItems = prepareShipmentLineItems(selectedProducts);
-                    var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
-                    var addedOrderLineItemsShipment = Object.assign({}, shipment, {
-                        lineItems: addedShipmentLineItems,
-                        order: {
-                            orderLineItems: addedOrderLineItems
-                        }
-                    });
-                    var addedTableLineItems = new SiglusLocationShipmentViewLineItemFactory()
-                        .createFrom(addedOrderLineItemsShipment);
-                    addedShipmentLineItems.forEach(function(shipmentLineItem) {
-                        shipment.lineItems.push(shipmentLineItem);
-                    });
-                    vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
-                    vm.displayTableLineItems = vm.displayTableLineItems.concat(
-                        _.map(addedTableLineItems, function(item) {
-                            return [item];
+                    loadingModalService.open();
+                    siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                        isAdjustment: false,
+                        extraData: true
+                    }, _.map(selectedProducts, function(orderable) {
+                        return orderable.id;
+                    }))
+                        .then(function(locationsInfo) {
+
+                            locations = locations.concat(locationsInfo);
+                            var addedProductRows = prepareRowDataService.prepareAddProductLineItem(selectedProducts);
+                            var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
+
+                            vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
+                            vm.displayTableLineItems = vm.displayTableLineItems.concat(
+                                _.map(addedProductRows, function(item) {
+                                    return [item];
+                                })
+                            );
+                            $stateParams.displayTableLineItems = _.clone(vm.displayTableLineItems);
+                            $stateParams.order = vm.order;
+                            $stateParams.locations = locations;
+                            reloadParams();
                         })
-                    );
-                    $stateParams.displayTableLineItems = _.clone(vm.displayTableLineItems);
-                    $stateParams.order = vm.order;
-                    reloadParams();
+                        .finally(function() {
+                            loadingModalService.close();
+                        });
+
                 });
         }
 
@@ -472,6 +387,7 @@
 
         function getAvailableProducts() {
             var existedOrderableMap = {};
+            console.log(vm.order.orderLineItems);
             vm.order.orderLineItems.forEach(function(lineItem) {
                 existedOrderableMap[lineItem.orderable.id] = lineItem.orderable;
             });
@@ -490,49 +406,13 @@
             });
         }
 
-        // #374: confirm shipment effect soh
-        function prepareShipmentLineItems(selectedProducts) {
-            var addedShipmentLineItems = [];
-            var stockCardDetailMap = mapStockCardDetail(stockCardSummaries);
-            selectedProducts.forEach(function(orderable) {
-                var stockCardDetailByOrderable = stockCardDetailMap[orderable.id];
-                orderable.versionNumber = orderable.meta.versionNumber;
-                Object.values(stockCardDetailByOrderable).forEach(function(stockCardDetail) {
-                    addedShipmentLineItems.push({
-                        id: '',
-                        lot: stockCardDetail.lot,
-                        orderable: orderable,
-                        quantityShipped: 0,
-                        skipped: undefined
-                    });
-                });
-            });
-            return addedShipmentLineItems;
-        }
-
-        function mapStockCardDetail(summaries) {
-            var stockCardDetailMap = {};
-            summaries.forEach(function(summary) {
-                summary.stockCardDetails.forEach(function(stockCardDetail) {
-                    var orderableId = stockCardDetail.orderable.id,
-                        lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
-                    if (!stockCardDetailMap[orderableId]) {
-                        stockCardDetailMap[orderableId] = {};
-                    }
-                    stockCardDetailMap[orderableId][lotId] = stockCardDetail;
-                });
-            });
-            return stockCardDetailMap;
-        }
-        // #374: ends here
-
-        // #287: Warehouse clerk can skip some products in order
         function skipAllLineItems() {
             vm.displayTableLineItems.forEach(function(lineItemGroup) {
                 _.forEach(lineItemGroup, function(lineItem) {
                     if (!lineItem.skipped && lineItemGroup.length === 1 && canSkip(lineItemGroup)) {
                         lineItem.skipped = true;
-                        changeSkipStatus(lineItem);
+                        clearErrorAndHint(lineItem);
+                        updateOrderSkipStatus();
                     }
                 });
             });
@@ -543,35 +423,31 @@
                 _.forEach(lineItemGroup, function(lineItem) {
                     if (lineItem.skipped && canSkip(lineItemGroup)) {
                         lineItem.skipped = false;
-                        changeSkipStatus(lineItem);
+                        updateOrderSkipStatus();
                     }
                 });
-
             });
+        }
+
+        function clearErrorAndHint(lineItem) {
+            lineItem.$error = {};
+            lineItem.$hint = {};
         }
 
         function changeSkipStatus(currentItem, lineItems) {
             _.forEach(lineItems, function(lineItem) {
                 lineItem.skipped = currentItem.skipped;
-                if (!isEmpty(lineItem.shipmentLineItem)) {
-                    lineItem.shipmentLineItem.skipped = lineItem.skipped;
-                }
-            });
-            vm.shipment.order.orderLineItems.forEach(function(orderLineItem) {
-                if (orderLineItem.orderable.productCode === currentItem.productCode) {
-                    orderLineItem.skipped = currentItem.skipped;
+                updateOrderSkipStatus();
+                if (currentItem.skipped) {
+                    clearErrorAndHint(lineItem);
                 }
             });
         }
 
         function canSkip(lineItems) {
             return  _.every(lineItems, function(lineItem) {
-                return isEmpty(_.get(lineItem.shipmentLineItem, 'quantityShipped'));
+                return !_.isNumber(lineItem.quantityShipped) || lineItem.quantityShipped === 0;
             });
-        }
-
-        function isEmpty(value) {
-            return !value || !value.toString().trim();
         }
 
         vm.showEmptyBlockWithKit = function(lineItem, lineItems) {
@@ -590,12 +466,12 @@
             return (lineItem.isMainGroup && lineItems.length === 1) || (!lineItem.isMainGroup && lineItems.length > 1);
         };
 
-        vm.isEmptyRow = function(lineItem, lineItems, index) {
-            if (lineItem.isKit) {
-                return _.size(vm.getLocationList(lineItem)) === 0;
-            }
-            return (_.size(vm.getLotList(lineItem)) === 0 || _.size(vm.getLocationList(lineItem)) === 0)
-              && index === lineItems.length - 1;
+        vm.isEmptyRow = function(lineItem) {
+            var lots = SiglusLocationCommonUtilsService.getLotsByOrderableId(locations, lineItem.orderableId);
+            var totalSoh = _.reduce(lots, function(sum, lot) {
+                return sum + (lot.stockOnHand || 0);
+            }, 0);
+            return totalSoh === 0;
         };
 
         function validateRequired(lineItem) {
@@ -661,12 +537,6 @@
             });
         }
 
-        vm.submit = function() {
-            if (isTableFormValid()) {
-                console.log('submit');
-            }
-        };
-
         function updateOrderSkipStatus() {
             _.forEach(vm.order.orderLineItems, function(orderLineItem) {
                 orderLineItem.skipped = _.chain(vm.displayTableLineItems)
@@ -692,21 +562,18 @@
                 .flatten()
                 .map(function(lineItem) {
                     var lot = lineItem.lot;
-                    var locationId = _.get(lineItem.location, 'id');
-
                     return {
-                        lot: _.isEmpty(lot) ? null : _.pick(lineItem.lot, ['id']),
-                        location: _.isEmpty(locationId) ? null : {
-                            id: locationId
+                        lot: _.isEmpty(lot) ? null : {
+                            id: lot.id
                         },
+                        location: lineItem.location,
                         id: lineItem.id,
-                        orderable: lineItem.shipmentLineItem.orderable,
-                        quantityShipped: lineItem.shipmentLineItem.quantityShipped,
+                        orderable: lineItem.orderable,
+                        quantityShipped: lineItem.quantityShipped,
                         stockOnHand: getSohByOrderableLocation(lineItem)
                     };
                 })
                 .value();
-            updateOrderSkipStatus();
             return {
                 id: shipment.id,
                 order: vm.order,
@@ -715,17 +582,118 @@
             };
         }
 
-        vm.delete = function() {
-            SiglusLocationViewService.deleteDraft({
-                id: '123123'
-            }).then(function() {
-
+        function getPartialFulfilledLineItems(unskippedLineItems) {
+            var totalPartialLineItems = 0;
+            unskippedLineItems.forEach(function(lineItems) {
+                if (!lineItems[0].added) {
+                    var totalQuantityShipped = _.reduce(lineItems, function(sum, lineItem) {
+                        return sum + (lineItem.quantityShipped || 0);
+                    }, 0);
+                    if (totalQuantityShipped + lineItems[0].partialFulfilledQuantity < lineItems[0].orderQuantity) {
+                        totalPartialLineItems = totalPartialLineItems + 1;
+                    }
+                }
             });
+            return totalPartialLineItems;
+        }
+
+        vm.submit = function() {
+            if (isTableFormValid()) {
+                var unskippedLineItems = _.filter(vm.displayTableLineItems, function(lineItems) {
+                    return !lineItems[0].skipped;
+                });
+
+                var haveFulfilledLineItem = _.some(unskippedLineItems, function(lineItems) {
+                    return _.reduce(lineItems, function(sum, lineItem) {
+                        return sum + (lineItem.quantityShipped || 0);
+                    }, 0) > 0;
+                });
+
+                if (unskippedLineItems.length === 0) {
+                    return alertService.error('shipmentView.allLineItemsSkipped');
+                } else if (!haveFulfilledLineItem) {
+                    return alertService.error('shipmentView.allLineItemsNotFulfilled');
+                }
+
+                return orderService.getStatus(vm.order.id).then(function(result) {
+                    if (result.suborder && result.closed) {
+                        return alertService.error('shipmentView.closed');
+                    }
+
+                    var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
+                    // todo add !result.closed
+                    if (result.closed && totalPartialLineItems) {
+                        return confirmService.confirm(
+                            messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                                totalPartialLineItems: totalPartialLineItems
+                            }), 'shipmentView.confirmPartialFulfilled.createSuborder'
+                        )
+                            .then(function() {
+                                return SiglusLocationViewService.createSubOrder()
+                                    .then(function() {
+                                        notificationService.success('shipmentView.suborderHasBeenConfirmed');
+                                        $state.go('openlmis.locationManagement.fulfillOrder');
+                                    })
+                                    .catch(function() {
+                                        notificationService.error('shipmentView.failedToCreateSuborder');
+                                        loadingModalService.close();
+                                    });
+                            });
+                    }
+
+                    return confirmService.confirm(
+                        'shipmentView.confirmShipment.question',
+                        'shipmentView.confirmShipment'
+                    )
+                        .then(function() {
+                            return SiglusLocationViewService.submitOrder(buildSaveParams())
+                                .then(function() {
+                                    notificationService.success('shipmentView.shipmentHasBeenConfirmed');
+                                    $state.go('openlmis.locationManagement.fulfillOrder');
+                                })
+                                .catch(function() {
+                                    notificationService.error('shipmentView.failedToConfirmShipment');
+                                    loadingModalService.close();
+                                });
+                        });
+                });
+            }
+        };
+
+        vm.delete = function() {
+            confirmService.confirmDestroy(
+                'shipmentView.deleteDraftConfirmation',
+                'shipmentView.deleteDraft'
+            )
+                .then(function() {
+                    loadingModalService.open();
+                    SiglusLocationViewService.deleteDraft({
+                        id: shipment.id
+                    })
+                        .then(function() {
+                            notificationService.success('shipmentView.draftHasBeenDeleted');
+                            $state.go('openlmis.locationManagement.fulfillOrder');
+                        })
+                        .catch(function() {
+                            notificationService.error('shipmentView.failedToDeleteDraft');
+                            loadingModalService.close();
+
+                        });
+                });
         };
 
         vm.save = function() {
-            SiglusLocationViewService.saveDraft(buildSaveParams()).then(function() {
-            });
+            loadingModalService.open();
+            SiglusLocationViewService.saveDraft(buildSaveParams())
+                .then(function() {
+                    notificationService.success('shipmentView.draftHasBeenSaved');
+                })
+                .catch(function() {
+                    notificationService.error('shipmentView.failedToSaveDraft');
+                })
+                .finally(function() {
+                    loadingModalService.close();
+                });
         };
 
     }

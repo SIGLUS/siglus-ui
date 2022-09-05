@@ -150,6 +150,7 @@
             var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                isAdjustment: false,
                 extraData: true
             }, [orderable.id])
                 .then(function(locationsInfo) {
