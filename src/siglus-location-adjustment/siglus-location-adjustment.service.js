@@ -29,10 +29,10 @@
         .service('siglusLocationAdjustmentService', service);
 
     service.$inject = [
-        '$resource', 'siglusLocationManagementUrlFactory'
+        '$resource', 'siglusLocationManagementUrlFactory', 'siglusStockEventService'
     ];
 
-    function service($resource, siglusLocationManagementUrlFactory) {
+    function service($resource, siglusLocationManagementUrlFactory, siglusStockEventService) {
 
         var resource = $resource(siglusLocationManagementUrlFactory('/api/siglusapi/draftsWithLocation'), {}, {
             saveDraft: {
@@ -45,7 +45,8 @@
             },
             submitDraft: {
                 method: 'post',
-                url: siglusLocationManagementUrlFactory('/api/siglusapi/stockEvents/location')
+                url: siglusLocationManagementUrlFactory('/api/siglusapi/stockEvents/location'),
+                transformRequest: siglusStockEventService.formatPayload
             },
             createDraft: {
                 method: 'post',
@@ -123,6 +124,7 @@
                     orderableId: lineItem.orderableId,
                     lotId: _.get(lineItem.lot, 'id'),
                     lotCode: _.get(lineItem.lot, 'lotCode'),
+                    expirationDate: _.get(lineItem.lot, 'expirationDate'),
                     isKit: lineItem.isKit,
                     area: _.get(lineItem.location, 'area'),
                     locationCode: _.get(lineItem.location, 'locationCode'),
