@@ -72,7 +72,6 @@
                         </select>
                     </td>
                     <td class="text-align-right">{{vm.getStockOnHand(lineItem, lineItems, index)}}</td>
-
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
                     <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}"
                         class="digit-cell">

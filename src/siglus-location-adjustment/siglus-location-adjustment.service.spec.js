@@ -65,11 +65,8 @@ describe('siglusLocationAdjustmentService', function() {
             var result;
             siglusLocationAdjustmentService.getDraft(programId, draftType, facilityId, userId)
                 .then(function(response) {
-                    console.log('response');
-                    console.log(response);
                     result = response;
                 });
-            console.log(result);
             $httpBackend.flush();
             $rootScope.$apply();
 

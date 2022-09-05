@@ -30,6 +30,7 @@
         'stock-program-util',
         'referencedata-facility',
         'referencedata-program',
-        'siglus-location-area'
+        'siglus-location-area',
+        'stock-event'
     ]);
 })();

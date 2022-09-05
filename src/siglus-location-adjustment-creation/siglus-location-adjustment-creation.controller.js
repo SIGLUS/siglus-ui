@@ -521,6 +521,8 @@
                     return location.locationCode;
                 });
 
+                addIdToLotItem(lotsGroup);
+
                 lineItem.lotOptions = lotsGroup;
                 lineItem.locationOptions = locationsGroup;
             } else if (_.get(lineItem, ['reason', 'reasonType']) === REASON_TYPES.CREDIT) {
@@ -535,6 +537,9 @@
                     lotsGroup = _.uniq(lotsGroup, function(lot) {
                         return lot.lotId;
                     });
+
+                    addIdToLotItem(lotsGroup);
+
                     lineItem.lotOptions = lotsGroup;
                 });
             }
@@ -558,6 +563,12 @@
                 return sum + (item.quantity || 0);
             }, 0);
         };
+
+        function addIdToLotItem(lotOptions) {
+            _.each(lotOptions, function(item) {
+                item.id = item.lotId;
+            });
+        }
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value) || value === '';
