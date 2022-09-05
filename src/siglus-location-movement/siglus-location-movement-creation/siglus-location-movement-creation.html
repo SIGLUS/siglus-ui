@@ -15,7 +15,7 @@
                    value="{{'stockReceiveCreation.search' | message}}"/>
         </form>
         <section class="is-primary">
-            <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
+            <form v-if="vm.isVirtual" class="form-inline" ng-submit="vm.addProduct()" name="productForm">
                 <div>
                     <label for="movement-select-product">{{'stockReceiveCreation.product' | message}}</label>
                     <select id="movement-select-product"
@@ -135,7 +135,7 @@
                 </td>
                 <td style="max-width: 160px;" ng-if="vm.isVirtual">
                     <button style="padding: 8px;"
-                            ng-if="lineItem.isFirst && !lineItem.isMainGroup"
+                            ng-if="lineItem.isFirst"
                             class="stock-actions add add-item"
                             ng-click="vm.addItem(lineItem, lineItems)">
                         {{'locationShipmentView.addItem' | message}}

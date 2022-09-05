@@ -61,8 +61,6 @@
                 programId: lineItem.programId,
                 location: _.clone(lineItem.location),
                 stockOnHand: lineItem.stockOnHand,
-                moveTo: _.clone(lineItem.moveTo),
-                moveToLocation: _.clone(lineItem.moveToLocation),
                 quantity: undefined
             };
         }
@@ -71,9 +69,6 @@
             lineItems.splice(1, 0,
                 getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
-        this.addRowForVirtual = function(tableLineItem, lineItems) {
-            lineItems.push(getRowTemplateDataForVirtualMovement(tableLineItem));
-        };
 
         function resetFirstRow(lineItem) {
             lineItem.lot = null;
@@ -83,6 +78,7 @@
             lineItem.moveTo = null;
             lineItem.moveToLocation = null;
             lineItem.stockOnHand = 0;
+            lineItem.isFirst = false;
         }
 
         this.addLineItem = function(lineItem, lineItems) {
@@ -93,13 +89,24 @@
             addRow(lineItem, lineItems, false);
         };
 
+        this.addLineItemForVirtual = function(lineItem, lineItems) {
+            var copied = angular.copy(lineItem);
+            if (lineItems.length === 1) {
+                addRow(copied, lineItems, true);
+                lineItems[1].isFirst = true;
+                resetFirstRow(lineItem);
+            }
+            lineItems.push(getRowTemplateDataForVirtualMovement(copied));
+        };
+
         this.removeItem = function(lineItems, index) {
             if (lineItems.length === 1) {
                 lineItems.splice(0, 1);
             } else if (lineItems.length === 3) {
                 var remainRowData = index > 1 ? lineItems[1] : lineItems[2];
                 _.extend(lineItems[0], remainRowData, {
-                    isMainGroup: true
+                    isMainGroup: true,
+                    isFirst: true
                 });
                 lineItems.splice(1, 2);
             } else if (lineItems.length > 3) {
@@ -162,7 +169,7 @@
             return _.get(_.first(items), ['orderable', 'programs', 0, 'programId'], '');
         }
 
-        function mapDataToDisplay(group, isMainGroup, locations, orderableGroups) {
+        function mapDataToDisplay(group, isMainGroup, locations, orderableGroups, isFirst) {
             return _.map(group, function(item) {
                 var stockOnHand = updateStockOnHand(locations, item);
                 var lot = item.lotCode ? {
@@ -189,7 +196,8 @@
                     isMainGroup: isMainGroup,
                     programId: getProgramId(orderableGroups, item),
                     location: location,
-                    moveTo: moveTo
+                    moveTo: moveTo,
+                    isFirst: isFirst
                 });
             });
         }
@@ -221,7 +229,7 @@
                 .values()
                 .map(function(group) {
                     if (group.length === 1) {
-                        return mapDataToDisplay(group, true, locations, orderableGroups);
+                        return mapDataToDisplay(group, true, locations, orderableGroups, true);
                     }
                     var firstRow = $this.getMainGroupRow(group[0]);
                     var result = [];
