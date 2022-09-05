@@ -31,7 +31,8 @@
         '$q', '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
         '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService',
         'authorizationService', 'alertService', '$stateParams',
-        'SiglusPhysicalInventoryCreationService', 'SiglusInitialInventoryResource', 'navigationStateService'
+        'SiglusPhysicalInventoryCreationService', 'SiglusInitialInventoryResource', 'navigationStateService',
+        'siglusLocationMovementService', 'siglusLocationMovementUpgradeService'
     ];
 
     function siglusInitialInventoryNavigationInterceptor(
@@ -39,7 +40,8 @@
         stockmanagementUrlFactory, $http, programService,
         facilityFactory, physicalInventoryFactory,
         currentUserService, authorizationService, alertService, $stateParams,
-        SiglusPhysicalInventoryCreationService, SiglusInitialInventoryResource, navigationStateService
+        SiglusPhysicalInventoryCreationService, SiglusInitialInventoryResource, navigationStateService,
+        siglusLocationMovementService, siglusLocationMovementUpgradeService
     ) {
 
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
@@ -61,11 +63,49 @@
             }
         });
 
-        $rootScope.$on('$stateChangeSuccess', function(event, toState) {
-            if (checkInitialInventoryStatus() && toState.url === '/home') {
-                event.preventDefault();
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+            // TODO RENAME FILE, NOT JUST FOR INITIAL INVENTORY, NOT WORKING WHEN PUT LOGIC IN OTHER PLACE
+            if ((!toState.name.contains('movement.creation')
+                && toState.showInNavigation
+                && toState.url !== '/home'
+                && !toParams.hasCheckedMoveProduct)) {
 
-                checkDraftIsStarter();
+                var user = currentUserService.getUserInfo().$$state.value;
+                if (user) {
+                    var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
+                    if (shouldUpgradeMoveProduct) {
+                        loadingModalService.close();
+                        event.preventDefault();
+                        if (toState.name === 'openlmis.locationManagement.movement') {
+                            return siglusLocationMovementUpgradeService.startVirtualMovement();
+                        }
+                        siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
+                    }
+                }
+
+            }
+        });
+
+        $rootScope.$on('$stateChangeSuccess', function(event, toState) {
+            if (toState.url === '/home') {
+                if (checkInitialInventoryStatus()) {
+                    event.preventDefault();
+                    checkDraftIsStarter();
+                } else {
+                    var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
+                    if (shouldUpgradeMoveProduct) {
+                        return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
+                    }
+                }
+            }
+        });
+
+        $rootScope.$on('openlmis-auth.login', function() {
+            var user = currentUserService.getUserInfo().$$state.value;
+            var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
+            if (user && shouldUpgradeMoveProduct === undefined
+                && $state.current.name !== 'openlmis.locationManagement.movement.creation') {
+                siglusLocationMovementUpgradeService.init(user.homeFacilityId);
             }
         });
 

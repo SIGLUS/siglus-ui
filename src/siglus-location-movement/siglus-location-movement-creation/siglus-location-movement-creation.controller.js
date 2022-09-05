@@ -33,7 +33,7 @@
         'addAndRemoveLineItemService', 'displayItems', 'locations',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
-        'siglusSignatureWithDateModalService', 'confirmDiscardService'];
+        'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
@@ -41,7 +41,8 @@
                         SiglusLocationCommonUtilsService,
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,
-                        siglusSignatureWithDateModalService, confirmDiscardService) {
+                        siglusSignatureWithDateModalService, confirmDiscardService,
+                        siglusLocationMovementUpgradeService) {
         var vm = this;
 
         vm.orderableGroups = null;
@@ -250,7 +251,7 @@
 
         vm.addItem = function(lineItem, lineItems) {
             if (vm.isVirtual) {
-                addAndRemoveLineItemService.addRowForVirtual(lineItem, lineItems);
+                addAndRemoveLineItemService.addLineItemForVirtual(lineItem, lineItems);
             } else {
                 addAndRemoveLineItemService.addLineItem(lineItem, lineItems);
             }
@@ -305,7 +306,7 @@
                             && _.get(item, ['moveTo', 'area']) === _.get(data.moveTo, 'area'));
                 });
 
-                if (filterLineItems.length > 0) {
+                if (filterLineItems.length > 1) {
                     item.$error.moveToLocationError = 'locationMovement.duplicateDesLocation';
                     item.$error.areaError = 'locationMovement.duplicateDesLocation';
                 }
@@ -454,9 +455,6 @@
         };
 
         vm.submit = function() {
-            // TODO not working
-            // facilityService.clearFacilitiesCache()
-            // $state.go('openlmis.home');
             validateForm();
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
@@ -470,6 +468,7 @@
                             .then(function() {
                                 $scope.needToConfirm = false;
                                 if (vm.isVirtual) {
+                                    siglusLocationMovementUpgradeService.doneUpgrade();
                                     $state.go('openlmis.home');
                                 } else {
                                     $state.go('^', $stateParams, {
