@@ -23,7 +23,6 @@
 
     config.$inject = ['$stateProvider', 'FULFILLMENT_RIGHTS', 'selectProductsModalStateProvider'];
 
-    // #264: warehouse clerk can add product to orders
     function config($stateProvider, FULFILLMENT_RIGHTS, selectProductsModalStateProvider) {
         selectProductsModalStateProvider.stateWithAddOrderablesChildState(
             'openlmis.locationManagement.locationShipmentView', {
@@ -47,7 +46,8 @@
                     stockCardSummaries: undefined,
                     shipment: undefined,
                     order: undefined,
-                    displayTableLineItems: undefined
+                    displayTableLineItems: undefined,
+                    locations: undefined
                 },
                 areAllRightsRequired: false,
                 resolve: {
@@ -61,7 +61,6 @@
 
                     },
                     stockCardSummaries: function($stateParams, StockCardSummaryRepositoryImpl, order) {
-                    // #264: warehouse clerk can add product to orders
                         if ($stateParams.stockCardSummaries) {
                             return $stateParams.stockCardSummaries;
                         }
@@ -69,47 +68,50 @@
                             return orderable.id;
                         });
 
-                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation({
+                        return new StockCardSummaryRepositoryImpl().queryWithStockCards({
                             programId: order.program.id,
                             facilityId: order.supplyingFacility.id,
                             orderableId: orderableIds
                         })
                             .then(function(page) {
-                                return page;
+                                return page.content;
                             });
 
                     },
-                    locations: function(siglusLocationCommonApiService, order) {
-                        var orderableIds = order.availableProducts.map(function(orderable) {
-                            return orderable.id;
+                    locations: function(siglusLocationCommonApiService, order, $stateParams) {
+                        if ($stateParams.locations) {
+                            return $stateParams.locations;
+                        }
+                        var orderableIds = _.map(order.orderLineItems, function(lineItem) {
+                            return lineItem.orderable.id;
                         });
                         return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                            isAdjustment: false,
                             extraData: true
                         }, orderableIds);
                     },
 
-                    orderableLocationLotsMap: function(locations, SiglusLocationCommonUtilsService) {
-                        return SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
-                    },
-
-                    orderableLotsLocationMap: function(SiglusLocationCommonUtilsService, locations) {
-                        return SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations);
-                    },
-
-                    // #372: Improving Fulfilling Order performance
-                    shipment: function(SiglusLocationViewService, order, stockCardSummaries, $stateParams) {
+                    shipment: function(SiglusLocationViewService, order, stockCardSummaries,
+                        $stateParams, ORDER_STATUS) {
                         if (!$stateParams.shipment) {
                             var orderWithoutAvailableProducts = angular.copy(order);
                             delete orderWithoutAvailableProducts.availableProducts;
 
-                            return SiglusLocationViewService.getDraftByOrderId(order, stockCardSummaries);
+                            if (_.includes([ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED], order.status)) {
+                                return SiglusLocationViewService.createDraft(order, stockCardSummaries);
+                            }
+
+                            if (order.status === ORDER_STATUS.FULFILLING) {
+                                return SiglusLocationViewService.getDraftByOrderId(order, stockCardSummaries);
+                            }
+
                         }
                         return $stateParams.shipment;
 
                     },
-                    displayTableLineItems: function(paginationService, $stateParams,
-                        SiglusLocationShipmentViewLineItemFactory, shipment,
-                        orderableLocationLotsMap, orderableLotsLocationMap) {
+                    displayTableLineItems: function(paginationService, $stateParams, shipment,
+                        order, locations, prepareRowDataService) {
+
                         var validator = function(group) {
                             return _.every(group, function(lineItem) {
                                 return _.chain(lineItem.$error).keys()
@@ -123,14 +125,13 @@
                         return paginationService.registerList(validator, angular.copy($stateParams), function() {
                             return $stateParams.displayTableLineItems
                                 ? $stateParams.displayTableLineItems
-                                : new SiglusLocationShipmentViewLineItemFactory().prepareGroupLineItems(shipment,
-                                    orderableLocationLotsMap, orderableLotsLocationMap);
+                                : prepareRowDataService.prepareGroupLineItems(shipment,
+                                    locations, order);
                         });
                     },
-                    // #264: warehouse clerk can add product to orders
+
                     updatedOrder: function(shipment, order, stockCardSummaries) {
                         var shipmentOrder = shipment.order;
-
                         shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
                             var stockCard = stockCardSummaries.find(function(stockCard) {
                                 return stockCard.orderable.id === orderable.id;
@@ -139,7 +140,6 @@
                         });
                         return shipmentOrder;
                     }
-                // #264: ends here
                 }
             }
         );

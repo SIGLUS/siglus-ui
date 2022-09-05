@@ -14,7 +14,7 @@
  */
 
 describe('SiglusLocationShipmentViewController', function() {
-    var vm, $controller, $scope, $rootScope, $state, $q;
+    var vm, $controller, $scope, $rootScope, $state, $q, SiglusLocationCommonUtilsService;
     function prepareInjector() {
 
         inject(function($injector) {
@@ -23,6 +23,7 @@ describe('SiglusLocationShipmentViewController', function() {
             $scope = $rootScope.$new();
             $state = $injector.get('$state');
             $controller = $injector.get('$controller');
+            SiglusLocationCommonUtilsService = $injector.get('SiglusLocationCommonUtilsService');
         });
     }
 
@@ -87,6 +88,7 @@ describe('SiglusLocationShipmentViewController', function() {
             stockCardSummaries: stockCardSummaries,
             displayTableLineItems: [],
             order: order,
+            locations: [],
             orderableLotsLocationMap: {
                 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
                     '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a': [
@@ -368,7 +370,7 @@ describe('SiglusLocationShipmentViewController', function() {
                 location: null,
                 lot: {
                     lotCode: 'code1',
-                    expirationDate: '2098-04-25'
+                    expirationDate: '3098-04-25'
                 },
                 isMainGroup: true,
                 netContent: 1,
@@ -385,7 +387,7 @@ describe('SiglusLocationShipmentViewController', function() {
                 location: null,
                 lot: {
                     lotCode: 'code2',
-                    expirationDate: '2096-04-25'
+                    expirationDate: '3096-04-25'
                 },
                 isMainGroup: true,
                 netContent: 1,
@@ -395,6 +397,17 @@ describe('SiglusLocationShipmentViewController', function() {
                 lineItem,
                 lineItem1
             ];
+
+            spyOn(SiglusLocationCommonUtilsService, 'getLotList').andReturn([
+                {
+                    lotCode: 'code2',
+                    expirationDate: '3096-04-25'
+                },
+                {
+                    lotCode: 'code1',
+                    expirationDate: '3098-04-25'
+                }
+            ]);
 
             vm.changeLot(lineItem, lineItems, 0);
 
@@ -470,9 +483,7 @@ describe('SiglusLocationShipmentViewController', function() {
             lineItem.location = {
                 locationCode: 'AA28B'
             };
-            lineItem.shipmentLineItem = {
-                quantityShipped: 334
-            };
+            lineItem.quantityShipped = 334;
             var lineItems = [
                 lineItem,
                 _.clone(lineItem)
@@ -489,9 +500,36 @@ describe('SiglusLocationShipmentViewController', function() {
             lineItem.location = {
                 locationCode: 'AA28B'
             };
-            lineItem.shipmentLineItem = {
-                quantityShipped: 332
+            lineItem.lot = {
+                lotCode: 'lotCode'
             };
+            lineItem.quantityShipped = 332;
+            var lineItems = [
+                lineItem,
+                _.clone(lineItem)
+            ];
+
+            spyOn(SiglusLocationCommonUtilsService, 'getOrderableLocationLotsMap').andReturn({
+                '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': {
+                    AA28B: [{
+                        stockOnHand: 333
+                    }]
+                }
+            });
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.quantityShippedError).toEqual('');
+        });
+
+        it('should validate current line item required error when change location and location is null', function() {
+            lineItem.isKit = false;
+            lineItem.orderableId = '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a';
+            lineItem.location = null,
+            lineItem.lot = {
+                lotCode: 'lotCode'
+            };
+            lineItem.quantityShipped = 334;
             var lineItems = [
                 lineItem,
                 _.clone(lineItem)
@@ -499,8 +537,26 @@ describe('SiglusLocationShipmentViewController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.quantityShippedError).toEqual('');
+            expect(lineItem.$error.locationError).toEqual('openlmisForm.required');
         });
+
+        it('should validate current line item required error when change location and lot is null', function() {
+            lineItem.isKit = false;
+            lineItem.orderableId = '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a';
+            lineItem.location = {
+                locationCode: 'AA035'
+            };
+            lineItem.lot = null;
+            lineItem.quantityShipped = 334;
+            var lineItems = [
+                lineItem
+            ];
+
+            vm.changeLocation(lineItem, lineItems, 0);
+
+            expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
+        });
+
     });
 
     describe('removeItem method', function() {
@@ -634,17 +690,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return sum availableSoh when current index is 0', function() {
             var lineItems = [
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: null,
                     lot: null,
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -656,9 +708,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -670,6 +720,21 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 }
             ];
+
+            spyOn(SiglusLocationCommonUtilsService, 'getOrderableLocationLotsMap').andReturn({
+                'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
+                    AA25A: [
+                        {
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            stockOnHand: 1000
+                        },
+                        {
+                            lotCode: 'SEM-LOTE-07A03-09082022-2',
+                            stockOnHand: 1000
+                        }
+                    ]
+                }
+            });
 
             expect(vm.getAvailableSoh(lineItems, 0)).toEqual(2000);
         });
@@ -677,17 +742,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return availableSoh quantity when current index is not 0', function() {
             var lineItems = [
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: null,
                     lot: null,
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -699,9 +760,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -713,6 +772,17 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 }
             ];
+
+            spyOn(SiglusLocationCommonUtilsService, 'getOrderableLocationLotsMap').andReturn({
+                'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
+                    AA25A: [
+                        {
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            stockOnHand: 1000
+                        }
+                    ]
+                }
+            });
 
             expect(vm.getAvailableSoh(lineItems, 1)).toEqual(1000);
         });
@@ -723,17 +793,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return sum remaining soh when current index is 0 and result is lt 0', function() {
             var lineItems = [
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: null,
                     lot: null,
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 1200
-                    },
+                    quantityShipped: 1200,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -745,9 +811,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 1000
-                    },
+                    quantityShipped: 1000,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -766,17 +830,14 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return sum remaining soh when current index is 0 and result is more than 0 ', function() {
             var lineItems = [
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+
+                    quantityShipped: 0,
                     location: null,
                     lot: null,
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 800
-                    },
+                    quantityShipped: 800,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -788,9 +849,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 1000
-                    },
+                    quantityShipped: 1000,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -802,6 +861,17 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 }
             ];
+
+            spyOn(SiglusLocationCommonUtilsService, 'getOrderableLocationLotsMap').andReturn({
+                'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
+                    AA25A: [
+                        {
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            stockOnHand: 2000
+                        }
+                    ]
+                }
+            });
 
             expect(vm.getRemainingSoh(lineItems, 0)).toEqual(200);
         });
@@ -809,17 +879,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return availableSoh quantity when current index is not 0', function() {
             var lineItems = [
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 0
-                    },
+                    quantityShipped: 0,
                     location: null,
                     lot: null,
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 900
-                    },
+                    quantityShipped: 900,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -831,9 +897,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
-                    shipmentLineItem: {
-                        quantityShipped: 900
-                    },
+                    quantityShipped: 900,
                     location: {
                         locationCode: 'AA25A'
                     },
@@ -845,6 +909,17 @@ describe('SiglusLocationShipmentViewController', function() {
                     orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 }
             ];
+
+            spyOn(SiglusLocationCommonUtilsService, 'getOrderableLocationLotsMap').andReturn({
+                'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
+                    AA25A: [
+                        {
+                            lotCode: 'SEM-LOTE-07A03-2508022-1',
+                            stockOnHand: 1000
+                        }
+                    ]
+                }
+            });
 
             expect(vm.getRemainingSoh(lineItems, 1)).toEqual(100);
         });
@@ -853,6 +928,9 @@ describe('SiglusLocationShipmentViewController', function() {
     describe('skipAllLineItems method', function() {
 
         it('should set skipped to true when lineItem is not checked', function() {
+            vm.order = {
+                orderLinItems: []
+            };
             vm.shipment = {
                 order: {
                     orderLineItems: [{
@@ -870,9 +948,7 @@ describe('SiglusLocationShipmentViewController', function() {
                         orderableId: '0001',
                         productCode: 'A0001',
                         productName: 'product 1',
-                        shipmentLineItem: {
-                            quantityShipped: 0
-                        }
+                        quantityShipped: 0
                     }
                 ]
             ];
@@ -880,13 +956,15 @@ describe('SiglusLocationShipmentViewController', function() {
             vm.skipAllLineItems();
 
             expect(vm.displayTableLineItems[0][0].skipped).toEqual(true);
-            expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(true);
         });
     });
 
     describe('unskipAllLineItems method', function() {
 
         it('should set skipped to false  when lineItem is checked', function() {
+            vm.order = {
+                orderLinItems: []
+            };
             vm.shipment = {
                 order: {
                     orderLineItems: [{
@@ -916,7 +994,6 @@ describe('SiglusLocationShipmentViewController', function() {
             vm.skipAllLineItems();
 
             expect(vm.displayTableLineItems[0][0].skipped).toEqual(true);
-            expect(vm.shipment.order.orderLineItems[0].skipped).toEqual(true);
         });
     });
 

@@ -17,13 +17,6 @@
 
     'use strict';
 
-    /**
-     * @ngdoc controller
-     * @name order-fulfillment.controller:OrderFulfillmentController
-     *
-     * @description
-     * Responsible for managing Order Fulfillment screen.
-     */
     angular
         .module('siglus-location-order-fulfillment')
         .controller('SiglusLocationOrderFulfillmentController', controller);
@@ -41,78 +34,22 @@
         vm.$onInit = onInit;
         vm.loadOrders = loadOrders;
 
-        /**
-         * @ngdoc property
-         * @propertyOf order-fulfillment.controller:OrderFulfillmentController
-         * @name requestingFacilities
-         * @type {Array}
-         *
-         * @description
-         * The list of requesting facilities available to the user.
-         */
         vm.orderingFacilities = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf order-fulfillment.controller:OrderFulfillmentController
-         * @name programs
-         * @type {Array}
-         *
-         * @description
-         * The list of all programs available to the user.
-         */
         vm.programs = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf order-fulfillment.controller:OrderFulfillmentController
-         * @name orderStatuses
-         * @type {Array}
-         *
-         * @description
-         * The list of available order statuses.
-         */
         vm.orderStatuses = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf order-fulfillment.controller:OrderFulfillmentController
-         * @name orders
-         * @type {Array}
-         *
-         * @description
-         * Holds orders that will be displayed on screen.
-         */
         vm.orders = undefined;
 
-        /**
-         * @ngdoc property
-         * @propertyOf order-fulfillment.controller:OrderFulfillmentController
-         * @name options
-         * @type {Object}
-         *
-         * @description
-         * Holds options for sorting order list.
-         */
         vm.options = {
             'orderFulfillment.createdDateDesc': ['createdDate,desc'],
             'orderFulfillment.createdDateAsc': ['createdDate,asc']
         };
 
-        /**
-         * @ngdoc method
-         * @methodOf order-fulfillment.controller:OrderFulfillmentController
-         * @name $onInit
-         *
-         * @description
-         * Initialization method called after the controller has been created. Responsible for
-         * setting data to be available on the view.
-         */
         function onInit() {
             vm.orderingFacilities = orderingFacilities;
-            // #400: Facility user partially fulfill an order and create sub-order for an requisition
             vm.orderStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED];
-            // #400: ends here
             vm.programs = programs;
 
             vm.orders = orders;
@@ -134,23 +71,13 @@
             }
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf order-fulfillment.controller:OrderFulfillmentController
-         * @name loadOrders
-         *
-         * @description
-         * Retrieves the list of orders matching the selected status, ordering facility and program.
-         */
         function loadOrders() {
             var stateParams = angular.copy($stateParams);
 
             stateParams.status = vm.orderStatus ? vm.orderStatus : null;
             stateParams.requestingFacilityId = vm.orderingFacility ? vm.orderingFacility.id : null;
             stateParams.programId = vm.program ? vm.program.id : null;
-            // SIGLUS-REFACTOR: starts here
             stateParams.page = 0;
-            // SIGLUS-REFACTOR: ends here
             $state.go('openlmis.locationManagement.fulfillOrder', stateParams, {
                 reload: true
             });

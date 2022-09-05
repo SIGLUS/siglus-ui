@@ -48,9 +48,22 @@
                 method: 'POST',
                 isArray: true
             },
+            createDraft: {
+                url: fulfillmentUrlFactory('/api/siglusapi/shipmentDrafts'),
+                method: 'POST'
+            },
             deleteDraft: {
                 url: fulfillmentUrlFactory('/api/siglusapi/shipmentDrafts/:id'),
                 method: 'DELETE'
+            },
+            createSubOrder: {
+                url: fulfillmentUrlFactory('/api/siglusapi/shipments'),
+                method: 'POST'
+
+            },
+            submitOrder: {
+                url: fulfillmentUrlFactory('/api/siglusapi/shipments1'),
+                method: 'POST'
             }
         });
 
@@ -77,10 +90,51 @@
             return resource.deleteDraft(params).$promise;
         };
 
+        this.createDraft = function(order, stockCardSummaries) {
+            return resource.createDraft(buildFromOrder(order, stockCardSummaries)).$promise;
+        };
+
+        function buildFromOrder(order, stockCardSummaries) {
+            var orderableIds = order.orderLineItems.map(function(lineItem) {
+                return lineItem.orderable.id;
+            });
+            var shipmentViewLineItems = stockCardSummaries.reduce(function(shipmentViewLineItems, summary) {
+                // todo summary
+                return shipmentViewLineItems.concat(
+                    summary.canFulfillForMe.map(function(canFulfillForMe) {
+                        return {
+                            orderable: {
+                                id: canFulfillForMe.orderable.id,
+                                versionNumber: canFulfillForMe.orderable.meta.versionNumber
+                            },
+                            lot: canFulfillForMe.lot,
+                            quantityShipped: 0
+                        };
+                    })
+                );
+            }, []).filter(function(shipmentLineItem) {
+                return orderableIds.includes(shipmentLineItem.orderable.id);
+            });
+            return {
+                order: order,
+                lineItems: shipmentViewLineItems
+            };
+        }
+
         this.getOrderableLocationLotsInfo = function(params) {
             return resource.getOrderableLocationLotsInfo({
                 extraData: params.extraData
             }, params.orderableIds).$promise;
+        };
+
+        this.createSubOrder = function() {
+            return resource.createSuborder({
+                isSubOrder: true
+            }).$promise;
+        };
+
+        this.submitOrder = function(params) {
+            return resource.submitOrder(params).$promise;
         };
 
         function combineResponses(shipment, order, stockCardDetailMap) {
@@ -97,15 +151,16 @@
         function mapCanFulfillForMe(summaries) {
             var stockCardDetailMap = {};
 
-            summaries.forEach(function(summary) {
-                summary.stockCardDetails.forEach(function(stockCardDetail) {
+            var orderableIds = [];
+            _.forEach(summaries, function(summary) {
+                _.forEach(summary.canFulfillForMe, function(stockCardDetail) {
                     var orderableId = stockCardDetail.orderable.id,
                         lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
 
                     if (!stockCardDetailMap[orderableId]) {
                         stockCardDetailMap[orderableId] = {};
                     }
-
+                    orderableIds.push(orderableId);
                     stockCardDetailMap[orderableId][lotId] = stockCardDetail;
                 });
             });

@@ -190,7 +190,10 @@
                 .then(function(page) {
                     var shipment = page.content[0];
                     var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+                    console.log(_.values(canFulfillForMeMap).length);
+
                     var orderableIds = Object.keys(canFulfillForMeMap);
+                    console.log(orderableIds);
                     shipment.lineItems = shipment.lineItems.filter(function(lineItem) {
                         return orderableIds.includes(lineItem.orderable.id);
                     });
@@ -238,6 +241,7 @@
         function mapCanFulfillForMe(summaries) {
             var canFulfillForMeMap = {};
 
+            var orderableIds = [];
             summaries.forEach(function(summary) {
                 summary.canFulfillForMe.forEach(function(canFulfillForMe) {
                     var orderableId = canFulfillForMe.orderable.id,
@@ -247,9 +251,13 @@
                         canFulfillForMeMap[orderableId] = {};
                     }
 
+                    orderableIds.push(orderableId);
+
                     canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
                 });
             });
+            console.log(orderableIds);
+            console.log(_.uniq(orderableIds));
 
             return canFulfillForMeMap;
         }

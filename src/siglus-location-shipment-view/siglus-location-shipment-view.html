@@ -6,16 +6,12 @@
     <ul>
         <li>
             <strong>{{'shipmentView.status' | message}}</strong>
-            <!-- SIGLUS-REFACTOR: starts here -->
             {{vm.order.status | orderStatus}}
-            <!-- SIGLUS-REFACTOR: ends here -->
         </li>
-        <!-- #365: add requisition number-->
         <li ng-if="vm.order.requisitionNumber">
             <strong>{{'shipmentView.requisitionNumber' | message}}</strong>
             {{vm.order.requisitionNumber}}
         </li>
-        <!-- #365: ends here -->
         <li>
             <strong>{{'shipmentView.dateCreated' | message}}</strong>
             {{vm.order.createdDate | openlmisDate}}
@@ -34,7 +30,6 @@
         </li>
     </ul>
 </aside>
-<!-- #264: warehouse clerk can add product to orders-->
 <div class="sub-heading">
     <h3 class="title">{{'shipmentView.products' | message}}</h3>
     <button class="add" ng-click="vm.addProducts()"
@@ -42,36 +37,26 @@
         {{'shipmentView.addProduct' | message}}
     </button>
 </div>
-<!-- #264: ends here -->
 <div id="locationShipmentForm" class="openlmis-table-container">
     <quantity-unit-toggle class="is-primary quantity-unit-btn" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
-    <!-- #287: Warehouse clerk can skip some products in order-->
     <h4>{{'shipmentView.skip' | message}}</h4>
     <ul>
         <li><a ng-click="vm.skipAllLineItems()">{{'shipmentView.all' | message}}</a></li>
         <li><a ng-click="vm.unskipAllLineItems()">{{'shipmentView.none' | message}}</a></li>
     </ul>
-    <!-- #287: ends here-->
     <table suppress-tr-openlmis-invalid>
         <thead>
         <tr>
-            <!-- #287: Warehouse clerk can skip some products in order-->
             <th>{{'shipmentView.skip' | message}}</th>
-            <!-- #287: ends here-->
             <th>{{'shipmentView.productCode' | message}}</th>
             <th>{{'shipmentView.product' | message}}</th>
             <th style="min-width: 200px;">{{'shipmentView.lotCode' | message}}</th>
-            <!-- #370: hide VVM Status-->
-            <!--<th>{{'shipmentView.vvmStatus' | message}}</th>-->
-            <!-- #370: ends here -->
             <th style="min-width: 130px">{{'shipmentView.expiryDate' | message}}</th>
             <th>Location</th>
             <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
                 {{'shipmentView.orderQuantity' | message}}
             </th>
-            <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
             <th>{{'shipmentView.partialFulfilledQuantity' | message}}</th>
-            <!-- #400: ends here -->
             <th>{{'shipmentView.fillQuantityInPack' | message}}</th>
             <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
                 {{'shipmentView.availableSoh' | message}}
@@ -86,7 +71,9 @@
         <tbody ng-repeat="lineItems in vm.pagedLineItems">
         <tr ng-repeat="(index, lineItem) in lineItems" empty-row="vm.isEmptyRow(lineItem, lineItems, index)" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="12">
             <td>
-                <input type="checkbox" ng-if="lineItem.isMainGroup" ng-model="lineItem.skipped"
+                <input type="checkbox"
+                       ng-if="lineItem.isMainGroup"
+                       ng-model="lineItem.skipped"
                        ng-change="vm.changeSkipStatus(lineItem, lineItems)"
                        ng-disabled="!vm.canSkip(lineItems)"/>
             </td>
@@ -128,7 +115,7 @@
                 >
                 </select>
             </td>
-            <td>{{vm.getOrderQuantity(lineItems, index)}}</td>
+            <td>{{lineItem.orderQuantity}}</td>
             <td>{{lineItem.partialFulfilledQuantity}}</td>
 
             <td ng-if="vm.showEmptyBlock(lineItem, lineItems)">
@@ -136,7 +123,7 @@
             </td>
             <td ng-if="vm.showEditableBlocks(lineItem, lineItems)">
                 <input positive-integer
-                       ng-model="lineItem.shipmentLineItem.quantityShipped"
+                       ng-model="lineItem.quantityShipped"
                        openlmis-invalid="{{lineItem.$error.quantityShippedError || '' | message}}"
                        ng-change="vm.changeFillQuantity(lineItem)"
                        ng-disabled="lineItem.skipped"/>
