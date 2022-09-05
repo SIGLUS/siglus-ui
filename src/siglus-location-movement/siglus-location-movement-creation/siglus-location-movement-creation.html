@@ -14,8 +14,8 @@
                    ng-keydown="$event.keyCode === 13 && vm.search()"
                    value="{{'stockReceiveCreation.search' | message}}"/>
         </form>
-        <section class="is-primary">
-            <form v-if="vm.isVirtual" class="form-inline" ng-submit="vm.addProduct()" name="productForm">
+        <section class="is-primary" ng-if="!vm.isVirtual">
+            <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
                 <div>
                     <label for="movement-select-product">{{'stockReceiveCreation.product' | message}}</label>
                     <select id="movement-select-product"

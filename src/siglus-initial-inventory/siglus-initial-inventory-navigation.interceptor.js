@@ -102,9 +102,7 @@
 
         $rootScope.$on('openlmis-auth.login', function() {
             var user = currentUserService.getUserInfo().$$state.value;
-            var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
-            if (user && shouldUpgradeMoveProduct === undefined
-                && $state.current.name !== 'openlmis.locationManagement.movement.creation') {
+            if (user && $state.current.name !== 'openlmis.locationManagement.movement.creation') {
                 siglusLocationMovementUpgradeService.init(user.homeFacilityId);
             }
         });
