@@ -581,6 +581,9 @@ describe('SiglusLocationShipmentViewController', function() {
                 lineItem
             ];
 
+            vm.order = {
+                orderLineItems: []
+            };
             vm.removeItem(lineItems, 0);
 
             expect(lineItems.length).toEqual(0);

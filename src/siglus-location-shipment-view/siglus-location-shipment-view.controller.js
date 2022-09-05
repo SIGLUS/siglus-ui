@@ -264,7 +264,7 @@
 
         function reloadParams() {
             $state.go($state.current.name, $stateParams, {
-                reload: $state.current.name,
+                reload: true,
                 notify: false
             });
         }
@@ -621,8 +621,7 @@
                     }
 
                     var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
-                    // todo add !result.closed
-                    if (result.closed && totalPartialLineItems) {
+                    if (!result.closed && totalPartialLineItems) {
                         return confirmService.confirm(
                             messageService.get('shipmentView.confirmPartialFulfilled.message', {
                                 totalPartialLineItems: totalPartialLineItems
@@ -687,11 +686,15 @@
             SiglusLocationViewService.saveDraft(buildSaveParams())
                 .then(function() {
                     notificationService.success('shipmentView.draftHasBeenSaved');
+                    $stateParams.shipment = null;
+                    $stateParams.order = null;
+                    $stateParams.locations = null;
+                    $stateParams.displayTableLineItems = null;
+                    $stateParams.stockCardSummaries = null;
+                    reloadParams();
                 })
                 .catch(function() {
                     notificationService.error('shipmentView.failedToSaveDraft');
-                })
-                .finally(function() {
                     loadingModalService.close();
                 });
         };

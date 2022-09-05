@@ -68,13 +68,13 @@
                             return orderable.id;
                         });
 
-                        return new StockCardSummaryRepositoryImpl().queryWithStockCards({
+                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation({
                             programId: order.program.id,
                             facilityId: order.supplyingFacility.id,
                             orderableId: orderableIds
                         })
                             .then(function(page) {
-                                return page.content;
+                                return page;
                             });
 
                     },
@@ -130,7 +130,7 @@
                         });
                     },
 
-                    updatedOrder: function(shipment, order, stockCardSummaries) {
+                    updatedOrder: function(shipment, order, stockCardSummaries, loadingModalService) {
                         var shipmentOrder = shipment.order;
                         shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
                             var stockCard = stockCardSummaries.find(function(stockCard) {
@@ -138,6 +138,7 @@
                             });
                             return stockCard.orderable;
                         });
+                        loadingModalService.close();
                         return shipmentOrder;
                     }
                 }
