@@ -132,7 +132,7 @@
             var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
             return _.map(itemsCopy, function(item) {
                 return angular.merge(item, {
-                    suggestedQuantity: suggestedQuatityMap[item.id] ? suggestedQuatityMap[item.id] : ''
+                    suggestedQuantity: suggestedQuatityMap[item.id] === undefined ? '' : suggestedQuatityMap[item.id]
                 });
             });
         }
