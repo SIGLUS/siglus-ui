@@ -99,15 +99,14 @@
                 return lineItem.orderable.id;
             });
             var shipmentViewLineItems = stockCardSummaries.reduce(function(shipmentViewLineItems, summary) {
-                // todo summary
                 return shipmentViewLineItems.concat(
-                    summary.canFulfillForMe.map(function(canFulfillForMe) {
+                    summary.stockCardDetails.map(function(stockCardDetail) {
                         return {
                             orderable: {
-                                id: canFulfillForMe.orderable.id,
-                                versionNumber: canFulfillForMe.orderable.meta.versionNumber
+                                id: stockCardDetail.orderable.id,
+                                versionNumber: stockCardDetail.orderable.meta.versionNumber
                             },
-                            lot: canFulfillForMe.lot,
+                            lot: stockCardDetail.lot,
                             quantityShipped: 0
                         };
                     })
@@ -153,7 +152,7 @@
 
             var orderableIds = [];
             _.forEach(summaries, function(summary) {
-                _.forEach(summary.canFulfillForMe, function(stockCardDetail) {
+                _.forEach(summary.stockCardDetails, function(stockCardDetail) {
                     var orderableId = stockCardDetail.orderable.id,
                         lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
 

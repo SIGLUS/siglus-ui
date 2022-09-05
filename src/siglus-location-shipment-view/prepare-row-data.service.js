@@ -26,20 +26,20 @@
     function prepareRowDataService(SiglusLocationCommonUtilsService) {
 
         function getRowTemplateData(currentItem, lineItems, isFirstRowToLineItem) {
-            var lot = lineItems.length === 1 && currentItem.lot;
-            var location = lineItems.length === 1 && currentItem.location;
+            var lot = lineItems.length === 1 ? currentItem.lot : null;
+            var location = lineItems.length === 1 ? currentItem.location : null;
 
             return {
                 $error: isFirstRowToLineItem ? currentItem.$error : {},
                 $hint: isFirstRowToLineItem ? currentItem.$hint : {},
                 productCode: currentItem.productCode,
                 productName: currentItem.fullProductName,
-                id: currentItem.id,
-                quantity: 0,
-                partialFilled: 0,
-                lot: lot,
+                orderable: currentItem.orderable,
+                id: isFirstRowToLineItem ? currentItem.id : undefined,
+                quantityShipped: isFirstRowToLineItem ? currentItem.quantityShipped : 0,
+                lot: isFirstRowToLineItem ? lot : null,
                 isKit: currentItem.isKit,
-                location: location,
+                location: isFirstRowToLineItem ? location : null,
                 netContent: currentItem.netContent,
                 skipped: currentItem.skipped,
                 orderableId: currentItem.orderableId
@@ -53,7 +53,7 @@
 
         function resetFirstRow(lineItem) {
             lineItem.lot = null;
-            lineItem.shipmentLineItem = {};
+            lineItem.quantityShipped = 0;
             lineItem.location = null;
         }
 
@@ -70,8 +70,10 @@
             var location =  orderLineItem.location;
 
             var lot = SiglusLocationCommonUtilsService.getLotByLotId(locations, _.get(orderLineItem.lot, 'id'));
-            lot.id = lot.lotId;
-            lot = _.omit(lot, 'lotId');
+            if (lot) {
+                lot.id = _.get(lot, 'lotId');
+                lot = _.omit(lot, 'lotId');
+            }
 
             var orderItem = _.find(order.orderLineItems, function(item) {
                 return item.orderable.id === orderLineItem.orderable.id;
