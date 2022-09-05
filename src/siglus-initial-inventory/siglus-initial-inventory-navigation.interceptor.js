@@ -31,8 +31,7 @@
         '$q', '$rootScope', 'loadingModalService', 'confirmService', '$state', 'stockmanagementUrlFactory',
         '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService',
         'authorizationService', 'alertService', '$stateParams',
-        'SiglusPhysicalInventoryCreationService', 'SiglusInitialInventoryResource', 'navigationStateService',
-        'siglusLocationMovementService'
+        'SiglusPhysicalInventoryCreationService', 'SiglusInitialInventoryResource', 'navigationStateService'
     ];
 
     function siglusInitialInventoryNavigationInterceptor(
@@ -40,8 +39,7 @@
         stockmanagementUrlFactory, $http, programService,
         facilityFactory, physicalInventoryFactory,
         currentUserService, authorizationService, alertService, $stateParams,
-        SiglusPhysicalInventoryCreationService, SiglusInitialInventoryResource, navigationStateService,
-        siglusLocationMovementService
+        SiglusPhysicalInventoryCreationService, SiglusInitialInventoryResource, navigationStateService
     ) {
 
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
@@ -63,85 +61,12 @@
             }
         });
 
-        // $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-        //     // TODO RENAME FILE, NOT JUST FOR INITIAL INVENTORY
-        //     if ((!toState.name.contains('movement.creation')
-        //         && toState.showInNavigation
-        //         && toState.url !== '/home'
-        //         && !toParams.hasCheckedMoveProduct)) {
-        //
-        //         // check async first disable then continue
-        //         event.preventDefault();
-        //         checkUpgradeMoveProduct().then(function(shouldUpgradeMoveProduct) {
-        //             if (shouldUpgradeMoveProduct) {
-        //                 loadingModalService.close();
-        //                 if (toState.name === 'openlmis.locationManagement.movement') {
-        //                     return startVirtualMovement();
-        //                 }
-        //                 return confirmService.confirm('locationMovement.upgradePopup')
-        //                     .then(function() {
-        //                         return startVirtualMovement();
-        //                     });
-        //             }
-        //             var params = angular.copy(toParams);
-        //             params.hasCheckedMoveProduct = true;
-        //             $state.go(toState.name, params);
-        //         });
-        //     }
-        // });
-
-        function startVirtualMovement() {
-            loadingModalService.open();
-            programService.getAllProductsProgram().then(function(programs) {
-                var programId = _.get(programs, [0, 'id']);
-                return siglusLocationMovementService.getMovementDrafts(programId).then(function(drafts) {
-                    if (drafts.length > 0) {
-                        var draftId = _.get(drafts, [0, 'id']);
-                        $stateParams.draftId = draftId;
-                        return $state.go('openlmis.locationManagement.movement.creation', {
-                            programId: programId,
-                            draftId: draftId,
-                            isVirtual: true
-                        });
-                    }
-                    var user = currentUserService.getUserInfo().$$state.value;
-                    var params = {
-                        programId: programId,
-                        facilityId: user.homeFacilityId,
-                        userId: user.id
-                    };
-                    return siglusLocationMovementService.createMovementDraft(params).then(function(draft) {
-                        var draftId = draft.id;
-                        return siglusLocationMovementService.initVirtualMovementDrafts(draft).then(function() {
-                            return $state.go('openlmis.locationManagement.movement.creation', {
-                                programId: programId,
-                                draftId: draftId,
-                                isVirtual: true
-                            });
-                        });
-                    });
-                });
-            });
-        }
-
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
-            if (toState.url === '/home') {
-                if (checkInitialInventoryStatus()) {
-                    event.preventDefault();
-                    checkDraftIsStarter();
-                } else {
-                    // checkUpgradeMoveProduct().then(function(shouldUpgradeMoveProduct) {
-                    //     if (shouldUpgradeMoveProduct) {
-                    //         loadingModalService.close();
-                    //         return confirmService.confirm('locationMovement.upgradePopup')
-                    //             .then(function() {
-                    //                 return startVirtualMovement();
-                    //             });
-                    //     }
-                    // });
-                }
-            }
+            if (checkInitialInventoryStatus() && toState.url === '/home') {
+                event.preventDefault();
 
+                checkDraftIsStarter();
+            }
         });
 
         function checkInitialInventoryStatus() {
@@ -150,16 +75,6 @@
                 return false;
             }
             return user.canInitialInventory;
-        }
-
-        function checkUpgradeMoveProduct() {
-            var user = currentUserService.getUserInfo().$$state.value;
-            if (user && user.homeFacilityId) {
-                return facilityFactory.getUserHomeFacility().then(function(facility) {
-                    return facility.needInitiallyMoveProduct;
-                });
-            }
-            return $q.resolve(false);
         }
 
         function checkInitialInventoryStatusByQuery() {
