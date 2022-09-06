@@ -25,28 +25,25 @@
    * Exposes data to the alert modal view.
    */
     angular
-        .module('siglus-facility-view-double-confirm-modal')
-        .controller('doubleConfirmModalController', doubleConfirmModalController);
+        .module('siglus-facility-view-radio-confirm-modal')
+        .controller('radioConfirmModalController', radioConfirmModalController);
 
-    doubleConfirmModalController.$inject = ['alertClass', 'title', 'message',
-        'buttonLabels', 'modalDeferred', 'alertConfirmModalService'];
+    radioConfirmModalController.$inject = ['alertClass', 'title', 'message',
+        'buttonLabels', 'modalDeferred'];
 
-    function doubleConfirmModalController(alertClass, title, message,
-                                          buttonLabels, modalDeferred,
-                                          alertConfirmModalService) {
+    function radioConfirmModalController(alertClass, title, message,
+                                         buttonLabels, modalDeferred) {
         var vm = this;
         vm.$onInit = onInit;
         vm.close = function() {
             modalDeferred.reject();
         };
-        vm.doubleConfirm = function() {
-            modalDeferred.reject();
-            alertConfirmModalService.error(
-                'siglusFacilityViewDoubleConfirmModal.doubleConfirmMessage',
-                '',
-                ['siglusFacilityViewDoubleConfirmModal.close',
-                    'siglusFacilityViewDoubleConfirmModal.confirm']
-            );
+        vm.confirm = function() {
+            if (vm.disableLocationManagement === true) {
+                modalDeferred.resolve();
+            } else {
+                modalDeferred.reject();
+            }
         };
 
         function onInit() {
@@ -54,6 +51,7 @@
             vm.title = title;
             vm.message = message;
             vm.buttonLabels = buttonLabels;
+            vm.disableLocationManagement = false;
         }
     }
 

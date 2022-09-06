@@ -44,5 +44,7 @@
   "adminFacilityView.siglusapi.error.upload.file.empty": "File empty.",
   "adminFacilityView.siglusapi.error.upload.header.missing": "Header for column ${lastNumber} is missing.",
   "adminFacilityView.siglusapi.error.upload.row.missing": "${firstEle} values in row ${lastNumber} is missing.",
-  "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting."
+  "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting.",
+  "adminFacilityView.notConfigured": "Note: Location information is not yet configured.",
+  "adminFacilityView.alreadyConfigured": "Note: Location information is already configured."
 }

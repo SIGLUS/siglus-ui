@@ -2470,5 +2470,12 @@
   "adminFacilityView.siglusapi.error.upload.file.empty": "File empty.",
   "adminFacilityView.siglusapi.error.upload.header.missing": "Header for column ${lastNumber} is missing.",
   "adminFacilityView.siglusapi.error.upload.row.missing": "${firstEle} values in row ${lastNumber} is missing.",
-  "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting."
+  "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting.",
+  "adminFacilityView.notConfigured": "Note: Location information is not yet configured.",
+  "adminFacilityView.alreadyConfigured": "Note: Location information is already configured.",
+  "siglusFacilityViewRadioConfirmModal.confirmMessage": "Once you disable the feature, the facility's current location data will be cleared. The virtual location will be applied. Are you sure you want to disable it?",
+  "siglusFacilityViewRadioConfirmModal.close": "Close",
+  "siglusFacilityViewRadioConfirmModal.confirm": "Confirm",
+  "siglusFacilityViewRadioConfirmModal.yes": "Yes",
+  "siglusFacilityViewRadioConfirmModal.no": "No"
 }

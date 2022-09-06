@@ -19,22 +19,22 @@
 
     /**
    * @ngdoc service
-   * @name siglus-double-confirm-modal.alertConfirmModalService
+   * @name siglus-radio-confirm-modal.alertConfirmModalService
    *
    * @description
    * Service allows to display alert modal with custom message.
    */
     angular
-        .module('siglus-facility-view-double-confirm-modal')
-        .service('siglusFacilityViewDoubleConfirmModalService',
-            siglusFacilityViewDoubleConfirmModalService);
+        .module('siglus-facility-view-radio-confirm-modal')
+        .service('siglusFacilityViewRadioConfirmModalService',
+            siglusFacilityViewRadioConfirmModalService);
 
-    siglusFacilityViewDoubleConfirmModalService.$inject = [
+    siglusFacilityViewRadioConfirmModalService.$inject = [
         '$q', 'openlmisModalService'
     ];
 
-    function siglusFacilityViewDoubleConfirmModalService($q,
-                                                         openlmisModalService) {
+    function siglusFacilityViewRadioConfirmModalService($q,
+                                                        openlmisModalService) {
 
         var modal;
 
@@ -69,9 +69,9 @@
             }
 
             modal = openlmisModalService.createDialog({
-                controller: 'doubleConfirmModalController',
+                controller: 'radioConfirmModalController',
                 controllerAs: 'vm',
-                templateUrl: 'siglus-facility-view-double-confirm-modal/siglus-facility-view-double-confirm-modal.html',
+                templateUrl: 'siglus-facility-view-radio-confirm-modal/siglus-facility-view-radio-confirm-modal.html',
                 show: true,
                 resolve: {
                     alertClass: function() {

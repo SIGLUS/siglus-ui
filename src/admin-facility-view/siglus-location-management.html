@@ -1,6 +1,10 @@
 <h3>{{'adminFacilityView.locationManagement.instructionTitle' | message}}</h3>
 <br>
 <p>{{'adminFacilityView.locationManagement.viewLocation' | message}}</p>
+<div>
+  <p>{{vm.configured}}</p>
+</div>
+
 <input openlmis-download="{{vm.exportFile(facilityId)}}" type="button"
        value="{{'adminFacilityView.export' | message}}"/>
 <br>

@@ -18,6 +18,7 @@ describe('FacilityViewController', function() {
     beforeEach(function() {
         module('admin-facility-view');
         module('siglus-alert-confirm-modal');
+        module('siglus-facility-view-radio-confirm-modal');
 
         inject(function($injector) {
             this.$q = $injector.get('$q');
@@ -43,6 +44,9 @@ describe('FacilityViewController', function() {
             );
             this.locationManagementService = $injector.get(
                 'locationManagementService'
+            );
+            this.siglusFacilityViewRadioConfirmModalService = $injector.get(
+                'siglusFacilityViewRadioConfirmModalService'
             );
         });
 

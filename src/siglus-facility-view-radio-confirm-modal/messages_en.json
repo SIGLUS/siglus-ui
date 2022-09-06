@@ -1,0 +1,7 @@
+{
+  "siglusFacilityViewRadioConfirmModal.confirmMessage": "Once you disable the feature, the facility's current location data will be cleared. The virtual location will be applied. Are you sure you want to disable it?",
+  "siglusFacilityViewRadioConfirmModal.close": "Close",
+  "siglusFacilityViewRadioConfirmModal.confirm": "Confirm",
+  "siglusFacilityViewRadioConfirmModal.yes": "Yes",
+  "siglusFacilityViewRadioConfirmModal.no": "No"
+}
