@@ -27,9 +27,15 @@
                 </div>
                 <div ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
-                    <select id="lotSelect" ng-model="vm.selectedLot"
-                            ng-options="lot as vm.selectedLotLabel(lot) for lot in vm.lots | orderBy :'expirationDate'" required>
-                    </select>
+                    <div style="display: inline-block;"popover="{{vm.lotNotFirstExpireHint | message}}">
+                        <select id="lotSelect"
+                                ng-model="vm.selectedLot"
+                                ng-change="vm.changeLot(lot)"
+                                ng-options="lot as vm.selectedLotLabel(lot) for lot in vm.lots | orderBy :'expirationDate'"
+                                required>
+                        </select>
+                    </div>
+
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
