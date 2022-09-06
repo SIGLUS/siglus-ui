@@ -1,0 +1,14 @@
+{
+    "shipmentViewReport.title": "report",
+    "shipmentViewReport.produceCode": "Product Code",
+    "shipmentViewReport.productName": "Product Name",
+    "shipmentViewReport.lotCode": "Lot Code",
+    "shipmentViewReport.expiryDate": "Expiry Date",
+    "shipmentViewReport.location": "Location",
+    "shipmentViewReport.orderQuantity": "Order Quantity",
+    "shipmentViewReport.partialFulfilled": "Partial Fulfilled",
+    "shipmentViewReport.fillQuantity": "Fill Quantity(in Packs)",
+    "shipmentViewReport.availableSOH": "Available SOH",
+    "shipmentViewReport.remainingSOH": "Remaining SOH",
+    "shipmentViewReport.bottomLeftTips": "Only products that have positive fill quantity entered are displayed."
+}

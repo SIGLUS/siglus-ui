@@ -38,7 +38,8 @@
         '$stateParams', 'order', 'moment', 'SiglusLocationViewService',
         'prepareRowDataService', 'SiglusLocationCommonUtilsService',
         'notificationService', 'confirmService',
-        'locations', 'siglusLocationCommonApiService'
+        'locations', 'siglusLocationCommonApiService',
+        'localStorageService', '$window'
     ];
 
     function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
@@ -53,7 +54,8 @@
                                                   prepareRowDataService,
                                                   SiglusLocationCommonUtilsService,
                                                   notificationService, confirmService,
-                                                  locations, siglusLocationCommonApiService) {
+                                                  locations, siglusLocationCommonApiService,
+                                                  localStorageService, $window) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -85,7 +87,7 @@
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = displayTableLineItems;
-
+            // console.log('#### displayTableLineItems', displayTableLineItems);
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
@@ -321,6 +323,27 @@
             return vm.quantityUnit === QUANTITY_UNIT.DOSES;
         }
 
+        vm.printShipment = function printShipment() {
+            console.log($stateParams);
+            localStorageService.add('shipmentViewData', JSON.stringify(vm.displayTableLineItems));
+            localStorageService.add('locations', JSON.stringify(locations));
+            var PRINT_URL = $window.location.href.split('!/')[0]
+                + '!/'
+                + 'orders/fulfillment/report';
+            $window.open(
+                PRINT_URL,
+                '_blank'
+            );
+        };
+
+        /**
+         * @ngdoc method
+         * @methodOf shipment-view.controller:ShipmentViewController
+         * @name getSelectedQuantityUnitKey
+         *
+         * @description
+         * Returns message key for selected quantity unit.
+         */
         function getSelectedQuantityUnitKey() {
             return QUANTITY_UNIT.$getDisplayName(vm.quantityUnit);
         }

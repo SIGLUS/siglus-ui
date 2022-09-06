@@ -38,7 +38,7 @@
             extraData: false
         }, {
             get: {
-                method: 'GET',
+                method: 'POST',
                 url: stockmanagementUrlFactory('api/siglusapi/locations'),
                 isArray: true
             }

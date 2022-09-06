@@ -84,7 +84,7 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
             },
             getSOH: {
-                method: 'GET',
+                method: 'POST',
                 url: stockmanagementUrlFactory('/api/siglusapi/locations'),
                 isArray: true
             }
@@ -134,10 +134,10 @@
         }
 
         function getSohByLocation(ids) {
+            console.log('ids: ', ids);
             return locationResource.getSOH({
-                extraData: true,
-                orderableIds: ids
-            }).$promise;
+                extraData: true
+            }, ids ? ids : []).$promise;
         }
 
         function validateConflictProgram(program, facility) {

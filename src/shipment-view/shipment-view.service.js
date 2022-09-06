@@ -46,6 +46,7 @@
 
         this.getShipmentForOrder = getShipmentForOrder;
         this.getSuggestedQuantity = getSuggestedQuantity;
+        this.getPickPackInfo = getPickPackInfo;
 
         /**
          * @ngdoc method
@@ -81,6 +82,18 @@
             var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/orders/:id/suggestedQuantity'), {}, {
                 find: {
                     url: fulfillmentUrlFactory('/api/siglusapi/orders/:id/suggestedQuantity'),
+                    method: 'get'
+                }
+            });
+            return resource.find({
+                id: id
+            }).$promise;
+        }
+
+        function getPickPackInfo(id) {
+            var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/orders/:id/pickPackInfo'), {}, {
+                find: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/orders/:id/pickPackInfo'),
                     method: 'get'
                 }
             });

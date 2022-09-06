@@ -13,13 +13,14 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('OrderFulfillmentController', function() {
+describe('SiglusLocationOrderFulfillmentController', function() {
 
     var vm, orderingFacilities, programs, orders, $controller, $stateParams, $state,
         BasicOrderResponseDataBuilder, ORDER_STATUS, ProgramDataBuilder, FacilityDataBuilder;
 
     beforeEach(function() {
         module('order-fulfillment');
+        module('siglus-location-order-fulfillment');
         module('referencedata-facility');
         module('referencedata-program');
 
@@ -62,7 +63,7 @@ describe('OrderFulfillmentController', function() {
     describe('initialization', function() {
 
         beforeEach(function() {
-            vm = $controller('OrderFulfillmentController', {
+            vm = $controller('SiglusLocationOrderFulfillmentController', {
                 orderingFacilities: orderingFacilities,
                 programs: programs,
                 orders: orders
@@ -113,20 +114,6 @@ describe('OrderFulfillmentController', function() {
             expect(vm.orderStatus).toBeUndefined();
         });
 
-        it('should reload state params', function() {
-            spyOn($state, 'go').andReturn();
-
-            $stateParams.status = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED];
-
-            vm.$onInit();
-
-            expect($state.go).toHaveBeenCalledWith('openlmis.orders.fulfillment', {
-                status: [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED]
-            }, {
-                notify: false
-            });
-        });
-
         it('should expose sort options', function() {
             expect(vm.options).toEqual({
                 'orderFulfillment.createdDateDesc': ['createdDate,desc'],
@@ -149,7 +136,7 @@ describe('OrderFulfillmentController', function() {
 
             vm.loadOrders();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.orders.fulfillment', {
+            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.fulfillOrder', {
                 status: null,
                 requestingFacilityId: null,
                 page: 0,
@@ -164,7 +151,7 @@ describe('OrderFulfillmentController', function() {
 
             vm.loadOrders();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.orders.fulfillment', {
+            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.fulfillOrder', {
                 status: ORDER_STATUS.FULFILLING,
                 requestingFacilityId: null,
                 page: 0,
@@ -179,7 +166,7 @@ describe('OrderFulfillmentController', function() {
 
             vm.loadOrders();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.orders.fulfillment', {
+            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.fulfillOrder', {
                 status: null,
                 requestingFacilityId: vm.orderingFacility.id,
                 page: 0,
@@ -198,7 +185,7 @@ describe('OrderFulfillmentController', function() {
     });
 
     function initController() {
-        vm = $controller('OrderFulfillmentController', {
+        vm = $controller('SiglusLocationOrderFulfillmentController', {
             orderingFacilities: orderingFacilities,
             programs: programs,
             orders: orders
