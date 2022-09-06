@@ -15,7 +15,7 @@
 
 describe('StockCardSummaryListController', function() {
     // SIGLUS-REFACTOR: add programs, facility
-    var $controller, $state, implMock, StockCardSummaryDataBuilder, vm, stockCardSummaries, stateParams,
+    var $controller, $state, implMock, $stateParams, vm, stockCardSummaries, stateParams,
         programs, facility, stockCardDataService, $scope, $rootScope;
     // SIGLUS-REFACTOR: ends here
 
@@ -36,13 +36,24 @@ describe('StockCardSummaryListController', function() {
             $state = $injector.get('$state');
             $rootScope = $injector.get('$rootScope');
             $scope = $rootScope.$new();
-            StockCardSummaryDataBuilder = $injector.get('StockCardSummaryDataBuilder');
+            $stateParams = $injector.get('$stateParams');
             stockCardDataService = $injector.get('stockCardDataService');
         });
 
         stockCardSummaries = [
-            new StockCardSummaryDataBuilder().build(),
-            new StockCardSummaryDataBuilder().build()
+            {
+                orderable: {
+                    isKit: true,
+                    fullProductName: 'Levofloxacina; 100mg; Comp',
+                    id: 'c965909b-431b-4cfd-98ae-1bf475420560'
+                },
+                stockCardDetails: [
+                    {
+                        occurredDate: '2022-08-24'
+                    }
+                ],
+                stockOnHand: 300
+            }
         ];
 
         stateParams = {
@@ -82,7 +93,18 @@ describe('StockCardSummaryListController', function() {
     describe('onInit', function() {
 
         it('should expose stockCardSummaries', function() {
-            expect(vm.stockCardSummaries).toEqual(stockCardSummaries);
+            $stateParams.isArchivedProducts = false;
+
+            expect(vm.stockCardSummaries).toEqual([{
+                orderable: {
+                    isKit: true,
+                    fullProductName: 'Levofloxacina; 100mg; Comp',
+                    id: 'c965909b-431b-4cfd-98ae-1bf475420560'
+                },
+                stockCardDetails: [],
+                stockOnHand: 300,
+                occurredDate: '2022-08-24'
+            }]);
         });
     });
 
