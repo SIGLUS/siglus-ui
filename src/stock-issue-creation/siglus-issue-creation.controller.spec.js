@@ -474,4 +474,95 @@ describe('SiglusStockIssueCreationController', function() {
             }]]);
         });
     });
+
+    describe('validateLotNotFirstExpire method', function() {
+        it('should not validate not first to expire when lots is null', function() {
+            vm.lots = [];
+            vm.changeLot();
+
+            expect(vm.lotNotFirstExpireHint).toEqual('');
+        });
+
+        it('should return ocationShipmentView.notFirstToExpire when select lot is not first to expire', function() {
+            var date1 = new Date();
+            date1.setFullYear(2022);
+            date1.setMonth(1);
+
+            var date2 = new Date();
+            date2.setFullYear(2025);
+            date2.setMonth(1);
+
+            var date3 = new Date();
+            date3.setFullYear(2028);
+            date3.setMonth(1);
+
+            vm.lots = [
+                {
+                    id: '000001',
+                    lotCode: 'A00001',
+                    expirationDate: date1
+                },
+                {
+                    id: '000002',
+                    lotCode: 'A00002',
+                    expirationDate: date2
+                },
+                {
+                    id: '000003',
+                    lotCode: 'A00003',
+                    expirationDate: date3
+                }
+            ];
+
+            vm.selectedLot = {
+                id: '000002',
+                lotCode: 'A00002',
+                expirationDate: date2
+            };
+            vm.changeLot();
+
+            expect(vm.lotNotFirstExpireHint).toEqual('locationShipmentView.notFirstToExpire');
+        });
+
+        it('should return empty string when select lot is first to expire', function() {
+            var date1 = new Date();
+            date1.setFullYear(2022);
+            date1.setMonth(1);
+
+            var date2 = new Date();
+            date2.setFullYear(2025);
+            date2.setMonth(1);
+
+            var date3 = new Date();
+            date3.setFullYear(2028);
+            date3.setMonth(1);
+
+            vm.lots = [
+                {
+                    id: '000001',
+                    lotCode: 'A00001',
+                    expirationDate: date1
+                },
+                {
+                    id: '000002',
+                    lotCode: 'A00002',
+                    expirationDate: date2
+                },
+                {
+                    id: '000003',
+                    lotCode: 'A00003',
+                    expirationDate: date3
+                }
+            ];
+
+            vm.selectedLot = {
+                id: '000001',
+                lotCode: 'A00001',
+                expirationDate: date1
+            };
+            vm.changeLot();
+
+            expect(vm.lotNotFirstExpireHint).toEqual('');
+        });
+    });
 });

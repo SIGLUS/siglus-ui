@@ -37,7 +37,7 @@
         'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
         'siglusStockUtilsService', 'localStorageFactory', '$q', 'siglusDownloadLoadingModalService',
-        'orderablesPrice'
+        'orderablesPrice', 'moment'
     ];
 
     function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
@@ -47,7 +47,7 @@
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
                         stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
                         siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
-                        localStorageFactory, $q, siglusDownloadLoadingModalService, orderablesPrice) {
+                        localStorageFactory, $q, siglusDownloadLoadingModalService, orderablesPrice, moment) {
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
@@ -56,6 +56,8 @@
         vm.destinationName = '';
         vm.type = 'issue';
         vm.isMerge = isMerge;
+
+        vm.lotNotFirstExpireHint = '';
         vm.key = function(secondaryKey) {
             return 'stockIssueCreation.' + secondaryKey;
         };
@@ -84,6 +86,24 @@
         vm.returnBack = function() {
             $state.go('openlmis.stockmanagement.issue.draft', $stateParams);
         };
+
+        vm.changeLot = function() {
+            validateLotNotFirstExpire();
+        };
+
+        function validateLotNotFirstExpire() {
+            if (!_.isEmpty(vm.lots) && !_.isEmpty(vm.selectedLot)) {
+                var resetLotList = _.filter(vm.lots, function(lot) {
+                    return lot.id !== _.get(vm.selectedLot, 'id');
+                });
+                var isNotFirstToExpire = _.some(resetLotList, function(lot) {
+                    return moment(lot.expirationDate).isBefore(moment(vm.selectedLot.expirationDate));
+                });
+                vm.lotNotFirstExpireHint = isNotFirstToExpire ? 'locationShipmentView.notFirstToExpire' : '';
+            } else {
+                vm.lotNotFirstExpireHint = '';
+            }
+        }
 
         vm.setProductGroups = function() {
             var addedLotIds = _.chain(vm.addedLineItems)
@@ -116,6 +136,7 @@
                 })
                 .value();
 
+            vm.lotNotFirstExpireHint = '';
             $stateParams.orderableGroups = vm.orderableGroups;
         };
 
@@ -163,6 +184,7 @@
             }
 
             previousAdded = vm.addedLineItems[0];
+            validateLotNotFirstExpire();
 
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
