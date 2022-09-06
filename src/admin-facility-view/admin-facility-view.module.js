@@ -32,6 +32,6 @@
         'referencedata-program',
         'ui.router',
         'siglus-admin-facility-view-location-management',
-        'siglus-facility-view-double-confirm-modal'
+        'siglus-facility-view-radio-confirm-modal'
     ]);
 })();

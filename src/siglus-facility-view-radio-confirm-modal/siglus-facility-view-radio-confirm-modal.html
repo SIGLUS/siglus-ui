@@ -1,0 +1,37 @@
+<div class="modal alert-modal {{vm.alertClass}}" tabindex="-1" role="dialog" aria-hidden="true"
+     xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="alert-main">
+          <div class="alert-message">
+            <h2>{{vm.title | message}}</h2>
+            <p>{{vm.message | message}}</p>
+            <fieldset>
+              <label class="radio">
+                <input type="radio" ng-model="vm.disableLocationManagement"
+                       ng-value="false"
+                />
+                {{'siglusFacilityViewRadioConfirmModal.no' | message}}
+              </label>
+              <label class="radio">
+                <input type="radio" ng-model="vm.disableLocationManagement"
+                       ng-value="true"/>
+                {{'siglusFacilityViewRadioConfirmModal.yes' | message}}
+              </label>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-footer-cancel" ng-click="vm.close()">{{vm.buttonLabels[0] | message}}
+        </button>
+        <button class="modal-footer-confirm primary" ng-click="vm.confirm()">
+          {{vm.buttonLabels[1]
+        | message}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

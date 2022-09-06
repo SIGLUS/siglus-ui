@@ -35,7 +35,7 @@
         'notificationService', 'locationManagementService',
         'messageService',
         'alertConfirmModalService', '$stateParams', 'facilityService',
-        'siglusFacilityViewDoubleConfirmModalService'
+        'siglusFacilityViewRadioConfirmModalService'
     ];
 
     function controller($q, $state, facility, facilityTypes,
@@ -45,7 +45,7 @@
                         notificationService, locationManagementService,
                         messageService, alertConfirmModalService,
                         $stateParams, facilityService,
-                        siglusFacilityViewDoubleConfirmModalService) {
+                        siglusFacilityViewRadioConfirmModalService) {
 
         var vm = this;
 
@@ -147,7 +147,6 @@
          * Holds form error message.
          */
         vm.invalidMessage = undefined;
-        vm.rowNumber = undefined;
 
         /**
          * @ngdoc method
@@ -166,6 +165,15 @@
             vm.isAndroid = angular.copy(
                 facility.isAndroidDevice
             );
+            vm.hasLocation = angular.copy(
+                facility.hasSuccessUploadLocations
+            );
+            vm.configured = facility.hasSuccessUploadLocations
+                ? messageService.get(
+                    'adminFacilityView.alreadyConfigured'
+                ) : messageService.get(
+                    'adminFacilityView.notConfigured'
+                );
             vm.isNewFacility = angular.copy(facility.isNewFacility);
             vm.facilityId = angular.copy(facility.id);
             vm.facilityWithPrograms = angular.copy(facility);
@@ -348,7 +356,6 @@
         function upload(facilityId) {
             facilityId = vm.facilityId;
             vm.invalidMessage = undefined;
-            vm.rowNumber = undefined;
 
             if (vm.file) {
                 var loadingPromise = loadingModalService.open();
@@ -367,9 +374,13 @@
                         new FacilityRepository().get($stateParams.id)
                             .then(function(res) {
                                 vm.facility = res;
+                                vm.configured = messageService.get(
+                                    'adminFacilityView.alreadyConfigured'
+                                );
                             });
                     })
                     .catch(handleError);
+                loadingModalService.close();
             } else {
                 notificationService.error(
                     'adminIsaManage.fileIsNotSelected'
@@ -382,62 +393,53 @@
             var numberSplit = businessErrorExtraData.split('');
             var lastNumber = numberSplit.slice(-1);
             var firstEle = businessErrorExtraData[0];
-            console.log('ln', lastNumber);
-            console.log('fe', firstEle);
-            //改成对象的形式 加isbusiness error的判断 写一个handleerror的方法
             notificationService.error(
                 'adminFacilityView.uploadFailed'
             );
             vm.file = null;
             var messageKey = error.data.messageKey;
-            var errorMessage = {
-                headerMissing: 'siglusapi.error.upload.header.missing',
-                headerInvalid: 'siglusapi.error.upload.header.invalid',
-                formatIncorrect: 'siglusapi.error.upload.file.format.incorrect',
-                fileEmpty: 'siglusapi.error.upload.file.empty',
-                rowMissing: 'siglusapi.error.upload.row.missing',
-                duplicateLocationCode: 'siglusapi.error.upload.duplicate.locationCode'
+            var messageKeyMap = {
+                'siglusapi.error.upload.header.missing': {
+                    message: 'adminFacilityView.siglusapi.error.upload.header.missing',
+                    firstEle: null,
+                    lastNumber: true
+                },
+                'siglusapi.error.upload.header.invalid': {
+                    message: 'adminFacilityView.siglusapi.error.upload.header.invalid',
+                    firstEle: null,
+                    lastNumber: null
+                },
+                'siglusapi.error.upload.file.format.incorrect': {
+                    message: 'adminFacilityView.siglusapi.error.upload.file.format.incorrect',
+                    firstEle: null,
+                    lastNumber: null
+                },
+                'siglusapi.error.upload.file.empty': {
+                    message: 'adminFacilityView.siglusapi.error.upload.file.empty',
+
+                    firstEle: null,
+                    lastNumber: null
+                },
+                'siglusapi.error.upload.row.missing': {
+                    message: 'adminFacilityView.siglusapi.error.upload.row.missing',
+                    firstEle: null,
+                    lastNumber: null
+                },
+                'siglusapi.error.upload.duplicate.locationCode': {
+                    message: 'adminFacilityView.siglusapi.error.upload.duplicate.locationCode',
+                    firstEle: true,
+                    lastNumber: true
+                }
             };
-            if (messageKey === errorMessage.headerMissing) {
-                vm.invalidMessage = messageService.get(
-                    'adminFacilityView.siglusapi.error.upload.header.missing',
-                    {
-                        lastNumber: lastNumber
-                    }
-                );
-            }
-            if (messageKey === errorMessage.headerInvalid) {
-                vm.invalidMessage = messageService.get(
-                    'adminFacilityView.siglusapi.error.upload.header.invalid'
-                );
-            }
-            if (messageKey === errorMessage.formatIncorrect) {
-                vm.invalidMessage = messageService.get(
-                    'adminFacilityView.siglusapi.error.upload.file.format.incorrect'
-                );
-            }
-            if (messageKey === errorMessage.fileEmpty) {
-                vm.invalidMessage = messageService.get(
-                    'adminFacilityView.siglusapi.error.upload.file.empty'
-                );
-            }
-            if (messageKey === errorMessage.rowMissing) {
-                vm.invalidMessage = messageService.get(
-                    'adminFacilityView.siglusapi.error.upload.row.missing',
-                    {
-                        lastNumber: lastNumber
-                    }
-                );
-            }
-            if (messageKey === errorMessage.duplicateLocationCode) {
-                vm.invalidMessage = messageService.get(
-                    'adminFacilityView.siglusapi.error.upload.duplicate.locationCode',
-                    {
-                        lastNumber: lastNumber,
-                        firstEle: firstEle
-                    }
-                );
-            }
+            vm.invalidMessage = messageService.get(
+                messageKeyMap[messageKey]['message'],
+                {
+                    lastNumber: messageKeyMap[messageKey].lastNumber
+                        ? lastNumber : '',
+                    firstEle: messageKeyMap[messageKey].firstEle ? firstEle
+                        : ''
+                }
+            );
             loadingModalService.close();
             document.getElementById('fileupload').value = '';
         }
@@ -458,7 +460,7 @@
             }
             var enableValue = vm.enableValue;
             if (enableValue) {
-                siglusFacilityViewDoubleConfirmModalService.error(
+                siglusFacilityViewRadioConfirmModalService.error(
                     'adminFacilityView.locationManagement.closeSwitch',
                     '',
                     ['adminFacilityView.close',
@@ -497,7 +499,7 @@
                     })
                     .catch(function(error) {
                         if (error.status === 500) {
-                            alertConfirmModalService.error(
+                            siglusFacilityViewRadioConfirmModalService.error(
                                 'adminFacilityView.uploadFailed',
                                 '',
                                 ['adminFacilityView.close',

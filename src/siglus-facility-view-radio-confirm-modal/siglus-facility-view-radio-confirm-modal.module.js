@@ -16,12 +16,11 @@
 (function() {
     'use strict';
 
-    angular.module('siglus-facility-view-double-confirm-modal', [
+    angular.module('siglus-facility-view-radio-confirm-modal', [
         'ui.router',
         'openlmis-modal',
         'siglus-physical-inventory-draft-list',
         'referencedata-facility',
-        'requisition',
-        'siglus-alert-confirm-modal'
+        'requisition'
     ]);
 })();
