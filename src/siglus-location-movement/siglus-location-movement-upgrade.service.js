@@ -35,6 +35,9 @@
         };
 
         this.init = function(facilityId) {
+            if (!facilityId) {
+                return ;
+            }
             return $http.get(openlmisUrlFactory('/api/siglusapi/locationMovements?facilityId=' + facilityId))
                 .then(function(response) {
                     service.facilityId = facilityId;
@@ -94,7 +97,7 @@
 
         angular.element(document).ready(function() {
             var user = currentUserService.getUserInfo().$$state.value;
-            if (user && service.needInitiallyMoveProduct === undefined) {
+            if (user && user.homeFacilityId && service.needInitiallyMoveProduct === undefined) {
                 service.init(user.homeFacilityId);
             }
         });
