@@ -224,7 +224,10 @@
 
         this.prepareAddedLineItemsForVirtual = function(draftInfo, locations,  orderableGroups) {
             var $this = this;
-            return _.chain(_.get(draftInfo, 'lineItems', []))
+            var sortedByProductCode = _.chain(_.get(draftInfo, 'lineItems', [])).sort(function(i1, i2) {
+                return _.get(i1, 'productCode', '').localeCompare(_.get(i2, 'productCode', ''));
+            });
+            return _.chain(sortedByProductCode)
                 .groupBy('orderableId')
                 .values()
                 .map(function(group) {
@@ -238,11 +241,12 @@
                     var childrenLineItems = mapDataToDisplay(group, false, locations, orderableGroups);
                     if (childrenLineItems.length > 1 && childrenLineItems[0].lot && childrenLineItems[0].lot.id) {
                         childrenLineItems.sort(function(i1, i2) {
-                            return _.get(i2, ['lot', 'lotCode']).localeCompare(_.get(i1, ['lot', 'lotCode']));
+                            return _.get(i2, ['lot', 'lotCode'], '').localeCompare(_.get(i1, ['lot', 'lotCode'], ''));
                         });
                         childrenLineItems[0].isFirst = true;
                         for (var i = 1; i < childrenLineItems.length; i++) {
-                            if (childrenLineItems[i].lot.id !== childrenLineItems[i - 1].lot.id) {
+                            if (_.get(childrenLineItems[i], ['lot', 'id'], '') !==
+                                _.get(childrenLineItems[i - 1], ['lot', 'id'], '')) {
                                 childrenLineItems[i].isFirst = true;
                             }
                         }

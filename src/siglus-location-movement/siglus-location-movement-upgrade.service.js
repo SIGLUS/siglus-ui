@@ -34,6 +34,10 @@
             && this.needInitiallyMoveProduct !== undefined ? this.needInitiallyMoveProduct : false;
         };
 
+        this.checkInited = function() {
+            return this.facilityId !== undefined && this.needInitiallyMoveProduct !== undefined;
+        };
+
         this.init = function(facilityId) {
             if (!facilityId) {
                 return ;
@@ -94,13 +98,6 @@
         this.doneUpgrade = function() {
             this.needInitiallyMoveProduct = false;
         };
-
-        angular.element(document).ready(function() {
-            var user = currentUserService.getUserInfo().$$state.value;
-            if (user && user.homeFacilityId && service.needInitiallyMoveProduct === undefined) {
-                service.init(user.homeFacilityId);
-            }
-        });
     }
 
 })();

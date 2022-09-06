@@ -12,7 +12,9 @@
   "locationMovement.deleteMovementWarning": "Once delete the draft, the existing process will lose and cannot be recovered.",
   "locationMovement.noTableData": "Add a product to make a movement. You have not added any products yet.",
   "locationMovement.movement": "Movement",
-  "locationMovement.ltSoh": "All the stock on hand need to be moved to real locations.",
+  "locationMovement.ltSoh": "All the stock on hand need to be moved to actual locations.",
   "locationMovement.duplicateDesLocation": "The location under the same lot cannot be repeated, please select a new one",
-  "locationMovement.upgradePopup": "Your account has been updated the location feature, please configure it first."
+  "locationMovement.upgradePopup": "Your account has been updated the location feature, please move your products to the actual locations first. It may take some time to load the products.",
+  "locationMovement.noFilterData": "No products found.",
+  "locationMovement.addLocation": "Add Location"
 }
