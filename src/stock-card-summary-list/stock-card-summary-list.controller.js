@@ -72,15 +72,27 @@
          * Initialization method for StockCardSummaryListController.
          */
         function onInit() {
-            // SIGLUS-REFACTOR: starts here
             vm.keyword = $stateParams.keyword;
-            // SIGLUS-REFACTOR: ends here
-            vm.stockCardSummaries = stockCardSummaries;
+            vm.isArchivedProducts = $stateParams.isArchivedProducts;
+
+            vm.stockCardSummaries = angular.copy(stockCardSummaries);
+            if (!vm.isArchivedProducts) {
+                _.forEach(vm.stockCardSummaries, function(stockCardSummary) {
+                    if (stockCardSummary.orderable.isKit) {
+                        stockCardSummary.occurredDate = _.get(stockCardSummary.stockCardDetails, [0, 'occurredDate']);
+                        stockCardSummary.stockCardDetails = [];
+                    }
+
+                    stockCardSummary.stockCardDetails = _.filter(stockCardSummary.stockCardDetails, function(item) {
+                        return item.stockOnHand !== 0;
+                    });
+                });
+            }
+
             vm.programs = programs;
             vm.program = _.find(programs, function(p) {
                 return p.id === $stateParams.program;
             });
-            vm.isArchivedProducts = $stateParams.isArchivedProducts;
         }
 
         /**

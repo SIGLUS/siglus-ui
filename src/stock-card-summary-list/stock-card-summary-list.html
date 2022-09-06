@@ -65,7 +65,7 @@
             <td>{{summary.orderable.fullProductName}}</td>
             <td></td>
             <td></td>
-            <td></td>
+            <td>{{summary.orderable.isKit ? (summary.occurredDate | openlmisDate) : ''}}</td>
             <!-- SIGLUS-REFACTOR: starts here -->
             <td class="text-align-right">{{summary.stockOnHand}}</td>
             <td>
