@@ -91,19 +91,17 @@
                 if (checkInitialInventoryStatus()) {
                     event.preventDefault();
                     checkDraftIsStarter();
-                } else {
+                } else if (siglusLocationMovementUpgradeService.checkInited()) {
                     var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
                     if (shouldUpgradeMoveProduct) {
                         return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
                     }
+                } else {
+                    var user = currentUserService.getUserInfo().$$state.value;
+                    if (user) {
+                        siglusLocationMovementUpgradeService.init(user.homeFacilityId);
+                    }
                 }
-            }
-        });
-
-        $rootScope.$on('openlmis-auth.login', function() {
-            var user = currentUserService.getUserInfo().$$state.value;
-            if (user && $state.current.name !== 'openlmis.locationManagement.movement.creation') {
-                siglusLocationMovementUpgradeService.init(user.homeFacilityId);
             }
         });
 

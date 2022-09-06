@@ -29,7 +29,8 @@
             </form>
         </section>
         <table suppress-tr-openlmis-invalid>
-            <caption ng-if="!vm.displayItems.length">{{'locationMovement.noTableData' | message}}</caption>
+            <caption ng-if="!vm.displayItems.length && !vm.keyword">{{'locationMovement.noTableData' | message}}</caption>
+            <caption ng-if="!vm.displayItems.length && vm.keyword">{{'locationMovement.noFilterData' | message}}</caption>
             <thead>
             <tr>
                 <th>{{'stockReceiveCreation.productCode' | message}}</th>
@@ -138,7 +139,7 @@
                             ng-if="lineItem.isFirst"
                             class="stock-actions add add-item"
                             ng-click="vm.addItem(lineItem, lineItems)">
-                        {{'locationShipmentView.addItem' | message}}
+                        {{'locationMovement.addLocation' | message}}
                     </button>
                     <input type="button"
                            value="{{'stockPhysicalInventoryDraft.remove' | message}}"

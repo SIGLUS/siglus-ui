@@ -24,3 +24,8 @@
 #locationMovementForm input[disabled] {
   cursor: not-allowed;
 }
+
+#locationMovementForm .stock-actions {
+  white-space: nowrap;
+  width: 130px !important;
+}
