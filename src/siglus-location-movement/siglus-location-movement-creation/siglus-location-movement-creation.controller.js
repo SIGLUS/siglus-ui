@@ -348,7 +348,7 @@
         });
 
         function validateRequiredFields(lineItem) {
-            if (_.isEmpty(_.get(lineItem.lot, 'lotCode')) && !lineItem.isKit) {
+            if (_.isEmpty(_.get(lineItem.lot, 'lotCode')) && !lineItem.isKit && !vm.isVirtual) {
                 lineItem.$error.lotCodeError = 'openlmisForm.required';
             }
 
