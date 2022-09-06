@@ -56,29 +56,8 @@
                 stockMovementItemArr.push(item.dateOfMovement);
                 stockMovementItemArr.push(item.reason);
                 stockMovementItemArr.push(item.documentNumber);
-                switch (item.type) {
-                case 'PHYSICAL_INVENTORY':
-                    stockMovementItemArr = stockMovementItemArr
-                        .concat([null, null, null, null]);
-                    break;
-                case 'ISSUE':
-                    stockMovementItemArr = stockMovementItemArr
-                        .concat([null, null, null, Math.abs(item.movementQuantity)]);
-                    break;
-                case 'RECEIVE':
-                    stockMovementItemArr = stockMovementItemArr
-                        .concat([Math.abs(item.movementQuantity), null, null, null ]);
-                    break;
-                case 'ADJUSTMENT':
-                    if (item.movementQuantity > 0) {
-                        stockMovementItemArr = stockMovementItemArr
-                            .concat([null, null, Math.abs(item.movementQuantity), null ]);
-                    } else {
-                        stockMovementItemArr = stockMovementItemArr
-                            .concat([null, Math.abs(item.movementQuantity), null, null ]);
-                    }
-                    break;
-                }
+                var result = vm.concatStockMovementItemArrByType(item);
+                stockMovementItemArr.concat(result);
                 stockMovementItemArr.push(item.productSoh);
                 stockMovementItemArr.push(item.requested);
                 stockMovementItemArr.push(item.signature);
@@ -89,6 +68,40 @@
                 return item[0];
             }).reverse();
         }
+
+        vm.concatStockMovementItemArrByType = function(item) {
+            var result = [];
+            switch (item.type) {
+            case 'PHYSICAL_INVENTORY':
+                // stockMovementItemArr = stockMovementItemArr
+                //     .concat([null, null, null, null]);
+                result = [null, null, null, null];
+                break;
+            case 'ISSUE':
+                // stockMovementItemArr = stockMovementItemArr
+                //     .concat([null, null, null, Math.abs(item.movementQuantity)]);
+                result = [null, null, null, Math.abs(item.movementQuantity)];
+                break;
+            case 'RECEIVE':
+                // stockMovementItemArr = stockMovementItemArr
+                //     .concat([Math.abs(item.movementQuantity), null, null, null ]);
+                result = [Math.abs(item.movementQuantity), null, null, null ];
+                break;
+            case 'ADJUSTMENT':
+                if (item.movementQuantity > 0) {
+                    // stockMovementItemArr = stockMovementItemArr
+                    //     .concat([null, null, Math.abs(item.movementQuantity), null ]);
+                    result = [null, null, Math.abs(item.movementQuantity), null ];
+                } else {
+                    // stockMovementItemArr = stockMovementItemArr
+                    //     .concat([null, Math.abs(item.movementQuantity), null, null ]);
+                    result = [null, Math.abs(item.movementQuantity), null, null ];
+                }
+                break;
+            }
+            return result;
+        };
+
         function exportExcel() {
             // eslint-disable-next-line no-undef
             var filename = 'Stock Movements Report_' + vm.facilityName + '_' + moment().utc()
