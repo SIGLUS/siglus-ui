@@ -274,6 +274,7 @@
             if (isRemoveItemInCurrentProduct) {
                 vm.setSelectedOrderableGroup('lot', _.get(lineItem, ['lot', 'id']));
                 vm.setLots();
+                validateLotNotFirstExpire();
             }
 
             $stateParams.isAddProduct = true;
