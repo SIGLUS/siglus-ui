@@ -464,7 +464,13 @@
                             signature: data.signature
                         });
                         loadingModalService.open();
-                        siglusLocationMovementService.submitMovementDraft(baseInfo, getLineItems(), locations)
+                        var lineItems = getLineItems();
+                        if (vm.isVirtual) {
+                            lineItems.forEach(function(line) {
+                                line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
+                            });
+                        }
+                        siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
                             .then(function() {
                                 $scope.needToConfirm = false;
                                 if (vm.isVirtual) {
