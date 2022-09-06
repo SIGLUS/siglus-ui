@@ -149,7 +149,7 @@
 
         function updateStockOnHand(locations, lineItem) {
             var stockOnHand = 0;
-            if (lineItem.lotCode && lineItem.srcLocationCode) {
+            if (lineItem.srcLocationCode) {
                 _.forEach(locations, function(loc) {
                     _.forEach(loc.lots, function(lot) {
                         if (lot.lotCode === lineItem.lotCode && loc.locationCode === lineItem.srcLocationCode) {
