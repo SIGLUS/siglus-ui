@@ -324,12 +324,13 @@
         }
 
         vm.printShipment = function printShipment() {
-            console.log($stateParams);
+            // console.log($stateParams.id);
             localStorageService.add('shipmentViewData', JSON.stringify(vm.displayTableLineItems));
             localStorageService.add('locations', JSON.stringify(locations));
             var PRINT_URL = $window.location.href.split('!/')[0]
                 + '!/'
-                + 'orders/fulfillment/report';
+                + 'orders/fulfillment/report?id='
+                + $stateParams.id;
             $window.open(
                 PRINT_URL,
                 '_blank'

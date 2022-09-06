@@ -2477,5 +2477,24 @@
   "siglusFacilityViewRadioConfirmModal.close": "Fechar",
   "siglusFacilityViewRadioConfirmModal.confirm": "Confirme",
   "siglusFacilityViewRadioConfirmModal.yes": "Sim",
-  "siglusFacilityViewRadioConfirmModal.no": "Não"
+  "siglusFacilityViewRadioConfirmModal.no": "Não",
+
+  "shipmentViewReport.title": "Relatórios",
+  "shipmentViewReport.produceCode": "Código do Produto",
+  "shipmentViewReport.productName": "Nome do Produto",
+  "shipmentViewReport.lotCode": "Número de lote",
+  "shipmentViewReport.expiryDate": "Prazo de validade",
+  "shipmentViewReport.location": "Localização",
+  "shipmentViewReport.orderQuantity": "Quantidade ordenada",
+  "shipmentViewReport.partialFulfilled": "Aviado parcialmente",
+  "shipmentViewReport.fillQuantity": "Preencher quantidade( em Packs)",
+  "shipmentViewReport.availableSOH": "SE disponível",
+  "shipmentViewReport.remainingSOH": "SE remanescente",
+  "shipmentViewReport.bottomLeftTips": "Apenas produtos com quantidade positiva de preenchimento inserida serão exibidos.",
+  "shipmentViewReport.tbTitle": "Lista de aviamento",
+  "shipmentViewReport.generatedOn": "Gerado para",
+  "shipmentViewReport.order": "Ordem",
+  "shipmentViewReport.facility": "Instalação",
+  "shipmentViewReport.storeroom": "Armazem",
+  "shipmentViewReport.tips": "tips: ctrl + p to print"
 }

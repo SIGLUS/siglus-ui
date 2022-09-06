@@ -28,7 +28,8 @@
         '$stateParams',
         'QUANTITY_UNIT',
         'SiglusLocationCommonUtilsService',
-        'locations'
+        'locations',
+        'pickPackInfo'
     ];
 
     function controller(
@@ -38,7 +39,8 @@
         $stateParams,
         QUANTITY_UNIT,
         SiglusLocationCommonUtilsService,
-        locations
+        locations,
+        pickPackInfo
     ) {
         var vm = this;
         vm.$onInit = onInit;
@@ -47,7 +49,7 @@
             hideLayoutAndBreadcrumb();
             vm.quantityUnit = undefined;
             vm.displayTableLineItems = JSON.parse(displayTableLineItems);
-            console.log('#### displayTableLineItems', vm.displayTableLineItems);
+            vm.pickPackInfo = pickPackInfo;
         }
 
         var hideLayoutAndBreadcrumb = function() {
