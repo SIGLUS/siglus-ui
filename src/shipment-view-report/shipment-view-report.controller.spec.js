@@ -81,6 +81,13 @@ describe('ShipmentViewReport', function() {
 
         var stockCardSummaries = {};
 
+        var pickPackInfo = {
+            generatedDate: '06/09/2022',
+            orderCode: 'ORDEM-3NXTR4L7R',
+            clientFacility: 'Posto de Saúde do Grupo Acolhida - Niassa',
+            supplierFacility: 'DDM de Cidade de Lichinga'
+        };
+
         vm = $controller('ShipmentViewReport', {
             $scope: $scope,
             shipment: {},
@@ -230,7 +237,8 @@ describe('ShipmentViewReport', function() {
                         }
                     ]
                 }
-            }
+            },
+            pickPackInfo: pickPackInfo
         });
     }
 

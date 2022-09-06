@@ -3,13 +3,15 @@
         <!-- {{ vm.breadcrumb }} -->
     </div>
     <div style="display: flex; align-items: center;">
-        <span style="font-size: 18px;">
-            hello world
-            <!-- {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program': vm.program.name} }} -->
-        </span>
-        <span style="font-weight: 600; margin-left: 8px;">(ctrl + p to print)</span>
+        <div>
+            <div class="shipment-view-report-title">{{ 'shipmentViewReport.tbTitle' | message }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.generatedOn' | message }}: {{ vm.pickPackInfo.generatedDate }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.order' | message }}: {{ vm.pickPackInfo.orderCode }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.facility' | message }}: {{ vm.pickPackInfo.clientFacility }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.storeroom' | message }}: : {{ vm.pickPackInfo.supplierFacility }}</div>
+            <div style="font-weight: 600;">{{ 'shipmentViewReport.tips' | message }}</div>
+        </div>
     </div>
-    
     <section>
         <!-- SIGLUS-REFACTOR: starts here -->
         <table cellpadding="0" cellspacing="0">
