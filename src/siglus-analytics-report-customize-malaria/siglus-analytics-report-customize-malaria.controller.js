@@ -63,8 +63,6 @@
             vm.facility = facility;
             vm.completedBy = vm.getCompletedBy(vm.requisition.extraData.signaure);
             vm.approvedBy = vm.getApprovedBy(vm.requisition.extraData.signaure);
-            // vm.requisition.extraData.signaure.approve && vm.requisition.extraData.signaure.approve[0] ?
-            //     vm.requisition.extraData.signaure.approve[0] : '';
             vm.sections = vm.requisition.usageTemplate.usageInformation;
             vm.lineItems = vm.requisition.usageInformationLineItems;
             vm.availableProducts = vm.requisition.availableFullSupplyProducts;

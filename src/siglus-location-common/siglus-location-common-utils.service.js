@@ -96,7 +96,7 @@
         this.getLotList = function(lineItem, orderableLocationLotsMap) {
             var orderableId = lineItem.orderableId;
             var locationCode = _.get(lineItem, ['location', 'locationCode']);
-            var data = locationCode
+            return locationCode
                 ? _.uniq(_.get(orderableLocationLotsMap, [orderableId, locationCode], []), function(item) {
                     return item.lotCode;
                 })
@@ -108,7 +108,6 @@
                         return item.lotCode;
                     })
                     .value();
-            return data;
         };
 
         this.getLocationList = function(lineItem, orderableLotsLocationMap) {

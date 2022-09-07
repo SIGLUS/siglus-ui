@@ -47,9 +47,6 @@
 
         function onInit() {
             hideLayoutAndBreadcrumb();
-            // $window.onunload = function() {
-            //     localStorageService.remove('physicalInventoryCategories');
-            // };
             vm.categories = _.flatten(Object.values(JSON.parse(draft)), true);
             vm.draft = vm.getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
