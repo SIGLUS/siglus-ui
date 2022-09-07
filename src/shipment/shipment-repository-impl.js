@@ -190,10 +190,8 @@
                 .then(function(page) {
                     var shipment = page.content[0];
                     var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
-                    console.log(_.values(canFulfillForMeMap).length);
 
                     var orderableIds = Object.keys(canFulfillForMeMap);
-                    console.log(orderableIds);
                     shipment.lineItems = shipment.lineItems.filter(function(lineItem) {
                         return orderableIds.includes(lineItem.orderable.id);
                     });
@@ -256,8 +254,6 @@
                     canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
                 });
             });
-            console.log(orderableIds);
-            console.log(_.uniq(orderableIds));
 
             return canFulfillForMeMap;
         }

@@ -16,5 +16,5 @@
     "shipmentViewReport.order": "Order",
     "shipmentViewReport.facility": "Facility",
     "shipmentViewReport.storeroom": "Storeroom",
-    "shipmentViewReport.tips": "tips: ctrl + p to print"
+    "shipmentViewReport.tips": "Ctrl+P to print"
 }

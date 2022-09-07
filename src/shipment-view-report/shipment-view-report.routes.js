@@ -33,7 +33,6 @@
                 '@openlmis': {
                     controller: 'ShipmentViewReport',
                     controllerAs: 'vm',
-                    // eslint-disable-next-line max-len
                     templateUrl: 'shipment-view-report/shipment-view-report.html'
                 }
             },

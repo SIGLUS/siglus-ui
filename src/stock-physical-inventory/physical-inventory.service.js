@@ -134,7 +134,6 @@
         }
 
         function getSohByLocation(ids) {
-            console.log('ids: ', ids);
             return locationResource.getSOH({
                 extraData: true
             }, ids ? ids : []).$promise;

@@ -4,12 +4,14 @@
     </div>
     <div style="display: flex; align-items: center;">
         <div>
-            <div class="shipment-view-report-title">{{ 'shipmentViewReport.tbTitle' | message }}</div>
+            <div class="shipment-view-report-title">
+                <span>{{ 'shipmentViewReport.tbTitle' | message }}</span>
+                <span style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</span>
+            </div>
             <div class="shipment-view-report-info">{{ 'shipmentViewReport.generatedOn' | message }}: {{ vm.pickPackInfo.generatedDate }}</div>
             <div class="shipment-view-report-info">{{ 'shipmentViewReport.order' | message }}: {{ vm.pickPackInfo.orderCode }}</div>
             <div class="shipment-view-report-info">{{ 'shipmentViewReport.facility' | message }}: {{ vm.pickPackInfo.clientFacility }}</div>
             <div class="shipment-view-report-info">{{ 'shipmentViewReport.storeroom' | message }}: : {{ vm.pickPackInfo.supplierFacility }}</div>
-            <div style="font-weight: 600;">{{ 'shipmentViewReport.tips' | message }}</div>
         </div>
     </div>
     <section>
