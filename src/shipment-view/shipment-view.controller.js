@@ -123,6 +123,7 @@
             vm.tableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantiry(tableLineItems) :
                 tableLineItems;
+            // console.log('#### vm.tableLineItems', vm.tableLineItems);
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
         }
@@ -132,7 +133,8 @@
             var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
             return _.map(itemsCopy, function(item) {
                 return angular.merge(item, {
-                    suggestedQuantity: suggestedQuatityMap[item.id] === undefined ? '' : suggestedQuatityMap[item.id]
+                    suggestedQuantity:
+                        _.includes([null, undefined], suggestedQuatityMap[item.id]) ? '' : suggestedQuatityMap[item.id]
                 });
             });
         }
