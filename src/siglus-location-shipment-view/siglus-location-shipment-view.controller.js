@@ -161,7 +161,7 @@
             var hasKitLocation = lineItem.isKit && !_.isEmpty(lineItem.location);
             var hasBothLocationAndLot = !lineItem.isKit && !_.isEmpty(lineItem.location)
               && !_.isEmpty(lineItem.lot);
-            var hasQuantityShippedFilled = !_.isNull(_.get(lineItem.shipmentLineItem, 'quantityShipped'));
+            var hasQuantityShippedFilled = !_.isNull(_.get(lineItem, 'quantityShipped'));
             if ((hasKitLocation || hasBothLocationAndLot) && hasQuantityShippedFilled) {
                 validateFillQuantity(lineItem);
             }
@@ -243,7 +243,7 @@
                 var remainRowData = index > 1 ? lineItems[1] : lineItems[2];
                 lineItems[0].lot = remainRowData.lot;
                 lineItems[0].location = remainRowData.location;
-                lineItems[0].shipmentLineItem = remainRowData.shipmentLineItem;
+                lineItems[0].quantityShipped = remainRowData.quantityShipped;
                 lineItems[0].$error = remainRowData.$error;
                 lineItems[0].$hint = remainRowData.$hint;
                 lineItems.splice(1, 2);
@@ -362,7 +362,6 @@
                         return orderable.id;
                     }))
                         .then(function(locationsInfo) {
-
                             locations = locations.concat(locationsInfo);
                             var addedProductRows = prepareRowDataService.prepareAddProductLineItem(selectedProducts);
                             var addedOrderLineItems = prepareOrderLineItems(selectedProducts);

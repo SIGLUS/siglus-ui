@@ -138,7 +138,7 @@
                        ng-click="vm.addLot(lineItem, lineItems)">
                 <input type="button"
                        value="{{'stockPhysicalInventoryDraft.remove' | message}}"
-                       ng-if="(index === 0 && lineItem.added) || (index > 0)"
+                       ng-if="(lineItems.length === 1 && lineItem.added) || (index > 0)"
                        class="danger stock-actions"
                        ng-disabled="lineItem.skipped"
                        ng-click="vm.removeItem(lineItems, index)">
