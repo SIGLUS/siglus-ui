@@ -83,12 +83,10 @@
                     </td>
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
                     <td
-                        ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
-                        openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
+                        ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
                         <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
-                            ng-change="vm.validateReasonFreeText(lineItem)" ng-model="lineItem.reasonFreeText" rows="1"
-                            cols="15" maxlength="100" ng-class="{'error': lineItem.$errors.reasonFreeTextInvalid}"
-                            ng-blur="vm.validateReasonFreeText(lineItem)" />
+                            ng-model="lineItem.reasonFreeText" rows="1"
+                            cols="15" maxlength="100" />
                     </td>
                     <td 
                     ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
