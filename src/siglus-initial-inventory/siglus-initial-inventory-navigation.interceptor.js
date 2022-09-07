@@ -63,12 +63,11 @@
             }
         });
 
-        $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+        $rootScope.$on('$stateChangeStart', function(event, toState) {
             // TODO RENAME FILE, NOT JUST FOR INITIAL INVENTORY, NOT WORKING WHEN PUT LOGIC IN OTHER PLACE
             if ((!toState.name.contains('movement.creation')
                 && toState.showInNavigation
-                && toState.url !== '/home'
-                && !toParams.hasCheckedMoveProduct)) {
+                && toState.url !== '/home')) {
 
                 var user = currentUserService.getUserInfo().$$state.value;
                 if (user) {
@@ -99,7 +98,13 @@
                 } else {
                     var user = currentUserService.getUserInfo().$$state.value;
                     if (user) {
-                        siglusLocationMovementUpgradeService.init(user.homeFacilityId);
+                        facilityFactory.getUserHomeFacility().then(function(facility) {
+                            if (facility && facility.enableLocationManagement) {
+                                siglusLocationMovementUpgradeService.init(user.homeFacilityId);
+                            } else {
+                                siglusLocationMovementUpgradeService.doneUpgrade();
+                            }
+                        });
                     }
                 }
             }
