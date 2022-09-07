@@ -96,6 +96,8 @@
         };
 
         this.doneUpgrade = function() {
+            var user = currentUserService.getUserInfo().$$state.value;
+            this.facilityId = user.homeFacilityId;
             this.needInitiallyMoveProduct = false;
         };
     }
