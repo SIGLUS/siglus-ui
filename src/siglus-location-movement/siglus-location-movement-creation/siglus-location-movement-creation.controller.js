@@ -384,7 +384,6 @@
                     }
                 });
             });
-            return validator(vm.addedLineItems);
         }
 
         function isValid() {
@@ -439,6 +438,7 @@
 
         vm.submit = function() {
             validateForm();
+            $scope.$apply();
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
                     then(function(data) {

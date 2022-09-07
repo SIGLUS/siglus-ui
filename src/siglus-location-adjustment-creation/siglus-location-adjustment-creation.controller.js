@@ -57,7 +57,7 @@
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
         var vm = this;
 
-        var validator = function(lineItems) {
+        function validator(lineItems) {
             return _.every(lineItems, function(lineItem) {
                 return _.chain(lineItem.$errors)
                     .keys()
@@ -66,7 +66,7 @@
                     })
                     .value();
             });
-        };
+        }
 
         vm.$onInit = function() {
 
@@ -437,8 +437,6 @@
                     vm.validateQuantity(lineItems);
                 });
             });
-
-            return validator(vm.addedLineItems);
         }
 
         function isValid() {
@@ -577,6 +575,7 @@
 
         vm.submit = function() {
             validateForm();
+            $scope.$apply();
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
                     then(function(data) {
