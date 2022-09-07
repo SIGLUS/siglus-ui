@@ -474,7 +474,7 @@ describe('SiglusLocationShipmentViewController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.quantityShippedError).toEqual('openlmisForm.required');
+            expect(lineItem.$error.quantityShippedError).toEqual('locationShipmentView.inputPositiveNumber');
         });
 
         it('should return quantityShippedError  when quantity shipped is more than soh', function() {
@@ -624,13 +624,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should calculate order quantity when current index is 0', function() {
             var lineItems = [
                 {
-                    orderQuantity: 0
+                    orderedQuantity: 0
                 },
                 {
-                    orderQuantity: 3
+                    orderedQuantity: 3
                 },
                 {
-                    orderQuantity: 5
+                    orderedQuantity: 5
                 }
             ];
 
@@ -640,13 +640,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return current order quantity when current index is not 0', function() {
             var lineItems = [
                 {
-                    orderQuantity: 0
+                    orderedQuantity: 0
                 },
                 {
-                    orderQuantity: 3
+                    orderedQuantity: 3
                 },
                 {
-                    orderQuantity: 5
+                    orderedQuantity: 5
                 }
             ];
 
@@ -658,13 +658,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should get FillQuantityquantity when current index is 0', function() {
             var lineItems = [
                 {
-                    orderQuantity: 0
+                    orderedQuantity: 0
                 },
                 {
-                    orderQuantity: 3
+                    orderedQuantity: 3
                 },
                 {
-                    orderQuantity: 5
+                    orderedQuantity: 5
                 }
             ];
 
@@ -674,13 +674,13 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return current order quantity when current index is not 0', function() {
             var lineItems = [
                 {
-                    orderQuantity: 0
+                    orderedQuantity: 0
                 },
                 {
-                    orderQuantity: 3
+                    orderedQuantity: 3
                 },
                 {
-                    orderQuantity: 5
+                    orderedQuantity: 5
                 }
             ];
 

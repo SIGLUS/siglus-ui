@@ -56,13 +56,8 @@
                 url: fulfillmentUrlFactory('/api/siglusapi/shipmentDrafts/:id'),
                 method: 'DELETE'
             },
-            createSubOrder: {
-                url: fulfillmentUrlFactory('/api/siglusapi/shipments'),
-                method: 'POST'
-
-            },
             submitOrder: {
-                url: fulfillmentUrlFactory('/api/siglusapi/shipments1'),
+                url: fulfillmentUrlFactory('/api/siglusapi/shipmentsWithLocation'),
                 method: 'POST'
             }
         });
@@ -126,10 +121,10 @@
             }, params.orderableIds).$promise;
         };
 
-        this.createSubOrder = function() {
-            return resource.createSuborder({
+        this.createSubOrder = function(params) {
+            return resource.submitOrder({
                 isSubOrder: true
-            }).$promise;
+            }, params).$promise;
         };
 
         this.submitOrder = function(params) {
