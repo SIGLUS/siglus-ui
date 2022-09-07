@@ -73,7 +73,7 @@
                     </select>
                 </td>
                 <!-- SIGLUS-REFACTOR: starts here -->
-                <td openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
+                <td>
                     <input type="text" ng-show="lineItem.reason.isFreeTextAllowed" ng-change="vm.validateReasonFreeText(lineItem)"
                            ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100"
                            ng-class="{'error': lineItem.$errors.reasonFreeTextInvalid}"
