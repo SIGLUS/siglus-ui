@@ -530,15 +530,15 @@
             }
         };
 
-        vm.validateReasonFreeText = function(lineItem) {
-            if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
-                var reasonName = lineItem.reason.name;
-                if (_.contains(vm.mandatoryReasons, reasonName.substr(reasonName.indexOf('] ') + 1).trim())) {
-                    lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
-                }
-            }
-            return lineItem;
-        };
+        // vm.validateReasonFreeText = function(lineItem) {
+        //     if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
+        //         var reasonName = lineItem.reason.name;
+        //         if (_.contains(vm.mandatoryReasons, reasonName.substr(reasonName.indexOf('] ') + 1).trim())) {
+        //             lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
+        //         }
+        //     }
+        //     return lineItem;
+        // };
 
         vm.getTotalQuantity = function(lineItems) {
             return _.reduce(lineItems, function(sum, item) {

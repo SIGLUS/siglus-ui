@@ -216,10 +216,6 @@
          */
         // SIGLUS-REFACTOR: starts here
         vm.addProducts = function() {
-            // var notYetAddedItems = _.chain(draft.lineItems)
-            //     .difference(_.flatten(vm.displayLineItemsGroup))
-            //     .value();
-            // var addedLotsId = getAddedLots();
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -234,16 +230,6 @@
                 siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
                     draft.lineItems = draft.lineItems.concat(addedItems);
                     refreshLotOptions();
-                    // $stateParams.program = vm.program;
-                    // $stateParams.facility = vm.facility;
-                    // $stateParams.draft = draft;
-                    //
-                    // $stateParams.isAddProduct = true;
-                    //
-                    // //Only reload current state and avoid reloading parent state
-                    // $state.go($state.current.name, $stateParams, {
-                    //     reload: $state.current.name
-                    // });
                     $stateParams.isAddProduct = true;
                     reload($state.current.name);
 
@@ -298,14 +284,7 @@
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
             // SIGLUS-REFACTOR: starts here
-            // $stateParams.program = vm.program;
-            // $stateParams.facility = vm.facility;
-            // $stateParams.draft = draft;
-            //
-            // //Only reload current state and avoid reloading parent state
-            // $state.go($state.current.name, $stateParams, {
-            //     reload: $state.current.name
-            // });
+            // Only reload current state and avoid reloading parent state
             return reload($state.current.name);
             // SIGLUS-REFACTOR: ends here
         };
@@ -390,13 +369,6 @@
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;
-                // $stateParams.program = vm.program;
-                // $stateParams.facility = vm.facility;
-                // $stateParams.draft = draft;
-                // //Reload parent state and current state to keep data consistency.
-                // $state.go($state.current.name, $stateParams, {
-                //     reload: true
-                // });
                 loadingModalService.close();
                 if (notReload) {
                     var stateParams = angular.copy($stateParams);
@@ -454,7 +426,6 @@
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
                 // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
-                //$state.go('openlmis.stockmanagement.physicalInventory.draftList');
                 $state.go('^', {}, {
                     reload: true
                 });
@@ -512,12 +483,6 @@
                     $state.go('^', {}, {
                         reload: true
                     });
-                    // $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
-                    //     program: program.id,
-                    //     facility: facility.id
-                    // }, {
-                    //     reload: true
-                    // });
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -532,7 +497,6 @@
                 // SIGLUS-REFACTOR: starts here
                 if ($stateParams.keyword) {
                     $stateParams.keyword = null;
-                    // reload($state.current.name);
                 }
                 // SIGLUS-REFACTOR: ends here
                 $scope.$broadcast('openlmis-form-submit');
@@ -701,11 +665,6 @@
 
         function onInit() {
             // SIGLUS-REFACTOR: starts here
-            // $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
-            //     facilityCode: facility.code,
-            //     facilityName: facility.name,
-            //     program: program.name
-            // });
             updateLabel();
             // SIGLUS-REFACTOR: ends here
 
@@ -745,12 +704,6 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
-            // if (!vm.isInitialInventory) {
-            // var data = messageService.get('stockPhysicalInventoryDraft.title', {
-            //     facilityCode: facility.code,
-            //     facilityName: facility.name,
-            //     program: program.name
-            // });
             if ($stateParams.isMerged === 'true') {
                 $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
             } else {
@@ -759,7 +712,6 @@
                         + ' '
                         + $stateParams.draftNum;
             }
-            // }
         }
 
         function initiateLineItems() {
@@ -1000,43 +952,6 @@
                 }
             });
         }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name getPrintUrl
-         *
-         * @description
-         * Prepares a print URL for the given physical inventory.
-         *
-         * @return {String} the prepared URL
-         */
-        /*function getPrintUrl(id) {
-            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
-        }*/
-
-        /*
-        function reorderItems() {
-            var sorted = $filter('orderBy')(vm.draft.lineItems, ['orderable.productCode', '-occurredDate']);
-            var groups = _.chain(sorted).groupBy(function(item) {
-                return item.orderable.id;
-            })
-                .sortBy(function(group) {
-                    return _.every(group, function(item) {
-                        return !item.$errors.quantityInvalid;
-                    });
-                })
-                .values()
-                .value();
-
-            groups.forEach(function(group) {
-                group.forEach(function(lineItem) {
-                    orderableGroupService.determineLotMessage(lineItem, group);
-                });
-            });
-            vm.displayLineItemsGroup = groups;
-        }
-        */
         function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {
