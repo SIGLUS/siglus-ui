@@ -57,6 +57,17 @@
 
         vm.isVirtual = false;
 
+        var validator = function(lineItems) {
+            return _.every(lineItems, function(lineItem) {
+                return _.chain(lineItem.$error)
+                    .keys()
+                    .all(function(key) {
+                        return _.isEmpty(lineItem.$error[key]);
+                    })
+                    .value();
+            });
+        };
+
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(
                 lineItem,
@@ -116,16 +127,6 @@
             }, true);
 
             confirmDiscardService.register($scope, 'openlmis.locationManagement.movement.creation');
-            var validator = function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$error)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
-                        })
-                        .value();
-                });
-            };
 
             paginationService.registerList(validator, angular.copy($stateParams), function() {
                 return vm.displayItems;
@@ -383,29 +384,11 @@
                     }
                 });
             });
-            return _.every(vm.addedLineItems, function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$error)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
-                        })
-                        .value();
-                });
-            });
+            return validator(vm.addedLineItems);
         }
 
         function isValid() {
-            return _.every(vm.addedLineItems, function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$error)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
-                        })
-                        .value();
-                });
-            });
+            return validator(vm.addedLineItems);
         }
 
         function getLineItems() {

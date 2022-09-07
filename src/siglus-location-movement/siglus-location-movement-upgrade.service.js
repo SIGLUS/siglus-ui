@@ -60,7 +60,6 @@
                 return siglusLocationMovementService.getMovementDrafts(programId).then(function(drafts) {
                     if (drafts.length > 0) {
                         var draftId = _.get(drafts, [0, 'id']);
-                        // $stateParams.draftId = draftId;
                         return $state.go('openlmis.locationManagement.movement.creation', {
                             programId: programId,
                             draftId: draftId,
@@ -74,11 +73,10 @@
                         userId: user.id
                     };
                     return siglusLocationMovementService.createMovementDraft(params).then(function(draft) {
-                        var draftId = draft.id;
                         return siglusLocationMovementService.initVirtualMovementDrafts(draft).then(function() {
                             return $state.go('openlmis.locationManagement.movement.creation', {
                                 programId: programId,
-                                draftId: draftId,
+                                draftId: draft.id,
                                 isVirtual: true
                             });
                         });

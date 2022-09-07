@@ -65,9 +65,9 @@
             };
         }
 
-        function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
+        function addRow(tableLineItem, lineItems) {
             lineItems.splice(1, 0,
-                getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
+                getRowTemplateData(tableLineItem));
         }
 
         function resetFirstRow(lineItem) {
@@ -83,16 +83,16 @@
 
         this.addLineItem = function(lineItem, lineItems) {
             if (lineItems.length === 1) {
-                addRow(lineItem, lineItems, true);
+                addRow(lineItem, lineItems);
                 resetFirstRow(lineItem);
             }
-            addRow(lineItem, lineItems, false);
+            addRow(lineItem, lineItems);
         };
 
         this.addLineItemForVirtual = function(lineItem, lineItems) {
             var copied = angular.copy(lineItem);
             if (lineItems.length === 1) {
-                addRow(copied, lineItems, true);
+                addRow(copied, lineItems);
                 lineItems[1].isFirst = true;
                 resetFirstRow(lineItem);
             }

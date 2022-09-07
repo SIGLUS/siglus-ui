@@ -80,8 +80,8 @@
             }).$promise;
         }
 
-        function saveDraft(baseInfo, lineItems, locations) {
-            var params = buildSaveParams(baseInfo, lineItems, locations);
+        function saveDraft(baseInfo, lineItems) {
+            var params = buildParams(baseInfo, lineItems);
             return resource.saveDraft({
                 id: baseInfo.id
             }, params).$promise;
@@ -92,8 +92,8 @@
                 id: draftId
             }).$promise;
         }
-        function submitDraft(baseInfo, lineItems, locations) {
-            var params = buildSubmitParams(baseInfo, lineItems, locations);
+        function submitDraft(baseInfo, lineItems) {
+            var params = buildParams(baseInfo, lineItems);
             return resource.submitDraft(params).$promise;
         }
 
@@ -118,38 +118,11 @@
             });
         }
 
-        function buildSubmitLineItems(lineItems) {
-            return _.map(lineItems, function(lineItem) {
-                return {
-                    orderableId: lineItem.orderableId,
-                    lotId: _.get(lineItem.lot, 'id'),
-                    lotCode: _.get(lineItem.lot, 'lotCode'),
-                    expirationDate: _.get(lineItem.lot, 'expirationDate'),
-                    isKit: lineItem.isKit,
-                    area: _.get(lineItem.location, 'area'),
-                    locationCode: _.get(lineItem.location, 'locationCode'),
-                    reasonId: lineItem.reason ? lineItem.reason.id : null,
-                    reasonFreeText: lineItem.reasonFreeText ? lineItem.reasonFreeText : null,
-                    documentNumber: lineItem.documentationNo,
-                    quantity: lineItem.quantity,
-                    stockOnHand: lineItem.stockOnHand,
-                    programId: lineItem.programId,
-                    occurredDate: lineItem.occurredDate
-                };
-            });
-        }
-
-        function buildSaveParams(baseInfo, lineItems) {
-            baseInfo.lineItems = [];
+        function buildParams(baseInfo, lineItems) {
             return _.extend(baseInfo, {
                 lineItems: buildLineItems(lineItems)
             });
         }
 
-        function buildSubmitParams(baseInfo, lineItems, locations) {
-            return _.extend(baseInfo, {
-                lineItems: buildSubmitLineItems(lineItems, locations)
-            });
-        }
     }
 })();

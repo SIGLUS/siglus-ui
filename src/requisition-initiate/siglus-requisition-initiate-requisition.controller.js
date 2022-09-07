@@ -57,7 +57,6 @@
         vm.initRnr = initRnr;
         vm.periodHasRequisition = periodHasRequisition;
         vm.goToRequisition = goToRequisition;
-        // vm.checkRnrStatus = checkRnrStatus;
         vm.checkProceedButton = checkProceedButton;
 
         /**

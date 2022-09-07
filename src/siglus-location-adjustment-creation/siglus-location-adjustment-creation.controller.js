@@ -44,10 +44,10 @@
     function controller(
         $scope, $state, $stateParams, $filter, confirmDiscardService,
         facility, orderableGroups, reasons, confirmService, messageService, user,
-        adjustmentType,  notificationService,
+        adjustmentType, notificationService,
         MAX_INTEGER_VALUE, loadingModalService,
         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
-        siglusSignatureWithDateModalService,   draftInfo,
+        siglusSignatureWithDateModalService, draftInfo,
         siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService,
         siglusOrderableLotService, addedLineItems, paginationService,
         SiglusLocationCommonUtilsService, siglusLocationAdjustmentModifyLineItemService,
@@ -56,6 +56,17 @@
     ) {
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
         var vm = this;
+
+        var validator = function(lineItems) {
+            return _.every(lineItems, function(lineItem) {
+                return _.chain(lineItem.$errors)
+                    .keys()
+                    .all(function(key) {
+                        return _.isEmpty(lineItem.$errors[key]);
+                    })
+                    .value();
+            });
+        };
 
         vm.$onInit = function() {
 
@@ -104,16 +115,6 @@
             }, true);
 
             confirmDiscardService.register($scope, 'openlmis.locationManagement.adjustment.creation');
-            var validator = function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$errors)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$errors[key]);
-                        })
-                        .value();
-                });
-            };
 
             return paginationService.registerList(validator, angular.copy($stateParams), function() {
                 return vm.addedLineItems;
@@ -145,23 +146,32 @@
             var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                extraData: true
+                extraData: true,
+                isAdjustment: true
             }, [orderable.id])
                 .then(function(locationsInfo) {
                     locations = locations.concat(locationsInfo);
                     var firstRow = siglusLocationAdjustmentModifyLineItemService.getAddProductRow(orderable);
-                    siglusOrderableLotService.fillLotsToAddedItems([firstRow]).then(function() {
-                        firstRow.locationOptions = areaLocationInfo;
-                        firstRow.locationsInfo = locationsInfo;
-                        firstRow.lotOptionsClone = _.clone(firstRow.lotOptions);
-                        firstRow.locationOptionsClone = _.clone(areaLocationInfo);
-                        firstRow.locationsInfo = locationsInfo;
-                        vm.addedLineItems.unshift([firstRow]);
-                        searchList();
-                    })
-                        .finally(function() {
-                            loadingModalService.close();
-                        });
+
+                    var lotsGroup = [];
+                    _.each(locationsInfo, function(item) {
+                        lotsGroup = lotsGroup.concat(item.lots);
+                    });
+                    lotsGroup = _.uniq(lotsGroup, function(lot) {
+                        return lot.lotId;
+                    });
+                    addIdToLotItem(lotsGroup);
+                    firstRow.lotOptions = lotsGroup;
+                    firstRow.locationOptions = areaLocationInfo;
+                    firstRow.locationsInfo = locationsInfo;
+                    firstRow.lotOptionsClone = _.clone(firstRow.lotOptions);
+                    firstRow.locationOptionsClone = _.clone(areaLocationInfo);
+                    firstRow.locationsInfo = locationsInfo;
+                    vm.addedLineItems.unshift([firstRow]);
+                    searchList();
+                })
+                .finally(function() {
+                    loadingModalService.close();
                 });
         };
 
@@ -223,7 +233,7 @@
                 if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
-                }  else {
+                } else {
                     lineItem.$errors.lotCodeInvalid = false;
                 }
             } else {
@@ -247,9 +257,9 @@
             return lineItem.lot && lineItem.lot.lotCode;
         }
 
-        function getLocationLotSohMap(locations) {
+        function getLocationLotSohMap(locationsMap) {
             var result = {};
-            _.each(locations, function(location) {
+            _.each(locationsMap, function(location) {
                 result[location.locationCode] = {};
                 _.each(location.lots, function(lot) {
                     result[location.locationCode][lot.lotId] = {};
@@ -263,11 +273,11 @@
             if (lineItem.lot && lineItem.location) {
                 var map = getLocationLotSohMap(lineItem.locationsInfo);
                 lineItem.stockOnHand =
-                _.get(map, [
-                    _.get(lineItem, ['location', 'locationCode']),
-                    _.get(lineItem, ['lot', 'id']),
-                    'stockOnHand'
-                ], 0);
+                    _.get(map, [
+                        _.get(lineItem, ['location', 'locationCode']),
+                        _.get(lineItem, ['lot', 'id']),
+                        'stockOnHand'
+                    ], 0);
                 vm.changeQuantity(lineItem, lineItems);
             } else if (lineItem.location && lineItem.isKit) {
                 var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locations);
@@ -284,7 +294,7 @@
 
             if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT
                 && !_.isEmpty(_.get(lineItem, ['location']))) {
-                lineItem.lotOptions =  SiglusLocationCommonUtilsService.getLotList(
+                lineItem.lotOptions = SiglusLocationCommonUtilsService.getLotList(
                     lineItem,
                     SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locationsInfo)
                 );
@@ -312,7 +322,7 @@
         };
 
         vm.changeQuantity = function(lineItem, lineItems) {
-            var isNumberEmpty =  _.isNumber(lineItem.quantity) ? lineItem.quantity < 0 : true;
+            var isNumberEmpty = _.isNumber(lineItem.quantity) ? lineItem.quantity < 0 : true;
             lineItem.$errors.quantityInvalid = isNumberEmpty ? messageService.get('openlmisForm.required') : '';
             if (!lineItem.$errors.quantityInvalid) {
                 vm.validateQuantity(lineItems);
@@ -326,11 +336,12 @@
                 }
                 var filterLineItems = _.filter(lineItems, function(data) {
                     return item.lot
-                    && item.location
-                    && _.get(item, ['lot', 'lotCode'], null) === _.get(data.lot, 'lotCode')
-                    && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
-                    && _.get(item, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT;
+                        && item.location
+                        && _.get(item, ['lot', 'lotCode'], null) === _.get(data.lot, 'lotCode')
+                        && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
+                        && _.get(data, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT;
                 });
+
                 var totalQuantity = _.reduce(filterLineItems, function(result, row) {
                     return result + _.get(row, 'quantity', 0);
                 }, 0);
@@ -426,29 +437,12 @@
                     vm.validateQuantity(lineItems);
                 });
             });
-            return _.every(vm.addedLineItems, function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$errors)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$errors[key]);
-                        })
-                        .value();
-                });
-            });
+
+            return validator(vm.addedLineItems);
         }
 
         function isValid() {
-            return _.every(vm.addedLineItems, function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$errors)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$errors[key]);
-                        })
-                        .value();
-                });
-            });
+            return validator(vm.addedLineItems);
         }
 
         function getLineItems() {
@@ -471,9 +465,9 @@
             return draftInfo[0];
         }
 
-        vm.filterByProgram = function(items, programs) {
+        vm.filterByProgram = function(items, programsList) {
             var programIds = [];
-            programs.forEach(function(program) {
+            programsList.forEach(function(program) {
                 programIds.push(program.programId);
             });
             var updatedItems = [];
@@ -498,11 +492,19 @@
 
         vm.validateReason = function(lineItem) {
             lineItem.lotOptions = _.clone(lineItem.lotOptionsClone);
-            lineItem.locationOptions  = _.clone(lineItem.locationOptionsClone);
+            lineItem.locationOptions = _.clone(lineItem.locationOptionsClone);
             lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
+            var locationsGroup = [], lotsGroup = [];
             if (_.get(lineItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
-                var locationsGroup = [], lotsGroup = [];
-                _.each(_.get(lineItem, ['locationsInfo'], []), function(item) {
+                var locationsInfoCopy =  _.filter(angular.copy(lineItem.locationsInfo), function(locationsInfoItem) {
+                    locationsInfoItem.lots = _.filter(locationsInfoItem.lots, function(
+                        lotItem
+                    ) {
+                        return lotItem.stockOnHand > 0;
+                    });
+                    return locationsInfoItem.lots.length > 0;
+                });
+                _.each(locationsInfoCopy, function(item) {
                     var newLocation = {};
                     newLocation.locationCode = item.locationCode;
                     newLocation.area = item.area;
@@ -525,23 +527,6 @@
 
                 lineItem.lotOptions = lotsGroup;
                 lineItem.locationOptions = locationsGroup;
-            } else if (_.get(lineItem, ['reason', 'reasonType']) === REASON_TYPES.CREDIT) {
-                siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                    extraData: true,
-                    isAdjustment: true
-                }, [lineItem.orderableId]).then(function(locationInfo) {
-                    var lotsGroup = [];
-                    _.each(locationInfo, function(item) {
-                        lotsGroup = lotsGroup.concat(item.lots);
-                    });
-                    lotsGroup = _.uniq(lotsGroup, function(lot) {
-                        return lot.lotId;
-                    });
-
-                    addIdToLotItem(lotsGroup);
-
-                    lineItem.lotOptions = lotsGroup;
-                });
             }
         };
 
@@ -557,7 +542,7 @@
 
         vm.getTotalQuantity = function(lineItems) {
             return _.reduce(lineItems, function(sum, item) {
-                if (_.get(item, ['reason', 'reasonType'])  === REASON_TYPES.DEBIT) {
+                if (_.get(item, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
                     return sum - (item.quantity || 0);
                 }
                 return sum + (item.quantity || 0);
@@ -580,7 +565,7 @@
 
         vm.save = function() {
             loadingModalService.open();
-            siglusLocationAdjustmentService.saveDraft(getBaseInfo(), getLineItems(), locations)
+            siglusLocationAdjustmentService.saveDraft(getBaseInfo(), getLineItems())
                 .then(function() {
                     $scope.needToConfirm = false;
                     notificationService.success('stockIssueCreation.saved');
@@ -600,11 +585,15 @@
                             signature: data.signature
                         });
                         loadingModalService.open();
-                        siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems(), locations)
+                        siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
                             .then(function() {
+                                notificationService.success(vm.key('submitted'));
                                 $scope.needToConfirm = false;
-                                $state.go('^', $stateParams, {
-                                    reload: true
+                                $state.go('openlmis.locationManagement.stockOnHand', {
+                                    program: program.id
+                                },
+                                {
+                                    location: 'replace'
                                 });
                                 loadingModalService.close();
                             })

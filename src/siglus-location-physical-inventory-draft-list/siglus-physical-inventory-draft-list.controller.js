@@ -139,8 +139,8 @@
             return messageService.get('stockPhysicalInventory.title');
         };
 
-        function isAllSubDraftsSubmit(draftList) {
-            return _.every(draftList, function(item) {
+        function isAllSubDraftsSubmit(draftsList) {
+            return _.every(draftsList, function(item) {
                 return item.status === 'SUBMITTED';
             });
         }

@@ -98,14 +98,16 @@
                     if ($stateParams.locations) {
                         return $stateParams.locations;
                     }
-                    var orderableIds = _.map(draftInfo[0].lineItems, function(lineItem) {
+                    var orderableIds = _.uniq(_.map(draftInfo[0].lineItems, function(lineItem) {
                         return lineItem.orderableId;
-                    });
+                    }));
+
                     if (_.isEmpty(orderableIds)) {
                         return [];
                     }
                     return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                        extraData: true
+                        extraData: true,
+                        isAdjustment: true
                     }, orderableIds);
                 },
                 addedLineItems: function(
