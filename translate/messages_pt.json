@@ -2496,5 +2496,5 @@
   "shipmentViewReport.order": "Ordem",
   "shipmentViewReport.facility": "Instalação",
   "shipmentViewReport.storeroom": "Armazem",
-  "shipmentViewReport.tips": "tips: ctrl + p to print"
+  "shipmentViewReport.tips": "Ctrl+P to print"
 }

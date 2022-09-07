@@ -411,7 +411,6 @@
 
         function getAvailableProducts() {
             var existedOrderableMap = {};
-            console.log(vm.order.orderLineItems);
             vm.order.orderLineItems.forEach(function(lineItem) {
                 existedOrderableMap[lineItem.orderable.id] = lineItem.orderable;
             });
