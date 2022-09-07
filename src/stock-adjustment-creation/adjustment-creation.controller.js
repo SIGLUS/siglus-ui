@@ -367,27 +367,6 @@
             });
         };
 
-        // SIGLUS-REFACTOR: starts here
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name validateReasonFreeText
-         *
-         * @description
-         * Validate reason free text.
-         *
-         * @param {Object} lineItem line item to be validated.
-         */
-        vm.validateReasonFreeText = function(lineItem) {
-            if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
-                var reasonName = lineItem.reason.name;
-                if (_.contains(vm.mandatoryReasons, reasonName.substr(reasonName.indexOf('] ') + 1).trim())) {
-                    lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
-                }
-            }
-            return lineItem;
-        };
-
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -569,7 +548,6 @@
             _.each(vm.addedLineItems, function(item) {
                 vm.validateAssignment(item);
                 vm.validateReason(item);
-                vm.validateReasonFreeText(item);
                 vm.validateLot(item);
                 vm.validateLotDate(item);
                 vm.validateQuantity(item);

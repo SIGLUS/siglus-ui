@@ -19,27 +19,27 @@
         <table cellpadding="0" cellspacing="0">
             <thead>
             <tr>
-                <th style="width: 60px;">{{'shipmentViewReport.produceCode' | message}}</th>
-                <th style="width: 135px;">{{'shipmentViewReport.productName' | message}}</th>
+                <th class="text__left" style="width: 60px;">{{'shipmentViewReport.produceCode' | message}}</th>
+                <th class="text__left" style="width: 135px;">{{'shipmentViewReport.productName' | message}}</th>
                 <!-- SIGLUS-REFACTOR: starts here -->
-                <th style="width: 243px;">{{'shipmentViewReport.lotCode' | message}}</th>
-                <th>{{'shipmentViewReport.expiryDate' | message}}</th>
-                <th class="col-sticky sticky-right">{{'shipmentViewReport.location' | message}}</th>
-                <th class="col-sticky sticky-right">{{'shipmentViewReport.orderQuantity' | message}}</th>
-                <th class="col-sticky sticky-right">{{'shipmentViewReport.partialFulfilled' | message}}</th>
-                <th class="col-sticky sticky-right">{{'shipmentViewReport.fillQuantity' | message}}</th>
-                <th class="col-sticky sticky-right">{{'shipmentViewReport.availableSOH' | message}}</th>
-                <th class="col-sticky sticky-right">{{'shipmentViewReport.remainingSOH' | message}}</th>
+                <th class="text__left" style="width: 243px;">{{'shipmentViewReport.lotCode' | message}}</th>
+                <th class="text__left">{{'shipmentViewReport.expiryDate' | message}}</th>
+                <th class="col-sticky sticky-right text__left">{{'shipmentViewReport.location' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.orderQuantity' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.partialFulfilled' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.fillQuantity' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.availableSOH' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.remainingSOH' | message}}</th>
                 <!-- SIGLUS-REFACTOR: ends here -->
             </tr>
             </thead>
             <tbody ng-repeat="lineItems in vm.displayTableLineItems">
                 <tr ng-repeat="(index, lineItem) in lineItems" ng-if="vm.getFillQuantity(lineItems, index) > 0">
-                    <td>{{ lineItem.isMainGroup ? lineItem.productCode : '' }}</td>
-                    <td>{{ lineItem.isMainGroup ? lineItem.productName : '' }}</td>
-                    <td>{{ lineItem.lot ? lineItem.lot.lotCode : '' }}</td>
-                    <td>{{ lineItem.lot ? lineItem.lot.expirationDate : '' }}</td>
-                    <td ng-if="!lineItem.isMainGroup || lineItems.length === 1">{{ lineItem.location ? lineItem.location.area + ' -' : '' }} {{ lineItem.location ? lineItem.location.locationCode : '' }}</td>
+                    <td class="text__left">{{ lineItem.isMainGroup ? lineItem.productCode : '' }}</td>
+                    <td class="text__left">{{ lineItem.isMainGroup ? lineItem.productName : '' }}</td>
+                    <td class="text__left">{{ lineItem.lot ? lineItem.lot.lotCode : '' }}</td>
+                    <td class="text__left">{{ lineItem.lot ? lineItem.lot.expirationDate : '' }}</td>
+                    <td class="text__left" ng-if="!lineItem.isMainGroup || lineItems.length === 1">{{ lineItem.location ? lineItem.location.area + ' -' : '' }} {{ lineItem.location ? lineItem.location.locationCode : '' }}</td>
                     <td ng-if="lineItem.isMainGroup && lineItems.length > 1"></td>
                     <td>{{ lineItem.isMainGroup ? lineItem.orderQuantity : '' }}</td>
                     <td>{{lineItem.partialFulfilledQuantity}}</td>
@@ -50,7 +50,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td style="border: none !important;" colspan="10">{{ 'shipmentViewReport.bottomLeftTips' | message }}</td>
+                    <td class="text__left" style="border: none !important;" colspan="10">{{ 'shipmentViewReport.bottomLeftTips' | message }}</td>
                 </tr>
             </tfoot>
         </table>
