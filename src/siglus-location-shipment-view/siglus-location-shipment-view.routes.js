@@ -131,7 +131,7 @@
                     },
 
                     updatedOrder: function(shipment, order, stockCardSummaries, loadingModalService) {
-                        var shipmentOrder = shipment.order;
+                        var shipmentOrder = order;
                         shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
                             var stockCard = stockCardSummaries.find(function(stockCard) {
                                 return stockCard.orderable.id === orderable.id;

@@ -20,5 +20,6 @@
   "locationShipmentView.notFirstToExpire": "This lot is not the first to expire.",
   "locationShipmentView.lotDuplicated": "The lot under the same product cannot be repeated, please enter a new one.",
   "locationShipmentView.locationDuplicated": "The locations for issue Kit cannot be repeated, please enter a new one.",
-  "locationShipmentView.addItem": "Add Item"
+  "locationShipmentView.addItem": "Add Item",
+  "locationShipmentView.inputPositiveNumber": "Please enter a positive number or skip/remove the record."
 }

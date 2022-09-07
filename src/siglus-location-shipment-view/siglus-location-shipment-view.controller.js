@@ -87,7 +87,6 @@
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = displayTableLineItems;
-            // console.log('#### displayTableLineItems', displayTableLineItems);
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
@@ -206,8 +205,8 @@
         function validateFillQuantity(currentItem) {
             currentItem.$error.quantityShippedError = '';
             var quantityShipped = currentItem.quantityShipped;
-            if (!_.isNumber(currentItem.quantityShipped)) {
-                currentItem.$error.quantityShippedError = 'openlmisForm.required';
+            if (!_.isNumber(currentItem.quantityShipped) || currentItem.quantityShipped === 0) {
+                currentItem.$error.quantityShippedError = 'locationShipmentView.inputPositiveNumber';
                 return;
             }
 
@@ -281,18 +280,18 @@
 
         vm.getOrderQuantity = function(lineItems, index) {
             if (index === 0) {
-                var quantity = _.reduce(lineItems, function(orderQuantity, item) {
-                    return orderQuantity + _.get(item, 'orderQuantity', 0);
+                var quantity = _.reduce(lineItems, function(orderedQuantity, item) {
+                    return orderedQuantity + _.get(item, 'orderedQuantity', 0);
                 }, 0);
                 return recalculateQuantity(quantity, lineItems[index]);
             }
-            return recalculateQuantity(_.get(lineItems[index], 'orderQuantity', 0), lineItems[index]);
+            return recalculateQuantity(_.get(lineItems[index], 'orderedQuantity', 0), lineItems[index]);
         };
 
         vm.getFillQuantity = function(lineItems, index) {
             if (index === 0) {
                 return _.reduce(lineItems, function(fillQuantity, item) {
-                    return fillQuantity + _.get(item, 'quantityShipped', 0);
+                    return fillQuantity + _.get(item, 'quantityShipped') || 0;
                 }, 0);
             }
             return _.get(lineItems[index], 'quantityShipped', 0);
@@ -324,7 +323,6 @@
         }
 
         vm.printShipment = function printShipment() {
-            // console.log($stateParams.id);
             localStorageService.add('shipmentViewData', JSON.stringify(vm.displayTableLineItems));
             localStorageService.add('locations', JSON.stringify(locations));
             var PRINT_URL = $window.location.href.split('!/')[0]
@@ -572,8 +570,7 @@
             });
         }
 
-        function buildSaveParams() {
-
+        function buildSaveParams(isSubmit) {
             var lineItems = _.chain(vm.displayTableLineItems)
                 .map(function(group) {
                     var data =  _.filter(group, function(lineItem) {
@@ -583,6 +580,9 @@
                     return data;
                 })
                 .flatten()
+                .filter(function(lineItem) {
+                    return isSubmit ? !lineItem.skipped : true;
+                })
                 .map(function(lineItem) {
                     var lot = lineItem.lot;
                     return {
@@ -612,7 +612,7 @@
                     var totalQuantityShipped = _.reduce(lineItems, function(sum, lineItem) {
                         return sum + (lineItem.quantityShipped || 0);
                     }, 0);
-                    if (totalQuantityShipped + lineItems[0].partialFulfilledQuantity < lineItems[0].orderQuantity) {
+                    if (totalQuantityShipped + lineItems[0].partialFulfilledQuantity < lineItems[0].orderedQuantity) {
                         totalPartialLineItems = totalPartialLineItems + 1;
                     }
                 }
@@ -625,18 +625,6 @@
                 var unskippedLineItems = _.filter(vm.displayTableLineItems, function(lineItems) {
                     return !lineItems[0].skipped;
                 });
-
-                var haveFulfilledLineItem = _.some(unskippedLineItems, function(lineItems) {
-                    return _.reduce(lineItems, function(sum, lineItem) {
-                        return sum + (lineItem.quantityShipped || 0);
-                    }, 0) > 0;
-                });
-
-                if (unskippedLineItems.length === 0) {
-                    return alertService.error('shipmentView.allLineItemsSkipped');
-                } else if (!haveFulfilledLineItem) {
-                    return alertService.error('shipmentView.allLineItemsNotFulfilled');
-                }
 
                 return orderService.getStatus(vm.order.id).then(function(result) {
                     if (result.suborder && result.closed) {
@@ -651,7 +639,8 @@
                             }), 'shipmentView.confirmPartialFulfilled.createSuborder'
                         )
                             .then(function() {
-                                return SiglusLocationViewService.createSubOrder()
+                                loadingModalService.open();
+                                return SiglusLocationViewService.createSubOrder(buildSaveParams())
                                     .then(function() {
                                         notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                         $state.go('openlmis.locationManagement.fulfillOrder');
@@ -668,7 +657,8 @@
                         'shipmentView.confirmShipment'
                     )
                         .then(function() {
-                            return SiglusLocationViewService.submitOrder(buildSaveParams())
+                            loadingModalService.open();
+                            return SiglusLocationViewService.submitOrder(buildSaveParams(true))
                                 .then(function() {
                                     notificationService.success('shipmentView.shipmentHasBeenConfirmed');
                                     $state.go('openlmis.locationManagement.fulfillOrder');
@@ -680,6 +670,8 @@
                         });
                 });
             }
+            alertService.error(messageService.get('openlmisForm.formInvalid'));
+
         };
 
         vm.delete = function() {

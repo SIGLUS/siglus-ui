@@ -43,9 +43,9 @@
                 return ;
             }
             return $http.get(openlmisUrlFactory('/api/siglusapi/locationMovements?facilityId=' + facilityId))
-                .then(function(response) {
+                .then(function() {
                     service.facilityId = facilityId;
-                    service.needInitiallyMoveProduct = response.data.needInitiallyMoveProduct;
+                    service.needInitiallyMoveProduct = false;
                     if (service.needInitiallyMoveProduct
                         && $state.current.name !== 'openlmis.locationManagement.movement.creation') {
                         service.showConfirmAndStartVirtualMovement();

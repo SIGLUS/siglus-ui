@@ -47,8 +47,7 @@
         }
 
         function addRow(tableLineItem, lineItems, isFirstRowToLineItem) {
-            lineItems.splice(1, 0,
-                getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
+            lineItems.push(getRowTemplateData(tableLineItem, lineItems, isFirstRowToLineItem));
         }
 
         function resetFirstRow(lineItem) {
@@ -65,37 +64,34 @@
             addRow(currentItem, lineItems, false);
         };
 
-        function getDataTemplate(orderLineItem, isMainGroup, locations, order) {
+        function getDataTemplate(orderLineItem, lineItem, locations, isFirstRow) {
 
-            var location =  orderLineItem.location;
-
-            var lot = SiglusLocationCommonUtilsService.getLotByLotId(locations, _.get(orderLineItem.lot, 'id'));
+            var lot = SiglusLocationCommonUtilsService.getLotByLotId(locations, _.get(lineItem, ['lot', 'id']));
             if (lot) {
                 lot.id = _.get(lot, 'lotId');
                 lot = _.omit(lot, 'lotId');
             }
-
-            var orderItem = _.find(order.orderLineItems, function(item) {
-                return item.orderable.id === orderLineItem.orderable.id;
-            });
             return {
                 $error: {},
                 $hint: {},
-                orderableId: _.get(orderItem, ['orderable', 'id']),
-                productCode: _.get(orderItem, ['orderable', 'productCode']),
-                productName: _.get(orderItem, ['orderable', 'fullProductName']),
-                orderable: orderLineItem.orderable,
-                id: orderLineItem.id,
-                isKit: _.get(orderItem, ['orderable', 'isKit']),
-                location: location,
+                orderableId: _.get(orderLineItem, ['orderable', 'id']),
+                productCode: _.get(orderLineItem, ['orderable', 'productCode']),
+                productName: _.get(orderLineItem, ['orderable', 'fullProductName']),
+                orderable: {
+                    id: orderLineItem.orderable.id,
+                    versionNumber: orderLineItem.orderable.meta.versionNumber
+                },
+                id: _.get(lineItem, 'id'),
+                isKit: _.get(orderLineItem, ['orderable', 'isKit']),
+                location: _.get(lineItem, 'location', null),
                 lot: lot,
-                added: orderItem.added,
-                orderQuantity: isMainGroup ? orderItem.orderedQuantity : '',
-                partialFulfilledQuantity: isMainGroup ? orderItem.partialFulfilledQuantity : '',
-                quantityShipped: orderLineItem.quantityShipped,
-                isMainGroup: isMainGroup,
-                netContent: _.get(orderItem, ['orderable', 'netContent']),
-                skipped: orderItem.skipped
+                added: _.get(orderLineItem, 'added', false),
+                orderedQuantity: isFirstRow ? orderLineItem.orderedQuantity : '',
+                partialFulfilledQuantity: isFirstRow ? orderLineItem.partialFulfilledQuantity : '',
+                quantityShipped: _.get(lineItem, 'quantityShipped', 0),
+                isMainGroup: isFirstRow,
+                netContent: _.get(orderLineItem, ['orderable', 'netContent']),
+                skipped: _.get(orderLineItem, 'skipped')
             };
         }
 
@@ -104,25 +100,24 @@
                 .groupBy(function(item)  {
                     return item.orderable.id;
                 })
-                .values()
                 .value();
             var result = [];
-            _.forEach(groupOrderLineItems, function(groupLineItems, index) {
 
-                if (!_.isArray(result[index])) {
+            _.forEach(order.orderLineItems, function(orderLineItem, index) {
+                var lineItems = groupOrderLineItems[orderLineItem.orderable.id] || [];
+                if (_.isEmpty(result[index])) {
                     result[index] = [];
                 }
-                if (groupLineItems.length === 1) {
-                    result[index].push(getDataTemplate(_.first(groupLineItems), true, locations, order));
-                    return;
-                }
+                if (lineItems.length === 0) {
+                    result[index].push(getDataTemplate(orderLineItem, undefined, locations, true));
+                } else if (lineItems.length === 1) {
+                    result[index].push(getDataTemplate(orderLineItem, lineItems[0], locations, true));
+                    result[index][0].isMainGroup = true;
 
-                if (groupLineItems.length > 1) {
-                    result[index].push(getDataTemplate(_.first(groupLineItems), true, locations, order));
-                    result[index][0].lot = null;
-                    result[index][0].location = null;
-                    _.forEach(groupLineItems, function(orderLineItem) {
-                        result[index].push(getDataTemplate(orderLineItem, false, locations, order));
+                } else {
+                    result[index].push(getDataTemplate(orderLineItem, undefined, locations, true));
+                    _.forEach(lineItems, function(lineItem) {
+                        result[index].push(getDataTemplate(orderLineItem, lineItem, locations, false));
                     });
                 }
             });
@@ -143,7 +138,7 @@
                     location: null,
                     lot: null,
                     added: true,
-                    orderQuantity: 0,
+                    orderedQuantity: 0,
                     partialFulfilledQuantity: 0,
                     quantityShipped: 0,
                     isMainGroup: true,

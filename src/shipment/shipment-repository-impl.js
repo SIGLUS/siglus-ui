@@ -239,7 +239,6 @@
         function mapCanFulfillForMe(summaries) {
             var canFulfillForMeMap = {};
 
-            var orderableIds = [];
             summaries.forEach(function(summary) {
                 summary.canFulfillForMe.forEach(function(canFulfillForMe) {
                     var orderableId = canFulfillForMe.orderable.id,
@@ -248,8 +247,6 @@
                     if (!canFulfillForMeMap[orderableId]) {
                         canFulfillForMeMap[orderableId] = {};
                     }
-
-                    orderableIds.push(orderableId);
 
                     canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
                 });
