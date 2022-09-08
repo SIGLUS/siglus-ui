@@ -179,6 +179,23 @@
             });
         }
 
+        function validateLocationDuplicatedForRemove(lineItems) {
+            _.forEach(lineItems, function(item) {
+                item.$error.locationError = '';
+                if (_.isEmpty(item.location)) {
+                    item.$error.locationError = 'openlmisForm.required';
+                    return;
+                }
+                var hasDuplicated = _.size(_.filter(lineItems, function(data) {
+                    return data.location
+                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                })) > 1;
+                if (hasDuplicated) {
+                    item.$error.locationError = 'locationShipmentView.locationDuplicated';
+                }
+            });
+        }
+
         vm.changeLocation = function(lineItem, lineItems, index) {
             lineItem.$error.locationError = '';
             if (lineItem.isKit) {
@@ -234,6 +251,7 @@
         };
 
         vm.removeItem = function(lineItems, index) {
+            var isKit = lineItems[index].isKit;
             if (lineItems.length === 1) {
                 vm.order.orderLineItems = _.filter(vm.order.orderLineItems, function(orderLineItem) {
                     return orderLineItem.orderable.id !== lineItems[0].orderableId;
@@ -251,10 +269,14 @@
                 lineItems.splice(index, 1);
             }
 
-            validateBase(lineItems, function(item) {
-                item.$error.lotCodeError = '';
-                item.$hint.lotCodeHint = '';
-            });
+            if (isKit) {
+                validateLocationDuplicatedForRemove(lineItems);
+            } else {
+                validateBase(lineItems, function(item) {
+                    item.$error.lotCodeError = '';
+                    item.$hint.lotCodeHint = '';
+                });
+            }
 
             vm.displayTableLineItems = _.filter(vm.displayTableLineItems, function(item) {
                 return !_.isEmpty(item);
@@ -265,8 +287,7 @@
 
         function reloadParams() {
             $state.go($state.current.name, $stateParams, {
-                reload: true,
-                notify: false
+                reload: true
             });
         }
 
@@ -372,7 +393,7 @@
                                     return [item];
                                 })
                             );
-                            $stateParams.displayTableLineItems = _.clone(vm.displayTableLineItems);
+                            $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
                             $stateParams.order = vm.order;
                             $stateParams.locations = locations;
                             reloadParams();
@@ -421,7 +442,9 @@
                 return {
                     orderedQuantity: 0,
                     orderable: orderable,
-                    partialFulfilledQuantity: 0
+                    partialFulfilledQuantity: 0,
+                    added: true,
+                    skipped: false
                 };
             });
         }
@@ -624,6 +647,9 @@
                 var unskippedLineItems = _.filter(vm.displayTableLineItems, function(lineItems) {
                     return !lineItems[0].skipped;
                 });
+                if (unskippedLineItems.length === 0) {
+                    return alertService.error('shipmentView.allLineItemsSkipped');
+                }
 
                 return orderService.getStatus(vm.order.id).then(function(result) {
                     if (result.suborder && result.closed) {
