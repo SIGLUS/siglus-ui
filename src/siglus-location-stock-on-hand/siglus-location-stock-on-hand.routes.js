@@ -76,7 +76,22 @@
                     if ($stateParams.stockCardSummaries) {
                         return $stateParams.stockCardSummaries;
                     }
-                    return siglusLocationStockOnHandService.getStockOnHandInfo(facility.id, $stateParams.program);
+                    return siglusLocationStockOnHandService.getStockOnHandInfo(facility.id, $stateParams.program)
+                        .then(function(stockCardSummaries) {
+                            _.forEach(stockCardSummaries, function(stockCardSummary) {
+                                if (stockCardSummary.orderable.isKit) {
+                                    stockCardSummary.occurredDate = _.get(stockCardSummary.stockCardDetails,
+                                        [0, 'occurredDate']);
+                                    stockCardSummary.stockCardDetails = [];
+                                }
+
+                                stockCardSummary.stockCardDetails = _.filter(stockCardSummary.stockCardDetails,
+                                    function(item) {
+                                        return item.stockOnHand !== 0;
+                                    });
+                            });
+                            return stockCardSummaries;
+                        });
                 },
                 stockCardLineItems: function(prepareStockOnHandRowService, stockCardSummaries, $stateParams) {
                     if ($stateParams.stockCardLineItems) {

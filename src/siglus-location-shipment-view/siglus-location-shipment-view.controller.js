@@ -486,12 +486,12 @@
             return (lineItem.isMainGroup && lineItems.length === 1) || (!lineItem.isMainGroup && lineItems.length > 1);
         };
 
-        vm.isEmptyRow = function(lineItem) {
+        vm.isEmptyRow = function(lineItem, lineItems, index) {
             var lots = SiglusLocationCommonUtilsService.getLotsByOrderableId(locations, lineItem.orderableId);
             var totalSoh = _.reduce(lots, function(sum, lot) {
                 return sum + (lot.stockOnHand || 0);
             }, 0);
-            return totalSoh === 0;
+            return totalSoh === 0 && (lineItems.length - 1 === index);
         };
 
         function validateRequired(lineItem) {

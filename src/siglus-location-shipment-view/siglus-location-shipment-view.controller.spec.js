@@ -1007,7 +1007,7 @@ describe('SiglusLocationShipmentViewController', function() {
                 isKit: true
             };
 
-            expect(vm.isEmptyRow(lineItem)).toEqual(true);
+            expect(vm.isEmptyRow(lineItem, [lineItem], 0)).toEqual(true);
         });
 
         it('should display no data row when lineItem has no location list and product is not kit', function() {

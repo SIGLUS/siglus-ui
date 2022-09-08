@@ -85,35 +85,12 @@
             return resource.deleteDraft(params).$promise;
         };
 
-        this.createDraft = function(order, stockCardSummaries) {
-            return resource.createDraft(buildFromOrder(order, stockCardSummaries)).$promise;
-        };
-
-        function buildFromOrder(order, stockCardSummaries) {
-            var orderableIds = order.orderLineItems.map(function(lineItem) {
-                return lineItem.orderable.id;
-            });
-            var shipmentViewLineItems = stockCardSummaries.reduce(function(shipmentViewLineItems, summary) {
-                return shipmentViewLineItems.concat(
-                    summary.stockCardDetails.map(function(stockCardDetail) {
-                        return {
-                            orderable: {
-                                id: stockCardDetail.orderable.id,
-                                versionNumber: stockCardDetail.orderable.meta.versionNumber
-                            },
-                            lot: stockCardDetail.lot,
-                            quantityShipped: 0
-                        };
-                    })
-                );
-            }, []).filter(function(shipmentLineItem) {
-                return orderableIds.includes(shipmentLineItem.orderable.id);
-            });
-            return {
+        this.createDraft = function(order) {
+            return resource.createDraft({
                 order: order,
-                lineItems: shipmentViewLineItems
-            };
-        }
+                lineItems: []
+            }).$promise;
+        };
 
         this.getOrderableLocationLotsInfo = function(params) {
             return resource.getOrderableLocationLotsInfo({
