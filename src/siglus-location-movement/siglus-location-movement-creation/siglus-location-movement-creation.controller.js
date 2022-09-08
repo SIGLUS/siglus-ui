@@ -57,17 +57,6 @@
 
         vm.isVirtual = false;
 
-        var validator = function(lineItems) {
-            return _.every(lineItems, function(lineItem) {
-                return _.chain(lineItem.$error)
-                    .keys()
-                    .all(function(key) {
-                        return _.isEmpty(lineItem.$error[key]);
-                    })
-                    .value();
-            });
-        };
-
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(
                 lineItem,
@@ -127,6 +116,16 @@
             }, true);
 
             confirmDiscardService.register($scope, 'openlmis.locationManagement.movement.creation');
+            var validator = function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$error)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$error[key]);
+                        })
+                        .value();
+                });
+            };
 
             paginationService.registerList(validator, angular.copy($stateParams), function() {
                 return vm.displayItems;
@@ -384,10 +383,29 @@
                     }
                 });
             });
+            return _.every(vm.addedLineItems, function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$error)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$error[key]);
+                        })
+                        .value();
+                });
+            });
         }
 
         function isValid() {
-            return validator(vm.addedLineItems);
+            return _.every(vm.addedLineItems, function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$error)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$error[key]);
+                        })
+                        .value();
+                });
+            });
         }
 
         function getLineItems() {
@@ -438,7 +456,6 @@
 
         vm.submit = function() {
             validateForm();
-            $scope.$apply();
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
                     then(function(data) {
