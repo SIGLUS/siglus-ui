@@ -123,7 +123,6 @@
             vm.tableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantiry(tableLineItems) :
                 tableLineItems;
-            // console.log('#### vm.tableLineItems', vm.tableLineItems);
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
         }

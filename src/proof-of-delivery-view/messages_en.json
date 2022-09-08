@@ -3,5 +3,11 @@
   "proofOfDeliveryView.requisitionNumber": "Requisition number",
   "proofOfDeliveryView.fnm":"FNM",
   "proofOfDeliveryView.preparedBy":"Prepared By",
-  "proofOfDeliveryView.conferredBy":"Conferred By"
+  "proofOfDeliveryView.conferredBy":"Conferred By",
+
+  "proofOfDeliveryView.dosage": "Dosage",
+  "proofOfDeliveryView.designation": "Designation",
+  "proofOfDeliveryView.expiringDate": "Expiring Date",
+  "proofOfDeliveryView.price": "Price",
+  "proofOfDeliveryView.value": "Value"
 }

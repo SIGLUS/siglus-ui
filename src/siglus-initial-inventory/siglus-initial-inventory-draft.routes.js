@@ -86,8 +86,8 @@
                                 : [$stateParams.subDraftIds];
                             var flag = $stateParams.isMerged === 'true';
                             physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
-                                .then(function(draft) {
-                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                                .then(function(subDraft) {
+                                    physicalInventoryDataService.setDraft(facility.id, subDraft);
                                     deferred.resolve();
                                 });
                         } else {

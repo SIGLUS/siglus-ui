@@ -45,23 +45,4 @@ describe('openlmis-navigation run', function() {
 
     });
 
-    // describe('post logout action', function() {
-
-    //     it('should clear current user cache', function() {
-    //         this.navigationStateServiceSpy.clearStatesAvailability.andReturn(this.$q.resolve());
-
-    //         var success;
-    //         console.log(this.postLogoutAction());
-    //         this.postLogoutAction()
-    //             .then(function() {
-    //                 success = true;
-    //             });
-    //         this.$rootScope.$apply();
-
-    //         expect(success).toBe(true);
-    //         expect(this.navigationStateServiceSpy.clearStatesAvailability).toHaveBeenCalled();
-    //     });
-
-    // });
-
 });

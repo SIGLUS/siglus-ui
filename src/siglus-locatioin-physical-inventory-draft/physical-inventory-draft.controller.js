@@ -54,7 +54,6 @@
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
                         allLocationAreaMap, localStorageService) {
         var vm = this;
-        // vm.withLocation = true;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
@@ -216,10 +215,6 @@
          */
         // SIGLUS-REFACTOR: starts here
         vm.addProducts = function() {
-            // var notYetAddedItems = _.chain(draft.lineItems)
-            //     .difference(_.flatten(vm.displayLineItemsGroup))
-            //     .value();
-            // var addedLotsId = getAddedLots();
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -233,16 +228,6 @@
             addProductsModalService.show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
                 draft.lineItems = draft.lineItems.concat(addedItems);
                 refreshLotOptions();
-                // $stateParams.program = vm.program;
-                // $stateParams.facility = vm.facility;
-                // $stateParams.draft = draft;
-                //
-                // $stateParams.isAddProduct = true;
-                //
-                // //Only reload current state and avoid reloading parent state
-                // $state.go($state.current.name, $stateParams, {
-                //     reload: $state.current.name
-                // });
                 $stateParams.isAddProduct = true;
                 reload($state.current.name);
 
@@ -296,14 +281,6 @@
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
             // SIGLUS-REFACTOR: starts here
-            // $stateParams.program = vm.program;
-            // $stateParams.facility = vm.facility;
-            // $stateParams.draft = draft;
-            //
-            // //Only reload current state and avoid reloading parent state
-            // $state.go($state.current.name, $stateParams, {
-            //     reload: $state.current.name
-            // });
             return reload($state.current.name);
             // SIGLUS-REFACTOR: ends here
         };
@@ -330,14 +307,14 @@
         // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
-        function reload(reload) {
+        function reload(isReload) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
                 return $state.go($state.current.name, $stateParams, {
-                    reload: reload
+                    reload: isReload
                 });
             });
         }
@@ -389,13 +366,6 @@
                 resetWatchItems();
 
                 $stateParams.isAddProduct = false;
-                // $stateParams.program = vm.program;
-                // $stateParams.facility = vm.facility;
-                // $stateParams.draft = draft;
-                // //Reload parent state and current state to keep data consistency.
-                // $state.go($state.current.name, $stateParams, {
-                //     reload: true
-                // });
                 loadingModalService.close();
                 if (notReload) {
                     var stateParams = angular.copy($stateParams);
@@ -449,7 +419,6 @@
          * Delete physical inventory draft.
          */
 
-        // todo wait for #56
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
                 // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
@@ -511,12 +480,6 @@
                     $state.go('^', {}, {
                         reload: true
                     });
-                    // $state.go('openlmis.stockmanagement.physicalInventory.draftList', {
-                    //     program: program.id,
-                    //     facility: facility.id
-                    // }, {
-                    //     reload: true
-                    // });
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -774,6 +737,8 @@
                     }));
                     return r;
                 }, []);
+                vm.areaList = areaList;
+                vm.allLocationList = locationList;
 
                 _.forEach(newList, function(item) {
                     _.forEach(item, function(itm) {
@@ -799,21 +764,8 @@
                         code: item.locationCode,
                         label: item.locationCode
                     };
-                }) : _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
-                    r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
-                        return {
-                            code: _item.locationCode,
-                            label: _item.locationCode
-                        };
-                    }));
-                    return r;
-                }, []);
-                lineItem.areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
-                    return {
-                        code: item,
-                        label: item
-                    };
-                });
+                }) : vm.allLocationList;
+                lineItem.areaList = vm.areaList;
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             } else {
@@ -838,21 +790,8 @@
                                 code: item.locationCode,
                                 label: item.locationCode
                             };
-                        }) : _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
-                            r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
-                                return {
-                                    code: _item.locationCode,
-                                    label: _item.locationCode
-                                };
-                            }));
-                            return r;
-                        }, []);
-                    lineItem.areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
-                        return {
-                            code: item,
-                            label: item
-                        };
-                    });
+                        }) : vm.allLocationList;
+                    lineItem.areaList = vm.areaList;
                 }
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
@@ -897,7 +836,6 @@
                 if (!summary.$errors) {
                     summary.$errors = {};
                 }
-                // TODO 报错了 改动
                 if (summary.lot && summary.lot.id && summary.lot.lotCode) {
                     vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
                 }
@@ -1057,12 +995,12 @@
             }
             var reason;
             if (diff > 0) {
-                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
-                    return reason.reasonType === REASON_TYPES.CREDIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(item) {
+                    return item.reasonType === REASON_TYPES.CREDIT;
                 });
             } else {
-                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
-                    return reason.reasonType === REASON_TYPES.DEBIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(item) {
+                    return item.reasonType === REASON_TYPES.DEBIT;
                 });
             }
             var adjustment = {
@@ -1074,21 +1012,8 @@
         }
 
         function addLot(lineItem) {
-            var areaList = _.map(Object.keys(vm.allLocationAreaMap), function(item) {
-                return {
-                    code: item,
-                    label: item
-                };
-            });
-            var locationList = _.reduce(Object.keys(vm.allLocationAreaMap), function(r, c) {
-                r = r.concat(_.map(vm.allLocationAreaMap[c], function(_item) {
-                    return {
-                        code: _item.locationCode,
-                        label: _item.locationCode
-                    };
-                }));
-                return r;
-            }, []);
+            var areaList = vm.areaList;
+            var locationList = vm.allLocationList;
             var newLineItem = _.assign({}, angular.copy(lineItem), {
                 stockCardId: null,
                 displayLotMessage: undefined,
@@ -1140,42 +1065,6 @@
             });
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
-         * @name getPrintUrl
-         *
-         * @description
-         * Prepares a print URL for the given physical inventory.
-         *
-         * @return {String} the prepared URL
-         */
-        /*function getPrintUrl(id) {
-            return stockmanagementUrlFactory('/api/physicalInventories/' + id + '?format=pdf');
-        }*/
-
-        /*
-        function reorderItems() {
-            var sorted = $filter('orderBy')(vm.draft.lineItems, ['orderable.productCode', '-occurredDate']);
-            var groups = _.chain(sorted).groupBy(function(item) {
-                return item.orderable.id;
-            })
-                .sortBy(function(group) {
-                    return _.every(group, function(item) {
-                        return !item.$errors.quantityInvalid;
-                    });
-                })
-                .values()
-                .value();
-
-            groups.forEach(function(group) {
-                group.forEach(function(lineItem) {
-                    orderableGroupService.determineLotMessage(lineItem, group);
-                });
-            });
-            vm.displayLineItemsGroup = groups;
-        }
-        */
         function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {

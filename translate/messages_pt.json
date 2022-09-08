@@ -1358,6 +1358,13 @@
   "proofOfDeliveryView.vvmStatus": "Estado do Monitor do Frasco de Vacina",
   "proofOfDeliveryView.preparedBy": "Elaborado por",
   "proofOfDeliveryView.conferredBy": "Conferido por",
+
+  "proofOfDeliveryView.dosage": "Dosagem",
+  "proofOfDeliveryView.designation": "Designação",
+  "proofOfDeliveryView.expiringDate": "Prazo de validade",
+  "proofOfDeliveryView.price": "Preço",
+  "proofOfDeliveryView.value": "Valor",
+
   "referencedataLot.noLotDefined": "Nenhum lote foi definido",
   "referencedataRoles.administration": "Administração",
   "referencedataRoles.fulfillment": "Aviamento",

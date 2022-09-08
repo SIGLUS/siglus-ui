@@ -310,14 +310,14 @@
         // SIGLUS-REFACTOR: ends here
 
         // SIGLUS-REFACTOR: starts here
-        function reload(reload) {
+        function reload(isReload) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
                 return $state.go($state.current.name, $stateParams, {
-                    reload: reload
+                    reload: isReload
                 });
             });
         }
@@ -422,7 +422,6 @@
          * Delete physical inventory draft.
          */
 
-        // todo wait for #56
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
                 // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
@@ -888,12 +887,12 @@
             }
             var reason;
             if (diff > 0) {
-                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
-                    return reason.reasonType === REASON_TYPES.CREDIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(item) {
+                    return item.reasonType === REASON_TYPES.CREDIT;
                 });
             } else {
-                reason = _.find(vm.reasons[lineItem.programId], function(reason) {
-                    return reason.reasonType === REASON_TYPES.DEBIT;
+                reason = _.find(vm.reasons[lineItem.programId], function(item) {
+                    return item.reasonType === REASON_TYPES.DEBIT;
                 });
             }
             var adjustment = {
