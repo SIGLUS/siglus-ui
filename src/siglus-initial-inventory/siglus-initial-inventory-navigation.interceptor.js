@@ -98,13 +98,7 @@
                 } else {
                     var user = currentUserService.getUserInfo().$$state.value;
                     if (user) {
-                        facilityFactory.getUserHomeFacility().then(function(facility) {
-                            if (facility && facility.enableLocationManagement) {
-                                siglusLocationMovementUpgradeService.init(user.homeFacilityId);
-                            } else {
-                                siglusLocationMovementUpgradeService.doneUpgrade();
-                            }
-                        });
+                        siglusLocationMovementUpgradeService.init(user.homeFacilityId);
                     }
                 }
             }
