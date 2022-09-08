@@ -34,7 +34,7 @@ describe('Expired lot filter', function() {
     });
 
     it('should return undefined for undefined', function() {
-        expect(this.siglusExpiredLotCodeFilter()).toBeUndefined();
+        expect(this.siglusExpiredLotCodeFilter()).toEqual('');
     });
 
     it('should return a lotcode with  [Expired] tag  when expirationDate is before the moment', function() {
