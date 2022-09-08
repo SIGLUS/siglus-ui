@@ -212,8 +212,7 @@
             emitQuantityChange(lineItem, lineItems);
             vm.validateLot(lineItem);
             vm.validateLotDate(lineItem);
-            if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT
-                && !_.isEmpty(_.get(lineItem, ['lot']))) {
+            if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT) {
                 lineItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
                     lineItem,
                     SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(lineItem.locationsInfo)
@@ -290,8 +289,7 @@
             lineItem.$errors.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : '';
             emitQuantityChange(lineItem, lineItems);
 
-            if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT
-                && !_.isEmpty(_.get(lineItem, ['location']))) {
+            if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT) {
                 lineItem.lotOptions = SiglusLocationCommonUtilsService.getLotList(
                     lineItem,
                     SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locationsInfo)
