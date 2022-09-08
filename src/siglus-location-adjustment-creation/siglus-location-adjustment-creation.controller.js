@@ -57,17 +57,6 @@
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
         var vm = this;
 
-        function validator(lineItems) {
-            return _.every(lineItems, function(lineItem) {
-                return _.chain(lineItem.$errors)
-                    .keys()
-                    .all(function(key) {
-                        return _.isEmpty(lineItem.$errors[key]);
-                    })
-                    .value();
-            });
-        }
-
         vm.$onInit = function() {
 
             vm.orderableGroups = null;
@@ -115,7 +104,16 @@
             }, true);
 
             confirmDiscardService.register($scope, 'openlmis.locationManagement.adjustment.creation');
-
+            var validator = function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$errors)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$errors[key]);
+                        })
+                        .value();
+                });
+            };
             return paginationService.registerList(validator, angular.copy($stateParams), function() {
                 return vm.addedLineItems;
             });
@@ -440,7 +438,16 @@
         }
 
         function isValid() {
-            return validator(vm.addedLineItems);
+            return _.every(vm.addedLineItems, function(lineItems) {
+                return _.every(lineItems, function(lineItem) {
+                    return _.chain(lineItem.$errors)
+                        .keys()
+                        .all(function(key) {
+                            return _.isEmpty(lineItem.$errors[key]);
+                        })
+                        .value();
+                });
+            });
         }
 
         function getLineItems() {
@@ -575,7 +582,6 @@
 
         vm.submit = function() {
             validateForm();
-            $scope.$apply();
             if (isValid()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
                     then(function(data) {
