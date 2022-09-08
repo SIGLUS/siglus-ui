@@ -36,7 +36,7 @@
     function expiredLotCodeFilter(moment, messageService) {
         return function(option) {
             if (!option) {
-                return undefined;
+                return '';
             }
 
             if (moment() > moment(option.expirationDate)) {

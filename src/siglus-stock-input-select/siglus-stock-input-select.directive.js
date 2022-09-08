@@ -211,7 +211,7 @@
                         $scope.showExpired = function() {
                             var lineItem = $scope.lineItem;
                             if (moment().isAfter(_.get(lineItem, ['lot', 'expirationDate']))) {
-                                return messageService.get('siglusIssueOrReceiveReport.expired');
+                                return  messageService.get('siglusStockInputSelect.lotExpired');
                             }
                         };
 

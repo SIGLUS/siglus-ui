@@ -2503,5 +2503,7 @@
   "shipmentViewReport.order": "Ordem",
   "shipmentViewReport.facility": "Instalação",
   "shipmentViewReport.storeroom": "Armazem",
-  "shipmentViewReport.tips": "Ctrl+P to print"
+  "shipmentViewReport.tips": "Ctrl+P to print",
+  
+  "siglusStockInputSelect.lotExpired": "This lot is expired"
 }
