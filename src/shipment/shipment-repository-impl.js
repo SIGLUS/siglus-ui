@@ -181,9 +181,6 @@
          */
         // #372: Improving Fulfilling Order performance
         function getDraftByOrderId(order, stockCardSummaries) {
-            // var orderResource = this.orderResource,
-            //     stockCardSummaryRepositoryImpl = this.stockCardSummaryRepositoryImpl;
-
             return this.shipmentDraftResource.query({
                 orderId: order.id
             })
