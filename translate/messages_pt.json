@@ -2460,7 +2460,8 @@
   "adminFacilityList.android": "Android",
   "locationShipmentView.lotExpired": "Este lote expirou, não pode ser aviado.",
   "locationShipmentView.notFirstToExpire": "Este lote não é o primeiro a expirar.",
-  "locationShipmentView.locationDuplicated": "The locations for issue Kit cannot be repeated, please enter a new one.",
+  "locationShipmentView.lotDuplicated": "The locations to fulfill the same lot cannot be repeated, please enter a new one.",
+  "locationShipmentView.locationDuplicated": "The locations to fulfill Kit cannot be repeated, please enter a new one.",
   "locationShipmentView.addItem": "Adicionar Item",
   "locationMovement.gtSoh": "Move quantity cannot be larger than SOH, please check your draft.",
   "locationMovement.moveTo": "Mover para",
@@ -2504,6 +2505,6 @@
   "shipmentViewReport.facility": "Instalação",
   "shipmentViewReport.storeroom": "Armazem",
   "shipmentViewReport.tips": "Ctrl+P to print",
-  
+
   "siglusStockInputSelect.lotExpired": "This lot is expired"
 }
