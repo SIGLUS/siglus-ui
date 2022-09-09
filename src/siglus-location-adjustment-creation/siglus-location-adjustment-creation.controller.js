@@ -603,8 +603,10 @@
                             .catch(function() {
                                 loadingModalService.close();
                             });
-
                     });
+            } else {
+                vm.cancelFilter();
+                alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
 
