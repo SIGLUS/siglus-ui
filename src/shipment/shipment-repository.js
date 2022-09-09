@@ -118,7 +118,6 @@
         // #372: Improving Fulfilling Order performance
         function getDraftByOrderId(order, stockCardSummaries) {
             var repository = this;
-
             return this.impl.getDraftByOrderId(order, stockCardSummaries)
                 .then(function(shipmentJson) {
                     return new Shipment(shipmentJson, repository);

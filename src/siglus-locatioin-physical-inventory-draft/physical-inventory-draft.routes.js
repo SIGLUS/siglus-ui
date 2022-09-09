@@ -100,23 +100,23 @@
                                                         return r;
                                                     }, {}
                                                 );
-                                                draft.lineItems = _.map(draft.lineItems, function(lineItem) {
+                                                _.forEach(draft.lineItems, function(lineItem) {
                                                     var tempSoh = _.get(_.find(
                                                         lotsDataByLocationMap[lineItem.locationCode],
                                                         function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                            if (lineItem.lot) {
+                                                                return item.lotCode === lineItem.lot.lotCode;
+                                                            }
                                                         }
                                                     ), 'stockOnHand', '');
-                                                    return angular.merge(lineItem, {
-                                                        stockOnHand: lotsDataByLocationMap[lineItem.locationCode] ?
-                                                            tempSoh :
-                                                            ''
-                                                    });
+                                                    lineItem.stockOnHand = tempSoh;
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();
                                             });
                                     } else {
+                                        // eslint-disable-next-line no-debugger
+                                        debugger;
                                         physicalInventoryDataService.setDraft(facility.id, draft);
                                         deferred.resolve();
                                     }
@@ -141,7 +141,9 @@
                                                     var tempSoh = _.get(_.find(
                                                         lotsDataByLocationMap[lineItem.locationCode],
                                                         function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                            if (lineItem.lot) {
+                                                                return item.lotCode === lineItem.lot.lotCode;
+                                                            }
                                                         }
                                                     ), 'stockOnHand', '');
                                                     return angular.merge(lineItem, {

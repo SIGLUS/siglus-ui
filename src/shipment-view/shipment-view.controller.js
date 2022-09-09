@@ -128,14 +128,14 @@
         }
 
         function setSuggestedQuantiry(items) {
-            var itemsCopy = angular.copy(items);
             var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
-            return _.map(itemsCopy, function(item) {
-                return angular.merge(item, {
-                    suggestedQuantity:
-                        _.includes([null, undefined], suggestedQuatityMap[item.id]) ? '' : suggestedQuatityMap[item.id]
-                });
+            _.forEach(items, function(item) {
+                item.suggestedQuantity =
+                    _.includes([null, undefined], suggestedQuatityMap[item.id]) ?
+                        '' :
+                        suggestedQuatityMap[item.id];
             });
+            return items;
         }
 
         /**

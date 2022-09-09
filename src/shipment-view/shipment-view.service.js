@@ -69,7 +69,6 @@
             return getShipmentBasedOnOrderStatus(order, stockCardSummaries)
             // #372: ends here
                 .then(function(shipment) {
-
                     shipment.save = decorateSave(shipment.save);
                     shipment.confirm = decorateConfirm(shipment.confirm);
                     shipment.delete = decorateDelete(shipment.delete);
@@ -124,7 +123,6 @@
         function decorateSave(originalSave) {
             return function() {
                 loadingModalService.open();
-
                 return originalSave.apply(this, arguments)
                     .then(function(response) {
                         notificationService.success('shipmentView.draftHasBeenSaved');
