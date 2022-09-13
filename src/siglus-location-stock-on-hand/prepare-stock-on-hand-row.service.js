@@ -90,7 +90,9 @@
             _.forEach(stockCardSummaries, function(stockCardSummary) {
                 lines.push(addGroupRow(stockCardSummary));
                 _.forEach(stockCardSummary.stockCardDetails, function(stockCard) {
-                    lines.push(addLotRow(stockCard));
+                    if (!stockCard.orderable.isKit) {
+                        lines.push(addLotRow(stockCard));
+                    }
                     _.forEach(stockCard.lotLocationSohDtoList, function(location) {
                         lines.push(addLocationRow(location, stockCard));
                     });

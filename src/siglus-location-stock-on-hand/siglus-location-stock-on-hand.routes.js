@@ -79,12 +79,6 @@
                     return siglusLocationStockOnHandService.getStockOnHandInfo(facility.id, $stateParams.program)
                         .then(function(stockCardSummaries) {
                             _.forEach(stockCardSummaries, function(stockCardSummary) {
-                                if (stockCardSummary.orderable.isKit) {
-                                    stockCardSummary.occurredDate = _.get(stockCardSummary.stockCardDetails,
-                                        [0, 'occurredDate']);
-                                    stockCardSummary.stockCardDetails = [];
-                                }
-
                                 stockCardSummary.stockCardDetails = _.filter(stockCardSummary.stockCardDetails,
                                     function(item) {
                                         return item.stockOnHand !== 0;
@@ -102,6 +96,7 @@
                 },
                 displayItems: function(stockCardLineItems, siglusLocationCommonFilterService,
                     $stateParams, paginationService) {
+
                     return paginationService.registerList(null, $stateParams, function() {
                         return  siglusLocationCommonFilterService
                             .filterList($stateParams.keyword, stockCardLineItems);
