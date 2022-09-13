@@ -127,6 +127,36 @@
                     .value();
         };
 
+        this.getDesLocationList = function(lineItem, areaLocationInfo) {
+            return  _.chain(areaLocationInfo)
+                .filter(function(locationInfo) {
+                    var currentMoveToArea = _.get(lineItem.moveTo, 'area', lineItem.destArea);
+                    return currentMoveToArea
+                        ? currentMoveToArea === locationInfo.area
+                        : true;
+                })
+                .uniq('locationCode')
+                .map(function(item) {
+                    return item.locationCode;
+                })
+                .value();
+        };
+
+        this.getDesAreaList = function(lineItem, areaLocationInfo) {
+            return _.chain(areaLocationInfo)
+                .filter(function(locationInfo) {
+                    var currentMoveToLocationCode = _.get(lineItem.moveTo, 'locationCode', lineItem.destLocationCode);
+                    return currentMoveToLocationCode
+                        ? currentMoveToLocationCode === locationInfo.locationCode
+                        : true;
+                })
+                .uniq('area')
+                .map(function(item) {
+                    return item.area;
+                })
+                .value();
+        };
+
         this.getOrderableLotsMapper = function(locations) {
             return _.chain(locations)
                 .map(function(location) {
