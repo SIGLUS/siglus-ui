@@ -90,7 +90,7 @@ describe('openlmis.stock.physical.inventory.list state', function() {
 
     describe('test resolve data programId', function() {
         it('should return programId when programId param exist in route', function() {
-            expect(getResolvedValue('programId')).toEqual('00000000-0000-0000-0000-000000000000');
+            expect(getResolvedValue('programId')).toEqual(undefined);
         });
 
         it('should return undefined when programId param exist in route', function() {
@@ -102,18 +102,7 @@ describe('openlmis.stock.physical.inventory.list state', function() {
 
     describe('test resolve data programs', function() {
         it('should filter program code is equal ML data when enter physical inventory list page', function() {
-            var result = [
-                {
-                    code: 'ALL',
-                    id: '00000000-0000-0000-0000-000000000000',
-                    name: 'Todos os produtos'
-                },
-                {
-                    code: 'VC',
-                    id: '00000000-0000-0000-0000-000000000002',
-                    name: 'Via Clássica'
-                }
-            ];
+            var result = undefined;
 
             expect(getResolvedValue('programs')).toEqual(result);
         });
