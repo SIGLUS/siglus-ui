@@ -43,6 +43,7 @@
                         notificationService, siglusLocationCommonApiService, facility, user,
                         siglusSignatureWithDateModalService, confirmDiscardService,
                         siglusLocationMovementUpgradeService) {
+
         var vm = this;
 
         vm.orderableGroups = null;
@@ -69,36 +70,6 @@
                 lineItem,
                 SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)
             );
-        };
-
-        vm.getAreaList = function(lineItem) {
-            return _.chain(areaLocationInfo)
-                .filter(function(locationInfo) {
-                    var currentMoveToLocationCode = _.get(lineItem.moveTo, 'locationCode', '');
-                    return currentMoveToLocationCode
-                        ? currentMoveToLocationCode === locationInfo.locationCode
-                        : true;
-                })
-                .uniq('area')
-                .map(function(item) {
-                    return item.area;
-                })
-                .value();
-        };
-
-        vm.getLocationAreaList = function(lineItem) {
-            return  _.chain(areaLocationInfo)
-                .filter(function(locationInfo) {
-                    var currentMoveToArea = _.get(lineItem.moveTo, 'area', '');
-                    return currentMoveToArea
-                        ? currentMoveToArea === locationInfo.area
-                        : true;
-                })
-                .uniq('locationCode')
-                .map(function(item) {
-                    return item.locationCode;
-                })
-                .value();
         };
 
         vm.$onInit = function() {
@@ -202,21 +173,31 @@
         vm.changeLot = function(lineItem, lineItems) {
             lineItem.$error.lotCodeError = _.isEmpty(lineItem.lot) ? 'openlmisForm.required' : '';
             emitQuantityChange(lineItem, lineItems);
-
+            lineItem.srcLocationOptions = SiglusLocationCommonUtilsService.getLocationList(
+                lineItem,
+                SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations)
+            );
         };
 
         vm.changeLocation = function(lineItem, lineItems) {
             lineItem.$error.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : '';
             emitQuantityChange(lineItem, lineItems);
+            lineItem.lotCodeOptions = SiglusLocationCommonUtilsService.getLotList(
+                lineItem,
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)
+            );
         };
 
         vm.changeArea = function(lineItem) {
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
+            lineItem.destLocationOptions = SiglusLocationCommonUtilsService
+                .getDesLocationList(lineItem, areaLocationInfo);
         };
 
         vm.changeMoveToLocation = function(lineItem) {
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
+            lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
         };
 
         vm.getStockOnHand = function(lineItem, lineItems, index) {

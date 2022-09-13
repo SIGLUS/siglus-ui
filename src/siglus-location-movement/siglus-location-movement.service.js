@@ -96,9 +96,11 @@
                 id: draftId
             }).$promise;
         }
-        function getMovementLocationAreaInfo(draftId) {
+        // TODO why draftId ?
+        function getMovementLocationAreaInfo(draftId, isEmpty) {
             return resource.getMovementLocationAreaInfo({
-                id: draftId
+                id: draftId,
+                isEmpty: isEmpty
             }).$promise;
         }
 

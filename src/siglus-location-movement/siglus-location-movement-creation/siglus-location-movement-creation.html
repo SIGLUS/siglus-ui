@@ -56,7 +56,7 @@
                             openlmis-invalid="{{lineItem.$error.lotCodeError | message}}"
                             ng-model="lineItem.lot"
                             no-auto-select="true"
-                            ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
+                            ng-options="lot.lotCode for lot in lineItem.lotCodeOptions track by lot.lotCode"
                             ng-change="vm.changeLot(lineItem, lineItems);"
                     >
                     </select>
@@ -80,7 +80,7 @@
                             ng-model="lineItem.location"
                             no-auto-select="true"
                             openlmis-invalid="{{lineItem.$error.locationError | message}}"
-                            ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
+                            ng-options="location.locationCode for location in lineItem.srcLocationOptions track by location.locationCode"
                             ng-change="vm.changeLocation(lineItem, lineItems)"
                     >
                     </select>
@@ -94,7 +94,7 @@
                                 no-auto-select="false"
                                 ng-model="lineItem.moveTo.area"
                                 openlmis-invalid="{{lineItem.$error.areaError | message}}"
-                                ng-options="area for area in vm.getAreaList(lineItem) track by area"
+                                ng-options="area for area in lineItem.destAreaOptions track by area"
                                 ng-change="vm.changeArea(lineItem)">
                         </select>
                         <select
@@ -103,7 +103,7 @@
                                 no-auto-select="false"
                                 ng-model="lineItem.moveTo.locationCode"
                                 openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
-                                ng-options="locationCode for locationCode in vm.getLocationAreaList(lineItem) track by locationCode"
+                                ng-options="locationCode for locationCode in lineItem.destLocationOptions track by locationCode"
                                 ng-change="vm.changeMoveToLocation(lineItem)"
                                >
                         </select>
