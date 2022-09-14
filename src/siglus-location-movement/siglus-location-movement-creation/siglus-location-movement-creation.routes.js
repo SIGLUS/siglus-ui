@@ -118,7 +118,6 @@
                         .filterList($stateParams.keyword || '', addedLineItems);
                     displayItems.forEach(function(lineItemGroups) {
                         lineItemGroups.forEach(function(lineItem) {
-                            // TODO should lotCode change update srcLocationOptions
                             if (!lineItem.lotCodeOptions) {
                                 lineItem.lotCodeOptions = SiglusLocationCommonUtilsService.getLotList(
                                     lineItem,
