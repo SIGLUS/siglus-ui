@@ -46,7 +46,11 @@
                 stockOnHand: lineItem.stockOnHand,
                 moveTo: _.clone(lineItem.moveTo),
                 moveToLocation: _.clone(lineItem.moveToLocation),
-                quantity: lineItem.quantity
+                quantity: lineItem.quantity,
+                lotCodeOptions: lineItem.lotCodeOptions,
+                srcLocationOptions: lineItem.srcLocationOptions,
+                destLocationOptions: lineItem.destLocationOptions,
+                destAreaOptions: lineItem.destAreaOptions
             };
         }
         function getRowTemplateDataForVirtualMovement(lineItem) {
@@ -61,7 +65,11 @@
                 programId: lineItem.programId,
                 location: _.clone(lineItem.location),
                 stockOnHand: lineItem.stockOnHand,
-                quantity: undefined
+                quantity: undefined,
+                lotCodeOptions: lineItem.lotCodeOptions,
+                srcLocationOptions: lineItem.srcLocationOptions,
+                destLocationOptions: lineItem.destLocationOptions,
+                destAreaOptions: lineItem.destAreaOptions
             };
         }
 
