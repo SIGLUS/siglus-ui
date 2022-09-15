@@ -193,8 +193,8 @@
                 });
         }
 
-        function getLocationPhysicalInventorySubDraft(id, flag) {
-            return physicalInventoryService.getLocationPhysicalInventorySubDraft(id)
+        function getLocationPhysicalInventorySubDraft(id, flag, locationManagementOption) {
+            return physicalInventoryService.getLocationPhysicalInventorySubDraft(id, locationManagementOption)
                 .then(function(physicalInventory) {
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;

@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.physicalInventory.draftList',
             {
-                url: '/draftList?creationType',
+                url: '/draftList?creationType&locationManagementOption',
                 showInNavigation: false,
                 views: {
                     '@openlmis': {

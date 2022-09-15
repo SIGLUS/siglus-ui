@@ -69,6 +69,7 @@
         vm.isEmpty = isEmpty;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
+        vm.locationManagementOption = $stateParams.locationManagementOption;
         var draft = physicalInventoryDataService.getDraft(facility.id);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);

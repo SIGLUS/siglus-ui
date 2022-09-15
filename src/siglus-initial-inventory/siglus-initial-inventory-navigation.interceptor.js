@@ -68,7 +68,6 @@
             if ((!toState.name.contains('movement.creation')
                 && toState.showInNavigation
                 && toState.url !== '/home')) {
-
                 var user = currentUserService.getUserInfo().$$state.value;
                 if (user) {
                     var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
@@ -87,6 +86,10 @@
 
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
             if (toState.url === '/home') {
+                var user = currentUserService.getUserInfo().$$state.value;
+                if (user) {
+                    siglusLocationMovementUpgradeService.init(user.homeFacilityId);
+                }
                 if (checkInitialInventoryStatus()) {
                     event.preventDefault();
                     checkDraftIsStarter();
@@ -94,11 +97,6 @@
                     var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
                     if (shouldUpgradeMoveProduct) {
                         return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
-                    }
-                } else {
-                    var user = currentUserService.getUserInfo().$$state.value;
-                    if (user) {
-                        siglusLocationMovementUpgradeService.init(user.homeFacilityId);
                     }
                 }
             }

@@ -87,6 +87,11 @@
                 method: 'POST',
                 url: stockmanagementUrlFactory('/api/siglusapi/locations'),
                 isArray: true
+            },
+            remove: {
+                method: 'DELETE',
+                hasBody: true,
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
             }
         });
         this.getDraft = getDraft;
@@ -106,6 +111,7 @@
         this.getInitialDraft = getInitialDraft;
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
+        this.deleteSubDraftByLocation = deleteSubDraftByLocation;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -137,6 +143,13 @@
             return locationResource.getSOH({
                 extraData: true
             }, ids ? ids : []).$promise;
+        }
+
+        function deleteSubDraftByLocation(ids) {
+            return locationResource.remove({
+                isByLocation: true
+            }, ids)
+                .$promise;
         }
 
         function validateConflictProgram(program, facility) {
@@ -179,10 +192,17 @@
                 });
         }
 
-        function getLocationPhysicalInventorySubDraft(id) {
-            return locationResource.find({
+        function getLocationPhysicalInventorySubDraft(id, locationManagementOption) {
+            var params = {
                 subDraftIds: id
-            })
+            };
+            if (locationManagementOption === 'location') {
+                params = {
+                    subDraftIds: id,
+                    isByLocation: true
+                };
+            }
+            return locationResource.find(params)
                 .$promise
                 .then(function(response) {
                     return siglusStockEventService.formatResponse(response);
@@ -222,22 +242,47 @@
         }
 
         function createLocationDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
-            if (isInitialInventory) {
-                return locationResource.save({
-                    splitNum: Number(splitNum),
-                    initialPhysicalInventory: true
-                }, {
-                    programId: program,
-                    facilityId: facility
-                }).$promise;
-            }
-            return locationResource.save({
+            var params = locationManagementOption === 'product' ? {
                 splitNum: Number(splitNum),
                 locationManagementOption: locationManagementOption
-            }, {
+            } : {
+                splitNum: Number(splitNum),
+                locationManagementOption: locationManagementOption,
+                isByLocation: true
+
+            };
+            if (isInitialInventory) {
+                params = locationManagementOption === 'product' ? {
+                    splitNum: Number(splitNum),
+                    locationManagementOption: locationManagementOption,
+                    initialPhysicalInventory: true
+                } : {
+                    splitNum: Number(splitNum),
+                    locationManagementOption: locationManagementOption,
+                    isByLocation: true,
+                    initialPhysicalInventory: true
+                };
+            }
+            return locationResource.save(params, {
                 programId: program,
                 facilityId: facility
             }).$promise;
+            // if (isInitialInventory) {
+            //     return locationResource.save({
+            //         splitNum: Number(splitNum),
+            //         initialPhysicalInventory: true
+            //     }, {
+            //         programId: program,
+            //         facilityId: facility
+            //     }).$promise;
+            // }
+            // return locationResource.save({
+            //     splitNum: Number(splitNum),
+            //     locationManagementOption: locationManagementOption
+            // }, {
+            //     programId: program,
+            //     facilityId: facility
+            // }).$promise;
 
         }
 
