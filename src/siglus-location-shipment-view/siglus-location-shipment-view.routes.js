@@ -51,6 +51,9 @@
                 },
                 areAllRightsRequired: false,
                 resolve: {
+                    facility: function(facilityFactory) {
+                        return facilityFactory.getUserHomeFacility();
+                    },
                     order: function(orderRepository, $stateParams) {
                         if (!$stateParams.order) {
                             return orderRepository.get($stateParams.id).then(function(data) {

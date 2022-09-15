@@ -16,27 +16,26 @@
 (function() {
 
     'use strict';
+    angular
+        .module('siglus-print-pallet-label-comfirm-modal')
+        .controller('siglusPrintPalletLabelComfirmModalController', controller);
 
-    /**
-     * @module
-     *
-     * @description
-     * Main locationManagement module.
-     */
-    angular.module('siglus-location-management', [
-        'ngResource',
-        'ui.router',
-        'openlmis-urls',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-modal',
-        'openlmis-table',
-        'openlmis-pagination',
-        'openlmis-rights',
-        'openlmis-date',
-        'openlmis-main-state',
-        'siglus-print-pallet-label',
-        'siglus-print-pallet-label-comfirm-modal'
-    ]);
+    controller.$inject = [
+        'modalDeferred'
+    ];
 
+    function controller(
+        modalDeferred
+    ) {
+        var vm = this;
+        var debounceTime = 50;
+        vm.$onInit = onInit;
+        function onInit() {
+            vm.shouldPrint = true;
+        }
+        vm.confirm = _.throttle(confirm, debounceTime);
+        function confirm() {
+            modalDeferred.resolve(vm.shouldPrint);
+        }
+    }
 })();

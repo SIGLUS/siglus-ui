@@ -1,0 +1,35 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+            <div class="alert-main">
+              <div class="alert-message">
+                <h2>{{'siglusPrintPalletComfirmModal.title'| message}}</h2>
+                <p>{{'siglusPrintPalletComfirmModal.message' | message}}</p>
+                <fieldset>
+                  <label class="radio">
+                    <input type="radio" ng-model="vm.shouldPrint"
+                           ng-value="true"/>
+                    {{'siglusFacilityViewRadioConfirmModal.yes' | message}}
+                  </label>
+                  <label class="radio">
+                    <input type="radio" ng-model="vm.shouldPrint"
+                           ng-value="false"
+                    />
+                    {{'siglusFacilityViewRadioConfirmModal.no' | message}}
+                  </label>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+        <div class="modal-footer">
+          <button ng-show="!vm.showConflictStatus" ng-click="$hide()">{{'adminFacilityList.close' | message}}</button>
+          <button class="primary" ng-click="vm.confirm()">{{'physicalInventoryCreation.confirm'
+          | message}}
+          </button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  

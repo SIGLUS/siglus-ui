@@ -33,7 +33,8 @@
         'addAndRemoveLineItemService', 'displayItems', 'locations',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
-        'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService'];
+        'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService',
+        'siglusPrintPalletLabelComfirmModalService'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
@@ -42,7 +43,7 @@
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,
                         siglusSignatureWithDateModalService, confirmDiscardService,
-                        siglusLocationMovementUpgradeService) {
+                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService) {
 
         var vm = this;
 
@@ -229,7 +230,7 @@
         };
 
         vm.changeQuantity = function(lineItem, lineItems) {
-            var isNumberEmpty =  _.isNumber(lineItem.quantity) ? lineItem.quantity < 0 : true;
+            var isNumberEmpty = _.isNumber(lineItem.quantity) ? lineItem.quantity < 0 : true;
             lineItem.$error.quantityError = isNumberEmpty ? 'openlmisForm.required' : '';
 
             if (!lineItem.$error.quantityError) {
@@ -265,7 +266,7 @@
             _.forEach(lineItems, function(item) {
                 var filterLineItems = _.filter(lineItems, function(data) {
                     return _.get(item, ['lot', 'lotCode']) === _.get(data.lot, 'lotCode')
-                      && _.get(item, ['location', 'locationCode']) === _.get(data.location, 'locationCode');
+                        && _.get(item, ['location', 'locationCode']) === _.get(data.location, 'locationCode');
                 });
                 var totalQuantity = _.reduce(filterLineItems, function(result, row) {
                     return result + _.get(row, 'quantity', 0);
@@ -446,42 +447,167 @@
         vm.submit = function() {
             validateForm();
             if (isValid()) {
-                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
-                    then(function(data) {
-                        var baseInfo = _.extend(getBaseInfo(), {
-                            occurredDate: data.occurredDate,
-                            signature: data.signature
-                        });
-                        loadingModalService.open();
-                        var lineItems = getLineItems();
-                        if (vm.isVirtual) {
-                            lineItems.forEach(function(line) {
-                                line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
+                if (vm.isVirtual) {
+                    siglusSignatureWithDateModalService
+                        .confirm('stockUnpackKitCreation.signature', null, null, true).
+                        then(function(data) {
+                            var baseInfo = _.extend(getBaseInfo(), {
+                                occurredDate: data.occurredDate,
+                                signature: data.signature
                             });
-                        }
-                        siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
-                            .then(function() {
-                                $scope.needToConfirm = false;
-                                if (vm.isVirtual) {
-                                    siglusLocationMovementUpgradeService.doneUpgrade();
-                                    $state.go('openlmis.home');
-                                } else {
-                                    $state.go('^', $stateParams, {
-                                        reload: true
-                                    });
-                                }
-                                loadingModalService.close();
-                            })
-                            .catch(function() {
-                                loadingModalService.close();
-                            });
+                            loadingModalService.open();
+                            var lineItems = getLineItems();
+                            if (vm.isVirtual) {
+                                lineItems.forEach(function(line) {
+                                    line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
+                                });
+                            }
+                            siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
+                                .then(function() {
+                                    $scope.needToConfirm = false;
+                                    if (vm.isVirtual) {
+                                        siglusLocationMovementUpgradeService.doneUpgrade();
+                                        $state.go('openlmis.home');
+                                    } else {
+                                        $state.go('^', $stateParams, {
+                                            reload: true
+                                        });
+                                    }
+                                    loadingModalService.close();
+                                })
+                                .catch(function() {
+                                    loadingModalService.close();
+                                });
 
-                    });
+                        });
+                } else {
+                    siglusPrintPalletLabelComfirmModalService.show()
+                        .then(function(result) {
+                            if (result) {
+                                vm.downloadPrint();
+                            }
+                            siglusSignatureWithDateModalService
+                                .confirm('stockUnpackKitCreation.signature', null, null, true).
+                                then(function(data) {
+                                    var baseInfo = _.extend(getBaseInfo(), {
+                                        occurredDate: data.occurredDate,
+                                        signature: data.signature
+                                    });
+                                    loadingModalService.open();
+                                    var lineItems = getLineItems();
+                                    if (vm.isVirtual) {
+                                        lineItems.forEach(function(line) {
+                                            line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
+                                        });
+                                    }
+                                    siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
+                                        .then(function() {
+                                            $scope.needToConfirm = false;
+                                            if (vm.isVirtual) {
+                                                siglusLocationMovementUpgradeService.doneUpgrade();
+                                                $state.go('openlmis.home');
+                                            } else {
+                                                $state.go('^', $stateParams, {
+                                                    reload: true
+                                                });
+                                            }
+                                            loadingModalService.close();
+                                        })
+                                        .catch(function() {
+                                            loadingModalService.close();
+                                        });
+
+                                });
+                        });
+                }
+
             } else {
                 vm.keyword = '';
                 searchList();
             }
         };
+
+        vm.downloadPrint = function() {
+            var increaseLineItem = _.chain(angular.copy(getLineItems()))
+                .map(function(item) {
+                    item.locationLotOrderableId =
+                        _.get(item, ['moveTo', 'locationCode'])
+                        + '_' + _.get(item, ['lot', 'lotCode'])
+                        + '_' + _.get(item, ['orderableId']);
+                    item.moveType = 'increase';
+                    return item;
+                })
+                .groupBy('locationLotOrderableId')
+                .values()
+                .flatten()
+                .map(function(item) {
+                    return getPrintItem(item);
+                })
+                .value();
+            var decreaseLineItems = _.chain(angular.copy(getLineItems()))
+                .map(function(item) {
+                    item.locationLotOrderableId =
+                        _.get(item, ['location', 'locationCode'])
+                        + '_' + _.get(item, ['lot', 'lotCode'])
+                        + '_' + _.get(item, ['orderableId']);
+                    item.moveType = 'decrease';
+                    return item;
+                })
+                .groupBy('locationLotOrderableId')
+                .values()
+                .flatten()
+                .map(function(item) {
+                    return getPrintItem(item);
+                })
+                .value();
+
+            var newPrintLineItems = _.chain(increaseLineItem.concat(decreaseLineItems))
+                .groupBy('locationLotOrderableId')
+                .values()
+                .map(function(item) {
+                    var result = _.first(item);
+                    var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
+
+                    var stockOnHand = _.chain(map)
+                        .get([result.orderableId, result.location])
+                        .find(function(findItem) {
+                            return findItem.lotCode === result.lotCode;
+                        })
+                        .get(['stockOnHand'], 0)
+                        .value();
+
+                    result.pallet = calculatePallet(stockOnHand, item);
+                    return result;
+                })
+                .filter(function(item) {
+                    return item.pallet > 0;
+                })
+                .value();
+            vm.printLineItems = newPrintLineItems;
+
+        };
+        function getPrintItem(item) {
+            var result = {};
+            result.orderableId = _.get(item, ['orderableId']);
+            result.location = _.get(item, ['location', 'locationCode']);
+            result.lotCode = _.get(item, ['lot', 'lotCode']);
+            result.expirationDate = _.get(item, ['lot', 'expirationDate']);
+            result.productName = _.get(item, ['productName']);
+            result.productCode = _.get(item, ['productCode']);
+            result.locationLotOrderableId = _.get(item, ['locationLotOrderableId']);
+            result.quantity = _.get(item, ['quantity']);
+            result.moveType = _.get(item, ['moveType']);
+            return result;
+        }
+        function calculatePallet(stockOnHand, lineItem) {
+            return _.reduce(lineItem, function(sum, item) {
+                if (item.moveType === 'decrease') {
+                    return sum - item.quantity;
+                }
+
+                return sum + item.quantity;
+            }, stockOnHand);
+        }
 
         vm.deleteDraft = function() {
             alertConfirmModalService.error(

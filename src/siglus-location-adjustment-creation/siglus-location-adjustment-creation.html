@@ -1,5 +1,6 @@
 <h2>
-    {{'stockAdjustmentCreation.title' | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name, 'program':
+    {{'stockAdjustmentCreation.title' | message:{'facilityCode': vm.facility.code, 'facilityName': vm.facility.name,
+    'program':
     vm.program.name} }}
 </h2>
 
@@ -15,17 +16,14 @@
             <input type="submit" ng-click="vm.search()" ng-keydown="$event.keyCode === 13 && vm.search()"
                 value="{{'stockAdjustmentCreation.search' | message}}" />
         </form>
-     
+
         <section class="is-primary">
             <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
                 <div>
                     <label for="productSelect">{{'stockAdjustmentCreation.product' | message}}</label>
-                    <select 
-                        id="productSelect" 
-                        ng-model="vm.selectedOrderableGroup"
+                    <select id="productSelect" ng-model="vm.selectedOrderableGroup"
                         ng-options="(orderable.orderable | siglusArchivedProductName) for orderable in (vm.orderableGroups)"
-                        ng-change="vm.orderableSelectionChanged()"
-                        required>
+                        ng-change="vm.orderableSelectionChanged()" required>
                     </select>
                 </div>
                 <button type="submit" class="add">{{'stockAdjustmentCreation.add' | message}}</button>
@@ -73,7 +71,8 @@
                     </td>
                     <td class="text-align-right">{{vm.getStockOnHand(lineItem, lineItems, index)}}</td>
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}"
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                        openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}"
                         class="digit-cell">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
@@ -82,18 +81,14 @@
                         </select>
                     </td>
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                    <td
-                        ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
                         <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
-                            ng-model="lineItem.reasonFreeText" rows="1"
-                            cols="15" maxlength="100" />
+                            ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100" />
                     </td>
-                    <td 
-                    ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
                         {{vm.getTotalQuantity(lineItems)}}
                     </td>
-                    <td 
-                        ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
                         openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                         <input class="form-control min-width-input" ng-model="lineItem.quantity"
                             ng-class="{'error': lineItem.$errors.quantityInvalid}"
@@ -120,10 +115,10 @@
     </section>
 </div>
 
-<siglus-common-toolbar
-        data="vm.addedLineItems"
-        mode="'SAVE'"
-        on-delete="vm.deleteDraft()"
-        on-save="vm.save()"
-        on-submit="vm.submit()">
+<siglus-common-toolbar data="vm.addedLineItems" mode="'SAVE'" on-delete="vm.deleteDraft()" on-save="vm.save()"
+    on-submit="vm.submit()">
 </siglus-common-toolbar>
+
+<siglus-print-pallet-label line-items="vm.printLineItems" print-type="'Adjustmens'" facility-name="vm.facility.name">
+
+</siglus-print-pallet-label>

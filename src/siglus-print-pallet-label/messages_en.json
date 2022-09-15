@@ -1,0 +1,10 @@
+{
+    "siglusPrintPallet.title":"Information of Pallet",
+    "siglusPrintPallet.productCode":"Product Code",
+    "siglusPrintPallet.product":"Product",
+    "siglusPrintPallet.stockOfPallet":"Stock on Pallet",
+    "siglusPrintPallet.lote":"Lot",
+    "siglusPrintPallet.PV":"Expiry Date",
+    "siglusPrintPallet.pack":"Pack",
+    "siglusPrintPallet.location":"Location"
+}
