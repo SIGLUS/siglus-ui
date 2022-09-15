@@ -39,7 +39,7 @@
                      localStorageService) {
 
         var facilitiesOffline = localStorageFactory('facilities'),
-            facilitiesPromise,
+            // facilitiesPromise,
             resource = $resource(
                 referencedataUrlFactory('/api/siglusapi/facilities/:id'),
                 {},
@@ -309,7 +309,7 @@
      * Deletes facilities stored in the browser cache.
      */
         function clearFacilitiesCache() {
-            facilitiesPromise = undefined;
+            // facilitiesPromise = undefined;
             localStorageService.remove('facilities');
         }
 
