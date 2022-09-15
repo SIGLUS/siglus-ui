@@ -529,12 +529,27 @@
          * upgrade android device to web
          */
         function upgradeToWeb() {
-            alertConfirmModalService.error(
-                'adminFacilityView.upgradeMessage',
+            siglusFacilityViewRadioConfirmModalService.error(
+                'adminFacilityView.locationManagement.upgradeWebUser',
                 '',
                 ['adminFacilityView.close',
                     'adminFacilityView.confirm']
-            );
+            ).then(function() {
+                facilityService.upgradeToWeb(vm.facilityId).then(function() {
+                    new FacilityRepository().get($stateParams.id)
+                        .then(function(res) {
+                            vm.facility = res;
+                            notificationService.success(
+                                'adminFacilityView.upgradSuccess'
+                            );
+                        });
+                })
+                    .catch(function() {
+                        notificationService.success(
+                            'adminFacilityView.upgradFailed'
+                        );
+                    });
+            });
         }
 
     }

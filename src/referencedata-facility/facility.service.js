@@ -86,6 +86,12 @@
                             '/api/siglusapi/facilities/initiate'
                         ),
                         method: 'POST'
+                    },
+                    upgradeToWeb: {
+                        url: referencedataUrlFactory(
+                            '/api/siglusapi/facilities/:facilityCode/upgradeToWeb'
+                        ),
+                        method: 'GET'
                     }
                     // SIGLUS-REFACTOR: ends here
                 }
@@ -101,7 +107,7 @@
         this.clearFacilitiesCache = clearFacilitiesCache;
         this.eraseDeviceInfo = eraseDeviceInfo;
         this.addNewFacility = addNewFacility;
-
+        this.upgradeToWeb = upgradeToWeb;
         /**
      * @ngdoc method
      * @methodOf referencedata-facility.facilityService
@@ -346,6 +352,11 @@
             ).$promise;
         }
 
-    // SIGLUS-REFACTOR: ends here
+        // SIGLUS-REFACTOR: ends here
+        function upgradeToWeb(facilityCode) {
+            return resource.upgradeToWeb({
+                facilityCode: facilityCode
+            }).$promise;
+        }
     }
 })();

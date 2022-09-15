@@ -91,18 +91,15 @@
                 siglusLocationMovementUpgradeService.getNeedInitiallyMoveProduct(initUser.homeFacilityId)
                     .then(function() {
                         if (checkInitialInventoryStatus()) {
-                            console.log(111);
                             event.preventDefault();
                             checkDraftIsStarter();
                         } else if (siglusLocationMovementUpgradeService.checkInited()) {
                             var shouldUpgradeMoveProduct =
                                 siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
-                            console.log(222, shouldUpgradeMoveProduct);
                             if (shouldUpgradeMoveProduct) {
                                 return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
                             }
                         } else {
-                            console.log(333);
                             var user = currentUserService.getUserInfo().$$state.value;
                             if (user) {
                                 siglusLocationMovementUpgradeService.init(user.homeFacilityId);
