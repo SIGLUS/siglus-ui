@@ -115,21 +115,11 @@
      * @return {Promise}            facility promise
      */
         function get(facilityId) {
-            var cachedFacility = facilitiesOffline.getBy('id', facilityId);
-
-            if (cachedFacility) {
-                facilitiesPromise = $q.resolve(
-                    angular.fromJson(cachedFacility)
-                );
-            } else {
-                facilitiesPromise = new FacilityResource().get(facilityId)
-                    .then(function(facility) {
-                        facilitiesOffline.put(facility);
-                        return $q.resolve(facility);
-                    });
-            }
-            return facilitiesPromise;
-
+            return new FacilityResource().get(facilityId)
+                .then(function(facility) {
+                    facilitiesOffline.put(facility);
+                    return $q.resolve(facility);
+                });
         }
 
         /**
