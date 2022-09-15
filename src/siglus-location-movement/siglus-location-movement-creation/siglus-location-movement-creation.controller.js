@@ -528,7 +528,7 @@
         };
 
         vm.downloadPrint = function() {
-            var increaseLineItem = _.chain(angular.copy(getLineItems()))
+            var increaseLineItems = _.chain(angular.copy(getLineItems()))
                 .map(function(item) {
                     item.locationLotOrderableId =
                         _.get(item, ['moveTo', 'locationCode'])
@@ -560,11 +560,11 @@
                     return getPrintItem(item);
                 })
                 .value();
-
-            var newPrintLineItems = _.chain(increaseLineItem.concat(decreaseLineItems))
+            var newPrintLineItems = _.chain(increaseLineItems.concat(decreaseLineItems))
                 .groupBy('locationLotOrderableId')
                 .values()
                 .map(function(item) {
+
                     var result = _.first(item);
                     var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
 
@@ -589,7 +589,11 @@
         function getPrintItem(item) {
             var result = {};
             result.orderableId = _.get(item, ['orderableId']);
-            result.location = _.get(item, ['location', 'locationCode']);
+            if (_.get(item, ['moveType']) === 'increase') {
+                result.location = _.get(item, ['moveTo', 'locationCode']);
+            } else {
+                result.location = _.get(item, ['location', 'locationCode']);
+            }
             result.lotCode = _.get(item, ['lot', 'lotCode']);
             result.expirationDate = _.get(item, ['lot', 'expirationDate']);
             result.productName = _.get(item, ['productName']);
