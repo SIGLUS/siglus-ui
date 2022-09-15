@@ -93,6 +93,10 @@
                 });
         };
 
+        this.clearStateNeedInitiallyMoveProduct = function() {
+            service.needInitiallyMoveProduct = undefined;
+        };
+
         this.doneUpgrade = function() {
             var user = currentUserService.getUserInfo().$$state.value;
             this.facilityId = user.homeFacilityId;
