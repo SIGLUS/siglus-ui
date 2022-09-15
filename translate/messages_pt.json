@@ -2517,5 +2517,6 @@
   "siglusPrintPallet.pack":"Pack",
   "siglusPrintPallet.location":"Localização",
   "siglusPrintPalletComfirmModal.title":"Print Pallet Label",
-  "siglusPrintPalletComfirmModal.message":"After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?"
+  "siglusPrintPalletComfirmModal.message":"After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?",
+  "stockAdjustmentCreationLocation.title":"Ajustes para ${facilityName} - ${program}"
 }

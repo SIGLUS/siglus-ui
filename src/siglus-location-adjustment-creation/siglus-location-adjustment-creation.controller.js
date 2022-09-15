@@ -61,6 +61,12 @@
 
         vm.$onInit = function() {
 
+            $state.current.label = messageService.get(vm.key('title'), {
+                facilityCode: facility.code,
+                facilityName: facility.name,
+                program: program.name
+            });
+
             vm.orderableGroups = null;
 
             vm.selectedOrderableGroup = null;
@@ -626,7 +632,7 @@
             var newPrintLineItems = _.chain(printLineItems)
                 .map(function(item) {
                     item.locationLotOrderableId =
-                        _.get(item, ['locationCode'])
+                        _.get(item, ['location', 'locationCode'])
                         + '_' + _.get(item, ['lot', 'lotCode'])
                         + '_' + _.get(item, ['orderableId']);
                     return item;
@@ -634,14 +640,15 @@
                 .groupBy('locationLotOrderableId')
                 .values()
                 .map(function(item) {
+                    var lineItem = _.first(item);
                     var result = {};
-                    result.productName = _.get(_.first(item), ['orderable', 'fullProductName']);
-                    result.productCode = _.get(_.first(item), ['orderable', 'productCode']);
-                    result.lotCode = _.get(_.first(item), ['lot', 'lotCode']);
-                    result.expirationDate = _.get(_.first(item), ['lot', 'expirationDate']);
-                    result.location = _.get(_.first(item), ['locationCode']);
+                    result.productName = _.get(lineItem, ['orderable', 'fullProductName']);
+                    result.productCode = _.get(lineItem, ['orderable', 'productCode']);
+                    result.lotCode = _.get(lineItem, ['lot', 'lotCode']);
+                    result.expirationDate = _.get(lineItem, ['lot', 'expirationDate']);
+                    result.location = _.get(lineItem, ['location', 'locationCode']);
                     var totalQuantity =  vm.getTotalQuantity(item);
-                    result.pallet = Number(totalQuantity) + _.get(_.first(item), ['stockOnHand']);
+                    result.pallet = Number(totalQuantity) + _.get(lineItem, ['stockOnHand']);
                     result.pack = null;
                     return result;
                 })

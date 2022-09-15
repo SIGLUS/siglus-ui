@@ -1,3 +1,4 @@
 {
-    "stockAdjustmentCreation.location":"Location"
+    "stockAdjustmentCreation.location":"Location",
+    "stockAdjustmentCreationLocation.title":"Adjustments for ${facilityName} - ${program}"
 }
