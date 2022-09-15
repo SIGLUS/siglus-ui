@@ -18,25 +18,23 @@
     'use strict';
 
     /**
-     * @module
-     *
-     * @description
-     * Main locationManagement module.
-     */
-    angular.module('siglus-location-management', [
-        'ngResource',
-        'ui.router',
-        'openlmis-urls',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-modal',
-        'openlmis-table',
-        'openlmis-pagination',
-        'openlmis-rights',
-        'openlmis-date',
-        'openlmis-main-state',
-        'siglus-print-pallet-label',
-        'siglus-print-pallet-label-comfirm-modal'
-    ]);
+   * @ngdoc controller
+   * @name siglus-issue-draft-list.controller:SiglusIssueDraftListController
+   *
+   * @description
+   * Controller for siglus issue draft list.
+   */
+    angular
+        .module('siglus-print-pallet-label')
+        .component('siglusPrintPalletLabel', {
+            templateUrl: 'siglus-print-pallet-label/siglus-print-pallet-label.html',
+            controller: 'siglusPrintPalletLabelController',
+            controllerAs: 'vm',
+            bindings: {
+                lineItems: '=',
+                printType: '<',
+                facilityName: '<'
+            }
+        });
 
 })();

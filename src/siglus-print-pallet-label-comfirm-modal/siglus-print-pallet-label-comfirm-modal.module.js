@@ -14,29 +14,10 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-     * @module
-     *
-     * @description
-     * Main locationManagement module.
-     */
-    angular.module('siglus-location-management', [
-        'ngResource',
+    angular.module('siglus-print-pallet-label-comfirm-modal', [
         'ui.router',
-        'openlmis-urls',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-modal',
-        'openlmis-table',
-        'openlmis-pagination',
-        'openlmis-rights',
-        'openlmis-date',
-        'openlmis-main-state',
-        'siglus-print-pallet-label',
-        'siglus-print-pallet-label-comfirm-modal'
+        'openlmis-modal'
     ]);
-
 })();

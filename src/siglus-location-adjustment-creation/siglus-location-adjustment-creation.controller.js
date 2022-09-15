@@ -38,7 +38,8 @@
         'siglusOrderableLotService', 'addedLineItems', 'paginationService',
         'SiglusLocationCommonUtilsService', 'siglusLocationAdjustmentModifyLineItemService',
         'siglusLocationCommonApiService', 'areaLocationInfo', 'siglusLocationAdjustmentService',
-        'alertConfirmModalService', 'siglusOrderableLotMapping', 'locations', 'program'
+        'alertConfirmModalService', 'siglusOrderableLotMapping', 'locations', 'program',
+        'siglusPrintPalletLabelComfirmModalService'
     ];
 
     function controller(
@@ -52,7 +53,8 @@
         siglusOrderableLotService, addedLineItems, paginationService,
         SiglusLocationCommonUtilsService, siglusLocationAdjustmentModifyLineItemService,
         siglusLocationCommonApiService, areaLocationInfo, siglusLocationAdjustmentService,
-        alertConfirmModalService, siglusOrderableLotMapping, locations, program
+        alertConfirmModalService, siglusOrderableLotMapping, locations, program,
+        siglusPrintPalletLabelComfirmModalService
     ) {
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
         var vm = this;
@@ -499,7 +501,7 @@
             lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
             var locationsGroup = [], lotsGroup = [];
             if (_.get(lineItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
-                var locationsInfoCopy =  _.filter(angular.copy(lineItem.locationsInfo), function(locationsInfoItem) {
+                var locationsInfoCopy = _.filter(angular.copy(lineItem.locationsInfo), function(locationsInfoItem) {
                     locationsInfoItem.lots = _.filter(locationsInfoItem.lots, function(
                         lotItem
                     ) {
@@ -581,34 +583,74 @@
         vm.submit = function() {
             validateForm();
             if (isValid()) {
-                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true).
-                    then(function(data) {
-                        var baseInfo = _.extend(getBaseInfo(), {
-                            occurredDate: data.occurredDate,
-                            signature: data.signature
-                        });
-                        loadingModalService.open();
-                        siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
-                            .then(function() {
-                                notificationService.success(vm.key('submitted'));
-                                $scope.needToConfirm = false;
-                                $state.go('openlmis.locationManagement.stockOnHand', {
-                                    program: program.id
-                                },
-                                {
-                                    location: 'replace'
+                siglusPrintPalletLabelComfirmModalService.show()
+                    .then(function(result) {
+                        if (result) {
+                            downloadPrint();
+                        }
+                        siglusSignatureWithDateModalService
+                            .confirm('stockUnpackKitCreation.signature', null, null, true)
+                            .then(function(data) {
+                                var baseInfo = _.extend(getBaseInfo(), {
+                                    occurredDate: data.occurredDate,
+                                    signature: data.signature
                                 });
-                                loadingModalService.close();
-                            })
-                            .catch(function() {
-                                loadingModalService.close();
+                                loadingModalService.open();
+                                siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
+                                    .then(function() {
+                                        notificationService.success(vm.key('submitted'));
+                                        $scope.needToConfirm = false;
+                                        $state.go('openlmis.locationManagement.stockOnHand', {
+                                            program: program.id
+                                        },
+                                        {
+                                            location: 'replace'
+                                        });
+                                        loadingModalService.close();
+                                    })
+                                    .catch(function() {
+                                        loadingModalService.close();
+                                    });
                             });
+
                     });
+
             } else {
                 vm.cancelFilter();
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
+
+        function downloadPrint() {
+            var printLineItems = angular.copy(getLineItems());
+            var newPrintLineItems = _.chain(printLineItems)
+                .map(function(item) {
+                    item.locationLotOrderableId =
+                        _.get(item, ['locationCode'])
+                        + '_' + _.get(item, ['lot', 'lotCode'])
+                        + '_' + _.get(item, ['orderableId']);
+                    return item;
+                })
+                .groupBy('locationLotOrderableId')
+                .values()
+                .map(function(item) {
+                    var result = {};
+                    result.productName = _.get(_.first(item), ['orderable', 'fullProductName']);
+                    result.productCode = _.get(_.first(item), ['orderable', 'productCode']);
+                    result.lotCode = _.get(_.first(item), ['lot', 'lotCode']);
+                    result.expirationDate = _.get(_.first(item), ['lot', 'expirationDate']);
+                    result.location = _.get(_.first(item), ['locationCode']);
+                    var totalQuantity =  vm.getTotalQuantity(item);
+                    result.pallet = Number(totalQuantity) + _.get(_.first(item), ['stockOnHand']);
+                    result.pack = null;
+                    return result;
+                })
+                .filter(function(item) {
+                    return item.pallet > 0;
+                })
+                .value();
+            vm.printLineItems = newPrintLineItems;
+        }
 
         vm.deleteDraft = function() {
             alertConfirmModalService.error(

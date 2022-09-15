@@ -18,25 +18,15 @@
     'use strict';
 
     /**
-     * @module
+     * @module siglus-analytics-report-tracer-drug
      *
      * @description
-     * Main locationManagement module.
+     * second-tier detail page for Tracer drug report
      */
-    angular.module('siglus-location-management', [
-        'ngResource',
+    angular.module('siglus-print-pallet-label', [
+        'openlmis-message',
         'ui.router',
-        'openlmis-urls',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-modal',
-        'openlmis-table',
-        'openlmis-pagination',
-        'openlmis-rights',
-        'openlmis-date',
-        'openlmis-main-state',
-        'siglus-print-pallet-label',
-        'siglus-print-pallet-label-comfirm-modal'
+        'openlmis-date'
     ]);
 
 })();

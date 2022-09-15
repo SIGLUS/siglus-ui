@@ -16,7 +16,8 @@
 describe('SiglusLocationMovementCreationController', function() {
 
     var vm, programs, $controller, $q, loadingModalService, $rootScope, $scope,
-        siglusSignatureWithDateModalService, $state, $stateParams, siglusLocationMovementService;
+        siglusSignatureWithDateModalService, $state, $stateParams, siglusLocationMovementService,
+        siglusPrintPalletLabelComfirmModalService, modalDeferred;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -27,8 +28,10 @@ describe('SiglusLocationMovementCreationController', function() {
             $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
             $stateParams = $injector.get('$stateParams');
+            siglusPrintPalletLabelComfirmModalService = $injector.get('siglusPrintPalletLabelComfirmModalService');
             $scope = $rootScope.$new();
             $q = $injector.get('$q');
+            modalDeferred = $q.defer();
         });
     }
 
@@ -37,6 +40,7 @@ describe('SiglusLocationMovementCreationController', function() {
         spyOn(loadingModalService, 'close').andReturn($q.resolve());
         spyOn(siglusSignatureWithDateModalService, 'confirm').andReturn($q.resolve());
         spyOn(siglusLocationMovementService, 'saveMovementDraft').andReturn($q.resolve());
+        spyOn(siglusPrintPalletLabelComfirmModalService, 'show').andReturn(modalDeferred.promise);
         spyOn($state, 'go').andReturn();
     }
 
@@ -63,7 +67,9 @@ describe('SiglusLocationMovementCreationController', function() {
     }
 
     beforeEach(function() {
-
+        module('siglus-location-management');
+        module('siglus-print-pallet-label');
+        module('siglus-print-pallet-label-comfirm-modal');
         module('siglus-location-common');
         module('siglus-location-movement');
         module('openlmis-table-form');
@@ -552,7 +558,12 @@ describe('SiglusLocationMovementCreationController', function() {
                     lineItem
                 ]
             ];
+            vm.isVirtual = false;
             vm.submit();
+            modalDeferred.resolve(true);
+            $rootScope.$apply();
+
+            expect(siglusPrintPalletLabelComfirmModalService.show).toHaveBeenCalledWith();
 
             expect(siglusSignatureWithDateModalService.confirm).toHaveBeenCalledWith(
                 'stockUnpackKitCreation.signature', null, null, true

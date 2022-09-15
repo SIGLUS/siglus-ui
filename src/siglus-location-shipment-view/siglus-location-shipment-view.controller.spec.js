@@ -230,11 +230,17 @@ describe('SiglusLocationShipmentViewController', function() {
                         }
                     ]
                 }
+            },
+            facility: {
+                id: 'asdfafds-123123djks-123123dafkfs'
             }
         });
     }
 
     beforeEach(function() {
+        module('siglus-location-management');
+        module('siglus-print-pallet-label');
+        module('siglus-print-pallet-label-comfirm-modal');
         module('siglus-location-shipment-view');
         module('siglus-location-shipment');
         module('requisition-template');

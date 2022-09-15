@@ -39,7 +39,7 @@
         'prepareRowDataService', 'SiglusLocationCommonUtilsService',
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
-        'localStorageService', '$window'
+        'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService'
     ];
 
     function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
@@ -55,7 +55,8 @@
                                                   SiglusLocationCommonUtilsService,
                                                   notificationService, confirmService,
                                                   locations, siglusLocationCommonApiService,
-                                                  localStorageService, $window) {
+                                                  localStorageService, $window, facility,
+                                                  siglusPrintPalletLabelComfirmModalService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -67,6 +68,7 @@
         vm.unskipAllLineItems = unskipAllLineItems;
         vm.canSkip = canSkip;
         vm.order = undefined;
+        vm.facility = undefined;
 
         vm.shipment = undefined;
         vm.quantityUnit = undefined;
@@ -87,6 +89,7 @@
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = displayTableLineItems;
+            vm.facility = facility;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
@@ -656,41 +659,47 @@
                         return alertService.error('shipmentView.closed');
                     }
 
-                    var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
-                    if (!result.closed && totalPartialLineItems) {
-                        return confirmService.confirm(
-                            messageService.get('shipmentView.confirmPartialFulfilled.message', {
-                                totalPartialLineItems: totalPartialLineItems
-                            }), 'shipmentView.confirmPartialFulfilled.createSuborder'
-                        )
-                            .then(function() {
-                                loadingModalService.open();
-                                return SiglusLocationViewService.createSubOrder(buildSaveParams())
+                    siglusPrintPalletLabelComfirmModalService.show()
+                        .then(function(result) {
+                            if (result) {
+                                downloadPrint();
+                            }
+                            var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
+                            if (!result.closed && totalPartialLineItems) {
+                                return confirmService.confirm(
+                                    messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                                        totalPartialLineItems: totalPartialLineItems
+                                    }), 'shipmentView.confirmPartialFulfilled.createSuborder'
+                                )
                                     .then(function() {
-                                        notificationService.success('shipmentView.suborderHasBeenConfirmed');
-                                        $state.go('openlmis.locationManagement.fulfillOrder');
-                                    })
-                                    .catch(function() {
-                                        notificationService.error('shipmentView.failedToCreateSuborder');
-                                        loadingModalService.close();
+                                        loadingModalService.open();
+                                        return SiglusLocationViewService.createSubOrder(buildSaveParams())
+                                            .then(function() {
+                                                notificationService.success('shipmentView.suborderHasBeenConfirmed');
+                                                $state.go('openlmis.locationManagement.fulfillOrder');
+                                            })
+                                            .catch(function() {
+                                                notificationService.error('shipmentView.failedToCreateSuborder');
+                                                loadingModalService.close();
+                                            });
                                     });
-                            });
-                    }
+                            }
 
-                    return confirmService.confirm(
-                        'shipmentView.confirmShipment.question',
-                        'shipmentView.confirmShipment'
-                    )
-                        .then(function() {
-                            loadingModalService.open();
-                            return SiglusLocationViewService.submitOrder(buildSaveParams(true))
+                            return confirmService.confirm(
+                                'shipmentView.confirmShipment.question',
+                                'shipmentView.confirmShipment'
+                            )
                                 .then(function() {
-                                    notificationService.success('shipmentView.shipmentHasBeenConfirmed');
-                                    $state.go('openlmis.locationManagement.fulfillOrder');
-                                })
-                                .catch(function() {
-                                    notificationService.error('shipmentView.failedToConfirmShipment');
-                                    loadingModalService.close();
+                                    loadingModalService.open();
+                                    return SiglusLocationViewService.submitOrder(buildSaveParams(true))
+                                        .then(function() {
+                                            notificationService.success('shipmentView.shipmentHasBeenConfirmed');
+                                            $state.go('openlmis.locationManagement.fulfillOrder');
+                                        })
+                                        .catch(function() {
+                                            notificationService.error('shipmentView.failedToConfirmShipment');
+                                            loadingModalService.close();
+                                        });
                                 });
                         });
                 });
@@ -698,6 +707,42 @@
             alertService.error(messageService.get('openlmisForm.formInvalid'));
 
         };
+
+        function downloadPrint() {
+            var printLineItems = _.chain(vm.displayTableLineItems)
+                .map(function(group) {
+                    var data =  _.filter(group, function(lineItem) {
+                        return (group.length > 1 && !lineItem.isMainGroup)
+                     || (group.length === 1 && lineItem.isMainGroup);
+                    });
+                    return data;
+                })
+                .flatten()
+                .filter(function(lineItem) {
+                    return !lineItem.skipped;
+                })
+                .value();
+            var newPrintLineItems = _.chain(printLineItems)
+                .map(function(item) {
+                    var result = {};
+                    result.productName = _.get(item, ['productName']);
+                    result.productCode = _.get(item, ['productCode']);
+                    result.lotCode = _.get(item, ['lot', 'lotCode']);
+                    result.expirationDate = _.get(item, ['lot', 'expirationDate']);
+                    result.location = _.get(item, ['location', 'locationCode']);
+                    result.pallet =
+                    Number(_.get(item, ['lot', 'stockOnHand'])) -
+                    Number(_.get(item, ['quantityShipped']));
+                    result.pack = null;
+                    return result;
+                })
+                .filter(function(item) {
+                    return item.pallet > 0;
+                })
+                .value();
+
+            vm.printLineItems = newPrintLineItems;
+        }
 
         vm.delete = function() {
             confirmService.confirmDestroy(

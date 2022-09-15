@@ -2506,5 +2506,16 @@
   "shipmentViewReport.storeroom": "Armazem",
   "shipmentViewReport.tips": "Ctrl+P to print",
 
-  "siglusStockInputSelect.lotExpired": "This lot is expired"
+  "siglusStockInputSelect.lotExpired": "This lot is expired",
+
+  "siglusPrintPallet.title":"Informação de Palete",
+  "siglusPrintPallet.productCode":"Código do Produto",
+  "siglusPrintPallet.product":"Produto",
+  "siglusPrintPallet.stockOfPallet":"Stock na Palete",
+  "siglusPrintPallet.lote":"Lote",
+  "siglusPrintPallet.PV":"P.V.",
+  "siglusPrintPallet.pack":"Pack",
+  "siglusPrintPallet.location":"Localização",
+  "siglusPrintPalletComfirmModal.title":"Print Pallet Label",
+  "siglusPrintPalletComfirmModal.message":"After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?"
 }
