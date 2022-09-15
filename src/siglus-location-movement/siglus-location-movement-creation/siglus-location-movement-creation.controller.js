@@ -159,14 +159,22 @@
         };
 
         function emitQuantityChange(lineItem, lineItems) {
-            if (lineItem.lot && lineItem.location || (lineItem.location && lineItem.isKit)) {
+            if (lineItem.lot && lineItem.location && !lineItem.isKit) {
                 var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
-                lineItem.stockOnHand = _.get(map[lineItem.orderableId],
+                var locationLotList = _.get(map[lineItem.orderableId], [lineItem.location.locationCode]);
+                var locationLot = _.find(locationLotList, function(l) {
+                    return l.id === _.get(lineItem, ['lot', 'id']);
+                });
+                lineItem.stockOnHand = _.get(locationLot, 'stockOnHand', 0);
+            } else if (lineItem.location && lineItem.isKit) {
+                var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
+                lineItem.stockOnHand = _.get(mapKit[lineItem.orderableId],
                     [lineItem.location.locationCode, 0, 'stockOnHand'], 0);
             } else {
                 lineItem.stockOnHand = 0;
             }
             lineItem.quantity = lineItem.stockOnHand;
+
             vm.changeQuantity(lineItem, lineItems);
         }
 
