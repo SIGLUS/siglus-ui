@@ -115,8 +115,6 @@
                                                 deferred.resolve();
                                             });
                                     } else {
-                                        // eslint-disable-next-line no-debugger
-                                        debugger;
                                         physicalInventoryDataService.setDraft(facility.id, draft);
                                         deferred.resolve();
                                     }
