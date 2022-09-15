@@ -38,6 +38,20 @@
             return this.facilityId !== undefined && this.needInitiallyMoveProduct !== undefined;
         };
 
+        this.getNeedInitiallyMoveProduct = function(facilityId) {
+            var defered = $q.defer();
+            if (!facilityId) {
+                return ;
+            }
+            $http.get(openlmisUrlFactory('/api/siglusapi/locationMovements?facilityId=' + facilityId))
+                .then(function(response) {
+                    service.facilityId = facilityId;
+                    service.needInitiallyMoveProduct = response.data.needInitiallyMoveProduct;
+                    defered.resolve('succuess');
+                });
+            return defered.promise;
+        };
+
         this.init = function(facilityId) {
             if (!facilityId) {
                 return ;
@@ -91,10 +105,6 @@
                 .then(function() {
                     return service.startVirtualMovement();
                 });
-        };
-
-        this.clearStateNeedInitiallyMoveProduct = function() {
-            service.needInitiallyMoveProduct = undefined;
         };
 
         this.doneUpgrade = function() {
