@@ -523,9 +523,9 @@
                                 notificationService.success('stockPhysicalInventoryDraft.submitted');
                             }
 
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            $state.go('openlmis.locationManagement.stockOnHand', {
                                 program: program.id,
-                                facility: facility.id
+                                facility: facility
                             }, {
                                 reload: true
                             });
