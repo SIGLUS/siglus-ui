@@ -211,7 +211,7 @@
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
-            if (lineItem.$error.quantityError !== 'openlmisForm.required' && vm.isVirtual) {
+            if (lineItem.$error.moveToLocationError !== 'openlmisForm.required' && vm.isVirtual) {
                 validateRelatedLineItemsForVirtual(lineItem, lineItems);
             }
         };
