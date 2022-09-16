@@ -525,7 +525,7 @@
 
                             $state.go('openlmis.stockmanagement.stockCardSummaries', {
                                 program: program.id,
-                                facility: facility.id
+                                facility: facility
                             }, {
                                 reload: true
                             });
