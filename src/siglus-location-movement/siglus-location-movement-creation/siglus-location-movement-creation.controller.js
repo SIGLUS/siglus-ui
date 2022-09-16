@@ -73,9 +73,12 @@
 
         vm.$onInit = function() {
             // TODO make '00000' as constant
-            vm.isVirtual = _.every(_.get(draftInfo, 'lineItems', []), function(line) {
-                return _.get(line, 'srcLocationCode') === '00000';
-            });
+            var draftLines = _.get(draftInfo, 'lineItems', []);
+            if (draftLines.length > 0) {
+                vm.isVirtual = _.every(draftLines, function(line) {
+                    return _.get(line, 'srcLocationCode') === '00000';
+                });
+            }
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
