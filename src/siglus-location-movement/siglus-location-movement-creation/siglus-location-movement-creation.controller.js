@@ -57,8 +57,6 @@
 
         vm.displayItems = displayItems || [];
 
-        vm.isVirtual = false;
-
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(
                 lineItem,
@@ -74,7 +72,10 @@
         };
 
         vm.$onInit = function() {
-            vm.isVirtual = $stateParams.isVirtual;
+            // TODO make '00000' as constant
+            vm.isVirtual = _.every(_.get(draftInfo, 'lineItems', []), function(line) {
+                return _.get(line, 'srcLocationCode') === '00000';
+            });
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
