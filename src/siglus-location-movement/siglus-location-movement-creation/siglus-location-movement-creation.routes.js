@@ -105,7 +105,10 @@
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
                     }
-                    if ($stateParams.isVirtual) {
+                    var isVirtual = _.every(_.get(draftInfo, 'lineItems', []), function(line) {
+                        return _.get(line, 'srcLocationCode') === '00000';
+                    });
+                    if (isVirtual) {
                         return addAndRemoveLineItemService
                             .prepareAddedLineItemsForVirtual(draftInfo, locations, orderableGroups);
                     }
