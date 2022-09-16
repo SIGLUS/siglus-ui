@@ -535,9 +535,11 @@
                 ['adminFacilityView.close',
                     'adminFacilityView.confirm']
             ).then(function() {
+                loadingModalService.open();
                 facilityService.upgradeToWeb(vm.facilityId).then(function() {
                     new FacilityRepository().get($stateParams.id)
                         .then(function(res) {
+                            loadingModalService.close();
                             vm.facility = res;
                             notificationService.success(
                                 'adminFacilityView.upgradSuccess'
@@ -545,6 +547,7 @@
                         });
                 })
                     .catch(function() {
+                        loadingModalService.close();
                         notificationService.success(
                             'adminFacilityView.upgradFailed'
                         );
