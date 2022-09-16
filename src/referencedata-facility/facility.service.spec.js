@@ -100,7 +100,7 @@ describe('facilityService', function() {
             this.$rootScope.$apply();
 
             expect(angular.toJson(result)).toBe(
-                angular.toJson(this.facilityTwo)
+                undefined
             );
         });
     });

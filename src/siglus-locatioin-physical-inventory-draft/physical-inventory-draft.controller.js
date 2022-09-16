@@ -524,9 +524,9 @@
                                 notificationService.success('stockPhysicalInventoryDraft.submitted');
                             }
 
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            $state.go('openlmis.locationManagement.stockOnHand', {
                                 program: program.id,
-                                facility: facility.id
+                                facility: facility
                             }, {
                                 reload: true
                             });
@@ -805,12 +805,7 @@
 
         // SIGLUS-REFACTOR: starts here
         function updateLabel() {
-            // if (!vm.isInitialInventory) {
-            // var data = messageService.get('stockPhysicalInventoryDraft.title', {
-            //     facilityCode: facility.code,
-            //     facilityName: facility.name,
-            //     program: program.name
-            // });
+            $stateParams.draft = draft;
             if ($stateParams.isMerged === 'true') {
                 $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
             } else {
@@ -819,7 +814,6 @@
                         + ' '
                         + $stateParams.draftNum;
             }
-            // }
         }
 
         function initiateLineItems() {

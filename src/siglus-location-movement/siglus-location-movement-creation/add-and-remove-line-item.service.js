@@ -28,9 +28,9 @@
         .module('siglus-location-movement-creation')
         .service('addAndRemoveLineItemService', addAndRemoveLineItemService);
 
-    addAndRemoveLineItemService.inject = ['$filter'];
+    addAndRemoveLineItemService.inject = ['$filter', 'SiglusLocationCommonUtilsService'];
 
-    function addAndRemoveLineItemService($filter) {
+    function addAndRemoveLineItemService($filter, SiglusLocationCommonUtilsService) {
 
         function getRowTemplateData(lineItem) {
             return  {
@@ -46,11 +46,7 @@
                 stockOnHand: lineItem.stockOnHand,
                 moveTo: _.clone(lineItem.moveTo),
                 moveToLocation: _.clone(lineItem.moveToLocation),
-                quantity: lineItem.quantity,
-                lotCodeOptions: lineItem.lotCodeOptions,
-                srcLocationOptions: lineItem.srcLocationOptions,
-                destLocationOptions: lineItem.destLocationOptions,
-                destAreaOptions: lineItem.destAreaOptions
+                quantity: lineItem.quantity
             };
         }
         function getRowTemplateDataForVirtualMovement(lineItem) {
@@ -65,11 +61,7 @@
                 programId: lineItem.programId,
                 location: _.clone(lineItem.location),
                 stockOnHand: lineItem.stockOnHand,
-                quantity: undefined,
-                lotCodeOptions: lineItem.lotCodeOptions,
-                srcLocationOptions: lineItem.srcLocationOptions,
-                destLocationOptions: lineItem.destLocationOptions,
-                destAreaOptions: lineItem.destAreaOptions
+                quantity: undefined
             };
         }
 
@@ -265,6 +257,29 @@
 
                 })
                 .value();
+        };
+
+        this.fillMovementOptions = function(lineItem, locations, areaLocationInfo) {
+            if (!lineItem.lotCodeOptions) {
+                lineItem.lotCodeOptions = SiglusLocationCommonUtilsService.getLotList(
+                    lineItem,
+                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)
+                );
+            }
+            if (!lineItem.srcLocationOptions) {
+                lineItem.srcLocationOptions = SiglusLocationCommonUtilsService.getLocationList(
+                    lineItem,
+                    SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations)
+                );
+            }
+            if (!lineItem.destLocationOptions) {
+                lineItem.destLocationOptions = SiglusLocationCommonUtilsService
+                    .getDesLocationList(lineItem, areaLocationInfo);
+            }
+            if (!lineItem.destAreaOptions) {
+                lineItem.destAreaOptions = SiglusLocationCommonUtilsService
+                    .getDesAreaList(lineItem, areaLocationInfo);
+            }
         };
     }
 
