@@ -33,12 +33,11 @@
   "adminFacilityView.close": "Close",
   "adminFacilityView.confirm": "Confirm",
   "adminFacilityView.locationManagement.closeSwitch": "Once you disable the feature, the facility won't be able to use location management in the system. Do you want to disable it?",
-  "adminFacilityView.locationManagement.closeSwitchWithoutConfigure": "Please configure location management first.",
+  "adminFacilityView.locationManagement.upgradeWebUser": "Before upgrading Android to Web facility, you need to make sure all local data on the Android tablet has been synced to the web. The upgrading cannot be withdrawn, are you sure to upgrade it?",
   "adminFacilityView.uploadSuccess": "Upload Successfully!",
   "adminFacilityView.uploadFailed": "Upload failed!",
   "adminFacilityView.androidFacility": "Android Facility",
   "adminFacilityView.upgradeToWeb": "Upgrade to web facility",
-  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?",
   "adminFacilityView.siglusapi.error.upload.header.invalid": "Invalid headers in the uploaded file: ${lastNumber}",
   "adminFacilityView.siglusapi.error.upload.file.format.incorrect": "File format incorrect.",
   "adminFacilityView.siglusapi.error.upload.file.empty": "File empty.",
@@ -46,5 +45,10 @@
   "adminFacilityView.siglusapi.error.upload.row.missing": "${firstEle} values in row ${lastNumber} is missing.",
   "adminFacilityView.siglusapi.error.upload.duplicate.locationCode": "The Location values in row ${lastNumber} are conflicting.",
   "adminFacilityView.notConfigured": "Note: Location information is not yet configured.",
-  "adminFacilityView.alreadyConfigured": "Note: Location information is already configured."
+  "adminFacilityView.alreadyConfigured": "Note: Location information is already configured.",
+  "adminFacilityView.locationManagement.closeSwitchWithoutConfigure": "Please configure location management first.",
+
+  "adminFacilityView.upgradeMessage": "Once you upgrade Facility from Android to web facility, you cannot undo this action. Are you sure to upgrade it?",
+  "adminFacilityView.upgradSuccess": "Facility upgraded successfully!",
+  "adminFacilityView.upgradFailed": "Facility upgraded Failed!"
 }

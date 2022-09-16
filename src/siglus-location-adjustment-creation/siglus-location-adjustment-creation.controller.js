@@ -275,7 +275,7 @@
         }
 
         function emitQuantityChange(lineItem, lineItems) {
-            if (lineItem.lot && lineItem.location) {
+            if (lineItem.lot && lineItem.location && !lineItem.isKit) {
                 var map = getLocationLotSohMap(lineItem.locationsInfo);
                 lineItem.stockOnHand =
                     _.get(map, [
@@ -285,7 +285,7 @@
                     ], 0);
                 vm.changeQuantity(lineItem, lineItems);
             } else if (lineItem.location && lineItem.isKit) {
-                var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locations);
+                var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locationsInfo);
                 lineItem.stockOnHand = _.get(mapKit[lineItem.orderableId],
                     [lineItem.location.locationCode, 0, 'stockOnHand'], 0);
             } else {

@@ -245,6 +245,9 @@
             } else {
                 addAndRemoveLineItemService.addLineItem(lineItem, lineItems);
             }
+            lineItems.forEach(function(line) {
+                addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
+            });
         };
 
         vm.removeItem = function(lineItems, index) {

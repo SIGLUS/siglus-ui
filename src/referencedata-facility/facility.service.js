@@ -39,7 +39,7 @@
                      localStorageService) {
 
         var facilitiesOffline = localStorageFactory('facilities'),
-            facilitiesPromise,
+            // facilitiesPromise,
             resource = $resource(
                 referencedataUrlFactory('/api/siglusapi/facilities/:id'),
                 {},
@@ -86,6 +86,12 @@
                             '/api/siglusapi/facilities/initiate'
                         ),
                         method: 'POST'
+                    },
+                    upgradeToWeb: {
+                        url: referencedataUrlFactory(
+                            '/api/siglusapi/facilities/:facilityCode/upgradeToWeb'
+                        ),
+                        method: 'GET'
                     }
                     // SIGLUS-REFACTOR: ends here
                 }
@@ -101,7 +107,7 @@
         this.clearFacilitiesCache = clearFacilitiesCache;
         this.eraseDeviceInfo = eraseDeviceInfo;
         this.addNewFacility = addNewFacility;
-
+        this.upgradeToWeb = upgradeToWeb;
         /**
      * @ngdoc method
      * @methodOf referencedata-facility.facilityService
@@ -115,6 +121,19 @@
      * @return {Promise}            facility promise
      */
         function get(facilityId) {
+            // var cachedFacility = facilitiesOffline.getBy('id', facilityId);
+
+            // if (cachedFacility) {
+            //     facilitiesPromise = $q.resolve(
+            //         angular.fromJson(cachedFacility)
+            //     );
+            // } else {
+            //     facilitiesPromise = new FacilityResource().get(facilityId)
+            //         .then(function(facility) {
+            //             facilitiesOffline.put(facility);
+            //             return $q.resolve(facility);
+            //         });
+            // }
             return new FacilityResource().get(facilityId)
                 .then(function(facility) {
                     facilitiesOffline.put(facility);
@@ -295,7 +314,7 @@
      * Deletes facilities stored in the browser cache.
      */
         function clearFacilitiesCache() {
-            facilitiesPromise = undefined;
+            // facilitiesPromise = undefined;
             localStorageService.remove('facilities');
         }
 
@@ -332,6 +351,11 @@
             ).$promise;
         }
 
-    // SIGLUS-REFACTOR: ends here
+        // SIGLUS-REFACTOR: ends here
+        function upgradeToWeb(facilityCode) {
+            return resource.upgradeToWeb({
+                facilityCode: facilityCode
+            }).$promise;
+        }
     }
 })();

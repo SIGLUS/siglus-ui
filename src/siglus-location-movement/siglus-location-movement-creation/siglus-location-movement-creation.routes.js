@@ -113,31 +113,12 @@
                     return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, orderableGroups);
                 },
                 displayItems: function($stateParams, siglusLocationCommonFilterService, addedLineItems, locations,
-                    areaLocationInfo, SiglusLocationCommonUtilsService) {
+                    areaLocationInfo, SiglusLocationCommonUtilsService, addAndRemoveLineItemService) {
                     var displayItems = siglusLocationCommonFilterService
                         .filterList($stateParams.keyword || '', addedLineItems);
                     displayItems.forEach(function(lineItemGroups) {
                         lineItemGroups.forEach(function(lineItem) {
-                            if (!lineItem.lotCodeOptions) {
-                                lineItem.lotCodeOptions = SiglusLocationCommonUtilsService.getLotList(
-                                    lineItem,
-                                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)
-                                );
-                            }
-                            if (!lineItem.srcLocationOptions) {
-                                lineItem.srcLocationOptions = SiglusLocationCommonUtilsService.getLocationList(
-                                    lineItem,
-                                    SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations)
-                                );
-                            }
-                            if (!lineItem.destLocationOptions) {
-                                lineItem.destLocationOptions = SiglusLocationCommonUtilsService
-                                    .getDesLocationList(lineItem, areaLocationInfo);
-                            }
-                            if (!lineItem.destAreaOptions) {
-                                lineItem.destAreaOptions = SiglusLocationCommonUtilsService
-                                    .getDesAreaList(lineItem, areaLocationInfo);
-                            }
+                            addAndRemoveLineItemService.fillMovementOptions(lineItem, locations, areaLocationInfo);
                         });
                     });
 

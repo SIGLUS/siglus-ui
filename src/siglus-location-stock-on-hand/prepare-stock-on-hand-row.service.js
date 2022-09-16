@@ -61,13 +61,21 @@
         }
 
         function addLotRow(stockCardDetail) {
+            var lastUpdate = undefined;
+            if (stockCardDetail.lotLocationSohDtoList && stockCardDetail.lotLocationSohDtoList.length > 0) {
+                // ascending
+                var sorted = _.sortBy(stockCardDetail.lotLocationSohDtoList, function(lotLocation) {
+                    return _.get(lotLocation, 'lastUpdate', '');
+                });
+                lastUpdate = _.get(sorted, [sorted.length - 1, 'lastUpdate']);
+            }
             var data = {
                 orderableId: stockCardDetail.orderable.id,
                 lotCode: _.get(stockCardDetail, ['lot', 'lotCode']),
                 expirationDate: _.get(stockCardDetail, ['lot', 'expirationDate']),
                 stockOnHand: stockCardDetail.stockOnHand,
                 stockCardId: stockCardDetail.stockCard.id,
-                lastUpdate: stockCardDetail.occurredDate,
+                lastUpdate: lastUpdate ? lastUpdate : stockCardDetail.occurredDate,
                 type: 'LOT'
             };
             return prepareRowData(data);

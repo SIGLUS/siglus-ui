@@ -33,7 +33,7 @@
                 $error: isFirstRowToLineItem ? currentItem.$error : {},
                 $hint: isFirstRowToLineItem ? currentItem.$hint : {},
                 productCode: currentItem.productCode,
-                productName: currentItem.fullProductName,
+                productName: currentItem.fullProductName ? currentItem.fullProductName : currentItem.productName,
                 orderable: currentItem.orderable,
                 id: isFirstRowToLineItem ? currentItem.id : undefined,
                 quantityShipped: isFirstRowToLineItem ? currentItem.quantityShipped : 0,
