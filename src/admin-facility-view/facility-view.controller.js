@@ -529,6 +529,7 @@
          * upgrade android device to web
          */
         function upgradeToWeb() {
+            loadingModalService.open();
             siglusFacilityViewRadioConfirmModalService.error(
                 'adminFacilityView.locationManagement.upgradeWebUser',
                 '',
@@ -539,12 +540,14 @@
                     new FacilityRepository().get($stateParams.id)
                         .then(function(res) {
                             vm.facility = res;
+                            loadingModalService.close();
                             notificationService.success(
                                 'adminFacilityView.upgradSuccess'
                             );
                         });
                 })
                     .catch(function() {
+                        loadingModalService.close();
                         notificationService.success(
                             'adminFacilityView.upgradFailed'
                         );

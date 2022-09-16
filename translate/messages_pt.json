@@ -2521,6 +2521,6 @@
   "stockAdjustmentCreationLocation.title":"Ajustes para ${facilityName} - ${program}",
 
   "adminFacilityView.locationManagement.upgradeWebUser": "Antes de atualizar o Android para o recurso Web, você precisa certificar-se de que todos os dados locais no tablet Android foram sincronizados com a web. A atualização não pode ser retirada, você tem certeza de atualizá-la?",
-  "adminFacilityView.upgradSuccess": "Sucesso da atualização",
-  "adminFacilityView.upgradFailed": "Falha na atualização"
+  "adminFacilityView.upgradSuccess": "Instalação atualizada com sucesso!",
+  "adminFacilityView.upgradFailed": "Falha na atualização da instalação!"
 }
