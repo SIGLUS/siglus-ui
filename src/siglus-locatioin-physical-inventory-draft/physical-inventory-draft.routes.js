@@ -105,7 +105,11 @@
                                                     }, {}
                                                 );
                                                 _.forEach(draft.lineItems, function(lineItem) {
-                                                    var array = _.get(lotsDataByLocationMap, [lineItem.locationCode, 'values'], []);
+                                                    var array = _.get(
+                                                        lotsDataByLocationMap,
+                                                        [lineItem.locationCode, 'values'],
+                                                        []
+                                                    );
                                                     var tempSoh = _.get(_.find(
                                                         array,
                                                         function(item) {
@@ -115,7 +119,11 @@
                                                         }
                                                     ), 'stockOnHand', '');
                                                     lineItem.stockOnHand = tempSoh;
-                                                    lineItem.area = _.get(lotsDataByLocationMap, [lineItem.locationCode, 'area'], 'Virtual');
+                                                    lineItem.area = _.get(
+                                                        lotsDataByLocationMap,
+                                                        [lineItem.locationCode, 'area'],
+                                                        'Virtual'
+                                                    );
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();
