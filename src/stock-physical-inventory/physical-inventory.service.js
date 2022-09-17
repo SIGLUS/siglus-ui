@@ -79,6 +79,10 @@
         });
         // SIGLUS-REFACTOR: ends here
         var locationResource = $resource(stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'), {}, {
+            getDraftByLocation: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories')
+            },
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
@@ -112,6 +116,7 @@
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
         this.deleteSubDraftByLocation = deleteSubDraftByLocation;
+        this.getDraftByLocation = getDraftByLocation;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -143,6 +148,15 @@
             return locationResource.getSOH({
                 extraData: true
             }, ids ? ids : []).$promise;
+        }
+
+        function getDraftByLocation(facility, program) {
+            return locationResource.getDraftByLocation({
+                facility: facility,
+                program: program,
+                isDraft: true
+            })
+                .$promise;
         }
 
         function deleteSubDraftByLocation(ids) {
