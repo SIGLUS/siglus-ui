@@ -14,7 +14,7 @@
  */
 
 describe('SiglusLocationShipmentViewController', function() {
-    var vm, $controller, $scope, $rootScope, $state, $q, SiglusLocationCommonUtilsService;
+    var vm, $controller, $scope, $rootScope, $state, $q, SiglusLocationCommonUtilsService, suggestedQuatity;
     function prepareInjector() {
 
         inject(function($injector) {
@@ -80,7 +80,10 @@ describe('SiglusLocationShipmentViewController', function() {
         };
 
         var stockCardSummaries = {};
-
+        suggestedQuatity = {
+            orderableIdToSuggestedQuantity: null,
+            showSuggestedQuantity: true
+        };
         vm = $controller('SiglusLocationShipmentViewController', {
             $scope: $scope,
             shipment: {},
@@ -233,7 +236,8 @@ describe('SiglusLocationShipmentViewController', function() {
             },
             facility: {
                 id: 'asdfafds-123123djks-123123dafkfs'
-            }
+            },
+            suggestedQuatity: suggestedQuatity
         });
     }
 
