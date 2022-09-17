@@ -94,7 +94,6 @@
             vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantiry(displayTableLineItems) :
                 displayTableLineItems;
-            console.log('#### displayTableLineItems', displayTableLineItems);
             vm.facility = facility;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;

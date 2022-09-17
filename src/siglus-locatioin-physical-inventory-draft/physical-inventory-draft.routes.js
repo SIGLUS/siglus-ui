@@ -104,8 +104,6 @@
                                                         return r;
                                                     }, {}
                                                 );
-                                                console.log('#### lotsDataByLocationMap', lotsDataByLocationMap);
-                                                console.log('#### draft', draft);
                                                 _.forEach(draft.lineItems, function(lineItem) {
                                                     var array = _.get(lotsDataByLocationMap, [lineItem.locationCode, 'values'], []);
                                                     var tempSoh = _.get(_.find(
