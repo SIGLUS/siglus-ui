@@ -96,7 +96,7 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.searchProgram = function searchProgram() {
-            $state.go('openlmis.stockmanagement.physicalInventory', {
+            $state.go('openlmis.locationManagement.physicalInventory', {
                 programId: vm.program.id,
                 drafts: _.clone(vm.drafts)
             });

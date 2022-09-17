@@ -442,7 +442,7 @@
                     vm.isInitialInventory ?
                         $state.go('^', {}, {
                             reload: true
-                        }) : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
+                        }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
                     // SIGLUS-REFACTOR: ends here
@@ -523,7 +523,7 @@
                                 notificationService.success('stockPhysicalInventoryDraft.submitted');
                             }
 
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            $state.go('openlmis.locationManagement.stockOnHand', {
                                 program: program.id,
                                 facility: facility
                             }, {
@@ -1027,7 +1027,6 @@
                 locationCode: null
             });
             draft.lineItems.push(newLineItem);
-            console.log('#### draft', draft);
             $stateParams.isAddProduct = true;
             reload($state.current.name);
         }
