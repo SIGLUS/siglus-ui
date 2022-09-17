@@ -137,6 +137,16 @@
             });
             if (programId) {
                 loadingModalService.open();
+                // physicalInventoryService.getDraftByLocation(facility.id, programId)
+                //     .then(function(drafts) {
+                //         vm.drafts = _.isEmpty(drafts) ?  [{
+                //             programId: programId,
+                //             isStarter: true
+                //         }] : drafts;
+                //     })
+                //     .finally(function() {
+                //         loadingModalService.close();
+                //     });
                 physicalInventoryService.getDraft(programId, facility.id)
                     .then(function(drafts) {
                         vm.drafts = _.isEmpty(drafts) ?  [{
