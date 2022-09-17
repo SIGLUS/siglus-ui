@@ -118,7 +118,8 @@
                     </select>
                 </div>
                 <div ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'SUBMITTED'" class="location-td">
-                    <div>{{ lineItem.area }} - {{ lineItem.locationCode }}</div>
+                    <div ng-if="lineItem.locationCode === '00000'">N/A</div>
+                    <div ng-if="lineItem.locationCode !== '00000'">{{ lineItem.area }} - {{ lineItem.locationCode }}</div>
                 </div>
             </td>
             <td  ng-if="!vm.isInitialInventory" class="text-align-right">

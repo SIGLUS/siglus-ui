@@ -96,13 +96,20 @@
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
-                                                        r[c.locationCode] = c.lots;
+                                                        r[c.locationCode] = angular.merge({
+                                                            values: c.lots
+                                                        }, {
+                                                            area: c.area
+                                                        });
                                                         return r;
                                                     }, {}
                                                 );
+                                                console.log('#### lotsDataByLocationMap', lotsDataByLocationMap);
+                                                console.log('#### draft', draft);
                                                 _.forEach(draft.lineItems, function(lineItem) {
+                                                    var array = _.get(lotsDataByLocationMap, [lineItem.locationCode, 'values'], []);
                                                     var tempSoh = _.get(_.find(
-                                                        lotsDataByLocationMap[lineItem.locationCode],
+                                                        array,
                                                         function(item) {
                                                             if (lineItem.lot) {
                                                                 return item.lotCode === lineItem.lot.lotCode;
@@ -110,6 +117,7 @@
                                                         }
                                                     ), 'stockOnHand', '');
                                                     lineItem.stockOnHand = tempSoh;
+                                                    lineItem.area = _.get(lotsDataByLocationMap, [lineItem.locationCode, 'area'], 'Virtual');
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();

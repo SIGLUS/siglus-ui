@@ -39,7 +39,8 @@
         'prepareRowDataService', 'SiglusLocationCommonUtilsService',
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
-        'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService'
+        'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
+        'suggestedQuatity'
     ];
 
     function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
@@ -56,7 +57,8 @@
                                                   notificationService, confirmService,
                                                   locations, siglusLocationCommonApiService,
                                                   localStorageService, $window, facility,
-                                                  siglusPrintPalletLabelComfirmModalService) {
+                                                  siglusPrintPalletLabelComfirmModalService,
+                                                  suggestedQuatity) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -89,11 +91,26 @@
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = displayTableLineItems;
+            vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
+                setSuggestedQuantiry(displayTableLineItems) :
+                displayTableLineItems;
+            console.log('#### displayTableLineItems', displayTableLineItems);
             vm.facility = facility;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
             $stateParams.displayTableLineItems = vm.displayTableLineItems;
+        }
+
+        function setSuggestedQuantiry(items) {
+            var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
+            _.forEach(items, function(item) {
+                item.suggestedQuantity =
+                    _.includes([null, undefined], suggestedQuatityMap[item.id]) ?
+                        '' :
+                        suggestedQuatityMap[item.id];
+            });
+            return items;
         }
 
         function validateLotExpired(item) {
