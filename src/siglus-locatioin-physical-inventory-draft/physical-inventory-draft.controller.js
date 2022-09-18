@@ -740,7 +740,6 @@
                 }, []);
                 vm.areaList = areaList;
                 vm.allLocationList = locationList;
-                // console.log('#### newList', newList);
                 _.forEach(newList, function(item) {
                     _.forEach(item, function(itm) {
                         itm.area = itm.area ? itm.area : null;
