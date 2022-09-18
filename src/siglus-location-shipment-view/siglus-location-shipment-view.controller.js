@@ -747,7 +747,7 @@
                     result.expirationDate = _.get(item, ['lot', 'expirationDate']);
                     result.location = _.get(item, ['location', 'locationCode']);
                     result.pallet =
-                    Number(_.get(item, ['lot', 'stockOnHand'])) -
+                    Number(getSohByOrderableLocation(item)) -
                     Number(_.get(item, ['quantityShipped']));
                     result.pack = null;
                     return result;

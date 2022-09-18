@@ -607,6 +607,9 @@
                     var stockOnHand = _.chain(map)
                         .get([result.orderableId, result.location])
                         .find(function(findItem) {
+                            if (result.isKit) {
+                                return true;
+                            }
                             return findItem.lotCode === result.lotCode;
                         })
                         .get(['stockOnHand'], 0)
@@ -637,6 +640,7 @@
             result.locationLotOrderableId = _.get(item, ['locationLotOrderableId']);
             result.quantity = _.get(item, ['quantity']);
             result.moveType = _.get(item, ['moveType']);
+            result.isKit = _.get(item, ['isKit']);
             return result;
         }
         function calculatePallet(stockOnHand, lineItem) {
