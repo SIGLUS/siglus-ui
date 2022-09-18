@@ -122,7 +122,7 @@
                                                     lineItem.area = _.get(
                                                         lotsDataByLocationMap,
                                                         [lineItem.locationCode, 'area'],
-                                                        'Virtual'
+                                                        null
                                                     );
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
