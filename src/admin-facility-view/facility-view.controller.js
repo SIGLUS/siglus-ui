@@ -243,6 +243,7 @@
          * Saves facility details and redirects to facility list screen.
          */
         function saveFacilityDetails() {
+            // console.log('### saveFacilityDetails', vm.facility);
             doSave(vm.facility,
                 'adminFacilityView.saveFacility.success',
                 'adminFacilityView.saveFacility.fail');
@@ -263,6 +264,7 @@
         }
 
         vm.saveFacilityWithReports = function() {
+            console.log('### saveFacilityWithReports', vm.facilityWithPrograms);
             doSave(vm.facilityWithPrograms,
                 'adminFacilityView.saveFacility.success',
                 'adminFacilityView.saveFacility.fail');
@@ -317,11 +319,11 @@
 
         function doSave(facility, successMessage, errorMessage) {
             loadingModalService.open();
-            return new facilityService.update(vm.facility)
-                .then(function(facility) {
+            return new facilityService.update(facility)
+                .then(function(res) {
                     notificationService.success(successMessage);
                     goToFacilityList();
-                    return $q.resolve(facility);
+                    return $q.resolve(res);
                 })
                 .catch(function() {
                     notificationService.error(errorMessage);
