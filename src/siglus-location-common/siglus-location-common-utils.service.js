@@ -43,14 +43,15 @@
                     if (!result[lot.orderableId][location.locationCode]) {
                         result[lot.orderableId][location.locationCode] = [];
                     }
-
-                    result[lot.orderableId][location.locationCode].push({
-                        id: lot.lotId,
-                        lotCode: lot.lotCode,
-                        expirationDate: lot.expirationDate,
-                        stockOnHand: lot.stockOnHand,
-                        area: location.area
-                    });
+                    if (lot.stockOnHand > 0) {
+                        result[lot.orderableId][location.locationCode].push({
+                            id: lot.lotId,
+                            lotCode: lot.lotCode,
+                            expirationDate: lot.expirationDate,
+                            stockOnHand: lot.stockOnHand,
+                            area: location.area
+                        });
+                    }
                 });
             });
 
@@ -70,11 +71,13 @@
                         result[lot.orderableId][lot.lotId] = [];
                     }
 
-                    result[lot.orderableId][lot.lotId].push({
-                        id: location.locationId,
-                        area: location.area,
-                        locationCode: location.locationCode
-                    });
+                    if (lot.stockOnHand > 0) {
+                        result[lot.orderableId][lot.lotId].push({
+                            id: location.locationId,
+                            area: location.area,
+                            locationCode: location.locationCode
+                        });
+                    }
                 });
             });
 
