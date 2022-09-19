@@ -767,7 +767,6 @@
                         }
                     });
                 });
-                console.log('#### newList', newList);
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
