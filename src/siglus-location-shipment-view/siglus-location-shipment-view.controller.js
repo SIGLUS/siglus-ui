@@ -94,6 +94,8 @@
             vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantiry(displayTableLineItems) :
                 displayTableLineItems;
+            vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
+            vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
@@ -104,10 +106,12 @@
         function setSuggestedQuantiry(items) {
             var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
             _.forEach(items, function(item) {
-                item.suggestedQuantity =
-                    _.includes([null, undefined], suggestedQuatityMap[item.id]) ?
-                        '' :
-                        suggestedQuatityMap[item.id];
+                _.forEach(item, function(lineItem) {
+                    lineItem.suggestedQuantity =
+                        _.includes([null, undefined], suggestedQuatityMap[lineItem.orderable.id]) ?
+                            '' :
+                            suggestedQuatityMap[lineItem.orderable.id];
+                });
             });
             return items;
         }
