@@ -39,7 +39,7 @@
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
         'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'allLocationAreaMap', 'localStorageService'
+        'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -52,7 +52,7 @@
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-                        allLocationAreaMap, localStorageService) {
+                        allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService) {
         var vm = this;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
@@ -69,6 +69,7 @@
         vm.isEmpty = isEmpty;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
+        vm.locationManagementOption = $stateParams.locationManagementOption;
         var draft = physicalInventoryDataService.getDraft(facility.id);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
@@ -1028,6 +1029,53 @@
             $stateParams.isAddProduct = true;
             reload($state.current.name);
         }
+
+        vm.addLotByLocation = function addLot(lineItem) {
+            var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
+            var notYetAddedItems = _.filter(draft.summaries, function(summary) {
+                var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
+                var orderableId = summary.orderable && summary.orderable.id;
+                var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
+                    lotId: lotId,
+                    orderableId: orderableId
+                });
+                return !isInAdded;
+            });
+            console.log('hello world', lineItem);
+            SiglusAddProductsModalWithLocationService
+                .show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
+                    draft.lineItems = draft.lineItems.concat(addedItems);
+                    refreshLotOptions();
+                    $stateParams.isAddProduct = true;
+                    reload($state.current.name);
+
+                    // #105: activate archived product
+                    siglusArchivedProductService.alterInfo(addedItems);
+                    // #105: ends here
+                });
+            // var areaList = vm.areaList;
+            // var locationList = vm.allLocationList;
+            // var newLineItem = _.assign({}, angular.copy(lineItem), {
+            //     stockCardId: null,
+            //     displayLotMessage: undefined,
+            //     lot: null,
+            //     quantity: undefined,
+            //     shouldOpenImmediately: false,
+            //     stockAdjustments: [],
+            //     stockOnHand: null,
+            //     unaccountedQuantity: undefined,
+            //     $errors: {},
+            //     reasonFreeText: undefined,
+            //     id: null,
+            //     areaList: areaList,
+            //     locationList: locationList,
+            //     area: null,
+            //     locationCode: null
+            // });
+            // draft.lineItems.push(newLineItem);
+            // $stateParams.isAddProduct = true;
+            // reload($state.current.name);
+        };
 
         function removeLot(lineItem) {
             var index = _.findIndex(draft.lineItems, function(item) {

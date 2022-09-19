@@ -106,6 +106,7 @@
                             $stateParams.drafts = null;
                             var stateParamsCopy = angular.copy($stateParams);
                             stateParamsCopy.creationType = 'location';
+                            stateParamsCopy.locationManagementOption = vm.inventoryType;
                             vm.creationType === 'location' ? $state.go(
                                 'openlmis.locationManagement.physicalInventory.draftList',
                                 stateParamsCopy
