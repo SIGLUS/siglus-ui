@@ -118,11 +118,13 @@
                                                         }
                                                     ), 'stockOnHand', '');
                                                     lineItem.stockOnHand = tempSoh;
-                                                    lineItem.area = _.get(
-                                                        lotsDataByLocationMap,
-                                                        [lineItem.locationCode, 'area'],
-                                                        null
-                                                    );
+                                                    lineItem.area = lineItem.area ?
+                                                        lineItem.area :
+                                                        _.get(
+                                                            lotsDataByLocationMap,
+                                                            [lineItem.locationCode, 'area'],
+                                                            null
+                                                        );
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();

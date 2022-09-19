@@ -356,7 +356,7 @@
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
-            return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
+            return physicalInventoryService.saveDraftWithLocation(_.extend({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
             })).then(function() {
@@ -767,6 +767,7 @@
                         }
                     });
                 });
+                console.log('#### newList', newList);
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
