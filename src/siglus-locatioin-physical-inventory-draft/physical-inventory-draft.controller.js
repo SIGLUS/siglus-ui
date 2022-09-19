@@ -738,14 +738,33 @@
                     }));
                     return r;
                 }, []);
+                var allLocation = _.flatten(Object.values(vm.allLocationAreaMap));
                 vm.areaList = areaList;
                 vm.allLocationList = locationList;
                 _.forEach(newList, function(item) {
                     _.forEach(item, function(itm) {
                         itm.area = itm.area ? itm.area : null;
-                        itm.locationCode = itm.locationCode ? itm.locationCode : null;
-                        itm.areaList = itm.areaList ? itm.areaList : areaList;
-                        itm.locationList = itm.locationList ? itm.locationList : locationList;
+                        // itm.locationCode = itm.locationCode ? itm.locationCode : null;
+                        if (itm.locationCode) {
+                            var currentArea = _.find(allLocation, function(location) {
+                                return location.locationCode === itm.locationCode;
+                            });
+                            itm.areaList = currentArea ? [{
+                                code: currentArea.area,
+                                label: currentArea.area
+                            }] : areaList;
+                            itm.locationList = currentArea ?
+                                _.map(vm.allLocationAreaMap[currentArea.area], function(location) {
+                                    return {
+                                        code: location.locationCode,
+                                        label: location.locationCode
+                                    };
+                                }) : locationList;
+                        } else {
+                            itm.locationCode = null;
+                            itm.areaList = itm.areaList ? itm.areaList : areaList;
+                            itm.locationList = itm.locationList ? itm.locationList : locationList;
+                        }
                     });
                 });
                 // SIGLUS-REFACTOR: starts here

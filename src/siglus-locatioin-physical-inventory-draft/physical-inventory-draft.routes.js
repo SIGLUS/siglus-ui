@@ -96,11 +96,10 @@
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
-                                                        r[c.locationCode] = angular.merge({
-                                                            values: c.lots
-                                                        }, {
+                                                        r[c.locationCode] = {
+                                                            values: c.lots,
                                                             area: c.area
-                                                        });
+                                                        };
                                                         return r;
                                                     }, {}
                                                 );
