@@ -103,9 +103,10 @@
                 });
             };
 
-            paginationService.registerList(validator, angular.copy($stateParams), function() {
+            paginationService.registerList(validator, $stateParams, function() {
                 return vm.displayItems;
             });
+            loadingModalService.close();
         };
 
         function filterOrderableGroups() {
@@ -156,6 +157,7 @@
 
         function searchList() {
             updateStateParams();
+            loadingModalService.open();
             reloadPage();
         }
 
