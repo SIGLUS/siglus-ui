@@ -1,4 +1,5 @@
 {
     "stockAdjustmentCreation.location":"Location",
-    "stockAdjustmentCreationLocation.title":"Adjustments for ${facilityName} - ${program}"
+    "stockAdjustmentCreationLocation.title":"Adjustments for ${facilityName} - ${program}",
+    "stockAdjustmentCreationLocation.duplicateError":"The adjustment reason for the same lot in the same location cannot be repeated, please enter a new one."
 }

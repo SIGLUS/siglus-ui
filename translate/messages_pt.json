@@ -2526,6 +2526,7 @@
   "siglusPrintPalletComfirmModal.message":"After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?",
   "stockAdjustmentCreationLocation.title":"Ajustes para ${facilityName} - ${program}",
   "siglusPrintPalletComfirmModal.tips":"If there is no change of stock, there will be no document exported.",
+  "stockAdjustmentCreationLocation.duplicateError":"The adjustment reason for the same lot in the same location cannot be repeated, please enter a new one.",
   "stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate": "O lote inserido já existe. Insira um novo",
   "adminFacilityView.locationManagement.upgradeWebUser": "Antes de atualizar o Android para o recurso Web, você precisa certificar-se de que todos os dados locais no tablet Android foram sincronizados com a web. A atualização não pode ser retirada, você tem certeza de atualizá-la?",
   "adminFacilityView.upgradSuccess": "Instalação atualizada com sucesso!",
