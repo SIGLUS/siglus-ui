@@ -17,12 +17,14 @@ describe('PaginationController', function() {
 
     beforeEach(function() {
         module('openlmis-pagination');
+        module('openlmis-modal');
 
         inject(function($injector) {
             this.$state = $injector.get('$state');
             this.$controller = $injector.get('$controller');
             this.paginationService = $injector.get('paginationService');
             this.paginationFactory = $injector.get('paginationFactory');
+            this.loadingModalService = $injector.get('loadingModalService');
             this.$rootScope = $injector.get('$rootScope');
             this.$q = $injector.get('$q');
         });
@@ -44,6 +46,7 @@ describe('PaginationController', function() {
         spyOn(this.paginationService, 'getShowingItems').andReturn(2);
         spyOn(this.paginationService, 'getPageParamName').andReturn('customPageParamName');
         spyOn(this.paginationService, 'getItemValidator').andReturn(this.validatorSpy);
+        spyOn(this.loadingModalService, 'open');
 
         spyOn(this.paginationFactory, 'getPage').andReturn([1]);
 
@@ -150,6 +153,7 @@ describe('PaginationController', function() {
 
             expect(this.$state.go).not.toHaveBeenCalled();
         });
+
     });
 
     describe('nextPage', function() {

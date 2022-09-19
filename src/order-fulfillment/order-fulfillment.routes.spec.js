@@ -75,6 +75,7 @@ describe('openlmis.orders.fulfillment state', function() {
         });
 
         spyOn(facilityFactory, 'getSupervisedFacilitiesBasedOnRights').andReturn($q.when(facilities));
+        spyOn(facilityFactory, 'getUserHomeFacility').andReturn({});
         spyOn(requestingFacilityFactory, 'loadRequestingFacilities').andReturn($q.when(minimalFacilities));
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         spyOn(orderRepository, 'searchFulfill').andReturn($q.when([]));
