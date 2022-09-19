@@ -55,6 +55,10 @@
                 programs: function(programService) {
                     return programService.getAll();
                 },
+
+                homeFacility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
                 orders: function(paginationService, orderRepository, $stateParams, ORDER_STATUS) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         // #400: Facility user partially fulfill an order and create sub-order for an requisition
