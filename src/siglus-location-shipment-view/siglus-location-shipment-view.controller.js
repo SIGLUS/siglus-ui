@@ -696,7 +696,7 @@
                                         return SiglusLocationViewService.createSubOrder(buildSaveParams())
                                             .then(function() {
                                                 notificationService.success('shipmentView.suborderHasBeenConfirmed');
-                                                $state.go('openlmis.locationManagement.fulfillOrder');
+                                                $state.go('openlmis.orders.fulfillment');
                                             })
                                             .catch(function() {
                                                 notificationService.error('shipmentView.failedToCreateSuborder');
@@ -714,7 +714,7 @@
                                     return SiglusLocationViewService.submitOrder(buildSaveParams(true))
                                         .then(function() {
                                             notificationService.success('shipmentView.shipmentHasBeenConfirmed');
-                                            $state.go('openlmis.locationManagement.fulfillOrder');
+                                            $state.go('openlmis.orders.fulfillment');
                                         })
                                         .catch(function() {
                                             notificationService.error('shipmentView.failedToConfirmShipment');
@@ -776,7 +776,7 @@
                     })
                         .then(function() {
                             notificationService.success('shipmentView.draftHasBeenDeleted');
-                            $state.go('openlmis.locationManagement.fulfillOrder');
+                            $state.go('openlmis.orders.fulfillment');
                         })
                         .catch(function() {
                             notificationService.error('shipmentView.failedToDeleteDraft');

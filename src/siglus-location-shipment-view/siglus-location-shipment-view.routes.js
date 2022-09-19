@@ -25,7 +25,7 @@
 
     function config($stateProvider, FULFILLMENT_RIGHTS, selectProductsModalStateProvider) {
         selectProductsModalStateProvider.stateWithAddOrderablesChildState(
-            'openlmis.locationManagement.locationShipmentView', {
+            'openlmis.orders.locationShipmentView', {
                 label: 'shipmentView.viewShipment',
                 showInNavigation: false,
                 url: '/:id/location-shipment?page&size',

@@ -28,9 +28,10 @@
         .module('openlmis-pagination')
         .controller('PaginationController', controller);
 
-    controller.$inject = ['paginationService', '$state', '$stateParams', 'paginationFactory', '$scope'];
+    controller.$inject = ['paginationService', '$state', '$stateParams', 'paginationFactory', '$scope',
+        'loadingModalService'];
 
-    function controller(paginationService, $state, $stateParams, paginationFactory, $scope) {
+    function controller(paginationService, $state, $stateParams, paginationFactory, $scope, loadingModalService) {
 
         var pagination = this;
 
@@ -144,7 +145,15 @@
                     });
                 }
                 stateParams.hasLoadOrderableGroups = false;
-                $state.go($state.current.name, stateParams);
+                if (pagination.showReloadLoading) {
+                    loadingModalService.open();
+                    setTimeout(function() {
+                        $state.go($state.current.name, stateParams);
+                    }, 0);
+                } else {
+                    $state.go($state.current.name, stateParams);
+                }
+
                 // SIGLUS-REFACTOR: ends here
             }
         }
