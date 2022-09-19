@@ -63,7 +63,7 @@
             }
         });
 
-        $rootScope.$on('$stateChangeStart', function(event, toState) {
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
             // TODO RENAME FILE, NOT JUST FOR INITIAL INVENTORY, NOT WORKING WHEN PUT LOGIC IN OTHER PLACE
             if ((!toState.name.contains('movement.creation')
                 && toState.showInNavigation
@@ -75,10 +75,12 @@
                     if (shouldUpgradeMoveProduct) {
                         loadingModalService.close();
                         event.preventDefault();
-                        if (toState.name === 'openlmis.locationManagement.movement') {
-                            return siglusLocationMovementUpgradeService.startVirtualMovement();
+                        if (fromState.name !== 'openlmis.locationManagement.movement.creation') {
+                            if (toState.name === 'openlmis.locationManagement.movement') {
+                                return siglusLocationMovementUpgradeService.startVirtualMovement();
+                            }
+                            siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
                         }
-                        siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
                     }
                 }
 

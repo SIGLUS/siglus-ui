@@ -39,7 +39,8 @@
         'prepareRowDataService', 'SiglusLocationCommonUtilsService',
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
-        'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService'
+        'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
+        'suggestedQuatity'
     ];
 
     function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
@@ -56,7 +57,8 @@
                                                   notificationService, confirmService,
                                                   locations, siglusLocationCommonApiService,
                                                   localStorageService, $window, facility,
-                                                  siglusPrintPalletLabelComfirmModalService) {
+                                                  siglusPrintPalletLabelComfirmModalService,
+                                                  suggestedQuatity) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -89,11 +91,29 @@
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = displayTableLineItems;
+            vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
+                setSuggestedQuantiry(displayTableLineItems) :
+                displayTableLineItems;
+            vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
+            vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
             $stateParams.displayTableLineItems = vm.displayTableLineItems;
+        }
+
+        function setSuggestedQuantiry(items) {
+            var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
+            _.forEach(items, function(item) {
+                _.forEach(item, function(lineItem) {
+                    lineItem.suggestedQuantity =
+                        _.includes([null, undefined], suggestedQuatityMap[lineItem.orderable.id]) ?
+                            '' :
+                            suggestedQuatityMap[lineItem.orderable.id];
+                });
+            });
+            return items;
         }
 
         function validateLotExpired(item) {
@@ -731,7 +751,7 @@
                     result.expirationDate = _.get(item, ['lot', 'expirationDate']);
                     result.location = _.get(item, ['location', 'locationCode']);
                     result.pallet =
-                    Number(_.get(item, ['lot', 'stockOnHand'])) -
+                    Number(getSohByOrderableLocation(item)) -
                     Number(_.get(item, ['quantityShipped']));
                     result.pack = null;
                     return result;

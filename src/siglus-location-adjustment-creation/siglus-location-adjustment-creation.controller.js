@@ -288,6 +288,7 @@
                 var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locationsInfo);
                 lineItem.stockOnHand = _.get(mapKit[lineItem.orderableId],
                     [lineItem.location.locationCode, 0, 'stockOnHand'], 0);
+                vm.changeQuantity(lineItem, lineItems);
             } else {
                 lineItem.stockOnHand = 0;
             }
@@ -339,13 +340,17 @@
                     return item.$errors = {};
                 }
                 var filterLineItems = _.filter(lineItems, function(data) {
-                    return item.lot
-                        && item.location
-                        && _.get(item, ['lot', 'lotCode'], null) === _.get(data.lot, 'lotCode')
+                    if (item.isKit) {
+                        return item.location
                         && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
                         && _.get(data, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT;
+                    }
+                    return item.lot
+                    && item.location
+                    && _.get(item, ['lot', 'lotCode'], null) === _.get(data.lot, 'lotCode', null)
+                    && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
+                    && _.get(data, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT;
                 });
-
                 var totalQuantity = _.reduce(filterLineItems, function(result, row) {
                     return result + _.get(row, 'quantity', 0);
                 }, 0);
@@ -358,6 +363,28 @@
                 } else {
                     item.$errors.quantityInvalid = messageService.get(vm.key('positiveInteger'));
                 }
+            });
+        };
+
+        vm.validateDuplicateLineItem = function(lineItems) {
+            _.forEach(lineItems, function(item) {
+                var filterLineItems = _.filter(lineItems, function(data) {
+                    if (item.isKit) {
+                        return item.location
+                        && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
+                        && _.get(item, ['reason', 'id'], null) === _.get(data, ['reason', 'id'], null);
+                    }
+                    return item.lot
+                    && item.location
+                    && _.get(item, ['lot', 'lotCode'], null) === _.get(data.lot, 'lotCode', null)
+                    && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
+                    && _.get(item, ['reason', 'id'], null) === _.get(data, ['reason', 'id'], null);
+                });
+
+                if (filterLineItems.length > 1) {
+                    item.$errors.locationError = 'locationMovement.duplicateDesLocation';
+                }
+
             });
         };
 
@@ -439,6 +466,7 @@
                     }
                     validateRequiredFields(lineItem);
                     vm.validateQuantity(lineItems);
+                    vm.validateDuplicateLineItem(lineItems);
                 });
             });
         }

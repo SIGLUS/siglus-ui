@@ -112,6 +112,10 @@
                         return $stateParams.shipment;
 
                     },
+                    suggestedQuatity: function(shipmentViewService, $stateParams) {
+                        var id = $stateParams.id;
+                        return shipmentViewService.getSuggestedQuantity(id);
+                    },
                     displayTableLineItems: function(paginationService, $stateParams, shipment,
                         order, locations, prepareRowDataService) {
 

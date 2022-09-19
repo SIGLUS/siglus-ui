@@ -57,6 +57,7 @@
                 {{'shipmentView.orderQuantity' | message}}
             </th>
             <th>{{'shipmentView.partialFulfilledQuantity' | message}}</th>
+            <th>{{'shipmentView.suggestedQuantity' | message}}</th>
             <th>{{'shipmentView.fillQuantityInPack' | message}}</th>
             <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
                 {{'shipmentView.availableSoh' | message}}
@@ -117,7 +118,8 @@
             </td>
             <td>{{lineItem.orderedQuantity}}</td>
             <td>{{lineItem.partialFulfilledQuantity}}</td>
-
+            <td ng-if="vm.isShowSuggestedQuantity">{{ vm.orderableIdToSuggestedQuantity ? lineItem.suggestedQuantity : lineItem.orderedQuantity - lineItem.partialFulfilledQuantity }}</td>
+            <td ng-if="!vm.isShowSuggestedQuantity"></td>
             <td ng-if="vm.showEmptyBlock(lineItem, lineItems)">
                 {{vm.getFillQuantity(lineItems, index)}}
             </td>

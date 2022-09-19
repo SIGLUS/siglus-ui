@@ -1,4 +1,5 @@
 {
    "siglusPrintPalletComfirmModal.title":"Print Pallet Label",
-   "siglusPrintPalletComfirmModal.message":"After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?"
+   "siglusPrintPalletComfirmModal.message":"After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?",
+   "siglusPrintPalletComfirmModal.tips":"If there is no change of stock, there will be no document exported."
 }
