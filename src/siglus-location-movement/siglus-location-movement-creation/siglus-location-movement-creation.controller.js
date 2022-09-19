@@ -421,13 +421,13 @@
             });
         }
 
-        function isValid() {
-            return _.every(vm.addedLineItems, function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
+        function findErrorIndex() {
+            return _.findIndex(vm.displayItems, function(lineItems) {
+                return _.some(lineItems, function(lineItem) {
                     return _.chain(lineItem.$error)
                         .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
+                        .any(function(key) {
+                            return !_.isEmpty(lineItem.$error[key]);
                         })
                         .value();
                 });
@@ -482,7 +482,8 @@
 
         vm.submit = function() {
             validateForm();
-            if (isValid()) {
+            var errorIndex = findErrorIndex();
+            if (errorIndex === -1) {
                 if (vm.isVirtual) {
                     siglusSignatureWithDateModalService
                         .confirm('stockUnpackKitCreation.signature', null, null, true).
@@ -559,6 +560,7 @@
 
             } else {
                 vm.keyword = '';
+                $stateParams.page = Math.floor(errorIndex / 10);
                 searchList();
             }
         };
