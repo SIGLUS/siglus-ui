@@ -74,6 +74,7 @@
                     program,
                     physicalInventoryService
                 ) {
+                    var locationManagementOption = $stateParams.locationManagementOption;
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
@@ -85,7 +86,9 @@
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
                             var flag = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(id, flag)
+                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(
+                                id, flag, locationManagementOption
+                            )
                                 .then(function(draft) {
                                     var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
                                         return item.orderable.id;
@@ -206,7 +209,9 @@
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {
-                                return lineItem.orderable.id;
+                                return $stateParams.locationManagementOption === 'product' ?
+                                    lineItem.orderable.id :
+                                    lineItem.locationCode;
                             })
                             .values()
                             .value();

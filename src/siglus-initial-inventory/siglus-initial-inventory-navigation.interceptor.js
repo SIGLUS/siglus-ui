@@ -68,7 +68,6 @@
             if ((!toState.name.contains('movement.creation')
                 && toState.showInNavigation
                 && toState.url !== '/home')) {
-
                 var user = currentUserService.getUserInfo().$$state.value;
                 if (user) {
                     var shouldUpgradeMoveProduct = siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
