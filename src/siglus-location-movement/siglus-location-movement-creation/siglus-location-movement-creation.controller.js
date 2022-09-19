@@ -57,8 +57,6 @@
 
         vm.displayItems = displayItems || [];
 
-        vm.isVirtual = false;
-
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(
                 lineItem,
@@ -74,7 +72,13 @@
         };
 
         vm.$onInit = function() {
-            vm.isVirtual = $stateParams.isVirtual;
+            // TODO make '00000' as constant
+            var draftLines = _.get(draftInfo, 'lineItems', []);
+            if (draftLines.length > 0) {
+                vm.isVirtual = _.every(draftLines, function(line) {
+                    return _.get(line, 'srcLocationCode') === '00000';
+                });
+            }
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
@@ -197,16 +201,22 @@
             );
         };
 
-        vm.changeArea = function(lineItem) {
+        vm.changeArea = function(lineItem, lineItems) {
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
+            if (lineItem.$error.areaError !== 'openlmisForm.required' && vm.isVirtual) {
+                validateRelatedLineItemsForVirtual(lineItem, lineItems);
+            }
         };
 
-        vm.changeMoveToLocation = function(lineItem) {
+        vm.changeMoveToLocation = function(lineItem, lineItems) {
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
+            if (lineItem.$error.moveToLocationError !== 'openlmisForm.required' && vm.isVirtual) {
+                validateRelatedLineItemsForVirtual(lineItem, lineItems);
+            }
         };
 
         vm.getStockOnHand = function(lineItem, lineItems, index) {
@@ -234,7 +244,11 @@
             lineItem.$error.quantityError = isNumberEmpty ? 'openlmisForm.required' : '';
 
             if (!lineItem.$error.quantityError) {
-                validateQuantityGtSoh(lineItems);
+                if (vm.isVirtual) {
+                    validateRelatedLineItemsForVirtual(lineItem, lineItems);
+                } else {
+                    validateQuantityGtSoh(lineItems);
+                }
             }
 
         };
@@ -265,6 +279,15 @@
             }
         };
 
+        function validateRelatedLineItemsForVirtual(lineItem, lineItems) {
+            var targets = lineItems.filter(function(line) {
+                return _.get(line, 'orderableId') === _.get(lineItem, 'orderableId')
+                    && _.get(line, ['lot', 'id']) === _.get(lineItem.lot, 'id');
+            });
+            validateQuantityGtSoh(targets);
+            validateDuplicateDesLocation(targets);
+        }
+
         function validateQuantityGtSoh(lineItems) {
             _.forEach(lineItems, function(item) {
                 var filterLineItems = _.filter(lineItems, function(data) {
@@ -281,9 +304,11 @@
 
                 if (totalQuantity > item.stockOnHand) {
                     item.$error.quantityError = 'locationMovement.gtSoh';
-                }
-                if (totalQuantity < item.stockOnHand && vm.isVirtual) {
+                } else if (totalQuantity < item.stockOnHand && vm.isVirtual && item.quantity) {
                     item.$error.quantityError = 'locationMovement.ltSoh';
+                } else if (item.$error.quantityError === 'locationMovement.gtSoh'
+                    || item.$error.quantityError === 'locationMovement.ltSoh') {
+                    item.$error.quantityError = '';
                 }
 
             });
@@ -292,7 +317,8 @@
         function validateDuplicateDesLocation(lineItems) {
             _.forEach(lineItems, function(item) {
                 var filterLineItems = _.filter(lineItems, function(data) {
-                    return _.get(item, ['lot', 'id']) === _.get(data.lot, 'id')
+                    return _.get(item, 'orderableId') === _.get(data, 'orderableId')
+                    && _.get(item, ['lot', 'id']) === _.get(data.lot, 'id')
                         && (_.get(data.moveTo, 'locationCode')
                             && _.get(item, ['moveTo', 'locationCode']) === _.get(data.moveTo, 'locationCode'))
                         && (_.get(data.moveTo, 'area')
@@ -302,6 +328,13 @@
                 if (filterLineItems.length > 1) {
                     item.$error.moveToLocationError = 'locationMovement.duplicateDesLocation';
                     item.$error.areaError = 'locationMovement.duplicateDesLocation';
+                } else {
+                    if (item.$error.moveToLocationError === 'locationMovement.duplicateDesLocation') {
+                        item.$error.moveToLocationError = '';
+                    }
+                    if (item.$error.areaError === 'locationMovement.duplicateDesLocation') {
+                        item.$error.areaError = '';
+                    }
                 }
 
             });
@@ -574,6 +607,9 @@
                     var stockOnHand = _.chain(map)
                         .get([result.orderableId, result.location])
                         .find(function(findItem) {
+                            if (result.isKit) {
+                                return true;
+                            }
                             return findItem.lotCode === result.lotCode;
                         })
                         .get(['stockOnHand'], 0)
@@ -604,6 +640,7 @@
             result.locationLotOrderableId = _.get(item, ['locationLotOrderableId']);
             result.quantity = _.get(item, ['quantity']);
             result.moveType = _.get(item, ['moveType']);
+            result.isKit = _.get(item, ['isKit']);
             return result;
         }
         function calculatePallet(stockOnHand, lineItem) {

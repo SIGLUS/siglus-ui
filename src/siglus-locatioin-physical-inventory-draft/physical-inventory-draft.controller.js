@@ -442,7 +442,7 @@
                     vm.isInitialInventory ?
                         $state.go('^', {}, {
                             reload: true
-                        }) : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
+                        }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
                     // SIGLUS-REFACTOR: ends here
@@ -719,6 +719,7 @@
                 saveDraft(true);
             }
             vm.allLocationAreaMap = allLocationAreaMap;
+
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
@@ -739,13 +740,12 @@
                 }, []);
                 vm.areaList = areaList;
                 vm.allLocationList = locationList;
-
                 _.forEach(newList, function(item) {
                     _.forEach(item, function(itm) {
                         itm.area = itm.area ? itm.area : null;
                         itm.locationCode = itm.locationCode ? itm.locationCode : null;
-                        itm.areaList = areaList;
-                        itm.locationList = locationList;
+                        itm.areaList = itm.areaList ? itm.areaList : areaList;
+                        itm.locationList = itm.locationList ? itm.locationList : locationList;
                     });
                 });
                 // SIGLUS-REFACTOR: starts here
@@ -845,12 +845,11 @@
         }
 
         function getLotOptions() {
-            var addedLotsId = getAddedLots();
+            // var addedLotsId = getAddedLots();
             var notAddedLotItemGroup = _.chain(draft.summaries)
                 .filter(function(summary) {
                     // #105: activate archived product
-                    return (!summary.stockCardId || summary.orderable.archived)
-                        && summary.lot && !_.contains(addedLotsId, summary.lot.id);
+                    return summary.lot;
                     // #105: ends here
                 })
                 .groupBy(function(item) {
@@ -864,15 +863,15 @@
             return lotOptions;
         }
 
-        function getAddedLots() {
-            var addedLotsId = [];
-            _.forEach(draft.lineItems, function(item) {
-                if (item.lot && item.lot.id) {
-                    addedLotsId.push(item.lot.id);
-                }
-            });
-            return addedLotsId;
-        }
+        // function getAddedLots() {
+        //     var addedLotsId = [];
+        //     _.forEach(draft.lineItems, function(item) {
+        //         if (item.lot && item.lot.id) {
+        //             addedLotsId.push(item.lot.id);
+        //         }
+        //     });
+        //     return addedLotsId;
+        // }
         // if no lot defined, then lot code is null
         // same lot code but different lot id? is that possible?
         function getAddedLotIdAndOrderableId() {

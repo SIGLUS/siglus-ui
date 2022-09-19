@@ -158,7 +158,6 @@
                 });
             }
             return stockOnHand;
-
         }
 
         function getProgramId(orderableGroups, lineItem) {
@@ -184,12 +183,17 @@
                 return _.extend(baseInfo, {
                     $errors: {},
                     lot: lot,
-                    stockOnHand: _.get(lot, ['stockOnHand'], 0),
+                    stockOnHand: baseInfo.isKit ? getKitStockOnHand(baseInfo) : _.get(lot, ['stockOnHand'], 0),
                     location: location,
                     isMainGroup: isMainGroup,
                     programId: getProgramId(orderableGroups, item)
                 });
             });
+        }
+        function getKitStockOnHand(item) {
+            var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(item.locationsInfo);
+            return _.get(mapKit[item.orderableId],
+                [item.location.locationCode, 0, 'stockOnHand'], 0);
         }
 
         /* todo  add lotoption locationOption and locationsInfo to item */

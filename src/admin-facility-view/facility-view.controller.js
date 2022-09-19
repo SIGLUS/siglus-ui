@@ -539,6 +539,7 @@
                 facilityService.upgradeToWeb(vm.facilityId).then(function() {
                     new FacilityRepository().get($stateParams.id)
                         .then(function(res) {
+                            loadingModalService.close();
                             vm.facility = res;
                             loadingModalService.close();
                             notificationService.success(

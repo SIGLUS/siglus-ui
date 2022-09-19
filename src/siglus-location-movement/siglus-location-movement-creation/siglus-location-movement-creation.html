@@ -95,7 +95,7 @@
                                 ng-model="lineItem.moveTo.area"
                                 openlmis-invalid="{{lineItem.$error.areaError | message}}"
                                 ng-options="area for area in lineItem.destAreaOptions track by area"
-                                ng-change="vm.changeArea(lineItem)">
+                                ng-change="vm.changeArea(lineItem, lineItems)">
                         </select>
                         <select
                                 noPlaceholder
@@ -104,7 +104,7 @@
                                 ng-model="lineItem.moveTo.locationCode"
                                 openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
                                 ng-options="locationCode for locationCode in lineItem.destLocationOptions track by locationCode"
-                                ng-change="vm.changeMoveToLocation(lineItem)"
+                                ng-change="vm.changeMoveToLocation(lineItem, lineItems)"
                                >
                         </select>
                     </div>
