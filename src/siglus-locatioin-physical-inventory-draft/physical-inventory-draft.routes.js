@@ -215,7 +215,6 @@
                                 orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
-
                         return groups;
                     })
                         .then(function(items) {
