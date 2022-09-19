@@ -563,7 +563,7 @@
             return lineItem.$errors.quantityInvalid;
         };
         vm.print = function() {
-            localStorageService.add('physicalInventoryCategories', JSON.stringify(vm.groupedCategories));
+            localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
             var PRINT_URL = $window.location.href.split('/?')[0]
                 + '/draft/report'
                 + '?'
