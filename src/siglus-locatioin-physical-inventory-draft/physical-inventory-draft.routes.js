@@ -112,9 +112,7 @@
                                                     var tempSoh = _.get(_.find(
                                                         array,
                                                         function(item) {
-                                                            if (lineItem.lot) {
-                                                                return item.lotCode === lineItem.lot.lotCode;
-                                                            }
+                                                            return item.orderableId === lineItem.orderable.id;
                                                         }
                                                     ), 'stockOnHand', '');
                                                     lineItem.stockOnHand = tempSoh;
