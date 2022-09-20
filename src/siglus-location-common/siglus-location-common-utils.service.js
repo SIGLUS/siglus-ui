@@ -32,7 +32,7 @@
 
     function SiglusLocationCommonUtilsService() {
 
-        this.getOrderableLocationLotsMap = function(locations) {
+        this.getOrderableLocationLotsMap = function(locations, shouldKeepSoh0) {
             var result = {};
             _.forEach(locations, function(location) {
                 _.forEach(location.lots, function(lot) {
@@ -43,7 +43,15 @@
                     if (!result[lot.orderableId][location.locationCode]) {
                         result[lot.orderableId][location.locationCode] = [];
                     }
-                    if (lot.stockOnHand > 0) {
+                    if (shouldKeepSoh0) {
+                        result[lot.orderableId][location.locationCode].push({
+                            id: lot.lotId,
+                            lotCode: lot.lotCode,
+                            expirationDate: lot.expirationDate,
+                            stockOnHand: lot.stockOnHand,
+                            area: location.area
+                        });
+                    } else if (lot.stockOnHand > 0) {
                         result[lot.orderableId][location.locationCode].push({
                             id: lot.lotId,
                             lotCode: lot.lotCode,
@@ -58,7 +66,7 @@
             return result;
         };
 
-        this.getOrderableLotsLocationMap = function(locations) {
+        this.getOrderableLotsLocationMap = function(locations, shouldKeepSoh0) {
             var result = {};
             _.forEach(locations, function(location) {
                 _.forEach(location.lots, function(lot) {
@@ -70,8 +78,13 @@
                     if (!result[lot.orderableId][lot.lotId]) {
                         result[lot.orderableId][lot.lotId] = [];
                     }
-
-                    if (lot.stockOnHand > 0) {
+                    if (shouldKeepSoh0) {
+                        result[lot.orderableId][lot.lotId].push({
+                            id: location.locationId,
+                            area: location.area,
+                            locationCode: location.locationCode
+                        });
+                    } else if (lot.stockOnHand > 0) {
                         result[lot.orderableId][lot.lotId].push({
                             id: location.locationId,
                             area: location.area,

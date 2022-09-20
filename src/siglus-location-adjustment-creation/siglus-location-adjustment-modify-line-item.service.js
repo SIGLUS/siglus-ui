@@ -235,7 +235,7 @@
                         delete newItemCopy.location;
                         var lotOptions = SiglusLocationCommonUtilsService.getLotList(
                             newItemCopy,
-                            SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)
+                            SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true)
                         );
 
                         newItem.lotOptionsClone = _.clone(lotOptions);

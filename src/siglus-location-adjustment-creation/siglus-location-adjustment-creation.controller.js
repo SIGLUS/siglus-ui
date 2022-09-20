@@ -162,7 +162,7 @@
 
                     var lotOptions = SiglusLocationCommonUtilsService.getLotList(
                         firstRow,
-                        SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locationsInfo)
+                        SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locationsInfo, true)
                     );
                     firstRow.lotOptions = lotOptions;
                     firstRow.locationOptions = areaLocationInfo;
@@ -230,7 +230,6 @@
             if (lineItem.isKit) {
                 return;
             }
-            console.log(lineItem);
             if (_.get(lineItem, ['lot', 'id'])) {
                 lineItem.$errors.lotCodeInvalid =
                 lineItem.$errors.lotCodeInvalid === messageService.get('openlmisForm.required') ?
