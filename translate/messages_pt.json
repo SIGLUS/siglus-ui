@@ -2477,6 +2477,8 @@
   "locationManagement.title": "Gestão de localização",
   "locationMovement.noFilterData": "Nenhum produto foi encontrado",
   "locationMovement.addLocation": "Adicionar localização",
+  "locationMovement.confirm": "Confirme",
+
   "sohLocation.binCardForProductLevel": "Ficha de stock ${name} - Nível do produto",
   "sohLocation.binCardForLotLevel": "Ficha de stock ${name} - Nível do lote",
   "sohLocation.binCardForLocationLevel": "Ficha de stock ${name} - Nível de localização",
