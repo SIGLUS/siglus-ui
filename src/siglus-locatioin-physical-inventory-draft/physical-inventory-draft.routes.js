@@ -96,11 +96,10 @@
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
-                                                        r[c.locationCode] = angular.merge({
-                                                            values: c.lots
-                                                        }, {
+                                                        r[c.locationCode] = {
+                                                            values: c.lots,
                                                             area: c.area
-                                                        });
+                                                        };
                                                         return r;
                                                     }, {}
                                                 );
@@ -113,17 +112,17 @@
                                                     var tempSoh = _.get(_.find(
                                                         array,
                                                         function(item) {
-                                                            if (lineItem.lot) {
-                                                                return item.lotCode === lineItem.lot.lotCode;
-                                                            }
+                                                            return item.orderableId === lineItem.orderable.id;
                                                         }
                                                     ), 'stockOnHand', '');
                                                     lineItem.stockOnHand = tempSoh;
-                                                    lineItem.area = _.get(
-                                                        lotsDataByLocationMap,
-                                                        [lineItem.locationCode, 'area'],
-                                                        null
-                                                    );
+                                                    lineItem.area = lineItem.area ?
+                                                        lineItem.area :
+                                                        _.get(
+                                                            lotsDataByLocationMap,
+                                                            [lineItem.locationCode, 'area'],
+                                                            null
+                                                        );
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();
@@ -215,7 +214,6 @@
                                 orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
-
                         return groups;
                     })
                         .then(function(items) {

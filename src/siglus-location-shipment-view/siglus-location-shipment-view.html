@@ -118,8 +118,8 @@
             </td>
             <td>{{lineItem.orderedQuantity}}</td>
             <td>{{lineItem.partialFulfilledQuantity}}</td>
-            <td ng-if="vm.isShowSuggestedQuantity">{{ vm.orderableIdToSuggestedQuantity ? lineItem.suggestedQuantity : lineItem.orderedQuantity - lineItem.partialFulfilledQuantity }}</td>
-            <td ng-if="!vm.isShowSuggestedQuantity"></td>
+            <td ng-if="vm.isShowSuggestedQuantity && lineItem.isMainGroup">{{ vm.orderableIdToSuggestedQuantity ? lineItem.suggestedQuantity : lineItem.orderedQuantity - lineItem.partialFulfilledQuantity }}</td>
+            <td ng-if="!vm.isShowSuggestedQuantity || !lineItem.isMainGroup"></td>
             <td ng-if="vm.showEmptyBlock(lineItem, lineItems)">
                 {{vm.getFillQuantity(lineItems, index)}}
             </td>

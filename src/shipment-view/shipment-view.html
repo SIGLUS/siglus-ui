@@ -93,8 +93,8 @@
                 <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>
                 <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
                 <td>{{tableLineItem.partialFulfilledQuantity}}</td>
-                <td ng-if="vm.isShowSuggestedQuantity">{{ vm.orderableIdToSuggestedQuantity ? tableLineItem.suggestedQuantity : tableLineItem.getOrderQuantity(vm.showInDoses()) - tableLineItem.partialFulfilledQuantity }}</td>
-                <td ng-if="!vm.isShowSuggestedQuantity"></td>
+                <td ng-if="vm.isShowSuggestedQuantity && tableLineItem.isMainGroup">{{ vm.orderableIdToSuggestedQuantity ? tableLineItem.suggestedQuantity : tableLineItem.getOrderQuantity(vm.showInDoses()) - tableLineItem.partialFulfilledQuantity }}</td>
+                <td ng-if="!vm.isShowSuggestedQuantity || !tableLineItem.isMainGroup"></td>
                 <!-- #400: ends here-->
                 <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getFillQuantity()}}</td>
                 <td ng-if="tableLineItem.shipmentLineItem">

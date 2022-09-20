@@ -101,7 +101,7 @@
 
         this.showConfirmAndStartVirtualMovement = function() {
             loadingModalService.close();
-            return confirmService.confirm('locationMovement.upgradePopup')
+            return confirmService.confirm('locationMovement.upgradePopup', 'locationMovement.confirm')
                 .then(function() {
                     return service.startVirtualMovement();
                 });

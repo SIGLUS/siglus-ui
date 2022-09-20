@@ -317,11 +317,11 @@
 
         function doSave(facility, successMessage, errorMessage) {
             loadingModalService.open();
-            return new facilityService.update(vm.facility)
-                .then(function(facility) {
+            return new facilityService.update(facility)
+                .then(function(res) {
                     notificationService.success(successMessage);
                     goToFacilityList();
-                    return $q.resolve(facility);
+                    return $q.resolve(res);
                 })
                 .catch(function() {
                     notificationService.error(errorMessage);
@@ -466,11 +466,11 @@
                     ['adminFacilityView.close',
                         'adminFacilityView.confirm']
                 ).then(function() {
-                    vm.enableValue = !vm.enableValue;
-                    facility.enableLocationManagement = vm.enableValue;
+                    facility.enableLocationManagement = !vm.enableValue;
                     new locationManagementService
                         .update(vm.facility.id, facility, 'locationManagement')
                         .then(function() {
+                            vm.enableValue = !vm.enableValue;
                             notificationService.success(
                                 'adminFacilityView.disabledLocation'
                             );
@@ -488,11 +488,11 @@
                 return;
             }
             if (!enableValue && facility.hasSuccessUploadLocations) {
-                vm.enableValue = !vm.enableValue;
-                facility.enableLocationManagement = vm.enableValue;
+                facility.enableLocationManagement = !vm.enableValue;
                 new locationManagementService
-                    .update(vm.facility.id, facility, 'locationManagement')
+                    .update(vm.facility.id + 1, facility, 'locationManagement')
                     .then(function() {
+                        vm.enableValue = !vm.enableValue;
                         notificationService.success(
                             'adminFacilityView.enableLocation'
                         );
@@ -509,11 +509,11 @@
                     });
                 return;
             }
-            vm.enableValue = !vm.enableValue;
-            facility.enableLocationManagement = vm.enableValue;
+            facility.enableLocationManagement = !vm.enableValue;
             new locationManagementService
                 .update(vm.facility.id, facility, 'locationManagement')
                 .then(function() {
+                    vm.enableValue = !vm.enableValue;
                     notificationService.success(
                         'adminFacilityView.enableLocation'
                     );
