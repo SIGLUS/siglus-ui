@@ -2311,10 +2311,10 @@
   "physicalInventoryCreation.required": "Este campo é obrigatório",
   "physicalInventoryCreation.initialLabel": "A sua Unidade Sanitária ainda não fez inventário inicial, por favor insira o número de utilizadores para iniciar",
 
-  "physicalInventoryCreation.choose_an_option": "1. Choose an option",
-  "physicalInventoryCreation.input_user_number": "2. Input user number",
-  "physicalInventoryCreation.inventory_by_product": "Inventory by Product",
-  "physicalInventoryCreation.inventory_by_location": "Inventory by Location",
+  "physicalInventoryCreation.choose_an_option": "1. Seleccione uma opção",
+  "physicalInventoryCreation.input_user_number": "2. Insira o número do usuário",
+  "physicalInventoryCreation.inventory_by_product": "Inventário por produto",
+  "physicalInventoryCreation.inventory_by_location": "Inventário por localização",
   "physicalInventoryCreation.option_must_be_choosed": "Option must be choosed.",
   
   "stockIssueInitialModal.title": "Insira informação do aviamento",
