@@ -682,6 +682,13 @@
 
             });
         };
+
+        $scope.$on('$stateChangeStart', function(event, toState) {
+            if (toState.name === 'openlmis.locationManagement.movement' && vm.isVirtual) {
+                event.preventDefault();
+                loadingModalService.close();
+            }
+        });
     }
 
 })();
