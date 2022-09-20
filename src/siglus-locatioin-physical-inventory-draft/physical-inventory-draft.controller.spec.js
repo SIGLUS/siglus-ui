@@ -15,7 +15,7 @@
 
 describe('LocationPhysicalInventoryDraftController', function() {
 
-    var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService, draftFactory,
+    var vm, $q, $rootScope, scope, state, stateParams, addProductsModalService,
         chooseDateModalService, facility, program, draft, lineItem, lineItem1, lineItem2, lineItem3,
         lineItem4, lineItem5, reasons, physicalInventoryService, stockmanagementUrlFactory, accessTokenFactory,
         $window, $controller, confirmService, PhysicalInventoryLineItemDataBuilder, OrderableDataBuilder,
@@ -69,7 +69,7 @@ describe('LocationPhysicalInventoryDraftController', function() {
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
                 'submitPhysicalInventory', 'deleteDraft'
             ]);
-            draftFactory = $injector.get('physicalInventoryFactory');
+            // draftFactory = $injector.get('physicalInventoryFactory');
 
             stockmanagementUrlFactory = jasmine.createSpy();
             stockmanagementUrlFactory.andCallFake(function(url) {
@@ -253,18 +253,18 @@ describe('LocationPhysicalInventoryDraftController', function() {
         // SIGLUS-REFACTOR: ends here
     });
 
-    it('should save draft', function() {
-        spyOn(draftFactory, 'saveDraft');
-        draftFactory.saveDraft.andReturn($q.defer().promise);
-        $rootScope.$apply();
+    // it('should save draft', function() {
+    //     spyOn(draftFactory, 'saveDraft');
+    //     draftFactory.saveDraft.andReturn($q.defer().promise);
+    //     $rootScope.$apply();
 
-        vm.saveDraft();
-        // SIGLUS-REFACTOR: starts here
-        draft.summaries = [];
-        draft.subDraftIds = subDraftIds;
-        // SIGLUS-REFACTOR: ends here
-        expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
-    });
+    //     vm.saveDraft();
+    //     // SIGLUS-REFACTOR: starts here
+    //     draft.summaries = [];
+    //     draft.subDraftIds = subDraftIds;
+    //     // SIGLUS-REFACTOR: ends here
+    //     expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
+    // });
 
     it('should highlight empty quantities before submit', function() {
         // SIGLUS-REFACTOR: ends here

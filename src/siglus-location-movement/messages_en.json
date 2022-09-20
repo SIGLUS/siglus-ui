@@ -16,5 +16,6 @@
   "locationMovement.duplicateDesLocation": "The location under the same lot cannot be repeated, please select a new one",
   "locationMovement.upgradePopup": "Your account has been updated the location feature, please move your products to the actual locations first. It may take some time to load the products.",
   "locationMovement.noFilterData": "No products found.",
-  "locationMovement.addLocation": "Add Location"
+  "locationMovement.addLocation": "Add Location",
+  "locationMovement.confirm": "Confirm"
 }

@@ -62,9 +62,11 @@
                             type="date" ng-model="lineItem.lot.expirationDate" ng-disabled="lineItem.lot.id" />
                     </td>
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                    openlmis-invalid="{{lineItem.$errors.locationError | message}}"
+                    class="digit-cell"
+                    >
                         <select ng-model="lineItem.location" no-auto-select="true"
-                            openlmis-invalid="{{lineItem.$errors.locationError | message}}"
                             ng-options="location.locationCode for location in lineItem.locationOptions track by location.locationCode"
                             ng-change="vm.changeLocation(lineItem, lineItems)">
                         </select>
@@ -72,10 +74,10 @@
                     <td class="text-align-right">{{vm.getStockOnHand(lineItem, lineItems, index)}}</td>
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
                     <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
-                        openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}"
+                        openlmis-invalid="{{lineItem.$errors.reasonInvalid | message}}"
                         class="digit-cell">
                         <select ng-model="lineItem.reason"
-                            ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
+                            ng-change="vm.validateReason(lineItem,lineItems);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
                             ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.orderable.programs) track by reason.id"
                             autofocus>
                         </select>

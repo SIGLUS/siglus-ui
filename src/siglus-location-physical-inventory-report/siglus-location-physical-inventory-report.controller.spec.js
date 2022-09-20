@@ -26,77 +26,75 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
     }
 
     function prepareData() {
-        draft = {
-            Default: [
-                [
-                    {
-                        area: null,
-                        id: '110',
-                        locationCode: null,
-                        lot: {
-                            lotCode: 'TEST-110',
-                            active: true,
-                            tradeItemId: '111'
-                        },
-                        lotOptions: [],
-                        orderable: {
-                            productCode: '08D01',
-                            fullProductName: 'testName'
-                        },
-                        programId: '00000000-0000-0000-0000-000000000000',
-                        quantity: null,
-                        reasonFreeText: null,
-                        stockAdjustments: [],
-                        stockCardId: 'stock-test-110',
-                        stockOnHand: 123
+        draft = [
+            [
+                {
+                    area: null,
+                    id: '110',
+                    locationCode: null,
+                    lot: {
+                        lotCode: 'TEST-110',
+                        active: true,
+                        tradeItemId: '111'
                     },
-                    {
-                        area: null,
-                        id: '110',
-                        locationCode: null,
-                        lot: {
-                            lotCode: 'TEST-110',
-                            active: true,
-                            tradeItemId: '111'
-                        },
-                        lotOptions: [],
-                        orderable: {
-                            productCode: '08D01',
-                            fullProductName: 'testName'
-                        },
-                        programId: '00000000-0000-0000-0000-000000000000',
-                        quantity: null,
-                        reasonFreeText: null,
-                        stockAdjustments: [],
-                        stockCardId: 'stock-test-110',
-                        stockOnHand: 123
-                    }
-                ],
-                [
-                    {
-                        area: null,
-                        id: '110',
-                        locationCode: null,
-                        lot: {
-                            lotCode: 'TEST-110',
-                            active: true,
-                            tradeItemId: '111'
-                        },
-                        lotOptions: [],
-                        orderable: {
-                            productCode: '08D01',
-                            fullProductName: 'testName'
-                        },
-                        programId: '00000000-0000-0000-0000-000000000000',
-                        quantity: null,
-                        reasonFreeText: null,
-                        stockAdjustments: [],
-                        stockCardId: 'stock-test-110',
-                        stockOnHand: 123
-                    }
-                ]
+                    lotOptions: [],
+                    orderable: {
+                        productCode: '08D01',
+                        fullProductName: 'testName'
+                    },
+                    programId: '00000000-0000-0000-0000-000000000000',
+                    quantity: null,
+                    reasonFreeText: null,
+                    stockAdjustments: [],
+                    stockCardId: 'stock-test-110',
+                    stockOnHand: 123
+                },
+                {
+                    area: null,
+                    id: '110',
+                    locationCode: null,
+                    lot: {
+                        lotCode: 'TEST-110',
+                        active: true,
+                        tradeItemId: '111'
+                    },
+                    lotOptions: [],
+                    orderable: {
+                        productCode: '08D01',
+                        fullProductName: 'testName'
+                    },
+                    programId: '00000000-0000-0000-0000-000000000000',
+                    quantity: null,
+                    reasonFreeText: null,
+                    stockAdjustments: [],
+                    stockCardId: 'stock-test-110',
+                    stockOnHand: 123
+                }
+            ],
+            [
+                {
+                    area: null,
+                    id: '110',
+                    locationCode: null,
+                    lot: {
+                        lotCode: 'TEST-110',
+                        active: true,
+                        tradeItemId: '111'
+                    },
+                    lotOptions: [],
+                    orderable: {
+                        productCode: '08D01',
+                        fullProductName: 'testName'
+                    },
+                    programId: '00000000-0000-0000-0000-000000000000',
+                    quantity: null,
+                    reasonFreeText: null,
+                    stockAdjustments: [],
+                    stockCardId: 'stock-test-110',
+                    stockOnHand: 123
+                }
             ]
-        };
+        ];
         program = {
             code: 'ALL',
             id: '00000000-0000-0000-0000-000000000000',
