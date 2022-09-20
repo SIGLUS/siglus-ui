@@ -88,7 +88,7 @@
             $scope.$watch(function() {
                 return vm.addedLineItems;
             }, function(newValue, oldValue) {
-                $scope.needToConfirm = !angular.equals(newValue, oldValue);
+                $scope.needToConfirm = !angular.equals(newValue, oldValue) && !vm.isVirtual;
             }, true);
 
             confirmDiscardService.register($scope, 'openlmis.locationManagement.movement.creation');
