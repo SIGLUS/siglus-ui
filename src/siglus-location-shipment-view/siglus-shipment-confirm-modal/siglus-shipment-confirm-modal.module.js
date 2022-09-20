@@ -14,32 +14,15 @@
  */
 
 (function() {
-
     'use strict';
 
     /**
-     * @module shipment-view
-     *
-     * Provides Shipment Draft view state and controller.
-     */
-    angular.module('shipment-view', [
-        'fulfillment',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-table',
-        'openlmis-date',
-        'stock-card-summary',
-        'stock-constants',
-        'shipment',
-        'order',
-        'ui.router',
-        'openlmis-state-tracker',
-        'stock-card',
-        // SIGLUS-REFACTOR: starts here
-        'select-products-modal',
-        'siglus-order-status-messages',
-        'siglus-shipment-confirm-modal'
-        // SIGLUS-REFACTOR: starts here
-    ]);
+   * @module siglus-location-physical-inventory-list
+   *
+   * @description
+   * Responsible for physical inventory list screen.
+   */
+    angular.module('siglus-shipment-confirm-modal', [
 
+    ]);
 })();

@@ -102,12 +102,14 @@
          *
          * @return {Promise} the promise resolved when confirm is successful, rejected otherwise
          */
-        function confirm() {
+        function confirm(signature) {
             if (this.isInvalid() || !this.isEditable() || !this.canBeConfirmed()) {
                 return $q.reject();
             }
 
-            return this.repository.create(this);
+            return this.repository.create(angular.extend({
+                shipment: this
+            }, signature));
         }
 
         // #400: Facility user partially fulfill an order and create sub-order for an requisition
@@ -122,14 +124,16 @@
          *
          * @return {Promise} the promise resolved when create is successful, rejected otherwise
          */
-        function createSuborder() {
+        function createSuborder(signature) {
             if (this.isInvalid() || !this.isEditable() || !this.canBeConfirmed()) {
                 return $q.reject();
             }
 
             return resource.create({
                 isSubOrder: true
-            }, this).$promise;
+            }, angular.extend({
+                shipment: this
+            }, signature)).$promise;
         }
         // #400: ends here
 

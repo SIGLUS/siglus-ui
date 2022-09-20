@@ -40,7 +40,8 @@
         'select-products-modal',
         'siglus-order-status-messages',
         'stock-orderable-group',
-        'siglus-location-common'
+        'siglus-location-common',
+        'siglus-shipment-confirm-modal'
         // SIGLUS-REFACTOR: starts here
     ]);
 
