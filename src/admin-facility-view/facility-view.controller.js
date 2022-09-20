@@ -466,11 +466,11 @@
                     ['adminFacilityView.close',
                         'adminFacilityView.confirm']
                 ).then(function() {
+                    facility.enableLocationManagement = !vm.enableValue;
                     new locationManagementService
                         .update(vm.facility.id, facility, 'locationManagement')
                         .then(function() {
                             vm.enableValue = !vm.enableValue;
-                            facility.enableLocationManagement = vm.enableValue;
                             notificationService.success(
                                 'adminFacilityView.disabledLocation'
                             );
@@ -488,11 +488,11 @@
                 return;
             }
             if (!enableValue && facility.hasSuccessUploadLocations) {
+                facility.enableLocationManagement = !vm.enableValue;
                 new locationManagementService
-                    .update(vm.facility.id, facility, 'locationManagement')
+                    .update(vm.facility.id + 1, facility, 'locationManagement')
                     .then(function() {
                         vm.enableValue = !vm.enableValue;
-                        facility.enableLocationManagement = vm.enableValue;
                         notificationService.success(
                             'adminFacilityView.enableLocation'
                         );
@@ -509,11 +509,11 @@
                     });
                 return;
             }
+            facility.enableLocationManagement = !vm.enableValue;
             new locationManagementService
                 .update(vm.facility.id, facility, 'locationManagement')
                 .then(function() {
                     vm.enableValue = !vm.enableValue;
-                    facility.enableLocationManagement = vm.enableValue;
                     notificationService.success(
                         'adminFacilityView.enableLocation'
                     );
