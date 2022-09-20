@@ -2309,6 +2309,14 @@
   "physicalInventoryCreation.confirm": "Confirme",
   "physicalInventoryCreation.conflictTips": "Um processo de inventário já foi iniciado, termine-o primeiro.",
   "physicalInventoryCreation.required": "Este campo é obrigatório",
+  "physicalInventoryCreation.initialLabel": "A sua Unidade Sanitária ainda não fez inventário inicial, por favor insira o número de utilizadores para iniciar",
+
+  "physicalInventoryCreation.choose_an_option": "1. Choose an option",
+  "physicalInventoryCreation.input_user_number": "2. Input user number",
+  "physicalInventoryCreation.inventory_by_product": "Inventory by Product",
+  "physicalInventoryCreation.inventory_by_location": "Inventory by Location",
+  "physicalInventoryCreation.option_must_be_choosed": "Option must be choosed.",
+  
   "stockIssueInitialModal.title": "Insira informação do aviamento",
   "stockIssueInitialModal.issueTo": "Aviar para",
   "stockIssueInitialModal.documentationNo": "Número de documento",
@@ -2348,7 +2356,6 @@
   "issueDraft.selectFirstForReceive": "Crie um rascunho para iniciar a recepção",
   "stockIssueInitialModal.titleForReceive": "Por favor, insira as informações de recepçao.",
   "analyticsReportMetabase.historicalData.title": "Relatório de dados históricos",
-  "physicalInventoryCreation.initialLabel": "A sua Unidade Sanitária ainda não fez inventário inicial, por favor insira o número de utilizadores para iniciar",
   "analyticsReportMetabase.malariaConsumptionData.title": "Relatório de dados de consumo de Malária",
   "mmia.title": "MMIA",
   "mmia.republic_of_mozambique": "REPÚBLICA DE MOÇAMBIQUE",
