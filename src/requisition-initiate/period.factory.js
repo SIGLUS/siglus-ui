@@ -86,7 +86,8 @@
                 activeForRnr: (emergency || id === 0),
                 rnrId: (period.requisitionId) ? period.requisitionId : null,
                 // SIGLUS-REFACTOR: starts here
-                currentPeriodRegularRequisitionAuthorized: period.currentPeriodRegularRequisitionAuthorized
+                currentPeriodRegularRequisitionAuthorized: period.currentPeriodRegularRequisitionAuthorized,
+                id: period.id
                 // SIGLUS-REFACTOR: ends here
             };
         }
