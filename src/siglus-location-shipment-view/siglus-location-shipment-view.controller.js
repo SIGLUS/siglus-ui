@@ -92,7 +92,7 @@
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = displayTableLineItems;
             vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
-                setSuggestedQuantiry(displayTableLineItems) :
+                setSuggestedQuantity(displayTableLineItems) :
                 displayTableLineItems;
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
@@ -103,7 +103,7 @@
             $stateParams.displayTableLineItems = vm.displayTableLineItems;
         }
 
-        function setSuggestedQuantiry(items) {
+        function setSuggestedQuantity(items) {
             var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
             _.forEach(items, function(item) {
                 _.forEach(item, function(lineItem) {
