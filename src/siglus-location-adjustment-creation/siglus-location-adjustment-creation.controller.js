@@ -214,10 +214,9 @@
             var lineItem = data.lineItem;
             var lineItems = data.lineItems;
 
-            emitQuantityChange(lineItem, lineItems);
             vm.validateLot(lineItem);
             vm.validateLotDate(lineItem);
-
+            emitQuantityChange(lineItem, lineItems);
             if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT) {
 
                 lineItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
@@ -231,20 +230,19 @@
             if (lineItem.isKit) {
                 return;
             }
-            if (lineItem.lotId) {
-                lineItem.$errors.lotCodeInvalid
-                = lineItem.$errors.lotCodeInvalid
-                        ? lineItem.$errors.lotCodeInvalid
-                        : false;
+            console.log(lineItem);
+            if (_.get(lineItem, ['lot', 'id'])) {
+                lineItem.$errors.lotCodeInvalid =
+                lineItem.$errors.lotCodeInvalid === messageService.get('openlmisForm.required') ?
+                    false : lineItem.$errors.lotCodeInvalid;
             } else if (hasLot(lineItem)) {
                 if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
                 } else {
-                    lineItem.$errors.lotCodeInvalid
-                    =  lineItem.$errors.lotCodeInvalid
-                            ? lineItem.$errors.lotCodeInvalid
-                            : false;
+                    lineItem.$errors.lotCodeInvalid =
+                    lineItem.$errors.lotCodeInvalid === messageService.get('openlmisForm.required') ?
+                        false : lineItem.$errors.lotCodeInvalid;
                 }
             } else {
                 lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
@@ -301,7 +299,7 @@
         }
 
         vm.changeLocation = function(lineItem, lineItems) {
-            lineItem.$errors.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : '';
+            lineItem.$errors.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : false;
             emitQuantityChange(lineItem, lineItems);
 
             if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT) {
@@ -402,18 +400,18 @@
                     if (!item.isKit) {
                         item.$errors.lotCodeInvalid =
                         item.$errors.lotCodeInvalid === messageService.get(duplicateErrorMessage)
-                            ? false
+                            ? vm.validateLot(item)
                             : item.$errors.lotCodeInvalid;
                     }
 
                     item.$errors.locationError =
                     item.$errors.locationError === duplicateErrorMessage
-                        ? false
-                        : item.$errors.lotCodeInvalid;
+                        ? _.isEmpty(item.location) ? 'openlmisForm.required' : false
+                        : item.$errors.locationError;
                     item.$errors.reasonInvalid =
                     item.$errors.reasonInvalid === duplicateErrorMessage
-                        ? false
-                        : item.$errors.lotCodeInvalid;
+                        ? _.isEmpty(item.reason) ? 'openlmisForm.required' : false
+                        : item.$errors.reasonInvalid;
                 }
             });
         };
@@ -466,11 +464,11 @@
 
         function validateRequiredFields(lineItem) {
             if (_.isEmpty(_.get(lineItem.lot, 'lotCode')) && !lineItem.isKit) {
-                lineItem.$errors.lotCodeInvalid = 'openlmisForm.required';
+                lineItem.$errors.lotCodeInvalid =  messageService.get('openlmisForm.required');
             }
 
             if (_.isEmpty(_.get(lineItem.lot, 'expirationDate')) && !lineItem.isKit) {
-                lineItem.$errors.lotDateInvalid = 'openlmisForm.required';
+                lineItem.$errors.lotDateInvalid =  messageService.get('openlmisForm.required');
             }
 
             if (_.isEmpty(lineItem.location)) {
