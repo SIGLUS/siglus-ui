@@ -357,7 +357,7 @@
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
-            return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
+            return physicalInventoryService.saveDraftWithLocation(_.extend({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
             })).then(function() {
@@ -564,7 +564,7 @@
             return lineItem.$errors.quantityInvalid;
         };
         vm.print = function() {
-            localStorageService.add('physicalInventoryCategories', JSON.stringify(vm.groupedCategories));
+            localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
             var PRINT_URL = $window.location.href.split('/?')[0]
                 + '/draft/report'
                 + '?'
@@ -720,7 +720,6 @@
                 saveDraft(true);
             }
             vm.allLocationAreaMap = allLocationAreaMap;
-
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {

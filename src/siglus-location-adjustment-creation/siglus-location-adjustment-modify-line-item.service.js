@@ -111,6 +111,9 @@
                 $errors: {},
                 orderableId: lineItem.orderableId,
                 orderable: lineItem.orderable,
+                locationsInfo: lineItem.locationsInfo,
+                lotOptionsClone: lineItem.lotOptionsClone,
+                locationOptionsClone: lineItem.locationOptionsClone,
                 lot: null,
                 stockOnHand: 0,
                 isKit: lineItem.isKit,
@@ -232,7 +235,7 @@
                         delete newItemCopy.location;
                         var lotOptions = SiglusLocationCommonUtilsService.getLotList(
                             newItemCopy,
-                            SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)
+                            SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true)
                         );
 
                         newItem.lotOptionsClone = _.clone(lotOptions);
@@ -256,58 +259,28 @@
                         newItem.reason = _.find(filteredReasons, function(reason) {
                             return reason.id === draftLineItem.reasonId;
                         });
-                        var locationsGroup = [], lotsGroup = [];
+
+                        if (newItem.locationCode) {
+                            newItem.location = _.find(areaLocationInfo, function(item) {
+                                return item.locationCode === newItem.locationCode;
+                            });
+                        }
 
                         if (_.get(newItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
-
-                            var locationsInfoCopy =  _.filter(angular.copy(locationsInfo), function(locationsInfoItem) {
-                                locationsInfoItem.lots = _.filter(locationsInfoItem.lots, function(
-                                    lotItem
-                                ) {
-                                    return lotItem.stockOnHand > 0;
-                                });
-                                return locationsInfoItem.lots.length > 0;
-                            });
-                            _.each(locationsInfoCopy, function(item) {
-                                var newLocation = {};
-                                newLocation.locationCode = item.locationCode;
-                                newLocation.area = item.area;
-                                locationsGroup.push(newLocation);
-                                _.each(_.get(item, ['lots']), function(lotItem) {
-                                    lotsGroup.push(lotItem);
-                                });
-                            });
-
-                            lotsGroup = _.uniq(lotsGroup, function(lotItem) {
-                                return lotItem.lotId;
-                            });
-
-                            addIdToLotItem(lotsGroup);
-
-                            locationsGroup = _.uniq(locationsGroup, function(location) {
-                                return location.locationCode;
-                            });
-
-                            newItem.lotOptions = lotsGroup;
-                            newItem.locationOptions = locationsGroup;
-
-                            if (newItem.locationCode) {
-                                newItem.location = _.find(locationsGroup, function(item) {
-                                    return item.locationCode === newItem.locationCode;
-                                });
-                            }
-                            resolve(newItem);
-
+                            newItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
+                                newItem,
+                                SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(newItem.locationsInfo)
+                            );
+                            newItem.lotOptions = SiglusLocationCommonUtilsService.getLotList(
+                                newItem,
+                                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(newItem.locationsInfo)
+                            );
                         } else {
                             newItem.lotOptions = lotOptions;
                             newItem.locationOptions = areaLocationInfo;
-                            if (newItem.locationCode) {
-                                newItem.location = _.find(areaLocationInfo, function(item) {
-                                    return item.locationCode === newItem.locationCode;
-                                });
-                            }
-                            resolve(newItem);
                         }
+
+                        resolve(newItem);
                     });
                 });
 
@@ -332,12 +305,6 @@
 
             });
         };
-
-        function addIdToLotItem(lotOptions) {
-            _.each(lotOptions, function(item) {
-                item.id = item.lotId;
-            });
-        }
 
         function getMapOfIdAndOrderable(orderableGroups) {
             var mapOfIdAndOrderable = {};

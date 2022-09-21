@@ -109,7 +109,7 @@
                     locationCode: _.get(lineItem.location, 'locationCode'),
                     reasonId: lineItem.reason ? lineItem.reason.id : null,
                     reasonFreeText: lineItem.reasonFreeText ? lineItem.reasonFreeText : null,
-                    documentNumber: lineItem.documentationNo,
+                    documentationNo: lineItem.documentationNo ? lineItem.documentationNo : null,
                     quantity: lineItem.quantity,
                     stockOnHand: lineItem.stockOnHand,
                     programId: lineItem.programId,

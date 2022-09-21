@@ -30,11 +30,11 @@
 
     controller.$inject = [
         'orderingFacilities', 'programs', 'loadingModalService', 'orders',
-        '$stateParams', '$state', 'ORDER_STATUS'
+        '$stateParams', '$state', 'ORDER_STATUS', 'homeFacility'
     ];
 
     function controller(orderingFacilities, programs, loadingModalService, orders,
-                        $stateParams, $state, ORDER_STATUS) {
+                        $stateParams, $state, ORDER_STATUS, homeFacility) {
 
         var vm = this;
 
@@ -62,6 +62,8 @@
          * The list of all programs available to the user.
          */
         vm.programs = undefined;
+
+        vm.enableLocationModule = _.get(homeFacility, 'enableLocationManagement');
 
         /**
          * @ngdoc property

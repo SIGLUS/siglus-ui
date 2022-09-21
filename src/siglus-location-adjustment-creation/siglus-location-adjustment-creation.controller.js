@@ -104,6 +104,7 @@
             vm.keyword = $stateParams.keyword;
             filterOrderableGroups();
             updateStateParams();
+            validateForm(true);
 
             $scope.$watch(function() {
                 return vm.addedLineItems;
@@ -159,15 +160,11 @@
                     locations = locations.concat(locationsInfo);
                     var firstRow = siglusLocationAdjustmentModifyLineItemService.getAddProductRow(orderable);
 
-                    var lotsGroup = [];
-                    _.each(locationsInfo, function(item) {
-                        lotsGroup = lotsGroup.concat(item.lots);
-                    });
-                    lotsGroup = _.uniq(lotsGroup, function(lot) {
-                        return lot.lotId;
-                    });
-                    addIdToLotItem(lotsGroup);
-                    firstRow.lotOptions = lotsGroup;
+                    var lotOptions = SiglusLocationCommonUtilsService.getLotList(
+                        firstRow,
+                        SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locationsInfo, true)
+                    );
+                    firstRow.lotOptions = lotOptions;
                     firstRow.locationOptions = areaLocationInfo;
                     firstRow.locationsInfo = locationsInfo;
                     firstRow.lotOptionsClone = _.clone(firstRow.lotOptions);
@@ -217,10 +214,11 @@
             var lineItem = data.lineItem;
             var lineItems = data.lineItems;
 
-            emitQuantityChange(lineItem, lineItems);
             vm.validateLot(lineItem);
             vm.validateLotDate(lineItem);
+            emitQuantityChange(lineItem, lineItems);
             if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT) {
+
                 lineItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
                     lineItem,
                     SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(lineItem.locationsInfo)
@@ -232,19 +230,24 @@
             if (lineItem.isKit) {
                 return;
             }
-            if (lineItem.lotId) {
-                lineItem.$errors.lotCodeInvalid = false;
+            if (_.get(lineItem, ['lot', 'id'])) {
+                lineItem.$errors.lotCodeInvalid =
+                lineItem.$errors.lotCodeInvalid === messageService.get('openlmisForm.required') ?
+                    false : lineItem.$errors.lotCodeInvalid;
             } else if (hasLot(lineItem)) {
                 if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid =
                         messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
                 } else {
-                    lineItem.$errors.lotCodeInvalid = false;
+                    lineItem.$errors.lotCodeInvalid =
+                    lineItem.$errors.lotCodeInvalid === messageService.get('openlmisForm.required') ?
+                        false : lineItem.$errors.lotCodeInvalid;
                 }
             } else {
                 lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
             }
             return lineItem;
+
         };
 
         vm.validateLotDate = function(lineItem) {
@@ -295,7 +298,7 @@
         }
 
         vm.changeLocation = function(lineItem, lineItems) {
-            lineItem.$errors.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : '';
+            lineItem.$errors.locationError = _.isEmpty(lineItem.location) ? 'openlmisForm.required' : false;
             emitQuantityChange(lineItem, lineItems);
 
             if (_.get(lineItem, ['reason', 'reasonType'], null) === REASON_TYPES.DEBIT) {
@@ -329,6 +332,7 @@
         vm.changeQuantity = function(lineItem, lineItems) {
             var isNumberEmpty = _.isNumber(lineItem.quantity) ? lineItem.quantity < 0 : true;
             lineItem.$errors.quantityInvalid = isNumberEmpty ? messageService.get('openlmisForm.required') : '';
+            vm.validateDuplicateLineItem(lineItems);
             if (!lineItem.$errors.quantityInvalid) {
                 vm.validateQuantity(lineItems);
             }
@@ -371,20 +375,43 @@
                 var filterLineItems = _.filter(lineItems, function(data) {
                     if (item.isKit) {
                         return item.location
+                        && item.reason
                         && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
                         && _.get(item, ['reason', 'id'], null) === _.get(data, ['reason', 'id'], null);
                     }
                     return item.lot
                     && item.location
+                    && item.reason
                     && _.get(item, ['lot', 'lotCode'], null) === _.get(data.lot, 'lotCode', null)
                     && _.get(item, ['location', 'locationCode'], null) === _.get(data.location, 'locationCode')
                     && _.get(item, ['reason', 'id'], null) === _.get(data, ['reason', 'id'], null);
                 });
+                var duplicateErrorMessage = 'stockAdjustmentCreationLocation.duplicateError';
 
                 if (filterLineItems.length > 1) {
-                    item.$errors.locationError = 'locationMovement.duplicateDesLocation';
-                }
+                    if (!item.isKit) {
+                        item.$errors.lotCodeInvalid = messageService.get(duplicateErrorMessage);
+                    }
 
+                    item.$errors.locationError = duplicateErrorMessage;
+                    item.$errors.reasonInvalid = duplicateErrorMessage;
+                } else {
+                    if (!item.isKit) {
+                        item.$errors.lotCodeInvalid =
+                        item.$errors.lotCodeInvalid === messageService.get(duplicateErrorMessage)
+                            ? vm.validateLot(item)
+                            : item.$errors.lotCodeInvalid;
+                    }
+
+                    item.$errors.locationError =
+                    item.$errors.locationError === duplicateErrorMessage
+                        ? _.isEmpty(item.location) ? 'openlmisForm.required' : false
+                        : item.$errors.locationError;
+                    item.$errors.reasonInvalid =
+                    item.$errors.reasonInvalid === duplicateErrorMessage
+                        ? _.isEmpty(item.reason) ? 'openlmisForm.required' : false
+                        : item.$errors.reasonInvalid;
+                }
             });
         };
 
@@ -436,11 +463,11 @@
 
         function validateRequiredFields(lineItem) {
             if (_.isEmpty(_.get(lineItem.lot, 'lotCode')) && !lineItem.isKit) {
-                lineItem.$errors.lotCodeInvalid = 'openlmisForm.required';
+                lineItem.$errors.lotCodeInvalid =  messageService.get('openlmisForm.required');
             }
 
             if (_.isEmpty(_.get(lineItem.lot, 'expirationDate')) && !lineItem.isKit) {
-                lineItem.$errors.lotDateInvalid = 'openlmisForm.required';
+                lineItem.$errors.lotDateInvalid =  messageService.get('openlmisForm.required');
             }
 
             if (_.isEmpty(lineItem.location)) {
@@ -457,14 +484,16 @@
 
         }
 
-        function validateForm() {
+        function validateForm(skipRequired) {
             _.forEach(vm.addedLineItems, function(lineItems) {
                 _.forEach(lineItems, function(lineItem, index) {
                     lineItem.$errors = {};
                     if (lineItems.length > 1 && index === 0) {
                         return;
                     }
-                    validateRequiredFields(lineItem);
+                    if (!skipRequired) {
+                        validateRequiredFields(lineItem);
+                    }
                     vm.validateQuantity(lineItems);
                     vm.validateDuplicateLineItem(lineItems);
                 });
@@ -529,44 +558,22 @@
                 .value();
         }
 
-        vm.validateReason = function(lineItem) {
-            lineItem.lotOptions = _.clone(lineItem.lotOptionsClone);
-            lineItem.locationOptions = _.clone(lineItem.locationOptionsClone);
-            lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason);
-            var locationsGroup = [], lotsGroup = [];
+        vm.validateReason = function(lineItem, lineItems) {
+            lineItem.$errors.reasonInvalid = isEmpty(lineItem.reason) ? 'openlmisForm.required' : '';
             if (_.get(lineItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
-                var locationsInfoCopy = _.filter(angular.copy(lineItem.locationsInfo), function(locationsInfoItem) {
-                    locationsInfoItem.lots = _.filter(locationsInfoItem.lots, function(
-                        lotItem
-                    ) {
-                        return lotItem.stockOnHand > 0;
-                    });
-                    return locationsInfoItem.lots.length > 0;
-                });
-                _.each(locationsInfoCopy, function(item) {
-                    var newLocation = {};
-                    newLocation.locationCode = item.locationCode;
-                    newLocation.area = item.area;
-                    locationsGroup.push(newLocation);
-
-                    _.each(_.get(item, ['lots']), function(lot) {
-                        lotsGroup.push(lot);
-                    });
-                });
-
-                lotsGroup = _.uniq(lotsGroup, function(lot) {
-                    return lot.lotId;
-                });
-
-                locationsGroup = _.uniq(locationsGroup, function(location) {
-                    return location.locationCode;
-                });
-
-                addIdToLotItem(lotsGroup);
-
-                lineItem.lotOptions = lotsGroup;
-                lineItem.locationOptions = locationsGroup;
+                lineItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
+                    lineItem,
+                    SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(lineItem.locationsInfo)
+                );
+                lineItem.lotOptions = SiglusLocationCommonUtilsService.getLotList(
+                    lineItem,
+                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(lineItem.locationsInfo)
+                );
+            } else {
+                lineItem.lotOptions = _.clone(lineItem.lotOptionsClone);
+                lineItem.locationOptions = _.clone(lineItem.locationOptionsClone);
             }
+            vm.validateDuplicateLineItem(lineItems);
         };
 
         // vm.validateReasonFreeText = function(lineItem) {
@@ -587,12 +594,6 @@
                 return sum + (item.quantity || 0);
             }, 0);
         };
-
-        function addIdToLotItem(lotOptions) {
-            _.each(lotOptions, function(item) {
-                item.id = item.lotId;
-            });
-        }
 
         function isEmpty(value) {
             return _.isUndefined(value) || _.isNull(value) || value === '';
@@ -650,7 +651,6 @@
                     });
 
             } else {
-                vm.cancelFilter();
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };

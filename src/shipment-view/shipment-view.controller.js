@@ -121,13 +121,13 @@
             vm.order = updatedOrder;
             vm.shipment = shipment;
             vm.tableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
-                setSuggestedQuantiry(tableLineItems) :
+                setSuggestedQuantity(tableLineItems) :
                 tableLineItems;
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
         }
 
-        function setSuggestedQuantiry(items) {
+        function setSuggestedQuantity(items) {
             var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
             _.forEach(items, function(item) {
                 item.suggestedQuantity =

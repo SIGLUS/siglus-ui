@@ -14,27 +14,15 @@
  */
 
 (function() {
-
     'use strict';
 
     /**
-     * @module order-fulfillment
-     *
-     * Provides Order Fulfillment pages.
-     */
-    angular.module('siglus-location-order-fulfillment', [
-        'openlmis-date',
-        'openlmis-facility',
-        'openlmis-i18n',
-        'openlmis-pagination',
-        'openlmis-table',
-        'order',
-        'shipment-view',
-        'ui.router',
-        // SIGLUS-REFACTOR: starts here
-        'siglus-order-status-messages',
-        // SIGLUS-REFACTOR: starts here,
-        'siglus-location-management'
-    ]);
+   * @module siglus-location-physical-inventory-list
+   *
+   * @description
+   * Responsible for physical inventory list screen.
+   */
+    angular.module('siglus-shipment-confirm-modal', [
 
+    ]);
 })();
