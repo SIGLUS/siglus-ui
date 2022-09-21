@@ -202,22 +202,22 @@ describe('SiglusAddProductsModalWithLocationController', function() {
 
     describe('orderableSelectionChanged', function() {
 
-        it('should unselect lot', function() {
-            vm.selectedLot = vm.items[0].lot;
+        // it('should unselect lot', function() {
+        //     vm.selectedLot = vm.items[0].lot;
 
-            vm.orderableSelectionChanged();
+        //     vm.orderableSelectionChanged();
 
-            expect(vm.selectedLot).toBe(null);
-        });
+        //     expect(vm.selectedLot).toBe(null);
+        // });
 
-        it('should clear form', function() {
-            vm.selectedLot = vm.items[0].lot;
+        // it('should clear form', function() {
+        //     vm.selectedLot = vm.items[0].lot;
 
-            vm.orderableSelectionChanged();
+        //     vm.orderableSelectionChanged();
 
-            expect(scope.productForm.$setPristine).toHaveBeenCalled();
-            expect(scope.productForm.$setUntouched).toHaveBeenCalled();
-        });
+        //     expect(scope.productForm.$setPristine).toHaveBeenCalled();
+        //     expect(scope.productForm.$setUntouched).toHaveBeenCalled();
+        // });
 
     });
 

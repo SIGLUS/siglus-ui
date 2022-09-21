@@ -47,7 +47,7 @@
 
         function onInit() {
             hideLayoutAndBreadcrumb();
-            vm.categories = _.flatten(Object.values(JSON.parse(draft)), true);
+            vm.categories = JSON.parse(draft);
             vm.draft = vm.getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
             vm.program = program;
@@ -93,14 +93,7 @@
         };
 
         vm.getTbDataSource = function(data) {
-            var tempArray = [];
-            _.forEach(Object.keys(data), function(key) {
-                _.forEach(data[key], function(item) {
-                    tempArray.push(item);
-                });
-            });
-
-            return _.reduce(tempArray, function(r, c) {
+            return _.reduce(data, function(r, c) {
                 if (c.length > 1) {
                     var temp = _.map(c, function(item, i) {
                         var result = {

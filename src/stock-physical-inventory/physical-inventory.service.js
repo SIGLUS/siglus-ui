@@ -92,9 +92,8 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/locations'),
                 isArray: true
             },
-            remove: {
-                method: 'DELETE',
-                hasBody: true,
+            saveDraftWithLocation: {
+                method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
             }
         });
@@ -106,6 +105,7 @@
         this.getPhysicalInventorySubDraft = getPhysicalInventorySubDraft;
         this.search = search;
         this.saveDraft = saveDraft;
+        this.saveDraftWithLocation = saveDraftWithLocation;
         this.deleteDraft = deleteDraft;
         this.deleteDraftList = deleteDraftList;
         this.submitPhysicalInventory = submit;
@@ -131,6 +131,52 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
+        function saveDraftWithLocation(draft) {
+            var physicalInventory = angular.copy(draft);
+
+            // SIGLUS-REFACTOR: Filter not added items
+            physicalInventory.lineItems = _.map(draft.lineItems, function(item) {
+                if (item.id) {
+                    return {
+                        id: item.id,
+                        orderableId: item.orderable.id,
+                        lotId: item.lot ? item.lot.id : null,
+                        lotCode: item.lot ? item.lot.lotCode : null,
+                        expirationDate: item.lot ? item.lot.expirationDate : null,
+                        quantity: item.quantity,
+                        extraData: {
+                            vvmStatus: item.vvmStatus
+                        },
+                        stockAdjustments: item.stockAdjustments,
+                        reasonFreeText: item.reasonFreeText,
+                        stockCardId: item.stockCardId,
+                        programId: item.programId,
+                        area: item.area,
+                        locationCode: item.locationCode
+                    };
+                }
+                return {
+                    orderableId: item.orderable.id,
+                    lotId: item.lot ? item.lot.id : null,
+                    lotCode: item.lot ? item.lot.lotCode : null,
+                    expirationDate: item.lot ? item.lot.expirationDate : null,
+                    quantity: item.quantity,
+                    extraData: {
+                        vvmStatus: item.vvmStatus
+                    },
+                    stockAdjustments: item.stockAdjustments,
+                    reasonFreeText: item.reasonFreeText,
+                    stockCardId: item.stockCardId,
+                    programId: item.programId,
+                    area: item.area,
+                    locationCode: item.locationCode
+                };
+            });
+            // SIGLUS-REFACTOR: ends here
+            return locationResource.saveDraftWithLocation(
+                siglusStockEventService.formatPayload(physicalInventory)
+            ).$promise;
+        }
         function getDraft(program, facility) {
             return resource.query({
                 program: program,

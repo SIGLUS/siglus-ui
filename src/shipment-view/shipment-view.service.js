@@ -33,14 +33,15 @@
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
-        'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory'
+        'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory', 'siglusShipmentConfirmModalService'
         // #400: ends here
     ];
     // #287: ends here
 
     function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
                                  $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
-                                 messageService, orderService, $resource, fulfillmentUrlFactory) {
+                                 messageService, orderService, $resource, fulfillmentUrlFactory,
+                                 siglusShipmentConfirmModalService) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -157,13 +158,13 @@
                     }
                     var totalPartialLineItems = getPartialFulfilledLineItems(shipment, unskippedLineItems);
                     if (!result.closed && totalPartialLineItems) {
-                        return confirmService.confirm(
+                        return siglusShipmentConfirmModalService.confirm(
                             messageService.get('shipmentView.confirmPartialFulfilled.message', {
                                 totalPartialLineItems: totalPartialLineItems
                             }), 'shipmentView.confirmPartialFulfilled.createSuborder'
                         )
-                            .then(function() {
-                                return shipment.createSuborder()
+                            .then(function(signature) {
+                                return shipment.createSuborder(signature)
                                     .then(function() {
                                         notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                         stateTrackerService.goToPreviousState('openlmis.orders.view');
@@ -175,12 +176,12 @@
                             });
                     }
                     // #400: ends here
-                    return confirmService.confirm(
+                    return siglusShipmentConfirmModalService.confirm(
                         'shipmentView.confirmShipment.question',
                         'shipmentView.confirmShipment'
                     )
-                        .then(function() {
-                            return originalConfirm.apply(shipment)
+                        .then(function(signature) {
+                            return originalConfirm.apply(shipment, [signature])
                                 .then(function() {
                                     notificationService.success('shipmentView.shipmentHasBeenConfirmed');
                                     stateTrackerService.goToPreviousState('openlmis.orders.view');

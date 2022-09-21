@@ -37,7 +37,8 @@
         'stock-card',
         // SIGLUS-REFACTOR: starts here
         'select-products-modal',
-        'siglus-order-status-messages'
+        'siglus-order-status-messages',
+        'siglus-shipment-confirm-modal'
         // SIGLUS-REFACTOR: starts here
     ]);
 

@@ -65,7 +65,8 @@ describe('OrderFulfillmentController', function() {
             vm = $controller('OrderFulfillmentController', {
                 orderingFacilities: orderingFacilities,
                 programs: programs,
-                orders: orders
+                orders: orders,
+                homeFacility: {}
             });
         });
 
@@ -201,7 +202,8 @@ describe('OrderFulfillmentController', function() {
         vm = $controller('OrderFulfillmentController', {
             orderingFacilities: orderingFacilities,
             programs: programs,
-            orders: orders
+            orders: orders,
+            homeFacility: {}
         });
         vm.$onInit();
     }

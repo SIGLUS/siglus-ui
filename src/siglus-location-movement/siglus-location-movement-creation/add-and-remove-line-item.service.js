@@ -152,7 +152,9 @@
             if (lineItem.srcLocationCode) {
                 _.forEach(locations, function(loc) {
                     _.forEach(loc.lots, function(lot) {
-                        if (lot.lotCode === lineItem.lotCode && loc.locationCode === lineItem.srcLocationCode) {
+                        if (lot.orderableId === lineItem.orderableId
+                            && lot.lotCode === lineItem.lotCode
+                            && loc.locationCode === lineItem.srcLocationCode) {
                             stockOnHand = lot.stockOnHand;
                         }
                     });
