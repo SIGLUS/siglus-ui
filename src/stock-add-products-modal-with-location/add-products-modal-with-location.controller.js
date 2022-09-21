@@ -107,16 +107,8 @@
             console.log('#### orderable.id', seletedItem.orderable.id);
             seletedItem.lotOptions =
                 orderableGroupService.lotsOfWithNull(notAddedLotItemGroup[seletedItem.orderable.id]);
+            seletedItem.lot.lotCode = null;
             vm.seletedItem = seletedItem;
-            console.log('seletedItem --->>>', seletedItem);
-            // var selectedLots = _.filter(items, function(c) {
-            //     return c.orderable.id === seletedItemOrderableId;
-            // });
-            // console.log('#### items', items);
-            // // vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
-            // // vm.selectedOrderableHasLots = vm.lots.length > 0;
-            // vm.lots = selectedLots;
-            // console.log('####lots', vm.lots);
         };
 
         /**
