@@ -103,11 +103,13 @@
                     return item.orderable.id;
                 })
                 .value();
-            console.log('#### notAddedLotItemGroup', notAddedLotItemGroup);
-            console.log('#### orderable.id', seletedItem.orderable.id);
             seletedItem.lotOptions =
                 orderableGroupService.lotsOfWithNull(notAddedLotItemGroup[seletedItem.orderable.id]);
-            seletedItem.lot.lotCode = null;
+            if (seletedItem.lot && seletedItem.lot.lotCode) {
+                seletedItem.lot.lotCode = null;
+                seletedItem.lot.expirationDate = null;
+            }
+            console.log('#### seletedItem', seletedItem);
             vm.seletedItem = seletedItem;
         };
 
