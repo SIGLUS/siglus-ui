@@ -739,19 +739,39 @@
                     }));
                     return r;
                 }, []);
+                var allLocation = _.flatten(Object.values(vm.allLocationAreaMap));
                 vm.areaList = areaList;
                 vm.allLocationList = locationList;
                 _.forEach(newList, function(item) {
                     _.forEach(item, function(itm) {
                         itm.area = itm.area ? itm.area : null;
-                        itm.locationCode = itm.locationCode ? itm.locationCode : null;
-                        itm.areaList = itm.areaList ? itm.areaList : areaList;
-                        itm.locationList = itm.locationList ? itm.locationList : locationList;
+                        // itm.locationCode = itm.locationCode ? itm.locationCode : null;
+                        if (itm.locationCode) {
+                            var currentArea = _.find(allLocation, function(location) {
+                                return location.locationCode === itm.locationCode;
+                            });
+                            itm.areaList = currentArea ? [{
+                                code: currentArea.area,
+                                label: currentArea.area
+                            }] : areaList;
+                            itm.locationList = currentArea ?
+                                _.map(vm.allLocationAreaMap[currentArea.area], function(location) {
+                                    return {
+                                        code: location.locationCode,
+                                        label: location.locationCode
+                                    };
+                                }) : locationList;
+                        } else {
+                            itm.locationCode = null;
+                            itm.areaList = itm.areaList ? itm.areaList : areaList;
+                            itm.locationList = itm.locationList ? itm.locationList : locationList;
+                        }
                     });
                 });
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
+                console.log('#### groupedCategories', vm.groupedCategories);
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
             }, true);
@@ -1030,7 +1050,7 @@
             reload($state.current.name);
         }
 
-        vm.addLotByLocation = function addLot(lineItem) {
+        vm.addLotByLocation = function(lineItem) {
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
                 var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
@@ -1041,40 +1061,20 @@
                 });
                 return !isInAdded;
             });
-            console.log('hello world', lineItem);
-            SiglusAddProductsModalWithLocationService
-                .show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
-                    draft.lineItems = draft.lineItems.concat(addedItems);
-                    refreshLotOptions();
-                    $stateParams.isAddProduct = true;
-                    reload($state.current.name);
+            SiglusAddProductsModalWithLocationService.show(
+                notYetAddedItems,
+                vm.hasLot,
+                lineItem.locationCode
+            ).then(function(addedItems) {
+                draft.lineItems = draft.lineItems.concat(addedItems);
+                refreshLotOptions();
+                $stateParams.isAddProduct = true;
+                reload($state.current.name);
 
-                    // #105: activate archived product
-                    siglusArchivedProductService.alterInfo(addedItems);
-                    // #105: ends here
-                });
-            // var areaList = vm.areaList;
-            // var locationList = vm.allLocationList;
-            // var newLineItem = _.assign({}, angular.copy(lineItem), {
-            //     stockCardId: null,
-            //     displayLotMessage: undefined,
-            //     lot: null,
-            //     quantity: undefined,
-            //     shouldOpenImmediately: false,
-            //     stockAdjustments: [],
-            //     stockOnHand: null,
-            //     unaccountedQuantity: undefined,
-            //     $errors: {},
-            //     reasonFreeText: undefined,
-            //     id: null,
-            //     areaList: areaList,
-            //     locationList: locationList,
-            //     area: null,
-            //     locationCode: null
-            // });
-            // draft.lineItems.push(newLineItem);
-            // $stateParams.isAddProduct = true;
-            // reload($state.current.name);
+                // #105: activate archived product
+                siglusArchivedProductService.alterInfo(addedItems);
+                // #105: ends here
+            });
         };
 
         function removeLot(lineItem) {

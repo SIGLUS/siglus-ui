@@ -44,6 +44,7 @@
          * @return {Promise} resolved with selected products.
          */
         function show(items, hasLot, locationCode) {
+            console.log('进来了!!!', items, hasLot, locationCode);
             return openlmisModalService.createDialog(
                 {
                     controller: 'SiglusAddProductsModalWithLocationController',
