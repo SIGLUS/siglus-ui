@@ -70,7 +70,7 @@
 
         </thead>
         <tbody ng-repeat="lineItems in vm.pagedLineItems">
-        <tr ng-repeat="(index, lineItem) in lineItems" empty-row="vm.isEmptyRow(lineItem, lineItems, index)" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="12">
+        <tr ng-repeat="(index, lineItem) in lineItems" empty-row="vm.isEmptyRow(lineItem, lineItems, index)" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="13">
             <td>
                 <input type="checkbox"
                        ng-if="lineItem.isMainGroup"
