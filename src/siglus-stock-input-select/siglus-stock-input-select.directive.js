@@ -207,7 +207,9 @@
                                 +
                                 moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
                             }
-                            $scope.hideAllSelect();
+                            setTimeout(function() {
+                                $scope.hideAllSelect();
+                            }, 100);
                         };
 
                         $scope.showExpired = function() {

@@ -40,11 +40,11 @@
                         <input
                             type="date"
                             class="min-width-date-input"
-                            ng-blur="vm.validExpirationDate(lineItem)"
-                            ng-change="vm.expirationDateChanged(lineItem)"
-                            ng-model="lineItem.lot.expirationDate"
-                            ng-disabled="lineItem.lot.id"
-                            ng-required="lineItem.$errors.lotDateInvalid"
+                            ng-blur="vm.validExpirationDate(vm.seletedItem)"
+                            ng-change="vm.expirationDateChanged(vm.seletedItem)"
+                            ng-model="vm.seletedItem.lot.expirationDate"
+                            ng-disabled="vm.seletedItem.lot.lotCode"
+                            ng-required="vm.seletedItem.$errors.lotDateInvalid"
                         />
                     </div>
                     <!-- SIGLUS-REFACTOR: Add stock-actions and fix width for add button-->
