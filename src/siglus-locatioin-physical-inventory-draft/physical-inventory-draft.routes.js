@@ -74,6 +74,7 @@
                     program,
                     physicalInventoryService
                 ) {
+                    var locationManagementOption = $stateParams.locationManagementOption;
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
@@ -85,7 +86,9 @@
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
                             var flag = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(id, flag)
+                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(
+                                id, flag, locationManagementOption
+                            )
                                 .then(function(draft) {
                                     var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
                                         return item.orderable.id;
@@ -109,12 +112,17 @@
                                                         [lineItem.locationCode, 'values'],
                                                         []
                                                     );
-                                                    var tempSoh = _.get(_.find(
-                                                        array,
-                                                        function(item) {
-                                                            return item.orderableId === lineItem.orderable.id;
-                                                        }
-                                                    ), 'stockOnHand', '');
+                                                    var tempLots = _.filter(array, function(lot) {
+                                                        return lot.orderableId === lineItem.orderable.id;
+                                                    });
+                                                    var tempSoh = '';
+                                                    if (tempLots.length === 1) {
+                                                        tempSoh = tempLots[0].stockOnHand;
+                                                    } else if (tempLots.length > 1) {
+                                                        tempSoh = _.find(tempLots, function(item) {
+                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                        }).stockOnHand;
+                                                    }
                                                     lineItem.stockOnHand = tempSoh;
                                                     lineItem.area = lineItem.area ?
                                                         lineItem.area :
@@ -144,24 +152,31 @@
                                                 var lotsDataByLocationMap = _.reduce(
                                                     lotsDataByLocation,
                                                     function(r, c) {
-                                                        r[c.locationCode] = c.lots;
+                                                        r[c.locationCode] = {
+                                                            values: c.lots,
+                                                            area: c.area
+                                                        };
                                                         return r;
                                                     }, {}
                                                 );
-                                                draft.lineItems = _.map(draft.lineItems, function(lineItem) {
-                                                    var tempSoh = _.get(_.find(
-                                                        lotsDataByLocationMap[lineItem.locationCode],
-                                                        function(item) {
-                                                            if (lineItem.lot) {
-                                                                return item.lotCode === lineItem.lot.lotCode;
-                                                            }
-                                                        }
-                                                    ), 'stockOnHand', '');
-                                                    return angular.merge(lineItem, {
-                                                        stockOnHand: lotsDataByLocationMap[lineItem.locationCode] ?
-                                                            tempSoh :
-                                                            ''
+                                                _.forEach(draft.lineItems, function(lineItem) {
+                                                    var array = _.get(
+                                                        lotsDataByLocationMap,
+                                                        [lineItem.locationCode, 'values'],
+                                                        []
+                                                    );
+                                                    var tempLots = _.filter(array, function(lot) {
+                                                        return lot.orderableId === lineItem.orderable.id;
                                                     });
+                                                    var tempSoh = '';
+                                                    if (tempLots.length === 1) {
+                                                        tempSoh = tempLots[0].stockOnHand;
+                                                    } else if (tempLots.length > 1) {
+                                                        tempSoh = _.find(tempLots, function(item) {
+                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                        }).stockOnHand;
+                                                    }
+                                                    lineItem.stockOnHand = tempSoh;
                                                 });
                                                 physicalInventoryDataService.setDraft(facility.id, draft);
                                                 deferred.resolve();
