@@ -232,11 +232,11 @@
                 <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
                 <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right"></td> -->
                 <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit) && vm.actionType !== 'SUBMITTED'">
-                    <button class="stock-actions add" ng-click="vm.addLotByLocation(lineItems[0])">{{'stockPhysicalInventoryDraft.addItem' | message}}</button>
+                    <button class="stock-actions add" ng-click="vm.addLotByLocation(lineItems[0], lineItems)">{{'stockPhysicalInventoryDraft.addItem' | message}}</button>
                 </td>
                 <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
             </tr>
-            <tr ng-click="vm.focusedRowChanged(lineItem)" ng-repeat="lineItem in lineItems" ng-repeat-end>
+            <tr ng-if="lineItems.length > 1" ng-click="vm.focusedRowChanged(lineItem)" ng-repeat="lineItem in lineItems" ng-repeat-end>
                 <td>
                     <input type="checkbox" />
                 </td>
@@ -306,8 +306,82 @@
                 <td ng-if="!vm.isInitialInventory && !vm.isFreeTextAllowed(lineItem)"></td>
                 <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.unaccountedQuantity}}</td> -->
                 <td ng-if="vm.actionType !== 'SUBMITTED'">
-                    <button ng-if="lineItems.length === 1 && !(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLotByLocation(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.addItem' | message}}</button>
+                    <!-- <button ng-if="lineItems.length === 1 && !(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLotByLocation(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.addItem' | message}}</button> -->
                     <button ng-if="vm.isInitialInventory || vm.isEmpty(lineItem.stockCardId) || lineItem.orderable.archived" class="danger stock-actions" ng-click="vm.removeLot(lineItem)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
+                </td>
+            </tr>
+            <tr ng-if="lineItems.length === 1" ng-repeat="lineItems in groupedLineItems">
+                <td>
+                    <input type="checkbox" />
+                </td>
+                <td>{{lineItems[0].locationCode}}</td>
+                <td>{{lineItems[0].orderable.productCode}}</td>
+                <td>{{lineItems[0].orderable | productName}}</td>
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+                    <span ng-if="!vm.isEmpty(lineItems[0].stockCardId) || vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItems[0].lot | siglusExpiredLotCode}}</span>
+                    <siglus-stock-input-select ng-if="vm.isEmpty(lineItems[0].stockCardId) && vm.actionType !== 'SUBMITTED'"
+                                        line-item="lineItems[0]"
+                                        enable-input="true">
+                    </siglus-stock-input-select>
+                </td>
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+                    <span ng-if="!vm.isEmpty(lineItems[0].stockCardId) || vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItems[0].lot.expirationDate | openlmisDate}}</span>
+                    <input ng-if="vm.isEmpty(lineItems[0].stockCardId) && vm.actionType !== 'SUBMITTED'"
+                        type="date"
+                        class="min-width-date-input"
+                        ng-blur="vm.validExpirationDate(lineItems[0])"
+                        ng-change="vm.expirationDateChanged(lineItems[0])"
+                        ng-model="lineItems[0].lot.expirationDate"
+                        ng-disabled="lineItems[0].lot.id"
+                        ng-required="lineItems[0].$errors.lotDateInvalid"/>
+                </td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+                <td  ng-if="!vm.isInitialInventory" class="text-align-right">
+                    {{lineItems[0].isFromSelect ? lineItems[0].$previewSOH : lineItems[0].stockOnHand}}
+                </td>
+                <td class="digit-cell" >
+                    <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItems[0].quantity}}</span>
+                    <input
+                            ng-if="vm.actionType !== 'SUBMITTED'"
+                            class="form-control"
+                            ng-model="lineItems[0].quantity"
+                            ng-model-options="{ updateOn: 'blur' }"
+                            ng-change="vm.quantityChanged(lineItems[0])"
+                            openlmis-invalid="{{lineItems[0].$errors.quantityInvalid ? lineItems[0].$errors.quantityInvalid : ''}}"
+                            positive-integer/>
+                </td>
+                <td ng-if="vm.showVVMStatusColumn" class="digit-cell">
+                    <select ng-if="lineItems[0].orderable.extraData.useVVM == 'true'"
+                            ng-model="lineItems[0].vvmStatus"
+                            ng-options="status as vm.getStatusDisplay(status) for status in vm.vvmStatuses"
+                            placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
+                    </select>
+                </td>
+                <td ng-if="!vm.isInitialInventory" class="reasons-cell">
+                    <!-- SIGLUS-REFACTOR: starts here -->
+                    <!-- <stock-reasons
+                            ng-model="lineItem.stockAdjustments"
+                            line-item="lineItem"
+                            reasons="vm.reasons[lineItem.programId] || []"
+                            ng-change="vm.reasonChanged(lineItem)"
+                    /> -->
+                    <p>{{ lineItems[0].stockAdjustments[0].reason.name }}</p>
+                    <p ng-style="{'color' : 'red'}">{{lineItems[0].$diffMessage.movementPopoverMessage}}</p>
+                    <!-- SIGLUS-REFACTOR: ends here -->
+                </td>
+                <td ng-if="!vm.isInitialInventory && vm.isFreeTextAllowed(lineItems[0])" openlmis-invalid="{{lineItems[0].$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
+                    <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItems[0].reasonFreeText}}</span>
+                    <input ng-if="vm.actionType !== 'SUBMITTED'" type="text" maxlength="100"
+                        ng-change="vm.reasonTextChanged(lineItems[0])"
+                        ng-blur="vm.validateReasonFreeText(lineItems[0])"
+                        ng-model="lineItems[0].reasonFreeText" rows="1" cols="15" />
+                </td>
+                <td ng-if="!vm.isInitialInventory && !vm.isFreeTextAllowed(lineItems[0])"></td>
+                <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.unaccountedQuantity}}</td> -->
+                <td ng-if="vm.actionType !== 'SUBMITTED'">
+                    <button ng-if="lineItems.length === 1 && !(lineItems[0].orderable && lineItems[0].orderable.isKit)" class="stock-actions add" ng-click="vm.addLotByLocation(lineItems[0], lineItems)">{{'stockPhysicalInventoryDraft.addItem' | message}}</button>
+                    <button ng-if="vm.isInitialInventory || vm.isEmpty(lineItems[0].stockCardId) || lineItems[0].orderable.archived" class="danger stock-actions" ng-click="vm.removeLot(lineItems[0])">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
             </tr>
         </tbody>

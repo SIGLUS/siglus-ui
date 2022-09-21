@@ -35,8 +35,6 @@
         };
 
         this.checkInited = function() {
-            // eslint-disable-next-line no-debugger
-            debugger;
             return this.facilityId !== undefined && this.needInitiallyMoveProduct !== undefined;
         };
 

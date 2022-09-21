@@ -47,6 +47,10 @@
          * All products available for users to choose from.
          */
         vm.items = items;
+        vm.seletedItem = {
+            isInModal: false
+        };
+        vm.withLocation = true;
         vm.locationCode = locationCode;
         /**
          * @ngdoc property
@@ -88,8 +92,31 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
-            vm.selectedOrderableHasLots = vm.lots.length > 0;
+            var seletedItem = vm.selectedOrderableGroup[0];
+            var notAddedLotItemGroup = _.chain(items)
+                .filter(function(summary) {
+                    // #105: activate archived product
+                    return summary.lot;
+                    // #105: ends here
+                })
+                .groupBy(function(item) {
+                    return item.orderable.id;
+                })
+                .value();
+            console.log('#### notAddedLotItemGroup', notAddedLotItemGroup);
+            console.log('#### orderable.id', seletedItem.orderable.id);
+            seletedItem.lotOptions =
+                orderableGroupService.lotsOfWithNull(notAddedLotItemGroup[seletedItem.orderable.id]);
+            vm.seletedItem = seletedItem;
+            console.log('seletedItem --->>>', seletedItem);
+            // var selectedLots = _.filter(items, function(c) {
+            //     return c.orderable.id === seletedItemOrderableId;
+            // });
+            // console.log('#### items', items);
+            // // vm.lots = orderableGroupService.lotsOf(vm.selectedOrderableGroup);
+            // // vm.selectedOrderableHasLots = vm.lots.length > 0;
+            // vm.lots = selectedLots;
+            // console.log('####lots', vm.lots);
         };
 
         /**
