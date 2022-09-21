@@ -145,7 +145,7 @@
                     });
                 }
                 stateParams.hasLoadOrderableGroups = false;
-                if (pagination.showReloadLoading) {
+                if (pagination.showReloadLoading && _.get($state, ['params', 'page']) !== _.get(stateParams, 'page')) {
                     loadingModalService.open();
                     setTimeout(function() {
                         $state.go($state.current.name, stateParams);
