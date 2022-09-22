@@ -145,12 +145,26 @@
                 if (scope.canApprove && isApprovalColumn(column)) {
                     return false;
                 }
+                if (needUserInput(column)) {
+                    return false;
+                }
                 if (canEditColumn(column)) {
                     return false;
                 }
 
                 // If we don't know that the field is editable, its read only
                 return true;
+            }
+
+            function needUserInput(column) {
+                var beginningBalance = scope.lineItem.getFieldValue(
+                    TEMPLATE_COLUMNS.BEGINNING_BALANCE);
+                return column.name === TEMPLATE_COLUMNS.BEGINNING_BALANCE
+                    && isEmpty(beginningBalance);
+            }
+
+            function isEmpty(value) {
+                return value === null || value === undefined || value === '';
             }
 
             function canEditColumn(column) {
