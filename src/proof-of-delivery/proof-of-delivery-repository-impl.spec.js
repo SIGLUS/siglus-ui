@@ -251,6 +251,124 @@ describe('ProofOfDeliveryRepositoryImpl', function() {
         });
 
     });
+    //
+    // describe('mergeDraft', function() {
+    //
+    //     beforeEach(function() {
+    //         lotRepositoryImplMock.query.andReturn($q.resolve(new PageDataBuilder()
+    //             .withContent(lotJsons)
+    //             .build()));
+    //
+    //         orderableResourceMock.query.andReturn($q.resolve(new PageDataBuilder()
+    //             .withContent(orderableJsons)
+    //             .build()));
+    //     });
+    //
+    //     it('should resolve to combined server responses if requests were successful', function() {
+    //         $httpBackend
+    //         // #400: Facility user partially fulfill an order and create sub-order for an requisition
+    //             .expectPOST(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+    //             'proof-of-delivery-id/subDrafts/merge?expand=shipment.order'))
+    //         // #400: ends here
+    //             .respond(200, {
+    //                 podDto: angular.copy(proofOfDeliveryJson)
+    //             });
+    //
+    //         var result;
+    //         proofOfDeliveryRepositoryImpl.mergeDraft('proof-of-delivery-id')
+    //             .then(function(response) {
+    //                 result = response;
+    //             });
+    //         $httpBackend.flush();
+    //         $rootScope.$apply();
+    //
+    //         expect(result.id).toEqual(proofOfDeliveryJson.id);
+    //         expect(result.status).toEqual(proofOfDeliveryJson.status);
+    //         expect(result.deliveredBy).toEqual(proofOfDeliveryJson.deliveredBy);
+    //         expect(result.receivedBy).toEqual(proofOfDeliveryJson.receivedBy);
+    //         expect(result.receivedDate).toEqual(proofOfDeliveryJson.receivedDate);
+    //         expect(result.shipment).toEqual(shipmentJson);
+    //
+    //         var lineItem = result.lineItems[0],
+    //             expected = proofOfDeliveryJson.lineItems[0];
+    //
+    //         expect(lineItem.id).toEqual(expected.id);
+    //         expect(lineItem.orderable).toEqual(orderableJsons[0]);
+    //         expect(lineItem.lot).toEqual(lotJsons[0]);
+    //         expect(lineItem.quantityAccepted).toEqual(expected.quantityAccepted);
+    //         expect(lineItem.quantityRejected).toEqual(expected.quantityRejected);
+    //         expect(lineItem.quantityShipped).toEqual(shipmentJson.lineItems[0].quantityShipped);
+    //
+    //         lineItem = result.lineItems[1];
+    //         expected = proofOfDeliveryJson.lineItems[1];
+    //
+    //         expect(lineItem.id).toEqual(expected.id);
+    //         expect(lineItem.orderable).toEqual(orderableJsons[1]);
+    //         expect(lineItem.lot).toEqual(lotJsons[1]);
+    //         expect(lineItem.quantityAccepted).toEqual(expected.quantityAccepted);
+    //         expect(lineItem.quantityRejected).toEqual(expected.quantityRejected);
+    //         expect(lineItem.quantityShipped).toEqual(shipmentJson.lineItems[1].quantityShipped);
+    //
+    //     });
+    //
+    //     it('should reject if request was unsuccessful', function() {
+    //         $httpBackend
+    //         // #400: Facility user partially fulfill an order and create sub-order for an requisition
+    //             .expectPOST(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+    //             'proof-of-delivery-id/subDrafts/merge?expand=shipment.order'))
+    //         // #400: ends here
+    //             .respond(400);
+    //
+    //         var rejected;
+    //         proofOfDeliveryRepositoryImpl.mergeDraft('proof-of-delivery-id')
+    //             .catch(function() {
+    //                 rejected = true;
+    //             });
+    //         $httpBackend.flush();
+    //
+    //         expect(rejected).toBe(true);
+    //     });
+    //
+    //     it('should reject if lot repository rejects', function() {
+    //         $httpBackend
+    //         // #400: Facility user partially fulfill an order and create sub-order for an requisition
+    //             .expectPOST(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+    //             'proof-of-delivery-id/subDrafts/merge?expand=shipment.order'))
+    //         // #400: ends here
+    //             .respond(200, angular.copy(proofOfDeliveryJson));
+    //
+    //         lotRepositoryImplMock.query.andReturn($q.reject());
+    //
+    //         var rejected;
+    //         proofOfDeliveryRepositoryImpl.mergeDraft('proof-of-delivery-id')
+    //             .catch(function() {
+    //                 rejected = true;
+    //             });
+    //         $httpBackend.flush();
+    //
+    //         expect(rejected).toBe(true);
+    //     });
+    //
+    //     it('should reject if orderable repository rejects', function() {
+    //         $httpBackend
+    //         // #400: Facility user partially fulfill an order and create sub-order for an requisition
+    //             .expectPOST(fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/' +
+    //             'proof-of-delivery-id/subDrafts/merge?expand=shipment.order'))
+    //         // #400: ends here
+    //             .respond(200, angular.copy(proofOfDeliveryJson));
+    //
+    //         orderableResourceMock.query.andReturn($q.reject());
+    //
+    //         var rejected;
+    //         proofOfDeliveryRepositoryImpl.mergeDraft('proof-of-delivery-id')
+    //             .catch(function() {
+    //                 rejected = true;
+    //             });
+    //         $httpBackend.flush();
+    //
+    //         expect(rejected).toBe(true);
+    //     });
+    // });
 
     afterEach(function() {
         $httpBackend.verifyNoOutstandingExpectation();

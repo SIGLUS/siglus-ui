@@ -9,5 +9,9 @@
   "proofOfDeliveryView.designation": "Designation",
   "proofOfDeliveryView.expiringDate": "Expiring Date",
   "proofOfDeliveryView.price": "Price",
-  "proofOfDeliveryView.value": "Value"
+  "proofOfDeliveryView.value": "Value",
+  "proofOfDeliveryView.quantityOrdered": "Ordered Quantity",
+  "proofOfDeliveryView.quantityShipped": "Supplied Quantity",
+  "proofOfDeliveryView.quantityAccepted": "Accepted Quantity",
+  "proofOfDeliveryView.quantityReturned": "Returned Quantity"
 }
