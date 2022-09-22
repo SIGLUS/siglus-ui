@@ -81,6 +81,7 @@
             }
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
+            vm.areaLocationInfo = areaLocationInfo;
             vm.keyword = $stateParams.keyword;
             filterOrderableGroups();
             updateStateParams();
@@ -220,6 +221,12 @@
                 validateRelatedLineItemsForVirtual(lineItem, lineItems);
             }
         };
+
+        $scope.$on('locationCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            var lineItems = data.lineItems;
+            vm.changeMoveToLocation(lineItem, lineItems);
+        });
 
         vm.getStockOnHand = function(lineItem, lineItems, index) {
             if (index === 0) {
