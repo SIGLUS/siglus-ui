@@ -143,10 +143,8 @@
             }
 
             function needUserInput(column) {
-                var beginningBalance = scope.lineItem.getFieldValue(
-                    TEMPLATE_COLUMNS.BEGINNING_BALANCE);
-                return column.name === TEMPLATE_COLUMNS.BEGINNING_BALANCE
-                    && isEmpty(beginningBalance);
+                var beginningBalance = scope.lineItem.getFieldValue(TEMPLATE_COLUMNS.BEGINNING_BALANCE);
+                return column.name === TEMPLATE_COLUMNS.BEGINNING_BALANCE && isEmpty(beginningBalance);
             }
 
             function isEmpty(value) {
