@@ -45,6 +45,7 @@
         var debounceTime = 50;
         vm.creationType = type;
         vm.showConflictStatus = false;
+        vm.showGTnumber = false;
         vm.userInputSplitNum = null;
         vm.confirm = _.throttle(confirm, debounceTime);
         vm.showError = false;
@@ -59,6 +60,9 @@
             }
             if (!_.isNull(vm.userInputSplitNum)) {
                 vm.showRequired = false;
+            }
+            if (vm.userInputSplitNum) {
+                vm.showGTnumber = false;
             }
         };
 
@@ -155,8 +159,12 @@
         }
 
         function catchError(err) {
-            if (err.status === 400 && err.data.isBusinessError) {
-                loadingModalService.close();
+            loadingModalService.close();
+            if (err.data.messageKey
+          === 'siglusapi.error.draft.number.greater.than.preset.products') {
+                vm.showGTnumber = true;
+            } else if (err.data.messageKey
+          === 'siglusapi.error.inventory.conflict.Draft') {
                 vm.showConflictStatus = true;
             }
         }
