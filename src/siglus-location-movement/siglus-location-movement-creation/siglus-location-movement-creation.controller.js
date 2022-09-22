@@ -34,7 +34,7 @@
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
         'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService',
-        'siglusPrintPalletLabelComfirmModalService'];
+        'siglusPrintPalletLabelComfirmModalService', 'allPrograms'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
@@ -43,7 +43,8 @@
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,
                         siglusSignatureWithDateModalService, confirmDiscardService,
-                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService) {
+                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService,
+                        allPrograms) {
 
         var vm = this;
 
@@ -496,22 +497,14 @@
                             });
                             loadingModalService.open();
                             var lineItems = getLineItems();
-                            if (vm.isVirtual) {
-                                lineItems.forEach(function(line) {
-                                    line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
-                                });
-                            }
+                            lineItems.forEach(function(line) {
+                                line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
+                            });
                             siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
                                 .then(function() {
                                     $scope.needToConfirm = false;
-                                    if (vm.isVirtual) {
-                                        siglusLocationMovementUpgradeService.doneUpgrade();
-                                        $state.go('openlmis.home');
-                                    } else {
-                                        $state.go('^', $stateParams, {
-                                            reload: true
-                                        });
-                                    }
+                                    siglusLocationMovementUpgradeService.doneUpgrade();
+                                    $state.go('openlmis.home');
                                     loadingModalService.close();
                                 })
                                 .catch(function() {
@@ -542,15 +535,11 @@
                                     siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
                                         .then(function() {
                                             $scope.needToConfirm = false;
-                                            if (vm.isVirtual) {
-                                                siglusLocationMovementUpgradeService.doneUpgrade();
-                                                $state.go('openlmis.home');
-                                            } else {
-                                                $state.go('^', $stateParams, {
-                                                    reload: true
-                                                });
-                                            }
-                                            loadingModalService.close();
+                                            var programId = _.get(allPrograms, [0, 'id']);
+                                            $stateParams.program = programId;
+                                            $state.go('openlmis.locationManagement.stockOnHand', $stateParams, {
+                                                reload: true
+                                            });
                                         })
                                         .catch(function() {
                                             loadingModalService.close();
