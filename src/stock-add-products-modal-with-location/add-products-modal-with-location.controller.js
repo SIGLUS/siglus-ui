@@ -109,7 +109,6 @@
                 seletedItem.lot.lotCode = null;
                 seletedItem.lot.expirationDate = null;
             }
-            console.log('#### seletedItem', seletedItem);
             vm.seletedItem = seletedItem;
         };
 
