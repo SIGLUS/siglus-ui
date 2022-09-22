@@ -43,15 +43,7 @@
                     if (!result[lot.orderableId][location.locationCode]) {
                         result[lot.orderableId][location.locationCode] = [];
                     }
-                    if (shouldKeepSoh0) {
-                        result[lot.orderableId][location.locationCode].push({
-                            id: lot.lotId,
-                            lotCode: lot.lotCode,
-                            expirationDate: lot.expirationDate,
-                            stockOnHand: lot.stockOnHand,
-                            area: location.area
-                        });
-                    } else if (lot.stockOnHand > 0) {
+                    if (shouldKeepSoh0 || lot.stockOnHand > 0) {
                         result[lot.orderableId][location.locationCode].push({
                             id: lot.lotId,
                             lotCode: lot.lotCode,
@@ -78,13 +70,7 @@
                     if (!result[lot.orderableId][lot.lotId]) {
                         result[lot.orderableId][lot.lotId] = [];
                     }
-                    if (shouldKeepSoh0) {
-                        result[lot.orderableId][lot.lotId].push({
-                            id: location.locationId,
-                            area: location.area,
-                            locationCode: location.locationCode
-                        });
-                    } else if (lot.stockOnHand > 0) {
+                    if (shouldKeepSoh0 || lot.stockOnHand > 0) {
                         result[lot.orderableId][lot.lotId].push({
                             id: location.locationId,
                             area: location.area,

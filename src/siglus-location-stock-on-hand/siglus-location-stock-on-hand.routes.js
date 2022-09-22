@@ -52,10 +52,7 @@
                     }
                     return authorizationService.getUser();
                 },
-                facility: function(facilityFactory, $stateParams) {
-                    if ($stateParams.facility) {
-                        return $stateParams.facility;
-                    }
+                facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
                 programs: function(user, $q, programService, stockProgramUtilService, $stateParams) {
