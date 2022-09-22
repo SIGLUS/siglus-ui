@@ -58,7 +58,7 @@
                     loadingModalService.open();
                     stockCardService.archiveProduct(stockCard.orderableId).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
-                        $state.go('openlmis.stockmanagement.archivedProductSummaries', Object.assign($state.params, {
+                        $state.go('openlmis.locationManagement.archivedProductSummaries', Object.assign($state.params, {
                             program: stockCard.programId,
                             page: 0
                         }));
@@ -69,12 +69,36 @@
                 });
         };
 
+        vm.activate = function() {
+            confirmService.confirm('stockCard.activateProduct', 'stockCard.activate', 'stockCard.cancel')
+                .then(function() {
+                    loadingModalService.open();
+                    stockCardService.activateProduct(stockCard.orderableId).then(function() {
+                        notificationService.success('stockCard.activateProduct.success');
+                        // eslint-disable-next-line no-debugger
+                        $state.go('openlmis.locationManagement.stockOnHand', Object.assign($state.params, {
+                            program: stockCard.programId,
+                            page: 0
+                        }));
+                    }, function() {
+                        loadingModalService.close();
+                        notificationService.error('stockCard.activateProduct.failure');
+                    });
+                });
+        };
+
         function onInit() {
             $state.current.label = stockCard.productName;
             vm.stockCard = stockCard;
             vm.displayItems = stockCard.lineItems;
             $stateParams.stockCard = vm.stockCard;
-            vm.canArchive = stockCard.stockOnHand === 0 && stockCard.lineItems[0].productSoh === 0 && !stockCard.inKit;
+
+            vm.isArchived = $state.params.archived;
+            vm.canArchive = !vm.isArchived &&
+                stockCard.stockOnHand === 0 &&
+                stockCard.lineItems[0].productSoh === 0 &&
+                !stockCard.inKit;
+            vm.canActivate = vm.isArchived && $state.params.isViewProductCard;
             paginationService.registerList(null, angular.copy($stateParams), function() {
                 return vm.displayItems;
             });

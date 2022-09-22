@@ -68,7 +68,6 @@
                         });
 
                         $scope.select = function(lotCode) {
-                            console.log('selected');
                             lotCode = lotCode.replace(/^\[Expired\]|\[Expirado\]/, '');
                             var lineItem = $scope.lineItem;
                             var option = findLotOptionByCode(lineItem.lotOptions, lotCode);
@@ -242,12 +241,10 @@
                 replace: true,
                 link: function(scope, element) {
                     $('.adjustment-custom-item').click(function(event) {
-                        console.log('.adjustment-custom-item', event);
                         event.stopPropagation();
                     });
 
                     $('.stock-select-container').click(function(event) {
-                        console.log('.stock-select-container', event);
                         event.stopPropagation();
                     });
 

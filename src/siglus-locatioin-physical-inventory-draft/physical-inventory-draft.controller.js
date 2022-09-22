@@ -770,7 +770,6 @@
                 // SIGLUS-REFACTOR: starts here
                 var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
-                console.log('#### groupedCategories', vm.groupedCategories);
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
             }, true);

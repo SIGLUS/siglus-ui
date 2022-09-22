@@ -51,6 +51,7 @@
         vm.program = null;
         vm.facility = facility;
         vm.isArchivedProducts = false;
+        vm.isLocationManagement = false;
 
         /**
          * @ngdoc property
@@ -74,7 +75,7 @@
         function onInit() {
             vm.keyword = $stateParams.keyword;
             vm.isArchivedProducts = $stateParams.isArchivedProducts;
-
+            vm.isLocationManagement = $stateParams.isLocationManagement;
             vm.stockCardSummaries = angular.copy(stockCardSummaries);
             if (!vm.isArchivedProducts) {
                 _.forEach(vm.stockCardSummaries, function(stockCardSummary) {
@@ -109,16 +110,26 @@
             stateParams.facility = vm.facility && vm.facility.id;
             stateParams.program = vm.program && vm.program.id;
             stateParams.supervised = vm.isSupervised;
+            if (vm.isLocationManagement) {
+                $state.go(
+                    'openlmis.locationManagement.archivedProductSummaries',
+                    stateParams,
+                    {
+                        reload: true
+                    }
+                );
+            } else {
+                $state.go(
+                    vm.isArchivedProducts
+                        ? 'openlmis.stockmanagement.archivedProductSummaries'
+                        : 'openlmis.stockmanagement.stockCardSummaries',
+                    stateParams,
+                    {
+                        reload: true
+                    }
+                );
+            }
 
-            $state.go(
-                vm.isArchivedProducts
-                    ? 'openlmis.stockmanagement.archivedProductSummaries'
-                    : 'openlmis.stockmanagement.stockCardSummaries',
-                stateParams,
-                {
-                    reload: true
-                }
-            );
         }
 
         /**
@@ -164,16 +175,26 @@
                 });
                 return;
             }
-            $state.go(
-                vm.isArchivedProducts
-                    ? 'openlmis.stockmanagement.archivedProductSummaries.singleCard'
-                    : 'openlmis.stockmanagement.stockCardSummaries.singleCard',
-                {
-                    orderable: orderableId,
-                    isViewProductCard: true,
-                    page: 0
-                }
-            );
+            if (vm.isLocationManagement) {
+                $state.go(
+                    'openlmis.locationManagement.archivedProductSummaries.productDetail',
+                    {
+                        orderable: orderableId,
+                        isViewProductCard: true,
+                        page: 0
+                    }
+                );
+            } else {
+                $state.go(
+                    'openlmis.stockmanagement.archivedProductSummaries.singleCard',
+                    {
+                        orderable: orderableId,
+                        isViewProductCard: true,
+                        page: 0
+                    }
+                );
+            }
+
         }
 
         $scope.$on('$stateChangeStart', function(event, toState) {
