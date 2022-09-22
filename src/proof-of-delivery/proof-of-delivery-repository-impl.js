@@ -168,7 +168,7 @@
          * Retrieves a proof of delivery from the OpenLMIS server.
          * Communicates with the GET endpoint of the Proof of Delivery REST API.
          *
-         * @param   {orderId}    orderId  the ID of the Proof of Delivery order 
+         * @param   {orderId}    orderId  the ID of the Proof of Delivery order
          * @param   {splitNum}   splitNum multi-user num to get POD order
          * @return  {Promise}       the promise resolving to server response
          */
@@ -190,7 +190,7 @@
          * Retrieves a proof of delivery from the OpenLMIS server.
          * Communicates with the GET endpoint of the Proof of Delivery REST API.
          *
-         * @param   {podId}    podId  the ID of the Proof of Delivery order 
+         * @param   {podId}    podId  the ID of the Proof of Delivery order
          * @return  {Promise}       the promise resolving to server response
          */
         function getDraftList(podId) {
@@ -208,7 +208,7 @@
          * Retrieves a proof of delivery from the OpenLMIS server.
          * Communicates with the GET endpoint of the Proof of Delivery REST API.
          *
-         * @param   {podId}    podId  the ID of the Proof of Delivery order 
+         * @param   {podId}    podId  the ID of the Proof of Delivery order
          * @return  {Promise}       the promise resolving to server response
          */
         function deleteAllDraft(podId) {
@@ -226,8 +226,8 @@
          * Retrieves a proof of delivery from the OpenLMIS server.
          * Communicates with the GET endpoint of the Proof of Delivery REST API.
          *
-         * @param   {podId}    podId  the ID of the Proof of Delivery order 
-         * @param   {subDraftId}    subDraftId  the ID of the Proof of Delivery sub draft 
+         * @param   {podId}    podId  the ID of the Proof of Delivery order
+         * @param   {subDraftId}    subDraftId  the ID of the Proof of Delivery sub draft
          * @return  {Promise}       the promise resolving to server response
          */
         function getSubDraft(podId, subDraftId) {
@@ -277,26 +277,40 @@
         function mergeDraft(podId) {
             var lotRepositoryImpl = this.lotRepositoryImpl,
                 orderableResource = this.orderableResource;
+
             return this.resource.mergeDraft({
                 id: podId,
                 expand: 'shipment.order'
-            }, {}).$promise.then(function(proofOfDeliveryJson) {
-                var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
-                    orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
-                return $q.all([
-                    lotRepositoryImpl.query({
-                        id: lotIds
-                    }),
-                    orderableResource.query({
-                        id: orderableIds
-                    })
-                ])
-                    .then(function(responses) {
-                        var lotPage = responses[0],
-                            orderablePage = responses[1];
-                        return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
-                    });
-            });
+            }, {}).$promise
+                .then(function(proofOfDeliveryJson) {
+                    var copyProofOfDeliveryJson = angular.copy(_.get(proofOfDeliveryJson, 'podDto'));
+                    copyProofOfDeliveryJson.conferredBy = _.get(proofOfDeliveryJson, 'conferredBy');
+                    copyProofOfDeliveryJson.preparedBy = _.get(proofOfDeliveryJson, 'preparedBy');
+                    var lotIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'lot'),
+                        orderableIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'orderable');
+                    var promiseList = lotIds.length ?
+                        [
+                            lotRepositoryImpl.query({
+                                id: lotIds
+                            }),
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ] :
+                        [
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ];
+                    return $q.all(promiseList)
+                        .then(function(responses) {
+                            var lotPage = lotIds.length ? responses[0] : {
+                                    content: []
+                                },
+                                orderablePage = lotIds.length ? responses[1] : responses[0];
+                            return combineResponses(copyProofOfDeliveryJson, lotPage.content, orderablePage.content);
+                        });
+                });
         }
 
         function submitDraft(podId, pod) {

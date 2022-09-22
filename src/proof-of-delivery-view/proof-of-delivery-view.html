@@ -52,8 +52,6 @@
             <tr>
                 <th>{{'proofOfDeliveryView.fnm' | message}}</th>
                 <th>{{'proofOfDeliveryView.productName' | message}}</th>
-                <th>{{'proofOfDeliveryView.dosage' | message}}</th>
-                <th>{{'proofOfDeliveryView.designation' | message}}</th>
                 <th>{{'proofOfDeliveryView.lotCode' | message}}</th>
                 <th>{{'proofOfDeliveryView.expiringDate' | message}}</th>
                 <th>{{'proofOfDeliveryView.quantityOrdered' | message}}</th>
@@ -76,8 +74,6 @@
                 <td>{{orderLineItem.orderable.fullProductName}}</td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
                 <td>{{orderLineItem.orderedQuantity}}</td>
                 <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
                 <td>{{orderLineItem.partialFulfilledQuantity}}</td>
@@ -94,9 +90,7 @@
             <tr ng-repeat-start="groupOfFulfillingLineItems in orderLineItem.groupedLineItems | orderBy: '[0].orderable.fullProductName'">
                 <td>{{groupOfFulfillingLineItems[0].orderable.productCode}}</td>
                 <td>{{groupOfFulfillingLineItems[0].orderable.fullProductName}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
+<               <td></td>
                 <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
                 <td></td>
                 <!-- #400: ends here -->
@@ -112,8 +106,6 @@
                 <td></td>
             </tr>
             <tr ng-repeat-end ng-repeat="fulfillingLineItem in groupOfFulfillingLineItems">
-                <td></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot | lotCode}}</td>
@@ -173,21 +165,21 @@
             <dt>{{'proofOfDeliveryView.preparedBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.preparedBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).preparedBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.preparedBy" disabled openlmis-invalid="{{vm.proofOfDelivery.validate(true).preparedBy | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.preparedBy}}</div>
             </dd>
             <dt>{{'proofOfDeliveryView.conferredBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.conferredBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).conferredBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.conferredBy" disabled openlmis-invalid="{{vm.proofOfDelivery.validate(true).conferredBy | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.conferredBy}}</div>
             </dd>
             <dt>{{'proofOfDeliveryView.receivedBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" disabled openlmis-invalid="{{vm.proofOfDelivery.validate(true).receivedBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).receivedBy | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.receivedBy}}</div>
             </dd>
@@ -241,4 +233,4 @@
 <div class="openlmis-toolbar button-group" ng-if="!vm.canEdit">
     <siglus-go-back />
 </div>
-<!-- #462: ends here -->
+ #462: ends here -->
