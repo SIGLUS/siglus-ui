@@ -81,7 +81,7 @@
 
         function getSohByOrderableLocation(lineItem) {
             var orderableLocationLotsMap =
-                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(JSON.parse(locations));
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
             var lot = _.chain(orderableLocationLotsMap[lineItem.orderableId])
                 .get(_.get(lineItem.location, 'locationCode'))
                 .find(function(item) {
