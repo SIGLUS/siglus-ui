@@ -237,13 +237,25 @@
                 stateParams.supervised = vm.isSupervised;
                 stateParams.keyword = vm.keyword;
 
-                $state.go(
-                    'openlmis.stockmanagement.stockCardSummaries',
-                    stateParams,
-                    {
-                        reload: true
-                    }
-                );
+                if (vm.isLocationManagement) {
+                    $state.go(
+                        'openlmis.locationManagement.archivedProductSummaries',
+                        stateParams,
+                        {
+                            reload: true
+                        }
+                    );
+                } else {
+                    $state.go(
+                        vm.isArchivedProducts
+                            ? 'openlmis.stockmanagement.archivedProductSummaries'
+                            : 'openlmis.stockmanagement.stockCardSummaries',
+                        stateParams,
+                        {
+                            reload: true
+                        }
+                    );
+                }
             });
         }
 

@@ -47,14 +47,13 @@ describe('openlmis.locationManagement.archivedProductSummaries', function() {
 
         expect(getResolvedValue('stockCardSummaries')).toEqual(stockCardSummaries);
         expect(stockCardRepositoryMock.query).toHaveBeenCalledWith({
-            page: '0',
-            size: '10',
+            page: 0,
+            size: 2147483647,
             facilityId: 'facility-id',
             programId: 'program-id',
             nonEmptyOnly: true,
             archivedOnly: true,
-            rightName: 'STOCK_CARDS_VIEW',
-            isLocationManagement: true
+            rightName: 'STOCK_CARDS_VIEW'
         });
     });
 
@@ -81,7 +80,10 @@ describe('openlmis.locationManagement.archivedProductSummaries', function() {
                 };
             });
         });
+        // module('stock-card-summary-list');
         module('stock-program-util');
+        module('stock-card');
+        module('stock-orderable-group');
     }
 
     function injectServices() {
