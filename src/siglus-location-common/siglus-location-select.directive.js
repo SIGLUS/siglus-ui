@@ -30,24 +30,34 @@
                 controller: ['$scope',
                     function($scope) {
                         $scope.optionToIsEmptyFlag = {};
-                        $scope.options = $scope.lineItem.destLocationOptions.map(function(option) {
-                            var target = _.find($scope.areaLocationInfo, function(areaLocation) {
-                                return areaLocation.locationCode === option;
-                            });
-                            var isEmpty = _.get(target, 'isEmpty');
-                            $scope.optionToIsEmptyFlag[option] = isEmpty;
-                            return isEmpty ? '[empty]' + option : option;
-                        });
 
                         $scope.selectedOption = undefined;
-                        var initValue = _.get($scope.lineItem, ['moveTo', 'locationCode']);
-                        if (initValue) {
-                            $scope.selectedOption = _.find($scope.options, function(option) {
-                                return option.replace('[empty]', '') === initValue.replace('[empty]', '');
+
+                        $scope.$watch('lineItem.moveTo.locationCode', function() {
+                            var initValue = _.get($scope.lineItem, ['moveTo', 'locationCode']);
+                            if (initValue) {
+                                $scope.selectedOption = _.find($scope.options, function(option) {
+                                    return option.replace('[empty]', '') === initValue.replace('[empty]', '');
+                                });
+                            }
+                        }, true);
+                        $scope.$watch('lineItem.moveTo.area', function() {
+                            $scope.options = $scope.lineItem.destLocationOptions.map(function(option) {
+                                var target = _.find($scope.areaLocationInfo, function(areaLocation) {
+                                    return areaLocation.locationCode === option;
+                                });
+                                var isEmpty = _.get(target, 'isEmpty');
+                                $scope.optionToIsEmptyFlag[option] = isEmpty;
+                                return isEmpty ? '[empty]' + option : option;
                             });
-                        }
+                        }, true);
+
                         $scope.changeMoveToLocation = function() {
-                            $scope.lineItem.moveTo.locationCode = $scope.selectedOption.replace('[empty]', '');
+                            if ($scope.selectedOption) {
+                                $scope.lineItem.moveTo.locationCode = $scope.selectedOption.replace('[empty]', '');
+                            } else {
+                                $scope.lineItem.moveTo.locationCode = undefined;
+                            }
 
                             $scope.$emit('locationCodeChange', {
                                 lineItem: $scope.lineItem,
