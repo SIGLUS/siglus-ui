@@ -31,12 +31,14 @@
     // SIGLUS-REFACTOR: add user, drafts
     controller.$inject = ['$stateParams', 'facility', 'programs', 'adjustmentType',
         '$state', 'user', 'siglusInitialIssueModalService',
-        'siglusStockIssueService', 'loadingModalService', 'siglusStockUtilsService'];
+        'siglusStockIssueService', 'DRAFT_TYPE', 'loadingModalService', 'siglusStockUtilsService',
+        'siglusStockDispatchService', 'moduleType'];
     // SIGLUS-REFACTOR: ends here
 
     function controller($stateParams, facility, programs, adjustmentType, $state, user,
                         siglusInitialIssueModalService, siglusStockIssueService,
-                        loadingModalService, siglusStockUtilsService) {
+                        DRAFT_TYPE,
+                        loadingModalService, siglusStockUtilsService, siglusStockDispatchService, moduleType) {
         var vm = this;
 
         /**
@@ -65,30 +67,30 @@
 
         vm.hasExistInitialDraft = false;
 
-        vm.draftType = adjustmentType.state;
-
-        vm.adjustmentType = adjustmentType;
+        vm.draftType = DRAFT_TYPE[moduleType][adjustmentType.state];
 
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + '.' + secondaryKey;
         };
 
         vm.proceedForIssue = function(program) {
-            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft', {
+            $state.go('openlmis.' + moduleType + '.' + adjustmentType.state + '.draft', {
                 facility: facility,
                 programId: program.id,
                 initialDraftId: vm.initialDraftInfo.id,
                 initialDraftInfo: vm.initialDraftInfo,
-                draftType: vm.draftType
+                draftType: adjustmentType.state,
+                moduleType: moduleType
             });
         };
 
         vm.start = function(program) {
-            siglusInitialIssueModalService.show(program.id, facility.id, vm.draftType)
+            siglusInitialIssueModalService.show(program.id, facility.id, adjustmentType.state, moduleType)
                 .then(function(loadIssueToInfo) {
                     if (loadIssueToInfo) {
                         loadingModalService.open();
-                        siglusStockIssueService.queryInitialDraftInfo(program.id, facility.id, vm.draftType)
+                        siglusStockDispatchService.queryInitialDraftInfo(program.id,
+                            vm.draftType, moduleType, facility.id)
                             .then(function(data) {
                                 vm.initialDraftInfo = data;
                                 vm.hasExistInitialDraft = true;
@@ -102,11 +104,11 @@
 
         vm.$onInit = function() {
             loadingModalService.open();
-            siglusStockIssueService.queryInitialDraftInfo(
-                _.get(programs, [0, 'id']), facility.id, vm.draftType
+            siglusStockDispatchService.queryInitialDraftInfo(
+                _.get(programs, [0, 'id']), vm.draftType, moduleType, facility.id
             ).then(function(data) {
                 vm.initialDraftInfo = data;
-                vm.hasExistInitialDraft = siglusStockUtilsService.isExistInitialDraft(data, vm.draftType);
+                vm.hasExistInitialDraft = siglusStockUtilsService.isExistInitialDraft(data, adjustmentType.state);
             })
                 .finally(function() {
                     loadingModalService.close();

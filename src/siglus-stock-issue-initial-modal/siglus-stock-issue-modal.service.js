@@ -26,7 +26,7 @@
     function service(openlmisModalService) {
         this.show = show;
 
-        function show(programId, facilityId, draftType) {
+        function show(programId, facilityId, draftType, moduleType) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'SiglusInitialIssueModalController',
@@ -42,6 +42,9 @@
                         },
                         draftType: function() {
                             return draftType;
+                        },
+                        moduleType: function() {
+                            return moduleType;
                         }
                     }
 

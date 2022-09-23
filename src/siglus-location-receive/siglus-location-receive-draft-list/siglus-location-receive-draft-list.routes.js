@@ -17,13 +17,13 @@
     'use strict';
 
     angular
-        .module('siglus-issue-draft-list')
+        .module('siglus-location-receive-draft-list')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.receive.draft', {
+        $stateProvider.state('openlmis.locationManagement.receive.draft', {
             url: '/draft/:programId?initialDraftId&draftType&moduleType',
             label: 'stockIssue.draftList',
             priority: 2,
@@ -59,9 +59,11 @@
                         receive: ADJUSTMENT_TYPE.RECEIVE
                     };
                     return adjustTypeMapper[$stateParams.draftType];
+                },
+                moduleType: function(MODULE_TYPE) {
+                    return MODULE_TYPE.LOCATION_MANAGEMENT;
                 }
             }
         });
     }
 })();
-

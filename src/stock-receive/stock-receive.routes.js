@@ -21,9 +21,9 @@
         .module('stock-receive')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE', 'MODULE_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE, MODULE_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive', {
             url: '/receive',
             label: 'stockReceive.receive',
@@ -51,6 +51,9 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;
+                },
+                moduleType: function() {
+                    return MODULE_TYPE.STOCK_MANAGEMENT;
                 }
             }
         });
