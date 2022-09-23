@@ -58,7 +58,19 @@ describe('SiglusLocationMovementCreationController', function() {
                 user_id: 'DPM_MP_Role2'
             },
             orderableGroups: [],
-            areaLocationInfo: [],
+            areaLocationInfo: [
+                {
+                    locationCode: 'AA25A',
+                    area: 'Armazem Principal',
+                    lots: [ {
+                        orderableId: 'ee3039cb-2c71-40c3-821d-98f34c3364a2',
+                        lotId: '586febc2-1876-50ff-a559-1ee2152ba200',
+                        stockOnHand: 100,
+                        lotCode: 'SEM-LOTE-04F0XY-092023-14/09/2023',
+                        expirationDate: '2023-09-14'
+                    } ]
+                }
+            ],
             addedLineItems: [],
             displayItems: [],
             locations: [],

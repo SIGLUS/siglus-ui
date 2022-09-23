@@ -205,7 +205,14 @@
         };
 
         vm.changeArea = function(lineItem, lineItems) {
-            lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
+            //lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
+            if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
+                lineItem.$error.areaError = 'openlmisForm.required';
+                lineItem.$error.moveToLocationError = 'openlmisForm.required';
+                lineItem.moveTo.locationCode = null;
+            } else {
+                lineItem.$error.areaError = '';
+            }
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
             if (lineItem.$error.areaError !== 'openlmisForm.required' && vm.isVirtual) {
@@ -219,6 +226,10 @@
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
             if (lineItem.$error.moveToLocationError !== 'openlmisForm.required' && vm.isVirtual) {
                 validateRelatedLineItemsForVirtual(lineItem, lineItems);
+            }
+            if (lineItem.$error.moveToLocationError === '') {
+                lineItem.moveTo.area = lineItem.destAreaOptions[0];
+                vm.changeArea(lineItem, lineItems);
             }
         };
 

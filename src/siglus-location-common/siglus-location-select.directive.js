@@ -39,6 +39,8 @@
                                 $scope.selectedOption = _.find($scope.options, function(option) {
                                     return option.replace('[empty]', '') === initValue.replace('[empty]', '');
                                 });
+                            } else {
+                                $scope.selectedOption = '';
                             }
                         }, true);
                         $scope.$watch('lineItem.moveTo.area', function() {
