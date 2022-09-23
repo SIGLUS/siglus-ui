@@ -197,8 +197,8 @@
 
         }
 
-        $scope.$on('$stateChangeStart', function(event, toState) {
-            if (toState.name !== 'openlmis.stockmanagement.stockCardSummaries') {
+        $scope.$on('$stateChangeStart', function(_e, toState, _toParams, fromState) {
+            if (toState.name !== fromState.name) {
                 stockCardDataService.clear();
             }
         });
