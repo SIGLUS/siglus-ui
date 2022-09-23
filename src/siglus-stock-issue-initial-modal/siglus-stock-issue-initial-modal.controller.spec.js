@@ -47,7 +47,8 @@ describe('SiglusInitialIssueModalController', function() {
             modalDeferred: modalDeferred,
             programId: '00000000-0000-0000-0000-000000000000',
             facilityId: '2ee6bbf4-cfcf-11e9-9535-0242ac130005',
-            draftType: ADJUSTMENT_TYPE.ISSUE.state
+            draftType: ADJUSTMENT_TYPE.ISSUE.state,
+            moduleType: 'stockmanagement'
         });
 
     }
@@ -119,6 +120,7 @@ describe('SiglusInitialIssueModalController', function() {
             expect($state.go).toHaveBeenCalledWith('openlmis.stockmanagement.issue.draft', {
                 programId: '00000000-0000-0000-0000-000000000000',
                 initialDraftId: 'A0000002',
+                moduleType: 'stockmanagement',
                 draftType: 'issue'
             });
         });

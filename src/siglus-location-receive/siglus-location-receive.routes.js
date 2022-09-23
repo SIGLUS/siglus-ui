@@ -17,15 +17,15 @@
     'use strict';
 
     angular
-        .module('stock-issue')
+        .module('siglus-location-receive')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE', 'MODULE_TYPE'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE, MODULE_TYPE) {
-        $stateProvider.state('openlmis.stockmanagement.issue', {
-            url: '/issue',
-            label: 'stockIssue.issue',
+        $stateProvider.state('openlmis.locationManagement.receive', {
+            url: '/receive',
+            label: 'stockReceive.receive',
             priority: 5,
             showInNavigation: true,
             views: {
@@ -44,17 +44,14 @@
                     return authorizationService.getUser();
                 },
                 programs: function(programService) {
-                    // SIGLUS-REFACTOR: get all products
                     return programService.getAllProductsProgram();
-                    // SIGLUS-REFACTOR: ends here
                 },
                 adjustmentType: function() {
-                    return ADJUSTMENT_TYPE.ISSUE;
+                    return ADJUSTMENT_TYPE.RECEIVE;
                 },
                 moduleType: function() {
-                    return MODULE_TYPE.STOCK_MANAGEMENT;
+                    return MODULE_TYPE.LOCATION_MANAGEMENT;
                 }
-                // SIGLUS-REFACTOR: starts here
             }
         });
     }
