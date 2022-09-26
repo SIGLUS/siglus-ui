@@ -34,7 +34,7 @@
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
         'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService',
-        'siglusPrintPalletLabelComfirmModalService', 'productList'];
+        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'allPrograms', 'productList'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state,
                         $filter, paginationService, $stateParams,
@@ -44,7 +44,7 @@
                         notificationService, siglusLocationCommonApiService, facility, user,
                         siglusSignatureWithDateModalService, confirmDiscardService,
                         siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService,
-                        productList) {
+                        SIGLUS_TIME, allPrograms, productList) {
 
         var vm = this;
 
@@ -496,7 +496,10 @@
                 });
         };
 
-        vm.submit = function() {
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+        function submit() {
             validateForm();
             var errorIndex = findErrorIndex();
             if (errorIndex === -1) {
@@ -510,22 +513,14 @@
                             });
                             loadingModalService.open();
                             var lineItems = getLineItems();
-                            if (vm.isVirtual) {
-                                lineItems.forEach(function(line) {
-                                    line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
-                                });
-                            }
+                            lineItems.forEach(function(line) {
+                                line.isKit = _.isEmpty(_.get(line, ['lot', 'id']));
+                            });
                             siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
                                 .then(function() {
                                     $scope.needToConfirm = false;
-                                    if (vm.isVirtual) {
-                                        siglusLocationMovementUpgradeService.doneUpgrade();
-                                        $state.go('openlmis.home');
-                                    } else {
-                                        $state.go('^', $stateParams, {
-                                            reload: true
-                                        });
-                                    }
+                                    siglusLocationMovementUpgradeService.doneUpgrade();
+                                    $state.go('openlmis.home');
                                     loadingModalService.close();
                                 })
                                 .catch(function() {
@@ -556,15 +551,11 @@
                                     siglusLocationMovementService.submitMovementDraft(baseInfo, lineItems, locations)
                                         .then(function() {
                                             $scope.needToConfirm = false;
-                                            if (vm.isVirtual) {
-                                                siglusLocationMovementUpgradeService.doneUpgrade();
-                                                $state.go('openlmis.home');
-                                            } else {
-                                                $state.go('^', $stateParams, {
-                                                    reload: true
-                                                });
-                                            }
-                                            loadingModalService.close();
+                                            var programId = _.get(allPrograms, [0, 'id']);
+                                            $stateParams.program = programId;
+                                            $state.go('openlmis.locationManagement.stockOnHand', $stateParams, {
+                                                reload: true
+                                            });
                                         })
                                         .catch(function() {
                                             loadingModalService.close();
@@ -579,7 +570,7 @@
                 $stateParams.page = Math.floor(errorIndex / 10);
                 searchList();
             }
-        };
+        }
 
         vm.downloadPrint = function() {
             var increaseLineItems = _.chain(angular.copy(getLineItems()))

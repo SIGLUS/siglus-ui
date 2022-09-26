@@ -9,7 +9,7 @@
   "shipmentView.none": "None",
   "shipmentView.allLineItemsSkipped": "Cannot fulfill order with all line items skipped.",
   "shipmentView.partialFulfilledQuantity": "Partial Fulfilled",
-  "shipmentView.suggestedQuantity": "Suggested Quantity",
+  "shipmentView.suggestedQuantity": "Rationalized Quantity",
   "shipmentView.confirmPartialFulfilled.message": "${totalPartialLineItems} products are not fully fulfilled. By confirming “create sub-order”, this order will be fulfilled and ordering with filling quantity,  the ordering facility will be notified of pending shipment with an electronic Proof of Delivery (POD). The rest products which not be fully fulfilled will be move to a new sub-order.",
   "shipmentView.confirmPartialFulfilled.createSuborder": "Create sub-order",
   "shipmentView.suborderHasBeenConfirmed": "Sub-order has been created",

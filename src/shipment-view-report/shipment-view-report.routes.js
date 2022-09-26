@@ -44,7 +44,7 @@
                     return localStorageService.get('shipmentViewData');
                 },
                 locations: function(localStorageService) {
-                    return localStorageService.get('locations');
+                    return JSON.parse(localStorageService.get('locations'));
                 },
                 pickPackInfo: function(shipmentViewService, $stateParams) {
                     return shipmentViewService.getPickPackInfo($stateParams.id);

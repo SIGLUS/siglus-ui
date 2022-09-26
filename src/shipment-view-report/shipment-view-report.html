@@ -41,7 +41,7 @@
                     <td class="text__left">{{ lineItem.lot ? lineItem.lot.expirationDate : '' }}</td>
                     <td class="text__left" ng-if="!lineItem.isMainGroup || lineItems.length === 1">{{ lineItem.location ? lineItem.location.area + ' -' : '' }} {{ lineItem.location ? lineItem.location.locationCode : '' }}</td>
                     <td ng-if="lineItem.isMainGroup && lineItems.length > 1"></td>
-                    <td>{{ lineItem.isMainGroup ? lineItem.orderQuantity : '' }}</td>
+                    <td>{{ lineItem.isMainGroup ? lineItem.orderedQuantity : '' }}</td>
                     <td>{{lineItem.partialFulfilledQuantity}}</td>
                     <td>{{vm.getFillQuantity(lineItems, index)}}</td>
                     <td>{{vm.getAvailableSoh(lineItems, index)}}</td>

@@ -73,8 +73,11 @@ describe('SiglusLocationMovementCreationController', function() {
             addedLineItems: [],
             displayItems: [],
             locations: [],
-            productList: [],
-            $scope: $scope
+            $scope: $scope,
+            allPrograms: [{
+                id: '00000000-0000000-0000000-0000000'
+            }],
+            productList: []
         });
     }
 
