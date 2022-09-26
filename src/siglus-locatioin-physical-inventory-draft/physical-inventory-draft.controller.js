@@ -39,7 +39,8 @@
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
         'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService'
+        'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService',
+        'siglusOrderableLotService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -52,7 +53,8 @@
                         REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-                        allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService) {
+                        allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
+                        siglusOrderableLotService) {
         var vm = this;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
@@ -227,14 +229,15 @@
                 return !isInAdded;
             });
             addProductsModalService.show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
-                draft.lineItems = draft.lineItems.concat(addedItems);
-                refreshLotOptions();
-                $stateParams.isAddProduct = true;
-                reload($state.current.name);
-
-                // #105: activate archived product
-                siglusArchivedProductService.alterInfo(addedItems);
-                // #105: ends here
+                siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
+                    draft.lineItems = draft.lineItems.concat(addedItems);
+                    refreshLotOptions();
+                    $stateParams.isAddProduct = true;
+                    reload($state.current.name);
+                    // #105: activate archived product
+                    siglusArchivedProductService.alterInfo(addedItems);
+                    // #105: ends here
+                });
             });
         };
         // SIGLUS-REFACTOR: ends here
@@ -1100,7 +1103,9 @@
             var lotOptions = getLotOptions();
             _.forEach(draft.lineItems, function(displayLineItem) {
                 var orderableId = displayLineItem.orderable.id;
-                displayLineItem.lotOptions = lotOptions[orderableId];
+                if (lotOptions[orderableId]) {
+                    displayLineItem.lotOptions = lotOptions[orderableId];
+                }
             });
         }
 

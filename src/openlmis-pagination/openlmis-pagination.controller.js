@@ -145,7 +145,8 @@
                     });
                 }
                 stateParams.hasLoadOrderableGroups = false;
-                if (pagination.showReloadLoading) {
+                if (pagination.showReloadLoading
+                    && parseInt(_.get($state, ['params', 'page'])) !== parseInt(_.get(stateParams, 'page'))) {
                     loadingModalService.open();
                     setTimeout(function() {
                         $state.go($state.current.name, stateParams);

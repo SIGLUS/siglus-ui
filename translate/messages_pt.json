@@ -1771,7 +1771,7 @@
   "shipmentView.orderQuantity": "Quantidade ordenada",
   "shipmentView.packs": "Pacotes",
   "shipmentView.partialFulfilledQuantity": "Abastecimento parcial",
-  "shipmentView.suggestedQuantity": "Suggested Quantity",
+  "shipmentView.suggestedQuantity": "Quantidade Racionalizada",
   "shipmentView.product": "Produto",
   "shipmentView.productCode": "Código de produto",
   "shipmentView.products": "Produto (s)",

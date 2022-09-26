@@ -31,12 +31,12 @@
         'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
         'FunctionDecorator', 'SiglusPhysicalInventoryCreationService', 'alertService',
-        'loadingModalService'];
+        'loadingModalService', 'drafts'];
 
     function controller($stateParams, facility, programs, programId, messageService,
                         $state, physicalInventoryService, physicalInventoryFactory,
                         FunctionDecorator, SiglusPhysicalInventoryCreationService, alertService,
-                        loadingModalService) {
+                        loadingModalService, drafts) {
         var vm = this;
 
         /**
@@ -135,34 +135,7 @@
             vm.program = _.find(programs, function(program) {
                 return program.id === programId;
             });
-            if (programId) {
-                loadingModalService.open();
-                // physicalInventoryService.getDraftByLocation(facility.id, programId)
-                //     .then(function(drafts) {
-                //         vm.drafts = _.isEmpty(drafts) ?  [{
-                //             programId: programId,
-                //             isStarter: true
-                //         }] : drafts;
-                //     })
-                //     .finally(function() {
-                //         loadingModalService.close();
-                //     });
-                physicalInventoryService.getDraft(programId, facility.id)
-                    .then(function(drafts) {
-                        vm.drafts = _.isEmpty(drafts) ?  [{
-                            programId: programId,
-                            isStarter: true
-                        }] : drafts;
-                        $state.go('openlmis.locationManagement.physicalInventory', {
-                            programId: programId,
-                            drafts: _.clone(vm.drafts)
-                        });
-                    })
-                    .finally(function() {
-                        loadingModalService.close();
-                    });
-            }
-
+            vm.drafts = drafts;
         }
 
         /**

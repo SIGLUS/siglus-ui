@@ -40,7 +40,7 @@
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
-        'suggestedQuatity', 'siglusShipmentConfirmModalService'
+        'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME'
     ];
 
     function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
@@ -58,7 +58,7 @@
                                                   locations, siglusLocationCommonApiService,
                                                   localStorageService, $window, facility,
                                                   siglusPrintPalletLabelComfirmModalService,
-                                                  suggestedQuatity, siglusShipmentConfirmModalService) {
+                                                  suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -665,7 +665,10 @@
             return totalPartialLineItems;
         }
 
-        vm.submit = function() {
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+        function submit() {
             if (isTableFormValid()) {
                 var unskippedLineItems = _.filter(vm.displayTableLineItems, function(lineItems) {
                     return !lineItems[0].skipped;
@@ -726,7 +729,7 @@
             }
             alertService.error(messageService.get('openlmisForm.formInvalid'));
 
-        };
+        }
 
         function downloadPrint() {
             var printLineItems = _.chain(vm.displayTableLineItems)

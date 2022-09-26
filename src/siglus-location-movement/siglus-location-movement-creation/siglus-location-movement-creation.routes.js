@@ -55,6 +55,9 @@
                     }
                     return facilityFactory.getUserHomeFacility();
                 },
+                allPrograms: function(programService) {
+                    return programService.getAllProductsProgram();
+                },
                 user: function(authorizationService, $stateParams) {
                     if ($stateParams.user) {
                         return $stateParams.user;
