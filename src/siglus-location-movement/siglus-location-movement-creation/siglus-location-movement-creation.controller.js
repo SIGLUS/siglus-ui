@@ -210,6 +210,7 @@
                 lineItem.$error.areaError = 'openlmisForm.required';
                 lineItem.$error.moveToLocationError = 'openlmisForm.required';
                 lineItem.moveTo.locationCode = null;
+                lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
             } else {
                 lineItem.$error.areaError = '';
             }

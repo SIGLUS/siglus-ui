@@ -108,7 +108,7 @@
                             vm.showGTnumber = true;
                         }
                         if (err.data.messageKey
-              === 'siglusapi.error.inventory.conflict.Draft') {
+              === 'siglusapi.error.proofOfDelivery.sub.drafts.already.existed') {
                             vm.showConflictStatus = true;
                         }
                     });
