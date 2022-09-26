@@ -39,7 +39,7 @@
         'SiglusLocationCommonUtilsService', 'siglusLocationAdjustmentModifyLineItemService',
         'siglusLocationCommonApiService', 'areaLocationInfo', 'siglusLocationAdjustmentService',
         'alertConfirmModalService', 'siglusOrderableLotMapping', 'locations', 'program',
-        'siglusPrintPalletLabelComfirmModalService'
+        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME'
     ];
 
     function controller(
@@ -54,7 +54,7 @@
         SiglusLocationCommonUtilsService, siglusLocationAdjustmentModifyLineItemService,
         siglusLocationCommonApiService, areaLocationInfo, siglusLocationAdjustmentService,
         alertConfirmModalService, siglusOrderableLotMapping, locations, program,
-        siglusPrintPalletLabelComfirmModalService
+        siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME
     ) {
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
         var vm = this;
@@ -615,7 +615,10 @@
                 });
         };
 
-        vm.submit = function() {
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+        function submit() {
             validateForm();
             if (isValid()) {
                 siglusPrintPalletLabelComfirmModalService.show()
@@ -653,7 +656,7 @@
             } else {
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
-        };
+        }
 
         function downloadPrint() {
             var printLineItems = angular.copy(getLineItems());

@@ -34,7 +34,7 @@
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
         'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService',
-        'siglusPrintPalletLabelComfirmModalService', 'allPrograms'];
+        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'allPrograms'];
 
     function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
                         $filter, paginationService, $stateParams,
@@ -43,7 +43,7 @@
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,
                         siglusSignatureWithDateModalService, confirmDiscardService,
-                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService,
+                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME,
                         allPrograms) {
 
         var vm = this;
@@ -483,7 +483,10 @@
                 });
         };
 
-        vm.submit = function() {
+        vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
+            trailing: false
+        });
+        function submit() {
             validateForm();
             var errorIndex = findErrorIndex();
             if (errorIndex === -1) {
@@ -554,7 +557,7 @@
                 $stateParams.page = Math.floor(errorIndex / 10);
                 searchList();
             }
-        };
+        }
 
         vm.downloadPrint = function() {
             var increaseLineItems = _.chain(angular.copy(getLineItems()))
