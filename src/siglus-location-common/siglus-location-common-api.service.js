@@ -28,16 +28,28 @@
         .module('siglus-location-common')
         .service('siglusLocationCommonApiService', siglusLocationCommonApiService);
 
-    siglusLocationCommonApiService.$inject = ['$resource', 'fulfillmentUrlFactory'];
-    function siglusLocationCommonApiService($resource, fulfillmentUrlFactory) {
+    siglusLocationCommonApiService.$inject = ['$resource', 'stockmanagementUrlFactory'];
+    function siglusLocationCommonApiService($resource, stockmanagementUrlFactory) {
 
-        var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/locations'), {}, {
+        var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/locations'), {}, {
 
             getOrderableLocationLotsInfo: {
                 method: 'POST',
                 isArray: true
+            },
+            getProductList: {
+                url: stockmanagementUrlFactory('/api/siglusapi/orderables/available'),
+                method: 'GET',
+                isArray: true
             }
+
         });
+
+        this.getProductList = function(isRequestAll) {
+            return resource.getProductList({
+                isRequestAll: isRequestAll
+            }).$promise;
+        };
 
         this.getOrderableLocationLotsInfo = function(params, orderableIds) {
             return resource.getOrderableLocationLotsInfo(params, orderableIds ? orderableIds : []).$promise;

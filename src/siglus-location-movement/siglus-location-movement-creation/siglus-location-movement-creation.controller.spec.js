@@ -57,7 +57,6 @@ describe('SiglusLocationMovementCreationController', function() {
                 // eslint-disable-next-line camelcase
                 user_id: 'DPM_MP_Role2'
             },
-            orderableGroups: [],
             areaLocationInfo: [
                 {
                     locationCode: 'AA25A',
@@ -74,6 +73,7 @@ describe('SiglusLocationMovementCreationController', function() {
             addedLineItems: [],
             displayItems: [],
             locations: [],
+            productList: [],
             $scope: $scope
         });
     }
