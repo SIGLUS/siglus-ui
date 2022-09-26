@@ -19,8 +19,8 @@
                 <div>
                     <label for="movement-select-product">{{'stockReceiveCreation.product' | message}}</label>
                     <select id="movement-select-product"
-                            ng-model="vm.selectedOrderableGroup"
-                            ng-options="(orderableGroup.orderable | siglusArchivedProductName) for orderableGroup in vm.orderableGroups"
+                            ng-model="vm.selectedProduct"
+                            ng-options="product.fullProductName for product in vm.productList"
                             ng-change="vm.orderableSelectionChanged()"
                             required>
                     </select>

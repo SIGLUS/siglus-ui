@@ -36,7 +36,7 @@
             },
             params: {
                 isVirtual: undefined,
-                orderableGroups: undefined,
+                productList: undefined,
                 draftInfo: undefined,
                 addedLineItems: undefined,
                 areaLocationInfo: undefined,
@@ -67,17 +67,11 @@
                     }
                     return siglusLocationMovementService.getMovementDraftById($stateParams.draftId);
                 },
-                orderableGroups: function($stateParams, facility, draftInfo, orderableGroupService) {
-                    if (!$stateParams.orderableGroups) {
-                        var allLineOrderableIds = draftInfo.lineItems.map(function(line) {
-                            return line.orderableId;
-                        });
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
-                            undefined, allLineOrderableIds
-                        );
+                productList: function($stateParams, siglusLocationCommonApiService) {
+                    if ($stateParams.productList) {
+                        return $stateParams.productList;
                     }
-                    return $stateParams.orderableGroups;
+                    return siglusLocationCommonApiService.getProductList(false);
                 },
                 locations: function(draftInfo, siglusLocationCommonApiService, $stateParams) {
                     if ($stateParams.locations) {
@@ -101,7 +95,7 @@
                     return siglusLocationMovementService.getMovementLocationAreaInfo(undefined, true);
                 },
                 addedLineItems: function(draftInfo, $stateParams, locations, addAndRemoveLineItemService,
-                    orderableGroups) {
+                    productList) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
                     }
@@ -114,10 +108,10 @@
                     }
                     if (isVirtual) {
                         return addAndRemoveLineItemService
-                            .prepareAddedLineItemsForVirtual(draftInfo, locations, orderableGroups);
+                            .prepareAddedLineItemsForVirtual(draftInfo, locations, productList);
                     }
 
-                    return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, orderableGroups);
+                    return addAndRemoveLineItemService.prepareAddedLineItems(draftInfo, locations, productList);
                 },
                 displayItems: function($stateParams, siglusLocationCommonFilterService, addedLineItems, locations,
                     areaLocationInfo, SiglusLocationCommonUtilsService, addAndRemoveLineItemService) {

@@ -130,18 +130,18 @@
             };
         };
 
-        this.getAddProductRow = function(orderable) {
+        this.getAddProductRow = function(product) {
             return {
                 $error: {},
-                orderableId: orderable.id,
-                productCode: orderable.productCode,
-                productName: $filter('productName')(orderable),
+                orderableId: product.orderableId,
+                productCode: product.productCode,
+                productName: $filter('productName')(product),
                 lot: null,
                 stockOnHand: 0,
-                isKit: orderable.isKit,
+                isKit: product.isKit,
                 isMainGroup: true,
                 location: null,
-                programId: _.get(orderable.programs, [0, 'programId'], ''),
+                programId: product.programId,
                 moveTo: null,
                 quantity: 0
             };
@@ -164,14 +164,14 @@
 
         }
 
-        function getProgramId(orderableGroups, lineItem) {
-            var items = _.find(orderableGroups, function(group) {
-                return _.get(_.first(group), ['orderable', 'id']) === lineItem.orderableId;
+        function getProgramId(productList, lineItem) {
+            var item = _.find(productList, function(product) {
+                return product.orderableId === lineItem.orderableId;
             });
-            return _.get(_.first(items), ['orderable', 'programs', 0, 'programId'], '');
+            return _.get(item, 'programId');
         }
 
-        function mapDataToDisplay(group, isMainGroup, locations, orderableGroups, isFirst) {
+        function mapDataToDisplay(group, isMainGroup, locations, productList, isFirst) {
             return _.map(group, function(item) {
                 var stockOnHand = updateStockOnHand(locations, item);
                 var lot = item.lotCode ? {
@@ -196,7 +196,7 @@
                     lot: lot,
                     stockOnHand: stockOnHand,
                     isMainGroup: isMainGroup,
-                    programId: getProgramId(orderableGroups, item),
+                    programId: getProgramId(productList, item),
                     location: location,
                     moveTo: moveTo,
                     isFirst: isFirst
@@ -204,27 +204,27 @@
             });
         }
 
-        this.prepareAddedLineItems = function(draftInfo, locations,  orderableGroups) {
+        this.prepareAddedLineItems = function(draftInfo, locations,  productList) {
             var $this = this;
             return _.chain(_.get(draftInfo, 'lineItems', []))
                 .groupBy('orderableId')
                 .values()
                 .map(function(group) {
                     if (group.length === 1) {
-                        return mapDataToDisplay(group, true, locations, orderableGroups);
+                        return mapDataToDisplay(group, true, locations, productList);
                     }
                     var firstRow = $this.getMainGroupRow(group[0]);
                     var result = [];
                     result.push(firstRow);
 
-                    var childrenLineItems = mapDataToDisplay(group, false, locations, orderableGroups);
+                    var childrenLineItems = mapDataToDisplay(group, false, locations, productList);
                     return result.concat(childrenLineItems);
 
                 })
                 .value();
         };
 
-        this.prepareAddedLineItemsForVirtual = function(draftInfo, locations,  orderableGroups) {
+        this.prepareAddedLineItemsForVirtual = function(draftInfo, locations,  productList) {
             var $this = this;
             var sortedByProductCode = _.chain(_.get(draftInfo, 'lineItems', [])).sort(function(i1, i2) {
                 return _.get(i1, 'productCode', '').localeCompare(_.get(i2, 'productCode', ''));
@@ -234,13 +234,13 @@
                 .values()
                 .map(function(group) {
                     if (group.length === 1) {
-                        return mapDataToDisplay(group, true, locations, orderableGroups, true);
+                        return mapDataToDisplay(group, true, locations, productList, true);
                     }
                     var firstRow = $this.getMainGroupRow(group[0]);
                     var result = [];
                     result.push(firstRow);
 
-                    var childrenLineItems = mapDataToDisplay(group, false, locations, orderableGroups);
+                    var childrenLineItems = mapDataToDisplay(group, false, locations, productList);
                     if (childrenLineItems.length > 1 && childrenLineItems[0].lot && childrenLineItems[0].lot.id) {
                         childrenLineItems.sort(function(i1, i2) {
                             return _.get(i2, ['lot', 'lotCode'], '').localeCompare(_.get(i1, ['lot', 'lotCode'], ''));
