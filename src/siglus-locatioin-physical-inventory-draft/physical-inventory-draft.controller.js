@@ -1118,7 +1118,6 @@
                 vm.hasLot,
                 lineItem.locationCode
             ).then(function(addedItems) {
-                // console.log('### allLocationAreaMap', vm.allLocationAreaMap);
                 var allLocationAreaList = _.flatten(Object.values(vm.allLocationAreaMap));
                 _.forEach(addedItems, function(item) {
                     item.area = _.find(allLocationAreaList, function(location) {
@@ -1129,7 +1128,6 @@
                     draft.lineItems = draft.lineItems.concat(addedItems);
                 }
                 if (!lineItem.orderable.id) {
-                    // draft.lineItems = draft.lineItems.concat(addedItems);
                     if (addedItems.length > 1) {
                         var  firstLineItem = _.first(addedItems);
 

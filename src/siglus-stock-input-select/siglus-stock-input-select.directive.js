@@ -256,8 +256,10 @@
 
                     var body = angular.element(document).find('body');
                     scope.showSelect = function($event, lineItem) {
+                        // eslint-disable-next-line no-debugger
+                        debugger;
+                        scope.testLotCode();
                         setTimeout(function() {
-                            scope.testLotCode();
                             if (!lineItem.showSelect) {
                                 lineItem.showSelect = true;
                                 scope.hideAllSelect();
@@ -278,7 +280,7 @@
                                     .on('click', select);
                                 body.append(target);
                             }
-                        }, 100);
+                        }, 200);
                     };
 
                     scope.hideAllSelect = function() {
