@@ -65,18 +65,6 @@
                         return $stateParams.programId;
                     }
                     return undefined;
-                },
-                drafts: function(physicalInventoryService, $stateParams, facility, programId) {
-                    return physicalInventoryService.getDraft(programId, facility.id)
-                        .then(function(drafts) {
-                            var vmDrafts = _.isEmpty(drafts) ?  [{
-                                programId: programId,
-                                isStarter: true
-                            }] : drafts;
-                            $stateParams.programId = programId;
-                            $stateParams.drafts = _.clone(vmDrafts);
-                            return vmDrafts;
-                        });
                 }
             }
         });
