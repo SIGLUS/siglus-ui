@@ -175,7 +175,9 @@ describe('LocationPhysicalInventoryListController', function() {
             });
             $rootScope.$apply();
 
-            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.physicalInventory.draftList');
+            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.physicalInventory.draftList', {
+                locationManagementOption: undefined
+            });
         });
 
         it('should alert error hint when validate is false', function() {

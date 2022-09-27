@@ -81,11 +81,20 @@
         var locationResource = $resource(stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'), {}, {
             getDraftByLocation: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories')
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'),
+                isArray: true
             },
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
+            },
+            deleteSubDraftByLocation: {
+                method: 'DELETE',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft'),
+                hasBody: true,
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
             },
             getSOH: {
                 method: 'POST',
@@ -95,6 +104,12 @@
             saveDraftWithLocation: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
+            },
+            submitSubDraftWithLocation: {
+                method: 'POST',
+                url: stockmanagementUrlFactory(
+                    '/api/siglusapi/location/physicalInventories/subDraftSubmit?isByLocation=true'
+                )
             }
         });
         this.getDraft = getDraft;
@@ -108,6 +123,7 @@
         this.saveDraftWithLocation = saveDraftWithLocation;
         this.deleteDraft = deleteDraft;
         this.deleteDraftList = deleteDraftList;
+        this.deleteSubDraftByLocation = deleteSubDraftByLocation;
         this.submitPhysicalInventory = submit;
         this.submitSubPhysicalInventory = subSubmit;
         this.getLocationPhysicalInventorySubDraft = getLocationPhysicalInventorySubDraft;
@@ -115,7 +131,6 @@
         this.getInitialDraft = getInitialDraft;
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
-        this.deleteSubDraftByLocation = deleteSubDraftByLocation;
         this.getDraftByLocation = getDraftByLocation;
         // SIGLUS-REFACTOR: ends here
 
@@ -131,7 +146,7 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function saveDraftWithLocation(draft) {
+        function saveDraftWithLocation(draft, locationManagementOption) {
             var physicalInventory = angular.copy(draft);
 
             // SIGLUS-REFACTOR: Filter not added items
@@ -152,7 +167,8 @@
                         stockCardId: item.stockCardId,
                         programId: item.programId,
                         area: item.area,
-                        locationCode: item.locationCode
+                        locationCode: item.locationCode,
+                        skipped: item.skipped
                     };
                 }
                 return {
@@ -169,11 +185,15 @@
                     stockCardId: item.stockCardId,
                     programId: item.programId,
                     area: item.area,
-                    locationCode: item.locationCode
+                    locationCode: item.locationCode,
+                    skipped: item.skipped
                 };
             });
             // SIGLUS-REFACTOR: ends here
             return locationResource.saveDraftWithLocation(
+                {
+                    isByLocation: locationManagementOption === 'location'
+                },
                 siglusStockEventService.formatPayload(physicalInventory)
             ).$promise;
         }
@@ -202,13 +222,6 @@
                 program: program,
                 isDraft: true
             })
-                .$promise;
-        }
-
-        function deleteSubDraftByLocation(ids) {
-            return locationResource.remove({
-                isByLocation: true
-            }, ids)
                 .$promise;
         }
 
@@ -432,6 +445,12 @@
             }).$promise;
         }
 
+        function deleteSubDraftByLocation(ids) {
+            return locationResource.deleteSubDraftByLocation({
+                isByLocation: true
+            }, ids).$promise;
+        }
+
         function deleteDraft(ids, isInitialInventory) {
             if (isInitialInventory) {
                 return resource.delete({
@@ -452,7 +471,7 @@
          * @param  {Object} physicalInventory Draft that will be saved
          * @return {Promise}                  Submitted Physical Inventory
          */
-        function subSubmit(physicalInventory) {
+        function subSubmit(physicalInventory, locationManagementOption) {
             var draft = angular.copy(physicalInventory);
 
             // SIGLUS-REFACTOR: Filter not added items
@@ -472,13 +491,20 @@
                     stockCardId: item.stockCardId,
                     area: item.area,
                     locationCode: item.locationCode,
-                    programId: item.programId
+                    programId: item.programId,
+                    skipped: item.skipped
                 };
             });
             // SIGLUS-REFACTOR: ends here
             var event = siglusStockEventService.formatPayload(draft);
             // SIGLUS-REFACTOR: starts here
-            return resource.submit(event).$promise;
+            var result = '';
+            if (locationManagementOption === 'location') {
+                result = locationResource.submitSubDraftWithLocation(event).$promise;
+            } else {
+                resource.submit(event).$promise;
+            }
+            return result;
             // SIGLUS-REFACTOR: ends here
         }
 

@@ -30,11 +30,11 @@
 
     controller.$inject = ['items', 'hasLot', 'messageService',
         'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE',
-        'locationCode'];
+        'locationCode', 'siglusOrderableLotService'];
 
     function controller(items, hasLot, messageService,
                         modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE,
-                        locationCode) {
+                        locationCode, siglusOrderableLotService) {
         var vm = this;
 
         /**
@@ -47,7 +47,7 @@
          * All products available for users to choose from.
          */
         vm.items = items;
-        vm.seletedItem = {
+        vm.selectedItem = {
             isInModal: false
         };
         vm.withLocation = true;
@@ -92,24 +92,20 @@
             //make form good as new, so errors won't persist
             $scope.productForm.$setPristine();
 
-            var seletedItem = vm.selectedOrderableGroup[0];
-            var notAddedLotItemGroup = _.chain(items)
-                .filter(function(summary) {
-                    // #105: activate archived product
-                    return summary.lot;
-                    // #105: ends here
-                })
-                .groupBy(function(item) {
-                    return item.orderable.id;
-                })
-                .value();
-            seletedItem.lotOptions =
-                orderableGroupService.lotsOfWithNull(notAddedLotItemGroup[seletedItem.orderable.id]);
-            if (seletedItem.lot && seletedItem.lot.lotCode) {
-                seletedItem.lot.lotCode = null;
-                seletedItem.lot.expirationDate = null;
+            var addedItems = vm.selectedOrderableGroup;
+            if (addedItems) {
+                siglusOrderableLotService.fillLotsToAddedItems(addedItems);
+                var selectedItem = addedItems[0];
+                selectedItem.locationCode = locationCode;
+                if (selectedItem.lot && selectedItem.lot.lotCode) {
+                    selectedItem.lot.lotCode = null;
+                    selectedItem.lot.expirationDate = null;
+                    selectedItem.lot.id = null;
+                }
+                vm.selectedItem = selectedItem;
+            } else {
+                vm.selectedItem = {};
             }
-            vm.seletedItem = seletedItem;
         };
 
         /**
@@ -121,21 +117,26 @@
          * Add the currently selected product into the table beneath it for users to do further actions.
          */
         vm.addOneProduct = function() {
-            // SIGLUS-REFACTOR: Ticket 5: add product without lot
-            // var selectedItem = orderableGroupService
-            //     .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
             if (vm.selectedOrderableGroup === null || vm.selectedOrderableGroup === undefined) {
                 return undefined;
             }
-            var selectedItem = vm.selectedOrderableGroup[0];
-            selectedItem.lot = undefined;
-            // set stockCardId undefined
-            selectedItem.stockCardId = undefined;
-            // SIGLUS-REFACTOR: ends here -->
-
+            var selectedItem = angular.copy(vm.selectedOrderableGroup[0]);
+            var addedItems = angular.copy(vm.addedItems);
+            selectedItem.$errors = {};
+            selectedItem.skipped = false;
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
+
             if (notAlreadyAdded) {
-                vm.addedItems.push(selectedItem);
+                vm.addedItems = addedItems.concat(selectedItem);
+                var hasAddedLotCode = _.map(vm.addedItems, function(item) {
+                    return item.lot && item.lot.lotCode;
+                });
+                vm.selectedItem.lotOptions = _.filter(vm.selectedItem.lotOptions, function(lot) {
+                    return !_.contains(hasAddedLotCode, lot.lotCode);
+                });
+                vm.selectedItem.lot.lotCode = null;
+                vm.selectedItem.lot.expirationDate = null;
+                vm.selectedItem.lot.id = null;
             }
         };
 

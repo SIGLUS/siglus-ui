@@ -203,8 +203,11 @@
                             loadingModalService.close();
                             SiglusPhysicalInventoryCreationService.show('', 'location');
                         } else {
+                            var stateParamsCopy = angular.copy($stateParams);
+                            stateParamsCopy.locationManagementOption = drafts[0].locationOption;
                             $state.go(
-                                'openlmis.locationManagement.physicalInventory.draftList'
+                                'openlmis.locationManagement.physicalInventory.draftList',
+                                stateParamsCopy
                             );
                         }
                     } else {

@@ -16,6 +16,7 @@
   "stockInitialInventory.delete": "Delete",
   "stockInitialInventory.cancel": "Cancel",
   "stockPhysicalInventoryDraft.draft": "Draft",
+  "stockPhysicalInventoryDraft.hasEmptyLocation": "Please skip the locations that do not contain any products.",
   "stockPhysicalInventoryDraft.mergeDraft": "Merged Draft",
   "stockInitialInventory.goBack": "Back to previous",
   "stockInitialInventoryDraft.submitted": "Initial inventory has successfully been submitted",

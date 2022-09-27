@@ -31,12 +31,12 @@
         'messageService',
         '$state', 'physicalInventoryService', 'physicalInventoryFactory',
         'FunctionDecorator', 'SiglusPhysicalInventoryCreationService', 'alertService',
-        'loadingModalService', 'drafts'];
+        'loadingModalService'];
 
     function controller($stateParams, facility, programs, programId, messageService,
                         $state, physicalInventoryService, physicalInventoryFactory,
                         FunctionDecorator, SiglusPhysicalInventoryCreationService, alertService,
-                        loadingModalService, drafts) {
+                        loadingModalService) {
         var vm = this;
 
         /**
@@ -135,7 +135,20 @@
             vm.program = _.find(programs, function(program) {
                 return program.id === programId;
             });
-            vm.drafts = drafts;
+            if (programId) {
+                loadingModalService.open();
+                physicalInventoryService.getDraft(programId, facility.id)
+                    .then(function(drafts) {
+                        vm.drafts = _.isEmpty(drafts) ?  [{
+                            programId: programId,
+                            isStarter: true
+                        }] : drafts;
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
+                    });
+            }
+
         }
 
         /**

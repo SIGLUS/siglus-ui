@@ -64,13 +64,14 @@
                     return '00000000-0000-0000-0000-000000000000';
                 },
                 drafts: function(physicalInventoryService, $stateParams, facility, programId) {
-                    return physicalInventoryService.getDraft(programId, facility.id)
+                    return physicalInventoryService.getDraftByLocation(facility.id, programId)
                         .then(function(drafts) {
                             var vmDrafts = _.isEmpty(drafts) ?  [{
                                 programId: programId,
                                 isStarter: true
                             }] : drafts;
                             $stateParams.programId = programId;
+                            $stateParams.locationManagementOption = !_.isEmpty(drafts) && drafts[0].locationOption;
                             $stateParams.drafts = _.clone(vmDrafts);
                             return vmDrafts;
                         });
