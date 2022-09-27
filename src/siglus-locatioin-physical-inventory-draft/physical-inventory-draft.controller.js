@@ -1118,6 +1118,13 @@
                 vm.hasLot,
                 lineItem.locationCode
             ).then(function(addedItems) {
+                // console.log('### allLocationAreaMap', vm.allLocationAreaMap);
+                var allLocationAreaList = _.flatten(Object.values(vm.allLocationAreaMap));
+                _.forEach(addedItems, function(item) {
+                    item.area = _.find(allLocationAreaList, function(location) {
+                        return location.locationCode === item.locationCode;
+                    }).area;
+                });
                 if (lineItem.orderable.id) {
                     draft.lineItems = draft.lineItems.concat(addedItems);
                 }
