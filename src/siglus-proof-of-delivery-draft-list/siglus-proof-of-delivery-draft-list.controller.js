@@ -123,6 +123,7 @@
         };
 
         function onInit() {
+            loadingModalService.close();
             vm.programName = programName;
             vm.orderCode = $stateParams.orderCode;
             $state.current.label = programName + '-' + $stateParams.orderCode;
