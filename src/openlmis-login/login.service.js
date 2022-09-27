@@ -35,7 +35,8 @@
         'authorizationService',
         'authService',
         'accessTokenFactory',
-        'localStorageService'
+        'localStorageService',
+        'LocalDatabase'
     ];
 
     function loginService(
@@ -45,7 +46,8 @@
         authorizationService,
         authService,
         accessTokenFactory,
-        localStorageService
+        localStorageService,
+        LocalDatabase
     ) {
 
         var postLoginActions = [],
@@ -161,6 +163,7 @@
                     authorizationService.clearAccessToken();
                     authorizationService.clearUser();
                     localStorageService.clearAll();
+                    new LocalDatabase('orderables').removeAll();
                     deferred.resolve();
                 });
 
