@@ -16,7 +16,6 @@
 describe('openlmis-login.loginService', function() {
 
     beforeEach(function() {
-        module('openlmis-database');
         module('openlmis-login');
 
         inject(function($injector) {
