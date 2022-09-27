@@ -50,7 +50,7 @@
          */
         function StockEventLineItem(orderableId, lotId, quantity, occurredDate, extraData, stockAdjustments,
                                     reasonFreeText, lotCode, expirationDate, stockCardId,
-                                    programId, area, locationCode) {
+                                    programId, area, locationCode, skipped) {
             this.orderableId = orderableId;
             this.lotId = lotId;
             this.quantity = quantity;
@@ -65,6 +65,7 @@
             this.programId = programId;
             this.area = area;
             this.locationCode = locationCode;
+            this.skipped = skipped;
             // SIGLUS-REFACTOR: ends here
         }
     }

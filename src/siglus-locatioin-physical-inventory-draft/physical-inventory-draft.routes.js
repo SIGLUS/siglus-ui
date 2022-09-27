@@ -90,7 +90,10 @@
                                 id, flag, locationManagementOption
                             )
                                 .then(function(draft) {
-                                    var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
+                                    var filterNullLineItems = _.filter(draft.lineItems, function(itm) {
+                                        return itm.orderable.id;
+                                    });
+                                    var orderableIds = _.uniq(_.map(filterNullLineItems, function(item) {
                                         return item.orderable.id;
                                     }));
                                     if (orderableIds.length) {
@@ -141,7 +144,11 @@
                                     }
                                 });
                         } else {
-                            physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                            physicalInventoryFactory.getInitialInventory(
+                                program.id,
+                                facility.id,
+                                $stateParams.locationManagementOption
+                            )
                                 .then(function(draft) {
                                     var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
                                         return item.orderable.id;
@@ -198,7 +205,6 @@
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {

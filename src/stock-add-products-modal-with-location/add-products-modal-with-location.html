@@ -29,7 +29,7 @@
                         <label for="lotSelect">Lot</label>
                         <siglus-stock-input-select
                             style="width: auto;"
-                            line-item="vm.seletedItem"
+                            line-item="vm.selectedItem"
                             enable-input="true"
                         >
                         </siglus-stock-input-select>
@@ -40,11 +40,11 @@
                         <input
                             type="date"
                             class="min-width-date-input"
-                            ng-blur="vm.validExpirationDate(vm.seletedItem)"
-                            ng-change="vm.expirationDateChanged(vm.seletedItem)"
-                            ng-model="vm.seletedItem.lot.expirationDate"
-                            ng-disabled="vm.seletedItem.lot.lotCode"
-                            ng-required="vm.seletedItem.$errors.lotDateInvalid"
+                            ng-blur="vm.validExpirationDate(vm.selectedItem)"
+                            ng-change="vm.expirationDateChanged(vm.selectedItem)"
+                            ng-model="vm.selectedItem.lot.expirationDate"
+                            ng-disabled="vm.selectedItem.lot.id"
+                            ng-required="vm.selectedItem.$errors.lotDateInvalid"
                         />
                     </div>
                     <!-- SIGLUS-REFACTOR: Add stock-actions and fix width for add button-->
@@ -71,8 +71,8 @@
                             <td>{{item.orderable.productCode}}</td>
                             <td>{{item.orderable.fullProductName}}</td>
                             <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
-                            <!-- <td ng-if="vm.hasLot">{{item.displayLotMessage}}</td> -->
-                            <!-- <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td> -->
+                            <td ng-if="vm.hasLot">{{item.lot.lotCode}}</td>
+                            <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td>
                             <!-- SIGLUS-REFACTOR: ends here -->
                             <td ng-if="!vm.withLocation" openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
                                 <input positive-integer

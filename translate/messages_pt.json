@@ -2533,5 +2533,6 @@
   "adminFacilityView.locationManagement.upgradeWebUser": "Antes de atualizar o Android para o recurso Web, você precisa certificar-se de que todos os dados locais no tablet Android foram sincronizados com a web. A atualização não pode ser retirada, você tem certeza de atualizá-la?",
   "adminFacilityView.upgradSuccess": "Instalação atualizada com sucesso!",
   "adminFacilityView.upgradFailed": "Falha na atualização da instalação!",
-  "physicalInventoryCreation.showGTnumber": "The number of users cannot be larger than the number of products"
+  "physicalInventoryCreation.showGTnumber": "The number of users cannot be larger than the number of products",
+  "stockPhysicalInventoryDraft.hasEmptyLocation": "Please skip the locations that do not contain any products."
 }

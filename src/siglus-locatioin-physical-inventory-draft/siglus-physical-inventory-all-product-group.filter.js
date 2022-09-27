@@ -33,7 +33,9 @@
     function filter() {
         return function(items) {
             return _.groupBy(items, function(item) {
-                return _.findWhere(item[0].orderable.programs).orderableCategoryDisplayName;
+                return item[0].orderable
+                    && item[0].orderable.programs
+                    && _.findWhere(item[0].orderable.programs).orderableCategoryDisplayName;
             });
         };
     }

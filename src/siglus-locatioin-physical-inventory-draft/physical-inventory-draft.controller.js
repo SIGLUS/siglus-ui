@@ -363,7 +363,7 @@
             return physicalInventoryService.saveDraftWithLocation(_.extend({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
-            })).then(function() {
+            }), $stateParams.locationManagementOption).then(function() {
                 if (!notReload) {
                     notificationService.success('stockPhysicalInventoryDraft.saved');
                 }
@@ -440,6 +440,23 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
+                if ($stateParams.locationManagementOption === 'location') {
+                    physicalInventoryService.deleteSubDraftByLocation(subDraftIds).then(function() {
+                        $scope.needToConfirm = false;
+                        // SIGLUS-REFACTOR: starts here
+                        vm.isInitialInventory ?
+                            $state.go('^', {}, {
+                                reload: true
+                            }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
+                                reload: true
+                            });
+                        // SIGLUS-REFACTOR: ends here
+                    })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
+                    return;
+                }
                 physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
@@ -473,7 +490,7 @@
             physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
-            }))
+            }), $stateParams.locationManagementOption)
                 .then(function() {
                     if (vm.isInitialInventory) {
                         notificationService.success('stockInitialInventoryDraft.submitted');
@@ -499,8 +516,13 @@
                 //     // reload($state.current.name);
                 // }
                 // SIGLUS-REFACTOR: ends here
-                $scope.$broadcast('openlmis-form-submit');
-                alertService.error('stockPhysicalInventoryDraft.submitInvalid');
+                if (validate() === 'hasEmptyLocation') {
+                    $scope.$broadcast('openlmis-form-submit');
+                    alertService.error('stockPhysicalInventoryDraft.hasEmptyLocation');
+                } else {
+                    $scope.$broadcast('openlmis-form-submit');
+                    alertService.error('stockPhysicalInventoryDraft.submitInvalid');
+                }
             } else {
                 if (
                     $stateParams.draftNum
@@ -513,7 +535,10 @@
 
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
-
+                    // var newDraft = draft.
+                    draft.lineItems = _.filter(draft.lineItems, function(item) {
+                        return !item.skipped || item.skipped === undefined;
+                    });
                     physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
                         summaries: []
                     }), true)
@@ -557,9 +582,9 @@
          */
         // SIGLUS-REFACTOR: starts here
         vm.validateQuantity = function(lineItem) {
-            if (lineItem.quantity > MAX_INTEGER_VALUE) {
+            if (lineItem.quantity > MAX_INTEGER_VALUE && !lineItem.skipped) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockmanagement.numberTooLarge');
-            } else if (isEmpty(lineItem.quantity)) {
+            } else if (isEmpty(lineItem.quantity) && !lineItem.skipped) {
                 lineItem.$errors.quantityInvalid = messageService.get('stockPhysicalInventoryDraft.required');
             } else {
                 lineItem.$errors.quantityInvalid = false;
@@ -598,7 +623,7 @@
         };
 
         vm.validateLocation = function(lineItem) {
-            if (Boolean(lineItem.area) * Boolean(lineItem.locationCode) === 0) {
+            if (lineItem.locationCode) {
                 lineItem.$errors.locationInvalid = messageService
                     .get('stockPhysicalInventoryDraft.required');
             }
@@ -658,16 +683,42 @@
 
         function validate() {
             var anyError = false;
-            _.chain(vm.draft.lineItems).flatten()
-                .each(function(item) {
-                    if (!(item.orderable && item.orderable.isKit)) {
-                        anyError = vm.validateLotCode(item) || anyError;
-                        anyError = vm.validExpirationDate(item) || anyError;
-                    }
-                    anyError = vm.validateReasonFreeText(item) || anyError;
-                    anyError = vm.validateQuantity(item) || anyError;
-                    anyError = vm.validateLocation(item) || anyError;
-                });
+            var isByLocation = $stateParams.locationManagementOption;
+            // var deferredByValidate = $q.defer();
+            if (isByLocation) {
+                // deferredByValidate
+                _.chain(vm.draft.lineItems).flatten()
+                    .each(function(item) {
+                        if (!item.orderable.id && !item.skipped) {
+                            anyError = 'hasEmptyLocation';
+                            return;
+                        }
+                    });
+            }
+            if (!anyError && $stateParams.locationManagementOption === 'product') {
+                _.chain(vm.draft.lineItems).flatten()
+                    .each(function(item) {
+                        if (!item.orderable.id) {
+                            if (!(item.orderable && item.orderable.isKit)) {
+                                anyError = vm.validateLotCode(item) || anyError;
+                                anyError = vm.validExpirationDate(item) || anyError;
+                            }
+
+                            anyError = vm.validateReasonFreeText(item) || anyError;
+                            anyError = vm.validateQuantity(item) || anyError;
+                            anyError = vm.validateLocation(item) || anyError;
+                        }
+                    });
+            } else if (!anyError && $stateParams.locationManagementOption === 'location') {
+                _.chain(vm.draft.lineItems).flatten()
+                    .each(function(item) {
+                        var skipped = _.get(item, 'skipped', false);
+                        if (!skipped) {
+                            anyError = vm.validateReasonFreeText(item) || anyError;
+                            anyError = vm.validateQuantity(item) || anyError;
+                        }
+                    });
+            }
             return anyError;
         }
 
@@ -1067,7 +1118,31 @@
                 vm.hasLot,
                 lineItem.locationCode
             ).then(function(addedItems) {
-                draft.lineItems = draft.lineItems.concat(addedItems);
+                if (lineItem.orderable.id) {
+                    draft.lineItems = draft.lineItems.concat(addedItems);
+                }
+                if (!lineItem.orderable.id) {
+                    // draft.lineItems = draft.lineItems.concat(addedItems);
+                    if (addedItems.length > 1) {
+                        var  firstLineItem = _.first(addedItems);
+
+                        draft.lineItems = _.map(draft.lineItems, function(line) {
+                            if (line.locationCode === firstLineItem.locationCode) {
+                                line = firstLineItem;
+                            }
+                            return line;
+                        })
+                            .concat(_.rest(addedItems));
+
+                    } else {
+                        draft.lineItems = _.map(draft.lineItems, function(line) {
+                            if (line.locationCode === addedItems[0].locationCode) {
+                                line = addedItems[0];
+                            }
+                            return line;
+                        });
+                    }
+                }
                 refreshLotOptions();
                 $stateParams.isAddProduct = true;
                 reload($state.current.name);
@@ -1078,12 +1153,22 @@
             });
         };
 
-        function removeLot(lineItem) {
+        function removeLot(lineItem, lineItems) {
             var index = _.findIndex(draft.lineItems, function(item) {
                 return _.isEqual(item, lineItem);
             });
             if (index === -1) {
                 return;
+            }
+            if ($stateParams.locationManagementOption === 'location') {
+                if (lineItems.length === 1) {
+                    draft.lineItems[index].orderable = {};
+                    draft.lineItems[index].lot = {};
+                    // draft.lineItems.splice(index, 1);
+                    $stateParams.isAddProduct = true;
+                    reload($state.current.name);
+                    return;
+                }
             }
             draft.lineItems.splice(index, 1);
             $stateParams.isAddProduct = true;
@@ -1102,7 +1187,7 @@
         function refreshLotOptions() {
             var lotOptions = getLotOptions();
             _.forEach(draft.lineItems, function(displayLineItem) {
-                var orderableId = displayLineItem.orderable.id;
+                var orderableId = _.get(displayLineItem, ['orderable', 'id'], undefined);
                 if (lotOptions[orderableId]) {
                     displayLineItem.lotOptions = lotOptions[orderableId];
                 }

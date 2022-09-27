@@ -20,3 +20,11 @@ input.lot-code {
         margin-right: 8px;
     }
 }
+.table-container-by-location {
+    table {
+        border-collapse: collapse !important;
+        td {
+            border: 1px solid rgb(221, 221, 221) !important;
+        }
+    }
+}

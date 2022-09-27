@@ -52,7 +52,6 @@
             }).filter(function(id) {
                 return !_.contains(Object.keys(orderableIdToLotsMap), id);
             });
-
             if (_.isEmpty(missingOrderableIds)) {
                 addedItems.forEach(function(item) {
                     item.lotOptions = orderableIdToLotsMap[item.orderable.id];
