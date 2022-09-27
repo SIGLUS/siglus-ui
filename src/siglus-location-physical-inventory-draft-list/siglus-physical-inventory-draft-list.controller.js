@@ -147,6 +147,7 @@
 
         // All drafts must be submitted before they can be merged.
         function onInit() {
+            loadingModalService.close();
             if (!vm.isInitialInventory) {
                 $state.current.label = programName;
             }
@@ -154,7 +155,6 @@
             vm.draftList = draftList;
             vm.isShowDeleteAndMerge = draftList.canMergeOrDeleteDrafts;
         }
-
     }
 }
 
