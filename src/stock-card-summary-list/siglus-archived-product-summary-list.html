@@ -68,7 +68,7 @@
                 </button>
             </td>
         </tr>
-        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''"  ng-if="fulfills.stockOnHand > 0" ng-repeat-end>
             <td>{{fulfills.orderable.productCode}}</td>
             <td>{{fulfills.orderable.fullProductName}}</td>
             <td>{{fulfills.lot && !fulfills.orderable.isKit ? fulfills.lot.lotCode : ''}}</td>
