@@ -255,6 +255,15 @@ describe('ProductGridCell', function() {
         expect(cell.text()).toEqual('readOnlyFieldValue');
     });
 
+    it('should set the default value when the quickly fill event is triggered', function() {
+        this.getCompiledElement();
+        this.scope.lineItem[this.scope.column.name] = null;
+        this.$rootScope.$broadcast('siglus-quickly-fill');
+        this.scope.$apply();
+
+        expect(this.scope.lineItem[this.scope.column.name]).toEqual(0);
+    });
+
     describe('Skip Column', function() {
 
         var skipColumn, element;
