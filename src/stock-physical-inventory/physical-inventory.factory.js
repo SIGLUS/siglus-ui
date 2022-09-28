@@ -171,7 +171,7 @@
                 });
         }
 
-        function getPhysicalInventorySubDraft(id, flag, locationManagementOption) {
+        function getPhysicalInventorySubDraft(id, flag) {
             return physicalInventoryService.getPhysicalInventorySubDraft(id)
                 .then(function(physicalInventory) {
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
@@ -185,7 +185,13 @@
                                 facilityId: physicalInventory.facilityId,
                                 lineItems: []
                             };
-                            prepareLineItems(physicalInventory, summaries, draftToReturn, locationManagementOption);
+                            prepareLineItems(
+                                physicalInventory,
+                                summaries,
+                                draftToReturn,
+                                false,
+                                false
+                            );
                             draftToReturn.id = physicalInventory.id;
                             return draftToReturn;
                         });
@@ -400,7 +406,7 @@
                         }
                         return summary.orderable.id === item.orderableId;
                     });
-                    if (locationManagementOption && summary) {
+                    if ((!locationManagementOption || locationManagementOption === 'product') && summary) {
                         draftToReturn.lineItems.push({
                             stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
                             lot: getLot(summary, item),

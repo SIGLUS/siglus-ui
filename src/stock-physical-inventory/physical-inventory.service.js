@@ -44,6 +44,10 @@
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             },
+            createInitialInventory: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories')
+            },
             update: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
@@ -294,24 +298,42 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function createDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
+        function createDraft(
+            program,
+            facility,
+            splitNum,
+            isInitialInventory,
+            locationManagementOption,
+            enableLocationManagement
+        ) {
+            var result = '';
             if (isInitialInventory) {
-                return resource.save({
+                if (enableLocationManagement) {
+                    result = resource.createInitialInventory({
+                        splitNum: Number(splitNum),
+                        initialPhysicalInventory: true,
+                        isByLocation: true,
+                        locationManagementOption: 'location'
+                    }).$promise;
+                } else {
+                    result = resource.save({
+                        splitNum: Number(splitNum),
+                        initialPhysicalInventory: true
+                    }, {
+                        programId: program,
+                        facilityId: facility
+                    }).$promise;
+                }
+            } else {
+                result = resource.save({
                     splitNum: Number(splitNum),
-                    initialPhysicalInventory: true
+                    locationManagementOption: locationManagementOption
                 }, {
                     programId: program,
                     facilityId: facility
                 }).$promise;
             }
-            return resource.save({
-                splitNum: Number(splitNum),
-                locationManagementOption: locationManagementOption
-            }, {
-                programId: program,
-                facilityId: facility
-            }).$promise;
-
+            return result;
         }
 
         function createLocationDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
@@ -502,7 +524,7 @@
             if (locationManagementOption === 'location') {
                 result = locationResource.submitSubDraftWithLocation(event).$promise;
             } else {
-                resource.submit(event).$promise;
+                result = resource.submit(event).$promise;
             }
             return result;
             // SIGLUS-REFACTOR: ends here

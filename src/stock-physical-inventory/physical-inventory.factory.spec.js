@@ -344,7 +344,7 @@ describe('physicalInventoryFactory', function() {
             expect(returnedDraft).toBeDefined();
             expect(returnedDraft.programId).toEqual(draft.programId);
             expect(returnedDraft.facilityId).toEqual(draft.facilityId);
-            expect(returnedDraft.lineItems.length).toEqual(0);
+            expect(returnedDraft.lineItems.length).toEqual(2);
             angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
                 expect(lineItem.stockOnHand).toEqual(summaries.content[0].canFulfillForMe[index].stockOnHand);
                 expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);

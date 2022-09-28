@@ -26,12 +26,12 @@
     // SIGLUS-REFACTOR: ends here
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, REASON_CATEGORIES) {
-        $stateProvider.state('openlmis.stockmanagement.physicalInventory.draftList.draft', {
+        $stateProvider.state('openlmis.locationManagement.initialInventory.draft', {
             url: '/:id?keyword&page&size&subDraftIds&draftNum&isMerged&actionType',
             views: {
                 '@openlmis': {
-                    controller: 'PhysicalInventoryDraftController',
-                    templateUrl: 'stock-physical-inventory-draft/physical-inventory-draft.html',
+                    controller: 'LocationPhysicalInventoryDraftController',
+                    templateUrl: 'siglus-locatioin-physical-inventory-draft/physical-inventory-draft.html',
                     controllerAs: 'vm'
                 }
             },
@@ -42,7 +42,8 @@
                 draft: undefined,
                 // SIGLUS-REFACTOR: add reasons, isAddProduct
                 reasons: undefined,
-                isAddProduct: undefined
+                isAddProduct: undefined,
+                canInitialInventory: true
                 // SIGLUS-REFACTOR: ends here
             },
             resolve: {
@@ -83,11 +84,10 @@
                             var id = $stateParams.subDraftIds.length > 1
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
-
-                            var isMerge = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, isMerge)
-                                .then(function(draft) {
-                                    physicalInventoryDataService.setDraft(facility.id, draft);
+                            var flag = $stateParams.isMerged === 'true';
+                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
+                                .then(function(subDraft) {
+                                    physicalInventoryDataService.setDraft(facility.id, subDraft);
                                     deferred.resolve();
                                 });
                         } else {
@@ -105,6 +105,7 @@
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -132,9 +133,11 @@
                             .value();
                         groups.forEach(function(group) {
                             group.forEach(function(lineItem) {
-                                orderableGroupService.determineLotMessage(lineItem, group);
+                                orderableGroupService
+                                    .determineLotMessage(lineItem, group, $stateParams.canInitialInventory);
                             });
                         });
+
                         return groups;
                     })
                         .then(function(items) {
