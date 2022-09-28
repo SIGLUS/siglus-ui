@@ -256,8 +256,6 @@
 
                     var body = angular.element(document).find('body');
                     scope.showSelect = function($event, lineItem) {
-                        // eslint-disable-next-line no-debugger
-                        debugger;
                         scope.testLotCode();
                         setTimeout(function() {
                             if (!lineItem.showSelect) {

@@ -28,9 +28,9 @@
         .module('siglus-physical-inventory-creation')
         .service('SiglusPhysicalInventoryCreationService', service);
 
-    service.$inject = ['openlmisModalService'];
+    service.$inject = ['openlmisModalService', 'facilityFactory'];
 
-    function service(openlmisModalService) {
+    function service(openlmisModalService, facilityFactory) {
         this.show = show;
 
         /**
@@ -56,6 +56,11 @@
                         },
                         type: function() {
                             return type;
+                        },
+                        facility: function() {
+                            return facilityFactory.getUserHomeFacility().then(function(res) {
+                                return res;
+                            });
                         }
                     }
                 }

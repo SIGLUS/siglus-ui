@@ -455,6 +455,7 @@
 
         function updateEnableLocationManagement() {
             var facility = vm.facility;
+            facility.isLocalMachine = false;
             if (facility.isAndroidDevice) {
                 return;
             }

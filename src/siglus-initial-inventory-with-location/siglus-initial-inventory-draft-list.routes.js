@@ -23,7 +23,7 @@
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.initialInventory',
+        $stateProvider.state('openlmis.locationManagement.initialInventory',
             {
                 url: '/initialInventory?programId',
                 label: 'stockInitialInventory.initialInventory',
@@ -31,8 +31,8 @@
                 views: {
                     '@openlmis': {
                         templateUrl:
-                            'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list.html',
-                        controller: 'siglusPhysicalInventoryDraftListController',
+                            'siglus-location-physical-inventory-draft-list/siglus-physical-inventory-draft-list.html',
+                        controller: 'siglusLocationPhysicalInventoryDraftListController',
                         controllerAs: 'vm'
                     }
                 },

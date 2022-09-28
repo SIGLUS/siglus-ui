@@ -28,7 +28,8 @@
         '$stateParams',
         'physicalInventoryService',
         'programId',
-        'type'
+        'type',
+        'facility'
     ];
 
     function controller(
@@ -39,7 +40,8 @@
         $stateParams,
         physicalInventoryService,
         programId,
-        type
+        type,
+        facility
     ) {
         var vm = this;
         var debounceTime = 50;
@@ -50,10 +52,7 @@
         vm.confirm = _.throttle(confirm, debounceTime);
         vm.showError = false;
         vm.showRequired = false;
-        facilityFactory.getUserHomeFacility().then(function(res) {
-            vm.facility = res;
-        });
-
+        vm.facility = facility;
         vm.changeShowError = function() {
             if (vm.isValid(vm.userInputSplitNum)) {
                 vm.showError = false;
@@ -123,36 +122,42 @@
                             catchError(err);
                         });
                     return;
+                // eslint-disable-next-line no-else-return
+                } else {
+                    physicalInventoryService.createDraft(
+                        $stateParams.programId ? $stateParams.programId : programId,
+                        vm.facility.id,
+                        vm.userInputSplitNum,
+                        !!programId,
+                        vm.facility.enableLocationManagement
+                    ).then(function() {
+                        modalDeferred.resolve();
+                        loadingModalService.close();
+                        if (programId) {
+                            var url = vm.facility.enableLocationManagement
+                                ? 'openlmis.locationManagement.initialInventory'
+                                : 'openlmis.stockmanagement.initialInventory';
+                            $state.go(
+                                url, {
+                                    programId: programId
+                                }
+                            );
+                        } else {
+                            $stateParams.drafts = null;
+                            var stateParamsCopy = angular.copy($stateParams);
+                            stateParamsCopy.creationType = 'location';
+                            vm.creationType === 'location' ? $state.go(
+                                'openlmis.locationManagement.physicalInventory.draftList',
+                                stateParamsCopy
+                            ) : $state.go(
+                                'openlmis.stockmanagement.physicalInventory.draftList'
+                            );
+                        }
+                    })
+                        .catch(function(err) {
+                            catchError(err);
+                        });
                 }
-                physicalInventoryService.createDraft(
-                    $stateParams.programId ? $stateParams.programId : programId,
-                    vm.facility.id,
-                    vm.userInputSplitNum,
-                    !!programId
-                ).then(function() {
-                    modalDeferred.resolve();
-                    loadingModalService.close();
-                    if (programId) {
-                        $state.go(
-                            'openlmis.stockmanagement.initialInventory', {
-                                programId: programId
-                            }
-                        );
-                    } else {
-                        $stateParams.drafts = null;
-                        var stateParamsCopy = angular.copy($stateParams);
-                        stateParamsCopy.creationType = 'location';
-                        vm.creationType === 'location' ? $state.go(
-                            'openlmis.locationManagement.physicalInventory.draftList',
-                            stateParamsCopy
-                        ) : $state.go(
-                            'openlmis.stockmanagement.physicalInventory.draftList'
-                        );
-                    }
-                })
-                    .catch(function(err) {
-                        catchError(err);
-                    });
             } else {
                 vm.showError = true;
             }
