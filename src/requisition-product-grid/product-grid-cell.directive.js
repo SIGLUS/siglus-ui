@@ -74,6 +74,13 @@
 
             scope.$on('openlmisInvalid.update', validate);
 
+            scope.$on('siglus-quickly-fill', function() {
+                if (!scope.lineItem[scope.column.name]) {
+                    scope.lineItem[scope.column.name] = 0;
+                    validate();
+                }
+            });
+
             updateCellContents();
 
             function updateCellContents() {
