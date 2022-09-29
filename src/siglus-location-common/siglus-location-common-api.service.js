@@ -45,9 +45,10 @@
 
         });
 
-        this.getProductList = function(isRequestAll) {
+        this.getProductList = function(isRequestAll, draftId) {
             return resource.getProductList({
-                isRequestAll: isRequestAll
+                isRequestAll: isRequestAll,
+                draftId: draftId
             }).$promise;
         };
 

@@ -23,18 +23,20 @@
 
     controller.$inject = ['$stateParams', '$scope', '$state', 'DRAFT_TYPE', 'draftInfo', 'facility', 'reasons',
         'initialDraftInfo', 'locations', 'addedLineItems', 'productList', 'siglusStockUtilsService', 'displayItems',
-        'prepareLineItemService', 'siglusLocationCommonApiService', 'SiglusLocationCommonUtilsService',
+        'siglusLocationCommonApiService', 'SiglusLocationCommonUtilsService',
         'siglusStockDispatchService', 'addAndRemoveIssueLineItemIssueService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'paginationService', 'messageService', 'isMerge', 'moment',
-        'siglusStockIssueLocationService', 'siglusRemainingProductsModalService', 'alertService'];
+        'siglusStockIssueLocationService', 'siglusRemainingProductsModalService', 'alertService',
+        'confirmDiscardService'];
 
     function controller($stateParams, $scope, $state, DRAFT_TYPE, draftInfo, facility, reasons, initialDraftInfo,
                         locations, addedLineItems, productList,
-                        siglusStockUtilsService, displayItems, prepareLineItemService,
+                        siglusStockUtilsService, displayItems,
                         siglusLocationCommonApiService, SiglusLocationCommonUtilsService, siglusStockDispatchService,
                         addAndRemoveIssueLineItemIssueService, alertConfirmModalService, loadingModalService,
                         notificationService, paginationService, messageService, isMerge, moment,
-                        siglusStockIssueLocationService, siglusRemainingProductsModalService, alertService) {
+                        siglusStockIssueLocationService, siglusRemainingProductsModalService, alertService,
+                        confirmDiscardService) {
         var vm = this;
 
         vm.keyword = $stateParams.keyword;
@@ -63,7 +65,10 @@
             filterProductList();
 
             var validator = function(lineItems) {
-                return _.every(lineItems, function(lineItem) {
+                return _.every(lineItems, function(lineItem, index) {
+                    if (lineItems.length > 1 && index === 0) {
+                        return true;
+                    }
                     return _.chain(lineItem.$error)
                         .keys()
                         .all(function(key) {
@@ -72,6 +77,13 @@
                         .value();
                 });
             };
+
+            $scope.$watch(function() {
+                return vm.addedLineItems;
+            }, function(newValue, oldValue) {
+                $scope.needToConfirm =  !angular.equals(newValue, oldValue);
+            }, true);
+            confirmDiscardService.register($scope, 'openlmis.locationManagement.issue.draft.creation');
             paginationService.registerList(validator, $stateParams, function() {
                 return vm.displayItems;
             });
@@ -104,8 +116,11 @@
         };
 
         function validateLocationDuplicatedForRemove(lineItems) {
-            _.forEach(lineItems, function(item) {
+            _.forEach(lineItems, function(item, index) {
                 item.$error.locationError = '';
+                if (lineItems.length > 1 && index === 0) {
+                    return;
+                }
                 if (_.isEmpty(item.location)) {
                     item.$error.locationError = 'openlmisForm.required';
                     return;
@@ -115,7 +130,7 @@
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.locationError = 'locationShipmentView.locationDuplicated';
+                    item.$error.locationError = 'issueLocationCreation.locationDuplicated';
                 }
             });
         }
@@ -176,6 +191,9 @@
 
         function validateBase(lineItems, callback) {
             _.forEach(lineItems, function(item, $index) {
+                if (lineItems.length > 1 && $index === 0) {
+                    return;
+                }
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                     return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
@@ -236,6 +254,7 @@
 
         vm.changeLot = function(lineItem, lineItems, index) {
             validateLot(lineItem, lineItems, index);
+            setStockOnHand(lineItem);
         };
 
         vm.changeLocation = function(lineItem, lineItems, index) {
@@ -259,7 +278,13 @@
                 });
             }
             validateQuantity(lineItem);
+            setStockOnHand(lineItem);
         };
+
+        function setStockOnHand(lineItem) {
+            var orderableLocationLotsMap = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
+            lineItem.stockOnHand = getSoh(lineItem, orderableLocationLotsMap);
+        }
 
         function validateLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item) {
@@ -268,7 +293,7 @@
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.locationError = 'locationShipmentView.locationDuplicated';
+                    item.$error.locationError = 'issueLocationCreation.locationDuplicated';
                 }
             });
         }
@@ -319,8 +344,8 @@
                 siglusStockDispatchService.resetDraft($stateParams.initialDraftId, $stateParams.draftId,
                     $stateParams.moduleType).then(function() {
                     $scope.needToConfirm = false;
-                    notificationService.success(vm.key('deleted'));
-                    $state.go('openlmis.locationManagement.issue.draft', $stateParams, {
+                    notificationService.success('stockIssueCreation.deleted');
+                    $state.go('^', $stateParams, {
                         reload: true
                     });
                 })
@@ -331,13 +356,21 @@
         };
 
         function searchList() {
-            cacheParams();
             reloadPage();
         }
 
         vm.search = function() {
             searchList();
         };
+
+        function getPageNumber() {
+            var totalPages = Math.ceil(vm.displayItems.length / parseInt($stateParams.size));
+            var pageNumber = parseInt($state.params.page || 0);
+            if (pageNumber > totalPages - 1) {
+                return totalPages > 0 ? totalPages - 1 : 0;
+            }
+            return pageNumber;
+        }
 
         vm.cancelFilter = function() {
             vm.keyword = '';
@@ -383,8 +416,9 @@
                     $scope.needToConfirm = false;
                     reloadPage();
                 })
-                .finally(function() {
+                .catch(function(error) {
                     loadingModalService.close();
+                    productDuplicatedHandler(error);
                 });
         };
 
@@ -417,14 +451,14 @@
             })) > 1;
 
             if (hasKitLocationDuplicated) {
-                item.$error.locationError = 'locationShipmentView.locationDuplicated';
+                item.$error.locationError = 'issueLocationCreation.locationDuplicated';
             }
         }
 
         function isTableFormValid() {
             _.forEach(vm.addedLineItems, function(lineItems) {
                 _.forEach(lineItems, function(lineItem, index) {
-                    if (index === 0 && lineItems.length !== 1 || lineItem.skipped) {
+                    if (index === 0 && lineItems.length !== 1) {
                         lineItem.$error = {};
                     } else {
                         validateRequired(lineItem);
@@ -467,6 +501,7 @@
                         });
                         if (_.includes(orderableIds, orderableId)) {
                             vm.addedLineItems.splice(index, 1);
+                            productList = null;
                             reloadPage();
                         }
                     });
@@ -514,6 +549,7 @@
             $stateParams.initialDraftInfo = initialDraftInfo;
             $stateParams.facility = facility;
             $stateParams.keyword = vm.keyword;
+            $stateParams.page = getPageNumber();
         }
 
         function reloadPage() {
