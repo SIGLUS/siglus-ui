@@ -59,10 +59,10 @@
                             // eslint-disable-next-line max-len
                             // SIGLUS-REFACTOR: starts here :after add product or change page number, the product order will restore by this filter
                             //, just order by the display the order will not change when page number change
-                            // '$program.orderableCategoryDisplayOrder',
-                            // '$program.orderableCategoryDisplayName',
-                            '$program.displayOrder'
-                            // 'orderable.fullProductName'
+                            '$program.orderableCategoryDisplayOrder',
+                            '$program.orderableCategoryDisplayName',
+                            '$program.displayOrder',
+                            'orderable.fullProductName'
                             // SIGLUS-REFACTOR: ends here
                         ]);
                     },
