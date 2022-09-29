@@ -441,8 +441,18 @@
                     }
                 };
 
-            vm.lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
+            var lineItems = $filter('filter')(vm.requisition.requisitionLineItems, filterObject);
 
+            vm.lineItems = $filter('orderBy')(lineItems, [
+                // eslint-disable-next-line max-len
+                // SIGLUS-REFACTOR: starts here :after add product or change page number, the product order will restore by this filter
+                //, just order by the display the order will not change when page number change
+                '$program.orderableCategoryDisplayOrder',
+                '$program.orderableCategoryDisplayName',
+                '$program.displayOrder',
+                'orderable.fullProductName'
+                // SIGLUS-REFACTOR: ends here
+            ]);
             // #271: fix add product performance. The follow code was added to fix OLMIS-6234, but with uniq
             // pagination id, line item's validator will not be covered by add product pagination,
             // so no this bug anymore.

@@ -39,8 +39,8 @@
                 return '';
             }
 
-            if (moment() > moment(option.expirationDate)) {
-                return '[' + messageService.get('siglusIssueOrReceiveReport.expired') + ']' + option.lotCode;
+            if (moment().isAfter(moment(option.expirationDate).add(1, 'd'))) {
+                return '[' + messageService.get('siglusIssueOrReceiveReport.expired') + '] ' + option.lotCode;
             }
             return option.lotCode;
         };
