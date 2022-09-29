@@ -121,12 +121,11 @@
         function checkInitialInventoryStatusByQuery() {
             var defered = $q.defer();
             var user = currentUserService.getUserInfo().$$state.value;
-
             new SiglusInitialInventoryResource().query({
                 facility: user.homeFacilityId
             })
                 .then(function(res) {
-                    defered.resolve(res.canInitialInventory);
+                    defered.resolve(res);
                 });
 
             return defered.promise;
@@ -135,7 +134,7 @@
         function checkDraftIsStarter(shouldNotPopComfirm) {
             var promise = checkInitialInventoryStatusByQuery();
             promise.then(function(res) {
-                if (res) {
+                if (res.canInitialInventory) {
                     loadingModalService.open();
                     $q.all([
                         programService.getAllProductsProgram(),
@@ -146,7 +145,7 @@
                                 if (response[0].isStarter) {
                                     loadingModalService.close();
                                     SiglusPhysicalInventoryCreationService
-                                        .show(responses[0][0].id);
+                                        .show(responses[0][0].id, false, responses[1]);
                                 } else {
                                     loadingModalService.close();
                                     if (shouldNotPopComfirm) {
@@ -154,7 +153,7 @@
                                             programId: responses[0][0].id
                                         });
                                     } else {
-                                        propopConfirm(responses[0][0].id);
+                                        propopConfirm(responses[0][0].id, responses[1]);
                                     }
 
                                 }
@@ -179,7 +178,7 @@
             });
         }
 
-        function propopConfirm(programId) {
+        function propopConfirm(programId, facility) {
 
             confirmService.confirm('stockInitialDiscard.initialInventory', 'stockInitialInventory.initialInventory')
                 .then(function() {
@@ -187,9 +186,16 @@
                         alertService.error('openlmisAuth.authorization.error',
                             'stockInitialInventory.authorization.message');
                     } else {
-                        $state.go('openlmis.stockmanagement.initialInventory', {
+                        var url = facility.enableLocationManagement
+                            ? 'openlmis.locationManagement.initialInventory'
+                            : 'openlmis.stockmanagement.initialInventory';
+                        var params = facility.enableLocationManagement ? {
+                            locationManagementOption: 'location',
                             programId: programId
-                        });
+                        } : {
+                            programId: programId
+                        };
+                        $state.go(url, params);
                     }
                 });
         }

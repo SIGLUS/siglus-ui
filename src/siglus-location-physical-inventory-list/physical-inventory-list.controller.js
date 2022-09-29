@@ -201,7 +201,7 @@
                     if (data.canStartInventory) {
                         if (isStarter) {
                             loadingModalService.close();
-                            SiglusPhysicalInventoryCreationService.show('', 'location');
+                            SiglusPhysicalInventoryCreationService.show('', 'location', facility);
                         } else {
                             var stateParamsCopy = angular.copy($stateParams);
                             stateParamsCopy.locationManagementOption = drafts[0].locationOption;

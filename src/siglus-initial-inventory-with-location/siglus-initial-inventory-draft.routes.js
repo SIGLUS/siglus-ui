@@ -72,8 +72,10 @@
                     physicalInventoryFactory,
                     physicalInventoryDataService,
                     $q,
-                    program
+                    program,
+                    physicalInventoryService
                 ) {
+                    var locationManagementOption = $stateParams.locationManagementOption;
                     var deferred = $q.defer();
                     if ($stateParams.draft) {
                         physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
@@ -85,16 +87,112 @@
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
                             var flag = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
-                                .then(function(subDraft) {
-                                    physicalInventoryDataService.setDraft(facility.id, subDraft);
-                                    deferred.resolve();
+                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(
+                                id, flag, locationManagementOption
+                            )
+                                .then(function(draft) {
+                                    var filterNullLineItems = _.filter(draft.lineItems, function(itm) {
+                                        return itm.orderable.id;
+                                    });
+                                    var orderableIds = _.uniq(_.map(filterNullLineItems, function(item) {
+                                        return item.orderable.id;
+                                    }));
+                                    if (orderableIds.length) {
+                                        physicalInventoryService.getSohByLocation(orderableIds)
+                                            .then(function(lotsDataByLocation) {
+                                                var lotsDataByLocationMap = _.reduce(
+                                                    lotsDataByLocation,
+                                                    function(r, c) {
+                                                        r[c.locationCode] = {
+                                                            values: c.lots,
+                                                            area: c.area
+                                                        };
+                                                        return r;
+                                                    }, {}
+                                                );
+                                                _.forEach(draft.lineItems, function(lineItem) {
+                                                    var array = _.get(
+                                                        lotsDataByLocationMap,
+                                                        [lineItem.locationCode, 'values'],
+                                                        []
+                                                    );
+                                                    var tempLots = _.filter(array, function(lot) {
+                                                        return lot.orderableId === lineItem.orderable.id;
+                                                    });
+                                                    var tempSoh = '';
+                                                    if (tempLots.length === 1) {
+                                                        tempSoh = tempLots[0].stockOnHand;
+                                                    } else if (tempLots.length > 1) {
+                                                        tempSoh = _.find(tempLots, function(item) {
+                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                        }).stockOnHand;
+                                                    }
+                                                    lineItem.stockOnHand = tempSoh;
+                                                    lineItem.area = lineItem.area ?
+                                                        lineItem.area :
+                                                        _.get(
+                                                            lotsDataByLocationMap,
+                                                            [lineItem.locationCode, 'area'],
+                                                            null
+                                                        );
+                                                });
+                                                physicalInventoryDataService.setDraft(facility.id, draft);
+                                                deferred.resolve();
+                                            });
+                                    } else {
+                                        physicalInventoryDataService.setDraft(facility.id, draft);
+                                        deferred.resolve();
+                                    }
                                 });
                         } else {
-                            physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                            physicalInventoryFactory.getInitialInventory(
+                                program.id,
+                                facility.id,
+                                $stateParams.locationManagementOption
+                            )
                                 .then(function(draft) {
-                                    physicalInventoryDataService.setDraft(facility.id, draft);
-                                    deferred.resolve();
+                                    var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
+                                        return item.orderable.id;
+                                    }));
+                                    if (orderableIds.length) {
+                                        physicalInventoryService.getSohByLocation(orderableIds)
+                                            .then(function(lotsDataByLocation) {
+                                                var lotsDataByLocationMap = _.reduce(
+                                                    lotsDataByLocation,
+                                                    function(r, c) {
+                                                        r[c.locationCode] = {
+                                                            values: c.lots,
+                                                            area: c.area
+                                                        };
+                                                        return r;
+                                                    }, {}
+                                                );
+                                                _.forEach(draft.lineItems, function(lineItem) {
+                                                    var array = _.get(
+                                                        lotsDataByLocationMap,
+                                                        [lineItem.locationCode, 'values'],
+                                                        []
+                                                    );
+                                                    var tempLots = _.filter(array, function(lot) {
+                                                        return lot.orderableId === lineItem.orderable.id;
+                                                    });
+                                                    var tempSoh = '';
+                                                    if (tempLots.length === 1) {
+                                                        tempSoh = tempLots[0].stockOnHand;
+                                                    } else if (tempLots.length > 1) {
+                                                        tempSoh = _.find(tempLots, function(item) {
+                                                            return item.lotCode === lineItem.lot.lotCode;
+                                                        }).stockOnHand;
+                                                    }
+                                                    lineItem.stockOnHand = tempSoh;
+                                                });
+                                                physicalInventoryDataService.setDraft(facility.id, draft);
+                                                deferred.resolve();
+                                            });
+                                    } else {
+                                        physicalInventoryDataService.setDraft(facility.id, draft);
+                                        deferred.resolve();
+                                    }
                                 });
                         }
                     } else {
@@ -102,10 +200,12 @@
                     }
                     return deferred.promise;
                 },
+                allLocationAreaMap: function(siglusLocationAreaFactory) {
+                    return siglusLocationAreaFactory.getAllLocationAreaInfoMap();
+                },
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -127,17 +227,17 @@
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {
-                                return lineItem.orderable.id;
+                                return $stateParams.locationManagementOption === 'product' ?
+                                    lineItem.orderable.id :
+                                    lineItem.locationCode;
                             })
                             .values()
                             .value();
                         groups.forEach(function(group) {
                             group.forEach(function(lineItem) {
-                                orderableGroupService
-                                    .determineLotMessage(lineItem, group, $stateParams.canInitialInventory);
+                                orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
-
                         return groups;
                     })
                         .then(function(items) {

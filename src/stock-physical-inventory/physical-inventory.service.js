@@ -314,6 +314,9 @@
                         initialPhysicalInventory: true,
                         isByLocation: true,
                         locationManagementOption: 'location'
+                    }, {
+                        programId: program,
+                        facilityId: facility
                     }).$promise;
                 } else {
                     result = resource.save({
@@ -413,15 +416,18 @@
                     // var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
                     //     item.quantity !== -1;
 
-                    var searchableFields = [
+                    var searchableFields = item.orderable.productCode ? [
                         item.orderable.productCode,
-                        productNameFilter(item.orderable)
+                        productNameFilter(item.orderable),
+                        item.locationCode
                         // hasStockOnHand ? item.stockOnHand.toString() : '',
                         // hasQuantity ? item.quantity.toString() : '',
                         // getLot(item, hasLot),
                         // SIGLUS-REFACTOR: starts here
                         // item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
                         // SIGLUS-REFACTOR: ends here
+                    ] : [
+                        item.locationCode
                     ];
                     return _.any(searchableFields, function(field) {
                         return field.toLowerCase().contains(keyword.toLowerCase());
