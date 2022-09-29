@@ -256,8 +256,10 @@ describe('ProductGridCell', function() {
     });
 
     it('should set the default value when the quickly fill event is triggered', function() {
-        this.getCompiledElement();
+        this.scope.userCanEdit = true;
+        this.scope.column = new this.RequisitionColumnDataBuilder().buildTotalConsumedQuantityColumn();
         this.scope.lineItem[this.scope.column.name] = null;
+        this.getCompiledElement();
         this.$rootScope.$broadcast('siglus-quickly-fill');
         this.scope.$apply();
 
