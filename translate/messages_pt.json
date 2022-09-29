@@ -2535,5 +2535,6 @@
   "adminFacilityView.upgradFailed": "Falha na atualização da instalação!",
   "physicalInventoryCreation.showGTnumber": "The number of users cannot be larger than the number of products",
   "stockPhysicalInventoryDraft.hasEmptyLocation": "Please skip the locations that do not contain any products.",
+  "issueLocationCreation.locationDuplicated": "The locations to issue Kit cannot be repeated, please enter a new one.",
   "stockAdjustmentCreation.location":"Localização"
 }

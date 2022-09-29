@@ -60,8 +60,8 @@
                     >
                     </select>
                 </td>
-                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+                <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
+                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <input type="date" ng-model="lineItem.lot.expirationDate"
                            ng-disabled="true"
                            autocomplete="off"/>

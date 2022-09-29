@@ -84,7 +84,7 @@
                     if ($stateParams.productList) {
                         return $stateParams.productList;
                     }
-                    return siglusLocationCommonApiService.getProductList(false);
+                    return siglusLocationCommonApiService.getProductList(false, $stateParams.draftId);
                 },
                 mergedItems: function() {
                     return [];

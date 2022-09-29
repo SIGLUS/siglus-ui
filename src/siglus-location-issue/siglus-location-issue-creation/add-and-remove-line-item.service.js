@@ -80,7 +80,7 @@
                 var remainRowData = index > 1 ? lineItems[1] : lineItems[2];
                 lineItems[0].lot = remainRowData.lot;
                 lineItems[0].location = remainRowData.location;
-                lineItems[0].quantityShipped = remainRowData.quantityShipped;
+                lineItems[0].quantity = remainRowData.quantity;
                 lineItems[0].$error = remainRowData.$error;
                 lineItems[0].$hint = remainRowData.$hint;
                 lineItems.splice(1, 2);
@@ -89,7 +89,10 @@
             }
         };
 
-        this.getMainGroupRow = function(lineItem) {
+        this.getMainGroupRow = function(lineItem, productList) {
+            var isKit = _.get(_.find(productList, function(product) {
+                return product.orderableId === lineItem.orderableId;
+            }), 'isKit');
             return {
                 $error: {},
                 $hint: {},
@@ -98,7 +101,7 @@
                 productName: lineItem.productName,
                 lot: null,
                 stockOnHand: 0,
-                isKit: lineItem.isKit,
+                isKit: isKit,
                 isMainGroup: true,
                 location: null,
                 quantity: 0
@@ -161,10 +164,14 @@
                 } : null;
 
                 var baseInfo = _.omit(item, ['lotCode', 'lotId', 'expirationDate', 'occurredDate']);
+                var isKit = _.get(_.find(productList, function(product) {
+                    return product.orderableId === item.orderableId;
+                }), 'isKit');
                 return _.extend(baseInfo, {
                     $error: {},
                     $hint: {},
                     lot: lot,
+                    isKit: isKit,
                     stockOnHand: stockOnHand,
                     isMainGroup: isMainGroup,
                     programId: getProgramId(productList, item),
@@ -182,7 +189,7 @@
                     if (group.length === 1) {
                         return mapDataToDisplay(group, true, locations, productList);
                     }
-                    var firstRow = $this.getMainGroupRow(group[0]);
+                    var firstRow = $this.getMainGroupRow(group[0], productList);
                     var result = [];
                     result.push(firstRow);
 
