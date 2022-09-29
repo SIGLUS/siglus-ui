@@ -27,7 +27,7 @@
                 <td width="235px" rowspan="2">
                     <div class="siglus-print-pallet-pallet">
                         <div class="">{{'siglusPrintPallet.stockOfPallet'|message}}</div>
-                        <div>
+                        <div ng-style="{'font-size':vm.getFS(lineItem.pallet)}">
                             {{lineItem.pallet}}  
                         </div>
                     </div>

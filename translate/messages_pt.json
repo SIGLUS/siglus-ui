@@ -2534,5 +2534,6 @@
   "adminFacilityView.upgradSuccess": "Instalação atualizada com sucesso!",
   "adminFacilityView.upgradFailed": "Falha na atualização da instalação!",
   "physicalInventoryCreation.showGTnumber": "The number of users cannot be larger than the number of products",
-  "stockPhysicalInventoryDraft.hasEmptyLocation": "Please skip the locations that do not contain any products."
+  "stockPhysicalInventoryDraft.hasEmptyLocation": "Please skip the locations that do not contain any products.",
+  "stockAdjustmentCreation.location":"Localização"
 }

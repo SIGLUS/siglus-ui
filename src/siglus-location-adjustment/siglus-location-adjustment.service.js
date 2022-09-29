@@ -113,7 +113,8 @@
                     quantity: lineItem.quantity,
                     stockOnHand: lineItem.stockOnHand,
                     programId: lineItem.programId,
-                    occurredDate: lineItem.occurredDate
+                    occurredDate: lineItem.occurredDate,
+                    documentNumber: lineItem.documentationNo ? lineItem.documentationNo : null
                 };
             });
         }
