@@ -99,9 +99,9 @@
             var orderableId = lineItem.orderableId;
             var locationCode = _.get(lineItem, ['location', 'locationCode']);
             return locationCode
-                ? _.uniq(_.get(orderableLocationLotsMap, [orderableId, locationCode], []), function(item) {
+                ? _.sortBy(_.uniq(_.get(orderableLocationLotsMap, [orderableId, locationCode], []), function(item) {
                     return item.lotCode;
-                })
+                }), 'expirationDate')
                 : _.chain(orderableLocationLotsMap)
                     .get(orderableId, {})
                     .values()
@@ -109,6 +109,7 @@
                     .uniq(function(item) {
                         return item.lotCode;
                     })
+                    .sortBy('expirationDate')
                     .value();
         };
 
@@ -116,9 +117,9 @@
             var orderableId = lineItem.orderableId;
             var lotId = _.get(lineItem, ['lot', 'id']);
             return lotId
-                ? _.uniq(_.get(orderableLotsLocationMap, [orderableId, lotId], []), function(item) {
+                ? _.sortBy(_.uniq(_.get(orderableLotsLocationMap, [orderableId, lotId], []), function(item) {
                     return item.locationCode;
-                })
+                }), 'locationCode')
                 : _.chain(orderableLotsLocationMap)
                     .get(orderableId, {})
                     .values()
@@ -126,6 +127,7 @@
                     .uniq(false, function(item) {
                         return item.locationCode;
                     })
+                    .sortBy('locationCode')
                     .value();
         };
 
