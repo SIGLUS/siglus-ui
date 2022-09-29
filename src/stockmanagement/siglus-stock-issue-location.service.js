@@ -58,11 +58,11 @@
             },
             resetDraft: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/info')
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/:initialDraftId/subDraft/:id/info')
             },
             getDraftById: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id'),
+                url: stockmanagementUrlFactory('api/siglusapi/draftsWithLocation/:initialDraftId/subDraft/:id'),
                 isArray: false
             },
             getMergedDraft: {
@@ -72,7 +72,7 @@
             },
             saveDraft: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:id')
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/:initialDraftId/subDraft/:id')
             },
             deleteAllDraft: {
                 method: 'DELETE',
@@ -84,7 +84,7 @@
             },
             submitDraft: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:initialDraftId/subDraft/:draftId/submit')
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/:initialDraftId/subDraft/:id/submit')
             },
             mergeSubmitDraft: {
                 method: 'POST',
@@ -154,8 +154,11 @@
             return resource.mergeAllDraft().$promise;
         }
 
-        function resetDraft(draftId) {
+        function resetDraft(initialDraftId, draftId) {
             return resource.resetDraft({
+                initialDraftId: initialDraftId,
+                id: draftId
+            }, {
                 id: draftId
             }).$promise;
         }
@@ -167,10 +170,11 @@
             }).$promise;
         }
 
-        function saveDraft(draftId, lineItems, draftType) {
+        function saveDraft(initialDraftId, draftId, lineItems, draftType) {
             var drafts = _.map(lineItems, buildLine);
             return resource.saveDraft({
-                id: draftId
+                id: draftId,
+                initialDraftId: initialDraftId
             }, {
                 id: draftId,
                 lineItems: drafts,
@@ -178,20 +182,20 @@
             }).$promise;
         }
 
-        function getDraftById(draftId) {
+        function getDraftById(initialDraftId, draftId) {
             return resource.getDraftById({
-                id: draftId
+                id: draftId,
+                initialDraftId: initialDraftId
             }).$promise;
         }
 
-        function submitDraft(initialDraftId, draftId, signature, lineItems, draftType) {
+        function submitDraft(initialDraftId, draftId, lineItems, draftType) {
             var drafts = _.map(lineItems, buildLine);
             return resource.submitDraft({
                 initialDraftId: initialDraftId,
-                draftId: draftId
+                id: draftId
             }, {
                 id: draftId,
-                signature: signature,
                 lineItems: drafts,
                 draftType: draftType
             }).$promise;
@@ -217,19 +221,18 @@
 
         function buildLine(item) {
             return {
-                orderableId: item.orderable.id,
+                orderableId: item.orderableId,
                 lotId: _.get(item.lot, 'id', null),
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
-                extraData: {
-                    vvmStatus: item.vvmStatus
-                },
-                stockOnHand: item.$previewSOH,
+                stockOnHand: item.stockOnHand,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText', null),
-                productCode: item.orderable.productCode,
-                productName: $filter('productName')(item.orderable)
+                productCode: item.productCode,
+                productName: item.productName,
+                locationCode: _.get(item.location, 'locationCode', null),
+                area: _.get(item.location, 'area', null)
             };
         }
 

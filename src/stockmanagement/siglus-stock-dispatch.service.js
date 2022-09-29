@@ -72,5 +72,33 @@
             }
             return siglusStockIssueService.deleteAllDraft(id);
         };
+
+        this.updateDraftStatus = function(draftId, operator, moduleType) {
+            if (moduleType === 'locationManagement') {
+                return siglusStockIssueLocationService.updateDraftStatus(draftId, operator);
+            }
+            return siglusStockIssueService.updateDraftStatus(draftId, operator);
+        };
+
+        this.saveDraft = function(initialDraftId, draftId, lineItems, draftType, moduleType) {
+            if (moduleType === 'locationManagement') {
+                return siglusStockIssueLocationService.saveDraft(initialDraftId, draftId, lineItems, draftType);
+            }
+            return siglusStockIssueService.saveDraft(draftId, lineItems, draftType);
+        };
+
+        this.getDraftById = function(initialDraftId, draftId, moduleType) {
+            if (moduleType === 'locationManagement') {
+                return siglusStockIssueLocationService.getDraftById(initialDraftId, draftId);
+            }
+            return siglusStockIssueService.getDraftById(draftId);
+        };
+
+        this.resetDraft = function(initialDraftId, draftId, moduleType) {
+            if (moduleType === 'locationManagement') {
+                return siglusStockIssueLocationService.resetDraft(initialDraftId, draftId);
+            }
+            return siglusStockIssueService.resetDraft(draftId);
+        };
     }
 })();

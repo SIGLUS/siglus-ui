@@ -181,10 +181,18 @@
 
         vm.proceed = function(draft) {
             if (draft.status === 'NOT_YET_STARTED') {
-                siglusStockIssueService.updateDraftStatus(draft.id, user.username);
+                siglusStockDispatchService.updateDraftStatus(draft.id, user.username).then(function() {
+                    $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
+                        programId: programId,
+                        draftId: _.get(draft, 'id', ''),
+                        initialDraftInfo: vm.initialDraftInfo,
+                        facility: facility
+                    });
+                });
+                return;
             }
 
-            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft.creation', {
+            $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,
@@ -193,7 +201,7 @@
         };
 
         vm.view = function(draft) {
-            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft.view', {
+            $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.view', {
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,
