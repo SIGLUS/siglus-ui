@@ -28,9 +28,9 @@
         .module('siglus-physical-inventory-creation')
         .service('SiglusPhysicalInventoryCreationService', service);
 
-    service.$inject = ['openlmisModalService', 'facilityFactory'];
+    service.$inject = ['openlmisModalService'];
 
-    function service(openlmisModalService, facilityFactory) {
+    function service(openlmisModalService) {
         this.show = show;
 
         /**
@@ -43,7 +43,7 @@
      *
      * @return {Promise} resolved input number.
      */
-        function show(programId, type) {
+        function show(programId, type, facility) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'SiglusPhysicalInventoryCreationController',
@@ -58,9 +58,7 @@
                             return type;
                         },
                         facility: function() {
-                            return facilityFactory.getUserHomeFacility().then(function(res) {
-                                return res;
-                            });
+                            return facility;
                         }
                     }
                 }

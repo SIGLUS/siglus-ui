@@ -406,7 +406,11 @@
                         }
                         return summary.orderable.id === item.orderableId;
                     });
-                    if ((!locationManagementOption || locationManagementOption === 'product') && summary) {
+                    if ((
+                        !locationManagementOption
+                            || _.contains(['location', 'product'], locationManagementOption))
+                            && summary
+                    ) {
                         draftToReturn.lineItems.push({
                             stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
                             lot: getLot(summary, item),

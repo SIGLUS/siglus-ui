@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.initialInventory',
             {
-                url: '/initialInventory?programId',
+                url: '/initialInventory?programId&locationManagementOption',
                 label: 'stockInitialInventory.initialInventory',
                 showInNavigation: true,
                 views: {
@@ -43,7 +43,8 @@
                 },
                 params: {
                     canInitialInventory: true,
-                    programId: undefined
+                    programId: undefined,
+                    locationManagementOption: undefined
                 },
 
                 resolve: {

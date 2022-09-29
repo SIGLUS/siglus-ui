@@ -25,7 +25,9 @@
                 scope: {
                     lineItem: '=',
                     lineItems: '=',
-                    enableInput: '<'
+                    enableInput: '<',
+                    realRequired: '<',
+                    compId: '='
                 },
                 controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
                     'siglusOrderableLotMapping', '$timeout', 'messageService', 'dateUtils',

@@ -65,7 +65,7 @@
             }
         };
 
-        vm.inventoryType = 'product';
+        vm.inventoryType = facility.enableLocationManagement ? 'location' : 'product';
 
         vm.isInitialInventory = !!programId;
 
@@ -129,6 +129,7 @@
                         vm.facility.id,
                         vm.userInputSplitNum,
                         !!programId,
+                        locationManagementOption,
                         vm.facility.enableLocationManagement
                     ).then(function() {
                         modalDeferred.resolve();
@@ -137,11 +138,13 @@
                             var url = vm.facility.enableLocationManagement
                                 ? 'openlmis.locationManagement.initialInventory'
                                 : 'openlmis.stockmanagement.initialInventory';
-                            $state.go(
-                                url, {
-                                    programId: programId
-                                }
-                            );
+                            var params = vm.facility.enableLocationManagement ? {
+                                locationManagementOption: 'location',
+                                programId: programId
+                            } : {
+                                programId: programId
+                            };
+                            $state.go(url, params);
                         } else {
                             $stateParams.drafts = null;
                             var stateParamsCopy = angular.copy($stateParams);

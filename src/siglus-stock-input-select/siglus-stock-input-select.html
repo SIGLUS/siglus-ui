@@ -1,6 +1,19 @@
 <div class="stock-select-container" >
     <div ng-if="enableInput">
-        <input class="form-control min-width-select custom-item-container adjustment-input"
+        <input ng-if="realRequired" class="form-control min-width-select custom-item-container adjustment-input"
+               ng-model="lineItem.lot.lotCode"
+               required
+               id="lotSelect"
+               autocomplete="off"
+               ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
+               ng-focus="showSelect($event, lineItem)"
+               ng-blur="fillLotCode(lineItem)"
+               ng-change="finishInput(lineItem)"
+               popover="{{showExpired()}}"
+               ng-keydown="input(lineItem)"
+               openlmis-invalid="{{lineItem.$errors.lotCodeInvalid ? lineItem.$errors.lotCodeInvalid : ''}}"
+        />
+        <input ng-if="!realRequired" class="form-control min-width-select custom-item-container adjustment-input"
                ng-model="lineItem.lot.lotCode"
                autocomplete="off"
                ng-class="{'error': lineItem.$errors.lotCodeInvalid}"
