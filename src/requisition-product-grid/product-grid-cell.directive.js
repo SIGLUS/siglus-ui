@@ -75,9 +75,16 @@
             scope.$on('openlmisInvalid.update', validate);
 
             scope.$on('siglus-quickly-fill', function() {
-                if (!scope.lineItem[scope.column.name]) {
-                    scope.lineItem[scope.column.name] = 0;
-                    validate();
+                if (
+                    scope.column.$type !== COLUMN_TYPES.CURRENCY
+                        && scope.column.name !== TEMPLATE_COLUMNS.SKIPPED
+                        && scope.column.name !== TEMPLATE_COLUMNS.EXPIRATION_DATE
+                        && !scope.isReadOnly
+                ) {
+                    if (!scope.lineItem[scope.column.name]) {
+                        scope.lineItem[scope.column.name] = 0;
+                        validate();
+                    }
                 }
             });
 
