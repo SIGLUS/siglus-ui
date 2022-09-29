@@ -70,7 +70,7 @@
                         });
 
                         $scope.select = function(lotCode) {
-                            lotCode = lotCode.replace(/^\[Expired\]|\[Expirado\]/, '');
+                            lotCode = lotCode.replace(/^\[Expired\]\s|\[Expirado\]\s/, '');
                             var lineItem = $scope.lineItem;
                             var option = findLotOptionByCode(lineItem.lotOptions, lotCode);
                             lineItem.lot = angular.copy(option);
@@ -217,7 +217,7 @@
 
                         $scope.showExpired = function() {
                             var lineItem = $scope.lineItem;
-                            if (moment().isAfter(_.get(lineItem, ['lot', 'expirationDate']))) {
+                            if (moment().isAfter(moment(_.get(lineItem, ['lot', 'expirationDate'])).add(1, 'd'))) {
                                 return  messageService.get('siglusStockInputSelect.lotExpired');
                             }
                         };

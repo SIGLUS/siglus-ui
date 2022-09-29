@@ -29,7 +29,7 @@ describe('Expired lot filter', function() {
         };
         this.unExpiredLot = {
             lotCode: 'testLostCode2',
-            expirationDate: '2028-08-18'
+            expirationDate: '2999-08-18'
         };
     });
 
@@ -40,14 +40,14 @@ describe('Expired lot filter', function() {
     it('should return a lotcode with  [Expired] tag  when expirationDate is before the moment', function() {
         var filteredLot = this.siglusExpiredLotCodeFilter(this.expiredLot);
 
-        expect(filteredLot).toEqual('[Expired]testLostCode1');
+        expect(filteredLot).toEqual('[Expired] testLostCode1');
         expect(filteredLot).not.toEqual('testLostCode1');
     });
 
     it('should not return a lotcode with  [Expired] tag  when expirationDate is after the moment', function() {
         var filteredLot = this.siglusExpiredLotCodeFilter(this.unExpiredLot);
 
-        expect(filteredLot).not.toEqual('[Expired]testLostCode2');
+        expect(filteredLot).not.toEqual('[Expired] testLostCode2');
         expect(filteredLot).toEqual('testLostCode2');
     });
 

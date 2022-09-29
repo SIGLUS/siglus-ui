@@ -112,31 +112,33 @@
                             ng-change="vm.changeQuantity(lineItem, lineItems)"
                             positive-integer/>
                 </td>
-                <td style="max-width: 160px;" ng-if="!vm.isVirtual">
+                <td ng-if="!vm.isVirtual">
                     <button style="padding: 8px;"
                             ng-if="lineItem.isMainGroup"
                             class="stock-actions add add-item"
                             ng-click="vm.addItem(lineItem, lineItems)">
                         {{'locationShipmentView.addItem' | message}}
                     </button>
-                    <input type="button"
-                           value="{{'stockPhysicalInventoryDraft.remove' | message}}"
+                    <button 
                            ng-if="lineItem.isMainGroup && lineItems.length === 1 || !lineItem.isMainGroup"
                            class="danger stock-actions"
                            ng-click="vm.removeItem(lineItems, index, outerIndex)">
+                           {{'stockPhysicalInventoryDraft.remove' | message}}
+                        </button>
                 </td>
-                <td style="max-width: 160px;" ng-if="vm.isVirtual">
+                <td ng-if="vm.isVirtual">
                     <button style="padding: 8px;"
-                            ng-if="lineItem.isFirst"
-                            class="stock-actions add add-item"
-                            ng-click="vm.addItem(lineItem, lineItems)">
+                        ng-if="lineItem.isFirst"
+                        class="stock-actions add add-item"
+                        ng-click="vm.addItem(lineItem, lineItems)">
                         {{'locationMovement.addLocation' | message}}
                     </button>
-                    <input type="button"
-                           value="{{'stockPhysicalInventoryDraft.remove' | message}}"
-                           ng-if="!lineItem.isFirst && !lineItem.isMainGroup"
-                           class="danger stock-actions"
-                           ng-click="vm.removeItem(lineItems, index, outerIndex)">
+                    <button 
+                        ng-if="!lineItem.isFirst && !lineItem.isMainGroup"
+                        class="danger stock-actions"
+                        ng-click="vm.removeItem(lineItems, index, outerIndex)">
+                        {{'stockPhysicalInventoryDraft.remove' | message}}
+                    </button>
                 </td>
             </tr>
             </tbody>
