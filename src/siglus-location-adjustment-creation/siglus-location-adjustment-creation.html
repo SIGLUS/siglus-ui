@@ -101,7 +101,7 @@
                     <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
                         <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100" />
                     </td>
-                    <td style="max-width: 140px;">
+                    <td>
                         <button style="padding: 8px;" ng-if="lineItem.isMainGroup" class="stock-actions add add-item"
                             ng-click="vm.addItem(lineItem, lineItems)">
                             {{'locationShipmentView.addItem' | message}}
