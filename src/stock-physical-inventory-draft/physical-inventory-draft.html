@@ -65,7 +65,7 @@
             <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit) && vm.actionType !== 'SUBMITTED'">
                 <button class="stock-actions add" ng-click="vm.addLot(lineItems[0])">{{'stockPhysicalInventoryDraft.addLot' | message}}</button>
             </td>
-            <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+            <!-- <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td> -->
         </tr>
         <tr ng-click="vm.focusedRowChanged(lineItem)" ng-repeat="lineItem in lineItems" ng-repeat-end>
             <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
