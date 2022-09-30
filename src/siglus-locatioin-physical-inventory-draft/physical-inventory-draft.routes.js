@@ -179,9 +179,10 @@
                                                     if (tempLots.length === 1) {
                                                         tempSoh = tempLots[0].stockOnHand;
                                                     } else if (tempLots.length > 1) {
-                                                        tempSoh = _.find(tempLots, function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
-                                                        }).stockOnHand;
+                                                        var tempSohObj = _.find(tempLots, function(item) {
+                                                            return item.lotCode === _.get(lineItem, ['lot', 'lotCode'], null);
+                                                        });
+                                                        tempSoh = tempSohObj && tempSohObj.stockOnHand;
                                                     }
                                                     lineItem.stockOnHand = tempSoh;
                                                 });

@@ -125,7 +125,6 @@ describe('physicalInventoryService', function() {
         });
 
         it('should search by productCode', function() {
-            // console.log('#### physicalInventoryLineItems', physicalInventoryLineItems);
 
             expect(physicalInventoryService.search('c2', physicalInventoryLineItems))
                 .toEqual([physicalInventoryLineItems[1], physicalInventoryLineItems[2]]);

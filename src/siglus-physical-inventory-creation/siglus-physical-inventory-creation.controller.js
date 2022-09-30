@@ -65,7 +65,8 @@
             }
         };
 
-        vm.inventoryType = facility.enableLocationManagement ? 'location' : 'product';
+        vm.inventoryType = 'product';
+        // facility.enableLocationManagement ? 'location' : 'product';
 
         vm.isInitialInventory = !!programId;
 
@@ -107,6 +108,7 @@
                             $stateParams.drafts = null;
                             var stateParamsCopy = angular.copy($stateParams);
                             stateParamsCopy.creationType = 'location';
+                            stateParamsCopy.locationManagementOption = locationManagementOption;
                             vm.creationType === 'location' ? $state.go(
                                 'openlmis.locationManagement.physicalInventory.draftList',
                                 stateParamsCopy

@@ -76,7 +76,7 @@
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
-        console.log('#### draft', draft);
+        // console.log('#### draft', draft);
         // SIGLUS-REFACTOR: ends here
 
         /**

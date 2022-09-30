@@ -218,8 +218,6 @@
             var orderableIds = _.filter(ids, function(id) {
                 return !!id;
             });
-            // eslint-disable-next-line no-debugger
-            debugger;
             return locationResource.getSOH({
                 extraData: true
             }, orderableIds ? orderableIds : []).$promise;
