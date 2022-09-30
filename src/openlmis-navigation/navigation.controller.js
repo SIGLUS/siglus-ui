@@ -68,7 +68,7 @@
             } else if ($scope.rootState) {
                 var states = navigationStateService.roots[$scope.rootState];
                 currentUserHomeFacilityService.getHomeFacility().then(function(data) {
-                    var flag = data.enableLocationManagement;
+                    var flag = _.get(data, 'enableLocationManagement', false);
                     vm.states = _.filter(states, function(stateItem) {
                         return !_.get(stateItem, ['name']).contains(
                             flag ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
