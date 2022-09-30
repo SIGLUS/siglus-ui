@@ -215,16 +215,22 @@
         }
 
         function getSohByLocation(ids) {
+            var orderableIds = _.filter(ids, function(id) {
+                return !!id;
+            });
+            // eslint-disable-next-line no-debugger
+            debugger;
             return locationResource.getSOH({
                 extraData: true
-            }, ids ? ids : []).$promise;
+            }, orderableIds ? orderableIds : []).$promise;
         }
 
         function getDraftByLocation(facility, program) {
             return locationResource.getDraftByLocation({
                 facility: facility,
                 program: program,
-                isDraft: true
+                isDraft: true,
+                isByLocation: true
             })
                 .$promise;
         }
