@@ -2536,5 +2536,9 @@
   "physicalInventoryCreation.showGTnumber": "The number of users cannot be larger than the number of products",
   "stockPhysicalInventoryDraft.hasEmptyLocation": "Please skip the locations that do not contain any products.",
   "issueLocationCreation.locationDuplicated": "The locations to issue Kit cannot be repeated, please enter a new one.",
+  "issueLocationCreation.lotDuplicated": "The locations to issue the same lot cannot be repeated, please enter a new one.",
+  "issueLocationCreation.moreThanSoh": "The Quantity can't be larger than Stock on Hand.",
+  "issueLocationCreation.inputPositiveNumber": "Please enter a positive number.",
+  "issueLocationCreation.submitSuccessfully": "Submit successfully",
   "stockAdjustmentCreation.location":"Localização"
 }

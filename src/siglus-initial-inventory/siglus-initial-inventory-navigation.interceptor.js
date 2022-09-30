@@ -89,24 +89,27 @@
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
             if (toState.url === '/home') {
                 var initUser = currentUserService.getUserInfo().$$state.value;
-                siglusLocationMovementUpgradeService.getNeedInitiallyMoveProduct(initUser.homeFacilityId)
-                    .then(function() {
-                        if (checkInitialInventoryStatus()) {
-                            event.preventDefault();
-                            checkDraftIsStarter();
-                        } else if (siglusLocationMovementUpgradeService.checkInited()) {
-                            var shouldUpgradeMoveProduct =
+                if (initUser.homeFacilityId) {
+                    siglusLocationMovementUpgradeService.getNeedInitiallyMoveProduct(initUser.homeFacilityId)
+                        .then(function() {
+                            if (checkInitialInventoryStatus()) {
+                                event.preventDefault();
+                                checkDraftIsStarter();
+                            } else if (siglusLocationMovementUpgradeService.checkInited()) {
+                                var shouldUpgradeMoveProduct =
                                 siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
-                            if (shouldUpgradeMoveProduct) {
-                                return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
+                                if (shouldUpgradeMoveProduct) {
+                                    return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
+                                }
+                            } else {
+                                var user = currentUserService.getUserInfo().$$state.value;
+                                if (user) {
+                                    siglusLocationMovementUpgradeService.init(user.homeFacilityId);
+                                }
                             }
-                        } else {
-                            var user = currentUserService.getUserInfo().$$state.value;
-                            if (user) {
-                                siglusLocationMovementUpgradeService.init(user.homeFacilityId);
-                            }
-                        }
-                    });
+                        });
+                }
+
             }
         });
 

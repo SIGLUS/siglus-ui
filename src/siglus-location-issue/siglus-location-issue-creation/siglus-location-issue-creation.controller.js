@@ -200,7 +200,7 @@
                 })) > 1;
 
                 if (hasDuplicated) {
-                    item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
+                    item.$error.lotCodeError = 'issueLocationCreation.lotDuplicated';
                 } else {
                     callback(item, $index);
 
@@ -225,12 +225,12 @@
             currentItem.$error.quantityError = '';
             var quantity = currentItem.quantity;
             if (!_.isNumber(currentItem.quantity) || currentItem.quantity === 0) {
-                currentItem.$error.quantityError = 'locationShipmentView.inputPositiveNumber';
+                currentItem.$error.quantityError = 'issueLocationCreation.inputPositiveNumber';
                 return;
             }
             var orderableLocationLotsMap = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
             if (quantity > getSoh(currentItem, orderableLocationLotsMap)) {
-                currentItem.$error.quantityError = 'shipment.fillQuantityCannotExceedStockOnHand';
+                currentItem.$error.quantityError = 'issueLocationCreation.moreThanSoh';
             }
         }
 
@@ -260,7 +260,7 @@
         vm.changeLocation = function(lineItem, lineItems, index) {
             lineItem.$error.locationError = '';
             if (lineItem.isKit) {
-                if (_.isEmpty(lineItem.location)) {
+                if (_.isEmpty(_.get(lineItem.location, 'locationCode'))) {
                     lineItem.$error.locationError = 'openlmisForm.required';
                 }
                 validateLocationDuplicated(lineItems);
@@ -288,6 +288,10 @@
 
         function validateLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item) {
+                if (item.$error.locationError === 'openlmisForm.required') {
+                    return;
+                }
+                item.$error.locationError = '';
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                     return data.location
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
@@ -440,7 +444,7 @@
             })) > 1;
 
             if (hasDuplicated) {
-                item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
+                item.$error.lotCodeError = 'issueLocationCreation.lotDuplicated';
             }
         }
 
@@ -500,11 +504,14 @@
                             return data.orderableId;
                         });
                         if (_.includes(orderableIds, orderableId)) {
-                            vm.addedLineItems.splice(index, 1);
-                            productList = null;
-                            reloadPage();
+                            vm.addedLineItems[index] = [];
                         }
                     });
+                    vm.addedLineItems = _.filter(vm.addedLineItems, function(group) {
+                        return !_.isEmpty(group);
+                    });
+                    productList = null;
+                    reloadPage();
                 });
             }
         }
@@ -517,7 +524,7 @@
                     .then(function() {
 
                         loadingModalService.close();
-                        notificationService.success('stockIssueCreation.submitted');
+                        notificationService.success('issueLocationCreation.submitSuccessfully');
                         $scope.needToConfirm = false;
                         $state.go('^', $stateParams);
                     })
