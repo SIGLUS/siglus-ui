@@ -41,36 +41,21 @@
         var vm = this;
         vm.lineItems = [];
         vm.$onInit = onInit;
-
         vm.getFS = function(data) {
-            var font;
-            switch (data.toString().length) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                font = 96;
-                break;
-            case 5:
-                font = 70;
-                break;
-            case 6:
-                font = 58;
-                break;
-            case 7:
-                font = 50;
-                break;
-            case 8:
-                font = 44;
-                break;
-            case 9:
-                font = 39;
-                break;
-            default:
-                font = 24;
-                break;
-            }
-            return font + 'px';
+            var fontMap = {
+                font1: 96,
+                font2: 96,
+                font3: 96,
+                font4: 96,
+                font5: 70,
+                font6: 58,
+                font7: 50,
+                font8: 44,
+                font9: 39,
+                font10: 35
+            };
+            var palletLength = data.toString().length;
+            return fontMap['font' + palletLength] ? fontMap['font' + palletLength] + 'px' : '24px';
         };
 
         function onInit() {
