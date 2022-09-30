@@ -441,8 +441,6 @@
         }
 
         function getLot(summary, item) {
-            // eslint-disable-next-line no-debugger
-            debugger;
             var draftLOt = item.lotCode || item.expirationDate ? {
                 lotCode: item.lotCode,
                 expirationDate: item.expirationDate
