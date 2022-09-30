@@ -405,7 +405,7 @@
                 <td>
                 </td>
                 <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.unaccountedQuantity}}</td> -->
-                <td ng-if="vm.actionType !== 'SUBMITTED'">
+                <td ng-if="vm.actionType !== 'SUBMITTED'" style="max-width: 170px;">
                     <button ng-if="lineItems.length === 1 && !(lineItems[0].orderable && lineItems[0].orderable.isKit)" class="stock-actions add" ng-click="vm.addLotByLocation(lineItems[0], lineItems)">{{'stockPhysicalInventoryDraft.addItem' | message}}</button>
                     <button ng-if="(vm.isInitialInventory || vm.isEmpty(lineItems[0].stockCardId) || lineItems[0].orderable.archived) && lineItems[0].orderable.id" class="danger stock-actions" ng-click="vm.removeLot(lineItems[0], lineItems)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
