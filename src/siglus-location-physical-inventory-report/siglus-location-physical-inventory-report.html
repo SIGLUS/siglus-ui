@@ -37,8 +37,21 @@
                     <td></td>
                 </tr>
             </tbody>
-            <tbody ng-repeat="groups in vm.categories" ng-if="groups.length > 1 && vm.isMerged">
-                <tr>
+            <!-- <tbody ng-repeat="groups in vm.categories" ng-if="groups.length > 1 && vm.isMerged">
+                
+            </tbody> -->
+            <tbody ng-repeat="groups in vm.categories">
+                <tr ng-if="groups.length === 1 && vm.isMerged">
+                    <td>{{ groups[0].orderable.productCode }}</td>
+                    <td>{{ groups[0].orderable.fullProductName }}</td>
+                    <td>{{ groups[0].lot.lotCode }}</td>
+                    <td>{{ groups[0].lot.expirationDate }}</td>
+                    <td>{{ groups[0].area }} - {{ groups[0].locationCode }}</td>
+                    <td>{{ groups[0].stockOnHand }}</td>
+                    <td>{{ groups[0].quantity }}</td>
+                    <td>{{ groups[0].reasonFreeText }}</td>
+                </tr>
+                <tr ng-if="groups.length > 1 && vm.isMerged">
                     <td>{{ groups[0].orderable.productCode }}</td>
                     <td>{{ groups[0].orderable.fullProductName }}</td>
                     <td></td>
@@ -48,7 +61,7 @@
                     <td>{{ vm.calculate(groups, 'quantity') }}</td>
                     <td></td>
                 </tr>
-                <tr ng-repeat="item in groups">
+                <tr ng-if="groups.length > 1 && vm.isMerged" ng-repeat="item in groups">
                     <td></td>
                     <td></td>
                     <td>{{ item.lot.lotCode }}</td>
@@ -57,18 +70,6 @@
                     <td ng-if="vm.isMerged">{{ item.stockOnHand }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.reasonFreeText }}</td>
-                </tr>
-            </tbody>
-            <tbody ng-repeat="groups in vm.categories" ng-if="groups.length === 1 && vm.isMerged">
-                <tr>
-                    <td>{{ groups[0].orderable.productCode }}</td>
-                    <td>{{ groups[0].orderable.fullProductName }}</td>
-                    <td>{{ groups[0].lot.lotCode }}</td>
-                    <td>{{ groups[0].lot.expirationDate }}</td>
-                    <td>{{ groups[0].area }} - {{ groups[0].locationCode }}</td>
-                    <td>{{ groups[0].stockOnHand }}</td>
-                    <td>{{ groups[0].quantity }}</td>
-                    <td>{{ groups[0].reasonFreeText }}</td>
                 </tr>
             </tbody>
         </table>
