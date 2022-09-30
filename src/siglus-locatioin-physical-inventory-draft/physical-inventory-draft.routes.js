@@ -180,7 +180,8 @@
                                                         tempSoh = tempLots[0].stockOnHand;
                                                     } else if (tempLots.length > 1) {
                                                         var tempSohObj = _.find(tempLots, function(item) {
-                                                            return item.lotCode === _.get(lineItem, ['lot', 'lotCode'], null);
+                                                            return item.lotCode ===
+                                                                _.get(lineItem, ['lot', 'lotCode'], null);
                                                         });
                                                         tempSoh = tempSohObj && tempSohObj.stockOnHand;
                                                     }
