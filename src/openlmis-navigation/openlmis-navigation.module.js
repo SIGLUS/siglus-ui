@@ -29,8 +29,7 @@
         'openlmis-modal',
         'openlmis-login',
         'mgcrea.ngStrap.dropdown',
-        'referencedata-facility',
-        'stock-program-util'
+        'referencedata-facility'
     ]);
 
 })();
