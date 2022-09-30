@@ -28,9 +28,9 @@
         .module('openlmis-navigation')
         .controller('NavigationController', NavigationController);
 
-    NavigationController.$inject = ['$scope', 'navigationStateService', 'currentUserHomeFacilityService'];
+    NavigationController.$inject = ['$scope', 'navigationStateService', '$timeout', '$q', 'facilityFactory'];
 
-    function NavigationController($scope, navigationStateService, currentUserHomeFacilityService) {
+    function NavigationController($scope, navigationStateService, $timeout, $q, facilityFactory) {
 
         var vm = this;
 
@@ -67,18 +67,30 @@
                 vm.states = navigationStateService.roots[''];
             } else if ($scope.rootState) {
                 var states = navigationStateService.roots[$scope.rootState];
-                currentUserHomeFacilityService.getHomeFacility().then(function(data) {
-                    var flag = data.enableLocationManagement;
+                var promise = getLocationManagementEnable();
+                promise.then(function(flag) {
                     vm.states = _.filter(states, function(stateItem) {
-                        return !_.get(stateItem, ['name']).contains(
-                            flag ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
-                        );
+                        if (flag) {
+                            return !_.get(stateItem, ['name']).contains('openlmis.stockmanagement');
+                        }
+                        return !_.get(stateItem, ['name']).contains('openlmis.locationManagement');
                     });
                 });
-
             } else {
                 vm.states = $scope.states;
             }
         }
+
+        function getLocationManagementEnable() {
+            var defered = $q.defer();
+            facilityFactory.getUserHomeFacility().then(function(res) {
+                defered.resolve(res.enableLocationManagement);
+            })
+                .catch(function() {
+                    defered.resolve(false);
+                });
+            return defered.promise;
+        }
+
     }
 })();
