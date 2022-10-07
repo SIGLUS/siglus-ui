@@ -65,6 +65,25 @@
             };
         }
 
+        // TODO
+        function getRowTemplateDataForPod(lineItem) {
+            return  {
+                $error: {},
+                id: lineItem.id,
+                orderable: _.clone(lineItem.orderable),
+                lot: _.clone(lineItem.lot),
+                isKit: lineItem.isKit,
+                isMainGroup: false,
+                stockOnHand: lineItem.stockOnHand,
+                moveTo: {},
+                quantity: lineItem.quantity,
+                notes: null,
+                quantityShipped: lineItem.quantityShipped,
+                useVvm: lineItem.useVvm,
+                vvmStatus: lineItem.vvmStatus
+            };
+        }
+
         function addRow(tableLineItem, lineItems) {
             lineItems.splice(1, 0,
                 getRowTemplateData(tableLineItem));
@@ -127,6 +146,27 @@
                 location: null,
                 moveTo: null,
                 quantity: 0
+            };
+        };
+
+        this.getMainGroupRowForPod = function(lineItem) {
+            return {
+                $error: {},
+                id: lineItem.id,
+                orderable: _.clone(lineItem.orderable),
+                lot: _.clone(lineItem.lot),
+                isKit: lineItem.isKit,
+                stockOnHand: 0,
+                isMainGroup: true,
+                location: null,
+                moveTo: null,
+                notes: lineItem.notes,
+                quantityShipped: lineItem.quantityShipped,
+                quantityAccepted: lineItem.quantityAccepted,
+                quantityRejected: lineItem.quantityRejected,
+                rejectionReasonId: lineItem.rejectionReasonId,
+                useVvm: lineItem.useVvm,
+                vvmStatus: lineItem.vvmStatus
             };
         };
 
@@ -281,6 +321,57 @@
             if (!lineItem.destAreaOptions) {
                 lineItem.destAreaOptions = SiglusLocationCommonUtilsService
                     .getDesAreaList(lineItem, areaLocationInfo);
+            }
+        };
+
+        this.prepareLineItemsForPod = function(orderLineItems) {
+            var that = this;
+            return orderLineItems.map(function(orderLineItem) {
+                var allLineItems = _.flatten(_.get(orderLineItem, 'groupedLineItems', []));
+
+                var groupByLot = _.groupBy(allLineItems, function(line) {
+                    return _.get(line, ['lot', 'id'], '');
+                });
+
+                Object.values(groupByLot).forEach(function(lotLineItems) {
+                    if (lotLineItems.length > 1) {
+                        lotLineItems.unshift(that.getMainGroupRowForPod(lotLineItems[0]));
+                    } else {
+                        lotLineItems[0].isFirst = true;
+                    }
+                    lotLineItems.forEach(function(line) {
+                        line.$error = {};
+                    });
+                });
+
+                orderLineItem.groupedLineItems = _.flatten(Object.values(groupByLot));
+
+                return orderLineItem;
+            });
+        };
+
+        this.addItemForPod = function(lineItem, index, groupedLineItems) {
+            var copy = angular.copy(lineItem);
+            if (lineItem.isFirst) {
+                var mainGroupRow = getRowTemplateDataForPod(copy);
+                mainGroupRow.isMainGroup = true;
+                groupedLineItems.splice(index, 0, mainGroupRow);
+                lineItem.isFirst = false;
+                lineItem.quantityRejected = undefined;
+            }
+            groupedLineItems.splice(index + 1, 0, getRowTemplateDataForPod(copy));
+        };
+        this.removeItemForPod = function(lineItem, index, groupedLineItems) {
+            var count = groupedLineItems.filter(function(line) {
+                return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
+            }).length;
+            groupedLineItems.splice(index, 1);
+            if (count === 3) {
+                var mainGroupIndex = groupedLineItems.findIndex(function(line) {
+                    return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '') && line.isMainGroup;
+                });
+                groupedLineItems[mainGroupIndex + 1].isFirst = true;
+                groupedLineItems.splice(mainGroupIndex, 1);
             }
         };
     }

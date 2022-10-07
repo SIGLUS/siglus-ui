@@ -46,10 +46,15 @@
         ProofOfDeliveryRepositoryImpl.prototype.getDraftList = getDraftList;
         ProofOfDeliveryRepositoryImpl.prototype.deleteAllDraft = deleteAllDraft;
         ProofOfDeliveryRepositoryImpl.prototype.getSubDraft = getSubDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.getSubDraftWithLocation = getSubDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.updateSubDraft = updateSubDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.updateSubDraftWithLocation = updateSubDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.deleteSubDraft = deleteSubDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.deleteSubDraftWithLocation = deleteSubDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.mergeDraft = mergeDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.mergeDraftWithLocation = mergeDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.submitDraft = submitDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.submitDraftWithLocation = submitDraftWithLocation;
         // SIGLUS-REFACTOR: ends here
         return ProofOfDeliveryRepositoryImpl;
 
@@ -87,23 +92,42 @@
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/:subDraftId'),
                     method: 'GET'
                 },
+                getSubDraftWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id/subDrafts/:subDraftId'),
+                    method: 'GET'
+                },
                 updateSubDraft: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/:subDraftId'),
+                    method: 'PUT'
+                },
+                updateSubDraftWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id/subDrafts/:subDraftId'),
                     method: 'PUT'
                 },
                 deleteSubDraft: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/:subDraftId'),
                     method: 'DELETE'
                 },
+                deleteSubDraftWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id/subDrafts/:subDraftId'),
+                    method: 'DELETE'
+                },
                 mergeDraft: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/merge'),
                     method: 'POST'
                 },
+                mergeDraftWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id'),
+                    method: 'GET'
+                },
                 submitDraft: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts/submit'),
                     method: 'POST'
+                },
+                submitDraftWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id'),
+                    method: 'PUT'
                 }
-
             });
             // SIGLUS-REFACTOR: ends here
         }
@@ -257,6 +281,57 @@
             });
         }
 
+        function getSubDraftWithLocation(podId, subDraftId) {
+            var lotRepositoryImpl = this.lotRepositoryImpl,
+                orderableResource = this.orderableResource;
+            return this.resource.getSubDraftWithLocation({
+                id: podId,
+                subDraftId: subDraftId
+            }).$promise.then(function(podWithLocation) {
+                var podDto = podWithLocation.podDto;
+                var podLineItemLocation = podWithLocation.podLineItemLocation;
+
+                podDto.lineItems = _.flatten(podDto.lineItems.map(function(lineItem) {
+                    var targets = _.filter(podLineItemLocation, function(itemLocation) {
+                        return lineItem.id === itemLocation.podLineItemId;
+                    });
+                    if (targets && targets.length > 0) {
+                        return targets.map(function(target) {
+                            var copy = angular.copy(lineItem);
+                            copy.moveTo = {
+                                locationCode: target.locationCode,
+                                area: target.area
+                            };
+                            copy.quantityAccepted = target.quantityAccepted;
+                            return copy;
+                        });
+                    }
+                    lineItem.moveTo = {
+                        locationCode: undefined,
+                        area: undefined
+                    };
+                    return lineItem;
+                }));
+
+                var lotIds = getIdsFromListByObjectName(podDto.lineItems, 'lot'),
+                    orderableIds = getIdsFromListByObjectName(podDto.lineItems, 'orderable');
+
+                return $q.all([
+                    lotRepositoryImpl.query({
+                        id: lotIds
+                    }),
+                    orderableResource.query({
+                        id: orderableIds
+                    })
+                ])
+                    .then(function(responses) {
+                        var lotPage = responses[0],
+                            orderablePage = responses[1];
+                        return combineResponses(podDto, lotPage.content, orderablePage.content);
+                    });
+            });
+        }
+
         function updateSubDraft(podId, subDraftId, pod, type) {
             return this.resource.updateSubDraft({
                 id: podId,
@@ -267,8 +342,34 @@
             }).$promise;
         }
 
+        function updateSubDraftWithLocation(podId, subDraftId, pod, type, podLineItemLocation) {
+            return this.resource.updateSubDraftWithLocation({
+                id: podId,
+                subDraftId: subDraftId
+            }, {
+                operateType: type,
+                podDto: pod,
+                podLineItemLocation: podLineItemLocation
+            }).$promise;
+        }
+
+        function submitDraftWithLocation(podId, pod, podLineItemLocation) {
+            return this.resource.submitDraftWithLocation({
+                id: podId
+            }, {
+                podDto: pod,
+                podLineItemLocation: podLineItemLocation
+            }).$promise;
+        }
+
         function deleteSubDraft(podId, subDraftId) {
             return this.resource.deleteSubDraft({
+                id: podId,
+                subDraftId: subDraftId
+            }).$promise;
+        }
+        function deleteSubDraftWithLocation(podId, subDraftId) {
+            return this.resource.deleteSubDraftWithLocation({
                 id: podId,
                 subDraftId: subDraftId
             }).$promise;
@@ -309,6 +410,71 @@
                                 },
                                 orderablePage = lotIds.length ? responses[1] : responses[0];
                             return combineResponses(copyProofOfDeliveryJson, lotPage.content, orderablePage.content);
+                        });
+                });
+        }
+
+        function mergeDraftWithLocation(podId) {
+            var lotRepositoryImpl = this.lotRepositoryImpl,
+                orderableResource = this.orderableResource;
+
+            return this.resource.mergeDraftWithLocation({
+                id: podId,
+                expand: 'shipment.order'
+            }, {}).$promise
+                .then(function(podWithLocation) {
+
+                    var podExtension = _.get(podWithLocation, ['podExtension']);
+                    var podDto = angular.copy(_.get(podExtension, ['podDto']));
+                    podDto.conferredBy = _.get(podExtension, ['conferredBy']);
+                    podDto.preparedBy = _.get(podExtension, ['preparedBy']);
+                    var podLineItemLocation = podWithLocation.podLineItemLocation;
+
+                    podDto.lineItems = _.flatten(podDto.lineItems.map(function(lineItem) {
+                        var targets = _.filter(podLineItemLocation, function(itemLocation) {
+                            return lineItem.id === itemLocation.podLineItemId;
+                        });
+                        if (targets && targets.length > 0) {
+                            return targets.map(function(target) {
+                                var copy = angular.copy(lineItem);
+                                copy.moveTo = {
+                                    locationCode: target.locationCode,
+                                    area: target.area
+                                };
+                                copy.quantityAccepted = target.quantityAccepted;
+                                return copy;
+                            });
+                        }
+                        lineItem.moveTo = {
+                            locationCode: undefined,
+                            area: undefined
+                        };
+                        return lineItem;
+                    }));
+
+                    var lotIds = getIdsFromListByObjectName(podDto.lineItems, 'lot'),
+                        orderableIds = getIdsFromListByObjectName(podDto.lineItems, 'orderable');
+                    var promiseList = lotIds.length ?
+                        [
+                            lotRepositoryImpl.query({
+                                id: lotIds
+                            }),
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ] :
+                        [
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ];
+                    return $q.all(promiseList)
+                        .then(function(responses) {
+                            var lotPage = lotIds.length ? responses[0] : {
+                                    content: []
+                                },
+                                orderablePage = lotIds.length ? responses[1] : responses[0];
+                            return combineResponses(podDto, lotPage.content, orderablePage.content);
                         });
                 });
         }
