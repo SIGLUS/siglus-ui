@@ -38,10 +38,15 @@
 
         // SIGLUS-REFACTOR: starts here
         ProofOfDeliveryRepository.prototype.getSubDraft = getSubDraft;
+        ProofOfDeliveryRepository.prototype.getSubDraftWithLocation = getSubDraftWithLocation;
         ProofOfDeliveryRepository.prototype.updateSubDraft = updateSubDraft;
+        ProofOfDeliveryRepository.prototype.updateSubDraftWithLocation = updateSubDraftWithLocation;
         ProofOfDeliveryRepository.prototype.deleteSubDraft = deleteSubDraft;
+        ProofOfDeliveryRepository.prototype.deleteSubDraftWithLocation = deleteSubDraftWithLocation;
         ProofOfDeliveryRepository.prototype.mergeDraft = mergeDraft;
+        ProofOfDeliveryRepository.prototype.mergeDraftWithLocation = mergeDraftWithLocation;
         ProofOfDeliveryRepository.prototype.submitDraft = submitDraft;
+        ProofOfDeliveryRepository.prototype.submitDraftWithLocation = submitDraftWithLocation;
         // SIGLUS-REFACTOR: end here
 
         return ProofOfDeliveryRepository;
@@ -76,16 +81,39 @@
                     return new ProofOfDelivery(json, repository);
                 });
         }
+        function getSubDraftWithLocation(id, subDraftId) {
+            var repository = this;
+            return this.impl.getSubDraftWithLocation(id, subDraftId)
+                .then(function(json) {
+                    return new ProofOfDelivery(json, repository);
+                });
+        }
 
         function updateSubDraft(id, subDraftId, pod, type) {
             return this.impl.updateSubDraft(id, subDraftId, pod, type);
         }
+        function updateSubDraftWithLocation(id, subDraftId, pod, type, podLineItemLocation) {
+            return this.impl.updateSubDraftWithLocation(id, subDraftId, pod, type, podLineItemLocation);
+        }
+        function submitDraftWithLocation(id, pod, podLineItemLocation) {
+            return this.impl.submitDraftWithLocation(id, pod, podLineItemLocation);
+        }
         function deleteSubDraft(id, subDraftId) {
             return this.impl.deleteSubDraft(id, subDraftId);
+        }
+        function deleteSubDraftWithLocation(id, subDraftId) {
+            return this.impl.deleteSubDraftWithLocation(id, subDraftId);
         }
         function mergeDraft(id) {
             var repository = this;
             return this.impl.mergeDraft(id)
+                .then(function(json) {
+                    return new ProofOfDelivery(json, repository);
+                });
+        }
+        function mergeDraftWithLocation(id) {
+            var repository = this;
+            return this.impl.mergeDraftWithLocation(id)
                 .then(function(json) {
                     return new ProofOfDelivery(json, repository);
                 });

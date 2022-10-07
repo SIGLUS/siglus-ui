@@ -86,10 +86,17 @@
 
         vm.mergeDrafts = function() {
             if (isAllDraftSubmitted()) {
-                $state.go('openlmis.orders.podManage.draftList.draft', {
-                    podId: $stateParams.podId,
-                    actionType: 'MERGE'
-                });
+                if (facility.enableLocationManagement) {
+                    $state.go('openlmis.orders.podManage.draftList.draftWithLocation', {
+                        podId: $stateParams.podId,
+                        actionType: 'MERGE'
+                    });
+                } else {
+                    $state.go('openlmis.orders.podManage.draftList.draft', {
+                        podId: $stateParams.podId,
+                        actionType: 'MERGE'
+                    });
+                }
             } else {
                 alertService.error('PhysicalInventoryDraftList.mergeError');
             }
@@ -119,7 +126,12 @@
             stateParams.subDraftId = draft.subDraftId;
             stateParams.actionType = draft.status;
             stateParams.draftNum = draft.groupNum;
-            $state.go('openlmis.orders.podManage.draftList.draft', stateParams);
+            if (facility.enableLocationManagement) {
+                $state.go('openlmis.orders.podManage.draftList.draftWithLocation', stateParams);
+            } else {
+                $state.go('openlmis.orders.podManage.draftList.draft', stateParams);
+
+            }
         };
 
         function onInit() {

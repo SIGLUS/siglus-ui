@@ -42,10 +42,15 @@
 
         proofOfDeliveryService.get = get;
         proofOfDeliveryService.getSubDraft = getSubDraft;
+        proofOfDeliveryService.getSubDraftWithLocation = getSubDraftWithLocation;
         proofOfDeliveryService.updateSubDraft = updateSubDraft;
+        proofOfDeliveryService.updateSubDraftWithLocation = updateSubDraftWithLocation;
         proofOfDeliveryService.deleteSubDraft = deleteSubDraft;
+        proofOfDeliveryService.deleteSubDraftWithLocation = deleteSubDraftWithLocation;
         proofOfDeliveryService.mergeDraft = mergeDraft;
+        proofOfDeliveryService.mergeDraftWithLocation = mergeDraftWithLocation;
         proofOfDeliveryService.submitDraft = submitDraft;
+        proofOfDeliveryService.submitDraftWithLocation = submitDraftWithLocation;
 
         /**
          * @ngdoc method
@@ -71,6 +76,16 @@
             return $q.reject();
         }
 
+        function getSubDraftWithLocation(id, subDraftId) {
+            if (id) {
+                return repository.getSubDraftWithLocation(id, subDraftId)
+                    .then(function(proofOfDelivery) {
+                        return proofOfDelivery;
+                    });
+            }
+            return $q.reject();
+        }
+
         function getSubDraft(id, subDraftId) {
             if (id) {
                 return repository.getSubDraft(id, subDraftId)
@@ -84,14 +99,32 @@
         function updateSubDraft(id, subDraftId, proofOfDelivery, type) {
             return repository.updateSubDraft(id, subDraftId, proofOfDelivery, type);
         }
+        function updateSubDraftWithLocation(id, subDraftId, proofOfDelivery, type, podLineItemLocation) {
+            return repository.updateSubDraftWithLocation(id, subDraftId, proofOfDelivery, type, podLineItemLocation);
+        }
+        function submitDraftWithLocation(id, proofOfDelivery, podLineItemLocation) {
+            return repository.submitDraftWithLocation(id, proofOfDelivery, podLineItemLocation);
+        }
 
         function deleteSubDraft(id, subDraftId) {
             return repository.deleteSubDraft(id, subDraftId);
+        }
+        function deleteSubDraftWithLocation(id, subDraftId) {
+            return repository.deleteSubDraftWithLocation(id, subDraftId);
         }
 
         function mergeDraft(id) {
             if (id) {
                 return repository.mergeDraft(id)
+                    .then(function(proofOfDelivery) {
+                        return proofOfDelivery;
+                    });
+            }
+            return $q.reject();
+        }
+        function mergeDraftWithLocation(id) {
+            if (id) {
+                return repository.mergeDraftWithLocation(id)
                     .then(function(proofOfDelivery) {
                         return proofOfDelivery;
                     });

@@ -29,18 +29,25 @@
                 },
                 controller: ['$scope',
                     function($scope) {
-                        $scope.optionToIsEmptyFlag = {};
-
                         $scope.selectedOption = undefined;
 
                         $scope.$watch('lineItem.moveTo.locationCode', function() {
+                            if (!$scope.options) {
+                                $scope.options = $scope.lineItem.destLocationOptions.map(function(option) {
+                                    var target = _.find($scope.areaLocationInfo, function(areaLocation) {
+                                        return areaLocation.locationCode === option;
+                                    });
+                                    var isEmpty = _.get(target, 'isEmpty');
+                                    return isEmpty ? '[empty]' + option : option;
+                                });
+                            }
                             var initValue = _.get($scope.lineItem, ['moveTo', 'locationCode']);
                             if (initValue) {
                                 $scope.selectedOption = _.find($scope.options, function(option) {
                                     return option.replace('[empty]', '') === initValue.replace('[empty]', '');
                                 });
                             } else {
-                                $scope.selectedOption = '';
+                                $scope.selectedOption = undefined;
                             }
                         }, true);
                         $scope.$watch('lineItem.moveTo.area', function() {
@@ -49,7 +56,6 @@
                                     return areaLocation.locationCode === option;
                                 });
                                 var isEmpty = _.get(target, 'isEmpty');
-                                $scope.optionToIsEmptyFlag[option] = isEmpty;
                                 return isEmpty ? '[empty]' + option : option;
                             });
                         }, true);
