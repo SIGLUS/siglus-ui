@@ -266,16 +266,16 @@ describe('LocationPhysicalInventoryDraftController', function() {
     //     expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
     // });
 
-    it('should highlight empty quantities before submit', function() {
-        // SIGLUS-REFACTOR: ends here
-        lineItem1.$errors = {};
-        lineItem3.$errors = {};
-        vm.submit();
+    // it('should highlight empty quantities before submit', function() {
+    //     // SIGLUS-REFACTOR: ends here
+    //     lineItem1.$errors = {};
+    //     lineItem3.$errors = {};
+    //     vm.submit();
 
-        expect(lineItem1.$errors.quantityInvalid).toBeFalsy();
-        expect(lineItem3.$errors.quantityInvalid).toBeTruthy();
-        // SIGLUS-REFACTOR: ends here
-    });
+    //     expect(lineItem1.$errors.quantityInvalid).toBeFalsy();
+    //     expect(lineItem3.$errors.quantityInvalid).toBeTruthy();
+    //     // SIGLUS-REFACTOR: ends here
+    // });
 
     it('should not show modal for occurred date if any quantity missing', function() {
         // vm.submit();
@@ -283,46 +283,46 @@ describe('LocationPhysicalInventoryDraftController', function() {
         expect(chooseDateModalService.show).not.toHaveBeenCalled();
     });
 
-    it('should show modal for occurred date if no quantity missing', function() {
-        lineItem3.quantity = 123;
-        lineItem3.stockAdjustments = [{
-            quantity: 123,
-            reason: {
-                reasonType: 'CREDIT'
-            }
-        }];
-        // SIGLUS-REFACTOR: starts here
-        lineItem3.lot = {
-            id: 3,
-            lotCode: 'test3',
-            expirationDate: '31/08/2019'
-        };
-        lineItem1.lot = {
-            id: 1,
-            lotCode: 'test1',
-            expirationDate: '31/08/2019'
-        };
-        lineItem2.quantity = 456;
-        lineItem2.lot = {
-            id: 2,
-            lotCode: 'test2',
-            expirationDate: '31/08/2019'
-        };
-        lineItem4.quantity = 789;
-        lineItem4.lot = {
-            id: 4,
-            lotCode: 'test4',
-            expirationDate: '31/08/2019'
-        };
-        // SIGLUS-REFACTOR: ends here
-        var deferred = $q.defer();
-        deferred.resolve();
-        chooseDateModalService.show.andReturn(deferred.promise);
+    // it('should show modal for occurred date if no quantity missing', function() {
+    //     lineItem3.quantity = 123;
+    //     lineItem3.stockAdjustments = [{
+    //         quantity: 123,
+    //         reason: {
+    //             reasonType: 'CREDIT'
+    //         }
+    //     }];
+    //     // SIGLUS-REFACTOR: starts here
+    //     lineItem3.lot = {
+    //         id: 3,
+    //         lotCode: 'test3',
+    //         expirationDate: '31/08/2019'
+    //     };
+    //     lineItem1.lot = {
+    //         id: 1,
+    //         lotCode: 'test1',
+    //         expirationDate: '31/08/2019'
+    //     };
+    //     lineItem2.quantity = 456;
+    //     lineItem2.lot = {
+    //         id: 2,
+    //         lotCode: 'test2',
+    //         expirationDate: '31/08/2019'
+    //     };
+    //     lineItem4.quantity = 789;
+    //     lineItem4.lot = {
+    //         id: 4,
+    //         lotCode: 'test4',
+    //         expirationDate: '31/08/2019'
+    //     };
+    //     // SIGLUS-REFACTOR: ends here
+    //     var deferred = $q.defer();
+    //     deferred.resolve();
+    //     chooseDateModalService.show.andReturn(deferred.promise);
 
-        vm.submit();
+    //     vm.submit();
 
-        expect(chooseDateModalService.show).not.toHaveBeenCalled();
-    });
+    //     expect(chooseDateModalService.show).not.toHaveBeenCalled();
+    // });
 
     describe('when submit pass validations', function() {
         beforeEach(function() {

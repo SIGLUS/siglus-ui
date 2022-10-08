@@ -28,7 +28,8 @@
         '$stateParams',
         'physicalInventoryService',
         'programId',
-        'type'
+        'type',
+        'facility'
     ];
 
     function controller(
@@ -39,20 +40,19 @@
         $stateParams,
         physicalInventoryService,
         programId,
-        type
+        type,
+        facility
     ) {
         var vm = this;
         var debounceTime = 50;
         vm.creationType = type;
         vm.showConflictStatus = false;
+        vm.showGTnumber = false;
         vm.userInputSplitNum = null;
         vm.confirm = _.throttle(confirm, debounceTime);
         vm.showError = false;
         vm.showRequired = false;
-        facilityFactory.getUserHomeFacility().then(function(res) {
-            vm.facility = res;
-        });
-
+        vm.facility = facility;
         vm.changeShowError = function() {
             if (vm.isValid(vm.userInputSplitNum)) {
                 vm.showError = false;
@@ -60,9 +60,13 @@
             if (!_.isNull(vm.userInputSplitNum)) {
                 vm.showRequired = false;
             }
+            if (vm.userInputSplitNum) {
+                vm.showGTnumber = false;
+            }
         };
 
         vm.inventoryType = 'product';
+        // facility.enableLocationManagement ? 'location' : 'product';
 
         vm.isInitialInventory = !!programId;
 
@@ -104,6 +108,7 @@
                             $stateParams.drafts = null;
                             var stateParamsCopy = angular.copy($stateParams);
                             stateParamsCopy.creationType = 'location';
+                            stateParamsCopy.locationManagementOption = locationManagementOption;
                             vm.creationType === 'location' ? $state.go(
                                 'openlmis.locationManagement.physicalInventory.draftList',
                                 stateParamsCopy
@@ -124,16 +129,23 @@
                         $stateParams.programId ? $stateParams.programId : programId,
                         vm.facility.id,
                         vm.userInputSplitNum,
-                        !!programId
+                        !!programId,
+                        locationManagementOption,
+                        vm.facility.enableLocationManagement
                     ).then(function() {
                         modalDeferred.resolve();
                         loadingModalService.close();
                         if (programId) {
-                            $state.go(
-                                'openlmis.stockmanagement.initialInventory', {
-                                    programId: programId
-                                }
-                            );
+                            var url = vm.facility.enableLocationManagement
+                                ? 'openlmis.locationManagement.initialInventory'
+                                : 'openlmis.stockmanagement.initialInventory';
+                            var params = vm.facility.enableLocationManagement ? {
+                                locationManagementOption: 'location',
+                                programId: programId
+                            } : {
+                                programId: programId
+                            };
+                            $state.go(url, params);
                         } else {
                             $stateParams.drafts = null;
                             var stateParamsCopy = angular.copy($stateParams);
@@ -156,8 +168,12 @@
         }
 
         function catchError(err) {
-            if (err.status === 400 && err.data.isBusinessError) {
-                loadingModalService.close();
+            loadingModalService.close();
+            if (err.data.messageKey
+          === 'siglusapi.error.draft.number.greater.than.preset.products') {
+                vm.showGTnumber = true;
+            } else if (err.data.messageKey
+          === 'siglusapi.error.inventory.conflict.Draft') {
                 vm.showConflictStatus = true;
             }
         }

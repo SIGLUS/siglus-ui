@@ -1,17 +1,12 @@
 <!-- #146: archived product list-->
 <h2 ng-if="vm.facility && vm.program">
     {{
-    vm.isArchivedProducts
-            ? ('stockCardSummaryList.archivedProductTitle' | message: { 'facility': vm.facility.name,
-                'program':vm.program.name})
-            : ('stockCardSummaryList.title' | message: { 'facility': vm.facility.name, 'program': vm.program.name})
+    'stockCardSummaryList.archivedProductTitle' | message: { 'facility': vm.facility.name,
+    'program':vm.program.name}
     }}
 </h2>
 <h2 ng-hide="vm.facility && vm.program">
-    {{vm.isArchivedProducts
-        ? ('stockCardSummaryList.archivedProduct' | message)
-        : ('stockCardSummaryList.stockOnHand' | message)
-    }}
+    {{'stockCardSummaryList.archivedProduct' | message}}
 </h2>
 <!-- #146: ends here -->
 
@@ -31,16 +26,12 @@
 </form>
 <!-- SIGLUS-REFACTOR: ends here -->
 <section class="openlmis-table-container">
-    <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-show="!vm.isArchivedProducts" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
-
-    <!-- SIGLUS-REFACTOR: starts here -->
     <form ng-submit="vm.search()" ng-show="!vm.isArchivedProducts">
         <label for="searchFor">{{'stockCardSummaryList.keyword' | message}}</label>
         <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
         <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.doCancelFilter()"/>
         <input type="submit" value="{{'stockCardSummaryList.search' | message}}"/>
     </form>
-    <!-- SIGLUS-REFACTOR: ends here  -->
 
     <table>
         <caption ng-if="!vm.stockCardSummaries.length">
@@ -77,7 +68,7 @@
                 </button>
             </td>
         </tr>
-        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+        <tr ng-repeat="fulfills in summary.canFulfillForMe | orderBy:'lot?lot.lotCode:\'\''"  ng-if="fulfills.stockOnHand > 0" ng-repeat-end>
             <td>{{fulfills.orderable.productCode}}</td>
             <td>{{fulfills.orderable.fullProductName}}</td>
             <td>{{fulfills.lot && !fulfills.orderable.isKit ? fulfills.lot.lotCode : ''}}</td>

@@ -25,7 +25,8 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.archivedProductSummaries', {
-            url: '/archivedProduct?facility&program&supervised&archivedStockCardListPage&archivedStockCardListSize',
+            // eslint-disable-next-line max-len
+            url: '/archivedProduct?keyword&facility&program&supervised&archivedStockCardListPage&archivedStockCardListSize',
             label: 'stockCardSummaryList.archivedProduct',
             priority: -1,
             showInNavigation: true,
@@ -56,7 +57,7 @@
                     });
                 },
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
-                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS) {
+                    StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, stockCardDataService) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
@@ -67,13 +68,29 @@
                             paramsCopy.archivedOnly = true;
                             paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
 
+                            var savedSummary = stockCardDataService.getSummary(paramsCopy);
+                            if (savedSummary) {
+                                return savedSummary;
+                            }
+                            paramsCopy.page = 0;
+                            paramsCopy.size = 2147483647;
+                            // #225: ends here
+
                             delete paramsCopy.facility;
                             delete paramsCopy.program;
                             delete paramsCopy.supervised;
                             delete paramsCopy.isArchivedProducts;
 
                             return new StockCardSummaryRepository(new StockCardSummaryRepositoryImpl())
-                                .query(paramsCopy);
+                                .query(paramsCopy)
+                                .then(function(result) {
+                                    var summary = result.content;
+                                    stockCardDataService.setSummary(paramsCopy, {
+                                        content: summary,
+                                        totalElements: summary.length
+                                    });
+                                    return stockCardDataService.getDisplaySummary(stateParams);
+                                });
                         }
                         return [];
                     }, {

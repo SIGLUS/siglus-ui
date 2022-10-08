@@ -167,7 +167,7 @@
             }
 
             if ($stateParams.actionType === 'MERGE') {
-                vm.proofOfDelivery.receivedBy = user.username;
+                vm.proofOfDelivery.receivedBy = '';
                 vm.maxDate = moment().format('YYYY-MM-DD');
             }
 

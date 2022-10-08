@@ -1,0 +1,12 @@
+#locationIssueForm tr:first-child>td {
+  border-top-width: 1px;
+}
+
+#locationIssueForm input.number {
+  text-align: left;
+}
+
+
+#locationIssueForm input[disabled] {
+  cursor: not-allowed;
+}

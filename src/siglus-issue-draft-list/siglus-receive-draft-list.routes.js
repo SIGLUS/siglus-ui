@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.receive.draft', {
-            url: '/draft/:programId?initialDraftId&draftType',
+            url: '/draft/:programId?initialDraftId&draftType&moduleType',
             label: 'stockIssue.draftList',
             priority: 2,
             showInNavigation: false,

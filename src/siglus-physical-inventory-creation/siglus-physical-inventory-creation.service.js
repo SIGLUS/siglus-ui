@@ -43,7 +43,7 @@
      *
      * @return {Promise} resolved input number.
      */
-        function show(programId, type) {
+        function show(programId, type, facility) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'SiglusPhysicalInventoryCreationController',
@@ -56,6 +56,9 @@
                         },
                         type: function() {
                             return type;
+                        },
+                        facility: function() {
+                            return facility;
                         }
                     }
                 }

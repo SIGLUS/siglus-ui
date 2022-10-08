@@ -98,14 +98,18 @@
             }, params.orderableIds).$promise;
         };
 
-        this.createSubOrder = function(params) {
+        this.createSubOrder = function(params, signature) {
             return resource.submitOrder({
                 isSubOrder: true
-            }, params).$promise;
+            }, angular.extend({
+                shipment: params
+            }, signature)).$promise;
         };
 
-        this.submitOrder = function(params) {
-            return resource.submitOrder(params).$promise;
+        this.submitOrder = function(params, signature) {
+            return resource.submitOrder(angular.extend({
+                shipment: params
+            }, signature)).$promise;
         };
 
         function combineResponses(shipment, order, stockCardDetailMap) {

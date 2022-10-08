@@ -7,6 +7,7 @@ input.lot-code {
 }
 
 .stock-actions {
+    min-width: 11em;
     // width: 115px!important;
 }
 
@@ -18,5 +19,13 @@ input.lot-code {
     display: flex;
     div:nth-child(1) {
         margin-right: 8px;
+    }
+}
+.table-container-by-location {
+    table {
+        border-collapse: collapse !important;
+        td {
+            border: 1px solid rgb(221, 221, 221) !important;
+        }
     }
 }

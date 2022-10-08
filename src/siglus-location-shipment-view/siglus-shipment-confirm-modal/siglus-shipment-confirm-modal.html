@@ -1,0 +1,31 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="vm.confirm()" hide-message-dialog="true">
+                <div class="modal-header">
+
+                </div>
+                <div class="modal-body">
+                    <div>{{vm.message | message}}</div>
+                    <div class="form-group">
+                        <label class="is-required">{{'siglusIssueOrReceiveReport.preparedBy' | message}}</label>
+                        <input type="text" ng-model="vm.preparedBy" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="is-required">{{'siglusIssueOrReceiveReport.conferredBy' | message}}</label>
+                        <input type="text" ng-model="vm.conferredBy" required/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="primary" type="submit">
+                        {{vm.confirmMessage | message}}
+                    </button>
+                    <button class="cancel" ng-click="vm.cancel()">
+                        {{vm.cancelMessage | message}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

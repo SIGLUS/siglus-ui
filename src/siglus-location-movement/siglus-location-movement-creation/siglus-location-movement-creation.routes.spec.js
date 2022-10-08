@@ -102,27 +102,27 @@ describe('openlmis.locationManagement.movement.creation', function() {
         });
     });
 
-    describe('orderableGroups resolve', function() {
-        it('should return orderableGroups', function() {
+    describe('productList resolve', function() {
+        it('should return productList', function() {
             $state.go('openlmis.locationManagement.movement.creation',
                 {
                     draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
-                    orderableGroups: undefined
+                    productList: undefined
                 });
             $rootScope.$apply();
 
-            expect(getResolvedValue('orderableGroups')).toBeUndefined();
+            expect(getResolvedValue('productList')).toBeUndefined();
         });
 
         it('should return $stateParams value', function() {
             $state.go('openlmis.locationManagement.movement.creation',
                 {
                     draftId: 'a24f19a8-3743-4a1a-a919-e8f97b5719',
-                    orderableGroups: []
+                    productList: []
                 });
             $rootScope.$apply();
 
-            expect(getResolvedValue('orderableGroups')).toBeUndefined();
+            expect(getResolvedValue('productList')).toBeUndefined();
         });
     });
 

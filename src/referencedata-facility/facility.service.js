@@ -139,7 +139,6 @@
                     facilitiesOffline.put(facility);
                     return $q.resolve(facility);
                 });
-
         }
 
         /**
