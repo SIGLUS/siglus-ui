@@ -65,7 +65,8 @@
               id="userInputSplitNum"
               ng-model="vm.userInputSplitNum"
               ng-change="vm.changeShowError()"
-              maxlength="2"
+              min="0"
+              max="10"
           />
           <span ng-if="vm.showError" id="validateInputValue">
               {{'physicalInventoryCreation.error' | message}}
@@ -73,8 +74,11 @@
           <span ng-if="vm.showRequired" id="validateInputValue">
               {{'physicalInventoryCreation.required' | message}}
             </span>
-          <span ng-if="vm.showGTnumber" id="validateInputValue">
+          <span ng-if="vm.showGTnumber && vm.inventoryType === 'product'" id="validateInputValue">
             {{'physicalInventoryCreation.showGTnumber' | message}}
+          </span>
+          <span ng-if="vm.showGTnumber && vm.inventoryType === 'location'" id="validateInputValue">
+            {{'physicalInventoryCreation.showGTnumberByLocation' | message}}
           </span>
         </div>
       </div>

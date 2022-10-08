@@ -46,15 +46,12 @@
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
         , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
         , SiglusLocationCommonUtilsService) {
-        console.log('orderLineItems', orderLineItems);
-        console.log('facility.enableLocationManagement', facility.enableLocationManagement);
 
         orderLineItems.forEach(function(orderLineItem) {
             orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
                 addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem, locations, areaLocationInfo);
             });
         });
-        console.log('orderLineItems', orderLineItems);
         var vm = this;
 
         vm.$onInit = onInit;
@@ -279,7 +276,6 @@
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
-            console.log('after change area', lineItem.destLocationOptions);
             vm.validateLocations(lineItem, groupedLineItems);
         };
         vm.changeMoveToLocation = function(lineItem, lineItems) {
@@ -365,7 +361,6 @@
                     if (fulfillingLineItem.isMainGroup) {
                         fulfillingLineItem.quantityAccepted = vm.getSumOfLot(fulfillingLineItem,
                             orderLineItem.groupedLineItems);
-                        console.log('sum of lot', fulfillingLineItem.quantityAccepted);
                     }
                     return fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst;
                 });
@@ -390,11 +385,9 @@
             $scope.needToConfirm = false;
             loadingModalService.open();
             // TODO lineitem here should be first & main
-            console.log(vm.proofOfDelivery);
             vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
             // TODO only pick no first, no main
             var podLineItemLocation = getPodLineItemLocationToSend();
-            console.log('podLineItemLocation', podLineItemLocation);
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE', podLineItemLocation).then(function() {
                 if (!notReload) {
@@ -470,11 +463,9 @@
         function submitSubDraft() {
             $scope.needToConfirm = false;
             loadingModalService.open();
-            console.log(vm.proofOfDelivery);
             vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
             // TODO only pick no first, no main
             var podLineItemLocation = getPodLineItemLocationToSend();
-            console.log('podLineItemLocation', podLineItemLocation);
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT', podLineItemLocation).then(function() {
                 notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
