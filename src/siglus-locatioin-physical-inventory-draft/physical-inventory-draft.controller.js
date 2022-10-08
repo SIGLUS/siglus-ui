@@ -76,7 +76,6 @@
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
-        // console.log('#### draft', draft);
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -532,8 +531,8 @@
                     return;
                 }
                 chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
+                    $scope.needToConfirm = false;
                     loadingModalService.open();
-
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
                     // var newDraft = draft.
