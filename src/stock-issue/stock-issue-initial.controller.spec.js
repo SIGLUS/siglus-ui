@@ -58,7 +58,8 @@ describe('StockIssueInitialController', function() {
             adjustmentType: ADJUSTMENT_TYPE.ADJUSTMENT,
             $state: state,
             initialDraftInfo: {},
-            user: user
+            user: user,
+            moduleType: 'stockmanagement'
         });
     }
 

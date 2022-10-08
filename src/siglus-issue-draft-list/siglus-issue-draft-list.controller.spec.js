@@ -109,6 +109,7 @@ describe('SiglusIssueDraftListController', function() {
 
     describe('$onInit method', function() {
         it('should call api to get initialDraftInfo when initialDraftInfo not exist in $stateParams', function() {
+            $stateParams.moduleType = 'stockmanagement';
             vm.$onInit();
 
             expect(siglusStockIssueService.queryInitialDraftInfo).toHaveBeenCalledWith('000000-000000-000000-0000000',
@@ -144,6 +145,7 @@ describe('SiglusIssueDraftListController', function() {
             vm.initialDraftInfo = {
                 id: 'A000001'
             };
+            $stateParams.moduleType = 'stockmanagement';
             vm.addDraft();
             confirmDeferred.resolve();
             $rootScope.$apply();
@@ -162,6 +164,7 @@ describe('SiglusIssueDraftListController', function() {
             vm.initialDraftInfo = {
                 id: 'A000001'
             };
+            $stateParams.moduleType = 'stockmanagement';
             vm.addDraft();
             confirmDeferred.reject({
                 data: {

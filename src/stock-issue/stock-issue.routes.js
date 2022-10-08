@@ -20,9 +20,9 @@
         .module('stock-issue')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'ADJUSTMENT_TYPE', 'MODULE_TYPE'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, ADJUSTMENT_TYPE, MODULE_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.issue', {
             url: '/issue',
             label: 'stockIssue.issue',
@@ -50,6 +50,9 @@
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ISSUE;
+                },
+                moduleType: function() {
+                    return MODULE_TYPE.STOCK_MANAGEMENT;
                 }
                 // SIGLUS-REFACTOR: starts here
             }

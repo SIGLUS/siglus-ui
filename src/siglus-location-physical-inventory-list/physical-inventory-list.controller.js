@@ -136,7 +136,6 @@
                 return program.id === programId;
             });
             vm.drafts = drafts;
-
         }
 
         /**
@@ -202,10 +201,13 @@
                     if (data.canStartInventory) {
                         if (isStarter) {
                             loadingModalService.close();
-                            SiglusPhysicalInventoryCreationService.show('', 'location');
+                            SiglusPhysicalInventoryCreationService.show('', 'location', facility);
                         } else {
+                            var stateParamsCopy = angular.copy($stateParams);
+                            stateParamsCopy.locationManagementOption = drafts[0].locationOption;
                             $state.go(
-                                'openlmis.locationManagement.physicalInventory.draftList'
+                                'openlmis.locationManagement.physicalInventory.draftList',
+                                stateParamsCopy
                             );
                         }
                     } else {

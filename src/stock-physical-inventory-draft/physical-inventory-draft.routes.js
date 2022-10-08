@@ -105,7 +105,6 @@
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -136,7 +135,6 @@
                                 orderableGroupService.determineLotMessage(lineItem, group);
                             });
                         });
-
                         return groups;
                     })
                         .then(function(items) {

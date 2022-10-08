@@ -1,0 +1,12 @@
+<div class="stock-select-container" >
+    <select
+            noPlaceholder
+            placeholder="  "
+            no-auto-select="false"
+            ng-model="selectedOption"
+            openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
+            ng-options="locationCode for locationCode in options track by locationCode"
+            ng-change="changeMoveToLocation()"
+    >
+    </select>
+</div>

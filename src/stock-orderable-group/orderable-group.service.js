@@ -114,7 +114,7 @@
         function groupByOrderableId(items) {
             return _.chain(items)
                 .groupBy(function(item) {
-                    return item.orderable.id;
+                    return item.orderable && item.orderable.id;
                 })
                 .values()
                 .value();

@@ -25,7 +25,9 @@
                 scope: {
                     lineItem: '=',
                     lineItems: '=',
-                    enableInput: '<'
+                    enableInput: '<',
+                    realRequired: '<',
+                    compId: '='
                 },
                 controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
                     'siglusOrderableLotMapping', '$timeout', 'messageService', 'dateUtils',
@@ -80,9 +82,11 @@
                             var selectedItem = orderableGroupService
                                 .findByLotInOrderableGroup(selectedOrderableGroup, lineItem.lot);
 
-                            // if auto generate, then no selectedItem
-                            lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
-                            $scope.hideAllSelect();
+                            // if auto generate, then no selectedItem、
+                            setTimeout(function() {
+                                lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
+                                $scope.hideAllSelect();
+                            }, 100);
                         };
 
                         $scope.autoLotCode = function() {
@@ -206,6 +210,9 @@
                                 +
                                 moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
                             }
+                            // setTimeout(function() {
+                            //     $scope.hideAllSelect();
+                            // }, 100);
                         };
 
                         $scope.showExpired = function() {
@@ -252,26 +259,28 @@
                     var body = angular.element(document).find('body');
                     scope.showSelect = function($event, lineItem) {
                         scope.testLotCode();
-                        if (!lineItem.showSelect) {
-                            lineItem.showSelect = true;
-                            scope.hideAllSelect();
-                            var offset = element.offset();
-                            var target = element
-                                .find('.adjustment-custom-item-wrapper').first()
-                                .find('.adjustment-custom-item')
-                                .clone();
-                            target.css({
-                                position: 'absolute',
-                                top: (offset.top + 35),
-                                left: offset.left
-                            });
-                            // ng-click will not work after element move;
-                            target.find('.auto').first()
-                                .on('click', autoLotCode);
-                            target.find('.option')
-                                .on('click', select);
-                            body.append(target);
-                        }
+                        setTimeout(function() {
+                            if (!lineItem.showSelect) {
+                                lineItem.showSelect = true;
+                                scope.hideAllSelect();
+                                var offset = element.offset();
+                                var target = element
+                                    .find('.adjustment-custom-item-wrapper').first()
+                                    .find('.adjustment-custom-item')
+                                    .clone();
+                                target.css({
+                                    position: 'absolute',
+                                    top: (offset.top + 35),
+                                    left: offset.left
+                                });
+                                // ng-click will not work after element move;
+                                target.find('.auto').first()
+                                    .on('click', autoLotCode);
+                                target.find('.option')
+                                    .on('click', select);
+                                body.append(target);
+                            }
+                        }, 200);
                     };
 
                     scope.hideAllSelect = function() {

@@ -90,7 +90,10 @@
                                 id, flag, locationManagementOption
                             )
                                 .then(function(draft) {
-                                    var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
+                                    var filterNullLineItems = _.filter(draft.lineItems, function(itm) {
+                                        return itm.orderable.id;
+                                    });
+                                    var orderableIds = _.uniq(_.map(filterNullLineItems, function(item) {
                                         return item.orderable.id;
                                     }));
                                     if (orderableIds.length) {
@@ -141,7 +144,11 @@
                                     }
                                 });
                         } else {
-                            physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                            physicalInventoryFactory.getInitialInventory(
+                                program.id,
+                                facility.id,
+                                $stateParams.locationManagementOption
+                            )
                                 .then(function(draft) {
                                     var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
                                         return item.orderable.id;
@@ -172,9 +179,11 @@
                                                     if (tempLots.length === 1) {
                                                         tempSoh = tempLots[0].stockOnHand;
                                                     } else if (tempLots.length > 1) {
-                                                        tempSoh = _.find(tempLots, function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
-                                                        }).stockOnHand;
+                                                        var tempSohObj = _.find(tempLots, function(item) {
+                                                            return item.lotCode ===
+                                                                _.get(lineItem, ['lot', 'lotCode'], null);
+                                                        });
+                                                        tempSoh = tempSohObj && tempSohObj.stockOnHand;
                                                     }
                                                     lineItem.stockOnHand = tempSoh;
                                                 });
@@ -198,7 +207,6 @@
                 displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
                     orderableGroupService, physicalInventoryDataService, draft, facility) {
                     $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
-
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -220,7 +228,9 @@
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
                             .groupBy(function(lineItem) {
-                                return lineItem.orderable.id;
+                                return $stateParams.locationManagementOption === 'product' ?
+                                    lineItem.orderable.id :
+                                    lineItem.locationCode;
                             })
                             .values()
                             .value();

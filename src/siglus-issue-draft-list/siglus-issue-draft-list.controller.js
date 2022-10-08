@@ -30,12 +30,12 @@
 
     controller.$inject = ['$scope', '$stateParams', 'user', 'programId', 'facility', '$state',
         'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
-        'alertConfirmModalService', 'siglusStockUtilsService'];
+        'alertConfirmModalService', 'siglusStockUtilsService', 'DRAFT_TYPE', 'siglusStockDispatchService'];
 
-    //NOSONAR at the end of the line of the issue. This will suppress all issues - now and in the future
     function controller($scope, $stateParams, user, programId, facility, $state,
                         alertService, confirmService, loadingModalService, siglusStockIssueService,
-                        alertConfirmModalService, siglusStockUtilsService)  {
+                        alertConfirmModalService, siglusStockUtilsService, DRAFT_TYPE,
+                        siglusStockDispatchService)  {
         var vm = this;
 
         vm.drafts = [];
@@ -77,9 +77,9 @@
                     facilityId: facility.id,
                     userId: user.user_id,
                     initialDraftId: _.get(vm.initialDraftInfo, 'id'),
-                    draftType: vm.draftType
+                    draftType: DRAFT_TYPE[$stateParams.moduleType][vm.draftType]
                 };
-                siglusStockIssueService.createDraft(params).then(function() {
+                siglusStockDispatchService.createDraft(params, $stateParams.moduleType).then(function() {
                     vm.refreshDraftList();
                 })
                     .catch(function(error) {
@@ -93,9 +93,9 @@
 
         vm.refreshDraftList = function() {
             loadingModalService.open();
-            siglusStockIssueService.getDrafts({
+            siglusStockDispatchService.getDrafts({
                 initialDraftId: _.get(vm.initialDraftInfo, 'id')
-            }).then(function(data) {
+            }, $stateParams.moduleType).then(function(data) {
                 vm.drafts = data;
             })
                 .finally(function() {
@@ -128,9 +128,9 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                siglusStockIssueService.deleteAllDraft($stateParams.initialDraftId)
+                siglusStockDispatchService.deleteAllDraft($stateParams.initialDraftId, $stateParams.moduleType)
                     .then(function() {
-                        $state.go('openlmis.stockmanagement.' + vm.draftType);
+                        $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType);
                     })
                     .finally(function() {
                         loadingModalService.close();
@@ -150,7 +150,8 @@
                 vm.updateDraftList($stateParams.initialDraftInfo);
             } else {
                 loadingModalService.open();
-                siglusStockIssueService.queryInitialDraftInfo(programId, facility.id, vm.draftType)
+                siglusStockDispatchService.queryInitialDraftInfo(programId,
+                    DRAFT_TYPE[$stateParams.moduleType][vm.draftType], $stateParams.moduleType, facility.id)
                     .then(function(initialDraftInfo) {
                         vm.updateDraftList(initialDraftInfo);
                     })
@@ -166,7 +167,8 @@
                 'issueDraft.remove'
             ).then(function() {
                 loadingModalService.open();
-                siglusStockIssueService.removeIssueDraft(draft.id).then(function() {
+                siglusStockDispatchService.removeIssueDraft(draft.id, $stateParams.initialDraftId,
+                    $stateParams.moduleType).then(function() {
                     loadingModalService.close();
                     vm.refreshDraftList();
                 })
@@ -179,10 +181,18 @@
 
         vm.proceed = function(draft) {
             if (draft.status === 'NOT_YET_STARTED') {
-                siglusStockIssueService.updateDraftStatus(draft.id, user.username);
+                siglusStockDispatchService.updateDraftStatus(draft.id, user.username).then(function() {
+                    $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
+                        programId: programId,
+                        draftId: _.get(draft, 'id', ''),
+                        initialDraftInfo: vm.initialDraftInfo,
+                        facility: facility
+                    });
+                });
+                return;
             }
 
-            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft.creation', {
+            $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,
@@ -191,7 +201,7 @@
         };
 
         vm.view = function(draft) {
-            $state.go('openlmis.stockmanagement.' + vm.draftType + '.draft.view', {
+            $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.view', {
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,

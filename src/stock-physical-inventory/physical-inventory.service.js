@@ -44,6 +44,10 @@
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/:id')
             },
+            createInitialInventory: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories')
+            },
             update: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
@@ -79,9 +83,22 @@
         });
         // SIGLUS-REFACTOR: ends here
         var locationResource = $resource(stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'), {}, {
+            getDraftByLocation: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'),
+                isArray: true
+            },
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
+            },
+            deleteSubDraftByLocation: {
+                method: 'DELETE',
+                url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft'),
+                hasBody: true,
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
             },
             getSOH: {
                 method: 'POST',
@@ -91,6 +108,12 @@
             saveDraftWithLocation: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
+            },
+            submitSubDraftWithLocation: {
+                method: 'POST',
+                url: stockmanagementUrlFactory(
+                    '/api/siglusapi/location/physicalInventories/subDraftSubmit?isByLocation=true'
+                )
             }
         });
         this.getDraft = getDraft;
@@ -104,6 +127,7 @@
         this.saveDraftWithLocation = saveDraftWithLocation;
         this.deleteDraft = deleteDraft;
         this.deleteDraftList = deleteDraftList;
+        this.deleteSubDraftByLocation = deleteSubDraftByLocation;
         this.submitPhysicalInventory = submit;
         this.submitSubPhysicalInventory = subSubmit;
         this.getLocationPhysicalInventorySubDraft = getLocationPhysicalInventorySubDraft;
@@ -111,6 +135,7 @@
         this.getInitialDraft = getInitialDraft;
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
+        this.getDraftByLocation = getDraftByLocation;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -125,7 +150,7 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function saveDraftWithLocation(draft) {
+        function saveDraftWithLocation(draft, locationManagementOption) {
             var physicalInventory = angular.copy(draft);
 
             // SIGLUS-REFACTOR: Filter not added items
@@ -146,7 +171,8 @@
                         stockCardId: item.stockCardId,
                         programId: item.programId,
                         area: item.area,
-                        locationCode: item.locationCode
+                        locationCode: item.locationCode,
+                        skipped: item.skipped
                     };
                 }
                 return {
@@ -163,11 +189,15 @@
                     stockCardId: item.stockCardId,
                     programId: item.programId,
                     area: item.area,
-                    locationCode: item.locationCode
+                    locationCode: item.locationCode,
+                    skipped: item.skipped
                 };
             });
             // SIGLUS-REFACTOR: ends here
             return locationResource.saveDraftWithLocation(
+                {
+                    isByLocation: locationManagementOption === 'location'
+                },
                 siglusStockEventService.formatPayload(physicalInventory)
             ).$promise;
         }
@@ -185,9 +215,22 @@
         }
 
         function getSohByLocation(ids) {
+            var orderableIds = _.filter(ids, function(id) {
+                return !!id;
+            });
             return locationResource.getSOH({
                 extraData: true
-            }, ids ? ids : []).$promise;
+            }, orderableIds ? orderableIds : []).$promise;
+        }
+
+        function getDraftByLocation(facility, program) {
+            return locationResource.getDraftByLocation({
+                facility: facility,
+                program: program,
+                isDraft: true,
+                isByLocation: true
+            })
+                .$promise;
         }
 
         function validateConflictProgram(program, facility) {
@@ -230,10 +273,17 @@
                 });
         }
 
-        function getLocationPhysicalInventorySubDraft(id) {
-            return locationResource.find({
+        function getLocationPhysicalInventorySubDraft(id, locationManagementOption) {
+            var params = {
                 subDraftIds: id
-            })
+            };
+            if (locationManagementOption === 'location') {
+                params = {
+                    subDraftIds: id,
+                    isByLocation: true
+                };
+            }
+            return locationResource.find(params)
                 .$promise
                 .then(function(response) {
                     return siglusStockEventService.formatResponse(response);
@@ -252,43 +302,89 @@
          * @param  {String}  facility Facility UUID
          * @return {Promise}          physical inventory promise
          */
-        function createDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
+        function createDraft(
+            program,
+            facility,
+            splitNum,
+            isInitialInventory,
+            locationManagementOption,
+            enableLocationManagement
+        ) {
+            var result = '';
             if (isInitialInventory) {
-                return resource.save({
+                if (enableLocationManagement) {
+                    result = resource.createInitialInventory({
+                        splitNum: Number(splitNum),
+                        initialPhysicalInventory: true,
+                        isByLocation: true,
+                        locationManagementOption: 'location'
+                    }, {
+                        programId: program,
+                        facilityId: facility
+                    }).$promise;
+                } else {
+                    result = resource.save({
+                        splitNum: Number(splitNum),
+                        initialPhysicalInventory: true
+                    }, {
+                        programId: program,
+                        facilityId: facility
+                    }).$promise;
+                }
+            } else {
+                result = resource.save({
                     splitNum: Number(splitNum),
-                    initialPhysicalInventory: true
+                    locationManagementOption: locationManagementOption
                 }, {
                     programId: program,
                     facilityId: facility
                 }).$promise;
             }
-            return resource.save({
-                splitNum: Number(splitNum),
-                locationManagementOption: locationManagementOption
-            }, {
-                programId: program,
-                facilityId: facility
-            }).$promise;
-
+            return result;
         }
 
         function createLocationDraft(program, facility, splitNum, isInitialInventory, locationManagementOption) {
-            if (isInitialInventory) {
-                return locationResource.save({
-                    splitNum: Number(splitNum),
-                    initialPhysicalInventory: true
-                }, {
-                    programId: program,
-                    facilityId: facility
-                }).$promise;
-            }
-            return locationResource.save({
+            var params = locationManagementOption === 'product' ? {
                 splitNum: Number(splitNum),
                 locationManagementOption: locationManagementOption
-            }, {
+            } : {
+                splitNum: Number(splitNum),
+                locationManagementOption: locationManagementOption,
+                isByLocation: true
+
+            };
+            if (isInitialInventory) {
+                params = locationManagementOption === 'product' ? {
+                    splitNum: Number(splitNum),
+                    locationManagementOption: locationManagementOption,
+                    initialPhysicalInventory: true
+                } : {
+                    splitNum: Number(splitNum),
+                    locationManagementOption: locationManagementOption,
+                    isByLocation: true,
+                    initialPhysicalInventory: true
+                };
+            }
+            return locationResource.save(params, {
                 programId: program,
                 facilityId: facility
             }).$promise;
+            // if (isInitialInventory) {
+            //     return locationResource.save({
+            //         splitNum: Number(splitNum),
+            //         initialPhysicalInventory: true
+            //     }, {
+            //         programId: program,
+            //         facilityId: facility
+            //     }).$promise;
+            // }
+            // return locationResource.save({
+            //     splitNum: Number(splitNum),
+            //     locationManagementOption: locationManagementOption
+            // }, {
+            //     programId: program,
+            //     facilityId: facility
+            // }).$promise;
 
         }
 
@@ -324,15 +420,18 @@
                     // var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
                     //     item.quantity !== -1;
 
-                    var searchableFields = [
+                    var searchableFields = item.orderable.productCode ? [
                         item.orderable.productCode,
-                        productNameFilter(item.orderable)
+                        productNameFilter(item.orderable),
+                        item.locationCode
                         // hasStockOnHand ? item.stockOnHand.toString() : '',
                         // hasQuantity ? item.quantity.toString() : '',
                         // getLot(item, hasLot),
                         // SIGLUS-REFACTOR: starts here
                         // item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
                         // SIGLUS-REFACTOR: ends here
+                    ] : [
+                        item.locationCode
                     ];
                     return _.any(searchableFields, function(field) {
                         return field.toLowerCase().contains(keyword.toLowerCase());
@@ -378,6 +477,12 @@
             }).$promise;
         }
 
+        function deleteSubDraftByLocation(ids) {
+            return locationResource.deleteSubDraftByLocation({
+                isByLocation: true
+            }, ids).$promise;
+        }
+
         function deleteDraft(ids, isInitialInventory) {
             if (isInitialInventory) {
                 return resource.delete({
@@ -398,7 +503,7 @@
          * @param  {Object} physicalInventory Draft that will be saved
          * @return {Promise}                  Submitted Physical Inventory
          */
-        function subSubmit(physicalInventory) {
+        function subSubmit(physicalInventory, locationManagementOption) {
             var draft = angular.copy(physicalInventory);
 
             // SIGLUS-REFACTOR: Filter not added items
@@ -418,13 +523,20 @@
                     stockCardId: item.stockCardId,
                     area: item.area,
                     locationCode: item.locationCode,
-                    programId: item.programId
+                    programId: item.programId,
+                    skipped: item.skipped
                 };
             });
             // SIGLUS-REFACTOR: ends here
             var event = siglusStockEventService.formatPayload(draft);
             // SIGLUS-REFACTOR: starts here
-            return resource.submit(event).$promise;
+            var result = '';
+            if (locationManagementOption === 'location') {
+                result = locationResource.submitSubDraftWithLocation(event).$promise;
+            } else {
+                result = resource.submit(event).$promise;
+            }
+            return result;
             // SIGLUS-REFACTOR: ends here
         }
 

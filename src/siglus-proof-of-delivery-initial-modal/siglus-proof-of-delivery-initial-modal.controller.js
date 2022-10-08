@@ -103,7 +103,12 @@
                 })
                     .catch(function(err) {
                         loadingModalService.close();
-                        if (err.status === 400 && err.data.isBusinessError) {
+                        if (err.data.messageKey
+              === 'siglusapi.error.draft.number.greater.than.preset.products') {
+                            vm.showGTnumber = true;
+                        }
+                        if (err.data.messageKey
+              === 'siglusapi.error.proofOfDelivery.sub.drafts.already.existed') {
                             vm.showConflictStatus = true;
                         }
                     });

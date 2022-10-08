@@ -19,8 +19,8 @@
                 <div>
                     <label for="movement-select-product">{{'stockReceiveCreation.product' | message}}</label>
                     <select id="movement-select-product"
-                            ng-model="vm.selectedOrderableGroup"
-                            ng-options="(orderableGroup.orderable | siglusArchivedProductName) for orderableGroup in vm.orderableGroups"
+                            ng-model="vm.selectedProduct"
+                            ng-options="product.fullProductName for product in vm.productList"
                             ng-change="vm.orderableSelectionChanged()"
                             required>
                     </select>
@@ -97,16 +97,7 @@
                                 ng-options="area for area in lineItem.destAreaOptions track by area"
                                 ng-change="vm.changeArea(lineItem, lineItems)">
                         </select>
-                        <select
-                                noPlaceholder
-                                placeholder="  "
-                                no-auto-select="false"
-                                ng-model="lineItem.moveTo.locationCode"
-                                openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
-                                ng-options="locationCode for locationCode in lineItem.destLocationOptions track by locationCode"
-                                ng-change="vm.changeMoveToLocation(lineItem, lineItems)"
-                               >
-                        </select>
+                        <siglus-location-select line-item="lineItem" line-items="lineItems" area-location-info="areaLocationInfo"></siglus-location-select>
                     </div>
 
                 </td>
@@ -121,7 +112,7 @@
                             ng-change="vm.changeQuantity(lineItem, lineItems)"
                             positive-integer/>
                 </td>
-                <td ng-if="!vm.isVirtual">
+                <td ng-if="!vm.isVirtual" style="max-width: 170px;">
                     <button style="padding: 8px;"
                             ng-if="lineItem.isMainGroup"
                             class="stock-actions add add-item"
@@ -135,7 +126,7 @@
                            {{'stockPhysicalInventoryDraft.remove' | message}}
                         </button>
                 </td>
-                <td ng-if="vm.isVirtual">
+                <td ng-if="vm.isVirtual" style="max-width: 170px;">
                     <button style="padding: 8px;"
                         ng-if="lineItem.isFirst"
                         class="stock-actions add add-item"

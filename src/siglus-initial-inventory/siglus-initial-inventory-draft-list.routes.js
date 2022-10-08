@@ -30,7 +30,8 @@
                 showInNavigation: true,
                 views: {
                     '@openlmis': {
-                        templateUrl: 'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list.html',
+                        templateUrl:
+                            'siglus-physical-inventory-draft-list/siglus-physical-inventory-draft-list.html',
                         controller: 'siglusPhysicalInventoryDraftListController',
                         controllerAs: 'vm'
                     }

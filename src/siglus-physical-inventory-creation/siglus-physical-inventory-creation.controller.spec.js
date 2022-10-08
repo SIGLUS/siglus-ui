@@ -30,7 +30,8 @@ describe('siglusPhysicalInventoryCeationController', function() {
                 $scope: $scope,
                 modalDeferred: modalDeferred,
                 programId: '',
-                type: 'location'
+                type: 'location',
+                facility: {}
             });
         });
     });

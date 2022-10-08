@@ -9,5 +9,15 @@
   "proofOfDeliveryView.designation": "Designation",
   "proofOfDeliveryView.expiringDate": "Expiring Date",
   "proofOfDeliveryView.price": "Price",
-  "proofOfDeliveryView.value": "Value"
+  "proofOfDeliveryView.value": "Value",
+  "proofOfDeliveryView.quantityOrdered": "Ordered Quantity",
+  "proofOfDeliveryView.quantityShipped": "Supplied Quantity",
+  "proofOfDeliveryView.quantityAccepted": "Accepted Quantity",
+  "proofOfDeliveryView.quantityReturned": "Returned Quantity",
+  "proofOfDeliveryView.location": "Location",
+  "proofOfDeliveryView.Actions": "Actions",
+
+  "proofOfDeliveryView.gtQuantityShipped": "You can't accept more stock than was supplied.",
+  "proofOfDeliveryView.notAllowedRejectReasonId": "The rejection reason is not allowed to be selected.",
+  "proofOfDeliveryView.duplicateLocation": "The locations to receive the same lot cannot be repeated, please enter a new one."
 }

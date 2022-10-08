@@ -40,7 +40,7 @@
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
-        'suggestedQuatity', 'SIGLUS_TIME'
+        'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME'
     ];
 
     function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
@@ -58,7 +58,7 @@
                                                   locations, siglusLocationCommonApiService,
                                                   localStorageService, $window, facility,
                                                   siglusPrintPalletLabelComfirmModalService,
-                                                  suggestedQuatity, SIGLUS_TIME) {
+                                                  suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -192,6 +192,10 @@
 
         function validateLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item) {
+                if (item.$error.locationError === 'openlmisForm.required') {
+                    return;
+                }
+                item.$error.locationError = '';
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                     return data.location
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
@@ -222,7 +226,7 @@
         vm.changeLocation = function(lineItem, lineItems, index) {
             lineItem.$error.locationError = '';
             if (lineItem.isKit) {
-                if (_.isEmpty(lineItem.location)) {
+                if (_.isEmpty(_.get(lineItem.location, 'locationCode'))) {
                     lineItem.$error.locationError = 'openlmisForm.required';
                 }
                 validateLocationDuplicated(lineItems);
@@ -689,14 +693,14 @@
                             }
                             var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
                             if (!result.closed && totalPartialLineItems) {
-                                return confirmService.confirm(
+                                return siglusShipmentConfirmModalService.confirm(
                                     messageService.get('shipmentView.confirmPartialFulfilled.message', {
                                         totalPartialLineItems: totalPartialLineItems
                                     }), 'shipmentView.confirmPartialFulfilled.createSuborder'
                                 )
-                                    .then(function() {
+                                    .then(function(signature) {
                                         loadingModalService.open();
-                                        return SiglusLocationViewService.createSubOrder(buildSaveParams())
+                                        return SiglusLocationViewService.createSubOrder(buildSaveParams(), signature)
                                             .then(function() {
                                                 notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                                 $state.go('openlmis.orders.fulfillment');
@@ -708,13 +712,13 @@
                                     });
                             }
 
-                            return confirmService.confirm(
+                            return siglusShipmentConfirmModalService.confirm(
                                 'shipmentView.confirmShipment.question',
                                 'shipmentView.confirmShipment'
                             )
-                                .then(function() {
+                                .then(function(signature) {
                                     loadingModalService.open();
-                                    return SiglusLocationViewService.submitOrder(buildSaveParams(true))
+                                    return SiglusLocationViewService.submitOrder(buildSaveParams(true), signature)
                                         .then(function() {
                                             notificationService.success('shipmentView.shipmentHasBeenConfirmed');
                                             $state.go('openlmis.orders.fulfillment');

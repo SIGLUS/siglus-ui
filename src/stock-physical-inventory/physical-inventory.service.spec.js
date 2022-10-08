@@ -59,7 +59,10 @@ describe('physicalInventoryService', function() {
                 .withQuantity(null)
                 .buildAsAdded()
         ];
-
+        _.forEach(physicalInventoryLineItems, function(item, index) {
+            item.locationCode = 'testLocation' + index;
+            item.area = 'testArea' + index;
+        });
         draft = new PhysicalInventoryDataBuilder().withLineItems(physicalInventoryLineItems)
             .build();
     });
@@ -122,6 +125,7 @@ describe('physicalInventoryService', function() {
         });
 
         it('should search by productCode', function() {
+
             expect(physicalInventoryService.search('c2', physicalInventoryLineItems))
                 .toEqual([physicalInventoryLineItems[1], physicalInventoryLineItems[2]]);
         });

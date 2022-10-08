@@ -28,29 +28,29 @@
         .module('siglus-location-movement-creation')
         .controller('SiglusLocationMovementCreationController', controller);
 
-    controller.$inject = ['draftInfo', 'areaLocationInfo', '$scope', 'addedLineItems', '$state', 'orderableGroups',
+    controller.$inject = ['draftInfo', 'areaLocationInfo', '$scope', 'addedLineItems', '$state',
         '$filter', 'paginationService', '$stateParams',
         'addAndRemoveLineItemService', 'displayItems', 'locations',
         'SiglusLocationCommonUtilsService', 'siglusLocationMovementService', 'alertConfirmModalService',
         'loadingModalService', 'notificationService', 'siglusLocationCommonApiService', 'facility', 'user',
         'siglusSignatureWithDateModalService', 'confirmDiscardService', 'siglusLocationMovementUpgradeService',
-        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'allPrograms'];
+        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'allPrograms', 'productList'];
 
-    function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state, orderableGroups,
+    function controller(draftInfo, areaLocationInfo, $scope, addedLineItems, $state,
                         $filter, paginationService, $stateParams,
                         addAndRemoveLineItemService, displayItems, locations,
                         SiglusLocationCommonUtilsService,
                         siglusLocationMovementService, alertConfirmModalService, loadingModalService,
                         notificationService, siglusLocationCommonApiService, facility, user,
                         siglusSignatureWithDateModalService, confirmDiscardService,
-                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME,
-                        allPrograms) {
+                        siglusLocationMovementUpgradeService, siglusPrintPalletLabelComfirmModalService,
+                        SIGLUS_TIME, allPrograms, productList) {
 
         var vm = this;
 
-        vm.orderableGroups = null;
+        vm.productList = null;
 
-        vm.selectedOrderableGroup = null;
+        vm.selectedProduct = null;
 
         vm.addedLineItems = [];
 
@@ -82,8 +82,9 @@
             }
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
+            vm.areaLocationInfo = areaLocationInfo;
             vm.keyword = $stateParams.keyword;
-            filterOrderableGroups();
+            filterProductList();
             updateStateParams();
 
             $scope.$watch(function() {
@@ -110,35 +111,29 @@
             loadingModalService.close();
         };
 
-        function filterOrderableGroups() {
+        function filterProductList() {
 
             var addedOrderableIds = _.map(vm.addedLineItems, function(group) {
                 return _.first(group).orderableId;
             });
-            vm.orderableGroups = _.chain(orderableGroups)
-                .map(function(group) {
-                    return _.first(group);
-                })
-                .filter(function(item) {
-                    return !_.isEmpty(item) && !_.includes(addedOrderableIds, item.orderable.id);
-                })
-                .value();
+            vm.productList = _.filter(productList, function(item) {
+                return !_.includes(addedOrderableIds, item.orderableId);
+            });
         }
 
         vm.addProduct = function() {
-            var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                 isAdjustment: false,
                 extraData: true
-            }, [orderable.id])
+            }, [vm.selectedProduct.orderableId])
                 .then(function(locationsInfo) {
                     locations = locations.concat(locationsInfo);
-                    var firstRow = addAndRemoveLineItemService.getAddProductRow(orderable);
+                    var firstRow = addAndRemoveLineItemService.getAddProductRow(vm.selectedProduct);
                     vm.addedLineItems.unshift([firstRow]);
                     searchList();
                 })
-                .finally(function() {
+                .catch(function() {
                     loadingModalService.close();
                 });
 
@@ -149,7 +144,7 @@
             $stateParams.areaLocationInfo = areaLocationInfo;
             $stateParams.keyword = vm.keyword;
             $stateParams.addedLineItems = vm.addedLineItems;
-            $stateParams.orderableGroups = orderableGroups;
+            $stateParams.productList = productList;
             $stateParams.draftInfo = draftInfo;
             $stateParams.user = user;
             $stateParams.facility = facility;
@@ -205,7 +200,15 @@
         };
 
         vm.changeArea = function(lineItem, lineItems) {
-            lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
+            //lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
+            if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
+                lineItem.$error.areaError = 'openlmisForm.required';
+                lineItem.$error.moveToLocationError = 'openlmisForm.required';
+                lineItem.moveTo.locationCode = null;
+                lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
+            } else {
+                lineItem.$error.areaError = '';
+            }
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
             if (lineItem.$error.areaError !== 'openlmisForm.required' && vm.isVirtual) {
@@ -220,7 +223,17 @@
             if (lineItem.$error.moveToLocationError !== 'openlmisForm.required' && vm.isVirtual) {
                 validateRelatedLineItemsForVirtual(lineItem, lineItems);
             }
+            if (lineItem.$error.moveToLocationError === '') {
+                lineItem.moveTo.area = lineItem.destAreaOptions[0];
+                vm.changeArea(lineItem, lineItems);
+            }
         };
+
+        $scope.$on('locationCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            var lineItems = data.lineItems;
+            vm.changeMoveToLocation(lineItem, lineItems);
+        });
 
         vm.getStockOnHand = function(lineItem, lineItems, index) {
             if (index === 0) {
@@ -278,7 +291,7 @@
                 vm.displayItems = _.filter(vm.displayItems, function(item) {
                     return !_.isEmpty(item);
                 });
-                filterOrderableGroups();
+                filterProductList();
             }
         };
 

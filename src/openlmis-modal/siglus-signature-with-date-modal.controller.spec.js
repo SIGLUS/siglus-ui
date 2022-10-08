@@ -61,7 +61,10 @@ describe('SiglusSignatureWithDateModalController', function() {
             vm.changeDateType(true);
             var date = new Date();
 
-            expect(vm.occurredDate).toEqual(date);
+            expect(vm.occurredDate.getFullYear()).toEqual(date.getFullYear());
+            expect(vm.occurredDate.getMonth()).toEqual(date.getMonth());
+
+            expect(vm.occurredDate.getDate()).toEqual(date.getDate());
 
         });
     });

@@ -28,11 +28,13 @@
         .module('siglus-stock-issue-initial-modal')
         .controller('SiglusInitialIssueModalController', controller);
 
-    controller.$inject = ['programId', 'facilityId', 'draftType', '$state', 'siglusInitialIssueModalService',
-        'modalDeferred', 'siglusStockIssueService', 'sourceDestinationService', 'loadingModalService'];
+    controller.$inject = ['programId', 'facilityId', 'draftType', 'moduleType', '$state',
+        'siglusInitialIssueModalService', 'modalDeferred', 'siglusStockDispatchService',
+        'sourceDestinationService', 'loadingModalService', 'DRAFT_TYPE'];
 
-    function controller(programId, facilityId, draftType, $state, siglusInitialIssueModalService, modalDeferred,
-                        siglusStockIssueService, sourceDestinationService, loadingModalService) {
+    function controller(programId, facilityId, draftType, moduleType, $state, siglusInitialIssueModalService,
+                        modalDeferred, siglusStockDispatchService, sourceDestinationService, loadingModalService,
+                        DRAFT_TYPE) {
         var vm = this;
 
         vm.location = undefined;
@@ -88,18 +90,19 @@
                     }
                 };
                 loadingModalService.open();
-                siglusStockIssueService.initDraft(_.extend({
+                siglusStockDispatchService.initDraft(_.extend({
                     programId: programId,
                     facilityId: facilityId,
-                    draftType: draftType,
+                    draftType: DRAFT_TYPE[moduleType][draftType],
                     documentNumber: vm.documentNumber,
                     locationFreeText: vm.locationFreeText
-                }, formInfo[draftType])).then(function(initialDraftInfo) {
+                }, formInfo[draftType]), moduleType).then(function(initialDraftInfo) {
                     modalDeferred.resolve();
-                    $state.go('openlmis.stockmanagement.' + draftType + '.draft', {
+                    $state.go('openlmis.' + moduleType + '.' + draftType + '.draft', {
                         programId: programId,
                         initialDraftId: initialDraftInfo.id,
-                        draftType: draftType
+                        draftType: draftType,
+                        moduleType: moduleType
                     });
                 })
                     .catch(function(error) {

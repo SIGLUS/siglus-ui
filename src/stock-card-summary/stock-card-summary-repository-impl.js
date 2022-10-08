@@ -97,6 +97,9 @@
                     var lotIds = getLotIds(stockCardSummariesPage.content),
                         orderableIds = getOrderableIds(stockCardSummariesPage.content);
 
+                    if (params.archivedOnly && stockCardSummariesPage.content.length === 0) {
+                        return stockCardSummariesPage;
+                    }
                     return $q.all([
                         orderableResource.query({
                             id: orderableIds,

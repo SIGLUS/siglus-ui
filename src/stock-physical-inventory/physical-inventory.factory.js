@@ -185,16 +185,21 @@
                                 facilityId: physicalInventory.facilityId,
                                 lineItems: []
                             };
-                            prepareLineItems(physicalInventory, summaries, draftToReturn);
+                            prepareLineItems(
+                                physicalInventory,
+                                summaries,
+                                draftToReturn,
+                                false,
+                                false
+                            );
                             draftToReturn.id = physicalInventory.id;
-
                             return draftToReturn;
                         });
                 });
         }
 
-        function getLocationPhysicalInventorySubDraft(id, flag) {
-            return physicalInventoryService.getLocationPhysicalInventorySubDraft(id)
+        function getLocationPhysicalInventorySubDraft(id, flag, locationManagementOption) {
+            return physicalInventoryService.getLocationPhysicalInventorySubDraft(id, locationManagementOption)
                 .then(function(physicalInventory) {
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;
@@ -207,46 +212,92 @@
                                 facilityId: physicalInventory.facilityId,
                                 lineItems: []
                             };
-                            prepareLineItems(physicalInventory, summaries, draftToReturn, true);
+                            prepareLineItems(
+                                physicalInventory,
+                                summaries,
+                                draftToReturn,
+                                true,
+                                locationManagementOption
+                            );
                             draftToReturn.id = physicalInventory.id;
-
                             return draftToReturn;
                         });
                 });
         }
 
         // SIGLUS-REFACTOR: starts here
-        function getInitialInventory(programId, facilityId) {
-            return physicalInventoryService.getInitialDraft(programId, facilityId)
-                .then(function(drafts) {
-                    var draft = _.first(drafts);
-                    var allLineOrderableIds = draft.lineItems.map(function(line) {
-                        return line.orderableId;
-                    });
-                    return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
-                        allLineOrderableIds)
-                        .then(function(summaries) {
-                            var initialInventory = {
-                                programId: draft.programId,
-                                facilityId: draft.facilityId,
-                                lineItems: []
-                            };
-                            prepareLineItems(draft, summaries, initialInventory);
-                            initialInventory.id = draft.id;
+        function getInitialInventory(programId, facilityId, locationManagementOption) {
+            var result =  {};
+            if (locationManagementOption === 'location') {
+                result = physicalInventoryService.getDraftByLocation(facilityId, programId)
+                    .then(function(drafts) {
+                        var draft = _.first(drafts);
+                        var allLineOrderableIds = draft.lineItems.map(function(line) {
+                            return line.orderableId;
+                        });
+                        return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
+                            allLineOrderableIds)
+                            .then(function(summaries) {
+                                var initialInventory = {
+                                    programId: draft.programId,
+                                    facilityId: draft.facilityId,
+                                    lineItems: []
+                                };
+                                prepareLineItems(
+                                    draft,
+                                    summaries,
+                                    initialInventory,
+                                    true,
+                                    locationManagementOption
+                                );
+                                initialInventory.id = draft.id;
 
-                            return initialInventory;
+                                return initialInventory;
+                            });
+                    }, function(err) {
+                        if (err.status === 406) {
+                            currentUserService.clearCache();
+                            navigationStateService.clearStatesAvailability();
+                            $state.go('openlmis.home', {}, {
+                                reload: true
+                            });
+                            loadingModalService.close();
+                            alertService.error('stockInitialInventory.initialFailed');
+                        }
+                    });
+            } else {
+                result = physicalInventoryService.getInitialDraft(programId, facilityId)
+                    .then(function(drafts) {
+                        var draft = _.first(drafts);
+                        var allLineOrderableIds = draft.lineItems.map(function(line) {
+                            return line.orderableId;
                         });
-                }, function(err) {
-                    if (err.status === 406) {
-                        currentUserService.clearCache();
-                        navigationStateService.clearStatesAvailability();
-                        $state.go('openlmis.home', {}, {
-                            reload: true
-                        });
-                        loadingModalService.close();
-                        alertService.error('stockInitialInventory.initialFailed');
-                    }
-                });
+                        return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
+                            allLineOrderableIds)
+                            .then(function(summaries) {
+                                var initialInventory = {
+                                    programId: draft.programId,
+                                    facilityId: draft.facilityId,
+                                    lineItems: []
+                                };
+                                prepareLineItems(draft, summaries, initialInventory);
+                                initialInventory.id = draft.id;
+
+                                return initialInventory;
+                            });
+                    }, function(err) {
+                        if (err.status === 406) {
+                            currentUserService.clearCache();
+                            navigationStateService.clearStatesAvailability();
+                            $state.go('openlmis.home', {}, {
+                                reload: true
+                            });
+                            loadingModalService.close();
+                            alertService.error('stockInitialInventory.initialFailed');
+                        }
+                    });
+            }
+            return result;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -266,8 +317,9 @@
 
             // SIGLUS-REFACTOR: Filter not added items
             physicalInventory.lineItems = _.map(draft.lineItems, function(item) {
+                var result = {};
                 if (item.id) {
-                    return {
+                    result = {
                         id: item.id,
                         orderableId: item.orderable.id,
                         lotId: item.lot ? item.lot.id : null,
@@ -284,23 +336,25 @@
                         area: item.area,
                         locationCode: item.locationCode
                     };
+                } else {
+                    result = {
+                        orderableId: item.orderable.id,
+                        lotId: item.lot ? item.lot.id : null,
+                        lotCode: item.lot ? item.lot.lotCode : null,
+                        expirationDate: item.lot ? item.lot.expirationDate : null,
+                        quantity: item.quantity,
+                        extraData: {
+                            vvmStatus: item.vvmStatus
+                        },
+                        stockAdjustments: item.stockAdjustments,
+                        reasonFreeText: item.reasonFreeText,
+                        stockCardId: item.stockCardId,
+                        programId: item.programId,
+                        area: item.area,
+                        locationCode: item.locationCode
+                    };
                 }
-                return {
-                    orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
-                    lotCode: item.lot ? item.lot.lotCode : null,
-                    expirationDate: item.lot ? item.lot.expirationDate : null,
-                    quantity: item.quantity,
-                    extraData: {
-                        vvmStatus: item.vvmStatus
-                    },
-                    stockAdjustments: item.stockAdjustments,
-                    reasonFreeText: item.reasonFreeText,
-                    stockCardId: item.stockCardId,
-                    programId: item.programId,
-                    area: item.area,
-                    locationCode: item.locationCode
-                };
+                return result;
             });
             // SIGLUS-REFACTOR: ends here
 
@@ -308,7 +362,13 @@
         }
 
         // SIGLUS-REFACTOR: starts here
-        function prepareLineItems(physicalInventory, summaries, draftToReturn, isWithLocation) {
+        function prepareLineItems(
+            physicalInventory,
+            summaries,
+            draftToReturn,
+            isWithLocation,
+            locationManagementOption
+        ) {
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
@@ -346,20 +406,33 @@
                         }
                         return summary.orderable.id === item.orderableId;
                     });
-                    summary && draftToReturn.lineItems.push({
-                        stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
-                        lot: getLot(summary, item),
-                        orderable: summary.orderable,
-                        quantity: item.quantity,
-                        vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
-                        stockAdjustments: item.stockAdjustments || [],
-                        reasonFreeText: item.reasonFreeText,
-                        stockCardId: item.stockCardId,
-                        area: item.area,
-                        id: item.id,
-                        locationCode: item.locationCode,
-                        programId: _.first(summary.orderable.programs).programId
-                    });
+                    if ((
+                        !locationManagementOption
+                            || _.contains(['location', 'product'], locationManagementOption))
+                            && summary
+                    ) {
+                        draftToReturn.lineItems.push({
+                            stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
+                            lot: getLot(summary, item),
+                            orderable: summary.orderable,
+                            quantity: item.quantity,
+                            vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
+                            stockAdjustments: item.stockAdjustments || [],
+                            reasonFreeText: item.reasonFreeText,
+                            stockCardId: _.get(item, ['extraData', 'stockCardId'], null),
+                            area: item.area,
+                            id: item.id,
+                            locationCode: item.locationCode,
+                            programId: _.first(summary.orderable.programs).programId
+                        });
+                    } else if (locationManagementOption === 'location' && !summary) {
+                        var newItem = angular.merge(item, {
+                            stockCardId: _.get(item, ['extraData', 'stockCardId'], null),
+                            extraData: {},
+                            orderable: {}
+                        });
+                        draftToReturn.lineItems.push(newItem);
+                    }
                 });
                 draftToReturn.lineItems = _.sortBy(draftToReturn.lineItems, function(kit) {
                     return !kit.stockCardId;
