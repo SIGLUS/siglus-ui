@@ -296,6 +296,10 @@
 
         vm.changeAcceptQuantity = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
+            if (lineItem.isMainGroup || lineItem.isFirst) {
+                lineItem.quantityRejected = vm.getRejectedQuantity(lineItem,
+                    groupedLineItems);
+            }
             vm.validateAcceptQuantity(lineItem, groupedLineItems);
         };
 
@@ -368,11 +372,20 @@
             }
         };
 
+        vm.getRejectedQuantity = function(fulfillingLineItem, groupedLineItems) {
+            var quantityAccepted = vm.getSumOfLot(fulfillingLineItem, groupedLineItems);
+            return fulfillingLineItem.quantityShipped - quantityAccepted;
+        };
+
         function getPodLineItemsToSend() {
             return _.flatten(vm.orderLineItems.map(function(orderLineItem) {
                 return orderLineItem.groupedLineItems.filter(function(fulfillingLineItem) {
                     if (fulfillingLineItem.isMainGroup) {
                         fulfillingLineItem.quantityAccepted = vm.getSumOfLot(fulfillingLineItem,
+                            orderLineItem.groupedLineItems);
+                    }
+                    if (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst) {
+                        fulfillingLineItem.quantityRejected = vm.getRejectedQuantity(fulfillingLineItem,
                             orderLineItem.groupedLineItems);
                     }
                     return fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst;
