@@ -109,15 +109,28 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                proofOfDeliveryManageService.deleteAllDraft($stateParams.podId)
-                    .then(function() {
-                        $state.go('^', {}, {
-                            reload: true
+                if (facility.enableLocationManagement) {
+                    proofOfDeliveryManageService.deleteAllDraftWithLocation($stateParams.podId)
+                        .then(function() {
+                            $state.go('^', {}, {
+                                reload: true
+                            });
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
                         });
-                    })
-                    .finally(function() {
-                        loadingModalService.close();
-                    });
+                } else {
+                    proofOfDeliveryManageService.deleteAllDraft($stateParams.podId)
+                        .then(function() {
+                            $state.go('^', {}, {
+                                reload: true
+                            });
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
+                        });
+                }
+
             });
         };
 

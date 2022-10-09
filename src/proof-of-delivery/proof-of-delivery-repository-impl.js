@@ -45,6 +45,7 @@
         ProofOfDeliveryRepositoryImpl.prototype.createDraft = createDraft;
         ProofOfDeliveryRepositoryImpl.prototype.getDraftList = getDraftList;
         ProofOfDeliveryRepositoryImpl.prototype.deleteAllDraft = deleteAllDraft;
+        ProofOfDeliveryRepositoryImpl.prototype.deleteAllDraftWithLocation = deleteAllDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.getSubDraft = getSubDraft;
         ProofOfDeliveryRepositoryImpl.prototype.getSubDraftWithLocation = getSubDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.updateSubDraft = updateSubDraft;
@@ -86,6 +87,10 @@
                 },
                 deleteAllDraft: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDelivery/:id/subDrafts'),
+                    method: 'DELETE'
+                },
+                deleteAllDraftWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id/subDrafts'),
                     method: 'DELETE'
                 },
                 getSubDraft: {
@@ -237,6 +242,11 @@
          */
         function deleteAllDraft(podId) {
             return this.resource.deleteAllDraft({
+                id: podId
+            }).$promise;
+        }
+        function deleteAllDraftWithLocation(podId) {
+            return this.resource.deleteAllDraftWithLocation({
                 id: podId
             }).$promise;
         }
