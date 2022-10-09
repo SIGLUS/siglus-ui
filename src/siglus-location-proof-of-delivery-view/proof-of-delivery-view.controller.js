@@ -353,7 +353,11 @@
                 });
                 mainLine.$error.rejectionReasonIdError = '';
             } else {
-                lineItem.$error.quantityAcceptedError = '';
+                relatedLines.forEach(function(line) {
+                    if (line.$error.quantityAcceptedError === 'proofOfDeliveryView.gtQuantityShipped') {
+                        line.$error.quantityAcceptedError = '';
+                    }
+                });
                 if (sumOfLot === quantityShipped && mainLine.rejectionReasonId) {
                     mainLine.$error.rejectionReasonIdError = 'proofOfDeliveryView.notAllowedRejectReasonId';
                 } else if (sumOfLot < quantityShipped && !mainLine.rejectionReasonId) {
@@ -443,6 +447,9 @@
             });
             return _.every(vm.orderLineItems, function(orderLineItem) {
                 return _.every(orderLineItem.groupedLineItems, function(lineItem) {
+                    if (lineItem.isMainGroup) {
+                        return true;
+                    }
                     return _.chain(lineItem.$error)
                         .keys()
                         .all(function(key) {
