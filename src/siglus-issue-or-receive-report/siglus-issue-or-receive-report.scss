@@ -53,18 +53,16 @@
     .section-fouth {
       padding: 5px 8px;
       width: 1246px;
-      height: 30px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
       background: #FFFFFF;
       border: 2px solid #000000;
       font-weight: 700;
       font-size: 18px;
-      .fouth-conferred {
-        margin-left: 351px;
-      }
-      .fouth-received {
-        margin-left: 295px;
+      flex-wrap: wrap;
+      &>div{
+        width: 33%;
       }
     }
     .sub-information {
@@ -95,7 +93,6 @@
         border-bottom: 1px solid #000;
         border-right: 0px solid #000;
         word-wrap: break-word;
-        word-break: break-all;
         padding: 0 4px;
       }
 
@@ -126,6 +123,10 @@
       }
       .text__left {
         text-align: left !important;
+        padding: 0 6px;
+      }
+      .text__right {
+        text-align: right !important;
         padding: 0 6px;
       }
   
@@ -174,7 +175,7 @@
     .hide-tr {
       height: 0px !important;
       td {
-        border: none;
+        border: none !important;
       }
     }
   

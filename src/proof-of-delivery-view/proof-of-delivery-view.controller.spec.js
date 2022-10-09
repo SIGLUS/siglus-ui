@@ -18,7 +18,7 @@ describe('PodViewController', function() {
     var vm, $controller, ProofOfDeliveryDataBuilder, OrderDataBuilder,
         proofOfDelivery, order, reasons, $rootScope, $q,
         ReasonDataBuilder, VVM_STATUS, messageService, orderLineItems,
-        ProofOfDeliveryPrinter, UserDataBuilder, userDataBuilder, orderablesPrice;
+        UserDataBuilder, userDataBuilder, orderablesPrice;
 
     beforeEach(function() {
         module('proof-of-delivery-view');
@@ -37,7 +37,6 @@ describe('PodViewController', function() {
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
             VVM_STATUS = $injector.get('VVM_STATUS');
             messageService = $injector.get('messageService');
-            ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
             UserDataBuilder = $injector.get('UserDataBuilder');
         });
         orderablesPrice = {
@@ -73,9 +72,6 @@ describe('PodViewController', function() {
         ];
 
         spyOn(messageService, 'get');
-        spyOn(ProofOfDeliveryPrinter.prototype, 'closeTab');
-        spyOn(ProofOfDeliveryPrinter.prototype, 'openTab');
-        spyOn(ProofOfDeliveryPrinter.prototype, 'print');
         spyOn(proofOfDelivery, 'save').andReturn($q.resolve(proofOfDelivery));
         spyOn(proofOfDelivery, 'isInitiated');
 
@@ -181,21 +177,5 @@ describe('PodViewController', function() {
             }).toThrow();
         });
 
-    });
-
-    describe('printProofOfDelivery', function() {
-
-        beforeEach(function() {
-            vm.$onInit();
-        });
-
-        it('should not call save if the pod is confirmed', function() {
-            proofOfDelivery.isInitiated.andReturn(false);
-
-            vm.printProofOfDelivery();
-            $rootScope.$apply();
-
-            expect(proofOfDelivery.save).not.toHaveBeenCalled();
-        });
     });
 });
