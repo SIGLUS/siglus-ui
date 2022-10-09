@@ -297,7 +297,7 @@
         vm.changeAcceptQuantity = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
             vm.validateAcceptQuantity(lineItem, groupedLineItems);
-        }
+        };
 
         vm.validateLocations = function(lineItem, groupedLineItems) {
             var relatedLineItems = groupedLineItems.filter(function(line) {
