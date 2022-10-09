@@ -95,9 +95,12 @@ body > header {
   }
 }
 
+.navbar-offline {
+  background-image: linear-gradient(to bottom, lighten($background-color-dark, 10%) 0%, $background-color-dark 10%, darken($background-color-dark, 10%) 100%) !important;
+}
+
 .navbar {
   width: 100%;
-
   .navbar-right {
     float: right !important;
 
@@ -108,6 +111,28 @@ body > header {
 
   .nav.navbar-nav {
     flex-direction: row;
+  }
+
+  .net-status-container {
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 50px;
+    .net-status-title {
+      color: #fff;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      margin-right: 7px;
+    }
+    .net-status-light {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #A0A0A0;
+    }
   }
 
 }

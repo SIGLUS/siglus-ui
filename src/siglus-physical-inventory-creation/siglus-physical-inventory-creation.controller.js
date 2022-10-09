@@ -60,7 +60,7 @@
             if (!_.isNull(vm.userInputSplitNum)) {
                 vm.showRequired = false;
             }
-            if (vm.userInputSplitNum) {
+            if (vm.userInputSplitNum || vm.userInputSplitNum === 0) {
                 vm.showGTnumber = false;
             }
         };

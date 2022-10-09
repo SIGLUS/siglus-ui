@@ -31,7 +31,7 @@ pipeline {
                 }
                 println "test coverage: check"
                 sh '''
-                    coverage_threshold=57.00
+                    coverage_threshold=55.00
 
                     statement_coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -1 | sed -n '1, 1p'`;
                     branch_coverage=`grep -o -P '(?<=<span class="strong">).*(?=% </span>)' build/test/coverage/HeadlessChrome\\ 74.0.3723\\ \\(Linux\\ 0.0.0\\)/lcov-report/index.html | head -2 | sed -n '2, 1p'`;

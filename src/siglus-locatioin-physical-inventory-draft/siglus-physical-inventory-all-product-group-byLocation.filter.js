@@ -1,0 +1,53 @@
+/*
+ * This program is part of the OpenLMIS logistics management information system platform software.
+ * Copyright © 2017 VillageReach
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms
+ * of the GNU Affero General Public License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+ * See the GNU Affero General Public License for more details. You should have received a copy of
+ * the GNU Affero General Public License along with this program. If not, see
+ * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
+ */
+
+(function() {
+    'use strict';
+
+    /**
+     * @ngdoc filter
+     * @name siglus-locatioin-physical-inventory-draft.filter:siglusGroupByAllProductProgramProductCategory
+     *
+     * @description
+     * Groups nested array of physical inventory line item by 'orderableCategoryDisplayName'
+     *
+     * @param   {Array}  List of objects to be grouped
+     * @return  {Object} Grouped products - category name as key and array of products as value
+     */
+    angular
+        .module('siglus-locatioin-physical-inventory-draft')
+        .filter('siglusGroupByAllProductProgramProductCategoryByLocation', filter);
+
+    function filter() {
+        return function(items) {
+            var itemsMap = _.reduce(items, function(r, c) {
+                if (r[c[0].locationCode]) {
+                    r[c[0].locationCode].push(c);
+                } else {
+                    r[c[0].locationCode] = [c];
+                }
+                return r;
+            }, {});
+            var itemsKeyAfterSort = _.sortBy(Object.keys(itemsMap), function(a) {
+                return a;
+            });
+            return _.reduce(itemsKeyAfterSort, function(r, c) {
+                r[c] = itemsMap[c];
+                return r;
+            }, {});
+        };
+    }
+
+})();

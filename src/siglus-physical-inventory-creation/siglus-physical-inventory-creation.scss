@@ -8,6 +8,12 @@
   font-size: 14px;
 }
 
+.inventory-creation {
+  .openlmis-invalid {
+    display: none;
+  }
+}
+
 .modal-header-warning {
   background-color: #A94442;
   padding: 7px 28px;

@@ -1,6 +1,6 @@
 {
   "physicalInventoryCreation.label": "Please input the number of users doing the inventory",
-  "physicalInventoryCreation.initialLabel": "Your facility haven't initial inventory yet, input the number of users to start it",
+  "physicalInventoryCreation.initialLabel": "Your facility hasn't initial inventory yet, input the number of users to start it",
   "physicalInventoryCreation.error": "Please enter an integer between 1 and 10",
   "physicalInventoryCreation.required": "This field is required",
   "physicalInventoryCreation.showGTnumber": "The number of users cannot be larger than the number of products",
