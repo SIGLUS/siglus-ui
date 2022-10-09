@@ -47,7 +47,11 @@ describe('SiglusAddProductsModalWithLocationController', function() {
                 modalDeferred: deferred,
                 orderableGroupService: _orderableGroupService_,
                 $scope: scope,
-                locationCode: '123test'
+                locationCode: '123test',
+                addedLotIdAndOrderableId: [{
+                    lotId: '123',
+                    orderableId: '123'
+                }]
             });
         });
     });
@@ -94,12 +98,15 @@ describe('SiglusAddProductsModalWithLocationController', function() {
     it('should remove added product and reset its quantity value', function() {
         //given
         var item = {
-            quantity: 123
+            quantity: 123,
+            lotOptions: []
         };
         vm.addedItems = [item];
-
+        vm.selectedItem = {
+            lotOptions: []
+        };
         //when
-        vm.removeAddedProduct(item);
+        vm.removeAddedProduct(item, 0);
 
         //then
         expect(item.quantity).not.toBeDefined();
@@ -160,25 +167,6 @@ describe('SiglusAddProductsModalWithLocationController', function() {
         vm.confirm();
 
         expect(scope.$broadcast).toHaveBeenCalledWith('openlmis-form-submit');
-    });
-
-    it('should confirm add products if all items have quantities', function() {
-        //given
-        var item1 = {
-            quantity: 1
-        };
-        var item2 = {
-            quantity: 2
-        };
-        vm.addedItems = [item1, item2];
-
-        spyOn(deferred, 'resolve');
-
-        //when
-        vm.confirm();
-
-        //then
-        expect(deferred.resolve).toHaveBeenCalled();
     });
 
     // it('should NOT confirm add products if some items have no quantity', function() {
