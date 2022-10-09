@@ -38,7 +38,9 @@
             <th>{{'requisitionApproval.dateSubmitted' | message}}</th>
             <th>{{'requisitionApproval.dateAuthorized' | message}}</th>
             <th>{{'requisitionApproval.emergency' | message}}</th>
-            <th>{{'requisitionApproval.offline' | message}}</th>
+            <!--        SIGLUS-REFACTOR: starts here :remove offline column-->
+            <!-- <th>{{'requisitionApproval.offline' | message}}</th> -->
+            <!--        SIGLUS-REFACTOR: end here-->
             <th class="col-sticky sticky-right">{{'requisitionApproval.actions' | message}}</th>
         </tr>
         </thead>
@@ -62,9 +64,11 @@
             <td class="col-emergency">
                 <span ng-if="requisition.emergency" class="icon-ok"></span>
             </td>
-            <td class="col-emergency">
+             <!--        SIGLUS-REFACTOR: starts here-->
+            <!-- <td class="col-emergency">
                 <i ng-class="{'icon-ok': requisition.$availableOffline}"></i>
-            </td>
+            </td> -->
+             <!--        SIGLUS-REFACTOR: end here-->
             <td>
                 <button ng-if="vm.isFullRequisitionAvailable(requisition.id)" class="primary" ng-click="vm.openRnr(requisition.id)">
                     {{'requisitionApproval.viewRequisition' | message}}
