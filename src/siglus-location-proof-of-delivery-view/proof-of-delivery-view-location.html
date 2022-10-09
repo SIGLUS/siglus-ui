@@ -174,8 +174,10 @@
                 </td>
                 <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst">
                 </td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
+                </td>
+                <td ng-if="!vm.canEdit && !(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                 </td>
 
                 <td></td>
