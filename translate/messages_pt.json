@@ -2545,5 +2545,6 @@
   "stockAddProductsModalWithLocation.title": "Add Product to Location ${locationCode}",
   "stockAddProductsModalWithLocation.confirm": "Confirme",
   "stockAddProductsModalWithLocation.lot": "lote",
-  "stockAddProductsModalWithLocation.expiryDate": "Data de validade"
+  "stockAddProductsModalWithLocation.expiryDate": "Data de validade",
+  "physicalInventoryCreation.showGTnumberByLocation": "The number of users cannot be larger than the number of locations"
 }

@@ -54,6 +54,7 @@
         vm.showRequired = false;
         vm.facility = facility;
         vm.changeShowError = function() {
+            vm.showGTnumber = false;
             if (vm.isValid(vm.userInputSplitNum)) {
                 vm.showError = false;
             }
