@@ -66,8 +66,8 @@
                            ng-disabled="true"
                            autocomplete="off"/>
                 </td>
-                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                <td ng-if="vm.showEmptyBlock(lineItems, index)"></td>
+                <td ng-if="!vm.showEmptyBlock(lineItems, index)"
                     openlmis-invalid="{{
                         lineItem.$error.lotCodeError === 'issueLocationCreation.lotDuplicated'
                             ? lineItem.$error.lotCodeError
@@ -83,8 +83,8 @@
                     </select>
                 </td>
                 <td class="text-align-right">{{vm.getStockOnHand(lineItems, index)}}</td>
-                <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">{{vm.getQuantity(lineItems)}}</td>
-                <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)" class="digit-cell">
+                <td ng-if="vm.showEmptyBlock(lineItems, index)">{{vm.getQuantity(lineItems)}}</td>
+                <td ng-if="!vm.showEmptyBlock(lineItems, index)" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            openlmis-invalid="{{lineItem.$error.quantityError || '' | message}}"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
@@ -107,9 +107,12 @@
     </section>
 </div>
 
+<ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
+
 <siglus-common-toolbar
         data="vm.addedLineItems"
         mode="vm.isMerge ? 'MERGE' : 'SAVE'"
+        on-cancel="vm.cancelMerge()"
         on-delete="vm.removeDisplayItems()"
         on-save="vm.save()"
         on-submit="vm.submit()">

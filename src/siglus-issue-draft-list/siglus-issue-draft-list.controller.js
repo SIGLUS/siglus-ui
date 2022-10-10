@@ -111,7 +111,7 @@
 
         vm.mergeDrafts = function() {
             if (isAllDraftSubmitted()) {
-                $state.go('openlmis.stockmanagement.' +  vm.draftType + '.draft.merge', {
+                $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.merge', {
                     programId: programId,
                     initialDraftInfo: vm.initialDraftInfo,
                     facility: facility
