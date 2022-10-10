@@ -34,7 +34,8 @@
         '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
         'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment', 'orderablesPrice', 'facility',
-        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService'];
+        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService',
+        'alertService'];
 
     function ProofOfDeliveryViewControllerWithLocation($scope
         , proofOfDelivery, order, reasons, messageService
@@ -45,7 +46,7 @@
         , openlmisDateFilter, fulfillingLineItemFactory
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
         , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
-        , SiglusLocationCommonUtilsService) {
+        , SiglusLocationCommonUtilsService, alertService) {
 
         orderLineItems.forEach(function(orderLineItem) {
             orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
@@ -291,6 +292,13 @@
         $scope.$on('locationCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             var lineItems = data.lineItems;
+            lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
+            if (_.get(lineItem.moveTo, 'locationCode')) {
+                lineItem.moveTo.area = lineItem.destAreaOptions[0];
+            } else {
+                lineItem.moveTo.area = undefined;
+            }
+            vm.changeArea(lineItem, lineItems);
             vm.changeMoveToLocation(lineItem, lineItems);
         });
 
@@ -319,26 +327,39 @@
 
             if (filterLineItems.length > 1) {
                 relatedLineItems.forEach(function(lineItem) {
-                    lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
-                    lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
+                    if (lineItem.lot) {
+                        lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
+                        lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
+                    } else {
+                        lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocationForKit';
+                        lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocationForKit';
+                    }
                 });
             } else {
                 relatedLineItems.forEach(function(lineItem) {
-                    if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation') {
+                    if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation'
+                        || lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocationForKit') {
                         lineItem.$error.moveToLocationError = '';
                     }
-                    if (lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocation') {
+                    if (lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocation'
+                        || lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocationForKit') {
                         lineItem.$error.areaError = '';
                     }
                 });
             }
         };
         vm.validateAcceptQuantity = function(lineItem, groupedLineItems) {
+            if (_.get(lineItem, 'rejectionReasonId')
+                && lineItem.$error.rejectionReasonIdError === 'openlmisForm.required') {
+                lineItem.$error.rejectionReasonIdError = '';
+            }
+
             if (!_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
                 lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
                 return;
             }
             lineItem.$error.quantityAcceptedError = '';
+
             var sumOfLot = vm.getSumOfLot(lineItem, groupedLineItems);
             var relatedLines = groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
@@ -483,7 +504,7 @@
                     submitSubDraft();
                 }
             } else {
-                return $q.reject();
+                alertService.error(messageService.get('openlmisForm.formInvalid'));
             }
         }
 
