@@ -348,7 +348,8 @@
                 });
             }
         };
-        vm.validateAcceptQuantity = function(lineItem, groupedLineItems) {
+
+        function resetError(lineItem) {
             if (_.get(lineItem, 'rejectionReasonId')
                 && lineItem.$error.rejectionReasonIdError === 'openlmisForm.required') {
                 lineItem.$error.rejectionReasonIdError = '';
@@ -363,6 +364,9 @@
                 return;
             }
             lineItem.$error.quantityAcceptedError = '';
+        }
+        vm.validateAcceptQuantity = function(lineItem, groupedLineItems) {
+            resetError(lineItem);
 
             var sumOfLot = vm.getSumOfLot(lineItem, groupedLineItems);
             var relatedLines = groupedLineItems.filter(function(line) {
