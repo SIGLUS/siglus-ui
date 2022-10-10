@@ -14,12 +14,14 @@
  */
 
 describe('StockCardForProductController', function() {
-    var vm, facility, $controller, stockCardService;
+    var vm, facility, $controller, stockCardService, $scope, $rootScope;
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
+            $rootScope = $injector.get('$rootScope');
+            $scope = $rootScope.$new();
             stockCardService = $injector.get('stockCardService');
         });
     }
@@ -32,6 +34,7 @@ describe('StockCardForProductController', function() {
     function prepareData() {
         vm = $controller('StockCardForProductController', {
             facility: facility,
+            $scope: $scope,
             stockCard: {
                 productName: 'Acido acetilsalicilico (Aspirina); 500mg; Comp',
                 productCode: '07A02',
