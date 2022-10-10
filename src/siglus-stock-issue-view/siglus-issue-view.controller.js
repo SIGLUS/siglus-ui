@@ -42,6 +42,8 @@
 
         vm.destinationName = '';
 
+        vm.isLocation = false;
+
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
@@ -126,6 +128,7 @@
             $state.current.label = messageService.get('stockIssue.draft') + ' ' + draft.draftNumber;
             initViewModel();
             initStateParams();
+            vm.isLocation = $stateParams.moduleType === 'locationManagement';
         }
 
         function initViewModel() {

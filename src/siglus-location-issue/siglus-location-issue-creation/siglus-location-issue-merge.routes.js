@@ -26,8 +26,8 @@
     ];
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.locationManagement.issue.draft.creation', {
-            url: '/:draftId/create?page&size&keyword',
+        $stateProvider.state('openlmis.locationManagement.issue.draft.merge', {
+            url: '/create?page&size&keyword',
             label: '',
             views: {
                 '@openlmis': {
@@ -52,7 +52,7 @@
             },
             resolve: {
                 isMerge: function() {
-                    return false;
+                    return true;
                 },
                 program: function($stateParams) {
                     return $stateParams.programId;
@@ -84,15 +84,23 @@
                     }
                     return siglusLocationCommonApiService.getProductList(false, $stateParams.draftId);
                 },
-                mergedItems: function() {
-                    return [];
-                },
-                draftInfo: function($stateParams, siglusStockDispatchService) {
-                    if ($stateParams.draftInfo) {
-                        return $stateParams.draftInfo;
+                mergedItems: function($stateParams, siglusStockIssueLocationService, alertService) {
+                    if ($stateParams.mergedItems) {
+                        return $stateParams.mergedItems;
                     }
-                    return siglusStockDispatchService.getDraftById($stateParams.initialDraftId,
-                        $stateParams.draftId, $stateParams.moduleType);
+                    return siglusStockIssueLocationService.getMergedDraft($stateParams.initialDraftId).catch(
+                        function(error) {
+                            if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
+                                alertService.error('PhysicalInventoryDraftList.mergeError');
+                                throw 'subDrafts not all submitted';
+                            }
+                        }
+                    );
+                },
+                draftInfo: function(mergedItems) {
+                    return {
+                        lineItems: mergedItems
+                    };
                 },
                 locations: function(siglusLocationCommonApiService, draftInfo, $stateParams) {
                     if ($stateParams.locations) {
