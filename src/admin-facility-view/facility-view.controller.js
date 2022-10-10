@@ -59,6 +59,7 @@
         vm.updateEnableLocationManagement = updateEnableLocationManagement;
         vm.selectedReport = null;
         vm.upgradeToWeb = upgradeToWeb;
+        facility.isLocalMachine = false;
         // vm.minDate = '2022-08-08';
         /**
          * @ngdoc property
@@ -426,7 +427,6 @@
 
         function updateEnableLocationManagement() {
             var facility = vm.facility;
-            facility.isLocalMachine = false;
             if (facility.isAndroidDevice) {
                 return;
             }
