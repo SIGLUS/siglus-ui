@@ -28,38 +28,27 @@
             showInNavigation: false,
             views: {
                 '@openlmis': {
-                    controller: 'StockCardController',
-                    templateUrl: 'stock-card/stock-card.html',
+                    controller: 'StockCardForProductController',
+                    templateUrl: 'stock-card/siglus-stock-card-for-product/siglus-stock-card-for-archived-product.html',
                     controllerAs: 'vm'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                stockCard: function($stateParams, stockCardService, paginationService, StockCard) {
-                    var stockCardResource;
-
-                    if ($stateParams.isViewProductCard) {
-                        stockCardResource = stockCardService.getProductStockCard($stateParams.orderable);
-                    } else {
-                        stockCardResource = stockCardService.getStockCard($stateParams.stockCardId);
+                facility: function($stateParams, facilityFactory) {
+                    if (_.isUndefined($stateParams.facility)) {
+                        return facilityFactory.getUserHomeFacility();
                     }
-                    return stockCardResource
-                        .then(function(json) {
-                            var stockCard = new StockCard(json);
-                            //display new line item on top
-                            stockCard.lineItems.reverse();
-                            $stateParams.archivedStockCardSize = '@@STOCKMANAGEMENT_PAGE_SIZE';
-                            paginationService.registerList(null, $stateParams, function() {
-                                return stockCard.lineItems;
-                            }, {
-                                paginationId: 'archivedStockCard'
-                            });
-                            if ($stateParams.isViewProductCard) {
-                                delete stockCard.lot;
-                            }
-                            return stockCard;
-                        });
+                    return $stateParams.facility;
+                },
+                stockCard: function(siglusStockCardForProduct, $stateParams) {
+                    if ($stateParams.stockCard) {
+                        return $stateParams.stockCard;
+                    }
+                    return siglusStockCardForProduct.queryStockCardForProduct($stateParams.orderable,
+                        $stateParams.facility);
                 }
+
             }
         });
     }
