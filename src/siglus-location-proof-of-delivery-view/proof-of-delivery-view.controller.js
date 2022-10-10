@@ -353,6 +353,10 @@
                 && lineItem.$error.rejectionReasonIdError === 'openlmisForm.required') {
                 lineItem.$error.rejectionReasonIdError = '';
             }
+            if (!_.get(lineItem, 'rejectionReasonId')
+                && lineItem.$error.rejectionReasonIdError === 'proofOfDeliveryView.notAllowedRejectReasonId') {
+                lineItem.$error.rejectionReasonIdError = '';
+            }
 
             if (!_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
                 lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
