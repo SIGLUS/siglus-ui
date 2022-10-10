@@ -2540,5 +2540,10 @@
   "issueLocationCreation.moreThanSoh": "The Quantity can't be larger than Stock on Hand.",
   "issueLocationCreation.inputPositiveNumber": "Please enter a positive number.",
   "issueLocationCreation.submitSuccessfully": "Submit successfully",
-  "stockAdjustmentCreation.location":"Localização"
+  "stockAdjustmentCreation.location":"Localização",
+
+  "stockAddProductsModalWithLocation.title": "Add Product to Location ${locationCode}",
+  "stockAddProductsModalWithLocation.confirm": "Confirme",
+  "stockAddProductsModalWithLocation.lot": "lote",
+  "stockAddProductsModalWithLocation.expiryDate": "Data de validade"
 }

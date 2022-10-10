@@ -149,9 +149,11 @@
                 vm.selectedItem.lotOptions = _.filter(vm.selectedItem.lotOptions, function(lot) {
                     return !_.contains(hasAddedLotCode, lot.lotCode);
                 });
-                vm.selectedItem.lot.lotCode = null;
-                vm.selectedItem.lot.expirationDate = null;
-                vm.selectedItem.lot.id = null;
+                if (vm.selectedItem.lot.lotCode) {
+                    vm.selectedItem.lot.lotCode = null;
+                    vm.selectedItem.lot.expirationDate = null;
+                    vm.selectedItem.lot.id = null;
+                }
                 if (vm.isKit) {
                     vm.selectedOrderableGroup = null;
                     var newItems = _.filter(items, function(item) {

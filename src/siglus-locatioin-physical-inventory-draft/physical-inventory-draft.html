@@ -212,7 +212,7 @@
             <th ng-if="!vm.isInitialInventory" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
             <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
             <th ng-if="vm.showVVMStatusColumn" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.VVMStatus' | message}}</th>
-            <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
+            <th ng-if="!vm.isInitialInventory" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasons' | message}}</th>
             <th class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
             <!-- <th ng-if="!vm.isInitialInventory" class="col-sticky sticky-right">{{'stockPhysicalInventoryDraft.unaccountedQuantity' | message}}</th> -->
             <th ng-if="vm.actionType !== 'SUBMITTED'" class="col-sticky sticky-right stock-actions">{{'stockPhysicalInventoryDraft.actions' | message}}</th>
@@ -230,12 +230,12 @@
                 <td></td>
                 <td></td>
                 <!-- SIGLUS-REFACTOR: starts here -->
-                <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}123</td>
+                <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
                 <td ng-class="{'text-align-right': vm.actionType !== 'SUBMITTED'}">
                     {{vm.calculate(lineItems, 'quantity')}}
                 </td>
                 <td ng-if="vm.showVVMStatusColumn"></td>
-                <td class="text-align-right"></td>
+                <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
                 <td class="text-align-right"></td>
                 <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right"></td> -->
                 <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit) && vm.actionType !== 'SUBMITTED'" style="max-width: 170px;">
@@ -291,7 +291,7 @@
                             placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
                 </td>
-                <td class="reasons-cell">
+                <td ng-if="!vm.isInitialInventory" class="reasons-cell">
                     <!-- SIGLUS-REFACTOR: starts here -->
                     <!-- <stock-reasons
                             ng-model="lineItem.stockAdjustments"
@@ -365,7 +365,7 @@
                             placeholder="{{'stockPhysicalInventoryDraft.selectStatus' | message}}">
                     </select>
                 </td>
-                <td class="reasons-cell">
+                <td ng-if="!vm.isInitialInventory" class="reasons-cell">
                     <!-- SIGLUS-REFACTOR: starts here -->
                     <!-- <stock-reasons
                             ng-model="lineItem.stockAdjustments"
@@ -403,7 +403,7 @@
                 <td ng-if="!vm.isInitialInventory" class="text-align-right"></td>
                 <td class="digit-cell" ></td>
                 <td ng-if="vm.showVVMStatusColumn" class="digit-cell"></td>
-                <td class="reasons-cell"></td>
+                <td ng-if="!vm.isInitialInventory" class="reasons-cell"></td>
                 <td>
                 </td>
                 <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.unaccountedQuantity}}</td> -->

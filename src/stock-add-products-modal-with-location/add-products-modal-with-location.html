@@ -26,7 +26,7 @@
                     </div>
                     <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
                     <div class="form-group max-width-form-group">
-                        <label for="lotSelect">Lot</label>
+                        <label for="lotSelect">{{ 'stockAddProductsModalWithLocation.lot' | message }}</label>
                         <siglus-stock-input-select
                             id="lotSelect"
                             comp-id="lotSelect"
@@ -40,7 +40,7 @@
                     </div>
                     <!-- SIGLUS-REFACTOR: ends here -->
                     <div class="form-group max-width-form-group">
-                        <label for="dateSelect">Expiry Date</label>
+                        <label for="dateSelect">{{ 'stockAddProductsModalWithLocation.expiryDate' | message }}</label>
                         <input
                             id="dateSelect"
                             type="date"
@@ -63,8 +63,8 @@
                             <th>{{'stockAddProductsModal.productCode' | message}}</th>
                             <th>{{'stockAddProductsModal.product' | message}}</th>
                             <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
-                            <th>Lot</th>
-                            <th>Expiry Date</th>
+                            <th>{{ 'stockAddProductsModalWithLocation.lot' | message }}</th>
+                            <th>{{ 'stockAddProductsModalWithLocation.expiryDate' | message }}</th>
                             <!-- <th ng-if="vm.hasLot">{{'stockAddProductsModal.expiryDate' | message}}</th> -->
                             <!-- SIGLUS-REFACTOR: ends here -->
                             <th ng-if="!vm.withLocation">{{'stockAddProductsModal.currentStock' | message}}</th>
@@ -100,7 +100,7 @@
                 <button ng-click="$hide()">{{'stockAddProductsModal.cancel' | message}}</button>
                 <button ng-click="vm.confirm()" class="primary">
                     <!-- {{'stockAddProductsModal.addProducts' | message: {'num': vm.addedItems.length} }} -->
-                    Confirm
+                    {{ 'stockAddProductsModalWithLocation.confirm' | message }}
                 </button>
             </div>
 
