@@ -28,9 +28,11 @@
         .module('openlmis-navigation')
         .controller('NavigationController', NavigationController);
 
-    NavigationController.$inject = ['$scope', 'navigationStateService', 'currentUserHomeFacilityService'];
+    NavigationController.$inject = ['$scope', 'navigationStateService', 'currentUserHomeFacilityService',
+        'siglusHomeFacilityService'];
 
-    function NavigationController($scope, navigationStateService, currentUserHomeFacilityService) {
+    function NavigationController($scope, navigationStateService, currentUserHomeFacilityService,
+                                  siglusHomeFacilityService) {
 
         var vm = this;
 
@@ -67,11 +69,10 @@
                 vm.states = navigationStateService.roots[''];
             } else if ($scope.rootState) {
                 var states = navigationStateService.roots[$scope.rootState];
-                currentUserHomeFacilityService.getHomeFacility().then(function(data) {
-                    var flag = _.get(data, 'enableLocationManagement', false);
+                siglusHomeFacilityService.getLocationEnableStatus().then(function(status) {
                     vm.states = _.filter(states, function(stateItem) {
                         return !_.get(stateItem, ['name']).contains(
-                            flag ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
+                            status ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
                         );
                     });
                 });

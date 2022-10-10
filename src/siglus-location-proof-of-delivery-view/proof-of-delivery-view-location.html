@@ -134,14 +134,17 @@
                 <td ng-if="vm.canEdit && (!fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     <input positive-integer
                            ng-model="fulfillingLineItem.quantityAccepted"
-                           ng-change="vm.validateAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)"
+                           ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)"
                            openlmis-invalid="{{fulfillingLineItem.$error.quantityAcceptedError | message}}"
                     />
                 </td>
                 <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)">
                     {{vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems)}}
                 </td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && fulfillingLineItem.isMainGroup">
+                    {{vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems)}}
+                </td>
+                <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup">
                     {{fulfillingLineItem.quantityAccepted}}
                 </td>
 
@@ -159,20 +162,22 @@
                     </div>
                 </td>
 
-<!--                <td>{{fulfillingLineItem.quantityRejected}}</td>-->
-                <td></td>
+                <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{vm.getRejectedQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)}}</td>
+                <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
 
                 <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     <select ng-model="fulfillingLineItem.rejectionReasonId"
                             ng-options="reason.id as reason.name for reason in vm.reasons"
                             openlmis-invalid="{{fulfillingLineItem.$error.rejectionReasonIdError | message}}"
-                            ng-change="vm.validateAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)">
+                            ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)">
                     </select>
                 </td>
                 <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst">
                 </td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
+                </td>
+                <td ng-if="!vm.canEdit && !(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                 </td>
 
                 <td></td>

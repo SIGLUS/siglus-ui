@@ -23,10 +23,7 @@
    * @description
    * Provides stock issue state and controller.
    */
-    angular.module('siglus-location-issue-creation', [
-        'stock-adjustment-creation',
-        'stock-orderable-group'
-    ]);
+    angular.module('siglus-location-issue-creation', []);
 
 })();
 

@@ -262,6 +262,7 @@
         };
 
         vm.addItemForPod = function(lineItem, index, groupedLineItems) {
+            $scope.needToConfirm = true;
             addAndRemoveLineItemService.addItemForPod(lineItem, index, groupedLineItems);
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
@@ -269,16 +270,19 @@
         };
 
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
+            $scope.needToConfirm = true;
             addAndRemoveLineItemService.removeItemForPod(lineItem, index, groupedLineItems);
         };
 
         vm.changeArea = function(lineItem, groupedLineItems) {
+            $scope.needToConfirm = true;
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
             vm.validateLocations(lineItem, groupedLineItems);
         };
         vm.changeMoveToLocation = function(lineItem, lineItems) {
+            $scope.needToConfirm = true;
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
@@ -289,6 +293,15 @@
             var lineItems = data.lineItems;
             vm.changeMoveToLocation(lineItem, lineItems);
         });
+
+        vm.changeAcceptQuantity = function(lineItem, groupedLineItems) {
+            $scope.needToConfirm = true;
+            if (lineItem.isMainGroup || lineItem.isFirst) {
+                lineItem.quantityRejected = vm.getRejectedQuantity(lineItem,
+                    groupedLineItems);
+            }
+            vm.validateAcceptQuantity(lineItem, groupedLineItems);
+        };
 
         vm.validateLocations = function(lineItem, groupedLineItems) {
             var relatedLineItems = groupedLineItems.filter(function(line) {
@@ -344,7 +357,11 @@
                 });
                 mainLine.$error.rejectionReasonIdError = '';
             } else {
-                lineItem.$error.quantityAcceptedError = '';
+                relatedLines.forEach(function(line) {
+                    if (line.$error.quantityAcceptedError === 'proofOfDeliveryView.gtQuantityShipped') {
+                        line.$error.quantityAcceptedError = '';
+                    }
+                });
                 if (sumOfLot === quantityShipped && mainLine.rejectionReasonId) {
                     mainLine.$error.rejectionReasonIdError = 'proofOfDeliveryView.notAllowedRejectReasonId';
                 } else if (sumOfLot < quantityShipped && !mainLine.rejectionReasonId) {
@@ -355,11 +372,20 @@
             }
         };
 
+        vm.getRejectedQuantity = function(fulfillingLineItem, groupedLineItems) {
+            var quantityAccepted = vm.getSumOfLot(fulfillingLineItem, groupedLineItems);
+            return fulfillingLineItem.quantityShipped - quantityAccepted;
+        };
+
         function getPodLineItemsToSend() {
             return _.flatten(vm.orderLineItems.map(function(orderLineItem) {
                 return orderLineItem.groupedLineItems.filter(function(fulfillingLineItem) {
                     if (fulfillingLineItem.isMainGroup) {
                         fulfillingLineItem.quantityAccepted = vm.getSumOfLot(fulfillingLineItem,
+                            orderLineItem.groupedLineItems);
+                    }
+                    if (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst) {
+                        fulfillingLineItem.quantityRejected = vm.getRejectedQuantity(fulfillingLineItem,
                             orderLineItem.groupedLineItems);
                     }
                     return fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst;
@@ -382,7 +408,6 @@
         }
 
         function save(notReload) {
-            $scope.needToConfirm = false;
             loadingModalService.open();
             // TODO lineitem here should be first & main
             vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
@@ -390,6 +415,7 @@
             var podLineItemLocation = getPodLineItemLocationToSend();
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE', podLineItemLocation).then(function() {
+                $scope.needToConfirm = false;
                 if (!notReload) {
                     notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
                 }
@@ -434,6 +460,9 @@
             });
             return _.every(vm.orderLineItems, function(orderLineItem) {
                 return _.every(orderLineItem.groupedLineItems, function(lineItem) {
+                    if (lineItem.isMainGroup) {
+                        return true;
+                    }
                     return _.chain(lineItem.$error)
                         .keys()
                         .all(function(key) {
@@ -445,7 +474,6 @@
         }
 
         function submit() {
-            $scope.needToConfirm = false;
             $scope.$broadcast('openlmis-form-submit');
 
             if (validateForm()) {
@@ -461,13 +489,13 @@
 
         // submit subDraft
         function submitSubDraft() {
-            $scope.needToConfirm = false;
             loadingModalService.open();
             vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
             // TODO only pick no first, no main
             var podLineItemLocation = getPodLineItemLocationToSend();
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT', podLineItemLocation).then(function() {
+                $scope.needToConfirm = false;
                 notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
                 $state.go('^', $stateParams, {
                     reload: true
@@ -493,6 +521,7 @@
                     copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
                     proofOfDeliveryService.submitDraftWithLocation($stateParams.podId,
                         copy, podLineItemLocation).then(function() {
+                        $scope.needToConfirm = false;
                         notificationService.success(
                             'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
                         );
@@ -514,7 +543,6 @@
         }
 
         function deleteDraft() {
-            $scope.needToConfirm = false;
             alertConfirmModalService.error(
                 'PhysicalInventoryDraftList.deleteDraftWarn',
                 '',
@@ -523,6 +551,7 @@
                 loadingModalService.open();
                 proofOfDeliveryService.deleteSubDraftWithLocation($stateParams.podId,
                     $stateParams.subDraftId).then(function() {
+                    $scope.needToConfirm = false;
                     $state.go('^', $stateParams, {
                         reload: true
                     });
