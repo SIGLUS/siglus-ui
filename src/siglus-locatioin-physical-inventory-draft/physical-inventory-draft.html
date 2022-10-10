@@ -230,7 +230,7 @@
                 <td></td>
                 <td></td>
                 <!-- SIGLUS-REFACTOR: starts here -->
-                <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+                <td  ng-if="!vm.isInitialInventory" class="text-align-right">{{vm.calculate(lineItems, 'stockOnHand')}}123</td>
                 <td ng-class="{'text-align-right': vm.actionType !== 'SUBMITTED'}">
                     {{vm.calculate(lineItems, 'quantity')}}
                 </td>
@@ -274,7 +274,7 @@
                     {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
                 </td>
                 <td class="digit-cell" >
-                    <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.quantity}}</span>
+                    <span ng-if="vm.actionType === 'SUBMITTED'">{{lineItem.quantity}}</span>
                     <input
                             ng-if="vm.actionType !== 'SUBMITTED'"
                             class="form-control"
