@@ -54,13 +54,14 @@
         vm.showRequired = false;
         vm.facility = facility;
         vm.changeShowError = function() {
+            vm.showGTnumber = false;
             if (vm.isValid(vm.userInputSplitNum)) {
                 vm.showError = false;
             }
             if (!_.isNull(vm.userInputSplitNum)) {
                 vm.showRequired = false;
             }
-            if (vm.userInputSplitNum) {
+            if (vm.userInputSplitNum || vm.userInputSplitNum === 0) {
                 vm.showGTnumber = false;
             }
         };

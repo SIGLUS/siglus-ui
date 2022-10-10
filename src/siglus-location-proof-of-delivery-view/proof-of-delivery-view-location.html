@@ -45,7 +45,7 @@
     </ul>
 </aside>
 
-<form id="proof-of-delivery-form" ng-submit="vm.submit()">
+<div id="proof-of-delivery-form">
     <div class="openlmis-table-container">
         <table class="openlmis-table" suppress-tr-openlmis-invalid>
             <thead>
@@ -134,14 +134,17 @@
                 <td ng-if="vm.canEdit && (!fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     <input positive-integer
                            ng-model="fulfillingLineItem.quantityAccepted"
-                           ng-change="vm.validateAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)"
+                           ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)"
                            openlmis-invalid="{{fulfillingLineItem.$error.quantityAcceptedError | message}}"
                     />
                 </td>
                 <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)">
                     {{vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems)}}
                 </td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && fulfillingLineItem.isMainGroup">
+                    {{vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems)}}
+                </td>
+                <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup">
                     {{fulfillingLineItem.quantityAccepted}}
                 </td>
 
@@ -159,20 +162,22 @@
                     </div>
                 </td>
 
-<!--                <td>{{fulfillingLineItem.quantityRejected}}</td>-->
-                <td></td>
+                <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{vm.getRejectedQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)}}</td>
+                <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
 
                 <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     <select ng-model="fulfillingLineItem.rejectionReasonId"
                             ng-options="reason.id as reason.name for reason in vm.reasons"
                             openlmis-invalid="{{fulfillingLineItem.$error.rejectionReasonIdError | message}}"
-                            ng-change="vm.validateAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)">
+                            ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)">
                     </select>
                 </td>
                 <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst">
                 </td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
+                </td>
+                <td ng-if="!vm.canEdit && !(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                 </td>
 
                 <td></td>
@@ -238,7 +243,7 @@
             </dd>
         </dl>
     </aside>
-</form>
+</div>
 
  <!-- SIGLUS-REFACTOR: starts here -->
  <div class="openlmis-toolbar"  ng-if="vm.canEdit">
@@ -255,7 +260,7 @@
     </div>
     <div class="button-group primary">
         <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">{{'stockPhysicalInventoryDraft.save' | message}}</button>
-        <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" form="proof-of-delivery-form">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
+        <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" ng-click="vm.submit()">{{'stockPhysicalInventoryDraft.submit' | message}}</button>
     </div>
 </div>
 

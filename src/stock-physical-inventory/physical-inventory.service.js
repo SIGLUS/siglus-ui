@@ -419,7 +419,6 @@
                     // var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
                     // var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
                     //     item.quantity !== -1;
-
                     var searchableFields = item.orderable.productCode ? [
                         item.orderable.productCode,
                         productNameFilter(item.orderable),
@@ -434,7 +433,7 @@
                         item.locationCode
                     ];
                     return _.any(searchableFields, function(field) {
-                        return field.toLowerCase().contains(keyword.toLowerCase());
+                        return field && field.toLowerCase().contains(keyword.toLowerCase());
                     });
                 });
             }

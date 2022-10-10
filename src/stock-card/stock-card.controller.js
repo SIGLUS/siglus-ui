@@ -74,6 +74,7 @@
                     loadingModalService.open();
                     stockCardService.archiveProduct(stockCard.orderable.id).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
+                        delete $state.params.keyword;
                         $state.go('openlmis.stockmanagement.archivedProductSummaries', Object.assign($state.params, {
                             program: stockCard.program.id,
                             page: 0
@@ -93,6 +94,7 @@
                     loadingModalService.open();
                     stockCardService.activateProduct(stockCard.orderable.id).then(function() {
                         notificationService.success('stockCard.activateProduct.success');
+                        delete $state.params.keyword;
                         $state.go('openlmis.stockmanagement.stockCardSummaries', Object.assign($state.params, {
                             program: stockCard.program.id,
                             page: 0
@@ -184,8 +186,8 @@
             }
         });
 
-        $scope.$on('$stateChangeStart', function(event, toState) {
-            if (toState.name !== 'openlmis.stockmanagement.stockCardSummaries.singleCard') {
+        $scope.$on('$stateChangeStart', function(_e, toState, _toParams, fromState) {
+            if (toState.name !== fromState.name) {
                 stockCardDataService.clear();
             }
         });

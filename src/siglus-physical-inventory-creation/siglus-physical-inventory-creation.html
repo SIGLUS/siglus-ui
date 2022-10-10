@@ -1,5 +1,5 @@
 <div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog inventory-creation">
     <div class="modal-content">
 
       <div
@@ -10,7 +10,7 @@
       </div>
 
       <div ng-if="vm.creationType !== 'location'" class="modal-body">
-        <fieldset>
+        <div>
           <label ng-if="vm.isInitialInventory">{{'physicalInventoryCreation.initialLabel' | message}}
             <span class="inputNecessary">*</span>
           </label>
@@ -19,24 +19,26 @@
           </label>
           <input
               type="number"
-              min="0"
-              max="10"
               id="userInputSplitNum"
               ng-model="vm.userInputSplitNum"
               ng-change="vm.changeShowError()"
-              maxlength="2"
+              max="10"
+              min="1"
           />
 
-          <span ng-if="vm.showError" id="validateInputValue">
+          <span style="margin-top: 2px;" ng-if="vm.showError" id="validateInputValue">
             {{'physicalInventoryCreation.error' | message}}
           </span>
-          <span ng-if="vm.showRequired" id="validateInputValue">
+          <span style="margin-top: 2px;" ng-if="vm.showRequired" id="validateInputValue">
             {{'physicalInventoryCreation.required' | message}}
           </span>
-          <span ng-if="vm.showGTnumber" id="validateInputValue">
+          <span style="margin-top: 2px;" ng-if="vm.showGTnumber && !vm.facility.enableLocationManagement" id="validateInputValue">
             {{'physicalInventoryCreation.showGTnumber' | message}}
           </span>
-        </fieldset>
+          <span style="margin-top: 2px;" ng-if="vm.showGTnumber && vm.facility.enableLocationManagement" id="validateInputValue">
+            {{'physicalInventoryCreation.showGTnumberByLocation' | message}}
+          </span>
+        </div>
       </div>
 
       <div ng-if="vm.creationType === 'location'" class="modal-body">
@@ -65,16 +67,20 @@
               id="userInputSplitNum"
               ng-model="vm.userInputSplitNum"
               ng-change="vm.changeShowError()"
-              maxlength="2"
+              min="0"
+              max="10"
           />
-          <span ng-if="vm.showError" id="validateInputValue">
+          <span style="margin-top: 2px;" ng-if="vm.showError" id="validateInputValue">
               {{'physicalInventoryCreation.error' | message}}
             </span>
-          <span ng-if="vm.showRequired" id="validateInputValue">
+          <span style="margin-top: 2px;" ng-if="vm.showRequired" id="validateInputValue">
               {{'physicalInventoryCreation.required' | message}}
             </span>
-          <span ng-if="vm.showGTnumber" id="validateInputValue">
+          <span style="margin-top: 2px;" ng-if="vm.showGTnumber && vm.inventoryType === 'product'" id="validateInputValue">
             {{'physicalInventoryCreation.showGTnumber' | message}}
+          </span>
+          <span style="margin-top: 2px;" ng-if="vm.showGTnumber && vm.inventoryType === 'location'" id="validateInputValue">
+            {{'physicalInventoryCreation.showGTnumberByLocation' | message}}
           </span>
         </div>
       </div>

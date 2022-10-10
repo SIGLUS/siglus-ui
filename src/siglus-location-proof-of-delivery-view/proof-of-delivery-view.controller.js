@@ -34,7 +34,8 @@
         '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
         'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment', 'orderablesPrice', 'facility',
-        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService'];
+        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService',
+        'alertService'];
 
     function ProofOfDeliveryViewControllerWithLocation($scope
         , proofOfDelivery, order, reasons, messageService
@@ -45,16 +46,13 @@
         , openlmisDateFilter, fulfillingLineItemFactory
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
         , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
-        , SiglusLocationCommonUtilsService) {
-        console.log('orderLineItems', orderLineItems);
-        console.log('facility.enableLocationManagement', facility.enableLocationManagement);
+        , SiglusLocationCommonUtilsService, alertService) {
 
         orderLineItems.forEach(function(orderLineItem) {
             orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
                 addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem, locations, areaLocationInfo);
             });
         });
-        console.log('orderLineItems', orderLineItems);
         var vm = this;
 
         vm.$onInit = onInit;
@@ -265,6 +263,7 @@
         };
 
         vm.addItemForPod = function(lineItem, index, groupedLineItems) {
+            $scope.needToConfirm = true;
             addAndRemoveLineItemService.addItemForPod(lineItem, index, groupedLineItems);
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
@@ -272,17 +271,19 @@
         };
 
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
+            $scope.needToConfirm = true;
             addAndRemoveLineItemService.removeItemForPod(lineItem, index, groupedLineItems);
         };
 
         vm.changeArea = function(lineItem, groupedLineItems) {
+            $scope.needToConfirm = true;
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
-            console.log('after change area', lineItem.destLocationOptions);
             vm.validateLocations(lineItem, groupedLineItems);
         };
         vm.changeMoveToLocation = function(lineItem, lineItems) {
+            $scope.needToConfirm = true;
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
@@ -291,8 +292,24 @@
         $scope.$on('locationCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             var lineItems = data.lineItems;
+            lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
+            if (_.get(lineItem.moveTo, 'locationCode')) {
+                lineItem.moveTo.area = lineItem.destAreaOptions[0];
+            } else {
+                lineItem.moveTo.area = undefined;
+            }
+            vm.changeArea(lineItem, lineItems);
             vm.changeMoveToLocation(lineItem, lineItems);
         });
+
+        vm.changeAcceptQuantity = function(lineItem, groupedLineItems) {
+            $scope.needToConfirm = true;
+            if (lineItem.isMainGroup || lineItem.isFirst) {
+                lineItem.quantityRejected = vm.getRejectedQuantity(lineItem,
+                    groupedLineItems);
+            }
+            vm.validateAcceptQuantity(lineItem, groupedLineItems);
+        };
 
         vm.validateLocations = function(lineItem, groupedLineItems) {
             var relatedLineItems = groupedLineItems.filter(function(line) {
@@ -310,26 +327,47 @@
 
             if (filterLineItems.length > 1) {
                 relatedLineItems.forEach(function(lineItem) {
-                    lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
-                    lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
+                    if (lineItem.lot) {
+                        lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
+                        lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
+                    } else {
+                        lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocationForKit';
+                        lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocationForKit';
+                    }
                 });
             } else {
                 relatedLineItems.forEach(function(lineItem) {
-                    if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation') {
+                    if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation'
+                        || lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocationForKit') {
                         lineItem.$error.moveToLocationError = '';
                     }
-                    if (lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocation') {
+                    if (lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocation'
+                        || lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocationForKit') {
                         lineItem.$error.areaError = '';
                     }
                 });
             }
         };
-        vm.validateAcceptQuantity = function(lineItem, groupedLineItems) {
+
+        function resetError(lineItem) {
+            if (_.get(lineItem, 'rejectionReasonId')
+                && lineItem.$error.rejectionReasonIdError === 'openlmisForm.required') {
+                lineItem.$error.rejectionReasonIdError = '';
+            }
+            if (!_.get(lineItem, 'rejectionReasonId')
+                && lineItem.$error.rejectionReasonIdError === 'proofOfDeliveryView.notAllowedRejectReasonId') {
+                lineItem.$error.rejectionReasonIdError = '';
+            }
+
             if (!_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
                 lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
                 return;
             }
             lineItem.$error.quantityAcceptedError = '';
+        }
+        vm.validateAcceptQuantity = function(lineItem, groupedLineItems) {
+            resetError(lineItem);
+
             var sumOfLot = vm.getSumOfLot(lineItem, groupedLineItems);
             var relatedLines = groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
@@ -348,7 +386,11 @@
                 });
                 mainLine.$error.rejectionReasonIdError = '';
             } else {
-                lineItem.$error.quantityAcceptedError = '';
+                relatedLines.forEach(function(line) {
+                    if (line.$error.quantityAcceptedError === 'proofOfDeliveryView.gtQuantityShipped') {
+                        line.$error.quantityAcceptedError = '';
+                    }
+                });
                 if (sumOfLot === quantityShipped && mainLine.rejectionReasonId) {
                     mainLine.$error.rejectionReasonIdError = 'proofOfDeliveryView.notAllowedRejectReasonId';
                 } else if (sumOfLot < quantityShipped && !mainLine.rejectionReasonId) {
@@ -359,13 +401,21 @@
             }
         };
 
+        vm.getRejectedQuantity = function(fulfillingLineItem, groupedLineItems) {
+            var quantityAccepted = vm.getSumOfLot(fulfillingLineItem, groupedLineItems);
+            return fulfillingLineItem.quantityShipped - quantityAccepted;
+        };
+
         function getPodLineItemsToSend() {
             return _.flatten(vm.orderLineItems.map(function(orderLineItem) {
                 return orderLineItem.groupedLineItems.filter(function(fulfillingLineItem) {
                     if (fulfillingLineItem.isMainGroup) {
                         fulfillingLineItem.quantityAccepted = vm.getSumOfLot(fulfillingLineItem,
                             orderLineItem.groupedLineItems);
-                        console.log('sum of lot', fulfillingLineItem.quantityAccepted);
+                    }
+                    if (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst) {
+                        fulfillingLineItem.quantityRejected = vm.getRejectedQuantity(fulfillingLineItem,
+                            orderLineItem.groupedLineItems);
                     }
                     return fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst;
                 });
@@ -387,16 +437,14 @@
         }
 
         function save(notReload) {
-            $scope.needToConfirm = false;
             loadingModalService.open();
             // TODO lineitem here should be first & main
-            console.log(vm.proofOfDelivery);
             vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
             // TODO only pick no first, no main
             var podLineItemLocation = getPodLineItemLocationToSend();
-            console.log('podLineItemLocation', podLineItemLocation);
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE', podLineItemLocation).then(function() {
+                $scope.needToConfirm = false;
                 if (!notReload) {
                     notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
                 }
@@ -441,6 +489,9 @@
             });
             return _.every(vm.orderLineItems, function(orderLineItem) {
                 return _.every(orderLineItem.groupedLineItems, function(lineItem) {
+                    if (lineItem.isMainGroup) {
+                        return true;
+                    }
                     return _.chain(lineItem.$error)
                         .keys()
                         .all(function(key) {
@@ -452,7 +503,6 @@
         }
 
         function submit() {
-            $scope.needToConfirm = false;
             $scope.$broadcast('openlmis-form-submit');
 
             if (validateForm()) {
@@ -462,22 +512,20 @@
                     submitSubDraft();
                 }
             } else {
-                return $q.reject();
+                alertService.error(messageService.get('openlmisForm.formInvalid'));
             }
         }
 
         // submit subDraft
         function submitSubDraft() {
-            $scope.needToConfirm = false;
             loadingModalService.open();
-            console.log(vm.proofOfDelivery);
             vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
             // TODO only pick no first, no main
             var podLineItemLocation = getPodLineItemLocationToSend();
-            console.log('podLineItemLocation', podLineItemLocation);
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT', podLineItemLocation).then(function() {
-                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+                $scope.needToConfirm = false;
+                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted');
                 $state.go('^', $stateParams, {
                     reload: true
                 });
@@ -502,6 +550,7 @@
                     copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
                     proofOfDeliveryService.submitDraftWithLocation($stateParams.podId,
                         copy, podLineItemLocation).then(function() {
+                        $scope.needToConfirm = false;
                         notificationService.success(
                             'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
                         );
@@ -523,7 +572,6 @@
         }
 
         function deleteDraft() {
-            $scope.needToConfirm = false;
             alertConfirmModalService.error(
                 'PhysicalInventoryDraftList.deleteDraftWarn',
                 '',
@@ -532,6 +580,7 @@
                 loadingModalService.open();
                 proofOfDeliveryService.deleteSubDraftWithLocation($stateParams.podId,
                     $stateParams.subDraftId).then(function() {
+                    $scope.needToConfirm = false;
                     $state.go('^', $stateParams, {
                         reload: true
                     });

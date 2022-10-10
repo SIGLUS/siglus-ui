@@ -62,7 +62,8 @@
             getPodInfo: getPodInfo,
             createDraft: createDraft,
             getDraftList: getDraftList,
-            deleteAllDraft: deleteAllDraft
+            deleteAllDraft: deleteAllDraft,
+            deleteAllDraftWithLocation: deleteAllDraftWithLocation
         };
         // SIGLUS-REFACTOR: ends here
         /**
@@ -95,6 +96,9 @@
 
         function deleteAllDraft(podId) {
             return PODManageService.deleteAllDraft(podId);
+        }
+        function deleteAllDraftWithLocation(podId) {
+            return PODManageService.deleteAllDraftWithLocation(podId);
         }
         // SIGLUS-REFACTOR: ends here
     }

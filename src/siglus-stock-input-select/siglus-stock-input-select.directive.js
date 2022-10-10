@@ -27,7 +27,8 @@
                     lineItems: '=',
                     enableInput: '<',
                     realRequired: '<',
-                    compId: '='
+                    compId: '=',
+                    disabled: '='
                 },
                 controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
                     'siglusOrderableLotMapping', '$timeout', 'messageService', 'dateUtils',

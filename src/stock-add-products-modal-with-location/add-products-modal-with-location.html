@@ -1,5 +1,5 @@
 <div class="modal with-location add-products-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" style="width: 950px;">
+    <div class="modal-dialog" style="width: 1040px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" aria-label="Close" ng-click="$hide()">
@@ -26,7 +26,7 @@
                     </div>
                     <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
                     <div class="form-group max-width-form-group">
-                        <label for="lotSelect">Lot</label>
+                        <label for="lotSelect">{{'stockAddProductsModalWithLocation.lot' | message}}</label>
                         <siglus-stock-input-select
                             id="lotSelect"
                             comp-id="lotSelect"
@@ -34,12 +34,13 @@
                             line-item="vm.selectedItem"
                             enable-input="true"
                             real-required="true"
+                            disabled="vm.isKit"
                         >
                         </siglus-stock-input-select>
                     </div>
                     <!-- SIGLUS-REFACTOR: ends here -->
                     <div class="form-group max-width-form-group">
-                        <label for="dateSelect">Expiry Date</label>
+                        <label for="dateSelect">{{ 'stockAddProductsModalWithLocation.expiryDate' | message }}</label>
                         <input
                             id="dateSelect"
                             type="date"
@@ -47,8 +48,8 @@
                             ng-blur="vm.validExpirationDate(vm.selectedItem)"
                             ng-change="vm.expirationDateChanged(vm.selectedItem)"
                             ng-model="vm.selectedItem.lot.expirationDate"
-                            ng-disabled="vm.selectedItem.lot.id"
-                            required
+                            ng-disabled="vm.selectedItem.lot.id || vm.isKit"
+                            ng-required="!vm.isKit"
                         />
                     </div>
                     <!-- SIGLUS-REFACTOR: Add stock-actions and fix width for add button-->
@@ -62,8 +63,8 @@
                             <th>{{'stockAddProductsModal.productCode' | message}}</th>
                             <th>{{'stockAddProductsModal.product' | message}}</th>
                             <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
-                            <th ng-if="vm.hasLot">Lot</th>
-                            <th ng-if="vm.hasLot">Expiry Date</th>
+                            <th>{{ 'stockAddProductsModalWithLocation.lot' | message }}</th>
+                            <th>{{ 'stockAddProductsModalWithLocation.expiryDate' | message }}</th>
                             <!-- <th ng-if="vm.hasLot">{{'stockAddProductsModal.expiryDate' | message}}</th> -->
                             <!-- SIGLUS-REFACTOR: ends here -->
                             <th ng-if="!vm.withLocation">{{'stockAddProductsModal.currentStock' | message}}</th>
@@ -71,12 +72,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="item in vm.addedItems">
+                        <tr ng-repeat="(index, item) in vm.addedItems">
                             <td>{{item.orderable.productCode}}</td>
                             <td>{{item.orderable.fullProductName}}</td>
                             <!-- SIGLUS-REFACTOR: Ticket 5: add product without lot -->
-                            <td ng-if="vm.hasLot">{{item.lot.lotCode}}</td>
-                            <td ng-if="vm.hasLot">{{item.lot.expirationDate | openlmisDate}}</td>
+                            <td>{{item.lot.lotCode}}</td>
+                            <td>{{item.lot.expirationDate | openlmisDate}}</td>
                             <!-- SIGLUS-REFACTOR: ends here -->
                             <td ng-if="!vm.withLocation" openlmis-invalid="{{item.quantityInvalid}}" class="digit-cell">
                                 <input positive-integer
@@ -86,7 +87,7 @@
                                        ng-change="vm.validate(item)" />
                             </td>
                             <td>
-                                <input type="button" class="danger" ng-click="vm.removeAddedProduct(item)"
+                                <input type="button" class="danger" ng-click="vm.removeAddedProduct(item, index)"
                                        value="{{'stockAddProductsModal.remove' | message}}"/>
                             </td>
                         </tr>
@@ -99,7 +100,7 @@
                 <button ng-click="$hide()">{{'stockAddProductsModal.cancel' | message}}</button>
                 <button ng-click="vm.confirm()" class="primary">
                     <!-- {{'stockAddProductsModal.addProducts' | message: {'num': vm.addedItems.length} }} -->
-                    Confirm
+                    {{ 'stockAddProductsModalWithLocation.confirm' | message }}
                 </button>
             </div>
 
