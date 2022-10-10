@@ -62,6 +62,7 @@
 
                         $scope.changeMoveToLocation = function() {
                             if ($scope.selectedOption) {
+                                $scope.lineItem.moveTo = {};
                                 $scope.lineItem.moveTo.locationCode = $scope.selectedOption.replace('[empty] ', '');
                             } else {
                                 $scope.lineItem.moveTo.locationCode = undefined;
