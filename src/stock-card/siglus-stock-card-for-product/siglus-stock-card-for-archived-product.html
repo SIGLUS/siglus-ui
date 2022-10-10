@@ -1,0 +1,74 @@
+<header>
+    <h2>
+        {{'stockCard.binCardName' | message: {'name': vm.stockCard.productName} }}
+    </h2>
+    <button class="primary" ng-click="vm.activate()">{{'stockCard.activate' | message}}</button>
+    <button class="primary" ng-click="vm.print()">{{'stockCard.print' | message}}</button>
+</header>
+
+<aside class="stock-card-info">
+    <div class="product-name-header">
+        <span>{{vm.getProductName()}}</span>
+    </div>
+
+    <ul>
+        <li>
+            <strong>{{'stockCard.productCode'|message}}</strong>
+            {{vm.stockCard.productCode}}
+        </li>
+        <li>
+            <strong>{{'stockCard.facilityName' | message}}</strong>
+            {{vm.stockCard.facilityName}}
+        </li>
+        <li>
+            <strong>{{'stockCard.program' | message}}</strong>
+            {{vm.stockCard.program}}
+        </li>
+        <li class="text-align-right">
+            <strong>{{'stockCard.soh' | message}}</strong>
+            {{vm.stockCard.stockOnHand}}
+        </li>
+    </ul>
+</aside>
+
+<section class="openlmis-table-container">
+
+    <table>
+        <thead>
+        <tr>
+            <th>{{'stockCard.date' | message}}</th>
+            <th>{{'stockCard.from' | message}}</th>
+            <th>{{'stockCard.to' | message}}</th>
+            <th>{{'stockCard.reason' | message}}</th>
+            <th>{{'stockCard.adjustment' | message}}</th>
+            <th>{{'stockCard.soh' | message}}</th>
+            <th>{{'stockCard.documentNumber' | message}}</th>
+            <th>{{'stockCard.signature' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="lineItem in vm.pagedLineItems track by $index">
+            <td>{{lineItem.dateOfMovement | openlmisDate}}</td>
+            <td>
+                {{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
+                message: {name:lineItem.sourceName, freeText: lineItem.sourceFreeText}) : lineItem.sourceName}}
+            </td>
+            <td>
+                {{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
+                message: {name:lineItem.destinationName, freeText: lineItem.destinationFreeText}) : lineItem.destinationName}}
+            </td>
+            <td>
+                {{ lineItem.reason | message }}
+            </td>
+            <td class="text-align-right">{{lineItem.movementQuantity}}</td>
+            <td class="text-align-right">{{lineItem.productSoh}}</td>
+            <td>{{lineItem.documentNumber}}</td>
+            <td>{{lineItem.signature}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+            list="vm.displayItems"
+            paged-list="vm.pagedLineItems">
+    </openlmis-pagination>
+</section>

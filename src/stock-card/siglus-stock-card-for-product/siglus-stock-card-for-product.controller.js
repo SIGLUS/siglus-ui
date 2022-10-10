@@ -28,11 +28,11 @@
         .module('siglus-stock-card-for-product')
         .controller('StockCardForProductController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'confirmService', 'loadingModalService',
-        'notificationService', '$stateParams', 'paginationService'];
+    controller.$inject = ['$scope', 'stockCard', '$state', 'stockCardService', 'confirmService', 'loadingModalService',
+        'notificationService', '$stateParams', 'paginationService', 'stockCardDataService'];
 
-    function controller(stockCard, $state, stockCardService, confirmService, loadingModalService,
-                        notificationService, $stateParams, paginationService) {
+    function controller($scope, stockCard, $state, stockCardService, confirmService, loadingModalService,
+                        notificationService, $stateParams, paginationService, stockCardDataService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -58,6 +58,7 @@
                     loadingModalService.open();
                     stockCardService.archiveProduct(stockCard.orderableId).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
+                        delete $state.params.keyword;
                         $state.go('openlmis.stockmanagement.archivedProductSummaries', Object.assign($state.params, {
                             program: stockCard.programId,
                             page: 0
@@ -69,6 +70,26 @@
                 });
         };
 
+        // #105: activate product
+        vm.activate = function() {
+            confirmService.confirm('stockCard.activateProduct', 'stockCard.activate', 'stockCard.cancel')
+                .then(function() {
+                    loadingModalService.open();
+                    stockCardService.activateProduct(stockCard.orderableId).then(function() {
+                        notificationService.success('stockCard.activateProduct.success');
+                        delete $state.params.keyword;
+                        $state.go('openlmis.stockmanagement.stockCardSummaries', Object.assign($state.params, {
+                            program: stockCard.programId,
+                            page: 0
+                        }));
+                    }, function() {
+                        loadingModalService.close();
+                        notificationService.error('stockCard.activateProduct.failure');
+                    });
+                });
+        };
+        // #105: ends here
+
         function onInit() {
             $state.current.label = stockCard.productName;
             vm.stockCard = stockCard;
@@ -77,6 +98,12 @@
             vm.canArchive = stockCard.stockOnHand === 0 && stockCard.lineItems[0].productSoh === 0 && !stockCard.inKit;
             paginationService.registerList(null, angular.copy($stateParams), function() {
                 return vm.displayItems;
+            });
+
+            $scope.$on('$stateChangeStart', function(_e, toState, _toParams, fromState) {
+                if (toState.name !== fromState.name) {
+                    stockCardDataService.clear();
+                }
             });
         }
     }

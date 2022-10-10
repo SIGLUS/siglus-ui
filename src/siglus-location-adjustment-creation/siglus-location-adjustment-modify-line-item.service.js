@@ -61,7 +61,7 @@
                 quantity: lineItem.quantity,
                 reason: lineItem.reason,
                 reasonFreeText: lineItem.reasonFreeText,
-                documentNumber: lineItem.documentationNo,
+                documentationNo: lineItem.documentationNo ? lineItem.documentationNo : null,
                 occurredDate: lineItem.occurredDate
             };
         }
@@ -81,7 +81,7 @@
             lineItem.stockOnHand =  0;
             lineItem.reason = null;
             lineItem.reasonFreeText = null;
-            lineItem.documentNumber = null;
+            lineItem.documentationNo = null;
         }
 
         this.addLineItem = function(lineItem, lineItems) {
@@ -121,7 +121,7 @@
                 location: null,
                 reason: null,
                 reasonFreeText: null,
-                documentNumber: null,
+                documentationNo: null,
                 quantity: null
             };
         };
@@ -141,7 +141,7 @@
                 programId: _.get(orderable.programs, [0, 'programId'], ''),
                 reason: null,
                 reasonFreeText: null,
-                documentNumber: null,
+                documentationNo: null,
                 quantity: null,
                 occurredDate: dateUtils.toStringDate(new Date())
             };

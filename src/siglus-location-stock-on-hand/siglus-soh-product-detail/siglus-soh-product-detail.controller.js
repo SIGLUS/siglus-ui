@@ -58,6 +58,7 @@
                     loadingModalService.open();
                     stockCardService.archiveProduct(stockCard.orderableId).then(function() {
                         notificationService.success('stockCard.archiveProduct.success');
+                        delete $state.params.keyword;
                         $state.go('openlmis.locationManagement.archivedProductSummaries', Object.assign($state.params, {
                             program: stockCard.programId,
                             page: 0
@@ -75,6 +76,7 @@
                     loadingModalService.open();
                     stockCardService.activateProduct(stockCard.orderableId).then(function() {
                         notificationService.success('stockCard.activateProduct.success');
+                        delete $state.params.keyword;
                         // eslint-disable-next-line no-debugger
                         $state.go('openlmis.locationManagement.stockOnHand', Object.assign($state.params, {
                             program: stockCard.programId,
