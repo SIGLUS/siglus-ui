@@ -17,10 +17,13 @@
                     <!-- SIGLUS-REFACTOR: ends here -->
                         <label for="productSelect">{{'stockAddProductsModal.product' | message}}</label>
                         <!-- #105: activate archived product-->
-                        <select id="productSelect" ng-model="vm.selectedOrderableGroup"
-                                ng-options="(orderableGroup[0].orderable | siglusArchivedProductName) for orderableGroup in (vm.orderableGroups | siglusOrderByArchived)"
-                                ng-change="vm.orderableSelectionChanged()"
-                                required>
+                        <select
+                            id="productSelect"
+                            ng-model="vm.selectedOrderableGroup"
+                            ng-options="(orderableGroup[0].orderable | siglusArchivedProductName) for orderableGroup in (vm.orderableGroups | siglusOrderByArchived)"
+                            ng-change="vm.orderableSelectionChanged()"
+                            required
+                        >
                         </select>
                         <!-- #105: ends here -->
                     </div>
@@ -28,18 +31,18 @@
                     <div class="form-group max-width-form-group">
                         <label for="lotSelect">{{'stockAddProductsModalWithLocation.lot' | message}}</label>
                         <siglus-stock-input-select
+                            real-required="true"
                             id="lotSelect"
                             comp-id="lotSelect"
                             style="width: auto;"
                             line-item="vm.selectedItem"
                             enable-input="true"
-                            real-required="true"
                             disabled="vm.isKit"
                         >
                         </siglus-stock-input-select>
                     </div>
                     <!-- SIGLUS-REFACTOR: ends here -->
-                    <div class="form-group max-width-form-group">
+                    <fieldset class="form-group max-width-form-group">
                         <label for="dateSelect">{{ 'stockAddProductsModalWithLocation.expiryDate' | message }}</label>
                         <input
                             id="dateSelect"
@@ -48,10 +51,10 @@
                             ng-blur="vm.validExpirationDate(vm.selectedItem)"
                             ng-change="vm.expirationDateChanged(vm.selectedItem)"
                             ng-model="vm.selectedItem.lot.expirationDate"
-                            ng-disabled="vm.selectedItem.lot.id || vm.isKit"
+                            ng-disabled="vm.isKit"
                             ng-required="!vm.isKit"
                         />
-                    </div>
+                    </fieldset>
                     <!-- SIGLUS-REFACTOR: Add stock-actions and fix width for add button-->
                     <button type="submit" class="add stock-actions">{{'stockAddProductsModal.add' | message}}</button>
                     <!-- SIGLUS-REFACTOR: ends here -->
