@@ -30,11 +30,11 @@
 
     controller.$inject = ['items', 'hasLot', 'messageService',
         'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE',
-        'locationCode', 'siglusOrderableLotService'];
+        'locationCode', 'siglusOrderableLotService', 'addedLotIdAndOrderableId'];
 
     function controller(items, hasLot, messageService,
                         modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE,
-                        locationCode, siglusOrderableLotService) {
+                        locationCode, siglusOrderableLotService, addedLotIdAndOrderableId) {
         var vm = this;
 
         /**
@@ -50,6 +50,7 @@
         vm.selectedItem = {
             isInModal: false
         };
+        vm.isKit = false;
         vm.withLocation = true;
         vm.locationCode = locationCode;
         /**
@@ -93,16 +94,30 @@
             $scope.productForm.$setPristine();
 
             var addedItems = vm.selectedOrderableGroup;
+            if (addedItems && addedItems[0].orderable.isKit) {
+                vm.isKit = true;
+            }
             if (addedItems) {
-                siglusOrderableLotService.fillLotsToAddedItems(addedItems);
-                var selectedItem = addedItems[0];
-                selectedItem.locationCode = locationCode;
-                if (selectedItem.lot && selectedItem.lot.lotCode) {
-                    selectedItem.lot.lotCode = null;
-                    selectedItem.lot.expirationDate = null;
-                    selectedItem.lot.id = null;
-                }
-                vm.selectedItem = selectedItem;
+                siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
+                    var selectedItem = addedItems[0];
+                    selectedItem.lotOptions = _.filter(selectedItem.lotOptions, function(summary) {
+                        var lotId = summary.id ? summary.id : null;
+                        var orderableId = selectedItem.orderable && selectedItem.orderable.id;
+                        var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
+                            lotId: lotId,
+                            orderableId: orderableId
+                        });
+                        return !isInAdded;
+                    });
+
+                    selectedItem.locationCode = locationCode;
+                    if (selectedItem.lot && selectedItem.lot.lotCode) {
+                        selectedItem.lot.lotCode = null;
+                        selectedItem.lot.expirationDate = null;
+                        selectedItem.lot.id = null;
+                    }
+                    vm.selectedItem = selectedItem;
+                });
             } else {
                 vm.selectedItem = {};
             }
@@ -134,9 +149,19 @@
                 vm.selectedItem.lotOptions = _.filter(vm.selectedItem.lotOptions, function(lot) {
                     return !_.contains(hasAddedLotCode, lot.lotCode);
                 });
-                vm.selectedItem.lot.lotCode = null;
-                vm.selectedItem.lot.expirationDate = null;
-                vm.selectedItem.lot.id = null;
+                if (vm.selectedItem.lot.lotCode) {
+                    vm.selectedItem.lot.lotCode = null;
+                    vm.selectedItem.lot.expirationDate = null;
+                    vm.selectedItem.lot.id = null;
+                }
+                if (vm.isKit) {
+                    vm.selectedOrderableGroup = null;
+                    var newItems = _.filter(items, function(item) {
+                        return item.orderable.id !== vm.addedItems[0].orderable.id;
+                    });
+                    vm.orderableGroups = orderableGroupService.groupByOrderableId(newItems);
+                    vm.isKit = false;
+                }
             }
         };
 
@@ -148,9 +173,14 @@
          * @description
          * Removes an already added product and reset its quantity value.
          */
-        vm.removeAddedProduct = function(item) {
+        vm.removeAddedProduct = function(item, index) {
             item.quantity = undefined;
             item.quantityMissingError = undefined;
+            vm.selectedItem.lotOptions = vm.addedItems[index].lotOptions;
+            if (vm.addedItems[index].orderable && vm.addedItems[index].orderable.isKit) {
+                // var newItems = items.push(vm.addedItems[0]);
+                vm.orderableGroups = orderableGroupService.groupByOrderableId(vm.items);
+            }
             vm.addedItems = _.without(vm.addedItems, item);
         };
 
@@ -190,8 +220,8 @@
 
             // SIGLUS-REFACTOR: remove added products
             modalDeferred.resolve(angular.copy(vm.addedItems));
-            _.forEach(vm.addedItems, function(item) {
-                return vm.removeAddedProduct(item);
+            _.forEach(vm.addedItems, function(item, index) {
+                return vm.removeAddedProduct(item, index);
             });
             // SIGLUS-REFACTOR: ends here
         };

@@ -67,7 +67,7 @@
             },
             getMergedDraft: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/:initialDraftId/subDraft/merge'),
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/:initialDraftId/subDraft/merge'),
                 isArray: true
             },
             saveDraft: {
@@ -88,7 +88,7 @@
             },
             mergeSubmitDraft: {
                 method: 'POST',
-                url: stockmanagementUrlFactory('/api/siglusapi/stockEvents/multiUser'),
+                url: stockmanagementUrlFactory('/api/siglusapi/stockEvents/multiUserWithLocation'),
                 transformRequest: formatPayload
             }
         });
@@ -247,19 +247,18 @@
                     sourceFreeText: _.get(initialDraftInfo, 'locationFreeText') || undefined
                 };
             return Object.assign({
-                orderableId: item.orderable.id,
+                orderableId: item.orderableId,
                 lotId: _.get(item.lot, 'id', null),
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
-                extraData: {
-                    vvmStatus: item.vvmStatus
-                },
                 occurredDate: formattedOccurredDate,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText'),
                 programId: item.programId,
-                documentationNo: initialDraftInfo.documentNumber
+                documentationNo: initialDraftInfo.documentNumber,
+                locationCode: _.get(item.location, 'locationCode', null),
+                area: _.get(item.location, 'area', null)
             }, data);
         }
 

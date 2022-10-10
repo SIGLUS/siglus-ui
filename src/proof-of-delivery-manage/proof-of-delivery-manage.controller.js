@@ -809,33 +809,51 @@
                                 vm.requisitionNum = res.requisitionNum;
                             });
                             proofOfDeliveryService.get(pod.id).then(function(result) {
-                                vm.addedLineItems = _.reduce(result.lineItems, function(r, c) {
-                                    r.push(angular.merge({
-                                        productCode: c.orderable.productCode,
-                                        productName: c.orderable.fullProductName,
-                                        price: orderablesPrice.data[c.orderable.id] * 100 || '',
-                                        lotCode:
-                                            c.lot
-                                                ? c.lot.lotCode
-                                                : '',
-                                        expirationDate:
-                                            c.lot
-                                                ? c.lot.expirationDate
-                                                : ''
-                                    }, c));
-                                    return r;
-                                }, []);
-                                vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                                    var price = c.price ? c.price : 0;
-                                    r = r + c.quantityShipped * price;
-                                    return r;
-                                }, 0);
-                                vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
-                                    return item.rejectionReasonId;
-                                });
-                                setTimeout(function() {
-                                    downloadPdf();
-                                }, 500);
+                                fulfillingLineItemFactory
+                                    // eslint-disable-next-line max-len
+                                    .groupByOrderable(result.lineItems, result.shipment.order.orderLineItems).then(function(
+                                        orderLineItems
+                                    ) {
+                                        var addedLineItems = [];
+                                        _.each(orderLineItems, function(orderLineItem) {
+                                            _.each(orderLineItem.groupedLineItems, function(groupedLineItem) {
+                                                _.each(groupedLineItem, function(fulfillingLineItem) {
+                                                    addedLineItems.push(angular.merge({
+                                                        orderedQuantity: orderLineItem.orderedQuantity,
+                                                        partialFulfilledQuantity: orderLineItem.partialFulfilledQuantity
+                                                    }, fulfillingLineItem));
+                                                });
+                                            });
+                                        });
+                                        vm.addedLineItems = _.reduce(addedLineItems, function(r, c) {
+                                            r.push(angular.merge({
+                                                productCode: c.orderable.productCode,
+                                                productName: c.orderable.fullProductName,
+                                                price: orderablesPrice.data[c.orderable.id] * 100 || '',
+                                                lotCode:
+                                                    c.lot
+                                                        ? c.lot.lotCode
+                                                        : '',
+                                                expirationDate:
+                                                    c.lot
+                                                        ? c.lot.expirationDate
+                                                        : ''
+                                            }, c));
+                                            return r;
+                                        }, []);
+                                        vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                                            var price = c.price ? c.price : 0;
+                                            r = r + c.quantityShipped * price;
+                                            return r;
+                                        }, 0);
+                                        vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
+                                            return item.rejectionReasonId;
+                                        });
+                                        setTimeout(function() {
+                                            downloadPdf();
+                                        }, 500);
+
+                                    });
                             });
                         })
                         .catch(function() {

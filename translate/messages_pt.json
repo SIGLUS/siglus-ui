@@ -2422,10 +2422,10 @@
   "siglusIssueOrReceiveReport.receptionDate": "Data de recepção",
   "siglusIssueOrReceiveReport.filledInByTheSupplier": "Preenchido pelo fornecedor",
   "siglusIssueOrReceiveReport.fnm": "FNM",
-  "siglusIssueOrReceiveReport.destinationOfProduct": "Destino do produto",
+  "siglusIssueOrReceiveReport.destinationOfProduct": "Produto",
   "siglusIssueOrReceiveReport.lotNr": "Lote Nº",
   "siglusIssueOrReceiveReport.expiringDate": "Prazo de validade",
-  "siglusIssueOrReceiveReport.quantityOrdered": "Quantidade aprovada",
+  "siglusIssueOrReceiveReport.quantityOrdered": "Quantidade encomendada",
   "siglusIssueOrReceiveReport.suppliedQuantity": "Quantidade Fornecida",
   "siglusIssueOrReceiveReport.price": "Preço",
   "siglusIssueOrReceiveReport.value": "Valor",
@@ -2435,7 +2435,7 @@
   "siglusIssueOrReceiveReport.qf": "QF",
   "siglusIssueOrReceiveReport.pu": "PU",
   "siglusIssueOrReceiveReport.filledInByTheClient": "Preenchido pelo cliente",
-  "siglusIssueOrReceiveReport.receivedQuantity": "Quantidade recebida",
+  "siglusIssueOrReceiveReport.receivedQuantity": "Quantidade Recebida",
   "siglusIssueOrReceiveReport.difference": "Diferença",
   "siglusIssueOrReceiveReport.qr": "QR",
   "siglusIssueOrReceiveReport.preparedBy": "Elaborado por",
@@ -2540,5 +2540,11 @@
   "issueLocationCreation.moreThanSoh": "The Quantity can't be larger than Stock on Hand.",
   "issueLocationCreation.inputPositiveNumber": "Please enter a positive number.",
   "issueLocationCreation.submitSuccessfully": "Submit successfully",
-  "stockAdjustmentCreation.location":"Localização"
+  "stockAdjustmentCreation.location":"Localização",
+
+  "stockAddProductsModalWithLocation.title": "Add Product to Location ${locationCode}",
+  "stockAddProductsModalWithLocation.confirm": "Confirme",
+  "stockAddProductsModalWithLocation.lot": "lote",
+  "stockAddProductsModalWithLocation.expiryDate": "Data de validade",
+  "physicalInventoryCreation.showGTnumberByLocation": "The number of users cannot be larger than the number of locations"
 }

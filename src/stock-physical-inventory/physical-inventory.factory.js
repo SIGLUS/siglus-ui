@@ -429,7 +429,9 @@
                         var newItem = angular.merge(item, {
                             stockCardId: _.get(item, ['extraData', 'stockCardId'], null),
                             extraData: {},
-                            orderable: {}
+                            orderable: {
+                                dispensable: {}
+                            }
                         });
                         draftToReturn.lineItems.push(newItem);
                     }
@@ -445,6 +447,9 @@
                 lotCode: item.lotCode,
                 expirationDate: item.expirationDate
             } : null;
+            if (item.extraData.lotCode && !item.lotId) {
+                draftLOt = item.extraData;
+            }
             if (item.lotId) {
                 draftLOt = angular.copy(summary.lot);
             }

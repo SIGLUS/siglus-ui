@@ -1,3 +1,6 @@
 {
-    "stockAddProductsModalWithLocation.title": "Add Product to Location ${locationCode}"
+    "stockAddProductsModalWithLocation.title": "Add Product to Location ${locationCode}",
+    "stockAddProductsModalWithLocation.confirm": "Confirm",
+    "stockAddProductsModalWithLocation.lot": "Lot",
+    "stockAddProductsModalWithLocation.expiryDate": "Expiry Date"
 }

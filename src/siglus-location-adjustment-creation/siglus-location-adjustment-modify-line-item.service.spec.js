@@ -154,7 +154,7 @@ describe('siglusLocationAdjustmentModifyLineItemService', function() {
                 location: null,
                 reason: null,
                 reasonFreeText: null,
-                documentNumber: null,
+                documentationNo: null,
                 quantity: null
             });
         });
@@ -180,7 +180,7 @@ describe('siglusLocationAdjustmentModifyLineItemService', function() {
                 programId: _.get(orderable.programs, [0, 'programId'], ''),
                 reason: null,
                 reasonFreeText: null,
-                documentNumber: null,
+                documentationNo: null,
                 quantity: null,
                 occurredDate: dateUtils.toStringDate(new Date())
             });

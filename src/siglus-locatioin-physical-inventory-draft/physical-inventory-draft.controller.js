@@ -76,7 +76,6 @@
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
-        // console.log('#### draft', draft);
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -101,7 +100,7 @@
                     var flag = false;
                     if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
                         flag = !isEmpty(lineItem.quantity) &&
-                            !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText));
+                            !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText)) || lineItem.skipped;
                     } else {
                         flag = updateInitialInventory(lineItem);
                     }
@@ -114,10 +113,12 @@
         // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
             if (vm.isInitialInventory) {
-                return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity);
+                return hasLot(lineItem)
+                    && !isEmpty(lineItem.lot.expirationDate)
+                    && !isEmpty(lineItem.quantity) || lineItem.skipped;
             }
             return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
-                && !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText));
+                && !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText)) || lineItem.skipped;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -532,8 +533,8 @@
                     return;
                 }
                 chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
+                    $scope.needToConfirm = false;
                     loadingModalService.open();
-
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
                     // var newDraft = draft.
@@ -823,12 +824,19 @@
                     });
                 });
                 // SIGLUS-REFACTOR: starts here
-                var categories = $filter('siglusGroupByAllProductProgramProductCategory')(newList);
+
+                var categories = $stateParams.locationManagementOption === 'location' ?
+                    $filter('siglusGroupByAllProductProgramProductCategoryByLocation')(newList) :
+                    $filter('siglusGroupByAllProductProgramProductCategory')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
             }, true);
         }
+
+        vm.skipChange = function() {
+            vm.updateProgress();
+        };
 
         vm.onSelectChange = function(type, lineItem) {
             if (type === 'area') {
@@ -1103,59 +1111,99 @@
             reload($state.current.name);
         }
 
-        vm.addLotByLocation = function(lineItem) {
-            var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
-            var notYetAddedItems = _.filter(draft.summaries, function(summary) {
-                var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
-                var orderableId = summary.orderable && summary.orderable.id;
-                var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
-                    lotId: lotId,
-                    orderableId: orderableId
-                });
-                return !isInAdded;
-            });
-            SiglusAddProductsModalWithLocationService.show(
-                notYetAddedItems,
-                vm.hasLot,
-                lineItem.locationCode
-            ).then(function(addedItems) {
-                var allLocationAreaList = _.flatten(Object.values(vm.allLocationAreaMap));
-                _.forEach(addedItems, function(item) {
-                    item.area = _.find(allLocationAreaList, function(location) {
-                        return location.locationCode === item.locationCode;
-                    }).area;
-                });
-                if (lineItem.orderable.id) {
-                    draft.lineItems = draft.lineItems.concat(addedItems);
-                }
-                if (!lineItem.orderable.id) {
-                    if (addedItems.length > 1) {
-                        var  firstLineItem = _.first(addedItems);
-
-                        draft.lineItems = _.map(draft.lineItems, function(line) {
-                            if (line.locationCode === firstLineItem.locationCode) {
-                                line = firstLineItem;
-                            }
-                            return line;
-                        })
-                            .concat(_.rest(addedItems));
-
+        function getNotYetAddedItems(lineItem) {
+            return $q(function(resolve) {
+                var draftByLocationMap = _.reduce(draft.lineItems, function(r, c) {
+                    if (r[c.locationCode]) {
+                        r[c.locationCode].push(c);
                     } else {
-                        draft.lineItems = _.map(draft.lineItems, function(line) {
-                            if (line.locationCode === addedItems[0].locationCode) {
-                                line = addedItems[0];
-                            }
-                            return line;
-                        });
+                        r[c.locationCode] = [c];
                     }
-                }
-                refreshLotOptions();
-                $stateParams.isAddProduct = true;
-                reload($state.current.name);
+                    return r;
+                }, {});
+                var addedLotIdAndOrderableId = [];
+                _.forEach(draftByLocationMap[lineItem.locationCode], function(item) {
+                    addedLotIdAndOrderableId.push({
+                        lotId: item.lot && item.lot.id ? item.lot.id : null,
+                        orderableId: item.orderable.id
+                    });
+                });
+                draft.summaries = Object.values(
+                    _.reduce(draft.summaries, function(r, c) {
+                        if (c.orderable.isKit) {
+                            c.lot = {};
+                        }
+                        r[c.orderable.id] = c;
+                        return r;
+                    }, {})
+                );
+                var notYetAddedItems = _.filter(draft.summaries, function(summary) {
+                    var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
+                    var orderableId = summary.orderable && summary.orderable.id;
+                    var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
+                        lotId: lotId,
+                        orderableId: orderableId
+                    });
+                    return !isInAdded;
+                });
+                resolve({
+                    notYetAddedItems: notYetAddedItems,
+                    addedLotIdAndOrderableId: addedLotIdAndOrderableId
+                });
+            });
+        }
 
-                // #105: activate archived product
-                siglusArchivedProductService.alterInfo(addedItems);
-                // #105: ends here
+        vm.addLotByLocation = function(lineItem) {
+            getNotYetAddedItems(lineItem).then(function(res) {
+                var notYetAddedItems = res.notYetAddedItems;
+                var addedLotIdAndOrderableId = res.addedLotIdAndOrderableId;
+                SiglusAddProductsModalWithLocationService.show(
+                    notYetAddedItems,
+                    vm.hasLot,
+                    lineItem.locationCode,
+                    addedLotIdAndOrderableId
+                ).then(function(addedItems) {
+                    var allLocationAreaList = _.flatten(Object.values(vm.allLocationAreaMap));
+                    _.forEach(addedItems, function(item) {
+                        item.area = _.find(allLocationAreaList, function(location) {
+                            return location.locationCode === item.locationCode;
+                        }).area;
+                    });
+                    if (lineItem.orderable.id) {
+                        draft.lineItems = draft.lineItems.concat(addedItems);
+                    }
+                    if (!lineItem.orderable.id) {
+                        if (addedItems.length > 1) {
+                            var  firstLineItem = _.first(addedItems);
+                            var index = 0;
+                            // draft.lineItems 
+                            var newLineItems = _.map(draft.lineItems, function(line, i) {
+                                if (line.locationCode === firstLineItem.locationCode) {
+                                    line = firstLineItem;
+                                    index = i;
+                                }
+                                return line;
+                            });
+                            newLineItems.splice.apply(newLineItems, [index + 1, 0].concat(_.rest(addedItems)));
+                            draft.lineItems = newLineItems;
+
+                        } else {
+                            draft.lineItems = _.map(draft.lineItems, function(line) {
+                                if (line.locationCode === addedItems[0].locationCode) {
+                                    line = addedItems[0];
+                                }
+                                return line;
+                            });
+                        }
+                    }
+                    refreshLotOptions();
+                    $stateParams.isAddProduct = true;
+                    reload($state.current.name);
+
+                    // #105: activate archived product
+                    siglusArchivedProductService.alterInfo(addedItems);
+                    // #105: ends here
+                });
             });
         };
 

@@ -54,7 +54,6 @@
     .section-fouth {
       padding: 5px 8px;
       width: 1246px;
-      height: 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -62,6 +61,10 @@
       border: 2px solid #000000;
       font-weight: 700;
       font-size: 18px;
+      flex-wrap: wrap;
+      &>div{
+        width: 33%;
+      }
     }
     .sub-information {
       width: 100%;
@@ -91,7 +94,6 @@
           border-bottom: 1px solid #000;
           border-right: 0px solid #000;
           word-wrap: break-word;
-          word-break: break-all;
           padding: 0 4px;
         }
       }
@@ -100,8 +102,7 @@
         border-left: 1px solid #000;
         border-bottom: 1px solid #000;
         border-right: 0px solid #000;
-        word-wrap: break-word;
-        word-break: break-all;
+        word-break: break-word;
         padding: 0 4px;
       }
   
