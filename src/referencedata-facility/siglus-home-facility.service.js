@@ -44,7 +44,7 @@
                     defered.resolve(res.enableLocationManagement);
                 })
                     .catch(function() {
-                        defered.reject(false);
+                        defered.resolve(false);
                     });
             }
             return defered.promise;
