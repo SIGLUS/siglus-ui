@@ -20,5 +20,6 @@
   "proofOfDeliveryView.gtQuantityShipped": "You can't accept more stock than was supplied.",
   "proofOfDeliveryView.notAllowedRejectReasonId": "The rejection reason is not allowed to be selected.",
   "proofOfDeliveryView.duplicateLocation": "The locations to receive the same lot cannot be repeated, please enter a new one.",
-  "proofOfDeliveryView.duplicateLocationForKit": "The locations to receive Kit cannot be repeated, please enter a new one."
+  "proofOfDeliveryView.duplicateLocationForKit": "The locations to receive Kit cannot be repeated, please enter a new one.",
+  "proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted": "Submit Successfully!"
 }

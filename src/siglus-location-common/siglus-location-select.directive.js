@@ -38,13 +38,13 @@
                                         return areaLocation.locationCode === option;
                                     });
                                     var isEmpty = _.get(target, 'isEmpty');
-                                    return isEmpty ? '[empty]' + option : option;
+                                    return isEmpty ? '[empty] ' + option : option;
                                 });
                             }
                             var initValue = _.get($scope.lineItem, ['moveTo', 'locationCode']);
                             if (initValue) {
                                 $scope.selectedOption = _.find($scope.options, function(option) {
-                                    return option.replace('[empty]', '') === initValue.replace('[empty]', '');
+                                    return option.replace('[empty] ', '') === initValue.replace('[empty] ', '');
                                 });
                             } else {
                                 $scope.selectedOption = undefined;
@@ -56,13 +56,13 @@
                                     return areaLocation.locationCode === option;
                                 });
                                 var isEmpty = _.get(target, 'isEmpty');
-                                return isEmpty ? '[empty]' + option : option;
+                                return isEmpty ? '[empty] ' + option : option;
                             });
                         }, true);
 
                         $scope.changeMoveToLocation = function() {
                             if ($scope.selectedOption) {
-                                $scope.lineItem.moveTo.locationCode = $scope.selectedOption.replace('[empty]', '');
+                                $scope.lineItem.moveTo.locationCode = $scope.selectedOption.replace('[empty] ', '');
                             } else {
                                 $scope.lineItem.moveTo.locationCode = undefined;
                             }

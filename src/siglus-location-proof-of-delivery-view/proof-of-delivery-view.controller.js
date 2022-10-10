@@ -517,7 +517,7 @@
             proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
                 $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT', podLineItemLocation).then(function() {
                 $scope.needToConfirm = false;
-                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted');
                 $state.go('^', $stateParams, {
                     reload: true
                 });
