@@ -169,6 +169,7 @@
                     <select ng-model="fulfillingLineItem.rejectionReasonId"
                             ng-options="reason.id as reason.name for reason in vm.reasons"
                             openlmis-invalid="{{fulfillingLineItem.$error.rejectionReasonIdError | message}}"
+                            ng-disabled="vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems) === fulfillingLineItem.quantityShipped"
                             ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)">
                     </select>
                 </td>
