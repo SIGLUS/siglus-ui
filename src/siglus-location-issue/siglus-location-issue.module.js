@@ -24,7 +24,6 @@
      * Provides stock issue state and controller.
      */
     angular.module('siglus-location-issue', [
-        'stock-adjustment',
         'stockmanagement',
         'siglus-stock-issue-initial-modal',
         'siglus-location-issue-draft-list'

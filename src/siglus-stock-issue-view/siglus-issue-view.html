@@ -22,6 +22,7 @@
                 <th>{{vm.key('productName') | message}}</th>
                 <th>{{vm.key('lotCode') | message}}</th>
                 <th>{{vm.key('expiryDate') | message}}</th>
+                <th ng-if="vm.isLocation">{{'stockPhysicalInventoryDraft.location' | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
             </tr>
@@ -32,6 +33,7 @@
                 <td>{{lineItem.productName}}</td>
                 <td>{{lineItem.lotCode}}</td>
                 <td>{{lineItem.expirationDate}}</td>
+                <td ng-if="vm.isLocation">{{lineItem.locationCode}}</td>
                 <td>{{lineItem.stockOnHand}}</td>
                 <td>{{lineItem.quantity}}</td>
             </tr>
