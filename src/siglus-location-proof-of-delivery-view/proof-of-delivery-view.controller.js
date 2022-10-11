@@ -385,15 +385,18 @@
                     }
                 });
                 mainLine.$error.rejectionReasonIdError = '';
+            } else if (sumOfLot === quantityShipped) {
+                if (mainLine.rejectionReasonId) {
+                    mainLine.rejectionReasonId = undefined;
+                }
+                mainLine.$error.rejectionReasonIdError = '';
             } else {
                 relatedLines.forEach(function(line) {
                     if (line.$error.quantityAcceptedError === 'proofOfDeliveryView.gtQuantityShipped') {
                         line.$error.quantityAcceptedError = '';
                     }
                 });
-                if (sumOfLot === quantityShipped && mainLine.rejectionReasonId) {
-                    mainLine.$error.rejectionReasonIdError = 'proofOfDeliveryView.notAllowedRejectReasonId';
-                } else if (sumOfLot < quantityShipped && !mainLine.rejectionReasonId) {
+                if (sumOfLot < quantityShipped && !mainLine.rejectionReasonId) {
                     mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
                 } else {
                     mainLine.$error.rejectionReasonIdError = '';
@@ -504,7 +507,6 @@
 
         function submit() {
             $scope.$broadcast('openlmis-form-submit');
-
             if (validateForm()) {
                 if (vm.isMerge) {
                     submitDraft();
@@ -512,6 +514,7 @@
                     submitSubDraft();
                 }
             } else {
+                console.log('submit failed', vm.orderLineItems);
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
             }
         }
