@@ -1,0 +1,26 @@
+#locationIssueForm tr:first-child>td {
+  border-top-width: 1px;
+}
+
+#locationIssueForm input.number {
+  text-align: left;
+}
+
+
+#locationIssueForm input[disabled] {
+  cursor: not-allowed;
+}
+
+
+.receive-location-area {
+  display: flex;
+}
+
+.receive-location-area .input-control:first-child {
+  flex: 1;
+  margin-right: 12px;
+}
+
+.receive-location-area .input-control:last-child {
+  min-width: 110px;
+}

@@ -113,6 +113,17 @@
                     .value();
         };
 
+        this.getAllLotList = function(orderableId, orderableLocationLotsMap) {
+            var data =  _.chain(_.values(_.get(orderableLocationLotsMap, orderableId)))
+                .flatten()
+                .uniq(function(item) {
+                    return item.lotCode;
+                })
+                .sortBy('expirationDate')
+                .value();
+            return data;
+        };
+
         this.getLocationList = function(lineItem, orderableLotsLocationMap) {
             var orderableId = lineItem.orderableId;
             var lotId = _.get(lineItem, ['lot', 'id']);
@@ -131,10 +142,11 @@
                     .value();
         };
 
-        this.getDesLocationList = function(lineItem, areaLocationInfo) {
+        this.getDesLocationList = function(lineItem, areaLocationInfo, field) {
+            var key = _.isEmpty(field) ? 'moveTo' : field;
             return  _.chain(areaLocationInfo)
                 .filter(function(locationInfo) {
-                    var currentMoveToArea = _.get(lineItem.moveTo, 'area', lineItem.destArea);
+                    var currentMoveToArea = _.get(lineItem[key], 'area', lineItem.destArea);
                     return currentMoveToArea
                         ? currentMoveToArea === locationInfo.area
                         : true;
@@ -146,10 +158,11 @@
                 .value();
         };
 
-        this.getDesAreaList = function(lineItem, areaLocationInfo) {
+        this.getDesAreaList = function(lineItem, areaLocationInfo, field) {
+            var key = _.isEmpty(field) ? 'moveTo' : field;
             return _.chain(areaLocationInfo)
                 .filter(function(locationInfo) {
-                    var currentMoveToLocationCode = _.get(lineItem.moveTo, 'locationCode', lineItem.destLocationCode);
+                    var currentMoveToLocationCode = _.get(lineItem[key], 'locationCode', lineItem.destLocationCode);
                     return currentMoveToLocationCode
                         ? currentMoveToLocationCode === locationInfo.locationCode
                         : true;
