@@ -99,6 +99,7 @@
                 orderableId: lineItem.orderableId,
                 productCode: lineItem.productCode,
                 productName: lineItem.productName,
+                programId: getProgramId(productList, lineItem),
                 lot: null,
                 stockOnHand: 0,
                 isKit: isKit,
