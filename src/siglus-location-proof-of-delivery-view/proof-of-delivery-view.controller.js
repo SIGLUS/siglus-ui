@@ -378,7 +378,7 @@
             var quantityShipped = mainLine.quantityShipped;
             if (sumOfLot > quantityShipped) {
                 relatedLines.forEach(function(line) {
-                    if (line.quantityAccepted) {
+                    if (_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
                         line.$error.quantityAcceptedError = 'proofOfDeliveryView.gtQuantityShipped';
                     } else {
                         line.$error.quantityAcceptedError = 'openlmisForm.required';
