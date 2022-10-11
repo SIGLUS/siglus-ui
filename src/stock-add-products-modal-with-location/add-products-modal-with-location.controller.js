@@ -50,6 +50,7 @@
         vm.selectedItem = {
             isInModal: false
         };
+        vm.test = 'hello world';
         vm.isKit = false;
         vm.withLocation = true;
         vm.locationCode = locationCode;
@@ -96,6 +97,8 @@
             var addedItems = vm.selectedOrderableGroup;
             if (addedItems && addedItems[0].orderable.isKit) {
                 vm.isKit = true;
+            } else {
+                vm.isKit = false;
             }
             if (addedItems) {
                 siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
@@ -111,6 +114,11 @@
                     });
 
                     selectedItem.locationCode = locationCode;
+                    selectedItem.errors = {
+                        showProductCodeError: '',
+                        showLotCodeError: '',
+                        showExpiredDateError: ''
+                    };
                     if (selectedItem.lot && selectedItem.lot.lotCode) {
                         selectedItem.lot.lotCode = null;
                         selectedItem.lot.expirationDate = null;
@@ -140,7 +148,6 @@
             selectedItem.$errors = {};
             selectedItem.skipped = false;
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
-
             if (notAlreadyAdded) {
                 vm.addedItems = addedItems.concat(selectedItem);
                 var hasAddedLotCode = _.map(vm.addedItems, function(item) {
@@ -153,6 +160,7 @@
                     vm.selectedItem.lot.lotCode = null;
                     vm.selectedItem.lot.expirationDate = null;
                     vm.selectedItem.lot.id = null;
+                    vm.test = '';
                 }
                 if (vm.isKit) {
                     vm.selectedOrderableGroup = null;
