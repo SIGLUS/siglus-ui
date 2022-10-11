@@ -99,6 +99,7 @@
                 orderableId: lineItem.orderableId,
                 productCode: lineItem.productCode,
                 productName: lineItem.productName,
+                programId: getProgramId(productList, lineItem),
                 lot: null,
                 stockOnHand: 0,
                 isKit: isKit,
@@ -127,7 +128,7 @@
 
         function updateStockOnHand(locations, lineItem) {
             var stockOnHand = 0;
-            if (lineItem.srcLocationCode) {
+            if (lineItem.locationCode) {
                 _.forEach(locations, function(loc) {
                     _.forEach(loc.lots, function(lot) {
                         if (lot.orderableId === lineItem.orderableId
