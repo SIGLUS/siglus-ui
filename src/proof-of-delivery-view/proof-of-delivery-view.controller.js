@@ -150,6 +150,7 @@
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
             vm.orderLineItems = orderLineItems;
+            console.log('#### vm.orderLineItems', vm.orderLineItems);
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;

@@ -63,6 +63,7 @@
         }
 
         vm.changeShowError = function() {
+            vm.showGTnumber = false;
             if (vm.isValid(vm.splitNum)) {
                 vm.showError = false;
             }
