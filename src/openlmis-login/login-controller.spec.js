@@ -18,6 +18,7 @@ describe('LoginController', function() {
     beforeEach(function() {
 
         module('openlmis-database');
+        module('referencedata-facility');
 
         module('openlmis-login', function($provide) {
             // Turn off AuthToken
