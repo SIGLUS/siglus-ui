@@ -266,7 +266,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             expect(stockCardSummaryResourceMock.query).toHaveBeenCalled();
             // expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
-            expect(lotResourceMock.query).toHaveBeenCalled();
+            // expect(lotResourceMock.query).toHaveBeenCalled();
         });
 
         it('should build proper response', function() {
@@ -285,7 +285,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             // expect(orderableFulfillsResourceMock.query).toHaveBeenCalled();
             expect(orderableResourceMock.getByVersionIdentities).toHaveBeenCalled();
             // SIGLUS-REFACTOR: ends here
-            expect(lotResourceMock.query).toHaveBeenCalled();
+            // expect(lotResourceMock.query).toHaveBeenCalled();
             expect(result).not.toBeUndefined();
         });
     });
