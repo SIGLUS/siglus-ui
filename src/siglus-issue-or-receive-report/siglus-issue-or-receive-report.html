@@ -232,7 +232,7 @@
               <!-- price -->
               <td>{{ item.price ? item.price : '' }}</td>
               <!-- value -->
-              <td style="width: 30px;">{{ item.price && vm.type ===  'issue' ? ((item.price * 100).toFixed * item.quantity) / 100 : '' }}</td>
+              <td style="width: 30px;">{{ item.price && vm.type ===  'issue' ? ((item.price * 100).toFixed(2) * item.quantity) / 100 : '' }}</td>
               <td style="border: none; border-left: 1px solid #000;"></td>
               <td>{{ vm.type === 'issue' ? '' : item.quantity }}</td>
               <td style="border-right: 1px solid #000;"></td>

@@ -53,9 +53,26 @@
                         reasons: function(stockReasonsFactory, order) {
                             return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT');
                         },
-                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory) {
+                        orderablesPrice: function(siglusOrderableLotService) {
+                            return siglusOrderableLotService.getOrderablesPrice();
+                        },
+                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory, orderablesPrice) {
+                            var orderablesPriceMap = orderablesPrice.data;
                             return fulfillingLineItemFactory
-                                .groupByOrderable(proofOfDelivery.lineItems, order.orderLineItems);
+                                .groupByOrderable(proofOfDelivery.lineItems, order.orderLineItems)
+                                .then(function(res) {
+                                    _.each(res, function(c) {
+                                        _.each(c.groupedLineItems, function(_c) {
+                                            _.each(_c, function(__c) {
+                                                var id = __c.orderable && __c.orderable.id;
+                                                __c.price = orderablesPriceMap[id]
+                                                    ? orderablesPriceMap[id]
+                                                    : '';
+                                            });
+                                        });
+                                    });
+                                    return res;
+                                });
                         },
                         canEdit: function($stateParams, authorizationService,
                             permissionService, order, proofOfDelivery) {

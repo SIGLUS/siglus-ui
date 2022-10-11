@@ -90,7 +90,13 @@
                 method: 'POST',
                 url: stockmanagementUrlFactory('/api/siglusapi/stockEvents/multiUserWithLocation'),
                 transformRequest: formatPayload
+            },
+            getMovementLocationAreaInfo: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/locations/facility'),
+                isArray: true
             }
+
         });
 
         this.createDraft = createDraft;
@@ -111,8 +117,17 @@
 
         this.getMergedDraft = getMergedDraft;
 
+        this.getLocationAreaInfo = getLocationAreaInfo;
+
         function createDraft(data) {
             return resource.post(data).$promise;
+        }
+
+        function getLocationAreaInfo(draftId, isEmpty) {
+            return resource.getMovementLocationAreaInfo({
+                id: draftId,
+                isEmpty: isEmpty
+            }).$promise;
         }
 
         function getMergedDraft(initialDraftId) {

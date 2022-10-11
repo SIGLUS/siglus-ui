@@ -148,8 +148,14 @@
                 <td ng-if="!vm.canEdit">
                     {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
                 </td>
-                <td></td>
-                <td></td>
+                <td>{{ fulfillingLineItem.price }}</td>
+                <td>
+                    {{
+                        fulfillingLineItem.price ?
+                        (fulfillingLineItem.quantityShipped * (fulfillingLineItem.price * 100).toFixed(2)) / 100 :
+                        ''
+                    }}
+                </td>
                 <td ng-if="vm.canEdit">
                     <input type="text" ng-model="fulfillingLineItem.notes"/>
                 </td>
