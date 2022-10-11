@@ -18,16 +18,12 @@
     'use strict';
 
     /**
-     * @module stock-issue
-     *
-     * @description
-     * Provides stock issue state and controller.
-     */
-    angular.module('siglus-location-receive-draft-list', [
-        'siglus-alert-confirm-modal',
-        'siglus-stock-issue-view',
-        'siglus-location-receive-creation'
-    ]);
+   * @module stock-issue
+   *
+   * @description
+   * Provides stock issue state and controller.
+   */
+    angular.module('siglus-location-receive-creation', []);
 
 })();
 

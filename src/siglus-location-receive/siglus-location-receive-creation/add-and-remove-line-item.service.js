@@ -25,12 +25,12 @@
    * Application layer service that prepares domain objects to be used on the view.
    */
     angular
-        .module('siglus-location-issue-creation')
-        .service('addAndRemoveIssueLineItemIssueService', addAndRemoveIssueLineItemIssueService);
+        .module('siglus-location-receive-creation')
+        .service('addAndRemoveReceiveLineItemIssueService', addAndRemoveReceiveLineItemIssueService);
 
-    addAndRemoveIssueLineItemIssueService.inject = ['$filter', 'SiglusLocationCommonUtilsService'];
+    addAndRemoveReceiveLineItemIssueService.inject = ['$filter', 'SiglusLocationCommonUtilsService'];
 
-    function addAndRemoveIssueLineItemIssueService($filter) {
+    function addAndRemoveReceiveLineItemIssueService($filter) {
 
         function getRowTemplateData(lineItem) {
             return  {
@@ -128,7 +128,7 @@
 
         function updateStockOnHand(locations, lineItem) {
             var stockOnHand = 0;
-            if (lineItem.srcLocationCode) {
+            if (lineItem.locationCode) {
                 _.forEach(locations, function(loc) {
                     _.forEach(loc.lots, function(lot) {
                         if (lot.orderableId === lineItem.orderableId

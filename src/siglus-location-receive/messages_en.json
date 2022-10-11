@@ -1,0 +1,4 @@
+{
+  "receiveLocationCreation.locationDuplicated": "The locations to receive Kit cannot be repeated, please enter a new one.",
+  "receiveLocationCreation.lotDuplicated": "The locations to receive the same lot cannot be repeated, please enter a new one."
+}

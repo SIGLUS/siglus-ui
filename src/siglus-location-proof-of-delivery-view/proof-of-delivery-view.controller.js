@@ -378,10 +378,8 @@
             var quantityShipped = mainLine.quantityShipped;
             if (sumOfLot > quantityShipped) {
                 relatedLines.forEach(function(line) {
-                    if (_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
+                    if (_.isNumber(_.get(line, 'quantityAccepted'))) {
                         line.$error.quantityAcceptedError = 'proofOfDeliveryView.gtQuantityShipped';
-                    } else {
-                        line.$error.quantityAcceptedError = 'openlmisForm.required';
                     }
                 });
                 mainLine.$error.rejectionReasonIdError = '';
@@ -391,12 +389,17 @@
                         line.$error.quantityAcceptedError = '';
                     }
                 });
-                if (sumOfLot === quantityShipped && mainLine.rejectionReasonId) {
-                    mainLine.$error.rejectionReasonIdError = 'proofOfDeliveryView.notAllowedRejectReasonId';
-                } else if (sumOfLot < quantityShipped && !mainLine.rejectionReasonId) {
-                    mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
-                } else {
+                if (sumOfLot === quantityShipped) {
+                    if (mainLine.rejectionReasonId) {
+                        mainLine.rejectionReasonId = undefined;
+                    }
                     mainLine.$error.rejectionReasonIdError = '';
+                } else if (sumOfLot < quantityShipped) {
+                    if (mainLine.rejectionReasonId) {
+                        mainLine.$error.rejectionReasonIdError = '';
+                    } else {
+                        mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
+                    }
                 }
             }
         };
@@ -504,7 +507,6 @@
 
         function submit() {
             $scope.$broadcast('openlmis-form-submit');
-
             if (validateForm()) {
                 if (vm.isMerge) {
                     submitDraft();
@@ -512,6 +514,7 @@
                     submitSubDraft();
                 }
             } else {
+                console.log('submit failed', vm.orderLineItems);
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
             }
         }
