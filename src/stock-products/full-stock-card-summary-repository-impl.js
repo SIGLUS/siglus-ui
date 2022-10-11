@@ -130,12 +130,22 @@
                         });
                     }
                     var tradeItemIds = getTradeItemIdsSet(orderablePage, givenOrderableIds);
-                    return LotResource.query({
-                        tradeItemId: tradeItemIds
-                    })
-                        .then(function(lotPage) {
-                            return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
-                        });
+                    var deferred = $q.defer();
+                    deferred.resolve({
+                        content: []
+                    });
+                    var promise = deferred.promise;
+                    if (tradeItemIds.length > 0) {
+                        return  LotResource.query({
+                            tradeItemId: tradeItemIds
+                        })
+                            .then(function(lotPage) {
+                                return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
+                            });
+                    }
+                    return promise.then(function(lotPage) {
+                        return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
+                    });
                 });
         }
 
