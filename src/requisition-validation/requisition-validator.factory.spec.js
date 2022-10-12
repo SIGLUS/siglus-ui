@@ -998,13 +998,14 @@ describe('requisitionValidator', function() {
             expect(result).toBe(true);
         });
 
-        it('should return true if column is Total Losses and Adjustments', function() {
-            column.name = TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS;
-
-            var result = validator.validateLineItemField(lineItem, column);
-
-            expect(result).toBe(true);
-        });
+        // #456: loss and adjustment is required
+        // it('should return true if column is Total Losses and Adjustments', function() {
+        //     column.name = TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS;
+        //
+        //     var result = validator.validateLineItemField(lineItem, column);
+        //
+        //     expect(result).toBe(true);
+        // });
 
         it('should return false if field is required but no set', function() {
             lineItem['requiredButNotSet'] = undefined;

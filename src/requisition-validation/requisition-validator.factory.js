@@ -249,9 +249,7 @@
         }
 
         function shouldSkipValidation(lineItem, column) {
-            return lineItem[TEMPLATE_COLUMNS.SKIPPED] ||
-                column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS ||
-                !column.$display;
+            return lineItem[TEMPLATE_COLUMNS.SKIPPED] || !column.$display;
         }
 
         function validateNumeric(lineItem, column) {
