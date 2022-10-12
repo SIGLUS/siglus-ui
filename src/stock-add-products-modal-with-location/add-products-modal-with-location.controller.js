@@ -30,11 +30,13 @@
 
     controller.$inject = ['items', 'hasLot', 'messageService',
         'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE',
-        'locationCode', 'siglusOrderableLotService', 'addedLotIdAndOrderableId'];
+        'locationCode', 'siglusOrderableLotService', 'addedLotIdAndOrderableId',
+        'alertService'];
 
     function controller(items, hasLot, messageService,
                         modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE,
-                        locationCode, siglusOrderableLotService, addedLotIdAndOrderableId) {
+                        locationCode, siglusOrderableLotService, addedLotIdAndOrderableId,
+                        alertService) {
         var vm = this;
 
         /**
@@ -48,9 +50,13 @@
          */
         vm.items = items;
         vm.selectedItem = {
-            isInModal: false
+            isInModal: false,
+            $errors: {
+                productCodeInvalid: undefined,
+                lotCodeInvalid: undefined,
+                lotDateInvalid: undefined
+            }
         };
-        vm.test = 'hello world';
         vm.isKit = false;
         vm.withLocation = true;
         vm.locationCode = locationCode;
@@ -76,6 +82,12 @@
          */
         vm.addedItems = [];
 
+        $scope.$on('lotCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            if (lineItem.lot && lineItem.lot.lotCode) {
+                vm.selectedItem.$errors.lotCodeInvalid = '';
+            }
+        });
         /**
          * @ngdoc method
          * @methodOf stock-add-products-modal.controller:AddProductsModalController
@@ -84,15 +96,18 @@
          * @description
          * Reset form status and change content inside lots drop down list.
          */
+        vm.expirationDateChanged = function() {
+            vm.selectedItem.$errors.lotDateInvalid = '';
+        };
         vm.orderableSelectionChanged = function() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
             //same as above
-            $scope.productForm.$setUntouched();
+            // $scope.productForm.$setUntouched();
 
             //make form good as new, so errors won't persist
-            $scope.productForm.$setPristine();
+            // $scope.productForm.$setPristine();
 
             var addedItems = vm.selectedOrderableGroup;
             if (addedItems && addedItems[0].orderable.isKit) {
@@ -114,10 +129,9 @@
                     });
 
                     selectedItem.locationCode = locationCode;
-                    selectedItem.errors = {
-                        showProductCodeError: '',
-                        showLotCodeError: '',
-                        showExpiredDateError: ''
+                    selectedItem.$errors = {
+                        lotDateInvalid: '',
+                        lotCodeInvalid: ''
                     };
                     if (selectedItem.lot && selectedItem.lot.lotCode) {
                         selectedItem.lot.lotCode = null;
@@ -131,6 +145,35 @@
             }
         };
 
+        // eslint-disable-next-line complexity
+        function validateForm() {
+            var result = false;
+            if (!vm.selectedItem.orderable) {
+                vm.selectedItem.$errors.productCodeInvalid = true;
+                vm.selectedItem.$errors.lotCodeInvalid = true;
+                vm.selectedItem.$errors.lotDateInvalid = true;
+            }
+            if (vm.selectedItem.orderable && vm.selectedItem.orderable.isKit) {
+                result = true;
+            }
+
+            if (vm.selectedItem.orderable && !vm.selectedItem.orderable.isKit && !vm.selectedItem.lot.lotCode) {
+                vm.selectedItem.$errors.lotCodeInvalid = true;
+            }
+            if (vm.selectedItem.orderable && !vm.selectedItem.orderable.isKit && !vm.selectedItem.lot.expirationDate) {
+                vm.selectedItem.$errors.lotDateInvalid = true;
+            }
+            if (
+                vm.selectedItem.orderable &&
+                !vm.selectedItem.orderable.isKit &&
+                vm.selectedItem.lot.lotCode &&
+                vm.selectedItem.lot.expirationDate
+            ) {
+                result = true;
+            }
+            return result;
+        }
+
         /**
          * @ngdoc method
          * @methodOf stock-add-products-modal.controller:AddProductsModalController
@@ -140,6 +183,10 @@
          * Add the currently selected product into the table beneath it for users to do further actions.
          */
         vm.addOneProduct = function() {
+            if (!validateForm()) {
+                alertService.error('openlmisForm.formInvalid');
+                return;
+            }
             if (vm.selectedOrderableGroup === null || vm.selectedOrderableGroup === undefined) {
                 return undefined;
             }

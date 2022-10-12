@@ -26,7 +26,6 @@
                     lineItem: '=',
                     lineItems: '=',
                     enableInput: '<',
-                    realRequired: '<',
                     compId: '=',
                     disabled: '='
                 },

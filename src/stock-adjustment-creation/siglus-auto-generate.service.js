@@ -25,22 +25,27 @@
         this.autoGenerateLotCode = function(lineItem) {
             var  code;
             var date = dateUtils.toDate(lineItem.lot.expirationDate);
-            var productCode = lineItem.orderable.productCode;
-            var month = ('0' + (date.getMonth() + 1)).slice(-2);
-            var year = date.getFullYear();
-            var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
+            if (lineItem.orderable) {
+                var productCode = lineItem.orderable.productCode;
+                var month = ('0' + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
 
-            var previous = dateLotMapping[productCode + lineItem.lot.expirationDate];
+                var previous = dateLotMapping[productCode + lineItem.lot.expirationDate];
 
-            if (previous) {
-                return previous;
+                if (previous) {
+                    return previous;
+                }
+
+                code =  lotCodeKey + moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
+
+                dateLotMapping[productCode + lineItem.lot.expirationDate] = code;
+
+                return code;
             }
+            lineItem.$errors.productCodeInvalid = true;
+            return '';
 
-            code =  lotCodeKey + moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
-
-            dateLotMapping[productCode + lineItem.lot.expirationDate] = code;
-
-            return code;
         };
 
     }
