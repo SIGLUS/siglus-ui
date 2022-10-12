@@ -372,9 +372,15 @@
             var relatedLines = groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
             });
-            var mainLine = relatedLines.filter(function(line) {
-                return line.isMainGroup || line.isFirst;
-            })[0];
+            var mainLine;
+            if (relatedLines.length > 1) {
+                mainLine = relatedLines.find(function(line) {
+                    return line.isMainGroup;
+                });
+            } else {
+                mainLine = lineItem;
+            }
+
             var quantityShipped = mainLine.quantityShipped;
             if (sumOfLot > quantityShipped) {
                 relatedLines.forEach(function(line) {
@@ -393,10 +399,14 @@
                     if (mainLine.rejectionReasonId) {
                         mainLine.rejectionReasonId = undefined;
                     }
-                    mainLine.$error.rejectionReasonIdError = '';
+                    relatedLines.forEach(function(line) {
+                        line.$error.rejectionReasonIdError = '';
+                    });
                 } else if (sumOfLot < quantityShipped) {
                     if (mainLine.rejectionReasonId) {
-                        mainLine.$error.rejectionReasonIdError = '';
+                        relatedLines.forEach(function(line) {
+                            line.$error.rejectionReasonIdError = '';
+                        });
                     } else {
                         mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
                     }

@@ -177,8 +177,13 @@
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;
                     });
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag,
-                        allLineOrderableIds)
+                    return getStockProducts(
+                        physicalInventory.programId,
+                        physicalInventory.facilityId,
+                        id,
+                        flag,
+                        allLineOrderableIds
+                    )
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
@@ -190,8 +195,9 @@
                                 summaries,
                                 draftToReturn,
                                 false,
-                                false
+                                'product'
                             );
+                            // console.log('prepareLineItems finished');
                             draftToReturn.id = physicalInventory.id;
                             return draftToReturn;
                         });
@@ -447,7 +453,7 @@
                 lotCode: item.lotCode,
                 expirationDate: item.expirationDate
             } : null;
-            if (item.extraData.lotCode && !item.lotId) {
+            if (item.extraData && item.extraData.lotCode && !item.lotId) {
                 draftLOt = item.extraData;
             }
             if (item.lotId) {

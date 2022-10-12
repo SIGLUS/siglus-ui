@@ -11,7 +11,7 @@
             </div>
 
             <div class="modal-body">
-                <form name="productForm" class="form-inline" ng-submit="vm.addOneProduct()">
+                <div class="form-inline">
                     <!-- SIGLUS-REFACTOR: Add max-width-form-group and limit width for add product model-->
                     <div class="form-group max-width-form-group">
                     <!-- SIGLUS-REFACTOR: ends here -->
@@ -19,10 +19,11 @@
                         <!-- #105: activate archived product-->
                         <select
                             id="productSelect"
+                            name="myProductCode"
                             ng-model="vm.selectedOrderableGroup"
                             ng-options="(orderableGroup[0].orderable | siglusArchivedProductName) for orderableGroup in (vm.orderableGroups | siglusOrderByArchived)"
                             ng-change="vm.orderableSelectionChanged()"
-                            required
+                            openlmis-invalid="{{ vm.selectedItem.$errors.productCodeInvalid }}"
                         >
                         </select>
                         <!-- #105: ends here -->
@@ -31,7 +32,6 @@
                     <div class="form-group max-width-form-group">
                         <label for="lotSelect">{{'stockAddProductsModalWithLocation.lot' | message}}</label>
                         <siglus-stock-input-select
-                            real-required="true"
                             id="lotSelect"
                             comp-id="lotSelect"
                             style="width: auto;"
@@ -46,19 +46,20 @@
                         <label for="dateSelect">{{ 'stockAddProductsModalWithLocation.expiryDate' | message }}</label>
                         <input
                             id="dateSelect"
+                            name="myExpiryDate"
                             type="date"
                             class="min-width-date-input"
                             ng-blur="vm.validExpirationDate(vm.selectedItem)"
                             ng-change="vm.expirationDateChanged(vm.selectedItem)"
                             ng-model="vm.selectedItem.lot.expirationDate"
-                            ng-disabled="vm.isKit"
-                            ng-required="!vm.isKit"
+                            ng-disabled="vm.isKit || vm.selectedItem.lot.id"
+                            openlmis-invalid="{{ vm.selectedItem.$errors.lotDateInvalid | message }}"
                         />
                     </fieldset>
                     <!-- SIGLUS-REFACTOR: Add stock-actions and fix width for add button-->
-                    <button type="submit" class="add stock-actions">{{'stockAddProductsModal.add' | message}}</button>
+                    <button type="submit" ng-click="vm.addOneProduct()" class="add stock-actions">{{'stockAddProductsModal.add' | message}}</button>
                     <!-- SIGLUS-REFACTOR: ends here -->
-                </form>
+                </div>
                 <section class="openlmis-table-container">
                     <table>
                         <thead>
