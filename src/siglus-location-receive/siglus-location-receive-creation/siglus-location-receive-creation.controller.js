@@ -61,7 +61,7 @@
 
         vm.selectedProduct = null;
 
-        vm.destinationName = '';
+        vm.sourceName = '';
 
         vm.isMerge = isMerge;
 
@@ -72,7 +72,7 @@
                 ? messageService.get('stockIssueCreation.mergedDraft')
                 : messageService.get('stockIssue.draft') + ' ' + draftInfo.draftNumber;
             vm.addedLineItems = addedLineItems || [];
-            vm.destinationName = siglusStockUtilsService
+            vm.sourceName = siglusStockUtilsService
                 .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             filterProductList();
 
@@ -765,7 +765,7 @@
                     );
                     PDF.save(
                         getPdfName(
-                            vm.destinationName,
+                            vm.sourceName,
                             openlmisDateFilter(new Date(), 'yyyy-MM-dd')
                         )
                     );
