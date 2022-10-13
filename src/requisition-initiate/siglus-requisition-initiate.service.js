@@ -44,14 +44,10 @@
             }).$promise;
         }
 
-        <!-- SIGLUS-REFACTOR: starts here -->
         function getPhysicalInventoryDates(programId, facilityId,  startDate, endDate) {
-            <!-- SIGLUS-REFACTOR: ends here -->
             var resource = $resource(requisitionUrlFactory('/api/siglusapi/physicalInventories/dates'));
             return resource.query({
-                <!-- SIGLUS-REFACTOR: starts here -->
                 programId: programId,
-                <!-- SIGLUS-REFACTOR: ends here -->
                 facilityId: facilityId,
                 startDate: startDate,
                 endDate: endDate
