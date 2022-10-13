@@ -524,7 +524,6 @@
                     submitSubDraft();
                 }
             } else {
-                console.log('submit failed', vm.orderLineItems);
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
             }
         }
