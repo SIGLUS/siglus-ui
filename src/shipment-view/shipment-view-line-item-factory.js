@@ -195,9 +195,11 @@
             var summary =  summaries.filter(function(summary) {
                 return summary.orderable.id === orderableId;
             })[0];
-            summary.canFulfillForMe = _.get(summary, ['canFulfillForMe']).filter(function(canFulfillForMeItem) {
-                return moment().isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd'));
-            });
+            if (summary && summary.canFulfillForMe) {
+                summary.canFulfillForMe = _.get(summary, ['canFulfillForMe'], []).filter(function(canFulfillForMeItem) {
+                    return moment().isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd'));
+                });
+            }
             return summary;
         }
 
