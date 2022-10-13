@@ -181,7 +181,7 @@
             if (!item.$error.lotCodeError && item.lot) {
                 var lotExpiredDate = moment(item.lot.expirationDate);
                 if (moment().isAfter(lotExpiredDate)) {
-                    item.$error.lotCodeError = 'locationShipmentView.lotExpired';
+                    item.$error.lotCodeError = 'receiveLocationCreation.lotExpired';
                 }
             }
         }
@@ -251,6 +251,7 @@
             if (_.get(lineItem.location, 'locationCode')) {
                 var areaList = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo, 'location');
                 lineItem.location.area = _.first(areaList);
+                vm.changeArea(lineItem);
             }
 
             lineItem.$error.locationError = '';
@@ -261,7 +262,7 @@
                 validateLocationDuplicated(lineItems);
             } else {
                 validateBase(lineItems, function(item, $index) {
-                    if (_.isEmpty(lineItem.location.locationCode) && $index === index) {
+                    if (_.isEmpty(_.get(lineItem.location, 'locationCode')) && $index === index) {
                         lineItem.$error.locationError = 'openlmisForm.required';
                         return;
                     }
