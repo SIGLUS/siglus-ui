@@ -122,7 +122,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLot(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.lotCodeError).toEqual('locationShipmentView.lotExpired');
+            expect(lineItem.$error.lotCodeError).toEqual('receiveLocationCreation.lotExpired');
 
         });
 
