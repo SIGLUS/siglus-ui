@@ -17,18 +17,8 @@
 
     'use strict';
 
-    /**
-     * @module stock-issue
-     *
-     * @description
-     * Provides stock issue state and controller.
-     */
-    angular.module('siglus-location-stock-on-hand', [
-        'referencedata-facility',
-        'siglus-soh-product-detail',
-        'siglus-soh-lot-detail',
-        'siglus-soh-location-detail',
-        'siglus-soh-product-print'
+    angular.module('siglus-soh-product-print', [
+
     ]);
 
 })();
