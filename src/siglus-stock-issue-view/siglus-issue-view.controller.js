@@ -31,16 +31,17 @@
     controller.$inject = [
         '$scope', 'draft', 'initialDraftInfo', '$state', '$stateParams', '$filter', 'confirmDiscardService',
         'confirmService', 'messageService',
-        'adjustmentType', 'paginationService', 'addedLineItems'
+        'adjustmentType', 'paginationService', 'addedLineItems', 'siglusStockUtilsService'
     ];
 
     function controller($scope, draft, initialDraftInfo, $state, $stateParams, $filter, confirmDiscardService,
-                        confirmService, messageService, adjustmentType, paginationService, addedLineItems) {
+                        confirmService, messageService, adjustmentType, paginationService, addedLineItems,
+                        siglusStockUtilsService) {
         var vm = this;
 
         vm.initialDraftInfo = initialDraftInfo;
 
-        vm.destinationName = '';
+        vm.displayName = '';
 
         vm.isLocation = false;
 
@@ -133,10 +134,8 @@
 
         function initViewModel() {
 
-            var destinationName = _.get(vm.initialDraftInfo, 'destinationName');
-            vm.destinationName = destinationName === 'Outros'
-                ? 'Outros: ' + _.get(vm.initialDraftInfo, 'locationFreeText', '')
-                : destinationName;
+            vm.displayName = siglusStockUtilsService
+                .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
 
             vm.keyword = $stateParams.keyword;
             vm.filterLineItems = search($stateParams.keyword, addedLineItems);

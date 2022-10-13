@@ -700,7 +700,8 @@
                                 )
                                     .then(function(signature) {
                                         loadingModalService.open();
-                                        return SiglusLocationViewService.createSubOrder(buildSaveParams(), signature)
+                                        return SiglusLocationViewService.createSubOrder(buildSaveParams(true),
+                                            signature)
                                             .then(function() {
                                                 notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                                 $state.go('openlmis.orders.fulfillment');

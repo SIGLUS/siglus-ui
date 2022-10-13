@@ -53,9 +53,7 @@
                         var startDate = dateUtils.toStringDate(periods[0].submitStartDate);
                         var endDate = dateUtils.toStringDate(periods[0].submitEndDate);
                         return siglusRequisitionInitiateService.getPhysicalInventoryDates(
-                            <!-- SIGLUS-REFACTOR: starts here -->
                             $stateParams.replaceId || $stateParams.program,
-                            <!-- SIGLUS-REFACTOR: ends here -->
                             $stateParams.facility,
                             startDate,
                             endDate

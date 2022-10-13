@@ -28,11 +28,12 @@
         .module('siglus-location-stock-on-hand')
         .controller('SiglusLocationStockOnHandController', controller);
 
-    controller.$inject = ['stockCardSummaries', 'facility', 'displayItems', 'user', 'siglusLocationCommonFilterService',
+    controller.$inject = ['$window', 'stockCardSummaries', 'facility',
+        'displayItems', 'user', 'siglusLocationCommonFilterService',
         'programs', 'paginationService',
         '$stateParams', '$state', 'stockCardLineItems'];
 
-    function controller(stockCardSummaries, facility, displayItems, user, siglusLocationCommonFilterService,
+    function controller($window, stockCardSummaries, facility, displayItems, user, siglusLocationCommonFilterService,
                         programs, paginationService, $stateParams, $state, stockCardLineItems) {
         var vm = this;
 
@@ -47,6 +48,8 @@
         vm.facility = facility;
 
         vm.stockCardLineItems = null;
+
+        vm.print = print;
 
         vm.$onInit = function() {
             vm.stockCardSummaries = stockCardSummaries;
@@ -77,6 +80,17 @@
             }
 
         };
+
+        function print() {
+            var PRINT_URL = $window.location.href.split('!/')[0]
+            + '!/'
+            + 'locationManagement/stock-on-hand/print?program='
+            + $stateParams.program;
+            $window.open(
+                PRINT_URL,
+                '_blank'
+            );
+        }
 
         function updateStateParams() {
             $stateParams.programs = programs;
