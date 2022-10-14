@@ -29,11 +29,12 @@
         .factory('ShipmentViewLineItemFactory', ShipmentViewLineItemFactory);
 
     ShipmentViewLineItemFactory.inject = [
-        'StockCardResource', 'VVM_STATUS', 'ShipmentViewLineItem', 'ShipmentViewLineItemGroup'
+        'StockCardResource', 'VVM_STATUS', 'ShipmentViewLineItem', 'ShipmentViewLineItemGroup',
+        'moment'
     ];
 
     function ShipmentViewLineItemFactory(StockCardResource, VVM_STATUS,
-                                         ShipmentViewLineItem, ShipmentViewLineItemGroup) {
+                                         ShipmentViewLineItem, ShipmentViewLineItemGroup, moment) {
 
         ShipmentViewLineItemFactory.prototype.createFrom = buildFrom;
 
@@ -191,9 +192,15 @@
         }
 
         function findSummaryByOrderableId(summaries, orderableId) {
-            return summaries.filter(function(summary) {
+            var summary =  summaries.filter(function(summary) {
                 return summary.orderable.id === orderableId;
             })[0];
+            if (summary && summary.canFulfillForMe) {
+                summary.canFulfillForMe = _.get(summary, ['canFulfillForMe'], []).filter(function(canFulfillForMeItem) {
+                    return moment().isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd'));
+                });
+            }
+            return summary;
         }
 
         function flatten(shipmentViewLineItems) {
