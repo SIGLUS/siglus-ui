@@ -739,11 +739,19 @@
             }
             if (order.status  === 'RECEIVED') {
                 proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
-                    $state.go('openlmis.orders.podManage.view', {
-                        orderId: order.id,
-                        podId: pod.id,
-                        actionType: 'VIEW'
-                    });
+                    if (facility.enableLocationManagement) {
+                        $state.go('openlmis.orders.podManage.viewWithLocation', {
+                            orderId: order.id,
+                            podId: pod.id,
+                            actionType: 'VIEW'
+                        });
+                    } else {
+                        $state.go('openlmis.orders.podManage.view', {
+                            orderId: order.id,
+                            podId: pod.id,
+                            actionType: 'VIEW'
+                        });
+                    }
                 });
             } else if (order.hasSubDraft) {
                 proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
