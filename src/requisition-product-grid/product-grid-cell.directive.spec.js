@@ -133,24 +133,24 @@ describe('ProductGridCell', function() {
         expect(this.directiveElem.html()).toContain('positive-integer');
     });
 
-    it('should validate full supply line item columns after updating fields', function() {
-        this.scope.requisition.template.getColumns.andReturn(this.fullSupplyColumns);
-        this.scope.userCanEdit = true;
-        this.scope.requisition.$isInitiated.andReturn(true);
-        var element = this.getCompiledElement(),
-            input = element.find('input');
+    // it('should validate full supply line item columns after updating fields', function() {
+    //     this.scope.requisition.template.getColumns.andReturn(this.fullSupplyColumns);
+    //     this.scope.userCanEdit = true;
+    //     this.scope.requisition.$isInitiated.andReturn(true);
+    //     var element = this.getCompiledElement(),
+    //         input = element.find('input');
 
-        input.controller('ngModel').$setViewValue('1000');
-        this.scope.$apply();
+    //     input.controller('ngModel').$setViewValue('1000');
+    //     this.scope.$apply();
 
-        expect(this.requisitionValidator.validateLineItem).toHaveBeenCalledWith(
-            this.scope.lineItem, this.fullSupplyColumns, this.scope.requisition
-        );
+    //     expect(this.requisitionValidator.validateLineItem).toHaveBeenCalledWith(
+    //         this.scope.lineItem, this.fullSupplyColumns, this.scope.requisition
+    //     );
 
-        expect(this.scope.lineItem.updateDependentFields).toHaveBeenCalledWith(
-            this.scope.column, this.scope.requisition
-        );
-    });
+    //     expect(this.scope.lineItem.updateDependentFields).toHaveBeenCalledWith(
+    //         this.scope.column, this.scope.requisition
+    //     );
+    // });
 
     it('should not show error message if line item is skipped', function() {
         this.scope.lineItem.skipped = true;
@@ -176,26 +176,25 @@ describe('ProductGridCell', function() {
         expect(elScope.invalidMessage).toEqual('Invalid entry');
     });
 
-    it('should validate non full supply line item columns after updating fields', function() {
-        this.scope.userCanEdit = true;
-        this.scope.requisition.template.getColumns.andReturn(this.nonFullSupplyColumns);
-        this.scope.requisition.$isInitiated.andReturn(true);
-        var element = this.getCompiledElement(),
-            input = element.find('input');
+    // it('should validate non full supply line item columns after updating fields', function() {
+    //     this.scope.userCanEdit = true;
+    //     this.scope.requisition.template.getColumns.andReturn(this.nonFullSupplyColumns);
+    //     this.scope.requisition.$isInitiated.andReturn(true);
+    //     var element = this.getCompiledElement(),
+    //         input = element.find('input');
 
-        this.scope.lineItem.$program.fullSupply = false;
+    //     this.scope.lineItem.$program.fullSupply = false;
+    //     input.controller('ngModel').$setViewValue('1000');
+    //     this.scope.$apply();
 
-        input.controller('ngModel').$setViewValue('1000');
-        this.scope.$apply();
+    //     expect(this.requisitionValidator.validateLineItem).toHaveBeenCalledWith(
+    //         this.scope.lineItem, this.nonFullSupplyColumns, this.scope.requisition
+    //     );
 
-        expect(this.requisitionValidator.validateLineItem).toHaveBeenCalledWith(
-            this.scope.lineItem, this.nonFullSupplyColumns, this.scope.requisition
-        );
-
-        expect(this.scope.lineItem.updateDependentFields).toHaveBeenCalledWith(
-            this.scope.column, this.scope.requisition
-        );
-    });
+    //     expect(this.scope.lineItem.updateDependentFields).toHaveBeenCalledWith(
+    //         this.scope.column, this.scope.requisition
+    //     );
+    // });
 
     it('should produce read only cell for approved requisition', function() {
         this.scope.requisition.$isApproved.andReturn(true);
