@@ -48,6 +48,7 @@
         ProofOfDeliveryRepositoryImpl.prototype.deleteAllDraftWithLocation = deleteAllDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.getSubDraft = getSubDraft;
         ProofOfDeliveryRepositoryImpl.prototype.getSubDraftWithLocation = getSubDraftWithLocation;
+        ProofOfDeliveryRepositoryImpl.prototype.getPodWithLocation = getPodWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.updateSubDraft = updateSubDraft;
         ProofOfDeliveryRepositoryImpl.prototype.updateSubDraftWithLocation = updateSubDraftWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.deleteSubDraft = deleteSubDraft;
@@ -122,7 +123,7 @@
                     method: 'POST'
                 },
                 mergeDraftWithLocation: {
-                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id'),
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id/subDrafts/merge'),
                     method: 'GET'
                 },
                 submitDraft: {
@@ -132,6 +133,10 @@
                 submitDraftWithLocation: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id'),
                     method: 'PUT'
+                },
+                getPodWithLocation: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id'),
+                    method: 'GET'
                 }
             });
             // SIGLUS-REFACTOR: ends here
@@ -429,8 +434,71 @@
                 orderableResource = this.orderableResource;
 
             return this.resource.mergeDraftWithLocation({
-                id: podId,
-                expand: 'shipment.order'
+                id: podId
+            }, {}).$promise
+                .then(function(podWithLocation) {
+
+                    var podExtension = _.get(podWithLocation, ['podExtension']);
+                    var podDto = angular.copy(_.get(podExtension, ['podDto']));
+                    podDto.conferredBy = _.get(podExtension, ['conferredBy']);
+                    podDto.preparedBy = _.get(podExtension, ['preparedBy']);
+                    var podLineItemLocation = podWithLocation.podLineItemLocation;
+
+                    podDto.lineItems = _.flatten(podDto.lineItems.map(function(lineItem) {
+                        var targets = _.filter(podLineItemLocation, function(itemLocation) {
+                            return lineItem.id === itemLocation.podLineItemId;
+                        });
+                        if (targets && targets.length > 0) {
+                            return targets.map(function(target) {
+                                var copy = angular.copy(lineItem);
+                                copy.moveTo = {
+                                    locationCode: target.locationCode,
+                                    area: target.area
+                                };
+                                copy.quantityAccepted = target.quantityAccepted;
+                                return copy;
+                            });
+                        }
+                        lineItem.moveTo = {
+                            locationCode: undefined,
+                            area: undefined
+                        };
+                        return lineItem;
+                    }));
+
+                    var lotIds = getIdsFromListByObjectName(podDto.lineItems, 'lot'),
+                        orderableIds = getIdsFromListByObjectName(podDto.lineItems, 'orderable');
+                    var promiseList = lotIds.length ?
+                        [
+                            lotRepositoryImpl.query({
+                                id: lotIds
+                            }),
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ] :
+                        [
+                            orderableResource.query({
+                                id: orderableIds
+                            })
+                        ];
+                    return $q.all(promiseList)
+                        .then(function(responses) {
+                            var lotPage = lotIds.length ? responses[0] : {
+                                    content: []
+                                },
+                                orderablePage = lotIds.length ? responses[1] : responses[0];
+                            return combineResponses(podDto, lotPage.content, orderablePage.content);
+                        });
+                });
+        }
+
+        function getPodWithLocation(podId) {
+            var lotRepositoryImpl = this.lotRepositoryImpl,
+                orderableResource = this.orderableResource;
+
+            return this.resource.getPodWithLocation({
+                id: podId
             }, {}).$promise
                 .then(function(podWithLocation) {
 
