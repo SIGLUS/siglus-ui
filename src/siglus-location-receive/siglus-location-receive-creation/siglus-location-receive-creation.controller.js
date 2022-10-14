@@ -336,7 +336,7 @@
                 item.$error.moveToLocationError = '';
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                     return data.moveTo
-                      && _.get(item, ['location', 'locationCode']) === data.moveTo.locationCode;
+                      && _.get(item, ['moveTo', 'locationCode']) === data.moveTo.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
                     item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
@@ -500,7 +500,7 @@
         function validateKitLocationDuplicated(lineItems, item) {
             var hasKitLocationDuplicated = _.size(_.filter(lineItems, function(data) {
                 return data.moveTo
-                  && _.get(item, ['location', 'locationCode']) === data.moveTo.locationCode;
+                  && _.get(item, ['moveTo', 'locationCode']) === data.moveTo.locationCode;
             })) > 1;
 
             if (hasKitLocationDuplicated) {
