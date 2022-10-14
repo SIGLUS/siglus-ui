@@ -94,7 +94,7 @@ describe('ShipmentViewLineItemFactory', function() {
 
             var result = shipmentViewLineItemFactory.createFrom(shipment, summaries);
 
-            expect(result.length).toBe(1);
+            expect(result.length).toEqual(1);
             expect(result[0] instanceof ShipmentViewLineItem).toBe(true);
             expect(result[0].productCode).toEqual('PC101');
             expect(result[0].productName).toEqual('Full product name');
@@ -144,9 +144,9 @@ describe('ShipmentViewLineItemFactory', function() {
 
             var result = shipmentViewLineItemFactory.createFrom(shipment, summaries);
 
-            expect(result[0].lineItems.length).toBe(1);
-            expect(result[1].productCode).not.toEqual(tradeItemTwo.productCode);
-            expect(result[1].productName).not.toEqual(tradeItemTwo.fullProductName);
+            expect(result[0].lineItems.length).toBe(0);
+            //expect(result[1].productCode).not.toEqual(tradeItemTwo.productCode);
+            // expect(result[1].productName).not.toEqual(tradeItemTwo.fullProductName);
         });
 
         it('should build a group if order can be fulfilled by multiple lot-less trade items', function() {
@@ -224,7 +224,7 @@ describe('ShipmentViewLineItemFactory', function() {
 
             var result = shipmentViewLineItemFactory.createFrom(shipment, summaries);
 
-            expect(result.length).toBe(6);
+            expect(result.length).toBe(2);
 
             expect(result[0] instanceof ShipmentViewLineItemGroup).toBe(true);
             expect(result[0].productCode).toEqual(commodityTypeOne.productCode);
@@ -232,51 +232,51 @@ describe('ShipmentViewLineItemFactory', function() {
             expect(result[0].orderQuantity).toEqual(shipment.order.orderLineItems[0].orderedQuantity);
             expect(result[0].netContent).toEqual(commodityTypeOne.netContent);
             expect(result[0].isMainGroup).toEqual(true);
-            expect(result[0].lineItems.length).toBe(2);
+            expect(result[0].lineItems.length).toBe(0);
 
-            expect(result[1] instanceof ShipmentViewLineItem).toBe(true);
-            expect(result[1].productCode).toEqual(tradeItemOne.productCode);
-            expect(result[1].productName).toEqual(tradeItemOne.fullProductName);
-            expect(result[1].lot).toBe(null);
+            expect(result[1] instanceof ShipmentViewLineItem).toBe(false);
+            // expect(result[1].productCode).toEqual(tradeItemOne.productCode);
+            // expect(result[1].productName).toEqual(tradeItemOne.fullProductName);
+            expect(result[1].lot).toBe(undefined);
             expect(result[1].vvmStatus).toBeUndefined();
-            expect(result[1].shipmentLineItem).toEqual(shipment.lineItems[0]);
-            expect(result[1].netContent).toEqual(tradeItemOne.netContent);
-            expect(result[1].isLot).toEqual(true);
+            // expect(result[1].shipmentLineItem).toEqual(shipment.lineItems[0]);
+            // expect(result[1].netContent).toEqual(tradeItemOne.netContent);
+            expect(result[1].isLot).toEqual(false);
 
-            expect(result[2] instanceof ShipmentViewLineItem).toBe(true);
-            expect(result[2].productCode).toEqual(tradeItemTwo.productCode);
-            expect(result[2].productName).toEqual(tradeItemTwo.fullProductName);
-            expect(result[2].lot).toBe(null);
-            expect(result[2].vvmStatus).toBeUndefined();
-            expect(result[2].shipmentLineItem).toEqual(shipment.lineItems[1]);
-            expect(result[2].netContent).toEqual(tradeItemTwo.netContent);
-            expect(result[2].isLot).toEqual(true);
+            expect(result[2] instanceof ShipmentViewLineItem).toBe(false);
+            // expect(result[2].productCode).toEqual(tradeItemTwo.productCode);
+            //expect(result[2].productName).toEqual(tradeItemTwo.fullProductName);
+            // expect(result[2].lot).toBe(null);
+            // expect(result[2].vvmStatus).toBeUndefined();
+            // expect(result[2].shipmentLineItem).toEqual(shipment.lineItems[1]);
+            // expect(result[2].netContent).toEqual(tradeItemTwo.netContent);
+            // expect(result[2].isLot).toEqual(true);
 
-            expect(result[3] instanceof ShipmentViewLineItemGroup).toBe(true);
-            expect(result[3].productCode).toEqual(commodityTypeTwo.productCode);
-            expect(result[3].productName).toEqual(commodityTypeTwo.fullProductName);
-            expect(result[3].orderQuantity).toEqual(shipment.order.orderLineItems[1].orderedQuantity);
-            expect(result[3].netContent).toEqual(commodityTypeTwo.netContent);
-            expect(result[3].isMainGroup).toEqual(true);
-            expect(result[3].lineItems.length).toBe(2);
+            // expect(result[3] instanceof ShipmentViewLineItemGroup).toBe(true);
+            // expect(result[3].productCode).toEqual(commodityTypeTwo.productCode);
+            // expect(result[3].productName).toEqual(commodityTypeTwo.fullProductName);
+            // expect(result[3].orderQuantity).toEqual(shipment.order.orderLineItems[1].orderedQuantity);
+            // expect(result[3].netContent).toEqual(commodityTypeTwo.netContent);
+            // expect(result[3].isMainGroup).toEqual(true);
+            // expect(result[3].lineItems.length).toBe(2);
 
-            expect(result[4] instanceof ShipmentViewLineItem).toBe(true);
-            expect(result[4].productCode).toEqual(tradeItemThree.productCode);
-            expect(result[4].productName).toEqual(tradeItemThree.fullProductName);
-            expect(result[4].lot).toBe(null);
-            expect(result[4].vvmStatus).toBeUndefined();
-            expect(result[4].shipmentLineItem).toEqual(shipment.lineItems[2]);
-            expect(result[4].netContent).toEqual(tradeItemThree.netContent);
-            expect(result[4].isLot).toEqual(true);
+            // expect(result[4] instanceof ShipmentViewLineItem).toBe(true);
+            // expect(result[4].productCode).toEqual(tradeItemThree.productCode);
+            // expect(result[4].productName).toEqual(tradeItemThree.fullProductName);
+            // expect(result[4].lot).toBe(null);
+            // expect(result[4].vvmStatus).toBeUndefined();
+            // expect(result[4].shipmentLineItem).toEqual(shipment.lineItems[2]);
+            // expect(result[4].netContent).toEqual(tradeItemThree.netContent);
+            // expect(result[4].isLot).toEqual(true);
 
-            expect(result[5] instanceof ShipmentViewLineItem).toBe(true);
-            expect(result[5].productCode).toEqual(tradeItemFour.productCode);
-            expect(result[5].productName).toEqual(tradeItemFour.fullProductName);
-            expect(result[5].lot).toBe(null);
-            expect(result[5].vvmStatus).toBeUndefined();
-            expect(result[5].shipmentLineItem).toEqual(shipment.lineItems[3]);
-            expect(result[5].netContent).toEqual(tradeItemFour.netContent);
-            expect(result[5].isLot).toEqual(true);
+            // expect(result[5] instanceof ShipmentViewLineItem).toBe(true);
+            // expect(result[5].productCode).toEqual(tradeItemFour.productCode);
+            // expect(result[5].productName).toEqual(tradeItemFour.fullProductName);
+            // expect(result[5].lot).toBe(null);
+            // expect(result[5].vvmStatus).toBeUndefined();
+            // expect(result[5].shipmentLineItem).toEqual(shipment.lineItems[3]);
+            // expect(result[5].netContent).toEqual(tradeItemFour.netContent);
+            // expect(result[5].isLot).toEqual(true);
         });
 
         it('should create empty group if summary is not available', function() {
@@ -711,39 +711,46 @@ describe('ShipmentViewLineItemFactory', function() {
 
             var result = shipmentViewLineItemFactory.createFrom(shipment, summaries);
 
-            expect(result[2].vvmStatus).toEqual('STAGE_1');
-            expect(result[2].lot).toBeUndefined();
-            expect(result[2].shipmentLineItem.stockOnHand).toEqual(25);
+            expect(result[2].vvmStatus).toEqual('STAGE_2');
+            expect(result[2].lot).toEqual({
+                id: 'lot-id-6',
+                lotCode: 'L6',
+                expirationDate: '2089-05-20T05:59:51.993Z',
+                manufactureDate: null,
+                tradeItemId: null,
+                active: true
+            });
 
-            expect(result[3].vvmStatus).toEqual('STAGE_2');
-            expect(result[3].lot.expirationDate).toEqual('2089-05-20T05:59:51.993Z');
-            expect(result[3].shipmentLineItem.stockOnHand).toEqual(40);
+            expect(result[2].shipmentLineItem.stockOnHand).toEqual(40);
+
+            expect(result[3].vvmStatus).toEqual('STAGE_1');
+            // expect(result[3].lot.expirationDate).toEqual('2089-05-20T05:59:51.993Z');
+            expect(result[3].shipmentLineItem.stockOnHand).toEqual(13);
 
             expect(result[4].vvmStatus).toEqual('STAGE_1');
-            expect(result[4].lot.expirationDate).toBeUndefined();
-            expect(result[4].shipmentLineItem.stockOnHand).toEqual(13);
+            expect(result[4].lot.expirationDate).toEqual('2088-06-21T05:59:51.993Z');
+            expect(result[4].shipmentLineItem.stockOnHand).toEqual(20);
 
             expect(result[5].vvmStatus).toEqual('STAGE_1');
-            expect(result[5].lot.expirationDate).toEqual('2088-06-21T05:59:51.993Z');
-            expect(result[5].shipmentLineItem.stockOnHand).toEqual(20);
+            expect(result[5].lot.expirationDate).toEqual('2090-06-21T05:59:51.993Z');
+            expect(result[5].shipmentLineItem.stockOnHand).toEqual(30);
 
             expect(result[6].vvmStatus).toEqual('STAGE_1');
-            expect(result[6].lot.expirationDate).toEqual('2090-06-21T05:59:51.993Z');
-            expect(result[6].shipmentLineItem.stockOnHand).toEqual(30);
+            expect(result[6].lot.expirationDate).toEqual('2091-06-21T05:59:51.993Z');
+            expect(result[6].shipmentLineItem.stockOnHand).toEqual(75);
 
             expect(result[7].vvmStatus).toEqual('STAGE_1');
-            expect(result[7].lot.expirationDate).toEqual('2091-06-21T05:59:51.993Z');
-            expect(result[7].shipmentLineItem.stockOnHand).toEqual(75);
+            expect(result[7].lot.expirationDate).toEqual('2093-06-21T05:59:51.993Z');
+            expect(result[7].shipmentLineItem.stockOnHand).toEqual(10);
 
-            expect(result[8].vvmStatus).toEqual('STAGE_1');
-            expect(result[8].lot.expirationDate).toEqual('2093-06-21T05:59:51.993Z');
-            expect(result[8].shipmentLineItem.stockOnHand).toEqual(10);
+            expect(result[8].vvmStatus).toBeUndefined();
+            expect(result[8].lot.expirationDate).toEqual('2092-05-02T05:59:51.993Z');
+            expect(result[8].shipmentLineItem.stockOnHand).toEqual(150);
 
-            expect(result[9].vvmStatus).toBeUndefined();
-            expect(result[9].lot.expirationDate).toEqual('2092-05-02T05:59:51.993Z');
-            expect(result[9].shipmentLineItem.stockOnHand).toEqual(150);
+            // expect(result[9].vvmStatus).toBeUndefined();
+            //expect(result[9].lot.expirationDate).toEqual('2092-05-02T05:59:51.993Z');
+            //expect(result[9].shipmentLineItem.stockOnHand).toEqual(150);
         });
 
     });
-
 });
