@@ -84,6 +84,16 @@
                         });
                     }
 
+                    if (summary && summary.canFulfillForMe) {
+                        summary.canFulfillForMe = _.get(summary, ['canFulfillForMe'], [])
+                            .filter(function(canFulfillForMeItem) {
+                                return _.get(canFulfillForMeItem, ['lot' ])
+                                && moment()
+                                    // eslint-disable-next-line max-len
+                                    .isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd'));
+                            });
+                    }
+
                     var tradeItemLineItems = summary ?
                         buildTradeItems(summary, shipmentLineItemMap, orderLineItem.skipped) : [];
                     return new ShipmentViewLineItemGroup({
@@ -192,15 +202,9 @@
         }
 
         function findSummaryByOrderableId(summaries, orderableId) {
-            var summary =  summaries.filter(function(summary) {
+            return summaries.filter(function(summary) {
                 return summary.orderable.id === orderableId;
             })[0];
-            if (summary && summary.canFulfillForMe) {
-                summary.canFulfillForMe = _.get(summary, ['canFulfillForMe'], []).filter(function(canFulfillForMeItem) {
-                    return moment().isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd'));
-                });
-            }
-            return summary;
         }
 
         function flatten(shipmentViewLineItems) {
