@@ -82,7 +82,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: false,
-                location: null,
+                moveTo: null,
                 lot: null,
                 isMainGroup: true,
                 netContent: 1,
@@ -107,7 +107,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: false,
-                location: null,
+                moveTo: null,
                 lot: {
                     lotCode: 'code1',
                     expirationDate: '2020-12-12'
@@ -135,7 +135,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: false,
-                location: null,
+                moveTo: null,
                 lot: null,
                 isMainGroup: true,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
@@ -148,7 +148,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: false,
-                location: null,
+                moveTo: null,
                 lot: {
                     lotCode: 'code2',
                     expirationDate: '3096-04-26'
@@ -191,7 +191,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: true,
-                location: null,
+                moveTo: null,
                 lot: null,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
@@ -205,12 +205,12 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.locationError).toEqual('openlmisForm.required');
+            expect(lineItem.$error.moveToLocationError).toEqual('openlmisForm.required');
         });
 
         it('should validate location duplicate when product is kit', function() {
             lineItem.isKit = true;
-            lineItem.location = {
+            lineItem.moveTo = {
                 locationCode: 'AA01'
             };
             var lineItems = [
@@ -220,12 +220,12 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.locationError).toEqual('receiveLocationCreation.locationDuplicated');
+            expect(lineItem.$error.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
         });
 
         it('should return quantityShippedError openlmisForm.required when location has changed', function() {
             lineItem.isKit = true;
-            lineItem.location = {
+            lineItem.moveTo = {
                 locationCode: 'AA01'
             };
             lineItem.shipmentLineItem = {
@@ -244,7 +244,7 @@ describe('siglusLocationReceiveCreationController', function() {
         it('should validate current line item required error when change location and lot is null', function() {
             lineItem.isKit = false;
             lineItem.orderableId = '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a';
-            lineItem.location = {
+            lineItem.moveTo = {
                 locationCode: 'AA035'
             };
             lineItem.lot = null;
@@ -271,7 +271,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: true,
-                location: null,
+                moveTo: null,
                 lot: null,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
@@ -331,7 +331,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: false,
-                location: null,
+                moveTo: null,
                 lot: null,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
@@ -351,7 +351,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: true,
-                location: null,
+                moveTo: null,
                 lot: null,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
@@ -369,7 +369,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCodeHint: ''
                 },
                 isKit: false,
-                location: null,
+                moveTo: null,
                 lot: null,
                 orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
             };
@@ -384,7 +384,7 @@ describe('siglusLocationReceiveCreationController', function() {
         it('it should alert form invalid when table form validation is not pass', function() {
             var lineItem = {
                 $error: {
-                    locationError: '',
+                    moveToLocationError: '',
                     lotCodeError: '',
                     lotCodeHint: '',
                     quantityError: ''
@@ -394,7 +394,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCode: 'Code 1',
                     expirationDate: '2399-12-08'
                 },
-                location: {
+                moveTo: {
                     area: 'WEST',
                     locationCode: 'A2203'
                 },
@@ -414,14 +414,14 @@ describe('siglusLocationReceiveCreationController', function() {
         it('it should display error message when filed has error', function() {
             var lineItem = {
                 $error: {
-                    locationError: '',
+                    moveToLocationError: '',
                     lotCodeError: '',
                     lotCodeHint: '',
                     quantityError: ''
                 },
                 orderableId: 'A000001',
                 lot: null,
-                location: null,
+                moveTo: null,
                 quantity: 0
             };
             vm.addedLineItems = [
@@ -432,7 +432,7 @@ describe('siglusLocationReceiveCreationController', function() {
             vm.submit();
 
             expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
-            expect(lineItem.$error.locationError).toEqual('openlmisForm.required');
+            expect(lineItem.$error.moveToLocationError).toEqual('openlmisForm.required');
             expect(lineItem.$error.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
 
             expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
@@ -441,7 +441,7 @@ describe('siglusLocationReceiveCreationController', function() {
         it('it should display location duplication error message when location has two or more same', function() {
             var lineItem0 = {
                 $error: {
-                    locationError: '',
+                    moveToLocationError: '',
                     lotCodeError: '',
                     lotCodeHint: '',
                     quantityError: ''
@@ -449,13 +449,13 @@ describe('siglusLocationReceiveCreationController', function() {
                 orderableId: 'A000001',
                 lot: null,
                 isKit: true,
-                location: null,
+                moveTo: null,
                 quantity: 0
             };
 
             var lineItem1 = {
                 $error: {
-                    locationError: '',
+                    moveToLocationError: '',
                     lotCodeError: '',
                     lotCodeHint: '',
                     quantityError: ''
@@ -465,7 +465,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCode: 'Code 1',
                     expirationDate: '2399-12-08'
                 },
-                location: {
+                moveTo: {
                     area: 'WEST',
                     locationCode: 'A2203'
                 },
@@ -475,7 +475,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             var lineItem2 = {
                 $error: {
-                    locationError: '',
+                    moveToLocationError: '',
                     lotCodeError: '',
                     lotCodeHint: '',
                     quantityError: ''
@@ -485,7 +485,7 @@ describe('siglusLocationReceiveCreationController', function() {
                     lotCode: 'Code 1',
                     expirationDate: '2399-12-08'
                 },
-                location: {
+                moveTo: {
                     area: 'WEST',
                     locationCode: 'A2203'
                 },
@@ -500,7 +500,7 @@ describe('siglusLocationReceiveCreationController', function() {
             vm.submit();
 
             expect(lineItem1.$error.lotCodeError).toEqual('');
-            expect(lineItem1.$error.locationError).toEqual('receiveLocationCreation.locationDuplicated');
+            expect(lineItem1.$error.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
 
             expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
         });
@@ -509,7 +509,7 @@ describe('siglusLocationReceiveCreationController', function() {
             function() {
                 var lineItem0 = {
                     $error: {
-                        locationError: '',
+                        moveToLocationError: '',
                         lotCodeError: '',
                         lotCodeHint: '',
                         quantityError: ''
@@ -517,13 +517,13 @@ describe('siglusLocationReceiveCreationController', function() {
                     orderableId: 'A000001',
                     lot: null,
                     isKit: false,
-                    location: null,
+                    moveTo: null,
                     quantity: 0
                 };
 
                 var lineItem1 = {
                     $error: {
-                        locationError: '',
+                        moveToLocationError: '',
                         lotCodeError: '',
                         lotCodeHint: '',
                         quantityError: ''
@@ -533,7 +533,7 @@ describe('siglusLocationReceiveCreationController', function() {
                         lotCode: 'Code 1',
                         expirationDate: '2399-12-08'
                     },
-                    location: {
+                    moveTo: {
                         area: 'WEST',
                         locationCode: 'A2203'
                     },
@@ -543,7 +543,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
                 var lineItem2 = {
                     $error: {
-                        locationError: '',
+                        moveToLocationError: '',
                         lotCodeError: '',
                         lotCodeHint: '',
                         quantityError: ''
@@ -553,7 +553,7 @@ describe('siglusLocationReceiveCreationController', function() {
                         lotCode: 'Code 1',
                         expirationDate: '2399-12-08'
                     },
-                    location: {
+                    moveTo: {
                         area: 'WEST',
                         locationCode: 'A2203'
                     },
@@ -568,7 +568,7 @@ describe('siglusLocationReceiveCreationController', function() {
                 vm.submit();
 
                 expect(lineItem1.$error.lotCodeError).toEqual('receiveLocationCreation.lotDuplicated');
-                expect(lineItem1.$error.locationError).toEqual('');
+                expect(lineItem1.$error.moveToLocationError).toEqual('receiveLocationCreation.lotDuplicated');
 
                 expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
             });
