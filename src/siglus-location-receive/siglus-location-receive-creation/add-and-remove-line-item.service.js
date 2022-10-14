@@ -43,7 +43,7 @@
                 isKit: lineItem.isKit,
                 isMainGroup: false,
                 programId: lineItem.programId,
-                location: _.clone(lineItem.location),
+                moveTo: _.clone(lineItem.moveTo),
                 stockOnHand: lineItem.stockOnHand,
                 quantity: lineItem.quantity,
                 dispensable: lineItem.dispensable
@@ -58,6 +58,7 @@
         function resetFirstRow(lineItem) {
             lineItem.lot = null;
             lineItem.location = null;
+            lineItem.moveTo = null;
             lineItem.quantity = 0;
             lineItem.isMainGroup = true;
             lineItem.stockOnHand = 0;
@@ -96,6 +97,7 @@
             return {
                 $error: {},
                 $hint: {},
+                moveTo: {},
                 orderableId: lineItem.orderableId,
                 productCode: lineItem.productCode,
                 productName: lineItem.productName,
@@ -113,6 +115,7 @@
             return {
                 $error: {},
                 $hint: {},
+                moveTo: {},
                 orderableId: product.orderableId,
                 productCode: product.productCode,
                 productName: $filter('productName')(product),
@@ -176,7 +179,7 @@
                     stockOnHand: stockOnHand,
                     isMainGroup: isMainGroup,
                     programId: getProgramId(productList, item),
-                    location: location
+                    moveTo: location
                 });
             });
         }

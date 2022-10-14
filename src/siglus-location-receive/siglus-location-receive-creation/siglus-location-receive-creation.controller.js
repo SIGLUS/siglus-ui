@@ -47,6 +47,8 @@
                                                      areaLocationInfo) {
         var vm = this;
 
+        vm.areaLocationInfo = areaLocationInfo;
+
         vm.keyword = $stateParams.keyword;
 
         vm.productList = null;
@@ -100,6 +102,13 @@
                 return vm.displayItems;
             });
             cacheParams();
+
+            addedLineItems.forEach(function(groupedItems) {
+                groupedItems.forEach(function(lineItem) {
+                    lineItem.destAreaOptions = vm.getDesAreaList(lineItem);
+                    lineItem.destLocationOptions = vm.getDesLocationList(lineItem);
+                });
+            });
             loadingModalService.close();
         };
 
@@ -109,11 +118,11 @@
         };
 
         vm.getDesAreaList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo, 'location');
+            return SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
         };
 
         vm.getDesLocationList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getDesLocationList(lineItem, areaLocationInfo, 'location');
+            return SiglusLocationCommonUtilsService.getDesLocationList(lineItem, areaLocationInfo);
         };
 
         vm.addProduct = function() {
@@ -123,29 +132,31 @@
                 extraData: true
             }, [vm.selectedProduct.orderableId]).then(function(locationsInfo) {
                 locations = locations.concat(locationsInfo);
-                vm.addedLineItems.unshift([
-                    addAndRemoveReceiveLineItemIssueService.getAddProductRow(vm.selectedProduct)
-                ]);
+                var lineItem = addAndRemoveReceiveLineItemIssueService.getAddProductRow(vm.selectedProduct);
+                // TODO hanlde area change & location change callback
+                lineItem.destAreaOptions = vm.getDesAreaList(lineItem);
+                lineItem.destLocationOptions = vm.getDesLocationList(lineItem);
+                vm.addedLineItems.unshift([lineItem]);
                 reloadPage();
             });
         };
 
         function validateLocationDuplicatedForRemove(lineItems) {
             _.forEach(lineItems, function(item, index) {
-                item.$error.locationError = '';
+                item.$error.moveToLocationError = '';
                 if (lineItems.length > 1 && index === 0) {
                     return;
                 }
-                if (_.isEmpty(item.location)) {
-                    item.$error.locationError = 'openlmisForm.required';
+                if (_.isEmpty(item.moveTo)) {
+                    item.$error.moveToLocationError = 'openlmisForm.required';
                     return;
                 }
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
-                    return data.location
-                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                    return data.moveTo
+                      && _.get(item, ['location', 'locationCode']) === data.moveTo.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.locationError = 'receiveLocationCreation.locationDuplicated';
+                    item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 }
             });
         }
@@ -175,6 +186,14 @@
 
         vm.addItem = function(lineItem, lineItems) {
             addAndRemoveReceiveLineItemIssueService.addLineItem(lineItem, lineItems);
+            lineItems.forEach(function(line) {
+                if (!line.destAreaOptions) {
+                    line.destAreaOptions = vm.getDesAreaList(lineItem);
+                }
+                if (!line.destLocationOptions) {
+                    line.destLocationOptions = vm.getDesLocationList(lineItem);
+                }
+            });
         };
 
         function validateLotExpired(item) {
@@ -192,13 +211,22 @@
                     return;
                 }
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
-                    return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
-                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                    return data.lot && data.moveTo && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
+                      && _.get(item, ['moveTo', 'locationCode']) === data.moveTo.locationCode;
                 })) > 1;
 
                 if (hasDuplicated) {
                     item.$error.lotCodeError = 'receiveLocationCreation.lotDuplicated';
+                    item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 } else {
+                    lineItems.forEach(function(line) {
+                        if (line.$error.lotCodeError === 'receiveLocationCreation.lotDuplicated') {
+                            line.$error.lotCodeError = '';
+                        }
+                        if (line.$error.moveToLocationError === 'receiveLocationCreation.locationDuplicated') {
+                            line.$error.moveToLocationError = '';
+                        }
+                    });
                     callback(item, $index);
 
                     validateLotExpired(item);
@@ -207,8 +235,8 @@
         }
 
         function lotOrLocationChangeEmitValidation(lineItem) {
-            var hasKitLocation = lineItem.isKit && !_.isEmpty(lineItem.location);
-            var hasBothLocationAndLot = !lineItem.isKit && !_.isEmpty(lineItem.location)
+            var hasKitLocation = lineItem.isKit && !_.isEmpty(lineItem.moveTo);
+            var hasBothLocationAndLot = !lineItem.isKit && !_.isEmpty(lineItem.moveTo)
               && !_.isEmpty(lineItem.lot);
             var hasQuantityShippedFilled = !_.isNull(_.get(lineItem, 'quantityShipped'));
             if ((hasKitLocation || hasBothLocationAndLot) && hasQuantityShippedFilled) {
@@ -248,22 +276,23 @@
         };
 
         vm.changeLocation = function(lineItem, lineItems, index) {
-            if (_.get(lineItem.location, 'locationCode')) {
-                var areaList = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo, 'location');
-                lineItem.location.area = _.first(areaList);
+            var areaList = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
+            if (_.get(lineItem.moveTo, 'locationCode')) {
+                lineItem.moveTo.area = _.first(areaList);
                 vm.changeArea(lineItem);
             }
+            lineItem.destAreaOptions = areaList;
 
-            lineItem.$error.locationError = '';
+            lineItem.$error.moveToLocationError = '';
             if (lineItem.isKit) {
-                if (_.isEmpty(_.get(lineItem.location, 'locationCode'))) {
-                    lineItem.$error.locationError = 'openlmisForm.required';
+                if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
+                    lineItem.$error.moveToLocationError = 'openlmisForm.required';
                 }
                 validateLocationDuplicated(lineItems);
             } else {
                 validateBase(lineItems, function(item, $index) {
-                    if (_.isEmpty(_.get(lineItem.location, 'locationCode')) && $index === index) {
-                        lineItem.$error.locationError = 'openlmisForm.required';
+                    if (_.isEmpty(lineItem.moveTo.locationCode) && $index === index) {
+                        lineItem.$error.moveToLocationError = 'openlmisForm.required';
                         return;
                     }
                     item.$error.lotCodeError = '';
@@ -279,12 +308,20 @@
         };
 
         vm.changeArea = function(lineItem) {
-            if (_.isEmpty(_.get(lineItem.location, 'area'))) {
+            lineItem.destLocationOptions = vm.getDesLocationList(lineItem);
+            if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
                 lineItem.$error.areaError = 'openlmisForm.required';
                 return;
             }
             lineItem.$error.areaError = '';
         };
+
+        $scope.$on('locationCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            var lineItems = data.lineItems;
+            var index = data.index;
+            vm.changeLocation(lineItem, lineItems, index);
+        });
 
         function setStockOnHand(lineItem) {
             var orderableLocationLotsMap = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
@@ -293,23 +330,23 @@
 
         function validateLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item) {
-                if (item.$error.locationError === 'openlmisForm.required') {
+                if (item.$error.moveToLocationError === 'openlmisForm.required') {
                     return;
                 }
-                item.$error.locationError = '';
+                item.$error.moveToLocationError = '';
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
-                    return data.location
-                      && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                    return data.moveTo
+                      && _.get(item, ['location', 'locationCode']) === data.moveTo.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.locationError = 'receiveLocationCreation.locationDuplicated';
+                    item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 }
             });
         }
 
         function getSoh(lineItem, orderableLocationLotsMap) {
             var lot = _.chain(orderableLocationLotsMap[lineItem.orderableId])
-                .get(_.get(lineItem.location, 'locationCode'))
+                .get(_.get(lineItem.moveTo, 'locationCode'))
                 .find(function(item) {
                     return lineItem.isKit ? _.isEmpty(item.lotCode)
                         : item.lotCode === _.get(lineItem.lot, 'lotCode');
@@ -410,6 +447,8 @@
                 .flatten()
                 .each(function(item) {
                     item.reason = reason;
+                    item.locationCode = _.get(item, ['moveTo', 'locationCode']);
+                    item.area = _.get(item, ['moveTo', 'area']);
                 })
                 .value();
         }
@@ -436,11 +475,11 @@
                 lineItem.$error.lotCodeError = 'openlmisForm.required';
             }
 
-            if (_.isEmpty(_.get(lineItem.location, 'locationCode'))) {
-                lineItem.$error.locationError = 'openlmisForm.required';
+            if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
+                lineItem.$error.moveToLocationError = 'openlmisForm.required';
             }
 
-            if (_.isEmpty(_.get(lineItem.location, 'area'))) {
+            if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
                 lineItem.$error.areaError = 'openlmisForm.required';
             }
 
@@ -448,23 +487,24 @@
 
         function validateDuplicated(lineItems, item) {
             var hasDuplicated = _.size(_.filter(lineItems, function(data) {
-                return data.lot && data.location && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
-                  && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                return data.lot && data.moveTo && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
+                  && _.get(item, ['moveTo', 'locationCode']) === data.moveTo.locationCode;
             })) > 1;
 
             if (hasDuplicated) {
                 item.$error.lotCodeError = 'receiveLocationCreation.lotDuplicated';
+                item.$error.moveToLocationError = 'receiveLocationCreation.lotDuplicated';
             }
         }
 
         function validateKitLocationDuplicated(lineItems, item) {
             var hasKitLocationDuplicated = _.size(_.filter(lineItems, function(data) {
-                return data.location
-                  && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
+                return data.moveTo
+                  && _.get(item, ['location', 'locationCode']) === data.moveTo.locationCode;
             })) > 1;
 
             if (hasKitLocationDuplicated) {
-                item.$error.locationError = 'receiveLocationCreation.locationDuplicated';
+                item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
             }
         }
 
