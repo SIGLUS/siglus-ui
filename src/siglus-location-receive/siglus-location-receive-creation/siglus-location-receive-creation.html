@@ -73,23 +73,12 @@
                                 noPlaceholder
                                 placeholder="  "
                                 no-auto-select="false"
-                                ng-model="lineItem.location.area"
+                                ng-model="lineItem.moveTo.area"
                                 openlmis-invalid="{{lineItem.$error.areaError | message}}"
-                                ng-options="area for area in vm.getDesAreaList(lineItem) track by area"
+                                ng-options="area for area in lineItem.destAreaOptions track by area"
                                 ng-change="vm.changeArea(lineItem, lineItems)">
                         </select>
-                        <select
-                                openlmis-invalid="{{
-                                lineItem.$error.lotCodeError === 'receiveLocationCreation.lotDuplicated'
-                                   ? lineItem.$error.lotCodeError
-                                    : (lineItem.$error.locationError || '') | message}}"
-                                ng-model="lineItem.location.locationCode"
-                                no-auto-select="false"
-                                placeholder="  "
-                                ng-options="locationCode for locationCode in vm.getDesLocationList(lineItem) track by locationCode"
-                                ng-change="vm.changeLocation(lineItem, lineItems, index)"
-                        >
-                        </select>
+                        <siglus-location-select line-item="lineItem" line-items="lineItems" area-location-info="vm.areaLocationInfo" index="index"></siglus-location-select>
                     </div>
 
                 </td>
