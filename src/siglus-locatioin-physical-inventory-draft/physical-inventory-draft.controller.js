@@ -693,6 +693,7 @@
                 _.chain(vm.draft.lineItems).flatten()
                     .each(function(item) {
                         if (!item.orderable.id && !item.skipped) {
+                            item.$errors.skippedInvalid = 'hasEmptyLocation';
                             anyError = 'hasEmptyLocation';
                             return;
                         }

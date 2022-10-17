@@ -53,11 +53,24 @@
                         reasons: function(stockReasonsFactory, order) {
                             return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT');
                         },
-                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory,
-                            addAndRemoveLineItemService) {
-                            return fulfillingLineItemFactory.groupByOrderable(proofOfDelivery.lineItems,
-                                order.orderLineItems).then(function(orderLineItems) {
-                                return addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
+                        orderablesPrice: function(siglusOrderableLotService) {
+                            return siglusOrderableLotService.getOrderablesPrice();
+                        },
+                        orderLineItems: function(
+                            proofOfDelivery,
+                            order,
+                            fulfillingLineItemFactory,
+                            addAndRemoveLineItemService,
+                            orderablesPrice
+                        ) {
+                            return fulfillingLineItemFactory.groupByOrderable(
+                                proofOfDelivery.lineItems,
+                                order.orderLineItems
+                            ).then(function(orderLineItems) {
+                                var result = addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
+                                console.log('orderLineItems', orderLineItems);
+                                console.log('orderablesPrice', orderablesPrice);
+                                return result;
                             });
                         },
                         canEdit: function($stateParams, authorizationService,
