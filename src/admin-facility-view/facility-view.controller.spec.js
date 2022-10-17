@@ -19,7 +19,7 @@ describe('FacilityViewController', function() {
         module('admin-facility-view');
         module('siglus-alert-confirm-modal');
         module('siglus-facility-view-radio-confirm-modal');
-
+        module('siglus-facility-device-activation-modal');
         inject(function($injector) {
             this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
@@ -54,6 +54,13 @@ describe('FacilityViewController', function() {
             fileName: 'file.csv',
             content: 'file-content'
         }, 'facility-id-1';
+
+        this.facilityDevice = {
+            deviceType: 'WEB',
+            deviceInfo: null,
+            version: null,
+            activationCode: 'C194296A-302D'
+        };
 
         spyOn(this.FacilityRepository.prototype, 'update').andReturn(
             this.$q.when()
@@ -101,7 +108,8 @@ describe('FacilityViewController', function() {
             facilityTypes: this.facilityTypes,
             geographicZones: this.geographicZones,
             facilityOperators: this.facilityOperators,
-            programs: this.programs
+            programs: this.programs,
+            facilityDevice: this.facilityDevice
         });
         this.vm.$onInit();
     });

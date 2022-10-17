@@ -17,22 +17,8 @@
 
     'use strict';
 
-    /**
-   * @module admin-facility-view
-   *
-   * @description
-   * Provides facility view screen for administrator.
-   */
-    angular.module('admin-facility-view', [
-        'openlmis-rights',
-        'openlmis-modal',
-        'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-geographic-zone',
-        'referencedata-program',
-        'ui.router',
-        'siglus-admin-facility-view-location-management',
-        'siglus-facility-view-radio-confirm-modal',
-        'siglus-facility-device-activation-modal'
+    angular.module('siglus-stock-card-print', [
     ]);
+
 })();
+

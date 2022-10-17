@@ -109,8 +109,11 @@
                 <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{fulfillingLineItem.quantityShipped}}</td>
                 <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
 
-                <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup">
+                <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup && fulfillingLineItem.moveTo.locationCode">
                     {{fulfillingLineItem.moveTo.area}}-{{fulfillingLineItem.moveTo.locationCode}}
+                </td>
+                <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.moveTo.locationCode">
+                    N/A
                 </td>
                 <td ng-if="!vm.canEdit && fulfillingLineItem.isMainGroup">
                 </td>
