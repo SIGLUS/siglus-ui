@@ -1,0 +1,33 @@
+<table class="openlmis-table">
+    <thead>
+        <tr>
+            <td></td>
+            <td>{{'adminFacilityView.detail' | message}}</td>
+            <td>{{'adminFacilityList.actions' | message}}</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{'adminFacilityView.deviceType' | message}}</td>
+            <td>{{vm.facilityDevice.deviceType}}</td>
+            <td >
+                <button  ng-show="vm.shouldShowUpgradeButton('WEB')" ng-disabled="vm.clickAbleUpgrade('WEB')" ng-click="vm.upgrade('WEB')" type="info">{{'adminFacilityView.changeToWeb' | message}}</button>
+                <button  ng-show="vm.shouldShowUpgradeButton('ANDROID')" ng-disabled="vm.clickAbleUpgrade('ANDROID')" ng-click="vm.upgrade('ANDROID')"  ng-click="vm.upgrade('ANDROID')" type="info">{{'adminFacilityView.changeToAndroid' | message}}</button>
+                <button  ng-show="vm.shouldShowUpgradeButton('LOCAL_MACHINE')" ng-disabled="vm.clickAbleUpgrade('LOCAL_MACHINE')" ng-click="vm.upgrade('LOCAL_MACHINE')" type="info">{{'adminFacilityView.changeToLocalMachine' | message}}</button>
+            </td>
+        </tr>
+        <tr>
+            <td>{{'adminFacilityView.deviceInfo' | message}}</td>
+            <td>{{vm.facilityDevice.deviceInfo?vm.facilityDevice.deviceInfo:'N/A'}}</td>
+            <td>
+                <button  class="danger" ng-show="vm.shouldShowEraseButton()" ng-disabled="vm.clickAbleErase()" ng-click="vm.eraseDeviceInfo()" type="info">{{'adminFacilityView.eraseDeviceInfo' | message}}</button>
+                <button  ng-show="vm.shouldShowRetrieve()" ng-disabled="vm.clickAbleRetrieve()" ng-click="vm.retrieveActivationCode()" type="info">{{'adminFacilityView.retrieveActivationCode' | message}}</button>
+            </td>
+        </tr>
+        <tr>
+            <td>{{'adminFacilityView.version' | message}}</td>
+            <td>{{vm.facilityDevice.version}}</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>

@@ -35,7 +35,8 @@
         'notificationService', 'locationManagementService',
         'messageService',
         'alertConfirmModalService', '$stateParams', 'facilityService',
-        'siglusFacilityViewRadioConfirmModalService'
+        'siglusFacilityViewRadioConfirmModalService', 'facilityDevice',
+        'adminFacilityDeviceService', 'SiglusFacilityDeviceActivationModalService'
     ];
 
     function controller($q, $state, facility, facilityTypes,
@@ -45,7 +46,8 @@
                         notificationService, locationManagementService,
                         messageService, alertConfirmModalService,
                         $stateParams, facilityService,
-                        siglusFacilityViewRadioConfirmModalService) {
+                        siglusFacilityViewRadioConfirmModalService, facilityDevice,
+                        adminFacilityDeviceService, SiglusFacilityDeviceActivationModalService) {
 
         var vm = this;
 
@@ -59,6 +61,16 @@
         vm.updateEnableLocationManagement = updateEnableLocationManagement;
         vm.selectedReport = null;
         vm.upgradeToWeb = upgradeToWeb;
+        vm.upgrade = upgradeComfirm;
+        vm.shouldShowUpgradeButton = shouldShowUpgradeButton;
+        vm.shouldShowEraseButton = shouldShowEraseButton;
+        vm.shouldShowRetrieve = shouldShowRetrieve;
+        vm.clickAbleUpgrade = clickAbleUpgrade;
+        vm.clickAbleErase = clickAbleErase;
+        vm.clickAbleRetrieve = clickAbleRetrieve;
+        vm.eraseDeviceInfo = eraseDeviceInfoComfirm;
+        vm.retrieveActivationCode = retrieveActivationCode;
+
         facility.isLocalMachine = false;
         // vm.minDate = '2022-08-08';
         /**
@@ -149,6 +161,8 @@
          */
         vm.invalidMessage = undefined;
 
+        vm.facilityDevice = undefined;
+
         /**
          * @ngdoc method
          * @propertyOf admin-facility-view.controller:FacilityViewController
@@ -181,6 +195,7 @@
             vm.facilityOperators = facilityOperators;
             vm.programs = programs;
             vm.selectedTab = 0;
+            vm.facilityDevice = facilityDevice;
             vm.managedExternally = facility.isManagedExternally();
             if (!vm.facilityWithPrograms.supportedPrograms) {
                 vm.facilityWithPrograms.supportedPrograms = [];
@@ -528,6 +543,126 @@
             });
         }
 
+        function shouldShowUpgradeButton(faclitiType) {
+            var  shouldShowUpgradeMap = {
+                WEB: vm.facilityDevice.deviceType !== 'WEB',
+                ANDROID: vm.facilityDevice.deviceType === 'WEB',
+                LOCAL_MACHINE: vm.facilityDevice.deviceType === 'WEB'
+            };
+            return shouldShowUpgradeMap[faclitiType];
+        }
+        function shouldShowEraseButton() {
+            return vm.facilityDevice.deviceType !== 'WEB';
+        }
+
+        function shouldShowRetrieve() {
+            return vm.facilityDevice.deviceType === 'LOCAL_MACHINE';
+        }
+
+        function clickAbleUpgrade(faclitiType) {
+            var clickAbleUpgradeMap = {
+                WEB: vm.facilityDevice.deviceInfo !== null,
+                ANDROID: !vm.facility.isNewFacility,
+                LOCAL_MACHINE: false
+            };
+            return clickAbleUpgradeMap[faclitiType];
+        }
+
+        function clickAbleErase() {
+            return vm.facilityDevice.deviceInfo === null;
+        }
+
+        function clickAbleRetrieve() {
+            return vm.facilityDevice.deviceInfo !== null;
+        }
+
+        function upgradeComfirm(deviceType) {
+            var upgradeConfirmMap = {
+                WEB: 'adminFacilityView.changeToWebConfirm',
+                ANDROID: 'adminFacilityView.changeToAndroidConfirm',
+                LOCAL_MACHINE: 'adminFacilityView.changeToLocalMachineConfirm'
+            };
+
+            if (deviceType !== 'LOCAL_MACHINE') {
+                return  alertConfirmModalService.error(
+                    upgradeConfirmMap[deviceType],
+                    '',
+                    ['adminFacilityView.close', 'adminFacilityView.confirm']
+                ).then(function() {
+                    if (deviceType === 'WEB' && vm.facilityDevice.deviceType === 'ANDROID') {
+                        siglusFacilityViewRadioConfirmModalService.error(
+                            '',
+                            'adminFacilityView.locationManagement.upgradeWebUser',
+                            ['adminFacilityView.close', 'adminFacilityView.confirm']
+                        ).then(function() {
+                            upgrade(deviceType);
+                        });
+                    } else {
+                        upgrade(deviceType);
+                    }
+                });
+            }
+
+            return  siglusFacilityViewRadioConfirmModalService.error(
+                upgradeConfirmMap[deviceType],
+                '',
+                ['adminFacilityView.close', 'adminFacilityView.confirm']
+            ).then(function() {
+                upgrade(deviceType);
+            });
+
+        }
+
+        function upgrade(deviceType) {
+            loadingModalService.open();
+            adminFacilityDeviceService.upgrade($stateParams.id, deviceType).then(function() {
+                notificationService.success('adminFacilityView.upgradeDeviceTypeSuccess');
+                goBack();
+            })
+                .catch(function() {
+                    notificationService.error('adminFacilityView.upgradeDeviceTypeFail');
+                })
+                .finally(loadingModalService.close);
+        }
+
+        function eraseDeviceInfoComfirm() {
+            var eraseConfirmMap = {
+                ANDROID: 'adminFacilityView.eraseAndroidConfirm',
+                LOCAL_MACHINE: 'adminFacilityView.eraseLocalMachineConfirm'
+            };
+            alertConfirmModalService.error(
+                eraseConfirmMap[vm.facilityDevice.deviceType],
+                '',
+                ['adminFacilityView.close', 'adminFacilityView.confirm']
+            ).then(function() {
+                eraseDeviceInfo();
+            });
+        }
+
+        function eraseDeviceInfo() {
+            loadingModalService.open();
+            adminFacilityDeviceService.erase($stateParams.id, vm.facilityDevice.deviceType)
+                .then(function() {
+                    adminFacilityDeviceService.get($stateParams.id).then(function(
+                        res
+                    ) {
+                        notificationService.success('adminFacilityList.eraseSuccess');
+                        vm.facilityDevice = res;
+                    });
+                })
+                .finally(loadingModalService.close);
+        }
+
+        function retrieveActivationCode() {
+            SiglusFacilityDeviceActivationModalService.show(vm.facilityDevice.activationCode);
+        }
+
+        function goBack() {
+            $state.go('^', $stateParams,
+                {
+                    reload: true
+                });
+        }
     }
 }
 )();
