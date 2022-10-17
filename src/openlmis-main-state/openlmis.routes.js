@@ -12,28 +12,34 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-//copy from stock-card-summary-resource.js but different request url
 (function() {
 
     'use strict';
 
     angular
-        .module('stock-card-summary')
-        .factory('SiglusStockCardSummaryResource', StockCardSummaryResource);
+        .module('openlmis-main-state')
+        .config(routes);
 
-    StockCardSummaryResource.inject = ['OpenlmisResource', 'classExtender'];
+    routes.$inject = ['$stateProvider'];
 
-    function StockCardSummaryResource(OpenlmisResource, classExtender) {
+    function routes($stateProvider) {
 
-        classExtender.extend(StockCardSummaryResource, OpenlmisResource);
+        $stateProvider.state('openlmis', {
+            label: 'openlmisMainState.home',
+            views: {
+                header: {
+                    templateUrl: 'openlmis-main-state/header.html',
+                    controller: 'SiglusOpenlmisMainStateController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                states: function(navigationStateService) {
+                    return navigationStateService.setUpStatesAvailability();
+                }
+            }
+        });
 
-        return StockCardSummaryResource;
-
-        function StockCardSummaryResource(locationManagementOption) {
-            var url = locationManagementOption === 'location' ?
-                '/api/siglusapi/stockCardSummariesWithLocation' :
-                '/api/siglusapi/stockCardSummaries';
-            this.super(url);
-        }
     }
+
 })();

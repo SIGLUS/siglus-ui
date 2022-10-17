@@ -2,8 +2,32 @@
     <!-- SIGLUS-REFACTOR: Add background-->
     <div class="bg"></div>
     <!-- SIGLUS-REFACTOR: ends here -->
-    <h2 class="power">{{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}</h2>
+    <div class="power-container">
+        <div class="power-title">Sync your data by exporting / importing the file.</div>
+        <div class="power-btn-group">
+            <button style="margin-right: 16px;" class="primary">Export</button>
+            <button class="primary">Import</button>
+        </div>
+        <h2 class="power">
+            {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}
+        </h2>
+    </div>
     <div class="usaid"></div>
+    <div class="offline-container">
+        <div class="sync-version">
+            <span>Local machine version：</span>
+            <span style="font-weight: 400;">2.22</span>
+        </div>
+        <div class="last-sync-date">
+            <span>Last sync time: </span>
+            <span style="font-weight: 400;">30/08/2022 11:23:12</span>
+        </div>
+        <div class="sync-tips">
+            <i class="fa fa-check-circle"></i>
+            Auto synced successfully at 30/08/2022 11:23:12
+        </div>
+        <button class="primary">Sync</button>
+    </div>
     <div class="system-notification-list" ng-if="!vm.isOffline">
         <h2> {{'openlmisSystemNotifications.systemNotifications' | message}} </h2>
         <h3 ng-if="!vm.homePageSystemNotifications || vm.homePageSystemNotifications.length === 0">
