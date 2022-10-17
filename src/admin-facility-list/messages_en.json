@@ -16,5 +16,6 @@
   "adminFacilityList.close": "Close",
   "adminFacilityList.confirm": "Confirm",
   "adminFacilityList.eraseSuccess": "Erasing is successful.",
-  "adminFacilityList.android": "Android"
+  "adminFacilityList.android": "Android",
+  "adminFacilityList.facilityDevice":"Facility Device"
 }
