@@ -48,11 +48,13 @@
         , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
         , SiglusLocationCommonUtilsService, alertService) {
 
-        orderLineItems.forEach(function(orderLineItem) {
-            orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
-                addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem, locations, areaLocationInfo);
+        if (canEdit) {
+            orderLineItems.forEach(function(orderLineItem) {
+                orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
+                    addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem, locations, areaLocationInfo);
+                });
             });
-        });
+        }
         var vm = this;
 
         vm.$onInit = onInit;
@@ -515,11 +517,31 @@
             });
         }
 
+        vm.validateMerge = function() {
+            if (vm.proofOfDelivery.receivedBy) {
+                vm.proofOfDelivery.receivedByError = '';
+            } else {
+                vm.proofOfDelivery.receivedByError = 'openlmisForm.required';
+            }
+
+            if (vm.proofOfDelivery.receivedDate) {
+                vm.proofOfDelivery.receivedDateError = '';
+            } else {
+                vm.proofOfDelivery.receivedDateError = 'openlmisForm.required';
+            }
+
+            return Boolean(!vm.proofOfDelivery.receivedByError && !vm.proofOfDelivery.receivedDateError);
+        };
+
         function submit() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateForm()) {
                 if (vm.isMerge) {
-                    submitDraft();
+                    if (vm.validateMerge()) {
+                        submitDraft();
+                    } else {
+                        alertService.error(messageService.get('openlmisForm.formInvalid'));
+                    }
                 } else {
                     submitSubDraft();
                 }

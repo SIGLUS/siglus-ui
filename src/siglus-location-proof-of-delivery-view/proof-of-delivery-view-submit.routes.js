@@ -35,12 +35,12 @@
             ],
             views: {
                 '@openlmis': {
-                    templateUrl: 'proof-of-delivery-view/proof-of-delivery-view.html',
-                    controller: 'ProofOfDeliveryViewController',
+                    templateUrl: 'siglus-location-proof-of-delivery-view/proof-of-delivery-view-location.html',
+                    controller: 'ProofOfDeliveryViewControllerWithLocation',
                     controllerAs: 'vm',
                     resolve: {
                         proofOfDelivery: function($stateParams, proofOfDeliveryService) {
-                            return proofOfDeliveryService.get($stateParams.podId);
+                            return proofOfDeliveryService.getPodWithLocation($stateParams.podId);
                         },
                         // SIGLUS-REFACTOR: starts here : getSubDraftDetail if actionType is not Merge
                         user: function(authorizationService) {
@@ -53,9 +53,12 @@
                         reasons: function(stockReasonsFactory, order) {
                             return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT');
                         },
-                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory) {
-                            return fulfillingLineItemFactory
-                                .groupByOrderable(proofOfDelivery.lineItems, order.orderLineItems);
+                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory,
+                            addAndRemoveLineItemService) {
+                            return fulfillingLineItemFactory.groupByOrderable(proofOfDelivery.lineItems,
+                                order.orderLineItems).then(function(orderLineItems) {
+                                return addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
+                            });
                         },
                         canEdit: function($stateParams, authorizationService,
                             permissionService, order, proofOfDelivery) {
@@ -71,6 +74,26 @@
                                 .catch(function() {
                                     return false;
                                 });
+                        },
+                        locations: function(orderLineItems, siglusLocationCommonApiService, $stateParams) {
+                            if ($stateParams.locations) {
+                                return $stateParams.locations;
+                            }
+                            var orderableIds = _.map(orderLineItems, function(lineItem) {
+                                return lineItem.orderable.id;
+                            });
+                            if (_.isEmpty(orderableIds)) {
+                                return [];
+                            }
+                            return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                                extraData: true
+                            }, orderableIds);
+                        },
+                        areaLocationInfo: function($stateParams, siglusLocationMovementService) {
+                            if ($stateParams.areaLocationInfo) {
+                                return $stateParams.areaLocationInfo;
+                            }
+                            return siglusLocationMovementService.getMovementLocationAreaInfo(undefined, true);
                         }
                     }
                 }

@@ -39,6 +39,7 @@
         // SIGLUS-REFACTOR: starts here
         ProofOfDeliveryRepository.prototype.getSubDraft = getSubDraft;
         ProofOfDeliveryRepository.prototype.getSubDraftWithLocation = getSubDraftWithLocation;
+        ProofOfDeliveryRepository.prototype.getPodWithLocation = getPodWithLocation;
         ProofOfDeliveryRepository.prototype.updateSubDraft = updateSubDraft;
         ProofOfDeliveryRepository.prototype.updateSubDraftWithLocation = updateSubDraftWithLocation;
         ProofOfDeliveryRepository.prototype.deleteSubDraft = deleteSubDraft;
@@ -84,6 +85,13 @@
         function getSubDraftWithLocation(id, subDraftId) {
             var repository = this;
             return this.impl.getSubDraftWithLocation(id, subDraftId)
+                .then(function(json) {
+                    return new ProofOfDelivery(json, repository);
+                });
+        }
+        function getPodWithLocation(id) {
+            var repository = this;
+            return this.impl.getPodWithLocation(id)
                 .then(function(json) {
                     return new ProofOfDelivery(json, repository);
                 });

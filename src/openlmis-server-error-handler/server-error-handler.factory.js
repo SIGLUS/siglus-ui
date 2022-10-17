@@ -28,9 +28,9 @@
         .module('openlmis-server-error-handler')
         .factory('serverErrorHandler', handler);
 
-    handler.$inject = ['$q', '$injector', '$timeout'];
+    handler.$inject = ['$q', '$injector', '$timeout', '$rootScope'];
 
-    function handler($q, $injector, $timeout) {
+    function handler($q, $injector, $timeout, $rootScope) {
 
         var provider = {
             responseError: responseError
@@ -50,12 +50,29 @@
          * @return {Promise}          Rejected promise
          */
         function responseError(response) {
-            if (
-                response.status >= 400 &&
-                response.status < 600 &&
-                response.status !== 401 &&
-                !response.data.isBusinessError
-            ) {
+            var mapper = {
+                CURRENT_IS_NOT_LOCATION_MANAGEMENT: 'interceptor.currentIsNotLocationManagement',
+                CURRENT_IS_NOT_STOCK_MANAGEMENT: 'interceptor.currentIsNotStockManagement'
+            };
+            var isBusinessError = _.get(response.data, 'isBusinessError', false);
+            var businessErrorExtraData = _.get(response.data, 'businessErrorExtraData');
+            var status = response.status;
+            if (isBusinessError && mapper[businessErrorExtraData]) {
+                $injector.get('alertConfirmModalService').error(
+                    mapper[businessErrorExtraData],
+                    '',
+                    ['', 'PhysicalInventoryDraftList.confirm']
+                )
+                    .then(function() {
+                        $injector.get('loginService').logout()
+                            .then(function() {
+                                $rootScope.$emit('openlmis-auth.logout');
+                                $injector.get('$state').go('auth.login');
+                            });
+                    });
+                return $q.reject(response);
+            }
+            if (status >= 400 && status < 600 && status !== 401 && !isBusinessError) {
                 $timeout(function() {
                     $injector.get('alertService').error(getTitle(response.statusText),
                         getMessage(response.data));

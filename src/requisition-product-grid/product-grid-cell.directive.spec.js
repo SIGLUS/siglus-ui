@@ -134,6 +134,7 @@ describe('ProductGridCell', function() {
     });
 
     it('should validate full supply line item columns after updating fields', function() {
+        this.scope.lineItem.getFieldValue.andReturn('');
         this.scope.requisition.template.getColumns.andReturn(this.fullSupplyColumns);
         this.scope.userCanEdit = true;
         this.scope.requisition.$isInitiated.andReturn(true);
@@ -177,6 +178,7 @@ describe('ProductGridCell', function() {
     });
 
     it('should validate non full supply line item columns after updating fields', function() {
+        this.scope.lineItem.getFieldValue.andReturn('');
         this.scope.userCanEdit = true;
         this.scope.requisition.template.getColumns.andReturn(this.nonFullSupplyColumns);
         this.scope.requisition.$isInitiated.andReturn(true);
@@ -184,7 +186,6 @@ describe('ProductGridCell', function() {
             input = element.find('input');
 
         this.scope.lineItem.$program.fullSupply = false;
-
         input.controller('ngModel').$setViewValue('1000');
         this.scope.$apply();
 

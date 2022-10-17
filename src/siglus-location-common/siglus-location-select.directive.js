@@ -25,7 +25,8 @@
                 scope: {
                     lineItem: '=',
                     lineItems: '=',
-                    areaLocationInfo: '<'
+                    areaLocationInfo: '<',
+                    index: '<'
                 },
                 controller: ['$scope',
                     function($scope) {
@@ -70,7 +71,8 @@
 
                             $scope.$emit('locationCodeChange', {
                                 lineItem: $scope.lineItem,
-                                lineItems: $scope.lineItems
+                                lineItems: $scope.lineItems,
+                                index: $scope.index
                             });
                         };
                     }],

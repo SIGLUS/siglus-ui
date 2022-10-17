@@ -246,8 +246,8 @@
                 reasonFreeText: _.get(item, 'reasonFreeText', null),
                 productCode: item.productCode,
                 productName: item.productName,
-                locationCode: _.get(item.location, 'locationCode', null),
-                area: _.get(item.location, 'area', null)
+                locationCode: _.get(item, ['moveTo', 'locationCode']) || _.get(item.location, 'locationCode', null),
+                area: _.get(item, ['moveTo', 'area']) || _.get(item.location, 'area', null)
             };
         }
 
@@ -272,8 +272,8 @@
                 reasonFreeText: _.get(item, 'reasonFreeText'),
                 programId: item.programId,
                 documentationNo: initialDraftInfo.documentNumber,
-                locationCode: _.get(item.location, 'locationCode', null),
-                area: _.get(item.location, 'area', null)
+                locationCode: _.get(item.moveTo, 'locationCode', null) || _.get(item.location, 'locationCode', null),
+                area: _.get(item.moveTo, 'area', null) || _.get(item.location, 'area', null)
             }, data);
         }
 
