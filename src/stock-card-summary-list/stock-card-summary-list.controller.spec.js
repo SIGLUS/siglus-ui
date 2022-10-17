@@ -165,15 +165,6 @@ describe('StockCardSummaryListController', function() {
         // #146: ends here
     });
 
-    describe('print', function() {
-
-        it('should call state go with proper parameters', function() {
-            vm.print();
-
-            expect(implMock.print).toHaveBeenCalledWith('program', 'facility');
-        });
-    });
-
     // #146: archived product list
     describe('viewProductStockCard', function() {
 

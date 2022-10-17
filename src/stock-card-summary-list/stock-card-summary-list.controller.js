@@ -31,12 +31,14 @@
     // SIGLUS-REFACTOR: add 'user', 'facility', 'programs', 'SIGLUS_TIME', '$q'
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
-        'user', 'facility', 'programs', '$scope', 'stockCardDataService', 'SIGLUS_TIME', '$q'
+        'user', 'facility', 'programs', '$scope', 'stockCardDataService', 'SIGLUS_TIME', '$q', 'localStorageService',
+        '$window'
     ];
     // SIGLUS-REFACTOR: ends here
-
+    // 
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q) {
+                        user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q,
+                        localStorageService, $window) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -164,7 +166,20 @@
          * Print SOH summary of current selected program and facility.
          */
         function print() {
-            new StockCardSummaryRepositoryImpl().print(vm.program.id, vm.facility.id);
+            localStorageService.add('stockCardSummariesPrint', JSON.stringify(
+                _.get(stockCardDataService.getDisplaySummary(angular.merge($stateParams, {
+                    size: '2147483647',
+                    page: '0'
+                })), ['content'])
+            ));
+            var PRINT_URL = $window.location.href.split('!/')[0]
+                    + '!/'
+                    + 'stockmanagement/stockCardSummaries/print?program='
+                    + $stateParams.program;
+            $window.open(
+                PRINT_URL,
+                '_blank'
+            );
         }
 
         function viewProductStockCard(orderableId) {
