@@ -1,0 +1,24 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h3></h3>
+      </div>
+      <div class="modal-body">
+        <div class="alert-main">
+          <div class="alert-message">
+            <div class="activation-title">{{'adminFacilityView.activationCode' | message}}</div>
+            <input type="text" ng-model="vm.activationCode" disabled="disabled">
+            <div class="activation-tips">{{'adminFacilityView.activationTips' | message}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button ng-show="!vm.showConflictStatus" ng-click="$hide()">{{'physicalInventoryCreation.cancel' | message}}</button>
+        <button class="primary" ng-click="vm.confirm()">{{'physicalInventoryCreation.confirm'
+          | message}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

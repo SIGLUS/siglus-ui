@@ -38,7 +38,6 @@
                 facility: function(FacilityRepository, $stateParams) {
                     return new FacilityRepository().get($stateParams.id);
                 },
-
                 facilityTypes: function(facilityTypeService) {
                     return facilityTypeService.query({
                         active: true
@@ -46,6 +45,9 @@
                         .then(function(response) {
                             return response.content;
                         });
+                },
+                facilityDevice: function(adminFacilityDeviceService, $stateParams) {
+                    return adminFacilityDeviceService.get($stateParams.id);
                 },
                 facilityOperators: function(facilityOperatorService) {
                     return facilityOperatorService.getAll();

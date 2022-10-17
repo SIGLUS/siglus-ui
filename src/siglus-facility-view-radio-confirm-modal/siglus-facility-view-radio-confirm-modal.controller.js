@@ -35,6 +35,7 @@
                                          buttonLabels, modalDeferred) {
         var vm = this;
         vm.$onInit = onInit;
+        vm.disableLocationManagement = undefined;
         vm.close = function() {
             modalDeferred.reject();
         };
@@ -47,11 +48,11 @@
         };
 
         function onInit() {
+            vm.disableLocationManagement = false;
             vm.alertClass = alertClass;
             vm.title = title;
             vm.message = message;
             vm.buttonLabels = buttonLabels;
-            vm.disableLocationManagement = false;
         }
     }
 
