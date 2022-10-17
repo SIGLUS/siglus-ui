@@ -589,7 +589,7 @@
                     '',
                     ['adminFacilityView.close', 'adminFacilityView.confirm']
                 ).then(function() {
-                    if (deviceType === 'WEB' && vm.facilityDevice.deviceType === 'ANDROID') {
+                    if (deviceType === 'WEB' && vm.facilityDevice.deviceType === 'ANDROID' && !vm.facility.isNewFacility) {
                         siglusFacilityViewRadioConfirmModalService.error(
                             '',
                             'adminFacilityView.locationManagement.upgradeWebUser',
