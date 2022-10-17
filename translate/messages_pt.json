@@ -2553,8 +2553,7 @@
   "sohLocationProduct.title":"Relatório de resumo da Ficha de stock",
   "interceptor.currentIsNotLocationManagement": "The administrator has degraded your facility to use Stock Management functions, current Location Management functions will be unavailable, please re-login to use the updated functions.",
   "interceptor.currentIsNotStockManagement": "The administrator has upgraded your facility to use Location Management functions, current Stock Management functions will be unavailable, please re-login to use the updated functions.",
-
-  "adminFacilityList.facilityDevide":"Facility Device",
+  "adminFacilityList.facilityDevice":"Facility Device",
   "adminFacilityView.facilityDevice":"Facility Device",
   "adminFacilityView.deviceType":"Device Type",
   "adminFacilityView.deviceInfo":"Device Info",

@@ -1,27 +1,27 @@
-<table class="openlmis-table">
+<table class="openlmis-table facility-device">
     <thead>
         <tr>
-            <td></td>
-            <td>{{'adminFacilityView.detail' | message}}</td>
-            <td>{{'adminFacilityList.actions' | message}}</td>
+            <th></th>
+            <th>{{'adminFacilityView.detail' | message}}</th>
+            <th style="width: 250px;">{{'adminFacilityList.actions' | message}}</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>{{'adminFacilityView.deviceType' | message}}</td>
             <td>{{vm.facilityDevice.deviceType}}</td>
-            <td >
-                <button  ng-show="vm.shouldShowUpgradeButton('WEB')" ng-disabled="vm.clickAbleUpgrade('WEB')" ng-click="vm.upgrade('WEB')" type="info">{{'adminFacilityView.changeToWeb' | message}}</button>
-                <button  ng-show="vm.shouldShowUpgradeButton('ANDROID')" ng-disabled="vm.clickAbleUpgrade('ANDROID')" ng-click="vm.upgrade('ANDROID')"  ng-click="vm.upgrade('ANDROID')" type="info">{{'adminFacilityView.changeToAndroid' | message}}</button>
-                <button  ng-show="vm.shouldShowUpgradeButton('LOCAL_MACHINE')" ng-disabled="vm.clickAbleUpgrade('LOCAL_MACHINE')" ng-click="vm.upgrade('LOCAL_MACHINE')" type="info">{{'adminFacilityView.changeToLocalMachine' | message}}</button>
+            <td>
+                <button  ng-if="vm.shouldShowUpgradeButton('WEB')" ng-disabled="vm.clickAbleUpgrade('WEB')" ng-click="vm.upgrade('WEB')" type="info">{{'adminFacilityView.changeToWeb' | message}}</button>
+                <button  ng-if="vm.shouldShowUpgradeButton('ANDROID')" ng-disabled="vm.clickAbleUpgrade('ANDROID')" ng-click="vm.upgrade('ANDROID')"  ng-click="vm.upgrade('ANDROID')" type="info">{{'adminFacilityView.changeToAndroid' | message}}</button>
+                <button  ng-if="vm.shouldShowUpgradeButton('LOCAL_MACHINE')" ng-disabled="vm.clickAbleUpgrade('LOCAL_MACHINE')" ng-click="vm.upgrade('LOCAL_MACHINE')" type="info">{{'adminFacilityView.changeToLocalMachine' | message}}</button>
             </td>
         </tr>
         <tr>
             <td>{{'adminFacilityView.deviceInfo' | message}}</td>
             <td>{{vm.facilityDevice.deviceInfo?vm.facilityDevice.deviceInfo:'N/A'}}</td>
             <td>
-                <button  class="danger" ng-show="vm.shouldShowEraseButton()" ng-disabled="vm.clickAbleErase()" ng-click="vm.eraseDeviceInfo()" type="info">{{'adminFacilityView.eraseDeviceInfo' | message}}</button>
-                <button  ng-show="vm.shouldShowRetrieve()" ng-disabled="vm.clickAbleRetrieve()" ng-click="vm.retrieveActivationCode()" type="info">{{'adminFacilityView.retrieveActivationCode' | message}}</button>
+                <button  class="danger" ng-if="vm.shouldShowEraseButton()" ng-disabled="vm.clickAbleErase()" ng-click="vm.eraseDeviceInfo()" type="info">{{'adminFacilityView.eraseDeviceInfo' | message}}</button>
+                <button  ng-if="vm.shouldShowRetrieve()" ng-disabled="vm.clickAbleRetrieve()" ng-click="vm.retrieveActivationCode()" type="info">{{'adminFacilityView.retrieveActivationCode' | message}}</button>
             </td>
         </tr>
         <tr>
