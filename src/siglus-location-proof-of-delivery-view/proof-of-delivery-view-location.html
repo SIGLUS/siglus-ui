@@ -229,14 +229,14 @@
             <dt>{{'proofOfDeliveryView.receivedBy' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" openlmis-invalid="{{vm.proofOfDelivery.validate(true).receivedBy | message}}"/>
+                    <input type="text" ng-model="vm.proofOfDelivery.receivedBy" ng-change="vm.validateMerge()" openlmis-invalid="{{vm.proofOfDelivery.receivedByError | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.receivedBy}}</div>
             </dd>
             <dt>{{'proofOfDeliveryView.receivedDate' | message}}</dt>
             <dd>
                 <div ng-if="vm.canEdit">
-                    <input id="receivedDate" type="date" max-date="vm.maxDate"  ng-model="vm.proofOfDelivery.receivedDate" required/>
+                    <input id="receivedDate" type="date" max-date="vm.maxDate"  ng-model="vm.proofOfDelivery.receivedDate" ng-change="vm.validateMerge()" openlmis-invalid="{{vm.proofOfDelivery.receivedDateError | message}}"/>
                 </div>
                 <div ng-if="!vm.canEdit">
                     {{vm.proofOfDelivery.receivedDate | openlmisDate}}

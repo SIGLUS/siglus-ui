@@ -43,6 +43,7 @@
         proofOfDeliveryService.get = get;
         proofOfDeliveryService.getSubDraft = getSubDraft;
         proofOfDeliveryService.getSubDraftWithLocation = getSubDraftWithLocation;
+        proofOfDeliveryService.getPodWithLocation = getPodWithLocation;
         proofOfDeliveryService.updateSubDraft = updateSubDraft;
         proofOfDeliveryService.updateSubDraftWithLocation = updateSubDraftWithLocation;
         proofOfDeliveryService.deleteSubDraft = deleteSubDraft;
@@ -70,6 +71,16 @@
                     .then(function(proofOfDelivery) {
                         decorateSave(proofOfDelivery);
                         decorateConfirm(proofOfDelivery);
+                        return proofOfDelivery;
+                    });
+            }
+            return $q.reject();
+        }
+
+        function getPodWithLocation(id) {
+            if (id) {
+                return repository.getPodWithLocation(id)
+                    .then(function(proofOfDelivery) {
                         return proofOfDelivery;
                     });
             }

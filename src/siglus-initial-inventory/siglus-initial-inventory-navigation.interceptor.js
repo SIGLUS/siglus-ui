@@ -32,7 +32,8 @@
         '$http', 'programService', 'facilityFactory', 'physicalInventoryFactory', 'currentUserService',
         'authorizationService', 'alertService', '$stateParams',
         'SiglusPhysicalInventoryCreationService', 'SiglusInitialInventoryResource', 'navigationStateService',
-        'siglusLocationMovementService', 'siglusLocationMovementUpgradeService'
+        'siglusLocationMovementService', 'siglusLocationMovementUpgradeService', 'currentUserHomeFacilityService',
+        'alertConfirmModalService', 'loginService'
     ];
 
     function siglusInitialInventoryNavigationInterceptor(
@@ -41,7 +42,8 @@
         facilityFactory, physicalInventoryFactory,
         currentUserService, authorizationService, alertService, $stateParams,
         SiglusPhysicalInventoryCreationService, SiglusInitialInventoryResource, navigationStateService,
-        siglusLocationMovementService, siglusLocationMovementUpgradeService
+        siglusLocationMovementService, siglusLocationMovementUpgradeService, currentUserHomeFacilityService,
+        alertConfirmModalService, loginService
     ) {
 
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
@@ -89,7 +91,8 @@
         $rootScope.$on('$stateChangeSuccess', function(event, toState) {
             if (toState.url === '/home') {
                 var initUser = currentUserService.getUserInfo().$$state.value;
-                if (initUser.homeFacilityId) {
+
+                var doInitialMoveProduct = function() {
                     siglusLocationMovementUpgradeService.getNeedInitiallyMoveProduct(initUser.homeFacilityId)
                         .then(function() {
                             if (checkInitialInventoryStatus()) {
@@ -97,9 +100,10 @@
                                 checkDraftIsStarter();
                             } else if (siglusLocationMovementUpgradeService.checkInited()) {
                                 var shouldUpgradeMoveProduct =
-                                siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
+                                    siglusLocationMovementUpgradeService.checkShouldUpgradeMoveProduct();
                                 if (shouldUpgradeMoveProduct) {
-                                    return siglusLocationMovementUpgradeService.showConfirmAndStartVirtualMovement();
+                                    return siglusLocationMovementUpgradeService
+                                        .showConfirmAndStartVirtualMovement();
                                 }
                             } else {
                                 var user = currentUserService.getUserInfo().$$state.value;
@@ -108,7 +112,32 @@
                                 }
                             }
                         });
-                }
+                };
+
+                $q.all([facilityFactory.getUserHomeFacility(), currentUserHomeFacilityService.getHomeFacility()])
+                    .then(function(response) {
+                        var currentEnableStatus = _.get(response[0], 'enableLocationManagement');
+                        var cachedEnableStatus = _.get(response[1], 'enableLocationManagement');
+                        if (currentEnableStatus === cachedEnableStatus) {
+                            if (initUser.homeFacilityId && currentEnableStatus) {
+                                doInitialMoveProduct();
+                            }
+                        } else {
+                            var message = currentEnableStatus ? 'interceptor.currentIsNotStockManagement'
+                                : 'interceptor.currentIsNotLocationManagement';
+                            alertConfirmModalService.error(
+                                message,
+                                '',
+                                ['', 'PhysicalInventoryDraftList.confirm']
+                            ).then(function() {
+                                loginService.logout()
+                                    .then(function() {
+                                        $rootScope.$emit('openlmis-auth.logout');
+                                        $state.go('auth.login');
+                                    });
+                            });
+                        }
+                    });
 
             }
         });

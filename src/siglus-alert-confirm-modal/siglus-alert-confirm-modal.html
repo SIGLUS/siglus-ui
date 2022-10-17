@@ -10,8 +10,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="modal-footer-cancel" ng-click="vm.close()">{{vm.buttonLabels[0] | message}}</button>
-                <button class="modal-footer-confirm primary" ng-click="vm.confirm()">{{vm.buttonLabels[1] | message}}</button>
+                <button class="modal-footer-cancel" ng-if="vm.buttonLabels[0]" ng-click="vm.close()">
+                    {{vm.buttonLabels[0] | message}}
+                </button>
+                <button class="modal-footer-confirm primary" ng-click="vm.confirm()">
+                    {{vm.buttonLabels[1] | message}}
+                </button>
             </div>
         </div>
     </div>
