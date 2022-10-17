@@ -181,14 +181,15 @@
 
         vm.proceed = function(draft) {
             if (draft.status === 'NOT_YET_STARTED') {
-                siglusStockDispatchService.updateDraftStatus(draft.id, user.username).then(function() {
-                    $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
-                        programId: programId,
-                        draftId: _.get(draft, 'id', ''),
-                        initialDraftInfo: vm.initialDraftInfo,
-                        facility: facility
+                siglusStockDispatchService.updateDraftStatus(draft.id, user.username, $stateParams.moduleType)
+                    .then(function() {
+                        $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
+                            programId: programId,
+                            draftId: _.get(draft, 'id', ''),
+                            initialDraftInfo: vm.initialDraftInfo,
+                            facility: facility
+                        });
                     });
-                });
                 return;
             }
 
