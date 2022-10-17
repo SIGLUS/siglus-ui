@@ -1,0 +1,53 @@
+<div class="shipment-view-container soh-product-print">
+    <div class="breadcrumb" style="font-size: 13px;">
+    </div>
+    <div style="display: flex; align-items: center;">
+        <div>
+            <div class="shipment-view-report-title">
+                <span>{{'sohLocationProduct.title' | message }}</span>
+                <span style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</span>
+            </div>
+            <div class="location-soh-facility-program">
+                <div class="shipment-view-report-info">{{ 'adminFacilityAdd.facilityName' | message }}:{{vm.facility.name}}</div>
+                <div class="shipment-view-report-info">{{ 'adminFacilityAdd.facilityCode' | message }}:{{vm.facility.code}}</div>
+                <div class="shipment-view-report-info">{{ 'stockCardSummaryList.program' | message }}:{{vm.program.name}}</div>
+                <div class="shipment-view-report-info">{{ 'adminProgramAdd.programCode' | message }}:{{vm.program.code}}</div>
+            </div>
+            <div class="soh-product-print-sub-title">
+                {{vm.facility.code}}-{{vm.facility.name}}-{{vm.program.name}}
+            </div>
+        </div>
+    </div>
+    <section>
+        <table border cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th class="text__left" style="width: 108px;">{{'stockCardSummaryList.productCode' | message}}</th>
+                <th class="text__left" style="width: 125px;">{{'stockCardSummaryList.product' | message}}</th>
+                <th class="text__left" style="width: 163px;">{{'stockCardSummaryList.lotCode' | message}}</th>
+                <th class="text__left" style="width: 123px;">{{'stockCardSummaryList.expiryDate' | message}}</th>
+                <th style="width: 123px;" class="col-sticky sticky-right">{{'stockCardSummaryList.lastUpdate' | message}}</th>
+                <th style="width: 115px;" class="col-sticky sticky-right">{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr class="is-secondary" ng-if="vm.displayItems.length > 0" ng-repeat-start="summary in vm.displayItems">
+                    <td>{{summary.orderable.productCode}}</td>
+                    <td>{{summary.orderable.fullProductName}}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{summary.orderable.isKit ? (summary.occurredDate | openlmisDate) : ''}}</td>
+                    <td class="text-align-right">{{summary.stockOnHand}}</td>
+                </tr>
+                <tr ng-repeat="stockCardDetail in summary.stockCardDetails | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+                    <td>{{stockCardDetail.orderable.productCode}}</td>
+                    <td>{{stockCardDetail.orderable.fullProductName}}</td>
+                    <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? stockCardDetail.lot.lotCode : ''}}</td>
+                    <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? (stockCardDetail.lot.expirationDate | openlmisDate) : ''}}</td>
+                    <td>{{stockCardDetail.occurredDate | openlmisDate}}</td>
+                    <td class="text-align-right">{{stockCardDetail.stockOnHand}}</td> 
+                </tr>
+                </tbody>
+        </table>
+    </section>
+</div>
