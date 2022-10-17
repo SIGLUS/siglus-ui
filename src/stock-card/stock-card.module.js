@@ -27,7 +27,9 @@
         'stockmanagement',
         'openlmis-auth',
         'stock-reasons-modal',
+        'siglus-stock-card-print',
         'siglus-stock-card-for-product'
+
     ]);
 
 })();

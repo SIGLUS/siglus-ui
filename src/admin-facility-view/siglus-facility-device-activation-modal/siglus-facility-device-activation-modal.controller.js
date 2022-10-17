@@ -16,23 +16,28 @@
 (function() {
 
     'use strict';
+    angular
+        .module('siglus-facility-device-activation-modal')
+        .controller('SiglusFacilityDeviceActivationModalController', controller);
 
-    /**
-   * @module admin-facility-view
-   *
-   * @description
-   * Provides facility view screen for administrator.
-   */
-    angular.module('admin-facility-view', [
-        'openlmis-rights',
-        'openlmis-modal',
-        'referencedata-facility',
-        'referencedata-facility-type',
-        'referencedata-geographic-zone',
-        'referencedata-program',
-        'ui.router',
-        'siglus-admin-facility-view-location-management',
-        'siglus-facility-view-radio-confirm-modal',
-        'siglus-facility-device-activation-modal'
-    ]);
+    controller.$inject = [
+        'modalDeferred',
+        'activationCode'
+    ];
+
+    function controller(
+        modalDeferred,
+        activationCode
+    ) {
+        var vm = this;
+        var debounceTime = 50;
+        vm.$onInit = onInit;
+        function onInit() {
+            vm.activationCode  = activationCode;
+        }
+        vm.confirm = _.throttle(confirm, debounceTime);
+        function confirm() {
+            modalDeferred.resolve(vm.shouldPrint);
+        }
+    }
 })();

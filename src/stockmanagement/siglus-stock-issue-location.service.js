@@ -50,7 +50,7 @@
             },
             update: {
                 method: 'PUT',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/update')
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/update')
             },
             delete: {
                 method: 'DELETE',
@@ -76,7 +76,7 @@
             },
             deleteAllDraft: {
                 method: 'DELETE',
-                url: stockmanagementUrlFactory('/api/siglusapi/drafts/initial/:initialDraftId')
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/:initialDraftId')
             },
             mergeAllDraft: {
                 method: 'POST',

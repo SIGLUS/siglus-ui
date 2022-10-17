@@ -210,7 +210,6 @@
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
-                                console.log('items: ', item);
                                 // SIGLUS-REFACTOR: starts here
                                 return !!item.$errors.quantityInvalid === false &&
                                     !!item.$errors.reasonFreeTextInvalid === false &&
