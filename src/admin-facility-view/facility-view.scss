@@ -172,3 +172,12 @@ input:focus + .slider {
 .sliderChecked.round:before {
   border-radius: 50%;
 }
+
+
+.facility-device td button + button{
+  margin-top: 8px;
+}
+
+.facility-device td button:nth-of-type(1){
+  margin-top: 0px !important;
+}
