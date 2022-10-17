@@ -219,14 +219,6 @@
                     item.$error.lotCodeError = 'receiveLocationCreation.lotDuplicated';
                     item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 } else {
-                    lineItems.forEach(function(line) {
-                        if (line.$error.lotCodeError === 'receiveLocationCreation.lotDuplicated') {
-                            line.$error.lotCodeError = '';
-                        }
-                        if (line.$error.moveToLocationError === 'receiveLocationCreation.locationDuplicated') {
-                            line.$error.moveToLocationError = '';
-                        }
-                    });
                     callback(item, $index);
 
                     validateLotExpired(item);
