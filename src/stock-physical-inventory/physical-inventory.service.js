@@ -32,12 +32,12 @@
         '$resource', 'stockmanagementUrlFactory', '$filter', 'messageService', 'openlmisDateFilter',
         'productNameFilter', 'stockEventFactory',
         // SIGLUS-REFACTOR: starts here
-        'siglusStockEventService'
+        'siglusStockEventService', 'STOCKMANAGEMENT_RIGHTS'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, siglusStockEventService) {
+                     productNameFilter, stockEventFactory, siglusStockEventService, STOCKMANAGEMENT_RIGHTS) {
         // SIGLUS-REFACTOR: starts here
         var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/physicalInventories'), {}, {
             get: {
@@ -88,6 +88,10 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'),
                 isArray: true
             },
+            getProductsByLocation: {
+                method: 'get',
+                url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummariesWithLocation')
+            },
             find: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/subDraft')
@@ -136,6 +140,7 @@
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
         this.getDraftByLocation = getDraftByLocation;
+        this.getStockProductsByLocation = getStockProductsByLocation;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -253,6 +258,38 @@
          * @param  {String}  id  physical inventory UUID
          * @return {Promise}     physical inventory promise
          */
+
+        function getStockProductsByLocation(
+            programId,
+            facilityId,
+            subDraftIds,
+            flag,
+            orderableIds
+        ) {
+            // var repository =
+            //    $resource(stockmanagementUrlFactory('/api/siglusapi/stockCardSummariesWithLocation'), {}, {
+            //     getStockProductsByLocation: {
+            //         method: 'GET',
+            //         url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
+            //     }
+            // });
+            // new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+            // #225: cant view detail page when not have stock view right
+            return locationResource.getProductsByLocation(flag ? {
+                programId: programId,
+                facilityId: facilityId,
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
+                subDraftIds: subDraftIds,
+                orderableIds: orderableIds
+            } : {
+                programId: programId,
+                facilityId: facilityId,
+                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
+                subDraftIds: subDraftIds,
+                orderableIds: orderableIds
+            }).$promise;
+        }
+
         function getPhysicalInventory(id) {
             return resource.get({
                 id: id

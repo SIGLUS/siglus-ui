@@ -26,17 +26,52 @@
         width: 170px;
         height: 100px;
     }
-
-    .power {
+    .power-container {
         position: absolute;
         left: 64px;
         bottom: 40px;
-        width: 210px;
-        height: 36px;
+        .power-title {
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .power-btn-group {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 30px;
+            button {
+                width: 74px;
+                height: 36px;
+            }
+        }
+        .power {
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+        }
+    }
+
+    .offline-container {
+        position: absolute;
+        top: 27px;
+        left: 36px;
         text-align: left;
-        font-size: 12px;
-        font-weight: bold;
-        color: #000000;
+        font-family: 'Arial';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        width: calc(300px + 10%);
+        .sync-tips {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            color: #2FCF3F;
+            margin-bottom: 10px;
+        }
     }
 
     .system-notification-list {
