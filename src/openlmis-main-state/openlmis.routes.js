@@ -27,6 +27,9 @@
         $stateProvider.state('openlmis', {
             label: 'openlmisMainState.home',
             views: {
+                '@': {
+                    templateUrl: 'openlmis-main-state/page.html'
+                },
                 header: {
                     templateUrl: 'openlmis-main-state/header.html',
                     controller: 'SiglusOpenlmisMainStateController',
