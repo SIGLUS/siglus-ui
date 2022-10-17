@@ -110,7 +110,7 @@
                 <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
 
                 <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup">
-                    {{fulfillingLineItem.moveTo.area}}-{{fulfillingLineItem.moveTo.locationCode}}
+                    {{Boolean(fulfillingLineItem.moveTo.area && fulfillingLineItem.moveTo.locationCode) ? fulfillingLineItem.moveTo.area + "-" + fulfillingLineItem.moveTo.locationCode : "N/A"}}
                 </td>
                 <td ng-if="!vm.canEdit && fulfillingLineItem.isMainGroup">
                 </td>
