@@ -388,6 +388,7 @@
                         new FacilityRepository().get($stateParams.id)
                             .then(function(res) {
                                 vm.facility = res;
+                                vm.facility.isLocalMachine = false;
                                 vm.hasConfigured = messageService.get(
                                     'adminFacilityView.alreadyConfigured'
                                 );
