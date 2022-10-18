@@ -69,5 +69,6 @@
   "adminFacilityView.upgradeDeviceTypeSuccess":"Facility device type updated successfully!",
   "adminFacilityView.upgradeDeviceTypeFail":"Update failed, please refresh the page and try again.",
   "adminFacilityView.activationCode":"Activation Code",
-  "adminFacilityView.activationTips":"Please inform the facility to use the code to activate the local machine."
+  "adminFacilityView.activationTips":"Please inform the facility to use the code to activate the local machine.",
+  "adminFacilityView.enableLocationTips":"Once you enable the feature, the facility's current movement drafts will be cleared. Are you sure you want to enable it."
 }

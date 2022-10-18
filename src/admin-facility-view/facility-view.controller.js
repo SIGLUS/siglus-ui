@@ -454,58 +454,62 @@
                     ['adminFacilityView.close',
                         'adminFacilityView.confirm']
                 ).then(function() {
-                    facility.enableLocationManagement = !vm.enableValue;
+                    loadingModalService.open();
                     new locationManagementService
                         .update(vm.facility.id, facility, 'locationManagement')
                         .then(function() {
                             vm.enableValue = !vm.enableValue;
+                            facility.enableLocationManagement = !vm.enableValue;
                             notificationService.success(
                                 'adminFacilityView.disabledLocation'
                             );
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
                         });
                 });
                 return;
             }
-            if (!enableValue && !facility.hasSuccessUploadLocations) {
+
+            if (facility.hasSuccessUploadLocations) {
+                alertConfirmModalService.error(
+                    'adminFacilityView.enableLocationTips',
+                    '',
+                    ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+                ).then(function() {
+                    loadingModalService.open();
+                    new locationManagementService
+                        .update(vm.facility.id, facility, 'locationManagement')
+                        .then(function() {
+                            vm.enableValue = !vm.enableValue;
+                            facility.enableLocationManagement = !vm.enableValue;
+                            notificationService.success(
+                                'adminFacilityView.enableLocation'
+                            );
+                        })
+                        .catch(function(error) {
+                            if (error.status === 500) {
+                                siglusFacilityViewRadioConfirmModalService.error(
+                                    'adminFacilityView.uploadFailed',
+                                    '',
+                                    ['adminFacilityView.close',
+                                        'adminFacilityView.confirm']
+                                );
+                            }
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
+                        });
+                });
+
+            } else {
                 alertConfirmModalService.error(
                     'adminFacilityView.locationManagement.closeSwitchWithoutConfigure',
                     '',
                     ['adminFacilityView.close',
                         'adminFacilityView.confirm']
                 );
-                return;
             }
-            if (!enableValue && facility.hasSuccessUploadLocations) {
-                facility.enableLocationManagement = !vm.enableValue;
-                new locationManagementService
-                    .update(vm.facility.id, facility, 'locationManagement')
-                    .then(function() {
-                        vm.enableValue = !vm.enableValue;
-                        notificationService.success(
-                            'adminFacilityView.enableLocation'
-                        );
-                    })
-                    .catch(function(error) {
-                        if (error.status === 500) {
-                            siglusFacilityViewRadioConfirmModalService.error(
-                                'adminFacilityView.uploadFailed',
-                                '',
-                                ['adminFacilityView.close',
-                                    'adminFacilityView.confirm']
-                            );
-                        }
-                    });
-                return;
-            }
-            facility.enableLocationManagement = !vm.enableValue;
-            new locationManagementService
-                .update(vm.facility.id, facility, 'locationManagement')
-                .then(function() {
-                    vm.enableValue = !vm.enableValue;
-                    notificationService.success(
-                        'adminFacilityView.enableLocation'
-                    );
-                });
         }
 
         /**
