@@ -197,7 +197,6 @@
                                 false,
                                 'product'
                             );
-                            // console.log('prepareLineItems finished');
                             draftToReturn.id = physicalInventory.id;
                             return draftToReturn;
                         });
@@ -210,6 +209,35 @@
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;
                     });
+                    allLineOrderableIds = _.filter(allLineOrderableIds, function(item) {
+                        return item;
+                    });
+                    if (locationManagementOption === 'location') {
+                        return getStockProducts(
+                            physicalInventory.programId,
+                            physicalInventory.facilityId,
+                            id,
+                            flag,
+                            allLineOrderableIds,
+                            locationManagementOption
+                        )
+                            .then(function(summaries) {
+                                var draftToReturn = {
+                                    programId: physicalInventory.programId,
+                                    facilityId: physicalInventory.facilityId,
+                                    lineItems: []
+                                };
+                                prepareLineItems(
+                                    physicalInventory,
+                                    summaries,
+                                    draftToReturn,
+                                    true,
+                                    locationManagementOption
+                                );
+                                draftToReturn.id = physicalInventory.id;
+                                return draftToReturn;
+                            });
+                    }
                     return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag,
                         allLineOrderableIds)
                         .then(function(summaries) {
@@ -241,9 +269,24 @@
                         var allLineOrderableIds = draft.lineItems.map(function(line) {
                             return line.orderableId;
                         });
-                        return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
-                            allLineOrderableIds)
+                        allLineOrderableIds = _.filter(allLineOrderableIds, function(item) {
+                            return item;
+                        });
+                        return getStockProducts(
+                            draft.programId,
+                            draft.facilityId,
+                            undefined,
+                            undefined,
+                            allLineOrderableIds,
+                            locationManagementOption
+                        )
                             .then(function(summaries) {
+                                summaries = summaries.content.reduce(function(items, summary) {
+                                    summary.canFulfillForMe.forEach(function(fulfill) {
+                                        items.push(fulfill);
+                                    });
+                                    return items;
+                                }, []);
                                 var initialInventory = {
                                     programId: draft.programId,
                                     facilityId: draft.facilityId,
@@ -492,8 +535,10 @@
         }*/
         // SIGLUS-REFACTOR: ends here
 
-        function getStockProducts(programId, facilityId, subDraftIds, flag, orderableIds) {
-            var repository = new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
+        function getStockProducts(programId, facilityId, subDraftIds, flag, orderableIds, locationManagementOption) {
+            var repository = new StockCardSummaryRepository(
+                new FullStockCardSummaryRepositoryImpl(locationManagementOption)
+            );
             // #225: cant view detail page when not have stock view right
             return repository.query(flag ? {
                 programId: programId,
@@ -517,11 +562,5 @@
                 }, []);
             });
         }
-
-        // SIGLUS-REFACTOR: starts here
-        // function getQuantity(item) {
-        //     return (_.isNull(item.quantity) || _.isUndefined(item.quantity)) && item.isAdded ? -1 : item.quantity;
-        // }
-        // SIGLUS-REFACTOR: ends here
     }
 })();

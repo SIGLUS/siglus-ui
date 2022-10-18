@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.initialInventory',
             {
-                url: '/initialInventory?programId&locationManagementOption',
+                url: '/initialInventory?program=00000000-0000-0000-0000-000000000000&locationManagementOption',
                 label: 'stockInitialInventory.initialInventory',
                 showInNavigation: true,
                 views: {
@@ -77,7 +77,7 @@
                         return siglusPhysicalInventoryDraftListService.getDraftList(
                             facility.id,
                             isDraft,
-                            $stateParams.programId
+                            $stateParams.programId ? $stateParams.programId : '00000000-0000-0000-0000-000000000000'
                         );
                     }
                 }

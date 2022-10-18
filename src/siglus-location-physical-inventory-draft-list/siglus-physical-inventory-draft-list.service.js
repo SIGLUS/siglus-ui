@@ -26,7 +26,7 @@
    */
     angular
         .module('siglus-physical-inventory-creation')
-        .service('siglusPhysicalInventoryDraftListService', service);
+        .service('siglusPhysicalInventoryDraftListLocationService', service);
 
     service.$inject = [
         '$resource',
@@ -52,36 +52,36 @@
     ) {
     // SIGLUS-REFACTOR: starts here
         var resource = $resource(
-            stockmanagementUrlFactory('/api/siglusapi/physicalInventories/draftList'), {},
+            stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories/draftList'), {},
             {
                 get: {
                     method: 'GET',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/physicalInventories/draftList/:id'
+                        '/api/siglusapi/location/physicalInventories/draftList/:id'
                     )
                 },
                 update: {
                     method: 'PUT',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/physicalInventories/draftList/:id'
+                        '/api/siglusapi/location/physicalInventories/draftList/:id'
                     )
                 },
                 delete: {
                     method: 'DELETE',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/physicalInventories/draftList/:id'
+                        '/api/siglusapi/location/physicalInventories/draftList/:id'
                     )
                 },
                 submit: {
                     method: 'POST',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/physicalInventories/draftList/:id'
+                        '/api/siglusapi/location/physicalInventories/draftList/:id'
                     )
                 },
                 query: {
                     method: 'GET',
                     url: stockmanagementUrlFactory(
-                        '/api/siglusapi/physicalInventories/draftList'
+                        '/api/siglusapi/location/physicalInventories/draftList'
                     )
                 }
             }
