@@ -181,3 +181,13 @@ input:focus + .slider {
 .facility-device td button:nth-of-type(1){
   margin-top: 0px !important;
 }
+
+.facility-device td button:disabled{
+  color: #979797;
+  cursor: not-allowed;
+}
+
+.facility-device td button.danger:disabled{
+  color: #bebebe;
+  cursor: not-allowed;
+}
