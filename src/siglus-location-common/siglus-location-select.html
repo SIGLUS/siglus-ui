@@ -4,7 +4,10 @@
             placeholder="  "
             no-auto-select="false"
             ng-model="selectedOption"
-            openlmis-invalid="{{lineItem.$error.moveToLocationError | message}}"
+            openlmis-invalid="{{
+                                lineItem.$error.lotCodeError === 'receiveLocationCreation.lotDuplicated'
+                                   ? lineItem.$error.lotCodeError
+                                    : (lineItem.$error.moveToLocationError || '') | message}}"
             ng-options="locationCode for locationCode in options track by locationCode"
             ng-change="changeMoveToLocation()"
     >
