@@ -73,7 +73,6 @@
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         vm.locationManagementOption = $stateParams.locationManagementOption;
         var draft = physicalInventoryDataService.getDraft(facility.id);
-        // console.log('#### draft', draft);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
@@ -88,7 +87,21 @@
          * @description
          * Holds current display physical inventory draft line items grouped by orderable id.
          */
-        vm.displayLineItemsGroup = displayLineItemsGroup;
+        var displayLineItemsMap = _.reduce(displayLineItemsGroup, function(r, c) {
+            if (r[c[0].locationCode]) {
+                r[c[0].locationCode].push(c);
+            } else {
+                r[c[0].locationCode] = [c];
+            }
+            return r;
+        }, {});
+        var itemsKeyAfterSort = _.sortBy(Object.keys(displayLineItemsMap), function(a) {
+            return a;
+        });
+        vm.displayLineItemsGroup = _.reduce(itemsKeyAfterSort, function(r, c) {
+            r.push(displayLineItemsMap[c][0]);
+            return r;
+        }, []);
         vm.back = function() {
             $state.go('^', {}, {
                 reload: true

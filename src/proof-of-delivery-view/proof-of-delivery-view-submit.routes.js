@@ -54,7 +54,6 @@
                             return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT');
                         },
                         orderablesPrice: function(siglusOrderableLotService) {
-                            console.log('aaaa');
                             return siglusOrderableLotService.getOrderablesPrice();
                         },
                         orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory, orderablesPrice) {

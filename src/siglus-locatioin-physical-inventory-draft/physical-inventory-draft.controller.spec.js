@@ -177,12 +177,6 @@ describe('LocationPhysicalInventoryDraftController', function() {
     });
 
     describe('onInit', function() {
-        it('should init displayLineItemsGroup and sort by product code properly', function() {
-            expect(vm.displayLineItemsGroup).toEqual([
-                [lineItem1],
-                [lineItem3]
-            ]);
-        });
 
         it('should set showVVMStatusColumn to true if any orderable use vvm', function() {
             draft.lineItems[0].orderable.extraData = {
