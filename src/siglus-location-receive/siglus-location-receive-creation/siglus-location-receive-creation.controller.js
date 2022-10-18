@@ -219,8 +219,10 @@
                     item.$error.lotCodeError = 'receiveLocationCreation.lotDuplicated';
                     item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 } else {
+                    if (item.$error.moveToLocationError === 'receiveLocationCreation.locationDuplicated') {
+                        item.$error.moveToLocationError = '';
+                    }
                     callback(item, $index);
-
                     validateLotExpired(item);
                 }
             });

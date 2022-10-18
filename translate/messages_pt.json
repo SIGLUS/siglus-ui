@@ -2570,7 +2570,7 @@
   "adminFacilityView.eraseAndroidConfirm":"Are you sure you want to erase the device info?",
   "adminFacilityView.eraseLocalMachineConfirm":"Are you sure you want to erase the device info? Facility need to reactivate to be able to use the system again.",
   "adminFacilityView.upgradeDeviceTypeSuccess":"Facility device type updated successfully!",
-  "adminFacilityView.upgradeDeviceTypeFail":"Upgrade failed, please refresh the page and try again.",
+  "adminFacilityView.upgradeDeviceTypeFail":"Update failed, please refresh the page and try again.",
   "adminFacilityView.activationCode":"Activation Code",
   "adminFacilityView.activationTips":"Please inform the facility to use the code to activate the local machine."
 }
