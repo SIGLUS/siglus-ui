@@ -83,10 +83,10 @@
                     if (lineItems.length > 1 && index === 0) {
                         return true;
                     }
-                    return _.chain(lineItem.$error)
+                    return _.chain(lineItem.$errors)
                         .keys()
                         .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
+                            return _.isEmpty(lineItem.$errors[key]);
                         })
                         .value();
                 });
@@ -112,11 +112,6 @@
             loadingModalService.close();
         };
 
-        vm.getLotList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getAllLotList(lineItem.orderableId,
-                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
-        };
-
         vm.getDesAreaList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
         };
@@ -132,7 +127,7 @@
                 extraData: true
             }, [vm.selectedProduct.orderableId]).then(function(locationsInfo) {
                 locations = locations.concat(locationsInfo);
-                var lineItem = addAndRemoveReceiveLineItemIssueService.getAddProductRow(vm.selectedProduct);
+                var lineItem = addAndRemoveReceiveLineItemIssueService.getAddProductRow(vm.selectedProduct, locations);
                 // TODO hanlde area change & location change callback
                 lineItem.destAreaOptions = vm.getDesAreaList(lineItem);
                 lineItem.destLocationOptions = vm.getDesLocationList(lineItem);
@@ -143,12 +138,12 @@
 
         function validateLocationDuplicatedForRemove(lineItems) {
             _.forEach(lineItems, function(item, index) {
-                item.$error.moveToLocationError = '';
+                item.$errors.moveToLocationError = '';
                 if (lineItems.length > 1 && index === 0) {
                     return;
                 }
                 if (_.isEmpty(item.moveTo)) {
-                    item.$error.moveToLocationError = 'openlmisForm.required';
+                    item.$errors.moveToLocationError = 'openlmisForm.required';
                     return;
                 }
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
@@ -156,7 +151,7 @@
                       && _.get(item, ['location', 'locationCode']) === data.moveTo.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
+                    item.$errors.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 }
             });
         }
@@ -178,8 +173,7 @@
                 validateLocationDuplicatedForRemove(lineItems);
             } else {
                 validateBase(lineItems, function(item) {
-                    item.$error.lotCodeError = '';
-                    item.$hint.lotCodeHint = '';
+                    item.$errors.lotCodeInvalid = '';
                 });
             }
         };
@@ -197,10 +191,10 @@
         };
 
         function validateLotExpired(item) {
-            if (!item.$error.lotCodeError && item.lot) {
+            if (!item.$errors.lotCodeInvalid && item.lot) {
                 var lotExpiredDate = moment(item.lot.expirationDate);
                 if (moment().isAfter(lotExpiredDate)) {
-                    item.$error.lotCodeError = 'receiveLocationCreation.lotExpired';
+                    item.$errors.lotCodeInvalid = 'receiveLocationCreation.lotExpired';
                 }
             }
         }
@@ -211,18 +205,22 @@
                     return;
                 }
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
-                    return data.lot && data.moveTo && _.get(item, ['lot', 'lotCode']) === data.lot.lotCode
-                      && _.get(item, ['moveTo', 'locationCode']) === data.moveTo.locationCode;
+                    var baseLotCode = _.get(item.lot, 'lotCode');
+                    var compareLotCode = _.get(data.lot, 'lotCode');
+                    var baseLocationCode = _.get(item.moveTo, 'locationCode');
+                    var compareLocationCode = _.get(data.moveTo, 'locationCode');
+
+                    var isLotTheSame = baseLotCode && compareLotCode && baseLotCode === compareLotCode;
+                    var isLocationTheSame = baseLocationCode && compareLocationCode
+                      && baseLocationCode === compareLocationCode;
+                    return isLotTheSame && isLocationTheSame;
                 })) > 1;
 
                 if (hasDuplicated) {
-                    item.$error.lotCodeError = 'receiveLocationCreation.lotDuplicated';
-                    item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
+                    item.$errors.lotCodeInvalid = 'receiveLocationCreation.lotDuplicated';
                 } else {
-                    if (item.$error.moveToLocationError === 'receiveLocationCreation.locationDuplicated') {
-                        item.$error.moveToLocationError = '';
-                    }
                     callback(item, $index);
+
                     validateLotExpired(item);
                 }
             });
@@ -239,9 +237,9 @@
         }
 
         function validateQuantity(currentItem) {
-            currentItem.$error.quantityError = '';
+            currentItem.$errors.quantityError = '';
             if (!_.isNumber(currentItem.quantity) || currentItem.quantity === 0) {
-                currentItem.$error.quantityError = 'issueLocationCreation.inputPositiveNumber';
+                currentItem.$errors.quantityError = 'issueLocationCreation.inputPositiveNumber';
                 return;
             }
         }
@@ -251,22 +249,46 @@
         };
 
         function validateLot(lineItem, lineItems, index) {
-            lineItem.$error.lotCodeError = '';
+            lineItem.$errors.lotCodeInvalid = '';
 
             validateBase(lineItems, function(item, $index) {
-                if (index === $index && _.isEmpty(item.lot)) {
-                    item.$error.lotCodeError = 'openlmisForm.required';
+                if (index === $index && _.isEmpty(_.get(item.lot, 'lotCode'))) {
+                    console.log(1);
+                    item.$errors.lotCodeInvalid = 'openlmisForm.required';
                     return ;
                 }
-                item.$error.lotCodeError = '';
-                item.$hint.lotCodeHint = '';
+
+                item.$errors.lotCodeInvalid = '';
             });
             lotOrLocationChangeEmitValidation(lineItem);
         }
 
+        $scope.$on('lotCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            var lineItems = data.lineItems;
+            var index = data.index;
+            validateLot(lineItem, lineItems, index);
+            setStockOnHand(lineItem);
+        });
+
         vm.changeLot = function(lineItem, lineItems, index) {
             validateLot(lineItem, lineItems, index);
             setStockOnHand(lineItem);
+        };
+
+        vm.changeExpirationDate = function(lineItem, lineItems, index) {
+            if (_.isEmpty(_.get(lineItem.lot, 'expirationDate'))) {
+                lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
+            } else {
+                lineItem.$errors.lotDateInvalid = '';
+            }
+            validateBase(lineItems, function(item, $index) {
+                if (index === $index && _.isEmpty(_.get(item.lot, 'lotCode'))) {
+                    item.$errors.lotCodeInvalid = 'openlmisForm.required';
+                    return ;
+                }
+                item.$errors.lotCodeInvalid = '';
+            });
         };
 
         vm.changeLocation = function(lineItem, lineItems, index) {
@@ -277,23 +299,23 @@
             }
             lineItem.destAreaOptions = areaList;
 
-            lineItem.$error.moveToLocationError = '';
+            lineItem.$errors.moveToLocationError = '';
             if (lineItem.isKit) {
                 if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
-                    lineItem.$error.moveToLocationError = 'openlmisForm.required';
+                    lineItem.$errors.moveToLocationError = 'openlmisForm.required';
                 }
                 validateLocationDuplicated(lineItems);
             } else {
                 validateBase(lineItems, function(item, $index) {
                     if (_.isEmpty(lineItem.moveTo.locationCode) && $index === index) {
-                        lineItem.$error.moveToLocationError = 'openlmisForm.required';
+                        lineItem.$errors.moveToLocationError = 'openlmisForm.required';
+                        item.$errors.lotCodeInvalid = '';
                         return;
                     }
-                    item.$error.lotCodeError = '';
-                    item.$hint.lotCodeHint = '';
+                    item.$errors.lotCodeInvalid = '';
 
                     if (_.isEmpty(item.lot) && $index === index) {
-                        item.$error.lotCodeError = 'openlmisForm.required';
+                        item.$errors.lotCodeInvalid = 'openlmisForm.required';
                     }
                 });
             }
@@ -304,10 +326,10 @@
         vm.changeArea = function(lineItem) {
             lineItem.destLocationOptions = vm.getDesLocationList(lineItem);
             if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
-                lineItem.$error.areaError = 'openlmisForm.required';
+                lineItem.$errors.areaError = 'openlmisForm.required';
                 return;
             }
-            lineItem.$error.areaError = '';
+            lineItem.$errors.areaError = '';
         };
 
         $scope.$on('locationCodeChange', function(event, data) {
@@ -324,16 +346,16 @@
 
         function validateLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item) {
-                if (item.$error.moveToLocationError === 'openlmisForm.required') {
+                if (item.$errors.moveToLocationError === 'openlmisForm.required') {
                     return;
                 }
-                item.$error.moveToLocationError = '';
+                item.$errors.moveToLocationError = '';
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                     return data.moveTo
                       && _.get(item, ['moveTo', 'locationCode']) === data.moveTo.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
+                    item.$errors.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
                 }
             });
         }
@@ -465,16 +487,20 @@
         };
 
         function validateRequired(lineItem) {
-            if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
-                lineItem.$error.lotCodeError = 'openlmisForm.required';
+            if (_.isEmpty(_.get(lineItem.lot, 'lotCode')) && !lineItem.isKit) {
+                lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+            }
+
+            if (_.isEmpty(_.get(lineItem.lot, 'expirationDate')) && !lineItem.isKit) {
+                lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
             }
 
             if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
-                lineItem.$error.moveToLocationError = 'openlmisForm.required';
+                lineItem.$errors.moveToLocationError = 'openlmisForm.required';
             }
 
             if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
-                lineItem.$error.areaError = 'openlmisForm.required';
+                lineItem.$errors.areaError = 'openlmisForm.required';
             }
 
         }
@@ -486,8 +512,7 @@
             })) > 1;
 
             if (hasDuplicated) {
-                item.$error.lotCodeError = 'receiveLocationCreation.lotDuplicated';
-                item.$error.moveToLocationError = 'receiveLocationCreation.lotDuplicated';
+                item.$errors.lotCodeInvalid = 'receiveLocationCreation.lotDuplicated';
             }
         }
 
@@ -498,7 +523,7 @@
             })) > 1;
 
             if (hasKitLocationDuplicated) {
-                item.$error.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
+                item.$errors.moveToLocationError = 'receiveLocationCreation.locationDuplicated';
             }
         }
 
@@ -506,7 +531,7 @@
             _.forEach(vm.addedLineItems, function(lineItems) {
                 _.forEach(lineItems, function(lineItem, index) {
                     if (index === 0 && lineItems.length !== 1) {
-                        lineItem.$error = {};
+                        lineItem.$errors = {};
                     } else {
                         validateRequired(lineItem);
                         validateLotExpired(lineItem);
@@ -522,10 +547,10 @@
 
             return _.every(vm.addedLineItems, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    return _.chain(lineItem.$error)
+                    return _.chain(lineItem.$errors)
                         .keys()
                         .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
+                            return _.isEmpty(lineItem.$errors[key]);
                         })
                         .value();
                 });

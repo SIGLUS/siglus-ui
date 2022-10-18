@@ -26,10 +26,12 @@
                     lineItem: '=',
                     lineItems: '=',
                     areaLocationInfo: '<',
-                    index: '<'
+                    index: '<',
+                    errorField: '<'
                 },
                 controller: ['$scope',
                     function($scope) {
+                        $scope.field = $scope.errorField ? $scope.errorField : '$error';
                         $scope.selectedOption = undefined;
 
                         $scope.$watch('lineItem.moveTo.locationCode', function() {

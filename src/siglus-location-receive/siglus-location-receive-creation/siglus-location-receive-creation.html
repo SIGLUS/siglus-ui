@@ -1,6 +1,7 @@
 <h2>{{'issueDraft.receiveFromTitle' | message: {
     destination: vm.sourceName || '',
-    document: vm.initialDraftInfo.documentNumber || ''} }}
+    document: vm.initialDraftInfo.documentNumber || ''
+} }}
 </h2>
 
 <div class="stock-adjustment-creation">
@@ -49,36 +50,43 @@
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
                 <td>{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
-                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"
-                    openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}">
-                    <select
-                            ng-model="lineItem.lot"
-                            no-auto-select="true"
-                            ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
-                            ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()"
-                    >
-                    </select>
+                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
+                    <siglus-stock-input-select
+                            line-items="lineItems"
+                            line-item="lineItem"
+                            index="index"
+                            hide-expired-popover="true"
+                            enable-input="true">
+                    </siglus-stock-input-select>
                 </td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
-                    <input type="date" ng-model="lineItem.lot.expirationDate"
-                           ng-disabled="true"
-                           autocomplete="off"/>
+                    <input
+                            openlmis-invalid="{{lineItem.lot.id ? '' : lineItem.$errors.lotDateInvalid}}"
+                            type="date"
+                            ng-model="lineItem.lot.expirationDate"
+                            ng-disabled="lineItem.lot.id"
+                            ng-change="vm.changeExpirationDate(lineItem, lineItems, index)"
+                            autocomplete="off"/>
                 </td>
                 <td ng-if="vm.showEmptyBlock(lineItems, index)"></td>
-                <td ng-if="!vm.showEmptyBlock(lineItems, index)"
-                >
+                <td ng-if="!vm.showEmptyBlock(lineItems, index)">
                     <div class="receive-location-area">
                         <select
                                 noPlaceholder
                                 placeholder="  "
                                 no-auto-select="false"
                                 ng-model="lineItem.moveTo.area"
-                                openlmis-invalid="{{lineItem.$error.areaError | message}}"
+                                openlmis-invalid="{{lineItem.$errors.areaError | message}}"
                                 ng-options="area for area in lineItem.destAreaOptions track by area"
                                 ng-change="vm.changeArea(lineItem, lineItems)">
                         </select>
-                        <siglus-location-select line-item="lineItem" line-items="lineItems" area-location-info="vm.areaLocationInfo" index="index"></siglus-location-select>
+                        <siglus-location-select
+                                line-item="lineItem"
+                                line-items="lineItems"
+                                area-location-info="vm.areaLocationInfo"
+                                error-field="'$errors'"
+                                index="index"></siglus-location-select>
                     </div>
 
                 </td>
@@ -86,19 +94,21 @@
                 <td ng-if="vm.showEmptyBlock(lineItems, index)">{{vm.getQuantity(lineItems)}}</td>
                 <td ng-if="!vm.showEmptyBlock(lineItems, index)" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
-                           openlmis-invalid="{{lineItem.$error.quantityError || '' | message}}"
+                           openlmis-invalid="{{lineItem.$errors.quantityError || '' | message}}"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.changeQuantity(lineItem)"
                            positive-integer/>
                 </td>
                 <td style="max-width: 170px;">
                     <button
-                           ng-if="lineItem.isMainGroup" class="stock-actions add"
-                           ng-click="vm.addItem(lineItem, lineItems)">{{'locationShipmentView.addItem' | message}}</button>
+                            ng-if="lineItem.isMainGroup" class="stock-actions add"
+                            ng-click="vm.addItem(lineItem, lineItems)">{{'locationShipmentView.addItem' | message}}
+                    </button>
                     <button
-                           class="danger stock-actions"
-                           ng-if="!lineItem.isMainGroup || (lineItem.isMainGroup && lineItems.length === 1)"
-                           ng-click="vm.removeItem(lineItems, index)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
+                            class="danger stock-actions"
+                            ng-if="!lineItem.isMainGroup || (lineItem.isMainGroup && lineItems.length === 1)"
+                            ng-click="vm.removeItem(lineItems, index)">{{'stockPhysicalInventoryDraft.remove' | message}}
+                    </button>
                 </td>
             </tr>
             </tbody>

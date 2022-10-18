@@ -16,7 +16,7 @@
 describe('siglusLocationReceiveCreationController', function() {
 
     var vm, loadingModalService, $controller, $q, $rootScope, $scope,
-        alertService, $state, SiglusLocationCommonUtilsService, siglusSignatureWithDateModalService;
+        alertService, $state, siglusSignatureWithDateModalService;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -24,7 +24,6 @@ describe('siglusLocationReceiveCreationController', function() {
             $rootScope = $injector.get('$rootScope');
             alertService = $injector.get('alertService');
             loadingModalService = $injector.get('loadingModalService');
-            SiglusLocationCommonUtilsService = $injector.get('SiglusLocationCommonUtilsService');
             siglusSignatureWithDateModalService = $injector.get('siglusSignatureWithDateModalService');
             $state = $injector.get('$state');
             $scope = $rootScope.$new();
@@ -75,11 +74,8 @@ describe('siglusLocationReceiveCreationController', function() {
     describe('changeLot method', function() {
         it('it should return openlmisForm.required error when clear lot', function() {
             var lineItem = {
-                $error: {
-                    lotCodeError: ''
-                },
-                $hint: {
-                    lotCodeHint: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 isKit: false,
                 moveTo: null,
@@ -94,17 +90,14 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLot(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
+            expect(lineItem.$errors.lotCodeInvalid).toEqual('openlmisForm.required');
 
         });
 
         it('it return locationShipmentView.lotExpired when select lot has expirated', function() {
             var lineItem = {
-                $error: {
-                    lotCodeError: ''
-                },
-                $hint: {
-                    lotCodeHint: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 isKit: false,
                 moveTo: null,
@@ -122,60 +115,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLot(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.lotCodeError).toEqual('receiveLocationCreation.lotExpired');
-
-        });
-
-        it('it not validate first row when has multi rows', function() {
-            var lineItem = {
-                $error: {
-                    lotCodeError: ''
-                },
-                $hint: {
-                    lotCodeHint: ''
-                },
-                isKit: false,
-                moveTo: null,
-                lot: null,
-                isMainGroup: true,
-                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
-            };
-            var lineItem1 = {
-                $error: {
-                    lotCodeError: ''
-                },
-                $hint: {
-                    lotCodeHint: ''
-                },
-                isKit: false,
-                moveTo: null,
-                lot: {
-                    lotCode: 'code2',
-                    expirationDate: '3096-04-26'
-                },
-                isMainGroup: true,
-                netContent: 1,
-                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
-            };
-            var lineItems = [
-                lineItem,
-                lineItem1
-            ];
-
-            spyOn(SiglusLocationCommonUtilsService, 'getLotList').andReturn([
-                {
-                    lotCode: 'code2',
-                    expirationDate: '3096-04-25'
-                },
-                {
-                    lotCode: 'code1',
-                    expirationDate: '3098-04-25'
-                }
-            ]);
-
-            vm.changeLot(lineItem, lineItems, 0);
-
-            expect(lineItem.$hint.lotCodeHint).toEqual('');
+            expect(lineItem.$errors.lotCodeInvalid).toEqual('receiveLocationCreation.lotExpired');
 
         });
     });
@@ -184,8 +124,8 @@ describe('siglusLocationReceiveCreationController', function() {
         var lineItem;
         beforeEach(function() {
             lineItem = {
-                $error: {
-                    lotCodeError: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 $hint: {
                     lotCodeHint: ''
@@ -205,7 +145,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.moveToLocationError).toEqual('openlmisForm.required');
+            expect(lineItem.$errors.moveToLocationError).toEqual('openlmisForm.required');
         });
 
         it('should validate location duplicate when product is kit', function() {
@@ -220,7 +160,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
+            expect(lineItem.$errors.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
         });
 
         it('should return quantityShippedError openlmisForm.required when location has changed', function() {
@@ -238,7 +178,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
+            expect(lineItem.$errors.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
         });
 
         it('should validate current line item required error when change location and lot is null', function() {
@@ -255,7 +195,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
             vm.changeLocation(lineItem, lineItems, 0);
 
-            expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
+            expect(lineItem.$errors.lotCodeInvalid).toEqual('openlmisForm.required');
         });
 
     });
@@ -264,8 +204,8 @@ describe('siglusLocationReceiveCreationController', function() {
         var lineItem;
         beforeEach(function() {
             lineItem = {
-                $error: {
-                    lotCodeError: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 $hint: {
                     lotCodeHint: ''
@@ -324,8 +264,8 @@ describe('siglusLocationReceiveCreationController', function() {
     describe('showEmptyBlock', function() {
         it('show show empty block when line item length mt 0 and index eq 0', function() {
             var lineItem = {
-                $error: {
-                    lotCodeError: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 $hint: {
                     lotCodeHint: ''
@@ -344,8 +284,8 @@ describe('siglusLocationReceiveCreationController', function() {
     describe('showEmptyBlockWithKit', function() {
         it('show show empty block when line item is kit', function() {
             var lineItem = {
-                $error: {
-                    lotCodeError: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 $hint: {
                     lotCodeHint: ''
@@ -362,8 +302,8 @@ describe('siglusLocationReceiveCreationController', function() {
 
         it('show show empty block when line item is not kit and index is 0', function() {
             var lineItem = {
-                $error: {
-                    lotCodeError: ''
+                $errors: {
+                    lotCodeInvalid: ''
                 },
                 $hint: {
                     lotCodeHint: ''
@@ -383,7 +323,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
         it('it should alert form invalid when table form validation is not pass', function() {
             var lineItem = {
-                $error: {
+                $errors: {
                     moveToLocationError: '',
                     lotCodeError: '',
                     lotCodeHint: '',
@@ -407,16 +347,15 @@ describe('siglusLocationReceiveCreationController', function() {
             ];
             vm.submit();
 
-            expect(lineItem.$error.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
+            expect(lineItem.$errors.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
             expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
         });
 
         it('it should display error message when filed has error', function() {
             var lineItem = {
-                $error: {
+                $errors: {
                     moveToLocationError: '',
-                    lotCodeError: '',
-                    lotCodeHint: '',
+                    lotCodeInvalid: '',
                     quantityError: ''
                 },
                 orderableId: 'A000001',
@@ -431,18 +370,17 @@ describe('siglusLocationReceiveCreationController', function() {
             ];
             vm.submit();
 
-            expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
-            expect(lineItem.$error.moveToLocationError).toEqual('openlmisForm.required');
-            expect(lineItem.$error.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
+            expect(lineItem.$errors.moveToLocationError).toEqual('openlmisForm.required');
+            expect(lineItem.$errors.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
 
             expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
         });
 
         it('it should display location duplication error message when location has two or more same', function() {
             var lineItem0 = {
-                $error: {
+                $errors: {
                     moveToLocationError: '',
-                    lotCodeError: '',
+                    lotCodeInvalid: '',
                     lotCodeHint: '',
                     quantityError: ''
                 },
@@ -454,9 +392,9 @@ describe('siglusLocationReceiveCreationController', function() {
             };
 
             var lineItem1 = {
-                $error: {
+                $errors: {
                     moveToLocationError: '',
-                    lotCodeError: '',
+                    lotCodeInvalid: '',
                     lotCodeHint: '',
                     quantityError: ''
                 },
@@ -474,9 +412,9 @@ describe('siglusLocationReceiveCreationController', function() {
             };
 
             var lineItem2 = {
-                $error: {
+                $errors: {
                     moveToLocationError: '',
-                    lotCodeError: '',
+                    lotCodeInvalid: '',
                     lotCodeHint: '',
                     quantityError: ''
                 },
@@ -499,8 +437,8 @@ describe('siglusLocationReceiveCreationController', function() {
             ];
             vm.submit();
 
-            expect(lineItem1.$error.lotCodeError).toEqual('');
-            expect(lineItem1.$error.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
+            expect(lineItem1.$errors.lotCodeInvalid).toEqual('');
+            expect(lineItem1.$errors.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
 
             expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
         });
@@ -508,9 +446,9 @@ describe('siglusLocationReceiveCreationController', function() {
         it('it should display location duplication error message when location has two or more same and is not kit',
             function() {
                 var lineItem0 = {
-                    $error: {
+                    $errors: {
                         moveToLocationError: '',
-                        lotCodeError: '',
+                        lotCodeInvalid: '',
                         lotCodeHint: '',
                         quantityError: ''
                     },
@@ -522,9 +460,9 @@ describe('siglusLocationReceiveCreationController', function() {
                 };
 
                 var lineItem1 = {
-                    $error: {
+                    $errors: {
                         moveToLocationError: '',
-                        lotCodeError: '',
+                        lotCodeInvalid: '',
                         lotCodeHint: '',
                         quantityError: ''
                     },
@@ -542,9 +480,9 @@ describe('siglusLocationReceiveCreationController', function() {
                 };
 
                 var lineItem2 = {
-                    $error: {
+                    $errors: {
                         moveToLocationError: '',
-                        lotCodeError: '',
+                        lotCodeInvalid: '',
                         lotCodeHint: '',
                         quantityError: ''
                     },
@@ -567,8 +505,7 @@ describe('siglusLocationReceiveCreationController', function() {
                 ];
                 vm.submit();
 
-                expect(lineItem1.$error.lotCodeError).toEqual('receiveLocationCreation.lotDuplicated');
-                expect(lineItem1.$error.moveToLocationError).toEqual('receiveLocationCreation.lotDuplicated');
+                expect(lineItem1.$errors.lotCodeInvalid).toEqual('receiveLocationCreation.lotDuplicated');
 
                 expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
             });
