@@ -10,7 +10,7 @@
                popover="{{showExpired()}}"
                ng-keydown="input(lineItem)"
                ng-disabled="disabled"
-               openlmis-invalid="{{lineItem.$errors.lotCodeInvalid && !disabled ? lineItem.$errors.lotCodeInvalid : ''}}"
+               openlmis-invalid="{{lineItem.$errors.lotCodeInvalid && !disabled ? lineItem.$errors.lotCodeInvalid : '' | message}}"
         />
         <div class="adjustment-custom-item-wrapper" ng-style="lineItem.positionTop">
             <div class="adjustment-custom-item">

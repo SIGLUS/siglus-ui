@@ -30,17 +30,21 @@
 
     addAndRemoveReceiveLineItemIssueService.inject = ['$filter', 'SiglusLocationCommonUtilsService'];
 
-    function addAndRemoveReceiveLineItemIssueService($filter) {
+    function addAndRemoveReceiveLineItemIssueService($filter, SiglusLocationCommonUtilsService) {
 
         function getRowTemplateData(lineItem) {
             return  {
-                $error: angular.copy(lineItem.$error),
-                $hint: angular.copy(lineItem.$hint),
+                $errors: angular.copy(lineItem.$errors),
                 orderableId: lineItem.orderableId,
+                orderable: {
+                    id: lineItem.orderableId,
+                    productCode: lineItem.productCode
+                },
                 productCode: lineItem.productCode,
                 productName: lineItem.productName,
                 lot: _.clone(lineItem.lot),
                 isKit: lineItem.isKit,
+                lotOptions: lineItem.lotOptions,
                 isMainGroup: false,
                 programId: lineItem.programId,
                 moveTo: _.clone(lineItem.moveTo),
@@ -57,13 +61,11 @@
 
         function resetFirstRow(lineItem) {
             lineItem.lot = null;
-            lineItem.location = null;
             lineItem.moveTo = null;
             lineItem.quantity = 0;
             lineItem.isMainGroup = true;
             lineItem.stockOnHand = 0;
-            lineItem.$error = {};
-            lineItem.$hint = {};
+            lineItem.$errors = {};
         }
 
         this.addLineItem = function(lineItem, lineItems) {
@@ -80,24 +82,29 @@
             } else if (lineItems.length === 3) {
                 var remainRowData = index > 1 ? lineItems[1] : lineItems[2];
                 lineItems[0].lot = remainRowData.lot;
-                lineItems[0].location = remainRowData.location;
+                lineItems[0].moveTo = remainRowData.moveTo;
                 lineItems[0].quantity = remainRowData.quantity;
-                lineItems[0].$error = remainRowData.$error;
-                lineItems[0].$hint = remainRowData.$hint;
+                lineItems[0].$errors = remainRowData.$errors;
                 lineItems.splice(1, 2);
             } else if (lineItems.length > 3) {
                 lineItems.splice(index, 1);
             }
         };
 
-        this.getMainGroupRow = function(lineItem, productList) {
+        this.getMainGroupRow = function(lineItem, productList, locations) {
             var isKit = _.get(_.find(productList, function(product) {
                 return product.orderableId === lineItem.orderableId;
             }), 'isKit');
+            var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(lineItem.orderableId,
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
             return {
-                $error: {},
-                $hint: {},
+                $errors: {},
                 moveTo: {},
+                orderable: {
+                    id: lineItem.orderableId,
+                    productCode: lineItem.productCode
+                },
+                lotOptions: lotOptions,
                 orderableId: lineItem.orderableId,
                 productCode: lineItem.productCode,
                 productName: lineItem.productName,
@@ -111,11 +118,17 @@
             };
         };
 
-        this.getAddProductRow = function(product) {
+        this.getAddProductRow = function(product, locations) {
+            var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(product.orderableId,
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
             return {
-                $error: {},
-                $hint: {},
+                $errors: {},
                 moveTo: {},
+                orderable: {
+                    id: product.orderableId,
+                    productCode: product.productCode
+                },
+                lotOptions: lotOptions,
                 orderableId: product.orderableId,
                 productCode: product.productCode,
                 productName: $filter('productName')(product),
@@ -123,7 +136,6 @@
                 stockOnHand: 0,
                 isKit: product.isKit,
                 isMainGroup: true,
-                location: null,
                 programId: product.programId,
                 quantity: 0
             };
@@ -171,11 +183,17 @@
                 var isKit = _.get(_.find(productList, function(product) {
                     return product.orderableId === item.orderableId;
                 }), 'isKit');
+                var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(item.orderableId,
+                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
                 return _.extend(baseInfo, {
-                    $error: {},
-                    $hint: {},
+                    $errors: {},
                     lot: lot,
                     isKit: isKit,
+                    orderable: {
+                        productCode: baseInfo.productCode,
+                        id: baseInfo.orderableId
+                    },
+                    lotOptions: lotOptions,
                     stockOnHand: stockOnHand,
                     isMainGroup: isMainGroup,
                     programId: getProgramId(productList, item),
@@ -186,6 +204,7 @@
 
         this.prepareAddedLineItems = function(draftInfo, locations,  productList) {
             var $this = this;
+
             return _.chain(_.get(draftInfo, 'lineItems', []))
                 .groupBy('orderableId')
                 .values()
@@ -193,7 +212,7 @@
                     if (group.length === 1) {
                         return mapDataToDisplay(group, true, locations, productList);
                     }
-                    var firstRow = $this.getMainGroupRow(group[0], productList);
+                    var firstRow = $this.getMainGroupRow(group[0], productList, locations);
                     var result = [];
                     result.push(firstRow);
 
