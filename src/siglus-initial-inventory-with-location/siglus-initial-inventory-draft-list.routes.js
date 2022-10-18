@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.initialInventory',
             {
-                url: '/initialInventory?program=00000000-0000-0000-0000-000000000000&locationManagementOption',
+                url: '/initialInventory?programId&locationManagementOption',
                 label: 'stockInitialInventory.initialInventory',
                 showInNavigation: true,
                 views: {
@@ -43,8 +43,12 @@
                 },
                 params: {
                     canInitialInventory: true,
-                    programId: undefined,
-                    locationManagementOption: undefined
+                    program: {
+                        code: 'ALL',
+                        id: '00000000-0000-0000-0000-000000000000',
+                        name: 'Todos os produtos'
+                    },
+                    locationManagementOption: 'location'
                 },
 
                 resolve: {
@@ -77,7 +81,7 @@
                         return siglusPhysicalInventoryDraftListService.getDraftList(
                             facility.id,
                             isDraft,
-                            $stateParams.programId ? $stateParams.programId : '00000000-0000-0000-0000-000000000000'
+                            $stateParams.program.id
                         );
                     }
                 }
