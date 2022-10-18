@@ -67,9 +67,18 @@
                                 proofOfDelivery.lineItems,
                                 order.orderLineItems
                             ).then(function(orderLineItems) {
+                                var orderablesPriceMap = orderablesPrice.data;
                                 var result = addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
-                                console.log('orderLineItems', orderLineItems);
-                                console.log('orderablesPrice', orderablesPrice);
+                                _.each(result, function(c) {
+                                    _.each(c.groupedLineItems, function(_c) {
+                                        var id = _c.orderable && _c.orderable.id;
+                                        _c.price = orderablesPriceMap[id]
+                                            ? orderablesPriceMap[id]
+                                            : '';
+                                    });
+                                });
+                                orderablesPriceMap;
+                                console.log('#### result', result);
                                 return result;
                             });
                         },
