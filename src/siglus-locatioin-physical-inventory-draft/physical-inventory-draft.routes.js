@@ -215,7 +215,7 @@
                                     !!item.$errors.reasonFreeTextInvalid === false &&
                                     !!item.$errors.lotCodeInvalid === false &&
                                     !!item.$errors.lotDateInvalid === false &&
-                                    !!item.skipped === false;
+                                    !!item.$errors.skippedInvalid === false;
                                 // SIGLUS-REFACTOR: ends here
                             })
                             .value();

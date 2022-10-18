@@ -281,12 +281,12 @@
                             locationManagementOption
                         )
                             .then(function(summaries) {
-                                summaries = summaries.content.reduce(function(items, summary) {
-                                    summary.canFulfillForMe.forEach(function(fulfill) {
-                                        items.push(fulfill);
-                                    });
-                                    return items;
-                                }, []);
+                                // summaries = summaries.content.reduce(function(items, summary) {
+                                //     summary.canFulfillForMe.forEach(function(fulfill) {
+                                //         items.push(fulfill);
+                                //     });
+                                //     return items;
+                                // }, []);
                                 var initialInventory = {
                                     programId: draft.programId,
                                     facilityId: draft.facilityId,
@@ -300,8 +300,10 @@
                                     locationManagementOption
                                 );
                                 initialInventory.id = draft.id;
-
                                 return initialInventory;
+                            })
+                            .catch(function(err) {
+                                console.log('### err', err);
                             });
                     }, function(err) {
                         if (err.status === 406) {
