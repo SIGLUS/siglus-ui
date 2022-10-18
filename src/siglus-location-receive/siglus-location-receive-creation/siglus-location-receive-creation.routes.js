@@ -114,22 +114,14 @@
                     }, orderableIds);
                 },
                 addedLineItems: function($stateParams, draftInfo, locations, productList,
-                    addAndRemoveIssueLineItemIssueService) {
+                    addAndRemoveReceiveLineItemIssueService) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
                     }
-                    return addAndRemoveIssueLineItemIssueService.prepareAddedLineItems(draftInfo, locations,
+                    return addAndRemoveReceiveLineItemIssueService.prepareAddedLineItems(draftInfo, locations,
                         productList);
                 },
                 displayItems: function($stateParams, siglusLocationCommonFilterService, addedLineItems) {
-                    addedLineItems.forEach(function(groupedItems) {
-                        groupedItems.forEach(function(lineItem) {
-                            lineItem.moveTo = {
-                                area: lineItem.area,
-                                locationCode: lineItem.locationCode
-                            };
-                        });
-                    });
                     var displayItems = siglusLocationCommonFilterService
                         .filterList($stateParams.keyword || '', addedLineItems);
 

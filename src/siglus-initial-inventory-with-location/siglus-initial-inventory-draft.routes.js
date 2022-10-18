@@ -143,6 +143,9 @@
                                         physicalInventoryDataService.setDraft(facility.id, draft);
                                         deferred.resolve();
                                     }
+                                })
+                                .catch(function(err) {
+                                    console.log('err: ', err);
                                 });
                         } else {
                             physicalInventoryFactory.getInitialInventory(

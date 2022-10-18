@@ -27,7 +27,9 @@
                     lineItems: '=',
                     enableInput: '<',
                     compId: '=',
-                    disabled: '='
+                    disabled: '=',
+                    index: '=',
+                    hideExpiredPopover: '='
                 },
                 controller: ['$scope', 'orderableGroupService', 'siglusAutoGenerateService',
                     'siglusOrderableLotMapping', '$timeout', 'messageService', 'dateUtils',
@@ -41,7 +43,8 @@
                             if ((!_.isEqual(newLot, oldLot))) {
                                 $scope.$emit('lotCodeChange', {
                                     lineItem: $scope.lineItem,
-                                    lineItems: $scope.lineItems
+                                    lineItems: $scope.lineItems,
+                                    index: $scope.index
                                 });
                             }
                         }, true);
@@ -217,9 +220,13 @@
 
                         $scope.showExpired = function() {
                             var lineItem = $scope.lineItem;
-                            if (moment().isAfter(moment(_.get(lineItem, ['lot', 'expirationDate'])).add(1, 'd'))) {
-                                return  messageService.get('siglusStockInputSelect.lotExpired');
+                            var hideExpiredPopover = $scope.hideExpiredPopover;
+                            if (!hideExpiredPopover) {
+                                if (moment().isAfter(moment(_.get(lineItem, ['lot', 'expirationDate'])).add(1, 'd'))) {
+                                    return  messageService.get('siglusStockInputSelect.lotExpired');
+                                }
                             }
+
                         };
 
                         function validateRequiredLot(lineItem) {

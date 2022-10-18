@@ -388,6 +388,7 @@
                         new FacilityRepository().get($stateParams.id)
                             .then(function(res) {
                                 vm.facility = res;
+                                vm.facility.isLocalMachine = false;
                                 vm.hasConfigured = messageService.get(
                                     'adminFacilityView.alreadyConfigured'
                                 );
@@ -559,12 +560,16 @@
             return vm.facilityDevice.deviceType === 'LOCAL_MACHINE';
         }
 
-        function clickAbleUpgrade(faclitiType) {
-            var clickAbleUpgradeMap = {
+        function getClickAbleUpgrade() {
+            return {
                 WEB: vm.facilityDevice.deviceInfo !== null,
                 ANDROID: !vm.facility.isNewFacility,
                 LOCAL_MACHINE: false
             };
+        }
+
+        function clickAbleUpgrade(faclitiType) {
+            var clickAbleUpgradeMap = getClickAbleUpgrade();
             return clickAbleUpgradeMap[faclitiType];
         }
 
@@ -599,7 +604,24 @@
                         ).then(function() {
                             upgrade(deviceType);
                         });
-                    } else {
+                    } else if (deviceType === 'WEB'
+                    && vm.facilityDevice.deviceType === 'ANDROID'
+                    && vm.facility.isNewFacility) {
+                        new FacilityRepository().get($stateParams.id)
+                            .then(function(res) {
+                                if (res.isNewFacility) {
+                                    upgrade(deviceType);
+                                } else {
+                                    siglusFacilityViewRadioConfirmModalService.error(
+                                        '',
+                                        'adminFacilityView.locationManagement.upgradeWebUser',
+                                        ['adminFacilityView.close', 'adminFacilityView.confirm']
+                                    ).then(function() {
+                                        upgrade(deviceType);
+                                    });
+                                }
+                            });
+                    }  else {
                         upgrade(deviceType);
                     }
                 });
