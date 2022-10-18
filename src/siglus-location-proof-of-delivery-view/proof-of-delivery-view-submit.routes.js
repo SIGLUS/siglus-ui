@@ -53,11 +53,33 @@
                         reasons: function(stockReasonsFactory, order) {
                             return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT');
                         },
-                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory,
-                            addAndRemoveLineItemService) {
-                            return fulfillingLineItemFactory.groupByOrderable(proofOfDelivery.lineItems,
-                                order.orderLineItems).then(function(orderLineItems) {
-                                return addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
+                        orderablesPrice: function(siglusOrderableLotService) {
+                            return siglusOrderableLotService.getOrderablesPrice();
+                        },
+                        orderLineItems: function(
+                            proofOfDelivery,
+                            order,
+                            fulfillingLineItemFactory,
+                            addAndRemoveLineItemService,
+                            orderablesPrice
+                        ) {
+                            return fulfillingLineItemFactory.groupByOrderable(
+                                proofOfDelivery.lineItems,
+                                order.orderLineItems
+                            ).then(function(orderLineItems) {
+                                var orderablesPriceMap = orderablesPrice.data;
+                                var result = addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
+                                _.each(result, function(c) {
+                                    _.each(c.groupedLineItems, function(_c) {
+                                        var id = _c.orderable && _c.orderable.id;
+                                        _c.price = orderablesPriceMap[id]
+                                            ? orderablesPriceMap[id]
+                                            : '';
+                                    });
+                                });
+                                orderablesPriceMap;
+                                console.log('#### result', result);
+                                return result;
                             });
                         },
                         canEdit: function($stateParams, authorizationService,

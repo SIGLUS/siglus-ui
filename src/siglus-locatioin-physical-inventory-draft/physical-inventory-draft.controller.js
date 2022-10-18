@@ -73,6 +73,7 @@
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         vm.locationManagementOption = $stateParams.locationManagementOption;
         var draft = physicalInventoryDataService.getDraft(facility.id);
+        // console.log('#### draft', draft);
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
@@ -692,6 +693,7 @@
                 _.chain(vm.draft.lineItems).flatten()
                     .each(function(item) {
                         if (!item.orderable.id && !item.skipped) {
+                            item.$errors.skippedInvalid = 'hasEmptyLocation';
                             anyError = 'hasEmptyLocation';
                             return;
                         }

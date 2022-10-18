@@ -52,13 +52,13 @@
          * @description
          * Creates an instance of the FullStockCardSummaryRepositoryImpl class.
          */
-        function FullStockCardSummaryRepositoryImpl() {
+        function FullStockCardSummaryRepositoryImpl(locationManagementOption) {
             this.LotResource = new LotResource();
             this.OrderableResource = new OrderableResource();
             // SIGLUS-REFACTOR: starts here
             // this.orderableFulfillsResource = new OrderableFulfillsResource();
 
-            this.resource = new SiglusStockCardSummaryResource();
+            this.resource = new SiglusStockCardSummaryResource(locationManagementOption);
         }
 
         /**

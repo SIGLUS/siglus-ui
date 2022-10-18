@@ -213,7 +213,8 @@
                                 return !!item.$errors.quantityInvalid === false &&
                                     !!item.$errors.reasonFreeTextInvalid === false &&
                                     !!item.$errors.lotCodeInvalid === false &&
-                                    !!item.$errors.lotDateInvalid === false;
+                                    !!item.$errors.lotDateInvalid === false &&
+                                    !!item.$errors.skippedInvalid === false;
                                 // && (!!item.skipped === false && !item.orderableId);
                                 // SIGLUS-REFACTOR: ends here
                             })

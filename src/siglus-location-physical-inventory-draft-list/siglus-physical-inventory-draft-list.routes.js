@@ -58,13 +58,13 @@
                         }
                         return result;
                     },
-                    draftList: function(siglusPhysicalInventoryDraftListService, programs,
+                    draftList: function(siglusPhysicalInventoryDraftListLocationService, programs,
                         facility, $stateParams) {
                         if (_.isUndefined(facility)) {
                             return [];
                         }
                         var isDraft = true;
-                        return siglusPhysicalInventoryDraftListService.getDraftList(
+                        return siglusPhysicalInventoryDraftListLocationService.getDraftList(
                             facility.id,
                             isDraft,
                             $stateParams.programId

@@ -12,28 +12,29 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-//copy from stock-card-summary-resource.js but different request url
+
 (function() {
 
     'use strict';
 
+    /**
+     * @ngdoc controller
+     * @name openlmis-main-state:AlertModalController
+     *
+     * @description
+     * Exposes data to the alert modal view.
+     */
     angular
-        .module('stock-card-summary')
-        .factory('SiglusStockCardSummaryResource', StockCardSummaryResource);
+        .module('openlmis-main-state')
+        .controller('SiglusOpenlmisMainStateController', SiglusOpenlmisMainStateController);
 
-    StockCardSummaryResource.inject = ['OpenlmisResource', 'classExtender'];
+    SiglusOpenlmisMainStateController.$inject = ['$scope'];
 
-    function StockCardSummaryResource(OpenlmisResource, classExtender) {
-
-        classExtender.extend(StockCardSummaryResource, OpenlmisResource);
-
-        return StockCardSummaryResource;
-
-        function StockCardSummaryResource(locationManagementOption) {
-            var url = locationManagementOption === 'location' ?
-                '/api/siglusapi/stockCardSummariesWithLocation' :
-                '/api/siglusapi/stockCardSummaries';
-            this.super(url);
-        }
+    function SiglusOpenlmisMainStateController($scope) {
+        var vm = this;
+        vm.$onInit = function() {
+            $scope.isOffline = false;
+        };
     }
+
 })();
