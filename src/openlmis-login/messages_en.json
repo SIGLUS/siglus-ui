@@ -9,5 +9,5 @@
   "openlmisLogin.cannotConnectToServer": "Could not connect to server. You must be online to log in. Please try again.",
   "openlmisLogin.unknownServerError": "Unknown server error. Please contact your OpenLMIS administrator.",
   "openlmisLogin.localmachineNotActivated": "Your local machine has been deactivated by the admin. You cannot login on inactive status. Please contact the administrator to reactivate your local machine.",
-  "openlmisLogin.localmachineLoginUserNotMatchActiveFacility": "Please login with the account of this activated facility."
+  "openlmisLogin.localmachineLoginUserNotMatchActiveFacility": "Please login with the account of this facility."
 }
