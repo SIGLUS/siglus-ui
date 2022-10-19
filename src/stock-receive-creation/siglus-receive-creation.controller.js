@@ -37,7 +37,7 @@
         'ADJUSTMENT_TYPE', 'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService',
         'draft', 'siglusArchivedProductService', 'siglusStockUtilsService', 'siglusStockIssueService',
         'siglusRemainingProductsModalService', 'alertConfirmModalService', '$q', 'siglusOrderableLotService',
-        'siglusDownloadLoadingModalService', 'orderablesPrice'
+        'siglusDownloadLoadingModalService', 'orderablesPrice', 'moment'
     ];
 
     function controller($scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
@@ -48,7 +48,7 @@
                         ADJUSTMENT_TYPE, siglusSignatureWithDateModalService, siglusOrderableLotMapping,
                         stockAdjustmentService, draft, siglusArchivedProductService, siglusStockUtilsService,
                         siglusStockIssueService, siglusRemainingProductsModalService, alertConfirmModalService,
-                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService, orderablesPrice) {
+                        $q, siglusOrderableLotService, siglusDownloadLoadingModalService, orderablesPrice, moment) {
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
@@ -142,11 +142,10 @@
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
-            // var globalIndex = getPageNumber() * parseInt($stateParams.size) + data.index;
-            // vm.addedLineItems[globalIndex] = lineItem;
-            // vm.search();
-            vm.validateLot(lineItem);
-            vm.validateLotDate(lineItem);
+            if (lineItem) {
+                vm.validateLot(lineItem);
+                vm.validateLotDate(lineItem);
+            }
         });
 
         function copyDefaultValue() {
@@ -187,7 +186,8 @@
          * @description
          * Remove a line item from added products.
          *
-         * @param {Object} lineItem line item to be removed.
+         * @param {Object} lineItem line item to be
+         * d.
          */
         vm.remove = function(lineItem) {
             var index = vm.addedLineItems.indexOf(lineItem);
@@ -268,33 +268,40 @@
         vm.validateLotCodeDuplicated = function() {
             var groupItems = _.groupBy(vm.addedLineItems, 'orderableId');
             _.forEach(vm.addedLineItems, function(item) {
+                item.$errors.lotCodeInvalid = false;
                 var hasDupliatedItems = _.size(_.filter(groupItems[item.orderableId], function(groupItem) {
                     var lotCode = _.get(groupItem, ['lot', 'lotCode']);
                     return lotCode && lotCode === _.get(item, ['lot', 'lotCode']);
                 })) > 1;
-                if (item.$errors.lotCodeInvalid !== messageService.get('openlmisForm.required')) {
-                    if (hasDupliatedItems) {
-                        item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
-                    } else {
-                        item.$errors.lotCodeInvalid = false;
+                if (hasDupliatedItems) {
+                    item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
+                } else {
+                    if (!_.get(item.lot, 'lotCode')) {
+                        item.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+                        return ;
                     }
+                    validateLotExpired(item);
                 }
             });
         };
 
-        vm.validateLot = function(lineItem) {
-            lineItem.lotCode = _.get(lineItem.lot, 'lotCode');
-            if (!lineItem.isKit) {
-
-                if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
-                    lineItem.$errors.lotCodeInvalid = false;
-                } else {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+        function validateLotExpired(item) {
+            if (!item.$errors.lotCodeInvalid && item.lot) {
+                var lotExpiredDate = moment(item.lot.expirationDate);
+                if (moment().isAfter(lotExpiredDate)) {
+                    item.$errors.lotCodeInvalid = 'receiveLocationCreation.lotExpired';
                 }
             }
+        }
 
-            vm.validateLotCodeDuplicated();
-            return lineItem;
+        vm.validateLot = function(lineItem) {
+            lineItem.lotCode = _.get(lineItem.lot, 'lotCode');
+            if (lineItem.lot) {
+                lineItem.$errors.lotCodeInvalid = false;
+            }
+            if (!lineItem.isKit) {
+                vm.validateLotCodeDuplicated();
+            }
         };
 
         vm.validateLotDate = function(lineItem) {

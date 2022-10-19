@@ -132,6 +132,13 @@
                 lineItem.destAreaOptions = vm.getDesAreaList(lineItem);
                 lineItem.destLocationOptions = vm.getDesLocationList(lineItem);
                 vm.addedLineItems.unshift([lineItem]);
+                if (vm.selectedProduct.archived) {
+                    alertService.info({
+                        title: 'archivedProduct.title',
+                        message: 'archivedProduct.message',
+                        buttonLabel: 'archivedProduct.close'
+                    });
+                }
                 reloadPage();
             });
         };
