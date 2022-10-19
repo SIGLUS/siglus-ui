@@ -62,9 +62,30 @@
                         reasons: function(stockReasonsFactory, order) {
                             return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT');
                         },
-                        orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory) {
-                            return fulfillingLineItemFactory
-                                .groupByOrderable(proofOfDelivery.lineItems, order.orderLineItems);
+                        orderablesPrice: function(siglusOrderableLotService) {
+                            return siglusOrderableLotService.getOrderablesPrice();
+                        },
+                        orderLineItems: function(
+                            proofOfDelivery,
+                            order,
+                            fulfillingLineItemFactory,
+                            orderablesPrice
+                        ) {
+                            return fulfillingLineItemFactory.groupByOrderable(
+                                proofOfDelivery.lineItems,
+                                order.orderLineItems
+                            ).then(function(orderLineItems) {
+                                var orderablesPriceMap = orderablesPrice.data;
+                                _.each(orderLineItems, function(c) {
+                                    _.each(c.groupedLineItems, function(_c) {
+                                        var id = _c[0].orderable && _c[0].orderable.id;
+                                        _c[0].price = orderablesPriceMap[id]
+                                            ? orderablesPriceMap[id]
+                                            : '';
+                                    });
+                                });
+                                return orderLineItems;
+                            });
                         },
                         canEdit: function($stateParams, authorizationService,
                             permissionService, order, proofOfDelivery) {
