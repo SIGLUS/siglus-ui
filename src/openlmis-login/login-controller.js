@@ -62,7 +62,16 @@
                     modalDeferred.resolve();
                 })
                 .catch(function(error) {
-                    vm.loginError = error;
+                    var errorMessageKey = _.get(error, ['data', 'messageKey']);
+                    if (errorMessageKey === 'localmachine.notActivated') {
+                        vm.loginError = 'openlmisLogin.localmachineNotActivated';
+                        loginService.logout();
+                    } else if (errorMessageKey === 'localmachine.login.user.not.match.active.facility') {
+                        vm.loginError = 'openlmisLogin.localmachineLoginUserNotMatchActiveFacility';
+                        loginService.logout();
+                    } else {
+                        vm.loginError = error;
+                    }
                     vm.password = undefined;
                 })
                 .finally(loadingModalService.close);
