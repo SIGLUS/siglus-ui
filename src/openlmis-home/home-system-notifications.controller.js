@@ -28,9 +28,9 @@
         .module('openlmis-home')
         .controller('HomeSystemNotificationsController', controller);
 
-    controller.$inject = ['homePageSystemNotifications', 'offlineService'];
+    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService'];
 
-    function controller(homePageSystemNotifications, offlineService) {
+    function controller(homePageSystemNotifications, offlineService, homeImportAndExportService) {
 
         var vm = this;
 
@@ -69,6 +69,18 @@
         function onInit() {
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
+        }
+
+        vm.file = undefined;
+
+        vm.import = function() {
+            console.log(vm.file)
+            homeImportAndExportService.importData(vm.file)
+        }
+
+        vm.changeFile = function(event) {
+            console.log(event.target.files);
+            vm.file = event.target.files[0];
         }
     }
 
