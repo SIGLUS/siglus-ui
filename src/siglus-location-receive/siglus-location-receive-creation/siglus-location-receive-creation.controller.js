@@ -253,7 +253,6 @@
 
             validateBase(lineItems, function(item, $index) {
                 if (index === $index && _.isEmpty(_.get(item.lot, 'lotCode'))) {
-                    console.log(1);
                     item.$errors.lotCodeInvalid = 'openlmisForm.required';
                     return ;
                 }

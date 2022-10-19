@@ -850,6 +850,12 @@
         }
 
         vm.skipChange = function() {
+            _.each(vm.displayLineItemsGroup, function(item) {
+                var orderableId = _.get(item[0], ['orderable', 'id']);
+                if (!orderableId && item[0].skipped) {
+                    item[0].$errors.skippedInvalid = '';
+                }
+            });
             vm.updateProgress();
         };
 
