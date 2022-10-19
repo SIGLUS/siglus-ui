@@ -455,11 +455,11 @@
                         'adminFacilityView.confirm']
                 ).then(function() {
                     loadingModalService.open();
+                    facility.enableLocationManagement = !vm.enableValue;
                     new locationManagementService
                         .update(vm.facility.id, facility, 'locationManagement')
                         .then(function() {
                             vm.enableValue = !vm.enableValue;
-                            facility.enableLocationManagement = !vm.enableValue;
                             notificationService.success(
                                 'adminFacilityView.disabledLocation'
                             );
@@ -478,11 +478,11 @@
                     ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
                 ).then(function() {
                     loadingModalService.open();
+                    facility.enableLocationManagement = !vm.enableValue;
                     new locationManagementService
                         .update(vm.facility.id, facility, 'locationManagement')
                         .then(function() {
                             vm.enableValue = !vm.enableValue;
-                            facility.enableLocationManagement = !vm.enableValue;
                             notificationService.success(
                                 'adminFacilityView.enableLocation'
                             );
