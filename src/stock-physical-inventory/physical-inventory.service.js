@@ -567,7 +567,7 @@
             var event = siglusStockEventService.formatPayload(draft);
             // SIGLUS-REFACTOR: starts here
             var result = '';
-            if (locationManagementOption === 'location') {
+            if (locationManagementOption === 'location' || locationManagementOption === 'product') {
                 result = locationResource.submitSubDraftWithLocation(event).$promise;
             } else {
                 result = resource.submit(event).$promise;
