@@ -371,7 +371,19 @@
         }
 
         vm.printShipment = function printShipment() {
-            localStorageService.add('shipmentViewData', JSON.stringify(vm.displayTableLineItems));
+            var cachedData =  _.chain(vm.displayTableLineItems)
+                .map(function(group) {
+                    return _.filter(group, function(lineItem) {
+                        return (lineItem.isMainGroup && group.length > 1) ||
+                          lineItem.quantityShipped > 0 && (lineItem.isKit || lineItem.lot
+                          && moment().isBefore(moment(lineItem.lot.expirationDate)));
+                    });
+                })
+                .filter(function(group) {
+                    return _.size(group) > 0;
+                })
+                .value();
+            localStorageService.add('shipmentViewData', JSON.stringify(cachedData));
             localStorageService.add('locations', JSON.stringify(locations));
             var PRINT_URL = $window.location.href.split('!/')[0]
                 + '!/'

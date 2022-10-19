@@ -41,6 +41,11 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/orderables/available'),
                 method: 'GET',
                 isArray: true
+            },
+            getAllProductList: {
+                url: stockmanagementUrlFactory('/api/siglusapi/orderables/dropDownList'),
+                method: 'GET',
+                isArray: true
             }
 
         });
@@ -54,6 +59,12 @@
 
         this.getOrderableLocationLotsInfo = function(params, orderableIds) {
             return resource.getOrderableLocationLotsInfo(params, orderableIds ? orderableIds : []).$promise;
+        };
+
+        this.getAllProductList = function(draftId) {
+            return resource.getAllProductList({
+                draftId: draftId
+            }).$promise;
         };
     }
 
