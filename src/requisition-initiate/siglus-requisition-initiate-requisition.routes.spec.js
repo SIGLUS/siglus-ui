@@ -15,8 +15,10 @@
 
 describe('openlmis.requisitions.initRnr.requisition state', function() {
 
-    var $q, $state, $rootScope, $stateParams, requisitionInitiateFactory, PeriodDataBuilder, periods,
-        periodFactory, siglusRequisitionInitiateService, authorizationService, programService;
+    var $q, $state, $rootScope, $stateParams, requisitionInitiateFactory,
+        PeriodDataBuilder, periods,
+        periodFactory, siglusRequisitionInitiateService, authorizationService,
+        programService, facilityFactory;
 
     beforeEach(function() {
         module('referencedata-period');
@@ -29,9 +31,12 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
             periodFactory = $injector.get('periodFactory');
             PeriodDataBuilder = $injector.get('PeriodDataBuilder');
             requisitionInitiateFactory = $injector.get('requisitionInitiateFactory');
-            siglusRequisitionInitiateService = $injector.get('siglusRequisitionInitiateService');
+            siglusRequisitionInitiateService = $injector.get(
+                'siglusRequisitionInitiateService'
+            );
             authorizationService = $injector.get('authorizationService');
             programService = $injector.get('programService');
+            facilityFactory = $injector.get('facilityFactory');
         });
 
         $state.go('openlmis');
@@ -47,11 +52,17 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
             new PeriodDataBuilder().build()
         ];
 
-        spyOn(requisitionInitiateFactory, 'canInitiate').andReturn($q.resolve(true));
+        spyOn(requisitionInitiateFactory, 'canInitiate').andReturn(
+            $q.resolve(true)
+        );
         spyOn(periodFactory, 'get').andReturn($q.resolve(periods));
-        spyOn(siglusRequisitionInitiateService, 'getPhysicalInventoryDates').andReturn($q.resolve([]));
+        spyOn(siglusRequisitionInitiateService,
+            'getPhysicalInventoryDates').andReturn($q.resolve([]));
         spyOn(authorizationService, 'getUser').andReturn($q.resolve({}));
         spyOn(programService, 'get').andReturn($q.resolve([]));
+        spyOn(facilityFactory, 'getUserHomeFacility').andReturn($q.resolve({
+            facilityId: 'A000001'
+        }));
         spyOn(authorizationService, 'hasRight').andReturn($q.resolve(true));
     });
 
@@ -62,7 +73,10 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('periods')).toEqual([]);
         });
 
@@ -71,7 +85,10 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('periods')).toEqual([]);
         });
 
@@ -80,13 +97,18 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
             goToState();
 
-            expect($state.current.name).not.toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).not.toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
         });
 
         it('should fetch periods', function() {
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('periods')).toEqual(periods);
             expect(periodFactory.get).toHaveBeenCalledWith(
                 $stateParams.program,
@@ -100,7 +122,10 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('periods')).toEqual(periods);
             expect(periodFactory.get).toHaveBeenCalledWith(
                 $stateParams.program,
@@ -118,7 +143,10 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('canInitiateRnr')).toEqual(false);
         });
 
@@ -127,31 +155,41 @@ describe('openlmis.requisitions.initRnr.requisition state', function() {
 
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('canInitiateRnr')).toEqual(false);
         });
 
         it('should return true if user can initiate requisitions', function() {
             goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
+            expect($state.current.name).toEqual(
+                'openlmis.requisitions.initRnr.requisition'
+            );
+
             expect(getResolvedValue('canInitiateRnr')).toEqual(true);
             expect(requisitionInitiateFactory.canInitiate).toHaveBeenCalledWith(
                 $stateParams.program, $stateParams.facility
             );
         });
 
-        it('should return false if user can not initiate requisitions', function() {
-            requisitionInitiateFactory.canInitiate.andReturn($q.resolve(false));
+        it('should return false if user can not initiate requisitions',
+            function() {
+                requisitionInitiateFactory.canInitiate.andReturn($q.resolve(false));
 
-            goToState();
+                goToState();
 
-            expect($state.current.name).toEqual('openlmis.requisitions.initRnr.requisition');
-            expect(getResolvedValue('canInitiateRnr')).toEqual(false);
-            expect(requisitionInitiateFactory.canInitiate).toHaveBeenCalledWith(
-                $stateParams.program, $stateParams.facility
-            );
-        });
+                expect($state.current.name).toEqual(
+                    'openlmis.requisitions.initRnr.requisition'
+                );
+
+                expect(getResolvedValue('canInitiateRnr')).toEqual(false);
+                expect(requisitionInitiateFactory.canInitiate).toHaveBeenCalledWith(
+                    $stateParams.program, $stateParams.facility
+                );
+            });
 
     });
 
