@@ -24,7 +24,7 @@
                 <div>
                     <label for="productSelect">{{'stockIssueCreation.product' | message}}</label>
                     <select id="productSelect" ng-model="vm.selectedProduct"
-                            ng-options="product.fullProductName for product in vm.productList"
+                            ng-options="(product | siglusArchivedProductName) for product in vm.productList"
                             required>
                     </select>
                 </div>
