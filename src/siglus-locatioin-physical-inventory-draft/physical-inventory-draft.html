@@ -151,7 +151,7 @@
                         reasons="vm.reasons[lineItem.programId] || []"
                         ng-change="vm.reasonChanged(lineItem)"
                 /> -->
-                <p>{{ lineItem.stockAdjustments[0].reason.name }}</p>
+                <p ng-if="!vm.isEmpty(lineItem.stockCardId)">{{ lineItem.stockAdjustments[0].reason.name }}</p>
                 <p ng-style="{'color' : 'red'}">{{lineItem.$diffMessage.movementPopoverMessage}}</p>
                 <!-- SIGLUS-REFACTOR: ends here -->
             </td>
@@ -299,7 +299,7 @@
                             reasons="vm.reasons[lineItem.programId] || []"
                             ng-change="vm.reasonChanged(lineItem)"
                     /> -->
-                    <p>{{ lineItem.stockAdjustments[0].reason.name }}</p>
+                    <p ng-if="!vm.isEmpty(lineItem.stockCardId)">{{ lineItem.stockAdjustments[0].reason.name }}</p>
                     <p ng-style="{'color' : 'red'}">{{lineItem.$diffMessage.movementPopoverMessage}}</p>
                     <!-- SIGLUS-REFACTOR: ends here -->
                 </td>
@@ -373,7 +373,7 @@
                             reasons="vm.reasons[lineItem.programId] || []"
                             ng-change="vm.reasonChanged(lineItem)"
                     /> -->
-                    <p>{{ lineItems[0].stockAdjustments[0].reason.name }}</p>
+                    <p ng-if="!vm.isEmpty(lineItems[0].stockCardId)">{{ lineItems[0].stockAdjustments[0].reason.name }}</p>
                     <p ng-style="{'color' : 'red'}">{{lineItems[0].$diffMessage.movementPopoverMessage}}</p>
                     <!-- SIGLUS-REFACTOR: ends here -->
                 </td>
