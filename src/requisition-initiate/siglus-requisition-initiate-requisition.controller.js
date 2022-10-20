@@ -34,10 +34,12 @@
         'notificationService', 'REQUISITION_RIGHTS',
         'permissionService', 'authorizationService', '$stateParams', 'periods',
         'canInitiateRnr', 'UuidGenerator',
-        'confirmService', 'siglusRequisitionInitiateService', 'REQUISITION_STATUS',
-        'siglusRequisitionDatePickerService', 'alertService', 'dateUtils', 'moment',
+        'confirmService', 'siglusRequisitionInitiateService',
+        'REQUISITION_STATUS',
+        'siglusRequisitionDatePickerService', 'alertService', 'dateUtils',
+        'moment',
         'inventoryDates', 'program',
-        'hasAuthorizeRight'
+        'hasAuthorizeRight', 'facility', 'facilityFactory'
     ];
 
     //NOSONAR
@@ -48,7 +50,7 @@
                         confirmService, siglusRequisitionInitiateService, REQUISITION_STATUS,
                         siglusRequisitionDatePickerService, alertService, dateUtils, moment,
                         inventoryDates, program,
-                        hasAuthorizeRight) {
+                        hasAuthorizeRight, facility, facilityFactory) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
@@ -96,6 +98,10 @@
 
         vm.program = undefined;
 
+        // vm.facility = undefined;
+        // vm.enableLocation = facility.enableLocationManagement;
+        // console.log('el', vm.enableLocation);
+
         /**
      * @ngdoc method
      * @methodOf requisition-initiate.controller:RequisitionInitiateController
@@ -111,12 +117,16 @@
             vm.hasAuthorizeRight = hasAuthorizeRight;
             vm.inventoryDates = inventoryDates;
             vm.program = program;
+            facilityFactory.getUserHomeFacility()
+                .then(function(res) {
+                    vm.facility = res;
+                });
         }
 
         function isCurrentSubmitDuration(period) {
             var today = moment();
             return (today.isSameOrAfter(period.submitStartDate, 'day')
-            && today.isSameOrBefore(period.submitEndDate, 'day'));
+          && today.isSameOrBefore(period.submitEndDate, 'day'));
         }
 
         function getDiffDates(startDate, endDate, dates) {
@@ -134,11 +144,15 @@
         }
 
         function pickInventoryDate(selectedPeriod) {
-            var startDate = dateUtils.toStringDate(selectedPeriod.submitStartDate);
+            var startDate = dateUtils.toStringDate(
+                selectedPeriod.submitStartDate
+            );
             var endDate = dateUtils.toStringDate(selectedPeriod.submitEndDate);
-            var datesDisabled = getDiffDates(startDate, endDate, vm.inventoryDates);
+            var datesDisabled = getDiffDates(startDate, endDate,
+                vm.inventoryDates);
             loadingModalService.open();
-            siglusRequisitionDatePickerService.show(startDate, endDate, datesDisabled)
+            siglusRequisitionDatePickerService.show(startDate, endDate,
+                datesDisabled)
                 .then(function(inventoryDate) {
                     initiate(selectedPeriod, inventoryDate);
                 }, function() {
@@ -148,7 +162,8 @@
 
         function initiate(selectedPeriod, inventoryDate) {
             loadingModalService.open();
-            requisitionService.initiate($stateParams.facility, $stateParams.program,
+            requisitionService.initiate($stateParams.facility,
+                $stateParams.program,
                 selectedPeriod.id, vm.emergency, key, inventoryDate)
                 .then(function(requisition) {
                     goToInitiatedRequisition(requisition);
@@ -194,10 +209,18 @@
                         if (result.occurredDate === today) {
                             initiate(selectedPeriod, today);
                         } else {
-                            confirmService.confirm('requisitionInitiate.confirm.label',
-                                'requisitionInitiate.confirm.button')
+                            confirmService.confirm(
+                                'requisitionInitiate.confirm.label',
+                                'requisitionInitiate.confirm.button'
+                            )
                                 .then(function() {
-                                    goToPhysicalInventory();
+                                    if (facility.enableLocationManagement) {
+                                        console.log('elm',
+                                            facility.enableLocationManagement);
+                                        goToPhysicalInventoryWithLocation();
+                                    } else {
+                                        goToPhysicalInventory();
+                                    }
                                 }, function() {
                                     loadingModalService.close();
                                 });
@@ -246,9 +269,19 @@
             });
         }
 
+        function goToPhysicalInventoryWithLocation() {
+            $state.go(
+                'openlmis.locationManagement.physicalInventory.draftList.draft',
+                {
+                    programId: $stateParams.replaceId || vm.program.id
+                }
+            );
+        }
+
         function checkProceedButton(period, idx) {
             if ($stateParams.program && $stateParams.facility) {
-                if (idx > 0 || Date.now() < period.startDate.getTime() || !checkRnrStatus(period.rnrStatus)) {
+                if (idx > 0 || Date.now() < period.startDate.getTime()
+            || !checkRnrStatus(period.rnrStatus)) {
                     return false;
                 }
             }
@@ -267,7 +300,8 @@
             if (status === REQUISITION_STATUS.INITIATED && !vm.canInitiateRnr) {
                 return false;
             }
-            if (status === REQUISITION_STATUS.SUBMITTED && !vm.hasAuthorizeRight) {
+            if (status === REQUISITION_STATUS.SUBMITTED
+          && !vm.hasAuthorizeRight) {
                 return false;
             }
             return true;

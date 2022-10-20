@@ -18,7 +18,8 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
     beforeEach(function() {
         module('requisition-initiate');
 
-        var FacilityDataBuilder, ProgramDataBuilder, PeriodDataBuilder, RequisitionDataBuilder;
+        var FacilityDataBuilder, ProgramDataBuilder, PeriodDataBuilder,
+            RequisitionDataBuilder;
 
         inject(function($injector) {
             FacilityDataBuilder = $injector.get('FacilityDataBuilder');
@@ -35,8 +36,12 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
             this.loadingModalService = $injector.get('loadingModalService');
             this.UuidGenerator = $injector.get('UuidGenerator');
             this.confirmService = $injector.get('confirmService');
-            this.siglusRequisitionInitiateService = $injector.get('siglusRequisitionInitiateService');
-            this.siglusRequisitionDatePickerService = $injector.get('siglusRequisitionDatePickerService');
+            this.siglusRequisitionInitiateService = $injector.get(
+                'siglusRequisitionInitiateService'
+            );
+            this.siglusRequisitionDatePickerService = $injector.get(
+                'siglusRequisitionDatePickerService'
+            );
             this.dateUtils = $injector.get('dateUtils');
 
             this.user = {
@@ -74,18 +79,23 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
             this.key = 'key';
 
             var context = this;
-            spyOn(context.UuidGenerator.prototype, 'generate').andCallFake(function() {
-                return context.key;
-            });
+            spyOn(context.UuidGenerator.prototype, 'generate').andCallFake(
+                function() {
+                    return context.key;
+                }
+            );
 
-            this.vm = $injector.get('$controller')('SiglusRequisitionInitiateRequisitionController', {
-                periods: this.periods,
-                $stateParams: this.$stateParams,
-                canInitiateRnr: this.canInitiateRnr,
-                hasAuthorizeRight: false,
-                inventoryDates: [],
-                program: []
-            });
+            this.vm = $injector.get('$controller')(
+                'SiglusRequisitionInitiateRequisitionController', {
+                    periods: this.periods,
+                    $stateParams: this.$stateParams,
+                    canInitiateRnr: this.canInitiateRnr,
+                    hasAuthorizeRight: false,
+                    inventoryDates: [],
+                    program: [],
+                    facility: []
+                }
+            );
 
             spyOn(this.siglusRequisitionInitiateService, 'getLatestPhysicalInventory')
                 .andReturn(this.$q.resolve({
@@ -95,22 +105,27 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
         });
     });
 
-    it('should change page to requisitions.requisition for with selected period with rnrId', function() {
-        spyOn(this.$state, 'go');
+    it('should change page to requisitions.requisition for with selected period with rnrId',
+        function() {
+            spyOn(this.$state, 'go');
 
-        this.vm.goToRequisition(1);
+            this.vm.goToRequisition(1);
 
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
-            rnr: 1
+            expect(this.$state.go).toHaveBeenCalledWith(
+                'openlmis.requisitions.requisition.fullSupply', {
+                    rnr: 1
+                }
+            );
         });
-    });
 
     it('should change page to requisition full supply for newly initialized requisition in selected period',
         function() {
             this.vm.$onInit();
             spyOn(this.$state, 'go');
 
-            spyOn(this.requisitionService, 'initiate').andReturn(this.$q.when(this.requisition));
+            spyOn(this.requisitionService, 'initiate').andReturn(
+                this.$q.when(this.requisition)
+            );
             this.vm.program = this.programs[0];
             this.vm.facility = this.facility;
             this.$stateParams = {
@@ -121,10 +136,12 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
             this.vm.initRnr(this.periods[0]);
             this.$rootScope.$apply();
 
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.requisition.fullSupply', {
-                rnr: this.requisition.id,
-                requisition: this.requisition
-            });
+            expect(this.$state.go).toHaveBeenCalledWith(
+                'openlmis.requisitions.requisition.fullSupply', {
+                    rnr: this.requisition.id,
+                    requisition: this.requisition
+                }
+            );
         });
 
     it('should initiate requisition with idempotency key', function() {
@@ -134,7 +151,9 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
             program: this.programs[0].id,
             facility: this.facility.id
         };
-        spyOn(this.requisitionService, 'initiate').andReturn(this.$q.when(this.requisition));
+        spyOn(this.requisitionService, 'initiate').andReturn(
+            this.$q.when(this.requisition)
+        );
 
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
@@ -143,29 +162,34 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
         this.$rootScope.$apply();
 
         expect(this.requisitionService.initiate)
-            .toHaveBeenCalledWith(this.vm.facility.id, this.vm.program.id, this.periods[0].id,
+            .toHaveBeenCalledWith(this.vm.facility.id, this.vm.program.id,
+                this.periods[0].id,
                 this.vm.emergency, this.key, this.periods[0].startDate);
     });
 
-    it('should display error when user has no right to init requisition', function() {
-        this.vm.$onInit();
-        spyOn(this.$state, 'go');
-        spyOn(this.requisitionService, 'initiate');
-        this.vm.program = this.programs[0];
-        this.vm.facility = this.facility;
-        this.vm.canInitiateRnr = false;
+    it('should display error when user has no right to init requisition',
+        function() {
+            this.vm.$onInit();
+            spyOn(this.$state, 'go');
+            spyOn(this.requisitionService, 'initiate');
+            this.vm.program = this.programs[0];
+            this.vm.facility = this.facility;
+            this.vm.canInitiateRnr = false;
 
-        this.vm.initRnr(this.periods[0]);
-        this.$rootScope.$apply();
+            this.vm.initRnr(this.periods[0]);
+            this.$rootScope.$apply();
 
-        expect(this.$state.go).not.toHaveBeenCalled();
-        expect(this.requisitionService.initiate).not.toHaveBeenCalled();
-    });
+            expect(this.$state.go).not.toHaveBeenCalled();
+            expect(this.requisitionService.initiate).not.toHaveBeenCalled();
+        });
 
-    it('should not change page to requisitions.requisition with selected period without rnrId and when invalid' +
-        ' response from service', function() {
+    it('should not change page to requisitions.requisition with selected period without rnrId and when invalid'
+      +
+      ' response from service', function() {
         var selectedPeriod = {};
-        spyOn(this.requisitionService, 'initiate').andReturn(this.$q.reject(this.requisition));
+        spyOn(this.requisitionService, 'initiate').andReturn(
+            this.$q.reject(this.requisition)
+        );
         spyOn(this.$state, 'go');
         this.vm.program = this.programs[0];
         this.vm.facility = this.facility;
