@@ -6,6 +6,7 @@
   "stockPhysicalInventoryDraft.remove": "Remove",
   "stockPhysicalInventoryDraft.lotCodeTooLong": "Must be at most 30 characters lot code",
   "stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate": "The lot and location under the same product cannot be repeated, please enter a new one.",
+  "stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation": "The lot under the same location cannot be repeated, please remove the other only one left.",
   "stockPhysicalInventoryDraft.PositiveAdjustment": "Positive adjustment of ${diff} will be made",
   "stockPhysicalInventoryDraft.NegativeAdjustment": "Negative adjustment of ${diff} will be made",
   "stockPhysicalInventoryDraft.draftList": "Draft List",
