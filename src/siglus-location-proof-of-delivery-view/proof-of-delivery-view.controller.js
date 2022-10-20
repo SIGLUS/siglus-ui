@@ -296,14 +296,20 @@
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
-            vm.validateLocations(lineItem, groupedLineItems);
+            // still need to verify all lines
+            groupedLineItems.forEach(function(line) {
+                vm.validateLocations(line, groupedLineItems);
+            });
         };
-        vm.changeMoveToLocation = function(lineItem, lineItems) {
+        vm.changeMoveToLocation = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
-            vm.validateLocations(lineItem, lineItems);
+            // still need to verify all lines
+            groupedLineItems.forEach(function(line) {
+                vm.validateLocations(line, groupedLineItems);
+            });
         };
         $scope.$on('locationCodeChange', function(event, data) {
             var lineItem = data.lineItem;
@@ -342,7 +348,7 @@
             });
 
             if (filterLineItems.length > 1) {
-                relatedLineItems.forEach(function(lineItem) {
+                filterLineItems.forEach(function(lineItem) {
                     if (lineItem.lot) {
                         lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
                         lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
@@ -352,7 +358,7 @@
                     }
                 });
             } else {
-                relatedLineItems.forEach(function(lineItem) {
+                filterLineItems.forEach(function(lineItem) {
                     if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation'
                         || lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocationForKit') {
                         lineItem.$error.moveToLocationError = '';
