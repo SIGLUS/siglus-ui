@@ -29,10 +29,10 @@
         .controller('HomeSystemNotificationsController', controller);
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
-        'loadingModalService', 'notificationService'];
+        'loadingModalService', 'notificationService', 'alertService'];
 
     function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
-                        loadingModalService, notificationService) {
+                        loadingModalService, notificationService, alertService) {
 
         var vm = this;
 
@@ -80,11 +80,11 @@
                 console.log(vm.file);
                 loadingModalService.open();
                 return homeImportAndExportService.importData(vm.file).then(function() {
-                    notificationService.success('adminFacilityView.uploadSuccess');
+                    notificationService.success('openlmisHome.importSuccess');
                 })
                     .catch(function(error) {
                         // TODO should be messageKey
-                        notificationService.error(error.data.message);
+                        alertService.error(error.data.message);
                     })
                     .finally(loadingModalService.close);
             }
@@ -93,7 +93,6 @@
         vm.export = function() {
             loadingModalService.open();
             return homeImportAndExportService.exportData().then(function(response) {
-                // TODO handle download file here
                 var fileName = response.headers('content-disposition').split('filename=')[1].split(';')[0];
                 var contentType = response.headers('content-type');
 
@@ -119,7 +118,12 @@
                 }
             })
                 .catch(function(error) {
-                    notificationService.error(error.data.message);
+                    var decoder = new TextDecoder('utf-8');
+                    var unit8 = new window.Uint8Array(error.data);
+                    var decoded = JSON.parse(decoder.decode(unit8));
+                    console.log('decoded error', decoded);
+                    // TODO should be messageKey
+                    alertService.error(decoded.message);
                 })
                 .finally(loadingModalService.close);
         };
