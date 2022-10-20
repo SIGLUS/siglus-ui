@@ -80,10 +80,10 @@
                 console.log(vm.file);
                 loadingModalService.open();
                 return homeImportAndExportService.importData(vm.file).then(function() {
-                    // TODO handle download file here
                     notificationService.success('adminFacilityView.uploadSuccess');
                 })
                     .catch(function(error) {
+                        // TODO should be messageKey
                         notificationService.error(error.data.message);
                     })
                     .finally(loadingModalService.close);
@@ -92,8 +92,31 @@
 
         vm.export = function() {
             loadingModalService.open();
-            return homeImportAndExportService.exportData().then(function() {
-                notificationService.success('adminFacilityView.uploadSuccess');
+            return homeImportAndExportService.exportData().then(function(response) {
+                // TODO handle download file here
+                var fileName = response.headers('content-disposition').split('filename=')[1].split(';')[0];
+                var contentType = response.headers('content-type');
+
+                var linkElement = document.createElement('a');
+                try {
+                    var blob = new Blob([response.data], {
+                        type: contentType
+                    });
+                    var url = window.URL.createObjectURL(blob);
+
+                    linkElement.setAttribute('href', url);
+                    linkElement.setAttribute('download', fileName);
+
+                    var clickEvent = new MouseEvent('click', {
+                        view: window,
+                        bubbles: true,
+                        cancelable: false
+                    });
+                    linkElement.dispatchEvent(clickEvent);
+                    notificationService.success('openlmisHome.exportSuccess');
+                } catch (ex) {
+                    console.log('export link exception: ', ex);
+                }
             })
                 .catch(function(error) {
                     notificationService.error(error.data.message);

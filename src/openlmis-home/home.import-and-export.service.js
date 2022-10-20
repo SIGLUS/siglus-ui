@@ -23,7 +23,10 @@
     function service($http, openlmisUrlFactory) {
 
         this.exportData = function() {
-            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/export'));
+            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/export'),
+                {
+                    responseType: 'arraybuffer'
+                });
         };
 
         this.importData = function(file) {
