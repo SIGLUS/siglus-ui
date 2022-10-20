@@ -18,37 +18,43 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name openlmis-modal.controller:SiglusSignatureModalController
-     *
-     * @description
-     * Exposes data to the confirmation modal view.
-     */
+       * @ngdoc controller
+       * @name openlmis-modal.controller:SiglusSignatureModalController
+       *
+       * @description
+       * Exposes data to the confirmation modal view.
+       */
     angular
         .module('openlmis-modal')
         .controller('SiglusSignatureWithDateModalController', controller);
 
     controller.$inject = [
-        'message', 'confirmMessage', 'cancelMessage', 'onlyShowToday', 'confirmDeferred', 'modalDeferred'
+        'message', 'confirmMessage', 'cancelMessage',
+        'confirmDeferred', 'modalDeferred',
+        'siglusSignatureWithLimitDateModalService', 'facility',
+        'messageService', 'alertService'
     ];
 
-    function controller(message, confirmMessage, cancelMessage, onlyShowToday, confirmDeferred, modalDeferred) {
+    function controller(message, confirmMessage, cancelMessage,
+                        confirmDeferred, modalDeferred,
+                        siglusSignatureWithLimitDateModalService, facility, messageService,
+                        alertService) {
         var vm = this;
-
         vm.$onInit = onInit;
+        vm.facilityId = facility.id;
         vm.confirm = confirm;
         vm.cancel = cancel;
         vm.signatureIsRequired = false;
-
         vm.occurredDate = new Date();
-
+        vm.currentDate = getCurrentDate();
+        vm.movementDate = undefined;
+        vm.firstDayOfPeroid = firstDayOfPeriod();
         vm.maxDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
+        vm.minDate = undefined;
         vm.isToday = true;
-
         vm.maxDate.setHours(0, 0, 0, 0);
-
-        vm.onlyShowToday = false;
+        vm.onlyShowToday = onlyShowToday();
+        console.log('ost', vm.onlyShowToday);
 
         /**
          * @ngdoc property
@@ -92,10 +98,33 @@
          * Initialization method of the SiglusSignatureModalController.
          */
         function onInit() {
+
             vm.message = message;
             vm.confirmMessage = confirmMessage;
             vm.cancelMessage = cancelMessage;
-            vm.onlyShowToday = onlyShowToday;
+            vm.facilityId = facility.id;
+            siglusSignatureWithLimitDateModalService.getMovementDate(
+                vm.currentDate, facility.id
+            ).then(
+                function(result) {
+                    vm.movementDate = result;
+                    vm.minDate = minDate();
+                }
+            )
+                .catch(handleError);
+        }
+
+        function handleError(error) {
+            if (error.data.messageKey
+              === 'siglusapi.error.stockManagement.movement.date.invalid') {
+                vm.invalidMessage = messageService.get(
+                    'openlmisModal.dateConflict'
+                );
+            }
+            if (error.data.messageKey
+              === 'siglusapi.error.stockManagement.draft.notFound') {
+                alertService.error('openlmisModal.dateConflict');
+            }
         }
 
         /**
@@ -135,6 +164,121 @@
         vm.changeDateType = function(isToday) {
             vm.occurredDate = isToday ? new Date() : null;
         };
-    }
 
-})();
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
+         * @name getCurrentDate
+         *
+         * @description
+         * to get current date
+         */
+        function getCurrentDate() {
+            var nowDate = new Date();
+            var year = nowDate.getFullYear();
+            var month = nowDate.getMonth() + 1;
+            var day = nowDate.getDate();
+            if (month < 10) {
+                month = '0' + month;
+            }
+            if (day < 10) {
+                day = '0' + day;
+            }
+            return year + '-' + month + '-' + day;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
+         * @name onlyShowToday
+         *
+         * @description
+         * to get the value of only show today
+         */
+        function onlyShowToday() {
+            if (vm.currentDate === vm.minDate) {
+                return vm.onlyShowToday = true;
+            }
+            return vm.onlyShowToday = false;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
+         * @name firstDayOfPeriod
+         *
+         * @description
+         * to get first day of every period
+         */
+        function firstDayOfPeriod() {
+            var nowDate = new Date();
+            var year = nowDate.getFullYear();
+            var month = nowDate.getMonth();
+            var day = 21;
+            return year + '-' + month + '-' + day;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
+         * @name minDate
+         *
+         * @description
+         * to get mindate
+         */
+
+        function minDate() {
+            if (vm.movementDate && vm.firstDayOfPeroid) {
+                var lastMovementDate = vm.movementDate;
+                var firstDayOfPeriod = vm.firstDayOfPeroid;
+                var lastMovementDateDT = new Date(
+                    lastMovementDate.replace('-', '/')
+                );
+                var firstDayOfPeriodDT = new Date(
+                    firstDayOfPeriod.replace('-', '/')
+                );
+                if (lastMovementDateDT > firstDayOfPeriodDT) {
+                    return lastMovementDateDT;
+                }
+
+                if (firstDayOfPeriodDT > lastMovementDateDT) {
+                    return firstDayOfPeriodDT;
+                }
+            } else if (vm.movementDate && !firstDayOfPeriod) {
+                return vm.movementDate;
+            } else if (!vm.movementDate && firstDayOfPeriod) {
+                return vm.firstDayOfPeroid;
+            }
+        }
+
+        // function getMovementDate() {
+        //     var currentDate = vm.currentDate;
+        //     var facilityId = vm.facilityId;
+        //     return new siglusSignatureWithLimitDateModalService.getMovementDate(
+        //         currentDate, facilityId
+        //     )
+        //         .then(function(lastMovementDate) {
+        //             vm.lastMovementDate = lastMovementDate;
+        //             console.log('vm.lastMovementDate', lastMovementDate);
+        //             return vm.lastMovementDate;
+        //         })
+        //         .catch(handleError);
+        // }
+        //
+        // function handleError(error) {
+        //     if (error.data.messageKey
+        //       === 'siglusapi.error.stockManagement.movement.date.invalid') {
+        //         vm.invalidMessage = messageService.get(
+        //             'openlmisModal.dateConflict'
+        //         );
+        //     }
+        //     if (error.data.messageKey
+        //       === 'siglusapi.error.stockManagement.draft.notFound') {
+        //         alertService.error('openlmisModal.dateConflict');
+        //     }
+        // }
+
+    }
+}
+
+)();

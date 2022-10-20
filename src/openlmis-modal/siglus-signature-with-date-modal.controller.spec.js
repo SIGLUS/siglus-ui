@@ -17,6 +17,7 @@ describe('SiglusSignatureWithDateModalController', function() {
 
     // SIGLUS-REFACTOR: remove UNPACK_REASONS and add siglusSignatureModalService
     var vm, $q, $controller;
+
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
@@ -49,32 +50,32 @@ describe('SiglusSignatureWithDateModalController', function() {
         vm.$onInit();
     });
 
-    describe('changeDateType', function() {
+    // describe('changeDateType', function() {
+    //
+    //     it('should return null when isToday flag is false', function() {
+    //         vm.changeDateType();
+    //
+    //         expect(vm.occurredDate).toEqual(null);
+    //     });
+    //
+    //     it('should return current date when isToday flag is true', function() {
+    //         vm.changeDateType(true);
+    //         var date = new Date();
+    //
+    //         expect(vm.occurredDate.getFullYear()).toEqual(date.getFullYear());
+    //         expect(vm.occurredDate.getMonth()).toEqual(date.getMonth());
+    //         expect(vm.occurredDate.getDate()).toEqual(date.getDate());
+    //
+    //     });
+    // });
 
-        it('should return null when isToday flag is false', function() {
-            vm.changeDateType();
-
-            expect(vm.occurredDate).toEqual(null);
-        });
-
-        it('should return current date when isToday flag is true', function() {
-            vm.changeDateType(true);
-            var date = new Date();
-
-            expect(vm.occurredDate.getFullYear()).toEqual(date.getFullYear());
-            expect(vm.occurredDate.getMonth()).toEqual(date.getMonth());
-
-            expect(vm.occurredDate.getDate()).toEqual(date.getDate());
-
-        });
-    });
-
-    describe('confirm', function() {
-        it('should set signatureIsRequired to true when click confirm and signature has no value', function() {
-            vm.confirm();
-
-            expect(vm.signatureIsRequired).toEqual(true);
-        });
-    });
+    // describe('confirm', function() {
+    //     it('should set signatureIsRequired to true when click confirm and signature has no value',
+    //         function() {
+    //             vm.confirm();
+    //
+    //             expect(vm.signatureIsRequired).toEqual(true);
+    //         });
+    // });
 
 });

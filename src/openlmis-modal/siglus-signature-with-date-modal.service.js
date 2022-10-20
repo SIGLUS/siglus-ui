@@ -18,15 +18,16 @@
     'use strict';
 
     /**
-     * @ngdoc service
-     * @name openlmis-modal.siglusSignatureModalService
-     *
-     * @description
-     * Service allows to display signature modal with custom message.
-     */
+   * @ngdoc service
+   * @name openlmis-modal.siglusSignatureModalService
+   *
+   * @description
+   * Service allows to display signature modal with custom message.
+   */
 
     angular.module('openlmis-modal')
-        .service('siglusSignatureWithDateModalService', siglusSignatureWithDateModalService);
+        .service('siglusSignatureWithDateModalService',
+            siglusSignatureWithDateModalService);
 
     siglusSignatureWithDateModalService.$inject = ['openlmisModalService', '$q'];
 
@@ -34,7 +35,8 @@
 
         this.confirm = confirm;
 
-        function confirm(message, confirmButtonMessage, cancelButtonMessage, onlyShowToday) {
+        function confirm(message, confirmButtonMessage, cancelButtonMessage,
+                         onlyShowToday) {
             var deferred = $q.defer();
 
             openlmisModalService.createDialog({
@@ -43,10 +45,12 @@
                 controllerAs: 'vm',
                 resolve: {
                     confirmMessage: function() {
-                        return confirmButtonMessage ? confirmButtonMessage : 'openlmisModal.confirm';
+                        return confirmButtonMessage ? confirmButtonMessage
+                            : 'openlmisModal.confirm';
                     },
                     cancelMessage: function() {
-                        return cancelButtonMessage ? cancelButtonMessage : 'openlmisModal.cancel';
+                        return cancelButtonMessage ? cancelButtonMessage
+                            : 'openlmisModal.cancel';
                     },
                     message: function() {
                         return message;
@@ -56,6 +60,9 @@
                     },
                     confirmDeferred: function() {
                         return deferred;
+                    },
+                    facility: function(facilityFactory) {
+                        return facilityFactory.getUserHomeFacility();
                     }
                 }
             });
