@@ -25,18 +25,6 @@
 <p class="note">{{'adminFacilityAdd.enabled.description.checked' | message}}</p>
 <p class="note">{{'adminFacilityAdd.enabled.description.unchecked' | message}}</p>
 
-<div ng-show="false">
-<label for="facilityAndroid" class="checkbox">
-  <input class="disabled-facility-view" id="facilityAndroid" type="checkbox"
-         ng-model="vm.facility.isAndroidDevice"
-         ng-disabled="!vm.facility.isNewFacility"/>
-  {{'adminFacilityView.androidFacility' | message}}
-</label>
-<div ng-show="vm.facility.isAndroidDevice === true && vm.facility.isNewFacility === false">
-  <input id="upgradeToWeb" type="button" ng-click="vm.upgradeToWeb()" value="{{ 'adminFacilityView.upgradeToWeb'
-    | message}}"/>
-</div>
-</div>
 <label for="geographicZone">{{'adminFacilityAdd.geographicZone' | message}}</label>
 <select id="geographicZone" ng-disabled="vm.managedExternally" ng-model="vm.facility.geographicZone"
         ng-options="geographicZone as geographicZone.name for geographicZone in vm.geographicZones track by geographicZone.id"

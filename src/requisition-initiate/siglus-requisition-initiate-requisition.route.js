@@ -38,6 +38,9 @@
                 program: function($stateParams, programService) {
                     return programService.get($stateParams.program);
                 },
+                facility: function(facilityFactory) {
+                    return facilityFactory.getUserHomeFacility();
+                },
                 periods: function(periodFactory, $stateParams) {
                     if ($stateParams.program && $stateParams.facility) {
                         return periodFactory.get(
@@ -48,7 +51,8 @@
                     }
                     return [];
                 },
-                inventoryDates: function(periods, siglusRequisitionInitiateService, dateUtils, $stateParams) {
+                inventoryDates: function(periods, siglusRequisitionInitiateService,
+                    dateUtils, $stateParams) {
                     if (periods.length) {
                         var startDate = dateUtils.toStringDate(periods[0].submitStartDate);
                         var endDate = dateUtils.toStringDate(periods[0].submitEndDate);
@@ -69,12 +73,15 @@
                     }
                     return false;
                 },
-                hasAuthorizeRight: function(authorizationService, permissionService,  $stateParams) {
+                hasAuthorizeRight: function(authorizationService, permissionService,
+                    $stateParams) {
                     if ($stateParams.program && $stateParams.facility) {
-                        return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
-                            programId: $stateParams.program,
-                            facilityId: $stateParams.facility
-                        });
+                        return authorizationService.hasRight(
+                            REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
+                                programId: $stateParams.program,
+                                facilityId: $stateParams.facility
+                            }
+                        );
                     }
                     return false;
                 }

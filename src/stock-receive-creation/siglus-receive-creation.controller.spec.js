@@ -173,7 +173,7 @@ describe('SiglusStockReceiveCreationController', function() {
                         lotCode: 'FAKE-LOTE-08L11-122018',
                         active: true,
                         tradeItemId: '38205859-6be9-4929-8115-6b0c3127c1f4',
-                        expirationDate: '2018-12-30'
+                        expirationDate: '2500-12-30'
                     },
                     occurredDate: '2022-08-01',
                     orderableId: 'ba08a234-4881-472f-af02-fcc0c7ab5d04',
@@ -189,7 +189,7 @@ describe('SiglusStockReceiveCreationController', function() {
                         lotCode: 'FAKE-LOTE-08L14-122017',
                         active: true,
                         tradeItemId: 'f8e19198-86b0-4075-a760-a7186bbd6809',
-                        expirationDate: '2017-12-31'
+                        expirationDate: '2500-12-31'
                     },
                     occurredDate: '2022-08-01',
                     orderableId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
@@ -205,7 +205,7 @@ describe('SiglusStockReceiveCreationController', function() {
                         lotCode: 'FAKE-LOTE-08L14-122017',
                         active: true,
                         tradeItemId: 'f8e19198-86b0-4075-a760-a7186bbd6809',
-                        expirationDate: '2017-12-31'
+                        expirationDate: '2500-12-31'
                     },
                     occurredDate: '2022-08-01',
                     orderableId: '0e278b62-65ab-447a-ad5a-a6bfb06dea78',
