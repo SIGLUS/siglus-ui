@@ -524,21 +524,6 @@ describe('LocationPhysicalInventoryDraftController', function() {
             );
         });
 
-        it('should go to the physical inventory screen after deleting draft', function() {
-            alertConfirmModalService.error.andReturn($q.resolve());
-            physicalInventoryService.deleteDraft.andReturn($q.resolve());
-
-            vm.delete();
-            $rootScope.$apply();
-
-            expect(state.go).toHaveBeenCalledWith(
-                'openlmis.locationManagement.physicalInventory.draftList',
-                stateParams, {
-                    reload: true
-                }
-            );
-        });
-
     });
 
     function initController() {
