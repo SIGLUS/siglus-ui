@@ -61,7 +61,7 @@
   "adminFacilityView.changeToLocalMachine":"Change to Local Machine",
   "adminFacilityView.changeToWebConfirm":"Are you sure to upgrade the device to Web Portal?",
   "adminFacilityView.changeToAndroidConfirm":"Are you sure to change the device type to Android?",
-  "adminFacilityView.changeToLocalMachineConfirm":"Are you sure to change the device type to local machine?",
+  "adminFacilityView.changeToLocalMachineConfirm":"Are you sure to change the device type to local machine? The facility's current movement drafts will be cleared.",
   "adminFacilityView.eraseDeviceInfo":"Erase Device Info",
   "adminFacilityView.retrieveActivationCode":"Retrieve activation code",
   "adminFacilityView.eraseAndroidConfirm":"Are you sure you want to erase the device info?",

@@ -513,9 +513,9 @@
             }).$promise;
         }
 
-        function deleteSubDraftByLocation(ids) {
+        function deleteSubDraftByLocation(ids, locationManagementOption) {
             return locationResource.deleteSubDraftByLocation({
-                isByLocation: true
+                isByLocation: locationManagementOption === 'location'
             }, ids).$promise;
         }
 

@@ -87,12 +87,13 @@
                     if (summary && summary.canFulfillForMe) {
                         summary.canFulfillForMe = _.get(summary, ['canFulfillForMe'], [])
                             .filter(function(canFulfillForMeItem) {
-                                return _.get(canFulfillForMeItem, ['lot' ])
+                                return  (_.get(canFulfillForMeItem, ['orderable', 'isKit'])
+                                &&  _.get(canFulfillForMeItem, ['stockOnHand' ], 0) > 0) ||
+                               (_.get(canFulfillForMeItem, ['lot' ])
                                 && _.get(canFulfillForMeItem, ['stockOnHand' ], 0) > 0
                                 && moment()
-                                    // eslint-disable-next-line max-len
-                                    .isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd'));
-
+                                //eslint-disable-next-line max-len
+                                    .isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd')));
                             });
                     }
 

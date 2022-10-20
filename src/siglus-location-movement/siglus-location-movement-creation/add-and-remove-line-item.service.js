@@ -80,7 +80,8 @@
                 notes: null,
                 quantityShipped: lineItem.quantityShipped,
                 useVvm: lineItem.useVvm,
-                vvmStatus: lineItem.vvmStatus
+                vvmStatus: lineItem.vvmStatus,
+                price: lineItem.price
             };
         }
 

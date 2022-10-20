@@ -101,10 +101,8 @@
                 <td ng-if="!fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">{{fulfillingLineItem.lot.expirationDate}}</td>
                 <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
                 <!-- #400: ends here -->
-                <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{orderLineItem.orderedQuantity}}</td>
-                <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
-                <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{orderLineItem.partialFulfilledQuantity}}</td>
-                <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+                <td ></td>
+                <td ></td>
 
                 <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{fulfillingLineItem.quantityShipped}}</td>
                 <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
@@ -184,22 +182,24 @@
                 <td ng-if="!vm.canEdit && !(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                 </td>
 
-                <td>{{ fulfillingLineItem.price }}</td>
-                <td>
+                <td ng-if="(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">{{ fulfillingLineItem.price }}</td>
+                <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+                <td ng-if="(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     {{
                         fulfillingLineItem.price ?
                         (fulfillingLineItem.quantityShipped * (fulfillingLineItem.price * 100).toFixed(2)) / 100 :
                         ''
                     }}
                 </td>
+                <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
 
                 <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     <input type="text" ng-model="fulfillingLineItem.notes"/>
                 </td>
-                <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     {{fulfillingLineItem.notes}}
                 </td>
+                <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
 
                 <td ng-if="vm.canEdit">
                     <button style="padding: 8px;"
@@ -295,5 +295,5 @@
  #462: ends here -->
 
 
-<siglus-print-pallet-label line-items="vm.printLineItems" print-type="'POD'" facility-name="vm.order.facility.name">
+<siglus-print-pallet-label line-items="vm.printLineItems" print-type="'pod'" pod-file-name="vm.fileName" facility-name="vm.order.facility.name">
 </siglus-print-pallet-label>
