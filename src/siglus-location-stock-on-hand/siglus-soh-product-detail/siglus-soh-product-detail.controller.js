@@ -28,11 +28,11 @@
         .module('siglus-soh-product-detail')
         .controller('SiglusSohProductDetailController', controller);
 
-    controller.$inject = ['stockCard', '$state', 'stockCardService', 'confirmService', 'loadingModalService',
-        'notificationService', '$stateParams', 'paginationService'];
+    controller.$inject = ['stockCard', '$state', '$window', 'stockCardService', 'confirmService', 'loadingModalService',
+        'notificationService', '$stateParams', 'paginationService', 'localStorageService'];
 
-    function controller(stockCard, $state, stockCardService, confirmService, loadingModalService,
-                        notificationService, $stateParams, paginationService) {
+    function controller(stockCard, $state, $window,  stockCardService, confirmService, loadingModalService,
+                        notificationService, $stateParams, paginationService, localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -44,7 +44,9 @@
         vm.canArchive = false;
 
         vm.print = function() {
-            stockCardService.printByProduct(vm.stockCard.orderableId);
+            localStorageService.add('stockCardInfoForPrint', angular.toJson(stockCard));
+            var PRINT_URL = $window.location.href.split('!/')[0] + '!/locationManagement/productDetailPrint';
+            $window.open(PRINT_URL, '_blank');
         };
 
         vm.getProductName = function() {
