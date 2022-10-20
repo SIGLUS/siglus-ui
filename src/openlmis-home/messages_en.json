@@ -1,4 +1,5 @@
 {
 	"openlmisHome.welcome": "Welcome to OpenLMIS Mozambique",
-	"openlmisHome.exportSuccess": "Export Success"
+	"openlmisHome.exportSuccess": "Export Successfully",
+	"openlmisHome.importSuccess": "Import Successfully"
 }
