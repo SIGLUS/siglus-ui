@@ -456,24 +456,10 @@
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
-                if ($stateParams.locationManagementOption === 'location') {
-                    physicalInventoryService.deleteSubDraftByLocation(subDraftIds).then(function() {
-                        $scope.needToConfirm = false;
-                        // SIGLUS-REFACTOR: starts here
-                        vm.isInitialInventory ?
-                            $state.go('^', {}, {
-                                reload: true
-                            }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
-                                reload: true
-                            });
-                        // SIGLUS-REFACTOR: ends here
-                    })
-                        .catch(function() {
-                            loadingModalService.close();
-                        });
-                    return;
-                }
-                physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
+                physicalInventoryService.deleteSubDraftByLocation(
+                    subDraftIds,
+                    $stateParams.locationManagementOption
+                ).then(function() {
                     $scope.needToConfirm = false;
                     // SIGLUS-REFACTOR: starts here
                     vm.isInitialInventory ?
@@ -487,6 +473,20 @@
                     .catch(function() {
                         loadingModalService.close();
                     });
+                // physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
+                //     $scope.needToConfirm = false;
+                //     // SIGLUS-REFACTOR: starts here
+                //     vm.isInitialInventory ?
+                //         $state.go('^', {}, {
+                //             reload: true
+                //         }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
+                //             reload: true
+                //         });
+                //     // SIGLUS-REFACTOR: ends here
+                // })
+                //     .catch(function() {
+                //         loadingModalService.close();
+                //     });
             });
         };
         vm.delete = _.throttle(deleteDraft, SIGLUS_TIME.THROTTLE_TIME, {
@@ -535,6 +535,9 @@
                 if (validate() === 'hasEmptyLocation') {
                     $scope.$broadcast('openlmis-form-submit');
                     alertService.error('stockPhysicalInventoryDraft.hasEmptyLocation');
+                } else if (validate() === 'hasDuplicateLotCode') {
+                    $scope.$broadcast('openlmis-form-submit');
+                    alertService.error('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
                 } else {
                     $scope.$broadcast('openlmis-form-submit');
                     alertService.error('stockPhysicalInventoryDraft.submitInvalid');
@@ -627,8 +630,9 @@
                 } else if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
                     lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
                 } else if (hasDuplicateLotCode(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid = messageService
-                        .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+                    lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
+                        ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
+                        : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
                 } else {
                     lineItem.$errors.lotCodeInvalid = false;
                 }
@@ -644,8 +648,11 @@
                     .get('stockPhysicalInventoryDraft.required');
             }
             if (hasDuplicateLotCode(lineItem)) {
-                lineItem.$errors.locationInvalid = messageService
-                    .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
+                    ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
+                    : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+                // lineItem.$errors.locationInvalid = messageService
+                //     .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
             }
             if (!hasDuplicateLotCode(lineItem) && lineItem.locationCode && lineItem.area) {
                 lineItem.$errors.locationInvalid = '';
@@ -697,18 +704,35 @@
             return duplicatedLineItems.length > 1;
         }
 
+        // function hasDuplicateLotCodeByLocation(lineItem) {
+        //     var allLots = getAllLotCode(lineItem.orderable.id, lineItem.area, lineItem.locationCode);
+        //     var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function(lot) {
+        //         return lot === lineItem.lot.lotCode.toUpperCase();
+        //     }) : [];
+        //     return duplicatedLineItems.length > 1;
+        // }
+
         function validate() {
             var anyError = false;
             var isByLocation = $stateParams.locationManagementOption;
             // var deferredByValidate = $q.defer();
-            if (isByLocation) {
+            if (isByLocation === 'location') {
                 // deferredByValidate
                 _.chain(vm.draft.lineItems).flatten()
                     .each(function(item) {
                         if (!item.orderable.id && !item.skipped) {
                             item.$errors.skippedInvalid = 'hasEmptyLocation';
                             anyError = 'hasEmptyLocation';
-                            return;
+                        }
+                    });
+            }
+            if (!anyError && isByLocation === 'location') {
+                _.chain(vm.draft.lineItems).flatten()
+                    .each(function(item) {
+                        if (hasDuplicateLotCode(item)) {
+                            item.$errors.lotCodeInvalid = messageService
+                                .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+                            anyError = 'hasDuplicateLotCode';
                         }
                     });
             }
@@ -1207,7 +1231,6 @@
                             });
                             newLineItems.splice.apply(newLineItems, [index + 1, 0].concat(_.rest(addedItems)));
                             draft.lineItems = newLineItems;
-
                         } else {
                             draft.lineItems = _.map(draft.lineItems, function(line) {
                                 if (line.locationCode === addedItems[0].locationCode) {
@@ -1219,8 +1242,13 @@
                     }
                     refreshLotOptions();
                     $stateParams.isAddProduct = true;
+                    _.each(draft.lineItems, function(item) {
+                        if (hasDuplicateLotCode(item)) {
+                            item.$errors.lotCodeInvalid = messageService
+                                .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
+                        }
+                    });
                     reload($state.current.name);
-
                     // #105: activate archived product
                     siglusArchivedProductService.alterInfo(addedItems);
                     // #105: ends here
@@ -1248,6 +1276,14 @@
             draft.lineItems.splice(index, 1);
             $stateParams.isAddProduct = true;
             reload($state.current.name);
+            _.each(draft.lineItems, function(item) {
+                if (hasDuplicateLotCode(item)) {
+                    item.$errors.lotCodeInvalid = messageService
+                        .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
+                } else {
+                    item.$errors.lotCodeInvalid = '';
+                }
+            });
         }
 
         $scope.$on('lotCodeChange', function(event, data) {

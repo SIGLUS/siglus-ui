@@ -35,7 +35,7 @@
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
         'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment', 'orderablesPrice', 'facility',
         'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService',
-        'alertService'];
+        'alertService', 'printInfo'];
 
     function ProofOfDeliveryViewControllerWithLocation($scope
         , proofOfDelivery, order, reasons, messageService
@@ -46,7 +46,7 @@
         , openlmisDateFilter, fulfillingLineItemFactory
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
         , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
-        , SiglusLocationCommonUtilsService, alertService) {
+        , SiglusLocationCommonUtilsService, alertService, printInfo) {
 
         if (canEdit) {
             orderLineItems.forEach(function(orderLineItem) {
@@ -67,6 +67,7 @@
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
+        vm.fileName = undefined;
         vm.getReason = function(reasonId) {
             // return 
             var reasonMap = _.reduce(reasons, function(r, c) {
@@ -168,6 +169,16 @@
             vm.facility = facility;
             vm.locations = locations;
             vm.areaLocationInfo = areaLocationInfo;
+            var orderCodeArray = vm.orderCode.split('-');
+            if (orderCodeArray.length > 2) {
+                var leftString =
+                    orderCodeArray[orderCodeArray.length - 1] < 10
+                        ? '0' + orderCodeArray[orderCodeArray.length - 1]
+                        : orderCodeArray[orderCodeArray.length - 1];
+                vm.fileName = printInfo.fileName + '/' + leftString;
+            } else {
+                vm.fileName = printInfo.fileName + '/' + '01';
+            }
             facilityFactory.getUserHomeFacility()
                 .then(function(res) {
                     vm.facility = res;
@@ -269,6 +280,10 @@
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
             });
+            console.log(groupedLineItems);
+            // $state.go($state.current.name, $stateParams, {
+            //     reload: true
+            // });
         };
 
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
@@ -281,14 +296,20 @@
             lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
-            vm.validateLocations(lineItem, groupedLineItems);
+            // still need to verify all lines
+            groupedLineItems.forEach(function(line) {
+                vm.validateLocations(line, groupedLineItems);
+            });
         };
-        vm.changeMoveToLocation = function(lineItem, lineItems) {
+        vm.changeMoveToLocation = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
             lineItem.$error.moveToLocationError = _.isEmpty(_.get(lineItem.moveTo, 'locationCode'))
                 ? 'openlmisForm.required' : '';
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
-            vm.validateLocations(lineItem, lineItems);
+            // still need to verify all lines
+            groupedLineItems.forEach(function(line) {
+                vm.validateLocations(line, groupedLineItems);
+            });
         };
         $scope.$on('locationCodeChange', function(event, data) {
             var lineItem = data.lineItem;
@@ -327,7 +348,7 @@
             });
 
             if (filterLineItems.length > 1) {
-                relatedLineItems.forEach(function(lineItem) {
+                filterLineItems.forEach(function(lineItem) {
                     if (lineItem.lot) {
                         lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
                         lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
@@ -337,7 +358,7 @@
                     }
                 });
             } else {
-                relatedLineItems.forEach(function(lineItem) {
+                filterLineItems.forEach(function(lineItem) {
                     if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation'
                         || lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocationForKit') {
                         lineItem.$error.moveToLocationError = '';

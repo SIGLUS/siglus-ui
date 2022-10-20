@@ -98,4 +98,31 @@
             }
         }
     }
+
+    label.primary {
+        cursor: pointer;
+        display: block;
+        width: 74px;
+        height: 36px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        border-top: #3A95BC 1px solid;
+        border-right: #3A95BC 1px;
+        border-left: #3A95BC 1px solid;
+        border-bottom: #3A95BC 1px solid;
+        color: #fff;
+        text-shadow: 0px 0px 0.1em #333;
+        background: #3A95BC;
+        background-image: linear-gradient(to bottom, #5cabcd, #49a1c7 10%, #3A95BC);
+        margin-bottom: 0;
+        font-weight: normal;
+    }
+
+    #fileupload {
+        display: none;
+    }
+
+    .openlmis-file-upload {
+        display: none;
+    }
 }

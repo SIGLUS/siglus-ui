@@ -5,8 +5,14 @@
     <div class="power-container">
         <div class="power-title">Sync your data by exporting / importing the file.</div>
         <div class="power-btn-group">
-            <button style="margin-right: 16px;" class="primary">Export</button>
-            <button class="primary">Import</button>
+            <button style="margin-right: 16px;" class="primary" ng-click="vm.export()">Export</button>
+            <input type="file"
+                   id="fileupload"
+                   ng-model="vm.file"
+                   ng-show="false"
+                   ng-change="vm.import()"
+            />
+            <label class="primary" for="fileupload">Import</label>
         </div>
         <h2 class="power">
             {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}

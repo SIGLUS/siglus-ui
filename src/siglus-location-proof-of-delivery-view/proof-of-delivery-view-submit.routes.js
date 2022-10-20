@@ -114,6 +114,9 @@
                                 return $stateParams.areaLocationInfo;
                             }
                             return siglusLocationMovementService.getMovementLocationAreaInfo(undefined, true);
+                        },
+                        printInfo: function(proofOfDeliveryManageService, $stateParams) {
+                            return  proofOfDeliveryManageService.getPodInfo($stateParams.podId, $stateParams.orderId);
                         }
                     }
                 }
