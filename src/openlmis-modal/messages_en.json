@@ -1,6 +1,6 @@
 {
   "openlmisModal.confirm": "Confirm",
   "openlmisModal.today": "Today",
-  "openlmisModal.beforeToday": "Before today"
-
+  "openlmisModal.beforeToday": "Before today",
+  "openlmisModal.dateConflict": "Invalid date, the lastest movement date has been updated, please refresh the page and try again"
 }
