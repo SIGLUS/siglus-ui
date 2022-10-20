@@ -28,11 +28,14 @@
 
         this.importData = function(file) {
             var formData = new FormData();
-            formData.append('file', file);
-            return $http.post(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/import'), formData, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
-            });
+            formData.append('files', file);
+            return $http.post(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/import'), formData,
+                {
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined
+                    }
+                });
         };
     }
 
