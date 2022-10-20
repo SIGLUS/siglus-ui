@@ -29,15 +29,15 @@
         .controller('siglusSohLotDetailController', siglusSohLotDetailController);
 
     siglusSohLotDetailController.$inject = [
-        'stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
+        'stockCard', '$state', '$window', 'stockCardService', 'REASON_TYPES', 'messageService',
         'alertService', '$scope', 'confirmService', 'notificationService', 'loadingModalService',
-        'paginationService', '$stateParams', 'REASON_CATEGORIES', 'Reason'
+        'paginationService', '$stateParams', 'REASON_CATEGORIES', 'Reason', 'localStorageService'
     ];
 
-    function siglusSohLotDetailController(stockCard, $state, stockCardService, REASON_TYPES, messageService,
+    function siglusSohLotDetailController(stockCard, $state, $window, stockCardService, REASON_TYPES, messageService,
                                           alertService, $scope, confirmService, notificationService,
                                           loadingModalService, paginationService,
-                                          $stateParams, REASON_CATEGORIES, Reason) {
+                                          $stateParams, REASON_CATEGORIES, Reason, localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -47,7 +47,9 @@
         vm.binCardName = '';
 
         vm.print = function() {
-            stockCardService.print(vm.stockCard.id);
+            localStorageService.add('stockCardInfoForPrint', angular.toJson(stockCard));
+            var PRINT_URL = $window.location.href.split('!/')[0] + '!/locationManagement/lotDetailPrint';
+            $window.open(PRINT_URL, '_blank');
         };
 
         function onInit() {
