@@ -35,7 +35,7 @@
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
         'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment', 'orderablesPrice', 'facility',
         'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService',
-        'alertService'];
+        'alertService', 'printInfo'];
 
     function ProofOfDeliveryViewControllerWithLocation($scope
         , proofOfDelivery, order, reasons, messageService
@@ -46,7 +46,7 @@
         , openlmisDateFilter, fulfillingLineItemFactory
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
         , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
-        , SiglusLocationCommonUtilsService, alertService) {
+        , SiglusLocationCommonUtilsService, alertService, printInfo) {
 
         if (canEdit) {
             orderLineItems.forEach(function(orderLineItem) {
@@ -67,6 +67,7 @@
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
+        vm.fileName = undefined;
         vm.getReason = function(reasonId) {
             // return 
             var reasonMap = _.reduce(reasons, function(r, c) {
@@ -168,6 +169,16 @@
             vm.facility = facility;
             vm.locations = locations;
             vm.areaLocationInfo = areaLocationInfo;
+            var orderCodeArray = vm.orderCode.split('-');
+            if (orderCodeArray.length > 2) {
+                var leftString =
+                    orderCodeArray[orderCodeArray.length - 1] < 10
+                        ? '0' + orderCodeArray[orderCodeArray.length - 1]
+                        : orderCodeArray[orderCodeArray.length - 1];
+                vm.fileName = printInfo.fileName + '/' + leftString;
+            } else {
+                vm.fileName = printInfo.fileName + '/' + '01';
+            }
             facilityFactory.getUserHomeFacility()
                 .then(function(res) {
                     vm.facility = res;

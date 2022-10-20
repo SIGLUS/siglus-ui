@@ -33,7 +33,8 @@
             bindings: {
                 lineItems: '=',
                 printType: '<',
-                facilityName: '<'
+                facilityName: '<',
+                podFileName: '<'
             }
         });
 
