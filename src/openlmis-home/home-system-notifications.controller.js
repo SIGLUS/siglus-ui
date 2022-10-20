@@ -28,9 +28,11 @@
         .module('openlmis-home')
         .controller('HomeSystemNotificationsController', controller);
 
-    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService'];
+    controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
+        'loadingModalService', 'notificationService'];
 
-    function controller(homePageSystemNotifications, offlineService, homeImportAndExportService) {
+    function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
+                        loadingModalService, notificationService) {
 
         var vm = this;
 
@@ -74,14 +76,30 @@
         vm.file = undefined;
 
         vm.import = function() {
-            console.log(vm.file)
-            homeImportAndExportService.importData(vm.file)
-        }
+            if (vm.file) {
+                console.log(vm.file);
+                loadingModalService.open();
+                return homeImportAndExportService.importData(vm.file).then(function() {
+                    // TODO handle download file here
+                    notificationService.success('adminFacilityView.uploadSuccess');
+                })
+                    .catch(function(error) {
+                        notificationService.error(error.data.message);
+                    })
+                    .finally(loadingModalService.close);
+            }
+        };
 
-        vm.changeFile = function(event) {
-            console.log(event.target.files);
-            vm.file = event.target.files[0];
-        }
+        vm.export = function() {
+            loadingModalService.open();
+            return homeImportAndExportService.exportData().then(function() {
+                notificationService.success('adminFacilityView.uploadSuccess');
+            })
+                .catch(function(error) {
+                    notificationService.error(error.data.message);
+                })
+                .finally(loadingModalService.close);
+        };
     }
 
 })();
