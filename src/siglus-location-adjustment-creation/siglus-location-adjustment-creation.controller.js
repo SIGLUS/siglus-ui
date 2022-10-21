@@ -29,7 +29,7 @@
         .controller('SiglusLocationAdjustmentCreationController', controller);
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService',
-        'facility', 'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user',
+        'facility', 'reasons', 'confirmService', 'messageService', 'user',
         'adjustmentType', 'notificationService',
         'MAX_INTEGER_VALUE', 'loadingModalService',
         'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
@@ -38,13 +38,13 @@
         'siglusOrderableLotService', 'addedLineItems', 'paginationService',
         'SiglusLocationCommonUtilsService', 'siglusLocationAdjustmentModifyLineItemService',
         'siglusLocationCommonApiService', 'areaLocationInfo', 'siglusLocationAdjustmentService',
-        'alertConfirmModalService', 'siglusOrderableLotMapping', 'locations', 'program',
-        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME'
+        'alertConfirmModalService', 'locations', 'program',
+        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'productList'
     ];
 
     function controller(
         $scope, $state, $stateParams, $filter, confirmDiscardService,
-        facility, orderableGroups, reasons, confirmService, messageService, user,
+        facility, reasons, confirmService, messageService, user,
         adjustmentType, notificationService,
         MAX_INTEGER_VALUE, loadingModalService,
         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
@@ -53,10 +53,9 @@
         siglusOrderableLotService, addedLineItems, paginationService,
         SiglusLocationCommonUtilsService, siglusLocationAdjustmentModifyLineItemService,
         siglusLocationCommonApiService, areaLocationInfo, siglusLocationAdjustmentService,
-        alertConfirmModalService, siglusOrderableLotMapping, locations, program,
-        siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME
+        alertConfirmModalService, locations, program,
+        siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME, productList
     ) {
-        siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
         var vm = this;
 
         vm.$onInit = function() {
@@ -69,7 +68,9 @@
 
             vm.orderableGroups = null;
 
-            vm.selectedOrderableGroup = null;
+            vm.productList = null;
+
+            vm.selectedProduct = null;
 
             vm.addedLineItems = [];
 
@@ -102,7 +103,7 @@
             vm.addedLineItems = addedLineItems;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
-            filterOrderableGroups();
+            filterProductList();
             updateStateParams();
             validateForm(true);
 
@@ -123,6 +124,7 @@
                         .value();
                 });
             };
+            loadingModalService.close();
             return paginationService.registerList(validator, angular.copy($stateParams), function() {
                 return vm.addedLineItems;
             });
@@ -132,33 +134,24 @@
             return lineItem.isMainGroup ? $filter('productName')(lineItem.orderable) : '';
         };
 
-        function filterOrderableGroups() {
+        function filterProductList() {
             var addedOrderableIds = _.map(vm.addedLineItems, function(group) {
                 return _.first(group).orderableId;
             });
-            vm.orderableGroups = _.chain(orderableGroups)
-                .map(function(group) {
-                    return _.first(group);
-                })
-                .filter(function(item) {
-                    return !_.isEmpty(item) && !_.includes(addedOrderableIds, item.orderable.id);
-                })
-                .value();
+            vm.productList = _.filter(productList, function(product) {
+                return !_.includes(addedOrderableIds, product.orderableId);
+            });
         }
 
-        // add locationsInfo to product
-        // add locationOptions all locationList to product
-        // add cloneOptions to filter lot and location options
         vm.addProduct = function() {
-            var orderable = vm.selectedOrderableGroup.orderable;
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                 extraData: true,
                 isAdjustment: true
-            }, [orderable.id])
+            }, [vm.selectedProduct.orderableId])
                 .then(function(locationsInfo) {
                     locations = locations.concat(locationsInfo);
-                    var firstRow = siglusLocationAdjustmentModifyLineItemService.getAddProductRow(orderable);
+                    var firstRow = siglusLocationAdjustmentModifyLineItemService.getAddProductRow(vm.selectedProduct);
 
                     var lotOptions = SiglusLocationCommonUtilsService.getLotList(
                         firstRow,
@@ -172,9 +165,6 @@
                     firstRow.locationsInfo = locationsInfo;
                     vm.addedLineItems.unshift([firstRow]);
                     searchList();
-                })
-                .finally(function() {
-                    loadingModalService.close();
                 });
         };
 
@@ -183,8 +173,9 @@
             $stateParams.keyword = vm.keyword;
             $stateParams.areaLocationInfo = areaLocationInfo;
             $stateParams.addedLineItems = vm.addedLineItems;
-            $stateParams.orderableGroups = orderableGroups;
+            $stateParams.productList = productList;
             $stateParams.draftInfo = draftInfo;
+            $stateParams.reasons = reasons;
             $stateParams.user = user;
             $stateParams.facility = facility;
             $stateParams.program = program;
@@ -429,7 +420,7 @@
                 vm.addedLineItems = _.filter(vm.addedLineItems, function(item) {
                     return !_.isEmpty(item);
                 });
-                filterOrderableGroups();
+                filterProductList();
             }
             searchList();
         };
@@ -533,18 +524,10 @@
             return draftInfo[0];
         }
 
-        vm.filterByProgram = function(items, programsList) {
-            var programIds = [];
-            programsList.forEach(function(program) {
-                programIds.push(program.programId);
+        vm.filterByProgram = function(reasons, programId) {
+            return _.filter(reasons, function(reason) {
+                return reason.programId === programId;
             });
-            var updatedItems = [];
-            items.forEach(function(item) {
-                if (programIds.indexOf(item.programId) !== -1) {
-                    updatedItems.push(item);
-                }
-            });
-            return updatedItems;
         };
 
         function filterReasons(items) {
@@ -575,16 +558,6 @@
             }
             vm.validateDuplicateLineItem(lineItems);
         };
-
-        // vm.validateReasonFreeText = function(lineItem) {
-        //     if (lineItem.reason && lineItem.reason.isFreeTextAllowed) {
-        //         var reasonName = lineItem.reason.name;
-        //         if (_.contains(vm.mandatoryReasons, reasonName.substr(reasonName.indexOf('] ') + 1).trim())) {
-        //             lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
-        //         }
-        //     }
-        //     return lineItem;
-        // };
 
         vm.getTotalQuantity = function(lineItems) {
             return _.reduce(lineItems, function(sum, item) {
@@ -644,7 +617,6 @@
                                         {
                                             location: 'replace'
                                         });
-                                        loadingModalService.close();
                                     })
                                     .catch(function() {
                                         loadingModalService.close();

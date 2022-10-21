@@ -21,8 +21,9 @@
             <form class="form-inline" ng-submit="vm.addProduct()" name="productForm">
                 <div>
                     <label for="productSelect">{{'stockAdjustmentCreation.product' | message}}</label>
-                    <select id="productSelect" ng-model="vm.selectedOrderableGroup"
-                        ng-options="(orderable.orderable | siglusArchivedProductName) for orderable in (vm.orderableGroups)"
+
+                    <select id="productSelect" ng-model="vm.selectedProduct"
+                        ng-options="(product | siglusArchivedProductName) for product in (vm.productList)"
                         ng-change="vm.orderableSelectionChanged()" required>
                     </select>
                 </div>
@@ -78,7 +79,7 @@
                         class="digit-cell">
                         <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem,lineItems);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
-                            ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.orderable.programs) track by reason.id"
+                            ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.programId) track by reason.id"
                             autofocus>
                         </select>
                     </td>
