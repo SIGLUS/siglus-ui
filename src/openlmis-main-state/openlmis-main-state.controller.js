@@ -28,13 +28,29 @@
         .module('openlmis-main-state')
         .controller('SiglusOpenlmisMainStateController', SiglusOpenlmisMainStateController);
 
-    SiglusOpenlmisMainStateController.$inject = ['$scope'];
+    SiglusOpenlmisMainStateController.$inject = [
+        '$scope',
+        'localStorageService',
+        'homeImportAndExportService'
+    ];
 
-    function SiglusOpenlmisMainStateController($scope) {
+    function SiglusOpenlmisMainStateController(
+        $scope,
+        localStorageService,
+        homeImportAndExportService
+    ) {
         var vm = this;
         vm.$onInit = function() {
             $scope.isOffline = false;
+            $scope.isLocalMachine = localStorageService.get('facilityDeviceInfo') === 'LOCAL_MACHINE';
+            // console.log(homeImportAndExportService.testString);
+            $scope.testString = homeImportAndExportService.testString;
         };
+        $scope.$watch(function() {
+            return homeImportAndExportService.testString;
+        }, function() {
+            $scope.testString = homeImportAndExportService.testString;
+        });
     }
 
 })();

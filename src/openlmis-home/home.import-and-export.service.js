@@ -21,7 +21,7 @@
     service.$inject = ['$http', 'openlmisUrlFactory'];
 
     function service($http, openlmisUrlFactory) {
-
+        this.testString = 'hello';
         this.exportData = function() {
             return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/export'),
                 {
@@ -39,6 +39,15 @@
                         'Content-Type': undefined
                     }
                 });
+        };
+
+        this.getLocalMachineBaseInfo = function() {
+            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/basicInfo'));
+        };
+
+        this.getSyncResults = function() {
+            this.testString = 'world';
+            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/syncResults'));
         };
     }
 

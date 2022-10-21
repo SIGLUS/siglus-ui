@@ -3,8 +3,8 @@
     <div class="bg"></div>
     <!-- SIGLUS-REFACTOR: ends here -->
     <div class="power-container">
-        <div class="power-title">Sync your data by exporting / importing the file.</div>
-        <div class="power-btn-group">
+        <div ng-if="vm.isLocalMachine" class="power-title">Sync your data by exporting / importing the file.</div>
+        <div ng-if="vm.isLocalMachine" class="power-btn-group">
             <button style="margin-right: 16px;" class="primary" ng-click="vm.export()">Export</button>
             <input type="file"
                    id="fileupload"
@@ -19,7 +19,7 @@
         </h2>
     </div>
     <div class="usaid"></div>
-    <div class="offline-container">
+    <div ng-if="vm.isLocalMachine" class="offline-container">
         <div class="sync-version">
             <span>Local machine version：</span>
             <span style="font-weight: 400;">2.22</span>
@@ -32,7 +32,7 @@
             <i class="fa fa-check-circle"></i>
             Auto synced successfully at 30/08/2022 11:23:12
         </div>
-        <button class="primary">Sync</button>
+        <button class="primary" ng-click="vm.sync()">Sync</button>
     </div>
     <div class="system-notification-list" ng-if="!vm.isOffline">
         <h2> {{'openlmisSystemNotifications.systemNotifications' | message}} </h2>
