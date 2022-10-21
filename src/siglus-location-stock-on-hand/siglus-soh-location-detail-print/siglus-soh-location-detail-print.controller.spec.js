@@ -64,4 +64,16 @@ describe('SiglusSohLocationDetailPrintController', function() {
             expect(vm.getProductName()).toEqual(productName);
         });
     });
+
+    describe('getStringWithoutEmpty method', function() {
+        it('should return N/A when data is empty', function() {
+
+            expect(vm.getStringWithoutEmpty('')).toEqual('N/A');
+        });
+
+        it('should return data when data is not empty', function() {
+
+            expect(vm.getStringWithoutEmpty('data')).toEqual('data');
+        });
+    });
 });

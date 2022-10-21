@@ -59,5 +59,9 @@
             var unit = vm.stockCard.displayUnit;
             return _.isEmpty(unit) ? vm.stockCard.productName : vm.stockCard.productName + ' - ' + unit;
         };
+
+        vm.getStringWithoutEmpty = function(data) {
+            return _.isEmpty(data) ? 'N/A' : data;
+        };
     }
 })();
