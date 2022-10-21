@@ -40,6 +40,7 @@
 
         vm.getReason = getReason;
         vm.$onInit = onInit;
+        vm.addPrefixForAdjustmentReason = addPrefixForAdjustmentReason;
 
         $scope.$on('$destroy', function() {
             $window.onunload = null;
