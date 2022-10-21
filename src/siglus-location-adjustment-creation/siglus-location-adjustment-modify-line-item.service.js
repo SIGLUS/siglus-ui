@@ -126,19 +126,19 @@
             };
         };
 
-        this.getAddProductRow = function(orderable) {
+        this.getAddProductRow = function(product) {
             return {
                 $errors: {},
-                orderable: orderable,
-                orderableId: orderable.id,
-                productCode: orderable.productCode,
-                productName: $filter('productName')(orderable),
+                orderable: product,
+                orderableId: product.orderableId,
+                productCode: product.productCode,
+                productName: $filter('productName')(product),
                 lot: null,
                 stockOnHand: 0,
-                isKit: orderable.isKit,
+                isKit: product.isKit,
                 isMainGroup: true,
                 location: null,
-                programId: _.get(orderable.programs, [0, 'programId'], ''),
+                programId: product.programId,
                 reason: null,
                 reasonFreeText: null,
                 documentationNo: null,
@@ -163,14 +163,14 @@
             return stockOnHand;
         }
 
-        function getProgramId(orderableGroups, lineItem) {
-            var items = _.find(orderableGroups, function(group) {
-                return _.get(_.first(group), ['orderable', 'id']) === lineItem.orderableId;
+        function getProgramId(productList, lineItem) {
+            var item = _.find(productList, function(product) {
+                return product.orderableId === lineItem.orderableId;
             });
-            return _.get(_.first(items), ['orderable', 'programs', 0, 'programId'], '');
+            return item.programId;
         }
 
-        function mapDataToDisplay(group, isMainGroup, locations, orderableGroups) {
+        function mapDataToDisplay(group, isMainGroup, locations, productList) {
             return _.map(group, function(item) {
                 var lot = item.lotCode ? {
                     id: item.lotId,
@@ -189,7 +189,7 @@
                     stockOnHand: baseInfo.isKit ? getKitStockOnHand(baseInfo) : _.get(lot, ['stockOnHand'], 0),
                     location: location,
                     isMainGroup: isMainGroup,
-                    programId: getProgramId(orderableGroups, item)
+                    programId: getProgramId(productList, item)
                 });
             });
         }
@@ -199,164 +199,96 @@
                 [item.location.locationCode, 0, 'stockOnHand'], 0);
         }
 
-        /* todo  add lotoption locationOption and locationsInfo to item */
-        this.prepareAddedLineItems = function(draftInfo, locations,  orderableGroups, reasons, areaLocationInfo) {
+        this.prepareAddedLineItems = function(draftInfo, locations,  productList, reasons, areaLocationInfo) {
             var $this = this;
             var lineItems = _.get(draftInfo, 'lineItems', []);
-            var mapOfIdAndOrderable = getMapOfIdAndOrderable(orderableGroups);
-            return getMapOfIdAndLot(lineItems).then(function(mapOfIdAndLot) {
-                var lineItemList =  lineItems.map(function(draftLineItem) {
-                    return $q(function(resolve) {
-                        // set default value for orderable
-                        var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {
-                            programs: [],
-                            dispensable: {}
-                        };
-                        var lot = mapOfIdAndLot[draftLineItem.lotId] || {};
-                        lot.lotCode = draftLineItem.lotCode;
-                        lot.expirationDate = draftLineItem.expirationDate;
-                        var soh =  0;
-                        var newItem = {
-                            $errors: {},
-                            $previewSOH: soh,
-                            orderable: orderable,
-                            lot: lot,
-                            stockOnHand: soh,
-                            occurredDate: draftLineItem.occurredDate,
-                            programId: draftLineItem.programId,
-                            documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber
-                        };
+            var lineItemList =  lineItems.map(function(draftLineItem) {
+                var product = _.find(productList, function(item) {
+                    return item.orderableId === draftLineItem.orderableId;
+                }) || {
+                    programs: [],
+                    dispensable: {}
+                };
+                var lot =
+                          SiglusLocationCommonUtilsService.getLotByLotId(locations, draftLineItem.lotId) || {};
+                var soh =  0;
+                var newItem = {
+                    $errors: {},
+                    $previewSOH: soh,
+                    orderable: product,
+                    orderableId: draftLineItem.orderableId,
+                    lot: lot,
+                    stockOnHand: soh,
+                    occurredDate: draftLineItem.occurredDate,
+                    programId: draftLineItem.programId,
+                    documentationNo: draftLineItem.documentationNo || draftLineItem.documentNumber,
+                    isKit: product.isKit
+                };
 
-                        var orderableId = draftLineItem.orderableId;
-                        newItem.orderableId = orderableId;
+                var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(product.orderableId,
+                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true));
 
-                        var newItemCopy = angular.copy(newItem);
-
-                        delete newItemCopy.location;
-                        var lotOptions = SiglusLocationCommonUtilsService.getLotList(
-                            newItemCopy,
-                            SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true)
-                        );
-
-                        newItem.lotOptionsClone = _.clone(lotOptions);
-                        newItem.locationOptionsClone = _.clone(areaLocationInfo);
-                        newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
-                        var locationsClone = angular.copy(locations);
-                        var locationsInfo = _.chain(locationsClone).map(function(location) {
-                            location.lots =  _.filter(location.lots, function(lotItem) {
-                                return lotItem.orderableId === orderableId;
-                            });
-                            return location;
-                        })
-                            .filter(function(location) {
-                                return location.lots.length  > 0;
-                            })
-                            .value();
-
-                        newItem.locationsInfo = locationsInfo;
-                        newItem = _.extend(draftLineItem, newItem);
-                        var filteredReasons = filterReasonsByProduct(reasons, newItem.orderable.programs);
-                        newItem.reason = _.find(filteredReasons, function(reason) {
-                            return reason.id === draftLineItem.reasonId;
+                newItem.lotOptionsClone = _.clone(lotOptions);
+                newItem.locationOptionsClone = _.clone(areaLocationInfo);
+                var locationsInfo = _.chain(angular.copy(locations))
+                    .map(function(location) {
+                        location.lots =  _.filter(location.lots, function(lotItem) {
+                            return lotItem.orderableId === product.orderableId;
                         });
+                        return location;
+                    })
+                    .filter(function(location) {
+                        return location.lots.length  > 0;
+                    })
+                    .value();
 
-                        if (newItem.locationCode) {
-                            newItem.location = _.find(areaLocationInfo, function(item) {
-                                return item.locationCode === newItem.locationCode;
-                            });
-                        }
+                newItem.locationsInfo = locationsInfo;
+                newItem = _.extend(draftLineItem, newItem);
 
-                        if (_.get(newItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
-                            newItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
-                                newItem,
-                                SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(newItem.locationsInfo)
-                            );
-                            newItem.lotOptions = SiglusLocationCommonUtilsService.getLotList(
-                                newItem,
-                                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(newItem.locationsInfo)
-                            );
-                        } else {
-                            newItem.lotOptions = lotOptions;
-                            newItem.locationOptions = areaLocationInfo;
-                        }
+                newItem.reason = _.find(reasons, function(reason) {
+                    return draftLineItem.reasonId === reason.id;
+                });
 
-                        resolve(newItem);
+                if (newItem.locationCode) {
+                    newItem.location = _.find(areaLocationInfo, function(item) {
+                        return item.locationCode === newItem.locationCode;
                     });
-                });
+                }
 
-                return $q.all(lineItemList).then(function(results) {
-                    return  _.chain(results)
-                        .groupBy('orderableId')
-                        .values()
-                        .map(function(group) {
-                            if (group.length === 1) {
-                                return mapDataToDisplay(group, true, locations, orderableGroups);
-                            }
-                            var firstRow = $this.getMainGroupRow(group[0]);
-                            var result = [];
-                            result.push(firstRow);
-
-                            var childrenLineItems =
-                        mapDataToDisplay(group, false, locations, orderableGroups);
-                            return result.concat(childrenLineItems);
-                        })
-                        .value();
-                });
+                if (_.get(newItem, ['reason', 'reasonType']) === REASON_TYPES.DEBIT) {
+                    newItem.locationOptions = SiglusLocationCommonUtilsService.getLocationList(
+                        newItem,
+                        SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(newItem.locationsInfo)
+                    );
+                    newItem.lotOptions = SiglusLocationCommonUtilsService.getLotList(
+                        newItem,
+                        SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(newItem.locationsInfo)
+                    );
+                } else {
+                    newItem.lotOptions = lotOptions;
+                    newItem.locationOptions = areaLocationInfo;
+                }
+                return newItem;
 
             });
-        };
 
-        function getMapOfIdAndOrderable(orderableGroups) {
-            var mapOfIdAndOrderable = {};
-            _.forEach(orderableGroups, function(og) {
-                og.forEach(function(orderableWrapper) {
-                    var orderable = orderableWrapper.orderable;
-                    var id = orderableWrapper.orderable.id;
-                    mapOfIdAndOrderable[id] = orderable;
-                });
-            });
-            return mapOfIdAndOrderable;
-        }
+            return _.chain(lineItemList)
+                .groupBy('orderableId')
+                .values()
+                .map(function(group) {
+                    if (group.length === 1) {
+                        return mapDataToDisplay(group, true, locations, productList);
+                    }
+                    var firstRow = $this.getMainGroupRow(group[0]);
+                    var result = [];
+                    result.push(firstRow);
 
-        function getMapOfIdAndLot(lineItems) {
-            var ids = _
-                .chain(lineItems)
-                .map(function(draftLineItem) {
-                    return draftLineItem.lotId;
-                })
-                .uniq()
-                .filter(function(id) {
-                    return !(_.isEmpty(id));
+                    var childrenLineItems =
+                        mapDataToDisplay(group, false, locations, productList);
+                    return result.concat(childrenLineItems);
                 })
                 .value();
-            if (_.isEmpty(ids)) {
-                return $q.resolve({});
-            }
-            return new LotRepositoryImpl().query({
-                id: ids
-            }).
-                then(function(data) {
-                    var mapOfIdAndLot = {};
-                    _.forEach(data.content, function(lot) {
-                        mapOfIdAndLot[lot.id] = lot;
-                    });
-                    return mapOfIdAndLot;
-                });
-        }
-
-        function filterReasonsByProduct(reasons, programs) {
-            var programIds = [];
-            programs.forEach(function(program) {
-                programIds.push(program.programId);
-            });
-            var updatedReasons = [];
-            reasons.forEach(function(reason) {
-                if (programIds.indexOf(reason.programId) !== -1) {
-                    updatedReasons.push(reason);
-                }
-            });
-            return updatedReasons;
-        }
+        };
     }
 
 })();

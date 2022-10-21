@@ -15,14 +15,13 @@
 
 describe('siglusLocationAdjustmentModifyLineItemService', function() {
 
-    var siglusLocationAdjustmentModifyLineItemService, OrderableDataBuilder, $filter, dateUtils,
+    var siglusLocationAdjustmentModifyLineItemService, $filter, dateUtils,
         ReasonDataBuilder;
 
     function prepareInjector() {
         inject(function($injector) {
             siglusLocationAdjustmentModifyLineItemService
             = $injector.get('siglusLocationAdjustmentModifyLineItemService');
-            OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             $filter = $injector.get('$filter');
             dateUtils =  $injector.get('dateUtils');
             ReasonDataBuilder = $injector.get('ReasonDataBuilder');
@@ -162,22 +161,31 @@ describe('siglusLocationAdjustmentModifyLineItemService', function() {
 
     describe('getAddProductRow method', function() {
         it('should add two rows when current lineItems length is one ', function() {
-            var orderable =  new OrderableDataBuilder().build();
 
-            var newLineItem =  siglusLocationAdjustmentModifyLineItemService.getAddProductRow(orderable);
+            var product = {
+                productCode: '29A13',
+                orderableId: 'eaa33427-de8e-49ed-aa82-cd71d332b809',
+                fullProductName: '96 Deep Well Plates (1x32DWP)(Covid 19); N/A; N/A - each',
+                isKit: false,
+                programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad',
+                dispensable: {
+                    displayUnit: 'each'
+                }
+            };
+            var newLineItem =  siglusLocationAdjustmentModifyLineItemService.getAddProductRow(product);
 
             expect(newLineItem).toEqual({
                 $errors: {},
-                orderable: orderable,
-                orderableId: orderable.id,
-                productCode: orderable.productCode,
-                productName: $filter('productName')(orderable),
+                orderable: product,
+                orderableId: 'eaa33427-de8e-49ed-aa82-cd71d332b809',
+                productCode: '29A13',
+                productName: $filter('productName')(product),
                 lot: null,
                 stockOnHand: 0,
-                isKit: orderable.isKit,
+                isKit: product.isKit,
                 isMainGroup: true,
                 location: null,
-                programId: _.get(orderable.programs, [0, 'programId'], ''),
+                programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad',
                 reason: null,
                 reasonFreeText: null,
                 documentationNo: null,
@@ -190,14 +198,37 @@ describe('siglusLocationAdjustmentModifyLineItemService', function() {
     describe('prepareAddedLineItems method', function() {
         it('should add two rows when current lineItems length is one ', function() {
             var reasons = [new ReasonDataBuilder().build()];
-            var orderableGroups = [];
+            var productList = [{
+                productCode: '29A13',
+                orderableId: 'eaa33427-de8e-49ed-aa82-cd71d332b809',
+                fullProductName: '96 Deep Well Plates (1x32DWP)(Covid 19); N/A; N/A - each',
+                isKit: false,
+                programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad',
+                dispensable: {
+                    displayUnit: 'each'
+                }
+            }];
             var locations = [];
             var areaLocationInfo = [];
             var darftInfo = {
-                lineItems: []
+                lineItems: [
+                    {
+                        productCode: '29A13',
+                        orderableId: 'eaa33427-de8e-49ed-aa82-cd71d332b809',
+                        fullProductName: '96 Deep Well Plates (1x32DWP)(Covid 19); N/A; N/A - each',
+                        isKit: false,
+                        reasonId: '0000123-123ahsdfoasdf-123123',
+                        lotCode: 'LTE-OTE-202012',
+                        locationCode: 'AA202',
+                        programId: 'a24f19a8-3743-4a1a-a919-e8f97b5719ad',
+                        dispensable: {
+                            displayUnit: 'each'
+                        }
+                    }
+                ]
             };
             var newLineItem =  siglusLocationAdjustmentModifyLineItemService
-                .prepareAddedLineItems(darftInfo, locations, orderableGroups, reasons, areaLocationInfo);
+                .prepareAddedLineItems(darftInfo, locations, productList, reasons, areaLocationInfo);
 
             expect(newLineItem).not.toEqual([]);
         });

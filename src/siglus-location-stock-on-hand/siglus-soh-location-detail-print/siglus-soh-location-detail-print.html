@@ -12,8 +12,8 @@
             <div class="report-info">{{ 'sohLocationPrint.product' | message }}:{{vm.getProductName()}}</div>
             <div class="report-info">{{ 'stockCard.productCode' | message }}:{{vm.stockCard.productCode}}</div>
             <div class="report-info">{{ 'stockCard.stockOnHand' | message }}:{{vm.stockCard.stockOnHand}}</div>
-            <div class="report-info">{{ 'stockCard.lot' | message }}:{{vm.stockCard.lotCode}}</div>
-            <div class="report-info">{{ 'stockCard.expiryDate' | message}}:{{vm.stockCard.expiryDate}}</div>
+            <div class="report-info">{{ 'stockCard.lot' | message }}:{{vm.getStringWithoutEmpty(vm.stockCard.lotCode)}}</div>
+            <div class="report-info">{{ 'stockCard.expiryDate' | message}}:{{vm.getStringWithoutEmpty(vm.stockCard.expiryDate)}}</div>
             <div class="report-info">{{ 'stockPhysicalInventoryDraft.location' | message }}:{{vm.stockCard.locationCode}}</div>
         </div>
     </div>

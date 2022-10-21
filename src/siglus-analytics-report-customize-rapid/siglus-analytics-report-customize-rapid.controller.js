@@ -73,7 +73,7 @@
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
             vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.startDate);
+            vm.month = getMonth(requisition.processingPeriod.endDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
