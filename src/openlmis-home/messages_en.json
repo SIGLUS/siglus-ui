@@ -5,5 +5,8 @@
 	"openlmisHome.localMachineVersion": "Local machine version",
 	"openlmisHome.lastSyncTime": "Last sync time",
 	"openlmisHome.syncedSuccessfullyAt": "Auto synced successfully at",
-	"openlmisHome.sync": "Sync"
+	"openlmisHome.sync": "Sync",
+	"localmachine.no.data.need.to.be.exported": "There is no data to be exported",
+	"localmachine.invalid.file.type.or.file.may.be.modified": "File may be modified",
+	"localmachine.file.receiver.not.match.current.facility": "The receiver of the file you imported is not your facility, please import the file with your facility as the receiver"
 }

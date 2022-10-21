@@ -70,7 +70,7 @@
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.historyComments = getHistoryComments(requisition.statusHistory);
             vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.startDate);
+            vm.month = getMonth(requisition.processingPeriod.endDate);
             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,

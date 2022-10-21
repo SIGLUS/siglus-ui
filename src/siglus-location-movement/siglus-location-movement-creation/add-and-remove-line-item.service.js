@@ -356,14 +356,14 @@
             if (lineItem.isFirst) {
                 var mainGroupRow = getRowTemplateDataForPod(copy);
                 mainGroupRow.isMainGroup = true;
-                groupedLineItems.splice(0, 0, mainGroupRow);
+                groupedLineItems.splice(index, 0, mainGroupRow);
                 lineItem.isFirst = false;
                 lineItem.quantityRejected = undefined;
             }
             var count = groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
             }).length;
-            groupedLineItems.splice(count, 0, getRowTemplateDataForPod(copy));
+            groupedLineItems.splice(index + count, 0, getRowTemplateDataForPod(copy));
         };
         this.removeItemForPod = function(lineItem, index, groupedLineItems) {
             var count = groupedLineItems.filter(function(line) {

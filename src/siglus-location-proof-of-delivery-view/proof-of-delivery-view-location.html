@@ -101,10 +101,8 @@
                 <td ng-if="!fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">{{fulfillingLineItem.lot.expirationDate}}</td>
                 <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
                 <!-- #400: ends here -->
-                <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{orderLineItem.orderedQuantity}}</td>
-                <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
-                <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{orderLineItem.partialFulfilledQuantity}}</td>
-                <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+                <td ></td>
+                <td ></td>
 
                 <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">{{fulfillingLineItem.quantityShipped}}</td>
                 <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
@@ -198,10 +196,10 @@
                 <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     <input type="text" ng-model="fulfillingLineItem.notes"/>
                 </td>
-                <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
-                <td ng-if="!vm.canEdit">
+                <td ng-if="!vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
                     {{fulfillingLineItem.notes}}
                 </td>
+                <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
 
                 <td ng-if="vm.canEdit">
                     <button style="padding: 8px;"

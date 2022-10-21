@@ -802,17 +802,7 @@
                                 vm.deliveredBy = res.deliveredBy;
                                 vm.receivedBy = res.receivedBy;
                                 vm.receivedDate = res.receivedDate;
-                                var orderCodeArray = vm.orderCode.split('-');
-                                // if (fileNameArray[fileNameArray.length - 1])
-                                if (orderCodeArray.length > 2) {
-                                    var leftString =
-                                        orderCodeArray[orderCodeArray.length - 1] < 10
-                                            ? '0' + orderCodeArray[orderCodeArray.length - 1]
-                                            : orderCodeArray[orderCodeArray.length - 1];
-                                    vm.fileName = res.fileName + '/' + leftString;
-                                } else {
-                                    vm.fileName = res.fileName + '/' + '01';
-                                }
+                                vm.fileName = res.fileName;
                                 vm.requisitionId = res.requisitionId;
                                 vm.requisitionNum = res.requisitionNum;
                             });
