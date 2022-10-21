@@ -14,13 +14,12 @@
  */
 
 describe('siglusSohLocationDetailController', function() {
-    var vm, facility, $controller, stockCardService, localStorageService;
+    var vm, facility, $controller, localStorageService;
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            stockCardService = $injector.get('stockCardService');
             localStorageService = $injector.get('localStorageService');
         });
     }
