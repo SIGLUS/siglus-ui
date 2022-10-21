@@ -17,18 +17,7 @@
 
     'use strict';
 
-    /**
-     * @module stock-card
-     *
-     * @description
-     * Provides stock card state and controller for viewing one single stock card.
-     */
-    angular.module('siglus-soh-lot-detail', [
-        'stockmanagement',
-        'openlmis-auth',
-        'stock-reasons-modal',
-        'siglus-soh-lot-detail-print'
-    ]);
+    angular.module('siglus-soh-lot-detail-print', []);
 
 })();
 

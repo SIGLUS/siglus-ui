@@ -1,0 +1,55 @@
+<div class="soh-product-detail-print">
+    <div class="header-container">
+        <div class="report-title">
+            <div>{{'sohLocationPrint.title' | message }}</div>
+            <div style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</div>
+        </div>
+        <div class="report-info-container">
+            <div class="report-info">{{ 'stockCard.facilityName' | message }}:{{vm.facility.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}:{{vm.facility.code}}</div>
+            <div class="report-info">{{ 'stockCard.program' | message }}:{{vm.program.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}:{{vm.program.code}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.product' | message }}:{{vm.stockCard.orderable | productName}}</div>
+            <div class="report-info">{{ 'stockCard.productCode' | message }}:{{vm.stockCard.orderable.productCode}}</div>
+            <div class="report-info">{{ 'stockCard.stockOnHand' | message }}:{{vm.stockCard.stockOnHand}}</div>
+            <div class="report-info">{{ 'stockCard.lot' | message }}:{{vm.stockCard.lot.lotCode}}</div>
+            <div class="report-info">{{ 'stockCard.expiryDate' | message}}:{{vm.stockCard.lot.expirationDate | openlmisDate}}</div>
+            <div class="report-info">{{ 'stockPhysicalInventoryDraft.location' | message }}:{{vm.stockCard.extraData.locationCode}}</div>
+        </div>
+    </div>
+    <section>
+        <table border cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th style="width: 116px;">{{'stockCard.date' | message}}</th>
+                <th style="width: 116px;">{{'stockCard.from' | message}}</th>
+                <th style="width: 120px;">{{'stockCard.to' | message}}</th>
+                <th style="width: 196px;">{{'stockCard.reason' | message}}</th>
+                <th style="width: 91px;">{{'stockCard.adjustment' | message}}</th>
+                <th style="width: 123px;">{{'stockCard.soh' | message}}</th>
+                <th style="width: 222px;">{{'stockCard.documentNumber' | message}}</th>
+                <th style="width: 103px;">{{'stockCard.signature' | message}}</th>
+            </tr>
+            <tbody>
+            <tr ng-repeat="lineItem in vm.stockCard.lineItems track by $index">
+                <td>{{lineItem.occurredDate | openlmisDate}}</td>
+                <td>
+                    {{lineItem.sourceFreeText ? ('stockCard.srcDstAndFreeText' |
+                    message: {name:lineItem.source.name, freeText: lineItem.sourceFreeText}) : lineItem.source.name}}
+                </td>
+                <td>
+                    {{lineItem.destinationFreeText ? ('stockCard.srcDstAndFreeText' |
+                    message: {name:lineItem.destination.name, freeText: lineItem.destinationFreeText}) : lineItem.destination.name}}
+                </td>
+                <td>
+                    {{ vm.getReason(lineItem) }}
+                </td>
+                <td class="text-align-right">{{lineItem.quantity}}</td>
+                <td class="text-align-right">{{lineItem.stockOnHand}}</td>
+                <td>{{lineItem.documentNumber}}</td>
+                <td>{{lineItem.signature}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
