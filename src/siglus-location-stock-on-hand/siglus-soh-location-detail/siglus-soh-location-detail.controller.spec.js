@@ -14,18 +14,18 @@
  */
 
 describe('siglusSohLocationDetailController', function() {
-    var vm, facility, $controller, stockCardService;
+    var vm, facility, $controller, localStorageService;
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            stockCardService = $injector.get('stockCardService');
+            localStorageService = $injector.get('localStorageService');
         });
     }
 
     function prepareSpies() {
-        spyOn(stockCardService, 'print').andReturn();
+        spyOn(localStorageService, 'add').andReturn();
     }
 
     function prepareData() {
@@ -58,11 +58,11 @@ describe('siglusSohLocationDetailController', function() {
     });
 
     describe('print method', function() {
-        it('should call print product service by orderableId', function() {
+        it('should save data by local storage service when print', function() {
             vm.$onInit();
             vm.print();
 
-            expect(stockCardService.print).toHaveBeenCalledWith('2ee6bbf4-cfcf-11e9-9535-0242ac130005');
+            expect(localStorageService.add).toHaveBeenCalled();
         });
     });
 

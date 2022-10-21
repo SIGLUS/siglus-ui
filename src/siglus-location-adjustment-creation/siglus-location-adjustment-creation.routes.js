@@ -41,15 +41,23 @@
                 locations: undefined,
                 user: undefined,
                 facility: undefined,
+                productList: undefined,
+                reasons: undefined,
                 page: '0',
                 size: '10',
                 keyword: ''
             },
             resolve: {
-                facility: function(facilityFactory) {
+                facility: function(facilityFactory, $stateParams) {
+                    if ($stateParams.facility) {
+                        return $stateParams.facility;
+                    }
                     return facilityFactory.getUserHomeFacility();
                 },
-                user: function(authorizationService) {
+                user: function(authorizationService, $stateParams) {
+                    if ($stateParams.user) {
+                        $stateParams.user;
+                    }
                     return authorizationService.getUser();
                 },
                 program: function($stateParams, programService) {
@@ -74,17 +82,11 @@
                     return siglusLocationAdjustmentService
                         .getDraft($stateParams.programId, adjustmentType.state, facility.id, user.user_id);
                 },
-                orderableGroups: function($stateParams, facility, draftInfo, orderableGroupService) {
-                    if (!$stateParams.orderableGroups) {
-                        var allLineOrderableIds = draftInfo[0].lineItems.map(function(line) {
-                            return line.orderableId;
-                        });
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
-                            undefined, allLineOrderableIds
-                        );
+                productList: function(siglusLocationCommonApiService, $stateParams) {
+                    if ($stateParams.productList) {
+                        return $stateParams.productList;
                     }
-                    return $stateParams.orderableGroups;
+                    return siglusLocationCommonApiService.getAllProductList();
                 },
                 areaLocationInfo: function($stateParams, siglusLocationCommonApiService) {
                     if ($stateParams.areaLocationInfo) {
@@ -113,13 +115,13 @@
                 addedLineItems: function(
                     draftInfo, $stateParams,
                     locations, siglusLocationAdjustmentModifyLineItemService,
-                    orderableGroups, reasons, areaLocationInfo
+                    productList, reasons, areaLocationInfo
                 ) {
                     if ($stateParams.addedLineItems) {
                         return $stateParams.addedLineItems;
                     }
                     return siglusLocationAdjustmentModifyLineItemService
-                        .prepareAddedLineItems(draftInfo[0], locations, orderableGroups, reasons, areaLocationInfo);
+                        .prepareAddedLineItems(draftInfo[0], locations, productList, reasons, areaLocationInfo);
                 },
                 displayItems: function($stateParams, siglusLocationDisplayItemFilterService, addedLineItems) {
                     return siglusLocationDisplayItemFilterService

@@ -151,8 +151,6 @@
                 if (firstDayOfPeriodDT > lastMovementDateDT) {
                     return firstDayOfPeriodDT;
                 }
-            } else if (!vm.movementDate && firstDayOfPeriod) {
-                return vm.firstDayOfPeroid;
             }
         }
 

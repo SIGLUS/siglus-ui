@@ -29,12 +29,12 @@
         .controller('HomeSystemNotificationsController', controller);
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
-        'loadingModalService', 'notificationService', 'alertService', 'localStorageService',
+        'loadingModalService', 'notificationService', 'alertService', 'messageService', 'localStorageService',
         'isLocalMachine'];
 
     function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
-                        loadingModalService, notificationService, alertService, localStorageService,
-                        isLocalMachine) {
+                        loadingModalService, notificationService, alertService, messageService,
+                        localStorageService, isLocalMachine) {
 
         var vm = this;
 
@@ -94,8 +94,7 @@
                     notificationService.success('openlmisHome.importSuccess');
                 })
                     .catch(function(error) {
-                        // TODO should be messageKey
-                        alertService.error(error.data.message);
+                        alertService.error(messageService.get(error.data.messageKey));
                     })
                     .finally(loadingModalService.close);
             }
@@ -133,8 +132,7 @@
                     var unit8 = new window.Uint8Array(error.data);
                     var decoded = JSON.parse(decoder.decode(unit8));
                     console.log('decoded error', decoded);
-                    // TODO should be messageKey
-                    alertService.error(decoded.message);
+                    alertService.error(messageService.get(decoded.messageKey));
                 })
                 .finally(loadingModalService.close);
         };
