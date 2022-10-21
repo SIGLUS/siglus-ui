@@ -23,7 +23,7 @@
    * @description
    * Provides stock card state and controller for viewing one single stock card.
    */
-    angular.module('siglus-soh-location-detail', []);
+    angular.module('siglus-soh-location-detail', ['siglus-soh-location-detail-print']);
 
 })();
 

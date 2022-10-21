@@ -2575,4 +2575,8 @@
   "adminFacilityView.activationTips": "Please inform the facility to use the code to activate the local machine.",
   "adminFacilityView.enableLocationTips": "Once you enable the feature, the facility's current movement drafts will be cleared. Are you sure you want to enable it.",
   "openlmisModal.dateConflict": "Invalid date, the lastest movement date has been updated, please refresh the page and try again"
+  "sohLocationPrint.title": "Relatórios de Fichas de stock",
+  "sohLocationPrint.facilityCode": "Código de instalación",
+  "sohLocationPrint.programCode": "Código do programa",
+  "sohLocationPrint.product": "Produtos",
 }

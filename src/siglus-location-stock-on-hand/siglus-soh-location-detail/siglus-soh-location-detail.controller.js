@@ -28,13 +28,13 @@
         .module('siglus-soh-location-detail')
         .controller('siglusSohLocationDetailController', controller);
 
-    controller.$inject = ['stockCard', 'REASON_TYPES', '$state', 'stockCardService', 'confirmService',
+    controller.$inject = ['stockCard', 'REASON_TYPES', '$state', '$window', 'stockCardService', 'confirmService',
         'loadingModalService', 'messageService', 'notificationService', '$stateParams',
-        'paginationService'];
+        'paginationService', 'localStorageService'];
 
-    function controller(stockCard, REASON_TYPES, $state, stockCardService, confirmService, loadingModalService,
-                        messageService, notificationService, $stateParams,
-                        paginationService) {
+    function controller(stockCard, REASON_TYPES, $state, $window, stockCardService, confirmService,
+                        loadingModalService, messageService, notificationService, $stateParams,
+                        paginationService, localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -42,7 +42,9 @@
         vm.displayedLineItems = [];
 
         vm.print = function() {
-            stockCardService.print(vm.stockCard.id);
+            localStorageService.add('stockCardInfoForPrint', angular.toJson(stockCard));
+            var PRINT_URL = $window.location.href.split('!/')[0] + '!/locationManagement/locationDetailPrint';
+            $window.open(PRINT_URL, '_blank');
         };
 
         vm.getProductName = function() {
