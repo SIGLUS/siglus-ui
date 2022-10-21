@@ -25,6 +25,7 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis', {
+            isOffline: true,
             label: 'openlmisMainState.home',
             views: {
                 '@': {

@@ -1,0 +1,5 @@
+{
+    "openlmisMainState.home": "Home",
+    "openlmisMainState.offline": "Network unavailable",
+    "openlmisMainState.online": "Network available"
+}
