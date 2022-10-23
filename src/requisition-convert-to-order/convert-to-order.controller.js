@@ -43,9 +43,6 @@
 
         vm.convertToOrder = convertToOrder;
         vm.releaseWithoutOrder = releaseWithoutOrder;
-        vm.getSelected = getSelected;
-        vm.toggleSelectAll = toggleSelectAll;
-        vm.setSelectAll = setSelectAll;
         vm.search = search;
 
         /**
@@ -139,67 +136,13 @@
         /**
          * @ngdoc method
          * @methodOf requisition-convert-to-order.controller:ConvertToOrderController
-         * @name getSelected
-         *
-         * @description
-         * Returns a list of requisitions selected by user, that are supposed to be converted to
-         *     orders.
-         *
-         * @return {Array} list of selected requisitions
-         */
-        function getSelected() {
-            var selected = [];
-            angular.forEach(vm.requisitions, function(requisition) {
-                if (requisition.$selected) {
-                    selected.push(requisition);
-                }
-            });
-            return selected;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-convert-to-order.controller:ConvertToOrderController
-         * @name toggleSelectAll
-         *
-         * @description
-         * Responsible for marking/unmarking all requisitions as selected.
-         *
-         * @param {Boolean} selectAll Determines if all requisitions should be selected or not
-         */
-        function toggleSelectAll(selectAll) {
-            angular.forEach(vm.requisitions, function(requisition) {
-                requisition.$selected = selectAll;
-            });
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-convert-to-order.controller:ConvertToOrderController
-         * @name setSelectAll
-         *
-         * @description
-         * Responsible for making the checkbox "select all" checked when all requisitions are
-         *     selected by user.
-         */
-        function setSelectAll() {
-            var value = true;
-            angular.forEach(vm.requisitions, function(requisition) {
-                value = value && requisition.$selected;
-            });
-            vm.selectAll = value;
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf requisition-convert-to-order.controller:ConvertToOrderController
          * @name convertToOrder
          *
          * @description
          * Responsible for converting selected requisitions to orders.
          */
-        function convertToOrder() {
-            release(true);
+        function convertToOrder(requisition) {
+            release(true, requisition);
         }
 
         /**
@@ -210,8 +153,8 @@
          * @description
          * Responsible for releasing selected requisitions without creating orders.
          */
-        function releaseWithoutOrder() {
-            release(false);
+        function releaseWithoutOrder(requisition) {
+            release(false, requisition);
         }
 
         /**
@@ -253,8 +196,8 @@
             });
         }
 
-        function release(withOrder) {
-            var requisitions = getSelected();
+        function release(withOrder, requisition) {
+            var  requisitions = [requisition];
             if (requisitions.length > 0) {
                 var missingDepots = requisitions
                     .filter(function(item) {
@@ -292,5 +235,4 @@
             }
         }
     }
-
 })();
