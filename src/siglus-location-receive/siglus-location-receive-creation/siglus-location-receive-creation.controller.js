@@ -29,7 +29,7 @@
         'loadingModalService', 'notificationService', 'paginationService', 'messageService', 'isMerge', 'moment',
         'siglusStockIssueLocationService', 'siglusRemainingProductsModalService', 'alertService',
         'siglusSignatureWithDateModalService', 'program', 'confirmDiscardService', 'siglusDownloadLoadingModalService',
-        'openlmisDateFilter', 'areaLocationInfo'];
+        'openlmisDateFilter', 'areaLocationInfo', 'siglusPrintPalletLabelComfirmModalService'];
 
     function siglusLocationReceiveCreationController($stateParams, $q, $scope, $state, DRAFT_TYPE, draftInfo, facility,
                                                      reasons, initialDraftInfo, locations, addedLineItems, productList,
@@ -44,7 +44,7 @@
                                                      siglusSignatureWithDateModalService, program,
                                                      confirmDiscardService,
                                                      siglusDownloadLoadingModalService, openlmisDateFilter,
-                                                     areaLocationInfo) {
+                                                     areaLocationInfo, siglusPrintPalletLabelComfirmModalService) {
         var vm = this;
 
         vm.areaLocationInfo = areaLocationInfo;
@@ -844,35 +844,42 @@
         vm.submit = function() {
             if (isTableFormValid()) {
                 if (isMerge) {
-                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
-                        .then(function(data) {
-                            loadingModalService.open();
-                            var signature = data.signature;
-                            var occurredDate = data.occurredDate;
-                            var subDrafts = _.uniq(_.map(draftInfo.lineItems, function(item) {
-                                return item.subDraftId;
-                            }));
+                    siglusPrintPalletLabelComfirmModalService.show()
+                        .then(function(result) {
+                            if (result) {
+                                vm.downloadPrint();
+                            }
+                            siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
+                                .then(function(data) {
+                                    loadingModalService.open();
+                                    var signature = data.signature;
+                                    var occurredDate = data.occurredDate;
+                                    var subDrafts = _.uniq(_.map(draftInfo.lineItems, function(item) {
+                                        return item.subDraftId;
+                                    }));
 
-                            downloadPdf();
-                            deferred.promise.then(function() {
-                                siglusStockIssueLocationService.mergeSubmitDraft($stateParams.programId, getLineItems(),
-                                    signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
-                                    .then(function() {
-                                        $scope.needToConfirm = false;
-                                        $state.go('openlmis.locationManagement.stockOnHand', {
-                                            facility: facility.id,
-                                            program: program
-                                        });
-                                    })
-                                    .catch(function(error) {
-                                        loadingModalService.close();
-                                        if (error.data &&
+                                    downloadPdf();
+                                    deferred.promise.then(function() {
+                                        siglusStockIssueLocationService
+                                            .mergeSubmitDraft($stateParams.programId, getLineItems(),
+                                                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
+                                            .then(function() {
+                                                $scope.needToConfirm = false;
+                                                $state.go('openlmis.locationManagement.stockOnHand', {
+                                                    facility: facility.id,
+                                                    program: program
+                                                });
+                                            })
+                                            .catch(function(error) {
+                                                loadingModalService.close();
+                                                if (error.data &&
                                         error.data.businessErrorExtraData === 'subDrafts quantity not match') {
-                                            alertService.error('stockIssueCreation.draftHasBeenUpdated');
-                                        }
+                                                    alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                                                }
+                                            });
                                     });
-                            });
 
+                                });
                         });
 
                 } else {
@@ -895,6 +902,30 @@
             } else {
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
             }
+        };
+
+        vm.downloadPrint = function() {
+            var printLineItems = getLineItems();
+            var newPrintLineItems = _.chain(printLineItems)
+                .map(function(item) {
+                    var result = {};
+                    result.productName = _.get(item, ['productName']);
+                    result.productCode = _.get(item, ['productCode']);
+                    result.lotCode = _.get(item, ['lot', 'lotCode'], null);
+                    result.expirationDate = _.get(item, ['lot', 'expirationDate'], null);
+                    result.location = _.get(item, ['location', 'locationCode']);
+                    var orderableLocationLotsMap = SiglusLocationCommonUtilsService
+                        .getOrderableLocationLotsMap(locations);
+                    var totalQuantity = getSoh(item, orderableLocationLotsMap);
+                    result.pallet = Number(totalQuantity) +  _.get(item, ['quantity']);
+                    result.pack = null;
+                    return result;
+                })
+                .filter(function(item) {
+                    return item.pallet > 0;
+                })
+                .value();
+            vm.printLineItems = newPrintLineItems;
         };
 
         function filterProductList() {
