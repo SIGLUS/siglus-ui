@@ -559,7 +559,9 @@ describe('requisitionService', function() {
                 descending: 'true'
             };
 
-        this.$httpBackend.whenGET(this.requisitionUrlFactory('/api/requisitions/requisitionsForConvert?descending=' +
+        this.$httpBackend
+            .whenGET(this.
+                requisitionUrlFactory('/api/siglusapi/requisitions/requisitionsForConvertToOrder?descending=' +
             params.descending + '&filterBy=' + params.filterBy + '&filterValue=' + params.filterValue + '&sortBy=' +
             params.sortBy))
 

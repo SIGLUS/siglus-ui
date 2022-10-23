@@ -37,6 +37,7 @@
         orderRepository.search = search;
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         orderRepository.searchFulfill = searchFulfill;
+        orderRepository.closeOrder = closeOrder;
         // #447: ends here
 
         /**
@@ -114,6 +115,11 @@
                 });
         }
         // #447: ends here
+        function closeOrder(orderId) {
+            return orderService.closeOrder(orderId).then(function(response) {
+                return response;
+            });
+        }
     }
 
 })();

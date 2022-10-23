@@ -2578,5 +2578,10 @@
   "sohLocationPrint.title": "Relatórios de Fichas de stock",
   "sohLocationPrint.facilityCode": "Código de instalación",
   "sohLocationPrint.programCode": "Código do programa",
-  "sohLocationPrint.product": "Produtos"
+  "sohLocationPrint.product": "Produtos",
+
+  "orderFulfillment.closeFulfillment": "Close Fulfillment",
+  "orderFulfillment.expiredMessage": "This order has expired, it cannot be fulfilled, please close the fulfillment.",
+  "orderFulfillment.closeConfirm":"Are you sure to close this fulfillment?",
+  "requisitionConvertToOrder.expiredMessage": "The Requisition or Report has expired, please release it without order."
 }

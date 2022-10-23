@@ -61,6 +61,10 @@
             retry: {
                 method: 'GET',
                 url: fulfillmentUrlFactory('/api/orders/:id/retry')
+            },
+            closeOrder: {
+                method: 'PUT',
+                url: fulfillmentUrlFactory('/api/siglusapi/orders/:id')
             }
         });
 
@@ -72,6 +76,7 @@
         // #401: ends here
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         this.searchFulfill = searchFulfill;
+        this.closeOrder = closeOrder;
         // #447: ends here
 
         /**
@@ -130,6 +135,11 @@
             return resource.get(params).$promise;
         }
 
+        function closeOrder(orderId) {
+            return resource.closeOrder({
+                id: orderId
+            }, {}).$promise;
+        }
         // #401: get closed & suborder status from backend
         /**
          * @ngdoc method

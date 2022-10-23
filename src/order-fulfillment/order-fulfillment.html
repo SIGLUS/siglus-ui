@@ -32,7 +32,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="order in vm.orders">
+    <tr ng-repeat="order in vm.orders" empty-row="order.expired" empty-row-message="{{'orderFulfillment.expiredMessage' | message}}" empty-row-col-span="8">
       <td class="col-emergency">
         <i ng-class="{'icon-ok': order.emergency}"></i>
       </td>
@@ -45,13 +45,19 @@
       <td>{{order.processingPeriod.name}}</td>
       <td>{{order.createdDate | openlmisDate}}</td>
       <td ng-if="!vm.enableLocationModule">
-        <button ui-sref="openlmis.orders.shipmentView({id: order.id})">
+        <button ng-if="!order.expired" ui-sref="openlmis.orders.shipmentView({id: order.id})">
           {{order.isFulfilling() ? 'orderFulfillment.continueFulfillment' : 'orderFulfillment.startFulfillment' | message}}
+        </button>
+        <button class="danger" ng-if="order.expired" ng-click="vm.closeFulfillment(order.id)">
+          {{'orderFulfillment.closeFulfillment' | message}}
         </button>
       </td>
       <td ng-if="vm.enableLocationModule">
-        <button ui-sref="openlmis.orders.locationShipmentView({id: order.id})">
+        <button ng-if="!order.expired" ui-sref="openlmis.orders.locationShipmentView({id: order.id})">
           {{order.isFulfilling() ? 'orderFulfillment.continueFulfillment' : 'orderFulfillment.startFulfillment' | message}}
+        </button>
+        <button class="danger" ng-if="order.expired" ng-click="vm.closeFulfillment(order.id)">
+          {{'orderFulfillment.closeFulfillment' | message}}
         </button>
       </td>
     </tr>
