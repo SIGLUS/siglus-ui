@@ -103,7 +103,13 @@
         function searchFulfill(searchParams) {
             return orderService.searchFulfill(searchParams)
                 .then(function(response) {
-                    response.content = basicOrderFactory.buildFromResponseArray(response.content);
+                    var content = angular.copy(response.content);
+                    content =  _.map(content, function(contentItem) {
+                        contentItem.basicOrder.expired = contentItem.expired;
+                        return contentItem.basicOrder;
+                    });
+                    response.content = basicOrderFactory.buildFromResponseArray(content);
+
                     return response;
                 });
         }
