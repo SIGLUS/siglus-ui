@@ -39,10 +39,9 @@
         'siglusRequisitionDatePickerService', 'alertService', 'dateUtils',
         'moment',
         'inventoryDates', 'program',
-        'hasAuthorizeRight', 'facility', 'facilityFactory'
+        'hasAuthorizeRight', 'siglusHomeFacilityService'
     ];
 
-    //NOSONAR
     function Controller(requisitionService, $state, loadingModalService,
                         notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods,
@@ -50,7 +49,7 @@
                         confirmService, siglusRequisitionInitiateService, REQUISITION_STATUS,
                         siglusRequisitionDatePickerService, alertService, dateUtils, moment,
                         inventoryDates, program,
-                        hasAuthorizeRight, facility, facilityFactory) {
+                        hasAuthorizeRight, siglusHomeFacilityService) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
@@ -98,10 +97,6 @@
 
         vm.program = undefined;
 
-        // vm.facility = undefined;
-        // vm.enableLocation = facility.enableLocationManagement;
-        // console.log('el', vm.enableLocation);
-
         /**
      * @ngdoc method
      * @methodOf requisition-initiate.controller:RequisitionInitiateController
@@ -117,10 +112,6 @@
             vm.hasAuthorizeRight = hasAuthorizeRight;
             vm.inventoryDates = inventoryDates;
             vm.program = program;
-            facilityFactory.getUserHomeFacility()
-                .then(function(res) {
-                    vm.facility = res;
-                });
         }
 
         function isCurrentSubmitDuration(period) {
@@ -214,11 +205,16 @@
                                 'requisitionInitiate.confirm.button'
                             )
                                 .then(function() {
-                                    if (facility.enableLocationManagement) {
-                                        goToPhysicalInventoryWithLocation();
-                                    } else {
-                                        goToPhysicalInventory();
-                                    }
+                                    siglusHomeFacilityService.getLocationEnableStatus().then(
+                                        function(enableLocationManagement) {
+                                            if (enableLocationManagement) {
+                                                goToPhysicalInventoryWithLocation();
+                                            } else {
+                                                goToPhysicalInventory();
+                                            }
+                                        }
+                                    );
+
                                 }, function() {
                                     loadingModalService.close();
                                 });
@@ -268,12 +264,7 @@
         }
 
         function goToPhysicalInventoryWithLocation() {
-            $state.go(
-                'openlmis.locationManagement.physicalInventory.draftList.draft',
-                {
-                    programId: $stateParams.replaceId || vm.program.id
-                }
-            );
+            $state.go('openlmis.locationManagement.physicalInventory');
         }
 
         function checkProceedButton(period, idx) {

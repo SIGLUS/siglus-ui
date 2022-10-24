@@ -14,7 +14,7 @@
  */
 
 describe('StockCardForProductController', function() {
-    var vm, facility, $controller, stockCardService, $scope, $rootScope;
+    var vm, facility, $controller, $scope, $rootScope, localStorageService;
     // SIGLUS-REFACTOR: ends here
 
     function prepareInjector() {
@@ -22,13 +22,12 @@ describe('StockCardForProductController', function() {
             $controller = $injector.get('$controller');
             $rootScope = $injector.get('$rootScope');
             $scope = $rootScope.$new();
-            stockCardService = $injector.get('stockCardService');
+            localStorageService = $injector.get('localStorageService');
         });
     }
 
     function prepareSpies() {
-        spyOn(stockCardService, 'printByProduct').andReturn();
-        spyOn(stockCardService, 'print').andReturn();
+        spyOn(localStorageService, 'add').andReturn();
     }
 
     function prepareData() {
@@ -61,11 +60,11 @@ describe('StockCardForProductController', function() {
     });
 
     describe('print method', function() {
-        it('should call print product service by orderableId', function() {
+        it('should save data by local storage service when invoke print', function() {
             vm.$onInit();
             vm.print();
 
-            expect(stockCardService.printByProduct).toHaveBeenCalledWith('2ee6bbf4-cfcf-11e9-9535-0242ac130005');
+            expect(localStorageService.add).toHaveBeenCalled();
         });
     });
 

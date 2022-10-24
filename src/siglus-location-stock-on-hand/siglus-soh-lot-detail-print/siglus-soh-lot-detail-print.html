@@ -14,7 +14,9 @@
             <div class="report-info">{{ 'stockCard.stockOnHand' | message }}:{{vm.stockCard.stockOnHand}}</div>
             <div class="report-info">{{ 'stockCard.lot' | message }}:{{vm.stockCard.lot.lotCode}}</div>
             <div class="report-info">{{ 'stockCard.expiryDate' | message}}:{{vm.stockCard.lot.expirationDate | openlmisDate}}</div>
-            <div class="report-info">{{ 'stockPhysicalInventoryDraft.location' | message }}:{{vm.stockCard.extraData.locationCode}}</div>
+            <div ng-if="vm.stockCard.extraData.locationCode" class="report-info">
+                {{ 'stockPhysicalInventoryDraft.location' | message }}:{{vm.stockCard.extraData.locationCode}}
+            </div>
         </div>
     </div>
     <section>
