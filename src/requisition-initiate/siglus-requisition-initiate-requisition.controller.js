@@ -42,7 +42,6 @@
         'hasAuthorizeRight', 'siglusHomeFacilityService'
     ];
 
-    //NOSONAR
     function Controller(requisitionService, $state, loadingModalService,
                         notificationService, REQUISITION_RIGHTS,
                         permissionService, authorizationService, $stateParams, periods,
@@ -206,11 +205,16 @@
                                 'requisitionInitiate.confirm.button'
                             )
                                 .then(function() {
-                                    if (facility.enableLocationManagement) {
-                                        goToPhysicalInventoryWithLocation();
-                                    } else {
-                                        goToPhysicalInventory();
-                                    }
+                                    siglusHomeFacilityService.getLocationEnableStatus().then(
+                                        function(enableLocationManagement) {
+                                            if (enableLocationManagement) {
+                                                goToPhysicalInventoryWithLocation();
+                                            } else {
+                                                goToPhysicalInventory();
+                                            }
+                                        }
+                                    );
+
                                 }, function() {
                                     loadingModalService.close();
                                 });
