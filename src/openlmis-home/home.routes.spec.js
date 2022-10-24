@@ -89,26 +89,26 @@ describe('openlmis.home route', function() {
         };
     });
 
-    it('should resolve system notifications', function() {
-        this.goToUrl('/home');
+    // it('should resolve system notifications', function() {
+    //     this.goToUrl('/home');
 
-        expect(this.getResolvedValue('homePageSystemNotifications')).toEqual(this.systemNotifications);
-    });
+    //     expect(this.getResolvedValue('homePageSystemNotifications')).toEqual(this.systemNotifications);
+    // });
 
-    it('should resolve a user with correct first name and last name', function() {
-        this.goToUrl('/home');
+    // it('should resolve a user with correct first name and last name', function() {
+    //     this.goToUrl('/home');
 
-        expect(this.getResolvedValue('homePageSystemNotifications')[0].author.firstName)
-            .toEqual(this.systemNotifications[0].author.firstName);
+    //     expect(this.getResolvedValue('homePageSystemNotifications')[0].author.firstName)
+    //         .toEqual(this.systemNotifications[0].author.firstName);
 
-        expect(this.getResolvedValue('homePageSystemNotifications')[0].author.lastName)
-            .toEqual(this.systemNotifications[0].author.lastName);
-    });
+    //     expect(this.getResolvedValue('homePageSystemNotifications')[0].author.lastName)
+    //         .toEqual(this.systemNotifications[0].author.lastName);
+    // });
 
-    it('should not resolve system notifications while offline', function() {
-        this.offlineService.isOffline.andReturn(true);
-        this.goToUrl('/home');
+    // it('should not resolve system notifications while offline', function() {
+    //     this.offlineService.isOffline.andReturn(true);
+    //     this.goToUrl('/home');
 
-        expect(this.SystemNotificationResource.prototype.query).not.toHaveBeenCalled();
-    });
+    //     expect(this.SystemNotificationResource.prototype.query).not.toHaveBeenCalled();
+    // });
 });

@@ -65,7 +65,7 @@ describe('siglusLocationReceiveCreationController', function() {
         module('stock-confirm-discard');
         module('stockmanagement');
         module('siglus-location-receive-creation');
-
+        module('siglus-print-pallet-label-comfirm-modal');
         prepareInjector();
         prepareSpies();
         prepareData();

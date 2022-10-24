@@ -1,0 +1,5 @@
+{
+    "orderFulfillment.closeFulfillment": "Close Fulfillment",
+    "orderFulfillment.expiredMessage": "This order has expired, it cannot be fulfilled, please close the fulfillment.",
+    "orderFulfillment.closeConfirm":"Are you sure to close this fulfillment?"
+}

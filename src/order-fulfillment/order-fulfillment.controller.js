@@ -30,16 +30,19 @@
 
     controller.$inject = [
         'orderingFacilities', 'programs', 'loadingModalService', 'orders',
-        '$stateParams', '$state', 'ORDER_STATUS', 'homeFacility'
+        '$stateParams', '$state', 'ORDER_STATUS', 'homeFacility', 'confirmService',
+        'orderRepository'
     ];
 
     function controller(orderingFacilities, programs, loadingModalService, orders,
-                        $stateParams, $state, ORDER_STATUS, homeFacility) {
+                        $stateParams, $state, ORDER_STATUS, homeFacility, confirmService,
+                        orderRepository) {
 
         var vm = this;
 
         vm.$onInit = onInit;
         vm.loadOrders = loadOrders;
+        vm.closeFulfillment = closeFulfillment;
 
         /**
          * @ngdoc property
@@ -162,6 +165,16 @@
             });
         }
 
+        function closeFulfillment(orderId) {
+            confirmService.confirm('orderFulfillment.closeConfirm',
+                'PhysicalInventoryDraftList.confirm',
+                'PhysicalInventoryDraftList.cancel').then(function() {
+                loadingModalService.open();
+                orderRepository.closeOrder(orderId).then(function() {
+                    loadOrders();
+                })
+                    .finally(loadingModalService.close);
+            });
+        }
     }
-
 })();

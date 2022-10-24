@@ -1,0 +1,61 @@
+<h2>{{'requisitionConvertToOrder.convertRequisitionsToOrder' | message}}</h2>
+<section class="openlmis-table-container">
+	<form ng-submit="vm.search()">
+		<label for="facility">{{'requisitionConvertToOrder.facility' | message}}</label>
+		<select id="facility"
+				ng-options="facility.id as facility.name for facility in vm.facilities"
+				ng-model="vm.facilityId">
+		</select>
+		<label for="program">{{'requisitionConvertToOrder.program' | message}}</label>
+		<select id="program"
+				ng-options="program.id as program.name for program in vm.programs"
+				ng-model="vm.programId">
+		</select>
+		<input type="submit" value="{{'requisitionConvertToOrder.search' | message}}"/>
+	</form>
+	<table>
+		<caption ng-if="vm.infoMessage">{{vm.infoMessage | message}}</caption>
+		<thead>
+			<tr>
+				<th>{{'requisitionConvertToOrder.program' | message}}</th>
+				<th>{{'requisitionConvertToOrder.facility' | message}}</th>
+				<th>{{'requisitionConvertToOrder.districtName' | message}}</th>
+				<th>{{'requisitionConvertToOrder.period' | message}}</th>
+				<th>{{'requisitionConvertToOrder.startDate' | message}}</th>
+				<th>{{'requisitionConvertToOrder.endDate' | message}}</th>
+				<th>{{'requisitionConvertToOrder.dateApproved' | message}}</th>
+				<th>{{'requisitionConvertToOrder.emergency' | message}}</th>
+                <th class="col-sticky sticky-right">{{'requisitionConvertToOrder.supplyingDepot' | message}}</th>
+				<th>{{'adminFacilityList.actions' | message}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in vm.requisitions" empty-row="item.expired" empty-row-message="{{'requisitionConvertToOrder.expiredMessage' | message}}" empty-row-col-span="10">
+				
+				<td>{{item.requisition.program.name}}</td>
+				<td>{{item.requisition.facility.code}} - {{item.requisition.facility.name}}</td>
+				<td>{{item.requisition.facility.geographicZone.name}}</td>
+				<td>{{item.requisition.processingPeriod.name}}</td>
+				<td>{{item.requisition.processingPeriod.startDate | openlmisDate}}</td>
+				<td>{{item.requisition.processingPeriod.endDate | openlmisDate}}</td>
+				<td>{{item.requisition.statusChanges.APPROVED.changeDate | openlmisDate}}</td>
+				<td class="col-emergency">
+					<i ng-class="{'icon-ok': item.requisition.emergency}"></i>
+				</td>
+                <td>
+					<select ng-model="item.requisition.supplyingFacility" required
+							ng-options="depot.id as depot.name for depot in item.supplyingDepots">
+						<option ng-value="" ng-if="!item.requisition.supplyingFacility">
+							{{'label.select.none' | message}}
+						</option>
+					</select>
+				</td>
+				<td>
+					<button class="primary" ng-click="vm.convertToOrder()">{{'requisitionConvertToOrder.convertToOrder.label' | message}}</button>
+					<button class="danger" ng-click="vm.releaseWithoutOrder()">{{'requisitionConvertToOrder.releaseWithoutOrder.label' | message}}</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<openlmis-pagination/>
+</section>
