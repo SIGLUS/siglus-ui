@@ -31,14 +31,14 @@
     controller.$inject = [
         'stockCard', '$state', 'stockCardService', 'REASON_TYPES', 'messageService',
         // SIGLUS-REFACTOR: starts here
-        'Reason', 'alertService', '$scope', 'confirmService', 'notificationService', 'loadingModalService',
-        'stockCardDataService'
+        'Reason', 'alertService', '$scope', '$window', 'confirmService', 'notificationService', 'loadingModalService',
+        'stockCardDataService', 'localStorageService'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function controller(stockCard, $state, stockCardService, REASON_TYPES, messageService,
-                        Reason, alertService, $scope, confirmService, notificationService,
-                        loadingModalService, stockCardDataService) {
+                        Reason, alertService, $scope, $window, confirmService, notificationService,
+                        loadingModalService, stockCardDataService, localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -63,8 +63,9 @@
          *
          */
         vm.print = function() {
-            $state.params.isViewProductCard ? stockCardService.printByProduct(vm.stockCard.orderable.id) :
-                stockCardService.print(vm.stockCard.id);
+            localStorageService.add('stockCardInfoForPrint', angular.toJson(stockCard));
+            var PRINT_URL = $window.location.href.split('!/')[0] + '!/stockmanagement/lotPrint';
+            $window.open(PRINT_URL, '_blank');
         };
 
         // #103: archive product

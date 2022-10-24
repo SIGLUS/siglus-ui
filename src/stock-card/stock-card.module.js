@@ -28,8 +28,8 @@
         'openlmis-auth',
         'stock-reasons-modal',
         'siglus-stock-card-print',
-        'siglus-stock-card-for-product'
-
+        'siglus-stock-card-for-product',
+        'siglus-stock-card-lot-print'
     ]);
 
 })();

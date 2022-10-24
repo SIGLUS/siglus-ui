@@ -28,11 +28,13 @@
         .module('siglus-stock-card-for-product')
         .controller('StockCardForProductController', controller);
 
-    controller.$inject = ['$scope', 'stockCard', '$state', 'stockCardService', 'confirmService', 'loadingModalService',
-        'notificationService', '$stateParams', 'paginationService', 'stockCardDataService'];
+    controller.$inject = ['$scope', 'stockCard', '$state', '$window', 'stockCardService', 'confirmService',
+        'loadingModalService', 'notificationService', '$stateParams', 'paginationService', 'stockCardDataService',
+        'localStorageService'];
 
-    function controller($scope, stockCard, $state, stockCardService, confirmService, loadingModalService,
-                        notificationService, $stateParams, paginationService, stockCardDataService) {
+    function controller($scope, stockCard, $state, $window, stockCardService, confirmService, loadingModalService,
+                        notificationService, $stateParams, paginationService, stockCardDataService,
+                        localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -44,7 +46,13 @@
         vm.canArchive = false;
 
         vm.print = function() {
-            stockCardService.printByProduct(vm.stockCard.orderableId);
+            localStorageService.add('stockCardInfoForPrint', angular.toJson(stockCard));
+            var PRINT_URL = $window.location.href.split('!/')[0] +
+                '!/stockmanagement/productPrint';
+            if ($stateParams.isArchivedProducts) {
+                PRINT_URL += '?isArchived=true';
+            }
+            $window.open(PRINT_URL, '_blank');
         };
 
         vm.getProductName = function() {

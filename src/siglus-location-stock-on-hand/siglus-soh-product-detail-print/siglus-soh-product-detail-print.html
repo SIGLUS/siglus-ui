@@ -11,7 +11,7 @@
             <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}:{{vm.program.code}}</div>
             <div class="report-info">{{ 'sohLocationPrint.product' | message }}:{{vm.stockCard.productName}}</div>
             <div class="report-info">{{ 'stockCard.productCode' | message }}:{{vm.stockCard.productCode}}</div>
-            <div class="report-info">{{ 'stockCard.soh' | message }}:{{vm.stockCard.stockOnHand}}</div>
+            <div ng-if="!vm.isArchived" class="report-info">{{ 'stockCard.soh' | message }}:{{vm.stockCard.stockOnHand}}</div>
         </div>
     </div>
     <section>

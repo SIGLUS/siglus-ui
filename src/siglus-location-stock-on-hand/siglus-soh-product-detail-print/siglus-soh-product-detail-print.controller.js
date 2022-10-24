@@ -31,21 +31,24 @@
     controller.$inject = [
         '$scope',
         '$window',
+        '$stateParams',
         'facility',
         'stockCard',
         'program'
     ];
 
-    function controller($scope, $window, facility, stockCard, program) {
+    function controller($scope, $window, $stateParams, facility, stockCard, program) {
         var vm = this;
         vm.facility = undefined;
         vm.stockCard = undefined;
         vm.program = undefined;
+        vm.isArchived = false;
 
         vm.$onInit = function onInit() {
             vm.stockCard = stockCard;
             vm.facility = facility;
             vm.program = program;
+            vm.isArchived = $stateParams.isArchived;
             document.getElementsByClassName('header')[0].style.display = 'none';
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
         };

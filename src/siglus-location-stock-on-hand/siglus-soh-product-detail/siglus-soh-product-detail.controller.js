@@ -45,7 +45,8 @@
 
         vm.print = function() {
             localStorageService.add('stockCardInfoForPrint', angular.toJson(stockCard));
-            var PRINT_URL = $window.location.href.split('!/')[0] + '!/locationManagement/productDetailPrint';
+            var PRINT_URL = $window.location.href.split('!/')[0]
+                + '!/locationManagement/productDetailPrint?isArchived=' + vm.isArchived;
             $window.open(PRINT_URL, '_blank');
         };
 
