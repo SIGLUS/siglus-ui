@@ -271,10 +271,6 @@
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
             });
-            console.log(groupedLineItems);
-            // $state.go($state.current.name, $stateParams, {
-            //     reload: true
-            // });
         };
 
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {

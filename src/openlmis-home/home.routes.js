@@ -39,12 +39,24 @@
                     templateUrl: 'openlmis-home/home.html'
                 }
             },
+            params: {
+                isLocalMachine: undefined
+            },
             resolve: {
                 homePageSystemNotifications: function(paginationService, SystemNotificationResource, $stateParams,
                     offlineService, systemNotificationService) {
                     if (!offlineService.isOffline()) {
                         return systemNotificationService.getSystemNotifications();
                     }
+                },
+                isLocalMachine: function(SiglusOpenlmisMainStateFactory, $stateParams) {
+                    if (_.isUndefined($stateParams.isLocalMachine)) {
+                        return SiglusOpenlmisMainStateFactory.getFacilityDevice().then(function(res) {
+                            $stateParams.isLocalMachine = res;
+                            return res;
+                        });
+                    }
+                    return $stateParams.isLocalMachine;
                 }
             }
         });

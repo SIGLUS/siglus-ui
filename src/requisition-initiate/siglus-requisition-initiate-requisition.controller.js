@@ -215,8 +215,6 @@
                             )
                                 .then(function() {
                                     if (facility.enableLocationManagement) {
-                                        console.log('elm',
-                                            facility.enableLocationManagement);
                                         goToPhysicalInventoryWithLocation();
                                     } else {
                                         goToPhysicalInventory();

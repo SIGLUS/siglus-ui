@@ -79,7 +79,7 @@
                 transformResponse: transformRequisitionListResponse
             },
             forConvert: {
-                url: requisitionUrlFactory('/api/requisitions/requisitionsForConvert'),
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/requisitionsForConvertToOrder'),
                 method: 'GET',
                 transformResponse: transformResponseForConvert
             },

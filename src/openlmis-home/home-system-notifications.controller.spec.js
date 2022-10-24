@@ -29,7 +29,8 @@ describe('HomeSystemNotificationsController', function() {
         ];
 
         this.vm = this.$controller('HomeSystemNotificationsController', {
-            homePageSystemNotifications: this.systemNotifications
+            homePageSystemNotifications: this.systemNotifications,
+            isLocalMachine: false
         });
 
         this.vm.$onInit();

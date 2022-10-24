@@ -29,15 +29,16 @@
         .controller('HomeSystemNotificationsController', controller);
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
-        'loadingModalService', 'notificationService', 'alertService', 'messageService'];
+        'loadingModalService', 'notificationService', 'alertService', 'messageService', 'localStorageService',
+        'isLocalMachine'];
 
     function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
-                        loadingModalService, notificationService, alertService, messageService) {
+                        loadingModalService, notificationService, alertService, messageService,
+                        localStorageService, isLocalMachine) {
 
         var vm = this;
 
         vm.$onInit = onInit;
-
         /**
          * @ngdoc property
          * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
@@ -48,7 +49,6 @@
          * System notifications which will be displayed to users.
          */
         vm.homePageSystemNotifications = undefined;
-
         /**
          * @ngdoc property
          * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
@@ -59,7 +59,7 @@
          * Indicates offline connection.
          */
         vm.isOffline = undefined;
-
+        vm.isLocalMachine = isLocalMachine;
         /**
          * @ngdoc method
          * @methodOf home-system-notifications.controller:HomeSystemNotificationsController
@@ -71,6 +71,17 @@
         function onInit() {
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
+            if (isLocalMachine) {
+                var timer = setInterval(function() {
+                    homeImportAndExportService.getLocalMachineBaseInfo()
+                        .then(function(res) {
+                            console.log('getLocalMachineBaseInfo: ', res);
+                        })
+                        .catch(function() {
+                            clearInterval(timer);
+                        });
+                }, 5000);
+            }
         }
 
         vm.file = undefined;
@@ -124,6 +135,13 @@
                     alertService.error(messageService.get(decoded.messageKey));
                 })
                 .finally(loadingModalService.close);
+        };
+
+        vm.sync = function() {
+            homeImportAndExportService.getSyncResults()
+                .then(function(res) {
+                    console.log('getSyncResults: ', res);
+                });
         };
     }
 

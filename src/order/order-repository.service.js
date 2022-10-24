@@ -37,6 +37,7 @@
         orderRepository.search = search;
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         orderRepository.searchFulfill = searchFulfill;
+        orderRepository.closeOrder = closeOrder;
         // #447: ends here
 
         /**
@@ -103,11 +104,22 @@
         function searchFulfill(searchParams) {
             return orderService.searchFulfill(searchParams)
                 .then(function(response) {
-                    response.content = basicOrderFactory.buildFromResponseArray(response.content);
+                    var content = angular.copy(response.content);
+                    content =  _.map(content, function(contentItem) {
+                        contentItem.basicOrder.expired = contentItem.expired;
+                        return contentItem.basicOrder;
+                    });
+                    response.content = basicOrderFactory.buildFromResponseArray(content);
+
                     return response;
                 });
         }
         // #447: ends here
+        function closeOrder(orderId) {
+            return orderService.closeOrder(orderId).then(function(response) {
+                return response;
+            });
+        }
     }
 
 })();
