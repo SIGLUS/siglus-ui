@@ -166,7 +166,7 @@
         }
 
         function goToShipment(notificationItem) {
-            $state.go('openlmis.orders.shipmentView', {
+            $state.go('openlmis.orders.fulfillment', {
                 id: notificationItem.referenceId
             });
         }

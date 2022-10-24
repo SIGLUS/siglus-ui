@@ -39,7 +39,7 @@
         'siglusRequisitionDatePickerService', 'alertService', 'dateUtils',
         'moment',
         'inventoryDates', 'program',
-        'hasAuthorizeRight', 'facility', 'facilityFactory'
+        'hasAuthorizeRight', 'siglusHomeFacilityService'
     ];
 
     //NOSONAR
@@ -50,7 +50,7 @@
                         confirmService, siglusRequisitionInitiateService, REQUISITION_STATUS,
                         siglusRequisitionDatePickerService, alertService, dateUtils, moment,
                         inventoryDates, program,
-                        hasAuthorizeRight, facility, facilityFactory) {
+                        hasAuthorizeRight, siglusHomeFacilityService) {
         var vm = this,
             uuidGenerator = new UuidGenerator(),
             key = uuidGenerator.generate();
@@ -98,10 +98,6 @@
 
         vm.program = undefined;
 
-        // vm.facility = undefined;
-        // vm.enableLocation = facility.enableLocationManagement;
-        // console.log('el', vm.enableLocation);
-
         /**
      * @ngdoc method
      * @methodOf requisition-initiate.controller:RequisitionInitiateController
@@ -117,10 +113,6 @@
             vm.hasAuthorizeRight = hasAuthorizeRight;
             vm.inventoryDates = inventoryDates;
             vm.program = program;
-            facilityFactory.getUserHomeFacility()
-                .then(function(res) {
-                    vm.facility = res;
-                });
         }
 
         function isCurrentSubmitDuration(period) {
@@ -268,12 +260,7 @@
         }
 
         function goToPhysicalInventoryWithLocation() {
-            $state.go(
-                'openlmis.locationManagement.physicalInventory.draftList.draft',
-                {
-                    programId: $stateParams.replaceId || vm.program.id
-                }
-            );
+            $state.go('openlmis.locationManagement.physicalInventory');
         }
 
         function checkProceedButton(period, idx) {
