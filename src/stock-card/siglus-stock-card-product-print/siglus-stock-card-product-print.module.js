@@ -17,13 +17,7 @@
 
     'use strict';
 
-    /**
-   * @module stock-card
-   *
-   * @description
-   * Provides stock card state and controller for viewing one single stock card.
-   */
-    angular.module('siglus-stock-card-for-product', ['siglus-stock-card-product-print']);
+    angular.module('siglus-stock-card-product-print', []);
 
 })();
 

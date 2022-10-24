@@ -17,20 +17,20 @@
     'use strict';
 
     angular
-        .module('siglus-soh-product-detail-print')
+        .module('siglus-stock-card-product-print')
         .config(routes);
 
     routes.$inject = ['$stateProvider'];
 
     function routes($stateProvider) {
-        $stateProvider.state('openlmis.locationManagement.productDetailPrint', {
-            url: '/productDetailPrint?isArchived',
+        $stateProvider.state('openlmis.stockmanagement.productPrint', {
+            url: '/productPrint?isArchived',
             showInNavigation: false,
             views: {
                 '@openlmis': {
                     controller: 'SiglusSohProductDetailPrintController',
                     templateUrl: 'siglus-location-stock-on-hand/'
-                    + 'siglus-soh-product-detail-print/siglus-soh-product-detail-print.html',
+                        + 'siglus-soh-product-detail-print/siglus-soh-product-detail-print.html',
                     controllerAs: 'vm'
                 }
             },
