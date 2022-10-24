@@ -5,13 +5,13 @@
             <div style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</div>
         </div>
         <div class="report-info-container">
-            <div class="report-info">{{ 'stockCard.facilityName' | message }}:{{vm.facility.name}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}:{{vm.facility.code}}</div>
-            <div class="report-info">{{ 'stockCard.program' | message }}:{{vm.program.name}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}:{{vm.program.code}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.product' | message }}:{{vm.stockCard.productName}}</div>
-            <div class="report-info">{{ 'stockCard.productCode' | message }}:{{vm.stockCard.productCode}}</div>
-            <div ng-if="!vm.isArchived" class="report-info">{{ 'stockCard.soh' | message }}:{{vm.stockCard.stockOnHand}}</div>
+            <div class="report-info">{{ 'stockCard.facilityName' | message }}: {{vm.facility.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}: {{vm.facility.code}}</div>
+            <div class="report-info">{{ 'stockCard.program' | message }}: {{vm.program.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}: {{vm.program.code}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.product' | message }}: {{vm.stockCard.productName}}</div>
+            <div class="report-info">{{ 'stockCard.productCode' | message }}: {{vm.stockCard.productCode}}</div>
+            <div ng-if="!vm.isArchived" class="report-info">{{ 'stockCard.soh' | message }}: {{vm.stockCard.stockOnHand}}</div>
         </div>
     </div>
     <section>

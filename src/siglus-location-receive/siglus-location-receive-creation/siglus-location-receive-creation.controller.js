@@ -906,6 +906,7 @@
 
         vm.downloadPrint = function() {
             var printLineItems = getLineItems();
+
             var newPrintLineItems = _.chain(printLineItems)
                 .map(function(item) {
                     var result = {};
@@ -913,7 +914,7 @@
                     result.productCode = _.get(item, ['productCode']);
                     result.lotCode = _.get(item, ['lot', 'lotCode'], null);
                     result.expirationDate = _.get(item, ['lot', 'expirationDate'], null);
-                    result.location = _.get(item, ['location', 'locationCode']);
+                    result.location = _.get(item, ['locationCode']);
                     var orderableLocationLotsMap = SiglusLocationCommonUtilsService
                         .getOrderableLocationLotsMap(locations);
                     var totalQuantity = getSoh(item, orderableLocationLotsMap);

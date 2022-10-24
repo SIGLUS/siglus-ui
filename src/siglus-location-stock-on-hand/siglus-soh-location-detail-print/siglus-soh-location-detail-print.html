@@ -5,16 +5,16 @@
             <div style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</div>
         </div>
         <div class="report-info-container">
-            <div class="report-info">{{ 'stockCard.facilityName' | message }}:{{vm.stockCard.facilityName}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}:{{vm.facility.code}}</div>
-            <div class="report-info">{{ 'stockCard.program' | message }}:{{vm.program.name}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}:{{vm.program.code}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.product' | message }}:{{vm.getProductName()}}</div>
-            <div class="report-info">{{ 'stockCard.productCode' | message }}:{{vm.stockCard.productCode}}</div>
-            <div class="report-info">{{ 'stockCard.stockOnHand' | message }}:{{vm.stockCard.stockOnHand}}</div>
-            <div class="report-info">{{ 'stockCard.lot' | message }}:{{vm.getStringWithoutEmpty(vm.stockCard.lotCode)}}</div>
-            <div class="report-info">{{ 'stockCard.expiryDate' | message}}:{{vm.getStringWithoutEmpty(vm.stockCard.expiryDate)}}</div>
-            <div class="report-info">{{ 'stockPhysicalInventoryDraft.location' | message }}:{{vm.stockCard.locationCode}}</div>
+            <div class="report-info">{{ 'stockCard.facilityName' | message }}: {{vm.stockCard.facilityName}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}: {{vm.facility.code}}</div>
+            <div class="report-info">{{ 'stockCard.program' | message }}: {{vm.program.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}: {{vm.program.code}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.product' | message }}: {{vm.getProductName()}}</div>
+            <div class="report-info">{{ 'stockCard.productCode' | message }}: {{vm.stockCard.productCode}}</div>
+            <div class="report-info">{{ 'stockCard.soh' | message }}: {{vm.stockCard.stockOnHand}}</div>
+            <div class="report-info">{{ 'stockCard.lot' | message }}: {{vm.getStringWithoutEmpty(vm.stockCard.lotCode)}}</div>
+            <div class="report-info">{{ 'stockCard.expiryDate' | message}}: {{vm.getStringWithoutEmpty(vm.stockCard.expiryDate)}}</div>
+            <div class="report-info">{{ 'stockPhysicalInventoryDraft.location' | message }}: {{vm.stockCard.locationCode}}</div>
         </div>
     </div>
     <section>
