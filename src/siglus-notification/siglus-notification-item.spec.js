@@ -20,7 +20,6 @@ describe('NotificationItem', function() {
 
         inject(function($injector) {
             this.openlmisDateFilter = $injector.get('openlmisDateFilter');
-            this.REQUISITION_STATUS = $injector.get('REQUISITION_STATUS');
             this.ORDER_STATUS = $injector.get('ORDER_STATUS');
             this.NOTIFICATION_TYPE = $injector.get('NOTIFICATION_TYPE');
             this.$state = $injector.get('$state');
@@ -74,7 +73,7 @@ describe('NotificationItem', function() {
             this.notification.status = 'ORDERED';
             this.notification.navigate();
 
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.orders.shipmentView', {
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.orders.fulfillment', {
                 id: 'f433700a-1182-41a9-8dda-30cb1c1681c2'
             });
         });

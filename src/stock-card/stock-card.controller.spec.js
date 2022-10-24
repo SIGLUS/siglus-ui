@@ -17,7 +17,7 @@ describe('StockCardController', function() {
 
     var vm, $state, stockCardService, stockCardId, debitReason, creditReason, ReasonDataBuilder, messageService;
     // SIGLUS-REFACTOR: starts here
-    var alertService, $scope, $q, $rootScope, confirmService, notificationService;
+    var alertService, $scope, $q, $rootScope, confirmService, notificationService, localStorageService;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -34,6 +34,7 @@ describe('StockCardController', function() {
             alertService = $injector.get('alertService');
             confirmService = $injector.get('confirmService');
             notificationService = $injector.get('notificationService');
+            localStorageService = $injector.get('localStorageService');
             // SIGLUS-REFACTOR: ends here
 
             stockCardId = 123;
@@ -175,14 +176,13 @@ describe('StockCardController', function() {
         });
     });
 
-    describe('print', function() {
-
-        it('should call stock card service with card id', function() {
-            spyOn(stockCardService, 'print');
+    describe('print method', function() {
+        it('should save data by local storage service when invoke print', function() {
+            spyOn(localStorageService, 'add').andReturn();
             vm.$onInit();
             vm.print();
 
-            expect(stockCardService.print).toHaveBeenCalledWith(stockCardId);
+            expect(localStorageService.add).toHaveBeenCalled();
         });
     });
 
