@@ -32,7 +32,7 @@
     function pendingInterceptor($rootScope, $state) {
         $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
             if (toState.name === 'openlmis.pending') {
-                if (toParams.summittedStatus !== 'Não Submetido') {
+                if (toParams.summittedStatus !== 'Não Submetido' && toParams.summittedStatus !== 'Not submitted') {
                     var routerParam = {
                         Malaria: 'openlmis.analyticsReport.requisitionAndMonthly.malaria',
                         MMIT: 'openlmis.analyticsReport.requisitionAndMonthly.rapid',
