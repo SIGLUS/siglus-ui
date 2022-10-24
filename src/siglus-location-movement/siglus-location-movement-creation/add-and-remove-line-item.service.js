@@ -77,7 +77,7 @@
                 stockOnHand: lineItem.stockOnHand,
                 moveTo: {},
                 quantity: lineItem.quantity,
-                notes: null,
+                notes: lineItem.notes,
                 quantityShipped: lineItem.quantityShipped,
                 useVvm: lineItem.useVvm,
                 vvmStatus: lineItem.vvmStatus,
