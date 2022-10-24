@@ -276,6 +276,9 @@
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
             $scope.needToConfirm = true;
             addAndRemoveLineItemService.removeItemForPod(lineItem, index, groupedLineItems);
+            groupedLineItems.forEach(function(line) {
+                vm.validateLocations(line, groupedLineItems);
+            });
         };
 
         vm.changeArea = function(lineItem, groupedLineItems) {
