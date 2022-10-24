@@ -37,6 +37,7 @@
                         Malaria: 'openlmis.analyticsReport.requisitionAndMonthly.malaria',
                         MMIT: 'openlmis.analyticsReport.requisitionAndMonthly.rapid',
                         'Requisição Balancete': 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica',
+                        'Balance Requisition': 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica',
                         MMIA: 'openlmis.analyticsReport.requisitionAndMonthly.mmia'
                     };
 
