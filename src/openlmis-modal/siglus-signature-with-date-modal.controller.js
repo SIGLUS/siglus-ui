@@ -120,10 +120,7 @@
                     'openlmisModal.dateConflict'
                 );
             }
-            if (error.data.messageKey
-              === 'siglusapi.error.stockManagement.draft.notFound') {
-                alertService.error('openlmisModal.dateConflict');
-            }
+
         }
 
         /**
