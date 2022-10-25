@@ -1,0 +1,29 @@
+<div class="modal alert-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>{{vm.title | message}}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="alert-main">
+                    <div class="alert-message">
+                        <p>{{vm.message | message}}</p>
+                        <div>
+                            {{'siglusPrintPallet.downloadProcess' | message}}:
+                            {{vm.service.currentIndex > vm.service.totalCount ? vm.service.totalCount : vm.service.currentIndex}} / {{vm.service.totalCount}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-footer-confirm primary"
+                     ng-class="{'siglus-btn-disable': vm.service.totalCount >= vm.service.currentIndex}">
+                    <button class="primary" ng-click="vm.confirm()">
+                        {{'stockIssueCreation.confirm' | message}}
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

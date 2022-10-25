@@ -35,13 +35,11 @@
         'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', '$window',
         'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        // SIGLUS-REFACTOR: starts here
         'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
         'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
         'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService',
-        'siglusOrderableLotService'
-        // SIGLUS-REFACTOR: ends here
+        'siglusOrderableLotService', 'siglusPrintPalletLabelComfirmModalService'
     ];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
@@ -54,12 +52,11 @@
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
                         allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
-                        siglusOrderableLotService) {
+                        siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService) {
         var vm = this;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
         vm.checkUnaccountedStockAdjustments = checkUnaccountedStockAdjustments;
-        // SIGLUS-REFACTOR: starts here
         vm.lotCodeChanged = lotCodeChanged;
         vm.expirationDateChanged = expirationDateChanged;
         vm.reasonChanged = reasonChanged;
@@ -76,7 +73,6 @@
         var reasons = physicalInventoryDataService.getReasons(facility.id);
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -110,7 +106,6 @@
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
-                    // SIGLUS-REFACTOR: starts here
                     var flag = false;
                     if (lineItem.orderable && lineItem.orderable.isKit || !isEmpty(lineItem.stockOnHand)) {
                         flag = !isEmpty(lineItem.quantity) &&
@@ -119,12 +114,10 @@
                         flag = updateInitialInventory(lineItem);
                     }
                     return flag;
-                    // SIGLUS-REFACTOR: ends here
                 });
             });
         };
 
-        // SIGLUS-REFACTOR: starts here
         function updateInitialInventory(lineItem) {
             if (vm.isInitialInventory) {
                 return hasLot(lineItem)
@@ -134,7 +127,6 @@
             return hasLot(lineItem) && !isEmpty(lineItem.lot.expirationDate) && !isEmpty(lineItem.quantity)
                 && !(vm.isFreeTextAllowed(lineItem) && isEmpty(lineItem.reasonFreeText)) || lineItem.skipped;
         }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -207,7 +199,6 @@
         vm.isInitialInventory = $stateParams.canInitialInventory;
 
         vm.draft = draft;
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -232,7 +223,6 @@
          * @description
          * Pops up a modal for users to add products for physical inventory.
          */
-        // SIGLUS-REFACTOR: starts here
         vm.addProducts = function() {
             var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
             var notYetAddedItems = _.filter(draft.summaries, function(summary) {
@@ -250,13 +240,10 @@
                     refreshLotOptions();
                     $stateParams.isAddProduct = true;
                     reload($state.current.name);
-                    // #105: activate archived product
                     siglusArchivedProductService.alterInfo(addedItems);
-                    // #105: ends here
                 });
             });
         };
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -300,12 +287,9 @@
         vm.search = function() {
             $stateParams.page = 0;
             $stateParams.keyword = vm.keyword;
-            // SIGLUS-REFACTOR: starts here
             return reload($state.current.name);
-            // SIGLUS-REFACTOR: ends here
         };
 
-        // SIGLUS-REFACTOR: starts here
         vm.doCancelFilter = function() {
             if ($stateParams.keyword) {
                 vm.keyword = null;
@@ -313,9 +297,7 @@
                 reload($state.current.name);
             }
         };
-        // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
         $scope.$watch(function() {
             return vm.keyword;
         }, function(newValue, oldValue) {
@@ -324,9 +306,7 @@
                 reload($state.current.name);
             }
         });
-        // SIGLUS-REFACTOR: ends here
 
-        // SIGLUS-REFACTOR: starts here
         function reload(isReload) {
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
@@ -338,7 +318,6 @@
                 });
             });
         }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -348,7 +327,6 @@
          * @description
          * Save physical inventory draft.
          */
-        // SIGLUS-REFACTOR: starts here
         var openRemainingModal = function(type, data) {
             siglusRemainingProductsModalService.show(data).then(function() {
                 saveOrSubmit(type, data);
@@ -408,7 +386,6 @@
         vm.saveDraft = _.throttle(saveDraft, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -418,7 +395,6 @@
          * @description
          * Save physical inventory draft on page change.
          */
-        // SIGLUS-REFACTOR: starts here: for open loading when reload page
         vm.saveOnPageChange = function() {
             // only this works!
             loadingModalService.open();
@@ -428,7 +404,6 @@
                 return $q.resolve(params);
             });
         };
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -441,12 +416,9 @@
 
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
-                // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
-                //$state.go('openlmis.stockmanagement.physicalInventory.draftList');
                 $state.go('^', {}, {
                     reload: true
                 });
-                // SIGLUS-REFACTOR: ends here
                 return;
             }
 
@@ -461,32 +433,16 @@
                     $stateParams.locationManagementOption
                 ).then(function() {
                     $scope.needToConfirm = false;
-                    // SIGLUS-REFACTOR: starts here
                     vm.isInitialInventory ?
                         $state.go('^', {}, {
                             reload: true
                         }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
-                    // SIGLUS-REFACTOR: ends here
                 })
                     .catch(function() {
                         loadingModalService.close();
                     });
-                // physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
-                //     $scope.needToConfirm = false;
-                //     // SIGLUS-REFACTOR: starts here
-                //     vm.isInitialInventory ?
-                //         $state.go('^', {}, {
-                //             reload: true
-                //         }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
-                //             reload: true
-                //         });
-                //     // SIGLUS-REFACTOR: ends here
-                // })
-                //     .catch(function() {
-                //         loadingModalService.close();
-                //     });
             });
         };
         vm.delete = _.throttle(deleteDraft, SIGLUS_TIME.THROTTLE_TIME, {
@@ -524,14 +480,46 @@
                     openRemainingModal('submit', data);
                 });
         };
+
+        vm.downloadPrint = function() {
+            vm.printLineItems = _.chain(angular.copy(vm.displayLineItemsGroup))
+                .flatten()
+                .filter(function(lineItem) {
+                    return lineItem.quantity > 0 && lineItem.quantity !== lineItem.stockOnHand;
+                })
+                .map(function(lineItem) {
+                    lineItem.pallet = lineItem.quantity;
+                    lineItem.locationLotOrderableId = _.get(lineItem, 'locationCode')
+                        + '_' + _.get(lineItem, ['lot', 'lotCode'])
+                        + '_' + _.get(lineItem, ['orderable', 'id']);
+                    return lineItem;
+                })
+                .groupBy('locationLotOrderableId')
+                .values()
+                .flatten()
+                .map(getPrintItem)
+                .value();
+
+        };
+
+        function getPrintItem(item) {
+            var result = {};
+            result.orderableId = _.get(item, ['orderable', 'id']);
+            result.location = item.locationCode;
+            result.lotCode = _.get(item, ['lot', 'lotCode']);
+            result.expirationDate = _.get(item, ['lot', 'expirationDate']);
+            result.productName = _.get(item, ['orderable', 'fullProductName']);
+            result.productCode = _.get(item, ['orderable', 'productCode']);
+            result.locationLotOrderableId = _.get(item, ['locationLotOrderableId']);
+            result.quantity = _.get(item, ['quantity']);
+            // result.moveType = _.get(item, ['moveType']);
+            result.isKit = _.get(item, ['orderable', 'isKit']);
+            result.pallet = item.pallet;
+            return result;
+        }
+
         var submit = function() {
             if (validate()) {
-                // SIGLUS-REFACTOR: starts here
-                // if ($stateParams.keyword) {
-                //     $stateParams.keyword = null;
-                //     // reload($state.current.name);
-                // }
-                // SIGLUS-REFACTOR: ends here
                 if (validate() === 'hasEmptyLocation') {
                     $scope.$broadcast('openlmis-form-submit');
                     alertService.error('stockPhysicalInventoryDraft.hasEmptyLocation');
@@ -543,45 +531,50 @@
                     alertService.error('stockPhysicalInventoryDraft.submitInvalid');
                 }
             } else {
-                if (
-                    $stateParams.draftNum
-                ) {
+                vm.printLineItems = [];
+                if ($stateParams.draftNum) {
                     subDraftSubmit();
                     return;
                 }
-                chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
-                    $scope.needToConfirm = false;
-                    loadingModalService.open();
-                    draft.occurredDate = resolvedData.occurredDate;
-                    draft.signature = resolvedData.signature;
-                    // var newDraft = draft.
-                    draft.lineItems = _.filter(draft.lineItems, function(item) {
-                        return !item.skipped || item.skipped === undefined;
-                    });
-                    physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
-                        summaries: []
-                    }), true)
-                        .then(function() {
-                            // rep logic
-                            if (vm.isInitialInventory) {
-                                currentUserService.clearCache();
-                                navigationStateService.clearStatesAvailability();
-                                notificationService.success('stockInitialInventoryDraft.submitted');
-                            } else {
-                                notificationService.success('stockPhysicalInventoryDraft.submitted');
-                            }
 
-                            $state.go('openlmis.locationManagement.stockOnHand', {
-                                program: program.id,
-                                facility: facility
-                            }, {
-                                reload: true
+                siglusPrintPalletLabelComfirmModalService.show()
+                    .then(function(result) {
+                        if (result) {
+                            vm.downloadPrint();
+                        }
+                        chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
+
+                            $scope.needToConfirm = false;
+                            loadingModalService.open();
+                            draft.occurredDate = resolvedData.occurredDate;
+                            draft.signature = resolvedData.signature;
+                            draft.lineItems = _.filter(draft.lineItems, function(item) {
+                                return !item.skipped || item.skipped === undefined;
                             });
-                        }, function() {
-                            loadingModalService.close();
-                            alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                            physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
+                                summaries: []
+                            }), true)
+                                .then(function() {
+                                    if (vm.isInitialInventory) {
+                                        currentUserService.clearCache();
+                                        navigationStateService.clearStatesAvailability();
+                                        notificationService.success('stockInitialInventoryDraft.submitted');
+                                    } else {
+                                        notificationService.success('stockPhysicalInventoryDraft.submitted');
+                                    }
+
+                                    $state.go('openlmis.locationManagement.stockOnHand', {
+                                        program: program.id,
+                                        facility: facility
+                                    }, {
+                                        reload: true
+                                    });
+                                }, function() {
+                                    loadingModalService.close();
+                                    alertService.error('stockPhysicalInventoryDraft.submitFailed');
+                                });
                         });
-                });
+                    });
             }
         };
 
@@ -990,17 +983,6 @@
             return lotOptions;
         }
 
-        // function getAddedLots() {
-        //     var addedLotsId = [];
-        //     _.forEach(draft.lineItems, function(item) {
-        //         if (item.lot && item.lot.id) {
-        //             addedLotsId.push(item.lot.id);
-        //         }
-        //     });
-        //     return addedLotsId;
-        // }
-        // if no lot defined, then lot code is null
-        // same lot code but different lot id? is that possible?
         function getAddedLotIdAndOrderableId() {
             var addedlotIdAndOrderableId = [];
             _.forEach(draft.lineItems, function(item) {
@@ -1221,7 +1203,7 @@
                         if (addedItems.length > 1) {
                             var  firstLineItem = _.first(addedItems);
                             var index = 0;
-                            // draft.lineItems 
+                            // draft.lineItems
                             var newLineItems = _.map(draft.lineItems, function(line, i) {
                                 if (line.locationCode === firstLineItem.locationCode) {
                                     line = firstLineItem;
