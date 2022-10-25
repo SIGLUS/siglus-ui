@@ -1,0 +1,9 @@
+.modal-footer .siglus-btn-disable {
+  cursor: not-allowed;
+}
+
+
+.modal-footer .siglus-btn-disable button {
+  pointer-events: none;
+  color: #BBB;
+}
