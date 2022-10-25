@@ -1158,6 +1158,7 @@
   "openlmisModal.today": "Hoje",
   "openlmisModal.beforeToday": "Dia anterior",
   "openlmisModal.date": "Data",
+  "openlmisModal.dateConflict": "Data inválida, a última data do movimento foi actualizada. Actualize a página e tente novamente.",
   "openlmisNavigation.notAvailableOffline": "Não é possível carregar esta página quando estiver offline.",
   "openlmisOffline.actionNotAllowedOffline": "Esta acção não pode ser concluída enquanto estiver sem internet.",
   "openlmisPagination.next": "Seguinte",
@@ -2574,14 +2575,12 @@
   "adminFacilityView.activationCode": "Activation Code",
   "adminFacilityView.activationTips": "Please inform the facility to use the code to activate the local machine.",
   "adminFacilityView.enableLocationTips": "Once you enable the feature, the facility's current movement drafts will be cleared. Are you sure you want to enable it?",
-  "openlmisModal.dateConflict": "Invalid date, the lastest movement date has been updated, please refresh the page and try again",
   "sohLocationPrint.title": "Relatórios de Fichas de stock",
   "sohLocationPrint.facilityCode": "Código de instalación",
   "sohLocationPrint.programCode": "Código do programa",
   "sohLocationPrint.product": "Produtos",
-
   "orderFulfillment.closeFulfillment": "Close Fulfillment",
   "orderFulfillment.expiredMessage": "This order has expired, it cannot be fulfilled, please close the fulfillment.",
-  "orderFulfillment.closeConfirm":"Are you sure to close this fulfillment?",
+  "orderFulfillment.closeConfirm": "Are you sure to close this fulfillment?",
   "requisitionConvertToOrder.expiredMessage": "The Requisition or Report has expired, please release it without order."
 }
