@@ -1,5 +1,5 @@
 <div class="siglus-print-pallet-label-container">
-    <div ng-repeat="(index, lineItem) in vm.printLineItems track by index " class="siglus-print-pallet-rect">
+    <div ng-repeat="lineItem in vm.printLineItems" class="siglus-print-pallet-rect">
 
         <div class="siglus-print-pallet-title">
             {{'siglusPrintPallet.title'|message}}
