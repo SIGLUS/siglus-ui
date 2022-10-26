@@ -169,10 +169,18 @@
                                         notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                         stateTrackerService.goToPreviousState('openlmis.orders.view');
                                     })
-                                    .catch(function() {
-                                        notificationService.error('shipmentView.failedToCreateSuborder');
-                                        loadingModalService.close();
-                                    });
+                                    .catch(function(err) {
+                                        // eslint-disable-next-line max-len
+                                        if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.fulfill.order.expired') {
+                                            notificationService.error('orderFulfillment.expiredMessage');
+                                            $state.go('openlmis.orders.fulfillment', '', {
+                                                reload: true
+                                            });
+                                        } else {
+                                            notificationService.error('shipmentView.failedToCreateSuborder');
+                                        }
+                                    })
+                                    .finally(loadingModalService.close);
                             });
                     }
                     // #400: ends here
@@ -186,10 +194,18 @@
                                     notificationService.success('shipmentView.shipmentHasBeenConfirmed');
                                     stateTrackerService.goToPreviousState('openlmis.orders.view');
                                 })
-                                .catch(function() {
-                                    notificationService.error('shipmentView.failedToConfirmShipment');
-                                    loadingModalService.close();
-                                });
+                                .catch(function(err) {
+                                    // eslint-disable-next-line max-len
+                                    if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.fulfill.order.expired') {
+                                        notificationService.error('orderFulfillment.expiredMessage');
+                                        $state.go('openlmis.orders.fulfillment', '', {
+                                            reload: true
+                                        });
+                                    } else {
+                                        notificationService.error('shipmentView.failedToConfirmShipment');
+                                    }
+                                })
+                                .finally(loadingModalService.close);
                         });
                 })
                     .finally(loadingModalService.close);

@@ -109,7 +109,8 @@
                     }
                     return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                         extraData: true,
-                        isAdjustment: true
+                        isAdjustment: true,
+                        returnNoMovementLots: true
                     }, orderableIds);
                 },
                 addedLineItems: function(

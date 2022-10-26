@@ -147,7 +147,8 @@
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                 extraData: true,
-                isAdjustment: true
+                isAdjustment: true,
+                returnNoMovementLots: true
             }, [vm.selectedProduct.orderableId])
                 .then(function(locationsInfo) {
                     locations = locations.concat(locationsInfo);

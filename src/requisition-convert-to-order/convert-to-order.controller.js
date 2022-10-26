@@ -223,9 +223,14 @@
                                         'requisitionConvertToOrder.releaseWithoutOrder.success');
                                     $state.reload();
                                 })
-                                .catch(function() {
+                                .catch(function(err) {
                                     loadingModalService.close();
-                                    notificationService.error('requisitionConvertToOrder.errorOccurred');
+                                    if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.requisition.expired') {
+                                        notificationService.error('requisitionConvertToOrder.expiredMessage');
+                                        $state.reload();
+                                    } else {
+                                        notificationService.error('requisitionConvertToOrder.errorOccurred');
+                                    }
                                     key = uuidGenerator.generate();
                                 });
                         });

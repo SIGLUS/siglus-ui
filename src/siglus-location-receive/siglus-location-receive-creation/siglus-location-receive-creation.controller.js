@@ -124,7 +124,8 @@
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                 isAdjustment: false,
-                extraData: true
+                extraData: true,
+                returnNoMovementLots: true
             }, [vm.selectedProduct.orderableId]).then(function(locationsInfo) {
                 locations = locations.concat(locationsInfo);
                 var lineItem = addAndRemoveReceiveLineItemIssueService.getAddProductRow(vm.selectedProduct, locations);

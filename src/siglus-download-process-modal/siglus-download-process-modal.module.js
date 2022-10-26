@@ -14,34 +14,13 @@
  */
 
 (function() {
-
     'use strict';
 
-    /**
-     * @ngdoc filter
-     * @name siglus-stock-archived-product.filter:siglusArchivedProductName
-     *
-     * @description
-     * Add archived tag for archived product name.
-     *
-     * @param   {Object} orderableGroup
-     * @return  {String}
-     */
-    angular
-        .module('siglus-stock-archived-product')
-        .filter('siglusArchivedProductName', archivedProductNameFilter);
-
-    function archivedProductNameFilter() {
-        return function(orderable) {
-            if (!orderable) {
-                return undefined;
-            }
-
-            if (orderable.archived) {
-                return '[Archived] ' + orderable.fullProductName;
-            }
-            return orderable.fullProductName;
-        };
-    }
-
+    angular.module('siglus-download-process-modal', [
+        'ui.router',
+        'openlmis-modal',
+        'siglus-physical-inventory-draft-list',
+        'referencedata-facility',
+        'requisition'
+    ]);
 })();

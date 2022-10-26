@@ -36,7 +36,7 @@ describe('archived product name filter', function() {
     it('should return name with tag when the orderable group is archived', function() {
         this.orderable.archived = true;
 
-        expect(this.archivedProductNameFilter(this.orderable)).toEqual('[archived]Product 1');
+        expect(this.archivedProductNameFilter(this.orderable)).toEqual('[Archived] Product 1');
     });
 
     it('should return fullProductName when the orderable group is not archived', function() {
