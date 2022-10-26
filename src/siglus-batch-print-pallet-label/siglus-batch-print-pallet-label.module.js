@@ -18,30 +18,15 @@
     'use strict';
 
     /**
-     * @ngdoc filter
-     * @name siglus-stock-archived-product.filter:siglusArchivedProductName
+     * @module siglus-analytics-report-tracer-drug
      *
      * @description
-     * Add archived tag for archived product name.
-     *
-     * @param   {Object} orderableGroup
-     * @return  {String}
+     * second-tier detail page for Tracer drug report
      */
-    angular
-        .module('siglus-stock-archived-product')
-        .filter('siglusArchivedProductName', archivedProductNameFilter);
-
-    function archivedProductNameFilter() {
-        return function(orderable) {
-            if (!orderable) {
-                return undefined;
-            }
-
-            if (orderable.archived) {
-                return '[Archived] ' + orderable.fullProductName;
-            }
-            return orderable.fullProductName;
-        };
-    }
+    angular.module('siglus-batch-print-pallet-label', [
+        'openlmis-message',
+        'ui.router',
+        'openlmis-date'
+    ]);
 
 })();

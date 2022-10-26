@@ -18,30 +18,25 @@
     'use strict';
 
     /**
-     * @ngdoc filter
-     * @name siglus-stock-archived-product.filter:siglusArchivedProductName
-     *
-     * @description
-     * Add archived tag for archived product name.
-     *
-     * @param   {Object} orderableGroup
-     * @return  {String}
-     */
+   * @ngdoc controller
+   * @name siglus-issue-draft-list.controller:SiglusIssueDraftListController
+   *
+   * @description
+   * Controller for siglus issue draft list.
+   */
     angular
-        .module('siglus-stock-archived-product')
-        .filter('siglusArchivedProductName', archivedProductNameFilter);
-
-    function archivedProductNameFilter() {
-        return function(orderable) {
-            if (!orderable) {
-                return undefined;
+        .module('siglus-batch-print-pallet-label')
+        .component('siglusBatchPrintPalletLabel', {
+            templateUrl: 'siglus-batch-print-pallet-label/siglus-batch-print-pallet-label.html',
+            controller: 'siglusBatchPrintPalletLabelController',
+            controllerAs: 'vm',
+            bindings: {
+                lineItems: '=',
+                printType: '<',
+                facilityName: '<',
+                podFileName: '<',
+                splitNumber: '<'
             }
-
-            if (orderable.archived) {
-                return '[Archived] ' + orderable.fullProductName;
-            }
-            return orderable.fullProductName;
-        };
-    }
+        });
 
 })();

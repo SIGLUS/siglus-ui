@@ -120,7 +120,7 @@
 
         this.getAddProductRow = function(product, locations) {
             var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(product.orderableId,
-                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true));
             return {
                 $errors: {},
                 moveTo: {},
