@@ -41,11 +41,14 @@
             var localStorageService = $injector.get('localStorageService');
             return $q(function(resolve) {
                 currentUserHomeFacilityService.getHomeFacility().then(function(res) {
-                    var facilityId = res.id;
-                    return adminFacilityDeviceService.get(facilityId).then(function(facilityDeviceInfo) {
-                        localStorageService.add('facilityDeviceInfo', facilityDeviceInfo.deviceType);
-                        resolve(facilityDeviceInfo.deviceType === 'LOCAL_MACHINE');
-                    });
+                    if (res) {
+                        var facilityId = res.id;
+                        return adminFacilityDeviceService.get(facilityId).then(function(facilityDeviceInfo) {
+                            localStorageService.add('facilityDeviceInfo', facilityDeviceInfo.deviceType);
+                            resolve(facilityDeviceInfo.deviceType === 'LOCAL_MACHINE');
+                        });
+                    }
+                    resolve(false);
                 });
             });
         }
