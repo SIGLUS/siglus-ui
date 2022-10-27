@@ -78,7 +78,7 @@
         vm.displayTableLineItems = undefined;
 
         vm.getLotList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getLotList(lineItem,
+            return SiglusLocationCommonUtilsService.getValidLotList(lineItem,
                 SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
         };
 
@@ -116,15 +116,6 @@
             return items;
         }
 
-        function validateLotExpired(item) {
-            if (!item.$error.lotCodeError && item.lot) {
-                var lotExpiredDate = moment(item.lot.expirationDate);
-                if (moment().isAfter(lotExpiredDate)) {
-                    item.$error.lotCodeError = 'locationShipmentView.lotExpired';
-                }
-            }
-        }
-
         function validateNotFirstToExpire(item) {
             if (!item.$error.lotCodeError) {
                 var lotOptions = _.filter(SiglusLocationCommonUtilsService.getLotList(item,
@@ -154,8 +145,6 @@
                     item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
                 } else {
                     callback(item, $index);
-
-                    validateLotExpired(item);
 
                     validateNotFirstToExpire(item);
                 }
@@ -596,7 +585,6 @@
                         lineItem.$error = {};
                     } else {
                         validateRequired(lineItem);
-                        validateLotExpired(lineItem);
                         if (lineItem.isKit) {
                             validateKitLocationDuplicated(lineItems, lineItem);
                         } else {
