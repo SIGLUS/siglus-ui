@@ -2399,6 +2399,7 @@
   "tracer.drug.report.to": "Para",
   "stockInitialInventoryDraft.submitted": "Inventário inicial submetido com sucesso",
   "analyticsReportMetabase.mmiaRegimens.title": "Relatório de Regimes MMIA",
+  "analyticsReportMetabase.mmtbRegimens.title": "Relatório de Regimes MMTB",
   "adminFacilityList.eraseSuccess": "Removido com sucesso",
   "siglusIssueOrReceiveReport.modelo": "CMAM - Modelo 02",
   "siglusIssueOrReceiveReport.republic_of_mozambique": "REPÚBLICA DE MOÇAMBIQUE",
