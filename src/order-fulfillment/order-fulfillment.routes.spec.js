@@ -107,14 +107,15 @@ describe('openlmis.orders.fulfillment state', function() {
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         expect(orderRepository.searchFulfill).toHaveBeenCalledWith({
             // #447: ends here
-            requestingFacilityId: undefined,
-            programId: undefined,
+            //requestingFacilityId: undefined,
+            //programId: undefined,
             // #400: Facility user partially fulfill an order and create sub-order for an requisition
-            status: [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED],
+            // status: [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED],
             // #400: ends here
-            page: '0',
-            size: '10',
-            sort: ['createdDate,desc']
+            page: 0,
+            size: 2147483647,
+            sort: [ 'createdDate,desc' ],
+            status: [ 'FULFILLING', 'ORDERED', 'PARTIALLY_FULFILLED' ]
         });
     });
 
@@ -126,12 +127,10 @@ describe('openlmis.orders.fulfillment state', function() {
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         expect(orderRepository.searchFulfill).toHaveBeenCalledWith({
             // #447: ends here
-            requestingFacilityId: undefined,
-            programId: undefined,
-            status: [ORDER_STATUS.ORDERED],
-            page: '0',
-            size: '10',
-            sort: ['createdDate,desc']
+            page: 0,
+            size: 2147483647,
+            sort: [ 'createdDate,desc' ],
+            status: [ 'FULFILLING', 'ORDERED', 'PARTIALLY_FULFILLED' ]
         });
     });
 

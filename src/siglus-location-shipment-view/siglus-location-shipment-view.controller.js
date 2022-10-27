@@ -40,25 +40,29 @@
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
-        'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME'
+        'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME',
+        'alertConfirmModalService'
     ];
 
-    function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
-                                                  fulfillmentUrlFactory, messageService,
-                                                  updatedOrder, QUANTITY_UNIT,
-                                                  selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-                                                  stockCardSummaries,
-                                                  orderService,
-                                                  displayTableLineItems, $stateParams,
-                                                  order, moment,
-                                                  SiglusLocationViewService,
-                                                  prepareRowDataService,
-                                                  SiglusLocationCommonUtilsService,
-                                                  notificationService, confirmService,
-                                                  locations, siglusLocationCommonApiService,
-                                                  localStorageService, $window, facility,
-                                                  siglusPrintPalletLabelComfirmModalService,
-                                                  suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME) {
+    function SiglusLocationShipmentViewController(
+        $scope, shipment, loadingModalService, $state,
+        fulfillmentUrlFactory, messageService,
+        updatedOrder, QUANTITY_UNIT,
+        selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
+        stockCardSummaries,
+        orderService,
+        displayTableLineItems, $stateParams,
+        order, moment,
+        SiglusLocationViewService,
+        prepareRowDataService,
+        SiglusLocationCommonUtilsService,
+        notificationService, confirmService,
+        locations, siglusLocationCommonApiService,
+        localStorageService, $window, facility,
+        siglusPrintPalletLabelComfirmModalService,
+        suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME,
+        alertConfirmModalService
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -708,11 +712,18 @@
                                             })
                                             .catch(function(err) {
                                                 // eslint-disable-next-line max-len
-                                                if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.fulfill.order.expired') {
-                                                    notificationService.error('orderFulfillment.expiredMessage');
-                                                    $state.go('openlmis.orders.fulfillment', $stateParams, {
-                                                        reload: true
-                                                    });
+                                                if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                                                    alertConfirmModalService.error(
+                                                        'orderFulfillment.expiredMessage',
+                                                        '',
+                                                        ['adminFacilityList.close',
+                                                            'adminFacilityList.confirm']
+                                                    )
+                                                        .then(function() {
+                                                            $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                                reload: true
+                                                            });
+                                                        });
                                                 } else {
                                                     notificationService.error('shipmentView.failedToCreateSuborder');
                                                 }
@@ -734,11 +745,18 @@
                                         })
                                         .catch(function(err) {
                                             // eslint-disable-next-line max-len
-                                            if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.fulfill.order.expired') {
-                                                notificationService.error('orderFulfillment.expiredMessage');
-                                                $state.go('openlmis.orders.fulfillment', $stateParams, {
-                                                    reload: true
-                                                });
+                                            if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                                                alertConfirmModalService.error(
+                                                    'orderFulfillment.expiredMessage',
+                                                    '',
+                                                    ['adminFacilityList.close',
+                                                        'adminFacilityList.confirm']
+                                                )
+                                                    .then(function() {
+                                                        $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                            reload: true
+                                                        });
+                                                    });
                                             } else {
                                                 notificationService.error('shipmentView.failedToConfirmShipment');
                                             }

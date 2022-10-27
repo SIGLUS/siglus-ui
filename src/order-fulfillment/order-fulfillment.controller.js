@@ -31,12 +31,14 @@
     controller.$inject = [
         'orderingFacilities', 'programs', 'loadingModalService', 'orders',
         '$stateParams', '$state', 'ORDER_STATUS', 'homeFacility', 'confirmService',
-        'orderRepository'
+        'orderRepository', 'orderList', 'siglusFacilityViewRadioConfirmModalService'
     ];
 
-    function controller(orderingFacilities, programs, loadingModalService, orders,
-                        $stateParams, $state, ORDER_STATUS, homeFacility, confirmService,
-                        orderRepository) {
+    function controller(
+        orderingFacilities, programs, loadingModalService, orders,
+        $stateParams, $state, ORDER_STATUS, homeFacility, confirmService,
+        orderRepository, orderList, siglusFacilityViewRadioConfirmModalService
+    ) {
 
         var vm = this;
 
@@ -104,6 +106,25 @@
             'orderFulfillment.createdDateAsc': ['createdDate,asc']
         };
 
+        vm.fulFill = function(url, order) {
+            if (order.showWarningPopup) {
+                siglusFacilityViewRadioConfirmModalService.error(
+                    'orderFulfillment.startFulFillConfirm',
+                    '',
+                    ['adminFacilityView.close',
+                        'adminFacilityView.confirm']
+                ).then(function() {
+                    $state.go(url, _.extend({
+                        id: order.id
+                    }, $stateParams));
+                });
+            } else {
+                $state.go(url, _.extend({
+                    id: order.id
+                }, $stateParams));
+            }
+        };
+
         /**
          * @ngdoc method
          * @methodOf order-fulfillment.controller:OrderFulfillmentController
@@ -153,7 +174,9 @@
          */
         function loadOrders() {
             var stateParams = angular.copy($stateParams);
-
+            stateParams.orderList  = orderList;
+            stateParams.programs  = programs;
+            stateParams.homeFacility = homeFacility;
             stateParams.status = vm.orderStatus ? vm.orderStatus : null;
             stateParams.requestingFacilityId = vm.orderingFacility ? vm.orderingFacility.id : null;
             stateParams.programId = vm.program ? vm.program.id : null;
