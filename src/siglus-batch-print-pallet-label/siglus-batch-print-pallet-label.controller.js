@@ -154,18 +154,10 @@
         }
 
         function getFileName() {
-            if (vm.printType === 'pod') {
-                return 'Pallet_'
-                + vm.podFileName + '_'
-                + moment().format('YYYY-MM-DD') + '_'
-                + moment().format('HH') + 'h'
-                + moment().format('mm') + 'min'
-                + '.pdf';
-            }
-            var part = vm.totoalIndex > 1 ? 'part' + vm.currentIndex + '_' : '';
-            return 'Pallet_' + vm.printType + '_' + vm.facilityName + '_' + part
+            var part = vm.totoalIndex > 1 ? '_part' + vm.currentIndex : '';
+            return 'Pallet_' + vm.printType + '_' + vm.facilityName + '_'
               + moment().format('YYYY-MM-DD') + '_' + moment().format('HH') + 'h' + moment().format('mm') + 'min'
-              + '.pdf';
+              + part + '.pdf';
         }
     }
 })();
