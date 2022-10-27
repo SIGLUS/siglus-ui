@@ -107,6 +107,7 @@
                     var content = angular.copy(response.content);
                     content =  _.map(content, function(contentItem) {
                         contentItem.basicOrder.expired = contentItem.expired;
+                        contentItem.basicOrder.showWarningPopup = contentItem.showWarningPopup;
                         return contentItem.basicOrder;
                     });
                     response.content = basicOrderFactory.buildFromResponseArray(content);

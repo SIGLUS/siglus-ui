@@ -51,7 +51,7 @@
 					</select>
 				</td>
 				<td>
-					<button class="primary" ng-if="!item.expired" style="margin-bottom: 10px;" ng-click="vm.convertToOrder(item)">{{'requisitionConvertToOrder.convertToOrder.label' | message}}</button>
+					<button class="primary" ng-show="!item.expired" style="margin-bottom: 10px;" ng-click="vm.convertToOrder(item)">{{'requisitionConvertToOrder.convertToOrder.label' | message}}</button>
 					<button class="danger" ng-click="vm.releaseWithoutOrder(item)">{{'requisitionConvertToOrder.releaseWithoutOrder.label' | message}}</button>
 				</td>
 			</tr>

@@ -251,6 +251,7 @@ describe('SiglusLocationShipmentViewController', function() {
         module('shipment-view');
         module('siglus-requisition-initiate-history');
         module('openlmis-array-decorator');
+        module('siglus-alert-confirm-modal');
 
         prepareInjector();
         prepareSpies();
