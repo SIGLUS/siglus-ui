@@ -30,15 +30,21 @@
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
         'loadingModalService', 'notificationService', 'alertService', 'messageService', 'localStorageService',
-        'isLocalMachine'];
+        'isLocalMachine', 'moment', '$rootScope', 'localStorageService'];
 
     function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
                         loadingModalService, notificationService, alertService, messageService,
-                        localStorageService, isLocalMachine) {
+                        localStorageService, isLocalMachine, moment, $rootScope) {
 
         var vm = this;
 
+        var LAST_SYNC_TIME = 'LAST_SYNC_TIME';
         vm.$onInit = onInit;
+        vm.localMachineVersion = undefined;
+        vm.connectedOnlineWeb = true;
+        vm.lastSyncTime = localStorageService.get(LAST_SYNC_TIME);
+        vm.syncMessage = '';
+        vm.errors = [];
         /**
          * @ngdoc property
          * @propertyOf home-system-notifications.controller:HomeSystemNotificationsController
@@ -75,12 +81,21 @@
                 var timer = setInterval(function() {
                     homeImportAndExportService.getLocalMachineBaseInfo()
                         .then(function(res) {
-                            console.log('getLocalMachineBaseInfo: ', res);
+                            var data = res.data;
+                            vm.localMachineVersion = _.get(data, 'localMachineVersion');
+                            vm.connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
+                            $rootScope.$emit('localMachine-online');
                         })
-                        .catch(function() {
-                            clearInterval(timer);
+                        .catch(function(error) {
+                            console.log(error);
+                            vm.connectedOnlineWeb = false;
+                            $rootScope.$emit('localMachine-offline');
                         });
                 }, 5000);
+
+                $rootScope.$on('$stateChangeStart', function() {
+                    clearInterval(timer);
+                });
             }
         }
 
@@ -141,6 +156,15 @@
             homeImportAndExportService.getSyncResults()
                 .then(function(res) {
                     console.log('getSyncResults: ', res);
+                    vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime'])).format('YYYY-MM-DD HH:MM:SS');
+                    localStorageService.add(LAST_SYNC_TIME, vm.lastSyncTime);
+                    var errors = _.get(res, ['data', 'errors']);
+                    if (errors && errors.length > 0) {
+                        vm.syncMessage = 'openlmisHome.syncedFailed';
+                        vm.errors = errors;
+                    } else {
+                        vm.syncMessage = 'openlmisHome.syncedSuccessfully';
+                    }
                 });
         };
     }
