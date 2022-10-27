@@ -2,7 +2,9 @@
     "sohLocation.binCardForProductLevel":"Bin Card for ${name} - Product Level",
     "sohLocation.binCardForLotLevel":"Bin Card for ${name} - Lot Level",
     "sohLocation.binCardForLocationLevel":"Bin Card for ${name} - Location Level",
-    "sohLocationPrint.title": "Stock Card Reports",
+    "sohLocationPrint.title.productLevel": "Stock Card Reports - Product Level",
+    "sohLocationPrint.title.lotLevel": "Stock Card Reports - Lot Level",
+    "sohLocationPrint.title.locationLevel": "Stock Card Reports - Location Level",
     "sohLocationPrint.facilityCode": "Facility code",
     "sohLocationPrint.programCode": "Program code",
     "sohLocationPrint.product": "Product"
