@@ -19,7 +19,7 @@
 
     /**
      * @ngdoc controller
-     * @name openlmis-modal.controller:SiglusSignatureModalController
+     * @name openlmis-modal.controller:SiglusSignatureWithDateModalController
      *
      * @description
      * Exposes data to the confirmation modal view.
@@ -62,7 +62,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf openlmis-modal.controller:SiglusSignatureModalController
+         * @propertyOf openlmis-modal.controller:SiglusSignatureWithDateModalController
          * @type {String}
          * @name message
          *
@@ -73,7 +73,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf openlmis-modal.controller:SiglusSignatureModalController
+         * @propertyOf openlmis-modal.controller:SiglusSignatureWithDateModalController
          * @type {String}
          * @name confirmMessage
          *
@@ -84,7 +84,7 @@
 
         /**
          * @ngdoc property
-         * @propertyOf openlmis-modal.controller:SiglusSignatureModalController
+         * @propertyOf openlmis-modal.controller:SiglusSignatureWithDateModalController
          * @type {String}
          * @name cancelMessage
          *
@@ -95,11 +95,11 @@
 
         /**
          * @ngdoc method
-         * @methodOf openlmis-modal.controller:SiglusSignatureModalController
+         * @methodOf openlmis-modal.controller:SiglusSignatureWithDateModalController
          * @name $onInit
          *
          * @description
-         * Initialization method of the SiglusSignatureModalController.
+         * Initialization method of the SiglusSignatureWithDateModalController.
          */
         function onInit() {
             vm.message = message;
