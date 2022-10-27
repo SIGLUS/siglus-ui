@@ -200,11 +200,13 @@ describe('orderRepository', function() {
             basicOrderResponses = [
                 {
                     basicOrder: new BasicOrderResponseDataBuilder().build(),
-                    expired: false
+                    expired: false,
+                    showWarningPopup: false
                 },
                 {
                     basicOrder: new BasicOrderResponseDataBuilder().build(),
-                    expired: false
+                    expired: false,
+                    showWarningPopup: false
                 }
             ];
 

@@ -28,9 +28,9 @@
         .module('siglus-location-common')
         .service('SiglusLocationCommonUtilsService', SiglusLocationCommonUtilsService);
 
-    SiglusLocationCommonUtilsService.$inject = ['$resource', 'fulfillmentUrlFactory'];
+    SiglusLocationCommonUtilsService.$inject = ['moment'];
 
-    function SiglusLocationCommonUtilsService() {
+    function SiglusLocationCommonUtilsService(moment) {
 
         this.getOrderableLocationLotsMap = function(locations, shouldKeepSoh0) {
             var result = {};
@@ -111,6 +111,13 @@
                     })
                     .sortBy('expirationDate')
                     .value();
+        };
+
+        this.getValidLotList = function(lineItem, orderableLocationLotsMap) {
+            var lotList = this.getLotList(lineItem, orderableLocationLotsMap);
+            return _.filter(lotList, function(lot) {
+                return moment().isSameOrBefore(moment(lot.expirationDate));
+            });
         };
 
         this.getAllLotList = function(orderableId, orderableLocationLotsMap) {

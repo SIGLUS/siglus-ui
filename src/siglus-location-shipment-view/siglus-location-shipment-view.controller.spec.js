@@ -251,6 +251,7 @@ describe('SiglusLocationShipmentViewController', function() {
         module('shipment-view');
         module('siglus-requisition-initiate-history');
         module('openlmis-array-decorator');
+        module('siglus-alert-confirm-modal');
 
         prepareInjector();
         prepareSpies();
@@ -337,34 +338,6 @@ describe('SiglusLocationShipmentViewController', function() {
             vm.changeLot(lineItem, lineItems, 0);
 
             expect(lineItem.$error.lotCodeError).toEqual('openlmisForm.required');
-
-        });
-
-        it('it return locationShipmentView.lotExpired when select lot has expirated', function() {
-            var lineItem = {
-                $error: {
-                    lotCodeError: ''
-                },
-                $hint: {
-                    lotCodeHint: ''
-                },
-                isKit: false,
-                location: null,
-                lot: {
-                    lotCode: 'code1',
-                    expirationDate: '2020-12-12'
-                },
-                isMainGroup: true,
-                netContent: 1,
-                orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
-            };
-            var lineItems = [
-                lineItem
-            ];
-
-            vm.changeLot(lineItem, lineItems, 0);
-
-            expect(lineItem.$error.lotCodeError).toEqual('locationShipmentView.lotExpired');
 
         });
 

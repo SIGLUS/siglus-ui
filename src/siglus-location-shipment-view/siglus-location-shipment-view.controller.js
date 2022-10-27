@@ -40,25 +40,29 @@
         'notificationService', 'confirmService',
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
-        'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME'
+        'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME',
+        'alertConfirmModalService'
     ];
 
-    function SiglusLocationShipmentViewController($scope, shipment, loadingModalService, $state,
-                                                  fulfillmentUrlFactory, messageService,
-                                                  updatedOrder, QUANTITY_UNIT,
-                                                  selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-                                                  stockCardSummaries,
-                                                  orderService,
-                                                  displayTableLineItems, $stateParams,
-                                                  order, moment,
-                                                  SiglusLocationViewService,
-                                                  prepareRowDataService,
-                                                  SiglusLocationCommonUtilsService,
-                                                  notificationService, confirmService,
-                                                  locations, siglusLocationCommonApiService,
-                                                  localStorageService, $window, facility,
-                                                  siglusPrintPalletLabelComfirmModalService,
-                                                  suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME) {
+    function SiglusLocationShipmentViewController(
+        $scope, shipment, loadingModalService, $state,
+        fulfillmentUrlFactory, messageService,
+        updatedOrder, QUANTITY_UNIT,
+        selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
+        stockCardSummaries,
+        orderService,
+        displayTableLineItems, $stateParams,
+        order, moment,
+        SiglusLocationViewService,
+        prepareRowDataService,
+        SiglusLocationCommonUtilsService,
+        notificationService, confirmService,
+        locations, siglusLocationCommonApiService,
+        localStorageService, $window, facility,
+        siglusPrintPalletLabelComfirmModalService,
+        suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME,
+        alertConfirmModalService
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -78,7 +82,7 @@
         vm.displayTableLineItems = undefined;
 
         vm.getLotList = function(lineItem) {
-            return SiglusLocationCommonUtilsService.getLotList(lineItem,
+            return SiglusLocationCommonUtilsService.getValidLotList(lineItem,
                 SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
         };
 
@@ -116,15 +120,6 @@
             return items;
         }
 
-        function validateLotExpired(item) {
-            if (!item.$error.lotCodeError && item.lot) {
-                var lotExpiredDate = moment(item.lot.expirationDate);
-                if (moment().isAfter(lotExpiredDate)) {
-                    item.$error.lotCodeError = 'locationShipmentView.lotExpired';
-                }
-            }
-        }
-
         function validateNotFirstToExpire(item) {
             if (!item.$error.lotCodeError) {
                 var lotOptions = _.filter(SiglusLocationCommonUtilsService.getLotList(item,
@@ -154,8 +149,6 @@
                     item.$error.lotCodeError = 'locationShipmentView.lotDuplicated';
                 } else {
                     callback(item, $index);
-
-                    validateLotExpired(item);
 
                     validateNotFirstToExpire(item);
                 }
@@ -596,7 +589,6 @@
                         lineItem.$error = {};
                     } else {
                         validateRequired(lineItem);
-                        validateLotExpired(lineItem);
                         if (lineItem.isKit) {
                             validateKitLocationDuplicated(lineItems, lineItem);
                         } else {
@@ -720,11 +712,18 @@
                                             })
                                             .catch(function(err) {
                                                 // eslint-disable-next-line max-len
-                                                if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.fulfill.order.expired') {
-                                                    notificationService.error('orderFulfillment.expiredMessage');
-                                                    $state.go('openlmis.orders.fulfillment', $stateParams, {
-                                                        reload: true
-                                                    });
+                                                if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                                                    alertConfirmModalService.error(
+                                                        'orderFulfillment.expiredMessage',
+                                                        '',
+                                                        ['adminFacilityList.close',
+                                                            'adminFacilityList.confirm']
+                                                    )
+                                                        .then(function() {
+                                                            $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                                reload: true
+                                                            });
+                                                        });
                                                 } else {
                                                     notificationService.error('shipmentView.failedToCreateSuborder');
                                                 }
@@ -746,11 +745,18 @@
                                         })
                                         .catch(function(err) {
                                             // eslint-disable-next-line max-len
-                                            if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.fulfill.order.expired') {
-                                                notificationService.error('orderFulfillment.expiredMessage');
-                                                $state.go('openlmis.orders.fulfillment', $stateParams, {
-                                                    reload: true
-                                                });
+                                            if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                                                alertConfirmModalService.error(
+                                                    'orderFulfillment.expiredMessage',
+                                                    '',
+                                                    ['adminFacilityList.close',
+                                                        'adminFacilityList.confirm']
+                                                )
+                                                    .then(function() {
+                                                        $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                            reload: true
+                                                        });
+                                                    });
                                             } else {
                                                 notificationService.error('shipmentView.failedToConfirmShipment');
                                             }
