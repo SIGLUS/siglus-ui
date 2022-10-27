@@ -172,16 +172,10 @@
                 vm.currentDate, facility.id
             ).then(
                 function(result) {
-                    vm.movementDate = result;
-                    vm.minDate = vm.movementDate;
+                    vm.minDate = result;
                 }
-            )
-                .catch(function(error) {
-                    if (error.data.messageKey
-            === 'siglusapi.error.stockManagement.movement.date.invalid') {
-                        alertService.error('openlmisModal.dateConflict');
-                    }
-                });
+            );
+
             vm.isMerge = $stateParams.actionType === 'MERGE'
           || $stateParams.actionType === 'VIEW';
 
@@ -330,10 +324,19 @@
                             reload: true
                         });
                     })
-                        .catch(function() {
-                            notificationService.error(
-                                'proofOfDeliveryView.failedToConfirmProofOfDelivery'
-                            );
+                        .catch(function(error) {
+                            if (
+                                // eslint-disable-next-line max-len
+                                _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
+                            ) {
+                                alertService.error('openlmisModal.dateConflict');
+
+                            } else {
+                                notificationService.error(
+                                    'proofOfDeliveryView.failedToConfirmProofOfDelivery'
+                                );
+                            }
+
                         })
                         .finally(loadingModalService.close);
                 });
