@@ -28,10 +28,10 @@
         .module('openlmis-modal')
         .controller('siglusDownloadProcessModalController', siglusDownloadProcessModalController);
 
-    siglusDownloadProcessModalController.$inject = ['title', 'message', 'currentCount', 'totalCount', 'modalDeferred',
-        'siglusDownloadProcessModalService'];
+    siglusDownloadProcessModalController.$inject = ['$scope', 'title', 'message', 'currentCount', 'totalCount',
+        'modalDeferred', 'siglusDownloadProcessModalService'];
 
-    function siglusDownloadProcessModalController(title, message, currentCount, totalCount, modalDeferred,
+    function siglusDownloadProcessModalController($scope, title, message, currentCount, totalCount, modalDeferred,
                                                   siglusDownloadProcessModalService) {
         var vm = this;
 
@@ -39,12 +39,13 @@
 
         vm.service = siglusDownloadProcessModalService;
 
-        vm.close = function() {
-            modalDeferred.reject();
-        };
-        vm.confirm = function() {
-            modalDeferred.resolve();
-        };
+        $scope.$watch(function() {
+            return vm.service.currentIndex;
+        }, function(newValue) {
+            if (newValue > vm.service.totalCount) {
+                modalDeferred.reject();
+            }
+        });
 
         function onInit() {
             vm.title = title;

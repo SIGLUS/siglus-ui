@@ -8,6 +8,7 @@
   "analyticsReportMetabase.sohByLot.title": "SOH by Lot Report",
   "analyticsReportMetabase.stockStatus.title": "Stock Status Report",
   "analyticsReportMetabase.mmiaRegimens.title": "MMIA Regimens Report",
+  "analyticsReportMetabase.mmtbRegimens.title": "MMTB Regimens Report",
   "analyticsReportMetabase.fulfillment.title":"Fulfillment Report",
   "analyticsReportMetabase.historicalData.title":"Historical Data Report",
   "analyticsReportMetabase.malariaConsumptionData.title":"Malaria Consumption Data Report",
