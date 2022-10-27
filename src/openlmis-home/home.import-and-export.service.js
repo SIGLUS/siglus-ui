@@ -42,7 +42,9 @@
         };
 
         this.getLocalMachineBaseInfo = function() {
-            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/basicInfo'));
+            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/basicInfo'), {
+                timeout: 3000
+            });
         };
 
         this.getSyncResults = function() {

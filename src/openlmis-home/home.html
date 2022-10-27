@@ -5,14 +5,15 @@
     <div class="power-container">
         <div ng-if="vm.isLocalMachine" class="power-title">Sync your data by exporting / importing the file.</div>
         <div ng-if="vm.isLocalMachine" class="power-btn-group">
-            <button style="margin-right: 16px;" class="primary" ng-click="vm.export()">Export</button>
+            <button style="margin-right: 16px;" class="primary" ng-click="vm.export()" ng-disabled="!vm.connectedOnlineWeb">Export</button>
             <input type="file"
                    id="fileupload"
                    ng-model="vm.file"
                    ng-show="false"
                    ng-change="vm.import()"
+                   ng-disabled="!vm.connectedOnlineWeb"
             />
-            <label class="primary" for="fileupload">Import</label>
+            <label class="primary" for="fileupload" ng-disabled="!vm.connectedOnlineWeb">Import</label>
         </div>
         <h2 class="power">
             {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}
@@ -22,17 +23,35 @@
     <div ng-if="vm.isLocalMachine" class="offline-container">
         <div class="sync-version">
             <span>Local machine version：</span>
-            <span style="font-weight: 400;">2.22</span>
+            <span style="font-weight: 400;">{{vm.localMachineVersion}}</span>
         </div>
         <div class="last-sync-date">
             <span>Last sync time: </span>
-            <span style="font-weight: 400;">30/08/2022 11:23:12</span>
+            <span style="font-weight: 400;">{{vm.lastSyncTime}}</span>
         </div>
-        <div class="sync-tips">
-            <i class="fa fa-check-circle"></i>
-            Auto synced successfully at 30/08/2022 11:23:12
+<!--        <div class="sync-tips">-->
+<!--            <i class="fa fa-check-circle"></i>-->
+<!--            Auto synced successfully at 30/08/2022 11:23:12-->
+<!--        </div>-->
+        <button class="primary" ng-click="vm.sync()" ng-disabled="!vm.connectedOnlineWeb">Sync</button>
+        <div ng-if="vm.syncMessage" class="sync-tips">
+            <div ng-if="vm.syncMessage === 'openlmisHome.syncedSuccessfully'">
+                <i class="fa fa-check-circle"></i>
+                {{vm.syncMessage | message}} at {{vm.lastSyncTime}}
+            </div>
+            <div ng-if="vm.syncMessage === 'openlmisHome.syncedFailed'" class="error">
+                <div>
+                    <i class="fa fa-warning"></i>
+                    {{vm.syncMessage | message}} at {{vm.lastSyncTime}}
+                </div>
+                <div ng-repeat="error in vm.errors" class="sync-error-item">
+                    <div ng-if="error.errorPayload.messageKey" class="sync-error-item-line">{{error.errorPayload.messageKey | message}}</div>
+                    <div class="sync-error-item-line">{{error.type}} failed</div>
+                    <div class="sync-error-item-line">{{error.errorPayload.errorName}}</div>
+                    <div class="sync-error-item-line">{{error.errorPayload.rootStackTrace}}</div>
+                </div>
+            </div>
         </div>
-        <button class="primary" ng-click="vm.sync()">Sync</button>
     </div>
     <div class="system-notification-list" ng-if="!vm.isOffline">
         <h2> {{'openlmisSystemNotifications.systemNotifications' | message}} </h2>

@@ -31,15 +31,23 @@
     SiglusOpenlmisMainStateController.$inject = [
         '$scope',
         'localStorageService',
-        'homeImportAndExportService'
+        'homeImportAndExportService',
+        '$rootScope'
     ];
 
     function SiglusOpenlmisMainStateController(
         $scope,
         localStorageService,
-        homeImportAndExportService
+        homeImportAndExportService,
+        $rootScope
     ) {
         var vm = this;
+        $rootScope.$on('localMachine-online', function() {
+            $scope.isOffline = false;
+        });
+        $rootScope.$on('localMachine-offline', function() {
+            $scope.isOffline = true;
+        });
         vm.$onInit = function() {
             $scope.isOffline = false;
             $scope.isLocalMachine = localStorageService.get('facilityDeviceInfo') === 'LOCAL_MACHINE';
