@@ -33,7 +33,10 @@
             templateUrl: 'order-fulfillment/order-fulfillment.html',
             url: '/fulfillment?requestingFacilityId&programId&status&page&size',
             params: {
-                sort: ['createdDate,desc']
+                sort: ['createdDate,desc'],
+                orderList: undefined,
+                programs: undefined,
+                homeFacility: undefined
             },
             accessRights: [
                 FULFILLMENT_RIGHTS.SHIPMENTS_VIEW,
@@ -52,31 +55,47 @@
                         return requestingFacilities;
                     });
                 },
-                programs: function(programService) {
+                programs: function(programService, $stateParams) {
+                    if ($stateParams.programs) {
+                        return $stateParams.programs;
+                    }
                     return programService.getAll();
                 },
 
-                homeFacility: function(facilityFactory) {
+                homeFacility: function(facilityFactory, $stateParams) {
+                    if ($stateParams.homeFacility) {
+                        return $stateParams.homeFacility;
+                    }
                     return facilityFactory.getUserHomeFacility();
                 },
-                orders: function(paginationService, orderRepository, $stateParams, ORDER_STATUS) {
+                orderList: function(orderRepository, $stateParams) {
+                    if ($stateParams.orderList) {
+                        return $stateParams.orderList;
+                    }
+                    return orderRepository.searchFulfill({
+                        page: 0,
+                        size: 2147483647,
+                        sort: ['createdDate,desc'],
+                        status: ['FULFILLING', 'ORDERED', 'PARTIALLY_FULFILLED']
+                    });
+                },
+                orders: function(paginationService, $stateParams, orderList, $filter) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
-                        // #400: Facility user partially fulfill an order and create sub-order for an requisition
-                        var availableStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED,
-                                ORDER_STATUS.PARTIALLY_FULFILLED],
-                            // #400: ends here
-                            copy = angular.copy(stateParams);
-                        if (stateParams.status instanceof Array) {
-                            stateParams.status = stateParams.status.filter(function(status) {
-                                return availableStatuses.indexOf(status) >= 0;
-                            });
-                            copy = angular.copy(stateParams);
-                        } else if (!stateParams.status || availableStatuses.indexOf(stateParams.status) < 0) {
-                            copy.status = availableStatuses;
-                        }
-                        // #447: DDM facility can see the fulfilment which is supervised by DPM facility
-                        return orderRepository.searchFulfill(copy);
-                        // #447: ends here
+                        var orderListCopy = angular.copy(orderList);
+                        orderListCopy.content = _.filter(orderListCopy.content, function(item) {
+                            // eslint-disable-next-line max-len
+                            return  stateParams.requestingFacilityId ?
+                                _.get(item, [ 'facility', 'id']) === stateParams.requestingFacilityId : true
+                            // eslint-disable-next-line max-len
+                            && stateParams.programId ? _.get(item, [ 'program', 'id']) === stateParams.programId : true
+                            && stateParams.status ? _.get(item, ['status']) === stateParams.status : true;
+                        });
+                        orderListCopy.content = $filter('orderBy')(
+                            orderListCopy.content,
+                            ['createdDate'],
+                            stateParams.sort[0] === ['createdDate,desc'][0]
+                        );
+                        return orderListCopy;
                     });
                 }
             }

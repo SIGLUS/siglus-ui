@@ -66,7 +66,7 @@
             vm.requisition = requisition;
             vm.productLineItems = getProductLineItems(requisition.requisitionLineItems);
             services = requisition.testConsumptionLineItems;
-            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
+            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.historyComments = getHistoryComments(requisition.statusHistory);
             vm.creationDate = getCreationDate(requisition.createdDate);
@@ -262,11 +262,8 @@
         }
 
         function getCreationDate(date) {
-            return openlmisDateFilter(date, 'MMM')
-                + ' '
-                + openlmisDateFilter(date, 'yyyy')
-                + ' '
-                + openlmisDateFilter(date, 'dd');
+            return openlmisDateFilter(date, 'd MMM y');
+
         }
 
         function getPdfName(date, facilityName, id) {
