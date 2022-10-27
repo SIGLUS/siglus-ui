@@ -9,8 +9,8 @@
         <thead>
         <tr>
             <th>{{'requisitionInitiate.periods' | message}}</th>
-            <th>{{'requisitionInitiate.startDate' | message}}</th>
-            <th>{{'requisitionInitiate.endDate' | message}}</th>
+            <th>{{'requisitionApproval.periodDuration' | message}}</th>
+            <th>{{'requisitionApproval.actualPeriod' | message}}</th>
             <th>{{'requisitionInitiate.submitDate' | message}}</th>
             <th>{{'requisitionInitiate.status' | message}}</th>
             <th class="col-sticky sticky-right">{{'requisitionInitiate.actions' | message}}</th>
@@ -19,8 +19,8 @@
         <tbody>
         <tr ng-repeat="requisition in vm.requisitions">
             <td>{{requisition.processingPeriod.name}}</td>
-            <td>{{requisition.processingPeriod.startDate | openlmisDate}}</td>
-            <td>{{requisition.processingPeriod.endDate | openlmisDate}}</td>
+            <td>{{requisition.processingPeriod.startDate | openlmisDate}} - {{requisition.processingPeriod.endDate | openlmisDate}}</td>
+            <td>{{requisition.extraData.actualStartDate | openlmisDate}} - {{requisition.extraData.actualEndDate | openlmisDate}}</td>
             <td>{{requisition.statusChanges.SUBMITTED.changeDate | openlmisDate}}</td>
             <td>{{requisition.status | requisitionStatus}}</td>
             <td >
