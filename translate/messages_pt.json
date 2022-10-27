@@ -2527,10 +2527,10 @@
   "siglusPrintPallet.pack": "Embalagem",
   "siglusPrintPallet.location": "Localização",
   "siglusPrintPalletComfirmModal.title": "Imprimir Etiqueta da Palete",
-  "siglusPrintPalletComfirmModal.message": "After you submit the draft, you cannot print pallet labels anymore, do you want to print it now?",
+  "siglusPrintPalletComfirmModal.message": "Depois de submeter o rascunho não poderá imprimir etiquetas da palete. Pretende imprimir agora?",
   "stockAdjustmentCreationLocation.title": "Ajustes para ${facilityName} - ${program}",
-  "siglusPrintPalletComfirmModal.tips": "If there is no change of stock, there will be no document exported.",
-  "stockAdjustmentCreationLocation.duplicateError": "The adjustment reason for the same lot in the same location cannot be repeated, please enter a new one.",
+  "siglusPrintPalletComfirmModal.tips": "Se não houver alteração de stock, não haverá impressão de label.",
+  "stockAdjustmentCreationLocation.duplicateError": "Razão de ajuste repetido (mesma localização e lote). Por favor escolha outro motivo.",
   "stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate": "O lote inserido já existe. Insira um novo",
   "adminFacilityView.locationManagement.upgradeWebUser": "Antes de atualizar o Android para o recurso Web, você precisa certificar-se de que todos os dados locais no tablet Android foram sincronizados com a web. A atualização não pode ser retirada, você tem certeza de atualizá-la?",
   "adminFacilityView.upgradSuccess": "Instalação atualizada com sucesso!",
@@ -2574,8 +2574,8 @@
   "adminFacilityView.upgradeDeviceTypeSuccess": "Facility device type updated successfully!",
   "adminFacilityView.upgradeDeviceTypeFail": "Update failed, please refresh the page and try again.",
   "adminFacilityView.activationCode": "Código de activação",
-  "adminFacilityView.activationTips": "Please inform the facility to use the code to activate the local machine.",
-  "adminFacilityView.enableLocationTips": "Once you enable the feature, the facility's current movement drafts will be cleared. Are you sure you want to enable it?",
+  "adminFacilityView.activationTips": "Por favor, informe ao usuário para activar o servidor local usando o código enviado.",
+  "adminFacilityView.enableLocationTips": "Uma vez activada a funcionalidade, os rascunhos serão apagados. Deseja continuar?",
   "sohLocationPrint.title.productLevel": "Relatórios de Fichas de stock - Nível do produto",
   "sohLocationPrint.title.lotLevel": "Relatórios de Fichas de stock - Nível do lote",
   "sohLocationPrint.title.locationLevel": "Relatórios de Fichas de stock - Nível de localização",
@@ -2587,6 +2587,6 @@
   "orderFulfillment.closeConfirm": "Are you sure to close this fulfillment?",
   "orderFulfillment.startFulFillConfirm":"Are you sure to start the fulfillment of this period? If yes, the order of previous period will be expired, you cannot fulfill them.",
   "requisitionConvertToOrder.expiredMessage": "O período da requisição terminou. Por favor, feche a requisição sem emitir a ordem.",
-  "requisitionApproval.periodDuration": "Period Duration",
-  "requisitionApproval.actualPeriod": "Actual Period"
+  "requisitionApproval.periodDuration": "Período oficial",
+  "requisitionApproval.actualPeriod": " Período efectivo"
 }
