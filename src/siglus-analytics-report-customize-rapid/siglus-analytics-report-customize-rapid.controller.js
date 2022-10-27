@@ -70,7 +70,7 @@
                 return r;
             }, '');
             vm.comments = commentsStr.substr(0, commentsStr.length - 1);
-            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
+            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
             vm.signaure =  requisition.extraData.signaure;
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.endDate);
@@ -91,11 +91,11 @@
                 .sortBy('displayOrder')
                 .value();
         }
+
         function getCreationDate(date) {
-            return openlmisDateFilter(date, 'MMM')
-                + ' '
-                + openlmisDateFilter(date, 'yyyy');
+            return openlmisDateFilter(date, 'd MMM y');
         }
+
         function getPdfName(date, facilityName, id) {
             return (
                 'MIT.' + id
