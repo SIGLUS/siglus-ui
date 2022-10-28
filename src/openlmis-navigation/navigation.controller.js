@@ -72,7 +72,7 @@
                 var enableLocationManagement = _.get(angular.fromJson(localStorageService.get('homeFacility')),
                     'enableLocationManagement');
                 vm.states = _.filter(states, function(stateItem) {
-                    return !_.get(stateItem, ['name']).contains(
+                    return !_.get(stateItem, ['name'], '').contains(
                         enableLocationManagement ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
                     );
                 });
