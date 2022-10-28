@@ -47,6 +47,12 @@
             });
         };
 
+        this.getMachineType = function() {
+            return $http.get(openlmisUrlFactory('/api/siglusapi/machineType'), {
+                timeout: 3000
+            });
+        };
+
         this.getSyncResults = function() {
             this.testString = 'world';
             return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/syncResults'));

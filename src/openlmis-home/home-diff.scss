@@ -73,7 +73,7 @@
             margin-bottom: 10px;
             .error {
                 color: #d25555;
-                background: rgba(0,0,0,0.8);
+                //background: rgba(0,0,0,0.8);
                 max-height: 300px;
                 overflow: scroll;
                 width: 668px;
@@ -84,7 +84,7 @@
     }
 
     .sync-error-item {
-        margin-top: 20px;
+        margin-top: 10px;
         .sync-error-item-line{
             width: 648px;
             overflow: hidden;
