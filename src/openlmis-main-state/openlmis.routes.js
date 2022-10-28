@@ -40,6 +40,14 @@
             resolve: {
                 states: function(navigationStateService) {
                     return navigationStateService.setUpStatesAvailability();
+                },
+                isLocalMachine: function(homeImportAndExportService, $stateParams) {
+                    if (_.isUndefined($stateParams.isLocalMachine)) {
+                        return homeImportAndExportService.getMachineType().then(function(res) {
+                            return !_.get(res, ['data', 'onlineWeb']);
+                        });
+                    }
+                    return $stateParams.isLocalMachine;
                 }
             }
         });

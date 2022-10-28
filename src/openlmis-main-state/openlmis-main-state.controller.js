@@ -32,14 +32,16 @@
         '$scope',
         'localStorageService',
         'homeImportAndExportService',
-        '$rootScope'
+        '$rootScope',
+        'isLocalMachine'
     ];
 
     function SiglusOpenlmisMainStateController(
         $scope,
         localStorageService,
         homeImportAndExportService,
-        $rootScope
+        $rootScope,
+        isLocalMachine
     ) {
         var vm = this;
         $rootScope.$on('localMachine-online', function() {
@@ -50,7 +52,7 @@
         });
         vm.$onInit = function() {
             $scope.isOffline = false;
-            $scope.isLocalMachine = localStorageService.get('facilityDeviceInfo') === 'LOCAL_MACHINE';
+            $scope.isLocalMachine = isLocalMachine;
             // console.log(homeImportAndExportService.testString);
             $scope.testString = homeImportAndExportService.testString;
         };
