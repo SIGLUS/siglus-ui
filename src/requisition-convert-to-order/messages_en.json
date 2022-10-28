@@ -3,7 +3,7 @@
   "requisitionConvertToOrder.startDate": "Start Date",
   "requisitionConvertToOrder.expiredMessage": "The Requisition or Report has expired, please release it without order.",
   "requisitionConvertToOrder.convertToOrder.confirm": "Are you sure you want to convert this R&R to order?",
-  "requisitionConvertToOrder.convertToOrder.success": "The requisition have been successfully converted to an order",
-  "requisitionConvertToOrder.releaseWithoutOrder.success": "The requisition have been successfully released without order",
+  "requisitionConvertToOrder.convertToOrder.success": "The requisition has been successfully converted to an order",
+  "requisitionConvertToOrder.releaseWithoutOrder.success": "The requisition has been successfully released without order",
   "requisitionConvertToOrder.releaseWithoutOrder.confirm": "Are you sure you want to release this R&R without order?"
 }

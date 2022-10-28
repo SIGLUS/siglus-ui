@@ -42,12 +42,12 @@
                 facility: function(facilityService, $stateParams) {
                     return facilityService.get($stateParams.facilityId);
                 },
-                stockMovements: function($stateParams, stockMovementReportService) {
-                    var stockMovementResource =  stockMovementReportService.getStockMovement(
-                        $stateParams.facilityId, $stateParams.orderableId
-                    );
+                stockMovements: function($stateParams, siglusLocationStockOnHandService) {
+                    var stockMovementResource = siglusLocationStockOnHandService
+                        .getStockCardForProduct($stateParams.orderableId,
+                            $stateParams.facilityId);
                     return stockMovementResource.then(function(data) {
-                        return data;
+                        return data.lineItems;
                     });
                 }
 
