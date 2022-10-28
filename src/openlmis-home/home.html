@@ -5,15 +5,14 @@
     <div class="power-container">
         <div ng-if="vm.isLocalMachine" class="power-title">Sync your data by exporting / importing the file.</div>
         <div ng-if="vm.isLocalMachine" class="power-btn-group">
-            <button style="margin-right: 16px;" class="primary" ng-click="vm.export()" ng-disabled="!vm.connectedOnlineWeb">Export</button>
+            <button style="margin-right: 16px;" class="primary" ng-click="vm.export()">Export</button>
             <input type="file"
                    id="fileupload"
                    ng-model="vm.file"
                    ng-show="false"
                    ng-change="vm.import()"
-                   ng-disabled="!vm.connectedOnlineWeb"
             />
-            <label class="primary" for="fileupload" ng-disabled="!vm.connectedOnlineWeb">Import</label>
+            <label class="primary" for="fileupload" >Import</label>
         </div>
         <h2 class="power">
             {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}
