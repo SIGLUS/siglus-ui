@@ -49,12 +49,10 @@
                         return systemNotificationService.getSystemNotifications();
                     }
                 },
-                isLocalMachine: function(SiglusOpenlmisMainStateFactory, $stateParams) {
-                    console.log('$stateParams.isLocalMachine', $stateParams.isLocalMachine);
+                isLocalMachine: function(homeImportAndExportService, $stateParams) {
                     if (_.isUndefined($stateParams.isLocalMachine)) {
-                        return SiglusOpenlmisMainStateFactory.getFacilityDevice().then(function(res) {
-                            $stateParams.isLocalMachine = res;
-                            return res;
+                        return homeImportAndExportService.getMachineType().then(function(res) {
+                            return !_.get(res, ['data', 'onlineWeb']);
                         });
                     }
                     return $stateParams.isLocalMachine;
