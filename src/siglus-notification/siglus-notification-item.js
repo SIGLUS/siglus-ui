@@ -172,8 +172,13 @@
         }
 
         function goToPOD(notificationItem) {
-            $state.go('openlmis.orders.podManage.podView', {
-                podId: notificationItem.referenceId
+            $state.go('openlmis.orders.podManage', {
+                podId: notificationItem.referenceId,
+                programId: _.get(notificationItem, ['program', 'id']),
+                requestingFacilityId: _.get(notificationItem, ['facility', 'id']),
+                supplyingFacilityId: ''
+            }, {
+                reload: true
             });
         }
     }
