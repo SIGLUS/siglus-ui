@@ -84,7 +84,7 @@ describe('NavigationController', function() {
 
             this.initController();
 
-            expect(this.vm.states).toBe(undefined);
+            expect(this.vm.states).toEqual([ 'subSubState1', 'subSubState2' ]);
         });
 
         it('should expose states if the state list was given', function() {
