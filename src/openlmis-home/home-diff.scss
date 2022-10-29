@@ -134,7 +134,7 @@
         background: #3A95BC;
         background-image: linear-gradient(to bottom, #5cabcd, #49a1c7 10%, #3A95BC);
         margin-bottom: 0;
-        font-weight: normal;
+        font-weight: bold;
         &[disabled='disabled'] {
             background: #979797;
             cursor: not-allowed;
@@ -157,5 +157,6 @@
     }
     button.primary {
         margin-top: 10px;
+        font-weight: bold;
     }
 }

@@ -111,7 +111,8 @@
         <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot | lotCode}}</td>
         <td ng-if="fulfillingLineItem.orderable.isKit"></td>
         <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
-        <td></td>
+        <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot.expirationDate}}</td>
+        <td ng-if="fulfillingLineItem.orderable.isKit"></td>
         <!-- #400: ends here -->
         <td></td>
         <td></td>

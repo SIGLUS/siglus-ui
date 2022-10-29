@@ -77,6 +77,7 @@
         function onInit() {
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
+            $rootScope.isLocalMachine = isLocalMachine;
             if (isLocalMachine) {
                 var timer = setInterval(function() {
                     if (!vm.isOffline) {

@@ -48,9 +48,10 @@
         $rootScope.$on('localMachine-offline', function() {
             $scope.isOffline = true;
         });
+
+        vm.isLocalMachine = false;
         vm.$onInit = function() {
             $scope.isOffline = false;
-            $scope.isLocalMachine = localStorageService.get('facilityDeviceInfo') === 'LOCAL_MACHINE';
             // console.log(homeImportAndExportService.testString);
             $scope.testString = homeImportAndExportService.testString;
         };
@@ -58,6 +59,9 @@
             return homeImportAndExportService.testString;
         }, function() {
             $scope.testString = homeImportAndExportService.testString;
+        });
+        $scope.$watch('$rootScope.isLocalMachine', function() {
+            vm.isLocalMachine = $rootScope.isLocalMachine;
         });
     }
 
