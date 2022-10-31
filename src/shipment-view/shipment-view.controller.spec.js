@@ -15,7 +15,7 @@
 
 describe('ShipmentViewController', function() {
 
-    var vm, $q, $controller, ShipmentDataBuilder, shipment, tableLineItems, OrderDataBuilder, fulfillmentUrlFactory,
+    var vm, $q, $controller, ShipmentDataBuilder, shipment, tableLineItems, OrderDataBuilder,
         QUANTITY_UNIT, order, messageService, $window, $rootScope,
         // #264: warehouse clerk can add product to orders
         selectProductsModalService, alertService, OrderableDataBuilder, availableProducts, ShipmentViewLineItemFactory,
@@ -43,7 +43,6 @@ describe('ShipmentViewController', function() {
             messageService = $injector.get('messageService');
             $window = $injector.get('$window');
             $rootScope = $injector.get('$rootScope');
-            fulfillmentUrlFactory = $injector.get('fulfillmentUrlFactory');
             // #264: warehouse clerk can add product to orders
             selectProductsModalService = $injector.get('selectProductsModalService');
             alertService = $injector.get('alertService');
@@ -170,7 +169,6 @@ describe('ShipmentViewController', function() {
         var popup, document;
 
         beforeEach(function() {
-            spyOn(shipment, 'save').andReturn($q.resolve(shipment));
 
             document = jasmine.createSpyObj('document', ['write']);
 
@@ -186,23 +184,8 @@ describe('ShipmentViewController', function() {
         it('should show information when saving shipment', function() {
             vm.printShipment();
 
-            expect($window.open).toHaveBeenCalledWith(expect.anything(), '_blank');
-            expect(document.write).toHaveBeenCalledWith('Saving and printing');
-            expect(messageService.get).toHaveBeenCalledWith('shipmentView.saveDraftPending');
+            expect($window.open).toHaveBeenCalled();
         });
-
-        it('should print shipment after it was saved', function() {
-            vm.printShipment();
-
-            expect(popup.location.href).toBeUndefined();
-
-            $rootScope.$apply();
-
-            expect(popup.location.href)
-                .toEqual(fulfillmentUrlFactory('/api/reports/templates/common/583ccc35-88b7-48a8-9193-6c4857d3ff60/' +
-                    'pdf?shipmentDraftId=' + shipment.id));
-        });
-
     });
 
     // #264: warehouse clerk can add product to orders
