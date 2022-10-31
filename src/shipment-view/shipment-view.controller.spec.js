@@ -186,7 +186,7 @@ describe('ShipmentViewController', function() {
         it('should show information when saving shipment', function() {
             vm.printShipment();
 
-            expect($window.open).toHaveBeenCalledWith('', '_blank');
+            expect($window.open).toHaveBeenCalledWith(expect.anything(), '_blank');
             expect(document.write).toHaveBeenCalledWith('Saving and printing');
             expect(messageService.get).toHaveBeenCalledWith('shipmentView.saveDraftPending');
         });
