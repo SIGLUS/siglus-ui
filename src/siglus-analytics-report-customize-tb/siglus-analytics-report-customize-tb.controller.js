@@ -19,14 +19,14 @@
 
     /**
      * @ngdoc controller
-     * @name siglus-analytics-report-customize-rapid.controller:siglusAnalyticsReportCustomizeRapidController
+     * @name siglus-analytics-report-customize-tb.controller:siglusAnalyticsReportCustomizeTBController
      *
      * @description
      * Get Requisitions and Monthly Report second-tier page rapid test Report Customize
      */
     angular
-        .module('siglus-analytics-report-customize-mmia')
-        .controller('siglusAnalyticsReportCustomizeMMIAController', controller);
+        .module('siglus-analytics-report-customize-tb')
+        .controller('siglusAnalyticsReportCustomizeTBController', controller);
 
     controller.$inject = [
         'facility',
@@ -36,7 +36,8 @@
         'SIGLUS_SECTION_TYPES',
         '$timeout',
         '$q',
-        'siglusDownloadLoadingModalService'
+        'siglusDownloadLoadingModalService',
+        '$filter'
     ];
 
     function controller(
@@ -47,7 +48,8 @@
         SIGLUS_SECTION_TYPES,
         $timeout,
         $q,
-        siglusDownloadLoadingModalService
+        siglusDownloadLoadingModalService,
+        $filter
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -64,9 +66,10 @@
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
-            vm.productLineItems = getProductLineItems(requisition.requisitionLineItems);
+            vm.productLineItems = requisition.requisitionLineItems;
+            // requisition.requisitionLineItems;
             services = requisition.testConsumptionLineItems;
-            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
+            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.historyComments = getHistoryComments(requisition.statusHistory);
             vm.creationDate = getCreationDate(requisition.createdDate);
@@ -88,41 +91,63 @@
             vm.services = _.chain(services)
                 .sortBy('displayOrder')
                 .value();
-            vm.regimensAdults = getCategories(vm.requisition.regimenLineItems).Adults;
-            vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
-            setBarCodeDom();
-            var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
-                return item.name === 'summary';
-            });
-            vm.regimenSummaryLineItems = lineItemsFactory(
-                vm.requisition.regimenSummaryLineItems,
-                summerySection.columns
-            );
-            var patients = patientTemplateFactory();
-            vm.patientList = patients.normalPatientList;
-            vm.mergedPatientMap = patients.mergedPatientMap;
+            vm.ageGroupLineItems = vm.requisition.ageGroupLineItems;
+            vm.quantificationPart1 = {};
+            vm.quantificationPart2 =
+                $filter('orderBy')(_.get(vm.requisition.patientLineItems[0], ['columns', 'columns']), 'displayOrder');
+            vm.quantificationPart3 = {};
             vm.getValueByKey = getValueByKey;
             vm.getHistoryComments = getHistoryComments;
             vm.getSignaure = getSignaure;
-            vm.patientTemplateFactory = patientTemplateFactory;
-            vm.setBarCodeDom = setBarCodeDom;
+            // vm.setBarCodeDom = setBarCodeDom;
+            getPatientData();
+            vm.draftStatusMessages =
+                getDraftStatusMessages(vm.requisition.draftStatusMessage);
+            console.log(vm.draftStatusMessages);
+            // vm.requisition.draftStatusMessage;
+            console.log('requisition', vm.requisition);
         }
-        function setBarCodeDom() {
-            $timeout(function() {
-                angular.forEach(vm.productLineItems, function(item) {
-                    if (item.id) {
-                        // eslint-disable-next-line no-undef
-                        JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
-                            height: 24,
-                            displayValue: true,
-                            fontSize: 10,
-                            marginTop: 10,
-                            marginBottom: 2
-                        });
-                    }
+        function getDraftStatusMessages(draftStatusMessage) {
+            var arr = ['', '', '', '', '', '', ''];
+            if (draftStatusMessage.length > 63) {
+                for (var i = 0, l = draftStatusMessage.length; i < l / 63; i++) {
+                    var a = draftStatusMessage.slice(63 * i, 63 * (i + 1));
+                    arr[i] = a;
+                }
+            } else {
+                arr[0] = draftStatusMessage;
+            }
+            return arr;
+        }
+        function getPatientData() {
+            var sectionsMap = _.indexBy(vm.requisition.usageTemplate.patient, 'name');
+            angular.forEach(vm.requisition.patientLineItems, function(lineItem) {
+                lineItem.section = sectionsMap[lineItem.name];
+                angular.forEach(Object.keys(lineItem.columns), function(columnName) {
+                    var column = _.find(lineItem.section.columns, {
+                        name: columnName
+                    });
+                    lineItem.columns[columnName] = angular.merge({}, column, lineItem.columns[columnName]);
                 });
-            }, 100);
+            });
+            console.log('123: ', vm.requisition.patientLineItems);
         }
+        // function setBarCodeDom() {
+        //     $timeout(function() {
+        //         angular.forEach(vm.productLineItems, function(item) {
+        //             if (item.id) {
+        //                 // eslint-disable-next-line no-undef
+        //                 JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
+        //                     height: 24,
+        //                     displayValue: true,
+        //                     fontSize: 10,
+        //                     marginTop: 10,
+        //                     marginBottom: 2
+        //                 });
+        //             }
+        //         });
+        //     }, 100);
+        // }
         function getValueByKey(key, index) {
             if (!vm.requisition.patientLineItems.length) {
                 return '';
@@ -145,7 +170,7 @@
 
         function getSignaure(signaure) {
             var newSignaure = angular.copy(signaure);
-            if (newSignaure.approve) {
+            if (newSignaure && newSignaure.approve) {
                 newSignaure.approve = newSignaure && newSignaure.approve.length
                     ? newSignaure.approve.join(',')
                     : '';
@@ -153,117 +178,12 @@
             return newSignaure;
         }
 
-        function getProductLineItems(requisitionLineItems) {
-            var productLineItems = _.map(requisitionLineItems, function(item) {
-                item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
-                return item;
-            });
-            var lineItemsGroupByCategory = _.reduce(productLineItems, function(r, c) {
-                if (
-                    r[c.orderable.programs[0].orderableCategoryDisplayName]
-                        && c.orderable.programs[0].orderableCategoryDisplayName !== 'Default'
-                ) {
-                    r[c.orderable.programs[0].orderableCategoryDisplayName].push(c);
-                }
-                if (
-                    !r[c.orderable.programs[0].orderableCategoryDisplayName]
-                        && c.orderable.programs[0].orderableCategoryDisplayName !== 'Default'
-                ) {
-                    r[c.orderable.programs[0].orderableCategoryDisplayName] = [c];
-                }
-                return r;
-            }, {});
-            var temp = _.map(Object.keys(lineItemsGroupByCategory), function(item) {
-                lineItemsGroupByCategory[item].push(
-                    {
-                        orderable: {
-                            programs: [
-                                {
-                                    orderableCategoryDisplayName: item
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        orderable: {
-                            programs: [
-                                {
-                                    orderableCategoryDisplayName: item
-                                }
-                            ]
-                        }
-                    }
-                );
-                return lineItemsGroupByCategory[item];
-            });
-            return _.flatten(temp, 2);
-        }
-
-        function patientTemplateFactory() {
-            if (!vm.requisition.patientLineItems.length) {
-                return {
-                    normalPatientList: [],
-                    mergedPatientMap: {}
-                };
-            }
-            var jugeArray = [
-                'Tipo de Dispensa - Dispensa Mensal (DM)',
-                'Tipo de Dispensa - Dispensa para 3 Mensal (DT)',
-                'Tipo de Dispensa - Dispensa para 6 Mensal (DS)',
-                'Tipo de Dispensa - Mês Corrente',
-                'Tipo de Dispensa - Total de pacientes com tratamento',
-                'Tipo de Dispensa - Ajuste'
-            ];
-            return _.reduce(vm.requisition.usageTemplate.patient, function(r, c) {
-                var temp = _.find(vm.requisition.patientLineItems, function(item) {
-                    return item.name === c.name;
-                });
-                c.columns = _.filter(c.columns, function(itm) {
-                    return itm.isDisplayed;
-                });
-                temp.column = c;
-                if (_.contains(jugeArray, c.label)) {
-                    r.mergedPatientMap[c.label] = temp;
-                } else {
-                    r.normalPatientList.push(temp);
-                }
-                return r;
-            }, {
-                mergedPatientMap: {},
-                normalPatientList: []
-            });
-        }
-
-        function lineItemsFactory(lineItems, sections) {
-            return _.map(lineItems, function(item) {
-                _.forEach(sections, function(_item) {
-                    if (item.name === _item.name) {
-                        _item.columns = _.filter(_item.columns, function(c) {
-                            return c.isDisplayed;
-                        });
-                        item.column = _item;
-                    }
-                });
-                return item;
-            });
-        }
-
-        function getCategories(regimenLineItems) {
-            var regimentLineItemsCopy = angular.copy(regimenLineItems);
-            vm.totalItem = regimentLineItemsCopy.pop();
-            return _.reduce(regimentLineItemsCopy, function(r, c) {
-                if (r[c.regimen.regimenCategory.name]) {
-                    r[c.regimen.regimenCategory.name].push(c);
-                } else {
-                    r[c.regimen.regimenCategory.name] = [c];
-                }
-                return r;
-            }, {});
-        }
-
         function getCreationDate(date) {
-            return openlmisDateFilter(date, 'd MMM y');
-
+            return openlmisDateFilter(date, 'MMM')
+                + ' '
+                + openlmisDateFilter(date, 'yyyy')
+                + ' '
+                + openlmisDateFilter(date, 'dd');
         }
 
         function getPdfName(date, facilityName, id) {
@@ -300,66 +220,79 @@
 
         vm.downloadPdf = function() {
             siglusDownloadLoadingModalService.open();
-            var node = document.getElementById('mmia-form');
-            var secondSectionNode = document.getElementById('secondSection');
-            var middleSectionNode = document.getElementById('middleSection');
-            var firstSectionNode = document.getElementById('firstSection');
-            var footerSectionNode = document.getElementById('bottomSection');
+            var node = document.getElementById('tb-form');
+            var headerNode = document.getElementById('header');
+            var repeatTitleNode = document.getElementById('repeatTitle');
+            var footerNode = document.getElementById('footer');
+            var outerNode = document.getElementById('outer');
             var contentWidth = node.offsetWidth;
-            var contentHeight = node.offsetHeight;
             var a4Height = 1250 / 585 * 781.89;
-            var leftHeight = contentHeight - secondSectionNode.offsetHeight;
-            var canUseHeight = a4Height - leftHeight;
-            var secondSectionTrNodes = document.querySelectorAll('#calcTr');
-            var secondSectionTrNodesArray = Array.from(secondSectionTrNodes);
+            // var leftHeight = contentHeight - secondSectionNode.offsetHeight;
+            var canUseHeight = a4Height
+                - headerNode.offsetHeight
+                - repeatTitleNode.offsetHeight;
+            var neddCalcNodes = document.querySelectorAll('#calcTr');
+            var neddCalcNodesArray = Array.from(neddCalcNodes);
             // eslint-disable-next-line no-undef
             var PDF = new jsPDF('', 'pt', 'a4');
             var rate = 585 / 1250;
             var promiseList = [];
             var headerAndFooterPromiseList = [
                 // eslint-disable-next-line no-undef
-                domtoimage.toPng(firstSectionNode, {
+                domtoimage.toPng(headerNode, {
                     scale: 1,
                     width: 1250,
-                    height: firstSectionNode.offsetHeight
+                    height: headerNode.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: firstSectionNode.offsetWidth,
-                        nodeHeight: firstSectionNode.offsetHeight
+                        nodeWidth: headerNode.offsetWidth,
+                        nodeHeight: headerNode.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
-                domtoimage.toPng(middleSectionNode, {
+                domtoimage.toPng(repeatTitleNode, {
                     scale: 1,
                     width: 1250,
-                    height: middleSectionNode.offsetHeight + 10
+                    height: repeatTitleNode.offsetHeight
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: middleSectionNode.offsetWidth,
-                        nodeHeight: middleSectionNode.offsetHeight
+                        nodeWidth: repeatTitleNode.offsetWidth,
+                        nodeHeight: repeatTitleNode.offsetHeight
                     };
                 }),
                 // eslint-disable-next-line no-undef
-                domtoimage.toPng(footerSectionNode, {
+                domtoimage.toPng(footerNode, {
                     scale: 1,
                     width: 1250,
-                    height: footerSectionNode.offsetHeight + 10 + 22
+                    height: footerNode.offsetHeight + 25
                 }).then(function(data) {
                     return {
                         data: data,
-                        nodeWidth: footerSectionNode.offsetWidth,
-                        nodeHeight: footerSectionNode.offsetHeight + 22
+                        nodeWidth: footerNode.offsetWidth,
+                        nodeHeight: footerNode.offsetHeight
+                    };
+                }),
+                // eslint-disable-next-line no-undef
+                domtoimage.toPng(outerNode, {
+                    scale: 1,
+                    width: 1250,
+                    height: outerNode.offsetHeight + 10 + 22
+                }).then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: outerNode.offsetWidth,
+                        nodeHeight: outerNode.offsetHeight + 22
                     };
                 })
             ];
-            _.forEach(secondSectionTrNodesArray, function(item) {
+            _.forEach(neddCalcNodesArray, function(item) {
                 // eslint-disable-next-line no-undef
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
                     width: contentWidth,
-                    height: item.offsetHeight
+                    height: item.offsetHeight + 1
                 }).then(function(data) {
                     return {
                         data: data,
@@ -371,14 +304,15 @@
             var A4_HEIGHT = 801.89;
             var promiseListLen = promiseList.length;
             $q.all(headerAndFooterPromiseList).then(function(reback) {
-                var offsetHeight = firstSectionNode.offsetHeight;
+                var offsetHeight = headerNode.offsetHeight;
                 var realHeight = 0;
                 var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                    PDF.addImage(reback[1].data, 'JPEG', 5, offsetHeight * rate, 585, reback[1].nodeHeight * rate);
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
-                        if (realHeight > canUseHeight - 30) {
+                        if (realHeight > canUseHeight) {
                             PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
@@ -386,22 +320,22 @@
                                 A4_HEIGHT - 10
                             );
                             pageNumber = pageNumber + 1;
-                            PDF.addImage(
-                                reback[1].data,
-                                'JPEG',
-                                5,
-                                offsetHeight * rate,
-                                585,
-                                reback[1].nodeHeight * rate
-                            );
-                            PDF.addImage(
-                                reback[2].data,
-                                'JPEG',
-                                5,
-                                (offsetHeight + reback[1].nodeHeight) * rate,
-                                585,
-                                reback[2].nodeHeight * rate
-                            );
+                            // PDF.addImage(
+                            //     reback[1].data,
+                            //     'JPEG',
+                            //     5,
+                            //     offsetHeight * rate,
+                            //     585,
+                            //     reback[1].nodeHeight * rate
+                            // );
+                            // PDF.addImage(
+                            //     reback[2].data,
+                            //     'JPEG',
+                            //     5,
+                            //     (offsetHeight + reback[1].nodeHeight) * rate,
+                            //     585,
+                            //     reback[2].nodeHeight * rate
+                            // );
                             PDF.addPage();
                             PDF.setFontSize(10);
                             PDF.text(
@@ -409,12 +343,28 @@
                                 585 / 2,
                                 A4_HEIGHT - 10
                             );
-                            PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+                            PDF.addImage(
+                                reback[1].data,
+                                'JPEG',
+                                5,
+                                0,
+                                585,
+                                (reback[1].nodeHeight) * rate
+                            );
 
-                            offsetHeight = firstSectionNode.offsetHeight;
+                            offsetHeight = reback[1].nodeHeight;
                             realHeight = 0;
                         }
-                        PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
+                        PDF.addImage(
+                            res.data,
+                            'JPEG',
+                            5,
+                            pageNumber > 1
+                                ? offsetHeight * rate
+                                : (offsetHeight + reback[1].nodeHeight) * rate,
+                            585,
+                            res.nodeHeight * rate
+                        );
                         if (promiseListLen - 1 === index) {
                             PDF.setFontSize(10);
                             PDF.text(
@@ -426,24 +376,22 @@
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
                     PDF.addImage(
-                        reback[1].data,
-                        'JPEG',
-                        5,
-                        offsetHeight * rate,
-                        585,
-                        reback[1].nodeHeight * rate
-                    );
-                    PDF.addImage(
                         reback[2].data,
                         'JPEG',
                         5,
-                        (offsetHeight + reback[1].nodeHeight) * rate,
+                        (offsetHeight) * rate,
                         585,
                         reback[2].nodeHeight * rate
                     );
-                    PDF.save(
-                        vm.requisition.requisitionNumber + '.pdf'
+                    PDF.addImage(
+                        reback[3].data,
+                        'JPEG',
+                        5,
+                        (offsetHeight + reback[2].nodeHeight) * rate,
+                        585,
+                        reback[3].nodeHeight * rate
                     );
+                    PDF.save(vm.requisition.requisitionNumber + '.pdf');
                     siglusDownloadLoadingModalService.close();
                 });
             });
