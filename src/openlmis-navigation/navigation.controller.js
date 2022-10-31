@@ -29,10 +29,10 @@
         .controller('NavigationController', NavigationController);
 
     NavigationController.$inject = ['$scope', 'navigationStateService', 'currentUserHomeFacilityService',
-        'siglusHomeFacilityService'];
+        'siglusHomeFacilityService', 'facilityFactory', 'localStorageService'];
 
     function NavigationController($scope, navigationStateService, currentUserHomeFacilityService,
-                                  siglusHomeFacilityService) {
+                                  siglusHomeFacilityService, facilityFactory, localStorageService) {
 
         var vm = this;
 
@@ -69,12 +69,12 @@
                 vm.states = navigationStateService.roots[''];
             } else if ($scope.rootState) {
                 var states = navigationStateService.roots[$scope.rootState];
-                siglusHomeFacilityService.getLocationEnableStatus().then(function(status) {
-                    vm.states = _.filter(states, function(stateItem) {
-                        return !_.get(stateItem, ['name']).contains(
-                            status ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
-                        );
-                    });
+                var enableLocationManagement = _.get(angular.fromJson(localStorageService.get('homeFacility')),
+                    'enableLocationManagement');
+                vm.states = _.filter(states, function(stateItem) {
+                    return !_.get(stateItem, ['name'], '').contains(
+                        enableLocationManagement ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
+                    );
                 });
 
             } else {

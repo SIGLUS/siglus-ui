@@ -38,7 +38,7 @@
             }
 
             if (orderable.archived) {
-                return '[archived]' + orderable.fullProductName;
+                return '[Archived] ' + orderable.fullProductName;
             }
             return orderable.fullProductName;
         };

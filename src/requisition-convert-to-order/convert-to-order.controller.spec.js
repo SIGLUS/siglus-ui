@@ -19,7 +19,7 @@ describe('ConvertToOrderController', function() {
 
     beforeEach(function() {
         module('requisition-convert-to-order');
-
+        module('siglus-alert-confirm-modal');
         inject(function($injector) {
             this.$q = $injector.get('$q');
             this.$rootScope = $injector.get('$rootScope');
@@ -77,6 +77,7 @@ describe('ConvertToOrderController', function() {
 
             this.vm = $injector.get('$controller')('ConvertToOrderController', {
                 requisitions: this.requisitions,
+                requisitionList: this.requisitions,
                 $stateParams: this.stateParams,
                 facilities: this.facilities,
                 programs: this.programs
@@ -369,7 +370,9 @@ describe('ConvertToOrderController', function() {
                 facilityId: 'facilityId',
                 sort: 'sort',
                 page: 0,
-                size: 10
+                size: 10,
+                programs: this.programs,
+                requisitionList: this.vm.requisitions
             }, {
                 reload: true
             });

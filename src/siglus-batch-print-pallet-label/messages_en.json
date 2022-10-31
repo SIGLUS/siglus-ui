@@ -1,0 +1,4 @@
+{
+    "siglusPrintPallet.downloadProcess":"Download process",
+    "siglusPrintPallet.downloadProcessMessage": "The number of labels is too large and will be downloaded in batches. Please wait until the downloads is complete."
+}

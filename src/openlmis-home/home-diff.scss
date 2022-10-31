@@ -28,7 +28,7 @@
     }
     .power-container {
         position: absolute;
-        left: 64px;
+        left: 36px;
         bottom: 40px;
         .power-title {
             font-style: normal;
@@ -63,14 +63,32 @@
         font-style: normal;
         font-weight: 700;
         font-size: 14px;
-        width: calc(300px + 10%);
         .sync-tips {
+            margin-top: 10px;
             font-family: 'Arial';
             font-style: normal;
             font-weight: 400;
             font-size: 14px;
             color: #2FCF3F;
             margin-bottom: 10px;
+            .error {
+                color: #d25555;
+                //background: rgba(0,0,0,0.8);
+                max-height: 300px;
+                overflow: scroll;
+                width: 668px;
+                padding: 10px;
+            }
+        }
+
+    }
+
+    .sync-error-item {
+        margin-top: 10px;
+        .sync-error-item-line{
+            width: 648px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
@@ -100,6 +118,7 @@
     }
 
     label.primary {
+        margin-top: 10px;
         cursor: pointer;
         display: block;
         width: 74px;
@@ -115,7 +134,18 @@
         background: #3A95BC;
         background-image: linear-gradient(to bottom, #5cabcd, #49a1c7 10%, #3A95BC);
         margin-bottom: 0;
-        font-weight: normal;
+        font-weight: bold;
+        &[disabled='disabled'] {
+            background: #979797;
+            cursor: not-allowed;
+            border: none;
+        }
+    }
+
+    button:disabled{
+        background: #979797 !important;
+        cursor: not-allowed;
+        border: none;
     }
 
     #fileupload {
@@ -124,5 +154,9 @@
 
     .openlmis-file-upload {
         display: none;
+    }
+    button.primary {
+        margin-top: 10px;
+        font-weight: bold;
     }
 }

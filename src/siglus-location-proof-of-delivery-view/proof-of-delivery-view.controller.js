@@ -26,16 +26,23 @@
      */
     angular
         .module('proof-of-delivery-view')
-        .controller('ProofOfDeliveryViewControllerWithLocation', ProofOfDeliveryViewControllerWithLocation);
+        .controller('ProofOfDeliveryViewControllerWithLocation',
+            ProofOfDeliveryViewControllerWithLocation);
 
-    ProofOfDeliveryViewControllerWithLocation.$inject = [ '$scope',
-        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS', 'orderLineItems', 'canEdit',
-        'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryService', 'notificationService',
-        '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
-        'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment', 'orderablesPrice', 'facility',
-        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService',
-        'alertService', 'printInfo'];
+    ProofOfDeliveryViewControllerWithLocation.$inject = ['$scope',
+        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
+        'orderLineItems', 'canEdit',
+        'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
+        'proofOfDeliveryService', 'notificationService',
+        '$stateParams', 'alertConfirmModalService', '$state',
+        'PROOF_OF_DELIVERY_STATUS', 'confirmService',
+        'confirmDiscardService', 'proofOfDeliveryManageService',
+        'openlmisDateFilter', 'fulfillingLineItemFactory',
+        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment',
+        'orderablesPrice', 'facility',
+        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService',
+        'SiglusLocationCommonUtilsService',
+        'alertService', 'printInfo', 'siglusSignatureWithLimitDateModalService'];
 
     function ProofOfDeliveryViewControllerWithLocation($scope
         , proofOfDelivery, order, reasons, messageService
@@ -45,13 +52,16 @@
         , confirmService, confirmDiscardService, proofOfDeliveryManageService
         , openlmisDateFilter, fulfillingLineItemFactory
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
-        , orderablesPrice, facility, locations, areaLocationInfo, addAndRemoveLineItemService
-        , SiglusLocationCommonUtilsService, alertService, printInfo) {
+        , orderablesPrice, facility, locations, areaLocationInfo,
+                                                       addAndRemoveLineItemService
+        , SiglusLocationCommonUtilsService, alertService, printInfo,
+                                                       siglusSignatureWithLimitDateModalService) {
 
         if (canEdit) {
             orderLineItems.forEach(function(orderLineItem) {
                 orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
-                    addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem, locations, areaLocationInfo);
+                    addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem,
+                        locations, areaLocationInfo);
                 });
             });
         }
@@ -64,9 +74,11 @@
         vm.submit = submit;
         vm.deleteDraft = deleteDraft;
         vm.returnBack = returnBack;
+        vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
+        vm.minDate = undefined;
         vm.fileName = undefined;
         vm.getReason = function(reasonId) {
             // return 
@@ -167,15 +179,30 @@
             vm.canEdit = canEdit;
             vm.orderCode = order.orderCode;
             vm.facility = facility;
+            vm.facilityId = facility.id;
             vm.locations = locations;
             vm.areaLocationInfo = areaLocationInfo;
             vm.fileName = printInfo.fileName;
+            vm.currentDate = moment().format('YYYY-MM-DD');
             facilityFactory.getUserHomeFacility()
                 .then(function(res) {
                     vm.facility = res;
                 });
+            siglusSignatureWithLimitDateModalService.getMovementDate(
+                vm.currentDate, vm.facility.id
+            ).then(
+                function(result) {
+                    vm.minDate = result;
+                }
+            )
+                .catch(function(error) {
+                    if (error.data.messageKey
+            === 'siglusapi.error.stockManagement.movement.date.invalid') {
+                        alertService.error('openlmisModal.dateConflict');
+                    }
+                });
             vm.isMerge = $stateParams.actionType === 'MERGE'
-            || $stateParams.actionType === 'VIEW';
+          || $stateParams.actionType === 'VIEW';
 
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 save(true);
@@ -271,6 +298,10 @@
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
             });
+            console.log(groupedLineItems);
+            // $state.go($state.current.name, $stateParams, {
+            //     reload: true
+            // });
         };
 
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
@@ -603,10 +634,17 @@
                             reload: true
                         });
                     })
-                        .catch(function() {
-                            notificationService.error(
-                                'proofOfDeliveryView.failedToConfirmProofOfDelivery'
-                            );
+                        .catch(function(error) {
+                            if (
+                                // eslint-disable-next-line max-len
+                                _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
+                            ) {
+                                alertService.error('openlmisModal.dateConflict');
+                            } else {
+                                notificationService.error(
+                                    'proofOfDeliveryView.failedToConfirmProofOfDelivery'
+                                );
+                            }
                         })
                         .finally(loadingModalService.close);
                 });

@@ -33,15 +33,18 @@
         'ShipmentRepository', 'notificationService', '$state', 'stateTrackerService',
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
-        'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory', 'siglusShipmentConfirmModalService'
+        'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory', 'siglusShipmentConfirmModalService',
+        '$stateParams', 'alertConfirmModalService'
         // #400: ends here
     ];
     // #287: ends here
 
-    function shipmentViewService(ShipmentRepository, notificationService, stateTrackerService,
-                                 $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
-                                 messageService, orderService, $resource, fulfillmentUrlFactory,
-                                 siglusShipmentConfirmModalService) {
+    function shipmentViewService(
+        ShipmentRepository, notificationService, stateTrackerService,
+        $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
+        messageService, orderService, $resource, fulfillmentUrlFactory,
+        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService
+    ) {
 
         var shipmentRepository = new ShipmentRepository();
 
@@ -169,10 +172,27 @@
                                         notificationService.success('shipmentView.suborderHasBeenConfirmed');
                                         stateTrackerService.goToPreviousState('openlmis.orders.view');
                                     })
-                                    .catch(function() {
-                                        notificationService.error('shipmentView.failedToCreateSuborder');
-                                        loadingModalService.close();
-                                    });
+                                    .catch(function(err) {
+                                        // eslint-disable-next-line max-len
+                                        if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+
+                                            alertConfirmModalService.error(
+                                                'orderFulfillment.expiredMessage',
+                                                '',
+                                                ['adminFacilityList.close',
+                                                    'adminFacilityList.confirm']
+                                            )
+                                                .then(function() {
+                                                    $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                        reload: true
+                                                    });
+                                                });
+
+                                        } else {
+                                            notificationService.error('shipmentView.failedToCreateSuborder');
+                                        }
+                                    })
+                                    .finally(loadingModalService.close);
                             });
                     }
                     // #400: ends here
@@ -186,10 +206,25 @@
                                     notificationService.success('shipmentView.shipmentHasBeenConfirmed');
                                     stateTrackerService.goToPreviousState('openlmis.orders.view');
                                 })
-                                .catch(function() {
-                                    notificationService.error('shipmentView.failedToConfirmShipment');
-                                    loadingModalService.close();
-                                });
+                                .catch(function(err) {
+                                    // eslint-disable-next-line max-len
+                                    if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                                        alertConfirmModalService.error(
+                                            'orderFulfillment.expiredMessage',
+                                            '',
+                                            ['adminFacilityList.close',
+                                                'adminFacilityList.confirm']
+                                        )
+                                            .then(function() {
+                                                $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                    reload: true
+                                                });
+                                            });
+                                    } else {
+                                        notificationService.error('shipmentView.failedToConfirmShipment');
+                                    }
+                                })
+                                .finally(loadingModalService.close);
                         });
                 })
                     .finally(loadingModalService.close);

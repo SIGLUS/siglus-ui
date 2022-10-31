@@ -53,8 +53,8 @@
                 <th>{{'requisitionSearch.program' | message}}</th>
                 <th>{{'requisitionSearch.facility' | message}}</th>
                 <th>{{'requisitionSearch.period' | message}}</th>
-                <th>{{'requisitionSearch.startDate' | message}}</th>
-                <th>{{'requisitionSearch.endDate' | message}}</th>
+                <th>{{'requisitionApproval.periodDuration' | message}}</th>
+                <th>{{'requisitionApproval.actualPeriod' | message}}</th>
                 <th>{{'requisitionSearch.dateInitiated' | message}}</th>
                 <th>{{'requisitionSearch.status' | message}}</th>
                 <th>{{'requisitionSearch.emergency' | message}}</th>
@@ -69,8 +69,8 @@
                 <td>{{requisition.program.name}}</td>
                 <td>{{requisition.facility.code}} - {{requisition.facility.name}}</td>
                 <td>{{requisition.processingPeriod.name}}</td>
-                <td>{{requisition.processingPeriod.startDate | openlmisDate}}</td>
-                <td>{{requisition.processingPeriod.endDate | openlmisDate}}</td>
+                <td>{{requisition.processingPeriod.startDate | openlmisDate}} - {{requisition.processingPeriod.endDate | openlmisDate}}</td>
+                <td>{{requisition.extraData.actualStartDate | openlmisDate}} - {{requisition.extraData.actualEndDate | openlmisDate}}</td>
                 <td>{{requisition.createdDate | openlmisDate}}</td>
                 <td>{{requisition.status | requisitionStatus}}</td>
                 <td class="col-emergency">
@@ -82,7 +82,7 @@
                 </td> -->
                 <!--        SIGLUS-REFACTOR: end here-->
                 <td>
-                    
+
                     <button class="primary" ng-click="vm.openRnr(requisition.id)">{{'requisitionSearch.viewRequisition' | message}}</button>
                     <!--        SIGLUS-REFACTOR: starts here :remove offline column-->
                     <!-- <button class="danger" ng-if="requisition.$availableOffline"

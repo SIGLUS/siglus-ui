@@ -31,11 +31,15 @@
 
     ConvertToOrderController.$inject = [
         '$stateParams', 'requisitionService', 'notificationService', 'facilities', 'programs',
-        'confirmService', 'loadingModalService', 'requisitions', '$state', 'UuidGenerator'
+        'confirmService', 'loadingModalService', 'requisitions', '$state', 'UuidGenerator', 'requisitionList',
+        'alertConfirmModalService'
     ];
 
-    function ConvertToOrderController($stateParams, requisitionService, notificationService, facilities, programs,
-                                      confirmService, loadingModalService, requisitions, $state, UuidGenerator) {
+    function ConvertToOrderController(
+        $stateParams, requisitionService, notificationService, facilities, programs,
+        confirmService, loadingModalService, requisitions, $state, UuidGenerator, requisitionList,
+        alertConfirmModalService
+    ) {
 
         var vm = this,
             uuidGenerator = new UuidGenerator(),
@@ -184,12 +188,13 @@
          */
         function search() {
             var stateParams = angular.copy($stateParams);
-
+            stateParams.programs = vm.programs;
             stateParams.programId = vm.programId;
             stateParams.facilityId = vm.facilityId;
             stateParams.sort = vm.sort;
             // SIGLUS-REFACTOR: starts here
             stateParams.page = 0;
+            stateParams.requisitionList = requisitionList;
             // SIGLUS-REFACTOR: ends here
             $state.go('openlmis.requisitions.convertToOrder', stateParams, {
                 reload: true
@@ -223,9 +228,22 @@
                                         'requisitionConvertToOrder.releaseWithoutOrder.success');
                                     $state.reload();
                                 })
-                                .catch(function() {
+                                .catch(function(err) {
                                     loadingModalService.close();
-                                    notificationService.error('requisitionConvertToOrder.errorOccurred');
+                                    if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.requisition.expired') {
+                                        alertConfirmModalService.error(
+                                            'requisitionConvertToOrder.expiredMessage',
+                                            '',
+                                            ['adminFacilityList.close',
+                                                'adminFacilityList.confirm']
+                                        )
+                                            .then(function() {
+                                                $state.reload();
+                                            });
+
+                                    } else {
+                                        notificationService.error('requisitionConvertToOrder.errorOccurred');
+                                    }
                                     key = uuidGenerator.generate();
                                 });
                         });

@@ -6,8 +6,8 @@
         <thead>
         <tr>
             <th>{{'requisitionInitiate.periods' | message}}</th>
-            <th>{{'requisitionInitiate.startDate' | message}}</th>
-            <th>{{'requisitionInitiate.endDate' | message}}</th>
+            <th>{{'requisitionApproval.periodDuration' | message}}</th>
+            <th>{{'requisitionApproval.actualPeriod' | message}}</th>
             <th>{{'requisitionInitiate.submitDuration' | message}}</th>
             <th>{{'requisitionInitiate.status' | message}}</th>
             <th class="col-sticky sticky-right">{{'requisitionInitiate.actions' | message}}</th>
@@ -16,8 +16,14 @@
         <tbody>
         <tr ng-repeat="(idx, period) in vm.periods">
             <td>{{period.name}}</td>
-            <td>{{period.startDate | openlmisDate}}</td>
-            <td>{{period.endDate | openlmisDate}}</td>
+
+            <td>{{period.startDate | openlmisDate}} - {{period.endDate | openlmisDate}}</td>
+            <td>{{
+                period.requisitionExtraData.actualStartDate
+                        ? ((period.requisitionExtraData.actualStartDate | openlmisDate) + ' - ' + (period.requisitionExtraData.actualEndDate | openlmisDate))
+                        : 'N/A'
+                }}
+            </td>
             <td>{{period.submitStartDate | openlmisDate}} - {{period.submitEndDate | openlmisDate}}</td>
             <td>{{period.rnrStatus | requisitionStatus}}</td>
             <td ng-if="vm.checkProceedButton(period, idx)">
