@@ -348,7 +348,7 @@ describe('siglusLocationReceiveCreationController', function() {
             vm.submit();
 
             expect(lineItem.$errors.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
-            expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+            expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
         });
 
         it('it should display error message when filed has error', function() {
@@ -373,7 +373,7 @@ describe('siglusLocationReceiveCreationController', function() {
             expect(lineItem.$errors.moveToLocationError).toEqual('openlmisForm.required');
             expect(lineItem.$errors.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
 
-            expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+            expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
         });
 
         it('it should display location duplication error message when location has two or more same', function() {
@@ -440,7 +440,7 @@ describe('siglusLocationReceiveCreationController', function() {
             expect(lineItem1.$errors.lotCodeInvalid).toEqual('');
             expect(lineItem1.$errors.moveToLocationError).toEqual('receiveLocationCreation.locationDuplicated');
 
-            expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+            expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
         });
 
         it('it should display location duplication error message when location has two or more same and is not kit',
@@ -507,7 +507,7 @@ describe('siglusLocationReceiveCreationController', function() {
 
                 expect(lineItem1.$errors.lotCodeInvalid).toEqual('receiveLocationCreation.lotDuplicated');
 
-                expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+                expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
             });
 
     });

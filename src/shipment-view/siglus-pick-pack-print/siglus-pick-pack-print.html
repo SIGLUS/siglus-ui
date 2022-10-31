@@ -1,0 +1,53 @@
+<div class="shipment-view-container">
+    <div class="breadcrumb" style="font-size: 13px;">
+        <!-- {{ vm.breadcrumb }} -->
+    </div>
+    <div style="display: flex; align-items: center;">
+        <div>
+            <div class="shipment-view-report-title">
+                <span>{{ 'shipmentViewReport.tbTitle' | message }}</span>
+                <span style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</span>
+            </div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.generatedOn' | message }}: {{ vm.order.createdDate | openlmisDate }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.order' | message }}: {{ vm.order.orderCode }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.facility' | message }}: {{ vm.order.requestingFacility.name }}</div>
+            <div class="shipment-view-report-info">{{ 'shipmentViewReport.storeroom' | message }}: {{ vm.order.supplyingFacility.name }}</div>
+        </div>
+    </div>
+    <section class="openlmis-table-container">
+        <!-- SIGLUS-REFACTOR: starts here -->
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th class="text__left" style="width: 112px;">{{'shipmentViewReport.produceCode' | message}}</th>
+                <th class="text__left" style="width: 154px;">{{'shipmentViewReport.productName' | message}}</th>
+                <!-- SIGLUS-REFACTOR: starts here -->
+                <th class="text__left" style="width: 245px;">{{'shipmentViewReport.lotCode' | message}}</th>
+                <th class="text__left" style="width: 156px;">{{'shipmentViewReport.expiryDate' | message}}</th>
+                <th style="width: 71px;" class="col-sticky sticky-right">{{'shipmentViewReport.orderQuantity' | message}}</th>
+                <th style="width: 71px;" class="col-sticky sticky-right">{{'shipmentViewReport.partialFulfilled' | message}}</th>
+                <th style="width: 97px;" class="col-sticky sticky-right">{{'shipmentViewReport.fillQuantity' | message}}</th>
+                <th style="width: 80px;" class="col-sticky sticky-right">{{'shipmentViewReport.availableSOH' | message}}</th>
+                <th style="width: 135px;" class="col-sticky sticky-right">{{'shipmentViewReport.remainingSOH' | message}}</th>
+                <!-- SIGLUS-REFACTOR: ends here -->
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in vm.tableLineItems" ng-class="{'is-secondary': item.isMainGroup}">
+                    <td>{{!item.isLot ? item.productCode : ''}}</td>
+                    <td>{{!item.isLot ? item.productName : ''}}</td>
+                    <td ng-if="item.isLot">{{item.lot.lotCode}}</td>
+                    <td ng-if="!item.isLot"></td>
+                    <td ng-if="item.isLot">{{item.lot.expirationDate | openlmisDate}}</td>
+                    <td ng-if="!item.isLot"></td>
+                    <td>{{item.orderQuantity}}</td>
+                    <td>{{item.partialFulfilledQuantity}}</td>
+                    <td>{{vm.getFillQuantity(item)}}</td>
+                    <td>{{vm.getAvailableSoh(item)}}</td>
+                    <td>{{vm.getRemainingSoh(item)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <div class="text__left" style="margin-top: 20px" colspan="10">{{ 'shipmentViewReport.bottomLeftTips' | message }}</div>
+</div>

@@ -51,7 +51,10 @@
                 return item.orderable.id;
             }).filter(function(id) {
                 return !_.contains(Object.keys(orderableIdToLotsMap), id);
-            });
+            })
+                .filter(function(id) {
+                    return id;
+                });
             if (_.isEmpty(missingOrderableIds)) {
                 addedItems.forEach(function(item) {
                     item.lotOptions = orderableIdToLotsMap[item.orderable.id];
@@ -70,7 +73,7 @@
                         }
                     });
                     addedItems.forEach(function(item) {
-                        item.lotOptions = orderableIdToLotsMap[item.orderable.id];
+                        item.lotOptions = orderableIdToLotsMap[item.orderable.id] || [];
                     });
                     deferred.resolve();
                 });

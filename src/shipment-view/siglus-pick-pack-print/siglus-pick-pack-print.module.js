@@ -18,29 +18,10 @@
     'use strict';
 
     /**
-     * @module shipment-view
+     * @module siglus-pick-pack-print
      *
-     * Provides Shipment Draft view state and controller.
+     * Provides Shipment pick pack list print.
      */
-    angular.module('shipment-view', [
-        'fulfillment',
-        'openlmis-auth',
-        'openlmis-i18n',
-        'openlmis-table',
-        'openlmis-date',
-        'stock-card-summary',
-        'stock-constants',
-        'shipment',
-        'order',
-        'ui.router',
-        'openlmis-state-tracker',
-        'stock-card',
-        // SIGLUS-REFACTOR: starts here
-        'select-products-modal',
-        'siglus-order-status-messages',
-        'siglus-shipment-confirm-modal',
-        'siglus-pick-pack-print'
-        // SIGLUS-REFACTOR: starts here
-    ]);
+    angular.module('siglus-pick-pack-print', []);
 
 })();
