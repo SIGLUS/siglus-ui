@@ -35,7 +35,7 @@
         '$window'
     ];
     // SIGLUS-REFACTOR: ends here
-    // 
+    //
     function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
                         user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q,
                         localStorageService, $window) {
@@ -112,6 +112,7 @@
             stateParams.facility = vm.facility && vm.facility.id;
             stateParams.program = vm.program && vm.program.id;
             stateParams.supervised = vm.isSupervised;
+            stateParams.stockCardListPage = 0;
             if (vm.isLocationManagement) {
                 $state.go(
                     'openlmis.locationManagement.archivedProductSummaries',
@@ -246,7 +247,6 @@
             loadingModalService.open();
             return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
                 var stateParams = angular.copy($stateParams);
-
                 stateParams.facility = vm.facility && vm.facility.id;
                 stateParams.program = vm.program && vm.program.id;
                 stateParams.supervised = vm.isSupervised;

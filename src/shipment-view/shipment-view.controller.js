@@ -37,7 +37,7 @@
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'suggestedQuatity'
+        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService'
         // #287: ends here
     ];
 
@@ -46,7 +46,8 @@
                                     updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-                                    ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity) {
+                                    ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity,
+                                    localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -164,6 +165,37 @@
             return QUANTITY_UNIT.$getDisplayName(vm.quantityUnit);
         }
 
+        function generateTableLineItemsForPrint() {
+            return _.chain(vm.tableLineItems)
+                .filter(function(tableLineItem) {
+                    return tableLineItem.isMainGroup;
+                })
+                .filter(function(tableLineItem) {
+                    return tableLineItem.getFillQuantity() > 0;
+                })
+                .map(function(tableLineItem) {
+                    return Object.assign(tableLineItem, {
+                        quantityShipped: tableLineItem.getFillQuantity(),
+                        stockOnHand: tableLineItem.getAvailableSoh()
+                    });
+                })
+                .reduce(function(tableLineItems, item) {
+                    // flatten table line items for print
+                    tableLineItems.push(item);
+                    item.lineItems.forEach(function(lineItem) {
+                        if (lineItem instanceof ShipmentViewLineItemGroup) {
+                            lineItem.lineItems.forEach(function(innerLineItem) {
+                                tableLineItems.push(innerLineItem);
+                            });
+                        } else {
+                            tableLineItems.push(lineItem);
+                        }
+                    });
+                    return tableLineItems;
+                }, [])
+                .value();
+        }
+
         /**
          * @ngdoc method
          * @methodOf shipment-view.controller:ShipmentViewController
@@ -175,19 +207,12 @@
          * @return {Promise} the promise resolved when print is successful, rejected otherwise
          */
         function printShipment() {
-            var popup = $window.open('', '_blank');
-            popup.document.write(messageService.get('shipmentView.saveDraftPending'));
-
-            return shipment.save()
-                .then(function(response) {
-                    popup.location.href = accessTokenFactory.addAccessToken(getPrintUrl(response.id));
-                });
-        }
-
-        function getPrintUrl(shipmentId) {
-            return fulfillmentUrlFactory(
-                '/api/reports/templates/common/583ccc35-88b7-48a8-9193-6c4857d3ff60/pdf?shipmentDraftId=' + shipmentId
-            );
+            localStorageService.add('dataForPrint', angular.toJson({
+                order: vm.order,
+                tableLineItems: generateTableLineItemsForPrint()
+            }));
+            var PRINT_URL = $window.location.href.split('!/')[0] + '!/orders/pickPackListPrint';
+            $window.open(PRINT_URL, '_blank');
         }
 
         // #264: warehouse clerk can add product to orders

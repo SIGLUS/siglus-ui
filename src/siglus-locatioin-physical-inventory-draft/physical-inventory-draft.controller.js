@@ -83,21 +83,26 @@
          * @description
          * Holds current display physical inventory draft line items grouped by orderable id.
          */
-        var displayLineItemsMap = _.reduce(displayLineItemsGroup, function(r, c) {
-            if (r[c[0].locationCode]) {
-                r[c[0].locationCode].push(c);
-            } else {
-                r[c[0].locationCode] = [c];
-            }
-            return r;
-        }, {});
-        var itemsKeyAfterSort = _.sortBy(Object.keys(displayLineItemsMap), function(a) {
-            return a;
-        });
-        vm.displayLineItemsGroup = _.reduce(itemsKeyAfterSort, function(r, c) {
-            r.push(displayLineItemsMap[c][0]);
-            return r;
-        }, []);
+        if (vm.locationManagementOption === 'location') {
+            var displayLineItemsMap = _.reduce(displayLineItemsGroup, function(r, c) {
+                if (r[c[0].locationCode]) {
+                    r[c[0].locationCode].push(c);
+                } else {
+                    r[c[0].locationCode] = [c];
+                }
+                return r;
+            }, {});
+            var itemsKeyAfterSort = _.sortBy(Object.keys(displayLineItemsMap), function(a) {
+                return a;
+            });
+            vm.displayLineItemsGroup = _.reduce(itemsKeyAfterSort, function(r, c) {
+                r.push(displayLineItemsMap[c][0]);
+                return r;
+            }, []);
+        } else {
+            // handle location-by-prodcut
+            vm.displayLineItemsGroup = displayLineItemsGroup;
+        }
         vm.back = function() {
             $state.go('^', {}, {
                 reload: true
@@ -964,25 +969,6 @@
             });
         }
 
-        function getLotOptions() {
-            // var addedLotsId = getAddedLots();
-            var notAddedLotItemGroup = _.chain(draft.summaries)
-                .filter(function(summary) {
-                    // #105: activate archived product
-                    return summary.lot;
-                    // #105: ends here
-                })
-                .groupBy(function(item) {
-                    return item.orderable.id;
-                })
-                .value();
-            var lotOptions = {};
-            for (var i in notAddedLotItemGroup) {
-                lotOptions[i] = angular.copy(orderableGroupService.lotsOfWithNull(notAddedLotItemGroup[i]));
-            }
-            return lotOptions;
-        }
-
         function getAddedLotIdAndOrderableId() {
             var addedlotIdAndOrderableId = [];
             _.forEach(draft.lineItems, function(item) {
@@ -1150,6 +1136,9 @@
                 }, {});
                 var addedLotIdAndOrderableId = [];
                 _.forEach(draftByLocationMap[lineItem.locationCode], function(item) {
+                    if (item.lot && item.lot.lotCode && !item.lot.id) {
+                        return;
+                    }
                     addedLotIdAndOrderableId.push({
                         lotId: item.lot && item.lot.id ? item.lot.id : null,
                         orderableId: item.orderable.id
@@ -1257,7 +1246,6 @@
             }
             draft.lineItems.splice(index, 1);
             $stateParams.isAddProduct = true;
-            reload($state.current.name);
             _.each(draft.lineItems, function(item) {
                 if (hasDuplicateLotCode(item)) {
                     item.$errors.lotCodeInvalid = messageService
@@ -1266,6 +1254,7 @@
                     item.$errors.lotCodeInvalid = '';
                 }
             });
+            reload($state.current.name);
         }
 
         $scope.$on('lotCodeChange', function(event, data) {
@@ -1278,13 +1267,8 @@
         });
 
         function refreshLotOptions() {
-            var lotOptions = getLotOptions();
-            _.forEach(draft.lineItems, function(displayLineItem) {
-                var orderableId = _.get(displayLineItem, ['orderable', 'id'], undefined);
-                if (lotOptions[orderableId]) {
-                    displayLineItem.lotOptions = lotOptions[orderableId];
-                }
-            });
+            // dynamicly fill lot options by sending request
+            siglusOrderableLotService.fillLotsToAddedItems(draft.lineItems);
         }
 
         function delayPromise(delay) {

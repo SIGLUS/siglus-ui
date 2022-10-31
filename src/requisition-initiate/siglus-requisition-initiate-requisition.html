@@ -19,8 +19,8 @@
 
             <td>{{period.startDate | openlmisDate}} - {{period.endDate | openlmisDate}}</td>
             <td>{{
-                period.extraData.actualStartDate
-                        ? ((period.extraData.actualStartDate | openlmisDate) + ' - ' + (period.extraData.actualEndDate | openlmisDate))
+                period.requisitionExtraData.actualStartDate
+                        ? ((period.requisitionExtraData.actualStartDate | openlmisDate) + ' - ' + (period.requisitionExtraData.actualEndDate | openlmisDate))
                         : 'N/A'
                 }}
             </td>

@@ -509,7 +509,7 @@ describe('SiglusLocationIssueCreationController', function() {
             vm.submit();
 
             expect(lineItem.$error.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
-            expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+            expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
         });
 
         it('it should display error message when filed has error', function() {
@@ -536,7 +536,7 @@ describe('SiglusLocationIssueCreationController', function() {
             expect(lineItem.$error.locationError).toEqual('openlmisForm.required');
             expect(lineItem.$error.quantityError).toEqual('issueLocationCreation.inputPositiveNumber');
 
-            expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+            expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
         });
 
         it('it should display location duplication error message when location has two or more same', function() {
@@ -604,7 +604,7 @@ describe('SiglusLocationIssueCreationController', function() {
             expect(lineItem1.$error.locationError).toEqual('issueLocationCreation.locationDuplicated');
             expect(lineItem1.$error.quantityError).toEqual('issueLocationCreation.moreThanSoh');
 
-            expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+            expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
         });
 
         it('it should display location duplication error message when location has two or more same and is not kit',
@@ -673,7 +673,7 @@ describe('SiglusLocationIssueCreationController', function() {
                 expect(lineItem1.$error.locationError).toEqual('');
                 expect(lineItem1.$error.quantityError).toEqual('issueLocationCreation.moreThanSoh');
 
-                expect(alertService.error).toHaveBeenCalledWith('This form is invalid');
+                expect(alertService.error).toHaveBeenCalledWith('openlmisForm.formInvalid');
             });
 
     });
