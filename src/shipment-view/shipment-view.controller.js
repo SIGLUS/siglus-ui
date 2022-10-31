@@ -174,11 +174,10 @@
                     return tableLineItem.getFillQuantity() > 0;
                 })
                 .map(function(tableLineItem) {
-                    Object.assign(tableLineItem, {
-                        quantityShipped: tableLineItem.getFillQuantity,
+                    return Object.assign(tableLineItem, {
+                        quantityShipped: tableLineItem.getFillQuantity(),
                         stockOnHand: tableLineItem.getAvailableSoh()
                     });
-                    return tableLineItem;
                 })
                 .reduce(function(tableLineItems, item) {
                     // flatten table line items for print

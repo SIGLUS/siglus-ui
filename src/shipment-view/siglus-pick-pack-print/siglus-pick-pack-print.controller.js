@@ -35,11 +35,13 @@
         vm.$onInit = onInit;
 
         function getFillQuantity(tableLineItem) {
-            return _.get(tableLineItem, ['shipmentLineItem', 'quantityShipped'], 0);
+            var path = tableLineItem.isMainGroup ? ['quantityShipped'] : ['shipmentLineItem', 'quantityShipped'];
+            return _.get(tableLineItem, path, 0);
         }
 
         function getAvailableSoh(tableLineItem) {
-            return _.get(tableLineItem, ['shipmentLineItem', 'stockOnHand'], 0);
+            var path = tableLineItem.isMainGroup ? ['stockOnHand'] : ['shipmentLineItem', 'stockOnHand'];
+            return _.get(tableLineItem, path, 0);
         }
 
         function getRemainingSoh(tableLineItem) {
