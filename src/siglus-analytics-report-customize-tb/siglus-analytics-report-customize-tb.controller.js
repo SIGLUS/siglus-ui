@@ -71,7 +71,6 @@
             services = requisition.testConsumptionLineItems;
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure = getSignaure(requisition.extraData.signaure);
-            vm.historyComments = getHistoryComments(requisition.statusHistory);
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = getMonth(requisition.processingPeriod.endDate);
             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
@@ -102,10 +101,14 @@
             // vm.setBarCodeDom = setBarCodeDom;
             getPatientData();
             vm.draftStatusMessages =
-                getDraftStatusMessages(vm.requisition.draftStatusMessage);
-            console.log(vm.draftStatusMessages);
-            // vm.requisition.draftStatusMessage;
-            console.log('requisition', vm.requisition);
+                getDraftStatusMessages(getHistoryComments(requisition.statusHistory));
+        }
+        function getHistoryComments(statusHistory) {
+            var historyCommentsStr = _.reduce(statusHistory, function(r, c) {
+                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                return r;
+            }, '');
+            return historyCommentsStr.substr(0, historyCommentsStr.length - 1);
         }
         function getDraftStatusMessages(draftStatusMessage) {
             var arr = ['', '', '', '', '', '', ''];
@@ -320,22 +323,6 @@
                                 A4_HEIGHT - 10
                             );
                             pageNumber = pageNumber + 1;
-                            // PDF.addImage(
-                            //     reback[1].data,
-                            //     'JPEG',
-                            //     5,
-                            //     offsetHeight * rate,
-                            //     585,
-                            //     reback[1].nodeHeight * rate
-                            // );
-                            // PDF.addImage(
-                            //     reback[2].data,
-                            //     'JPEG',
-                            //     5,
-                            //     (offsetHeight + reback[1].nodeHeight) * rate,
-                            //     585,
-                            //     reback[2].nodeHeight * rate
-                            // );
                             PDF.addPage();
                             PDF.setFontSize(10);
                             PDF.text(
