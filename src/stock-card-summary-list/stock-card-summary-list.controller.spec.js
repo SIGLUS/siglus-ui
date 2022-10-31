@@ -118,7 +118,8 @@ describe('StockCardSummaryListController', function() {
                 param: 'param',
                 facility: 'facility',
                 program: 'program',
-                supervised: true
+                supervised: true,
+                stockCardListPage: 0
             }, {
                 reload: true
             });
@@ -132,7 +133,8 @@ describe('StockCardSummaryListController', function() {
                 param: 'param',
                 facility: 'facility',
                 program: 'program',
-                supervised: true
+                supervised: true,
+                stockCardListPage: 0
             }, {
                 reload: true
             });
