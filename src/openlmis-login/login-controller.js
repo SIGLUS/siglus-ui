@@ -29,11 +29,12 @@
 
     LoginController.$inject = [
         'loginService', 'modalDeferred', 'loadingModalService', '$rootScope', 'LocalDatabase',
-        'siglusHomeFacilityService', 'localStorageService', 'navigationStateService'
+        'siglusHomeFacilityService', 'localStorageService', 'navigationStateService', 'currentUserService'
     ];
 
     function LoginController(loginService, modalDeferred, loadingModalService, $rootScope, LocalDatabase,
-                             siglusHomeFacilityService, localStorageService, navigationStateService) {
+                             siglusHomeFacilityService, localStorageService, navigationStateService,
+                             currentUserService) {
 
         var vm = this;
 
@@ -42,6 +43,7 @@
         vm.$onInit = function() {
             new LocalDatabase('orderables').removeAll();
             siglusHomeFacilityService.facility = null;
+            currentUserService.clearCache();
             localStorageService.clearAll();
             navigationStateService.clearPromise();
         };
