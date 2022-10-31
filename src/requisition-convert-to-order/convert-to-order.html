@@ -21,8 +21,8 @@
 				<th>{{'requisitionConvertToOrder.facility' | message}}</th>
 				<th>{{'requisitionConvertToOrder.districtName' | message}}</th>
 				<th>{{'requisitionConvertToOrder.period' | message}}</th>
-				<th>{{'requisitionConvertToOrder.startDate' | message}}</th>
-				<th>{{'requisitionConvertToOrder.endDate' | message}}</th>
+				<th>{{'requisitionApproval.periodDuration' | message}}</th>
+				<th>{{'requisitionApproval.actualPeriod' | message}}</th>
 				<th>{{'requisitionConvertToOrder.dateApproved' | message}}</th>
 				<th>{{'requisitionConvertToOrder.emergency' | message}}</th>
                 <th class="col-sticky sticky-right">{{'requisitionConvertToOrder.supplyingDepot' | message}}</th>
@@ -35,8 +35,11 @@
 				<td>{{item.requisition.facility.code}} - {{item.requisition.facility.name}}</td>
 				<td>{{item.requisition.facility.geographicZone.name}}</td>
 				<td>{{item.requisition.processingPeriod.name}}</td>
-				<td>{{item.requisition.processingPeriod.startDate | openlmisDate}}</td>
-				<td>{{item.requisition.processingPeriod.endDate | openlmisDate}}</td>
+				<td>{{item.requisition.processingPeriod.startDate | openlmisDate}} - {{item.requisition.processingPeriod.endDate | openlmisDate}}</td>
+				<td>{{
+					(item.requisition.extraData.actualStartDate | openlmisDate) + ' - ' + (item.requisition.extraData.actualEndDate | openlmisDate)
+					}}
+				</td>
 				<td>{{item.requisition.statusChanges.APPROVED.changeDate | openlmisDate}}</td>
 				<td class="col-emergency">
 					<i ng-class="{'icon-ok': item.requisition.emergency}"></i>

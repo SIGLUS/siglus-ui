@@ -304,13 +304,8 @@
                     if (vm.requisition.emergency) {
                         reportName = 'REM';
                     }
-
-                    PDF.save(reportName + '.'
-                    + vm.facility.code + '.'
-                    + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'yy')
-                    + openlmisDateFilter(vm.requisition.processingPeriod.startDate, 'MM') + '.'
-                    + vm.emergencyCount
-                    + '.pdf');
+                    console.log(reportName);
+                    PDF.save(vm.requisition.requisitionNumber + '.pdf');
                     siglusDownloadLoadingModalService.close();
                 });
             });
