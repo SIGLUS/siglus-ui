@@ -14632,16 +14632,4 @@ describe('siglusAnalyticsReportCustomizeTBController', function() {
             });
         });
     });
-
-    describe('patientTemplateFactory', function() {
-        it('should be called', function() {
-            this.vm.requisition.patientLineItems = [];
-
-            expect(this.vm.patientTemplateFactory()).toEqual({
-                normalPatientList: [],
-                mergedPatientMap: {}
-            });
-            // expect(this.vm.getSignaure(signaure)).toEqual({});
-        });
-    });
 });
