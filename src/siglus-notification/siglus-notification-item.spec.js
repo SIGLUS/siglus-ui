@@ -81,8 +81,14 @@ describe('NotificationItem', function() {
         it('Should route to POD when notification type is todo and status is SHIPPED', function() {
             this.notification.navigate();
 
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.orders.podManage.podView', {
-                podId: 'f433700a-1182-41a9-8dda-30cb1c1681c2'
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.orders.podManage', {
+                podId: 'f433700a-1182-41a9-8dda-30cb1c1681c2',
+                programId: undefined,
+                requestingFacility: undefined,
+                supplyingFacilityId: ''
+            },
+            {
+                reload: true
             });
         });
 
@@ -98,8 +104,13 @@ describe('NotificationItem', function() {
         it('Should route to POD when notification type is update and status is SHIPPED', function() {
             this.notification.navigate();
 
-            expect(this.$state.go).toHaveBeenCalledWith('openlmis.orders.podManage.podView', {
-                podId: 'f433700a-1182-41a9-8dda-30cb1c1681c2'
+            expect(this.$state.go).toHaveBeenCalledWith('openlmis.orders.podManage', {
+                podId: 'f433700a-1182-41a9-8dda-30cb1c1681c2',
+                programId: undefined,
+                requestingFacility: undefined,
+                supplyingFacilityId: ''
+            }, {
+                reload: true
             });
         });
 
