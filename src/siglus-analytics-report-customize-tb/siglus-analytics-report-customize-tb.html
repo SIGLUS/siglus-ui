@@ -1,0 +1,521 @@
+<div id="tb-form" class="tb-form">
+  <table id="firstSection" class="border-all-bold head-section" cellpadding="0" cellspacing="0">
+      <tr class="hideTr">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tbody id="header">
+        <tr>
+            <td rowspan="4" class="background-black tb-container" style="width: 110px;">
+                <div style="top: 40%;" class="text-nowrap">CMAM - TB03</div>
+            </td>
+            <td class="col-1" style="text-align: center;">
+                <span class="view-table-logo"></span>
+            </td>
+            <td colspan="4" style="padding-left: 4px;">
+                <h6>REPUBLICA DE MOCAMBIQUE</h6>
+                <h6>MINISTERIO DA SAUDE</h6>
+                <h6>CENTRAL DE MEDICAMENTOS E ARTIGOS MEDICOS</h6>
+            </td>
+            <td colspan="4" class="col-5 align-center">
+                <h2 style="font-weight: 800;">Mapa Mensal de Informação dos
+                    Medicamentos da Tuberculose</h2>
+            </td>
+            <td class="col-2">
+                &nbsp;
+                <span openlmis-message="view.rnr.tb.month">Mês: </span>
+                <span> </span> {{vm.month}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" style="padding-left: 4px;"><span openlmis-message="view.rnr.province">Província</span>:{{vm.facility.geographicZone.parent.name}}</td>
+            <td colspan="4"></td>
+            <td rowspan="3">
+                &nbsp;
+                <span openlmis-message="view.rnr.tb.year">Ano: </span>
+                <span>{{vm.year}}</span>
+            </td>
+        </tr>
+        <tr class="">
+            <td style="padding-left: 4px;" colspan="5"><span openlmis-message="view.rnr.district">Distrito</span>: {{vm.facility.geographicZone.name}}</td>
+            <td colspan="5"></td>
+        </tr>
+        <tr class="">
+            <td colspan="5">
+                <span openlmis-message="view.rnr.healthFacility">Unidade Sanitária</span>
+                <span>: {{vm.facility.name}}</span>
+            </td>
+            <td colspan="5"></td>
+        </tr>
+        <tr>
+            <td colspan="11"></td>
+        </tr>
+        </tbody>
+        <tbody id="repeatTitle">
+        <tr>
+            <td colspan="11" class="text-center" style="position: relative; background-color: rgb(130, 130, 130); font-weight: 700; font-size: 18px; color: #fff;">
+                Balancente dos Medicamentos usados no tratamento e profilaxia da Tuberculose
+            </td>
+        </tr>
+        <tr class="text-bold">
+            <!-- <td class="background-black text-center"></td> -->
+            <td class="text-center grey" colspan="4">MEDICAMENTO </td>
+            <td class="text-center grey">Unidade de Saída</td>
+            <td class="text-center grey">Saldo Inicial</td>
+            <td class="text-center grey">Entradas </td>
+            <td class="text-center grey">Saídas</td>
+            <td class="text-center grey">Perdas e ajustes</td>
+            <td class="text-center grey">Inventário</td>
+            <td class="text-center grey">Validade</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr id="calcTr" ng-repeat="(index, product) in vm.productLineItems">
+            <!-- <td style="border: none; position: relative; background-color: rgb(130, 130, 130);">
+                <span
+                    ng-if="index === 0"
+                    class="text-nowrap"
+                    style="
+                        display: inline-block;
+                        position: absolute;
+                        left: -135px;
+                        top: 190px;
+                        white-space: normal;
+                        height: 30px;
+                        width: 360px;
+                        text-align: center;
+                        color: #fff;
+                        font-size: 18px;
+                        font-weight: 700;
+                        z-index: 100;
+                    "
+                >
+                    Balancente dos Medicamentos usados no tratamento e profilaxia da Tuberculose
+                </span>
+            </td> -->
+            <td class="col-4 normal-td green-dark" colspan="4">{{ product.orderable.fullProductName }}</td>
+            <td class="normal-td green-dark">{{product.orderable.dispensable.displayUnit}}</td>
+            <td class="normal-td">{{product.beginningBalance}}</td>
+            <td class="normal-td">{{product.totalReceivedQuantity}}</td>
+            <td class="normal-td">{{product.totalConsumedQuantity}}</td>
+            <td class="normal-td">{{product.totalLossesAndAdjustments}}</td>
+            <td class="normal-td">{{product.stockOnHand}}</td>
+            <td class="normal-td"><span ng-show="product.expirationDate">{{product.expirationDate}}</span></td>
+        </tr>
+    </tbody>
+    <tbody id="footer">
+    <tr>
+        <td colspan="10" style="border: none; height: 12px;"></td>
+    </tr>
+    <tr>
+        <td style="position: relative; background-color: rgb(165, 168, 167);" rowspan="15">
+            <span
+                class="text-nowrap"
+                style="
+                    display: inline-block;
+                    position: absolute;
+                    left: -105px; 
+                    white-space: normal;
+                    height: 30px;
+                    width: 280px;
+                    text-align: center;
+                    color: #fff;
+                    font-size: 18px;
+                    font-weight: 700;
+                "
+            >
+                number of days spent in the different phases of the treatment
+            </span>
+        </td>
+        <td class="col-3 normal-td green-light text-center" colspan="3">
+            <h2>Fases de Tratamento</h2>
+        </td>
+        <td class="green-light">
+            <h3>N° Dias Dispensados</h3>
+        </td>
+        <td style="border: none;"></td>
+        <td colspan="4" class="col-4 normal-td text-center" style="color: #fff; background-color: black; font-size: 18px; font-weight: 700;">
+            <i>Quantification if patients</i>
+        </td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="col-2 text-center blue-light" colspan="2" rowspan="7">Adulto</td>
+        <td class="blue-light" colspan="1">Sensível Intensiva</td>
+        <td class="blue-light">{{ vm.requisition.patientLineItems[3].columns.new.value }}</td>
+        <td style="border: none;"></td>
+        <td style="border: none;" colspan="4"></td>
+        <td style="border: none;"></td>
+    </tr>
+    <!-- XR Intensiva -->
+    <tr>
+        <td class="blue-light" colspan="1">Sensível Manutenção</td>
+        <td class="blue-light">
+            {{ vm.requisition.patientLineItems[3].columns.newColumn0.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="7">
+            Pacientes Novos no Sector da TB
+        </td>
+        <td class="text-center pink-light" colspan="2">Paciente / Tipo</td>
+        <td class="text-center pink-light">Total</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-light" colspan="1">MR Indução</td>
+        <td class="blue-light">
+            {{ vm.requisition.patientLineItems[3].columns.newColumn1.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td colspan="2">Novo Adulto Sensivel</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.new.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-light" colspan="1">MR Intensiva</td>
+        <td class="blue-light">
+            {{ vm.requisition.patientLineItems[3].columns.newColumn2.value }}
+        </td>
+        <td style="border: none;"></td>
+        <!-- <td colspan="4"></td> -->
+        <td colspan="2">Novo Adulto MR</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.newColumn0.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-light" colspan="1">MR Manutenção</td>
+        <td class="blue-light">
+            {{ vm.requisition.patientLineItems[3].columns.newColumn3.value }}
+        </td>
+        <td style="border: none;"></td>
+        <!-- <td colspan="4"></td> -->
+        <td colspan="2">Novo Adulto XR</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.newColumn1.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-light" colspan="1">XR Indução</td>
+        <td class="blue-light">
+            {{ vm.requisition.patientLineItems[3].columns.newColumn4.value }}
+        </td>
+        <td style="border: none;"></td>
+        <!-- <td colspan="4"></td> -->
+        <td colspan="2">Novo Criança Sensivel</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.newColumn2.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-light" colspan="1">XR Manutenção</td>
+        <td class="blue-light">
+            {{ vm.requisition.patientLineItems[3].columns.newColumn6.value }}
+        </td>
+        <td style="border: none;"></td>
+        <!-- <td colspan="4"></td> -->
+        <td colspan="2">Novo Criança MR</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.newColumn3.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="col-2 text-center blue-deep" colspan="2" rowspan="7">Pediatrico</td>
+        <td class="blue-deep" colspan="1">Sensível Intensiva</td>
+        <td class="blue-deep">
+            {{ vm.requisition.patientLineItems[4].columns.new.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td colspan="2">Novo Criança XR</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.newColumn4.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-deep" colspan="1">Sensível Manutenção</td>
+        <td class="blue-deep">
+            {{ vm.requisition.patientLineItems[4].columns.newColumn6.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td style="border: none;" colspan="2"></td>
+        <td style="border: none; text-align: right;">Total</td>
+        <td>{{ vm.requisition.patientLineItems[5].columns.total.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-deep" colspan="1">MR Indução</td>
+        <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn0.value }}</td>
+        <td style="border: none;"></td>
+        <td style="border: none;" colspan="4"></td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-deep" colspan="1">MR Intensiva</td>
+        <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn1.value }}</td>
+        <td style="border: none;"></td>
+        <!-- <td colspan="4"></td> -->
+        <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="4">Seguimento
+            Profilaxias
+            (PUs e
+            Farmácia
+            Pública )</td>
+        <td class="text-center pink-deep" colspan="2">Fases Profilaxias</td>
+        <td class="text-center pink-deep">Total</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-deep" colspan="1">MR Manutenção</td>
+        <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn2.value }}</td>
+        <td style="border: none;"></td>
+        <td colspan="2">Início</td>
+        <td>
+            {{ vm.requisition.patientLineItems[0].columns.new.value }}
+        </td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-deep" colspan="1">XR Manutenção</td>
+        <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn3.value }}</td>
+        <td style="border: none;"></td>
+        <td colspan="2">Contínua/Manutenção</td>
+        <td>{{ vm.requisition.patientLineItems[0].columns.newColumn0.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="blue-deep" colspan="1">XR Intensiva</td>
+        <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn4.value }}</td>
+        <td style="border: none;"></td>
+        <td colspan="2">Final/última Dispensa</td>
+        <td>{{ vm.requisition.patientLineItems[0].columns.newColumn1.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td style="border: none;" colspan="8"></td>
+        <td style="border: none; text-align: right;">Total</td>
+        <td>{{ vm.requisition.patientLineItems[0].columns.total.value }}</td>
+    </tr>
+    <tr>
+        <td colspan="11" style="border: none; height: 8px;"></td>
+    </tr>
+    <!-- consumption -->
+    <tr>
+        <td style="position: relative; background-color: rgb(165, 168, 167);" rowspan="10">
+            <span
+                class="text-nowrap"
+                style="
+                    display: inline-block;
+                    position: absolute;
+                    left: -90px; 
+                    white-space: normal;
+                    height: 30px;
+                    width: 280px;
+                    text-align: center;
+                    color: #fff;
+                    font-size: 18px;
+                    font-weight: 700;
+                "
+            >
+                consumption of prophylactic drugs
+            </span>
+        </td>
+        <td class="col-3 normal-td blue-deep text-center" colspan="2" rowspan="10">
+            <h2>PUs e Farmacia Ambulatorio</h2>
+        </td>
+        <td style="font-weight: 700;" class="green-light">Product</td>
+        <td class="green-light">
+            <h3>No Dias Dispensados</h3>
+        </td>
+        <td style="border: none;"></td>
+        <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="3">
+            Tipo de Dispensa dos Profilacticos
+        </td>
+        <td class="text-center pink-deep" colspan="2">
+            Periodicidade da Dispensa
+        </td>
+        <td class="text-center pink-deep">
+            Total
+        </td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">isoniazida 100 mg</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.new.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td colspan="2">Mensal</td>
+        <td>
+            {{ vm.requisition.patientLineItems[1].columns.new.value }}
+        </td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">isoniazida 300 mg</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn0.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td colspan="2">Trimenstral</td>
+        <td>{{ vm.requisition.patientLineItems[1].columns.newColumn0.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-tdt">Levofloxacina 100 mg Disp</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn1.value }}
+        </td>
+        <td colspan="4" style="border: none; text-align: right;">Total</td>
+        <td>{{ vm.requisition.patientLineItems[1].columns.total.value }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">Levofloxacina 250 mg Rev</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn2.value }}
+        </td>
+        <td style="border: none;" colspan="6"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">Rifapentina 300mg + isoniazida 300mg</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn3.value }}
+        </td>
+        <td colspan="8" style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">Rifapentina 150mg</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn4.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td class="text-center" style="font-weight: 700; background-color: rgb(165, 168, 167);" colspan="4">Observacoes</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">Piridoxina 25mg</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn5.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td class="only-bottom-line" colspan="4">{{ vm.draftStatusMessages[0] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td">Piridoxina 50mg</td>
+        <td class="normal-td">
+            {{ vm.requisition.patientLineItems[2].columns.newColumn6.value }}
+        </td>
+        <td style="border: none;"></td>
+        <td class="only-bottom-line" colspan="4">{{ vm.draftStatusMessages[1] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td class="normal-td"></td>
+        <td class="normal-td"></td>
+        <td style="border: none;"></td>
+        <td class="only-bottom-line" colspan="4">{{ vm.draftStatusMessages[2] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td colspan="6" style="border: none;"></td>
+        <td class="only-bottom-line" colspan="4">{{ vm.draftStatusMessages[3] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <!-- Faixas -->
+    <tr>
+        <td style="position: relative; background-color: rgb(165, 168, 167);" rowspan="4">
+            <span
+                class="text-nowrap"
+                style="
+                    display: inline-block;
+                    position: absolute;
+                    bottom: 52px;
+                    left: -35px; 
+                    white-space: normal;
+                    height: 30px;
+                    width: 135px;
+                    text-align: center;
+                    color: #fff;
+                    font-size: 18px;
+                    font-weight: 700;
+                    padding: 0 6px;
+                "
+            >
+                Quantification of users by age groups
+            </span>
+        </td>
+        <td class="green-light text-center" style="height: 35px; font-weight: 700;" colspan="2">Faixas Etarias</td>
+        <td style="font-weight: 700;" class="green-light text-center">Tratamento</td>
+        <td style="font-weight: 700;" class="green-light text-center">Profilaxia</td>
+        <td style="border: none;"></td>
+        <td colspan="4" class="only-bottom-line">{{ vm.draftStatusMessages[4] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td style="height: 35px;" colspan="2">Adultos</td>
+        <td>{{ vm.ageGroupLineItems[2].columns.treatment.value }}</td>
+        <td>{{ vm.ageGroupLineItems[2].columns.prophylaxis.value }}</td>
+        <td style="border: none;"></td>
+        <td colspan="4" class="only-bottom-line">{{ vm.draftStatusMessages[5] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td style="height: 35px;" colspan="2">Criança < 25Kg</td>
+        <td>{{ vm.ageGroupLineItems[1].columns.treatment.value }}</td>
+        <td>{{ vm.ageGroupLineItems[1].columns.prophylaxis.value }}</td>
+        <td style="border: none;"></td>
+        <td colspan="4" class="only-bottom-line">{{ vm.draftStatusMessages[6] }}</td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td style="height: 35px;" colspan="2">Criança > 25Kg</td>
+        <td>{{ vm.ageGroupLineItems[0].columns.treatment.value }}</td>
+        <td>{{ vm.ageGroupLineItems[0].columns.prophylaxis.value }}</td>
+        <td colspan="6" style="border: none;"></td>
+    </tr>
+    <tr>
+        <td colspan="11" style="border: none;"></td>
+    </tr>
+    
+    <tr>
+        <td style="height: 48px; vertical-align: top;" colspan="3">
+            Elaborado Por: {{vm.signaure.submit}}
+        </td>
+        <td style="vertical-align: top;" colspan="2">
+            Visto Por: {{vm.signaure.approve}}
+        </td>
+        <td style="border: none;"></td>
+        <td style="vertical-align: top;" colspan="4">
+            Data de elaboração: {{vm.creationDate}}
+        </td>
+        <td style="border: none;"></td>
+    </tr>
+    <tr>
+        <td style="border: none; height: 10px;" colspan="11"></td>
+    </tr>
+    </tbody>
+  </table>
+  <div id="outer">
+    <div style="font-size: 14px;">
+        <div>
+            Mapa Mensal de Prenchimento Obrigatorio
+        </div>
+        <div>
+            Versão 001 Setembro 2022
+        </div>
+    </div>
+    <div style="display: flex;">
+        <div style="font-size: 15px; text-align: left; font-weight: 700; width: 50%;">{{ 'tb.print_on_computer' | message }}</div>
+        <div style="font-size: 15px; text-align: right; font-weight: 700; width: 50%;">{{ vm.nowTime }}</div>
+    </div>
+  </div>
+  <div class="align-right" style="clear: both;">
+    <button class="btn btn-primary btn-download btn-download-pdf" ng-click="vm.downloadPdf()">
+        {{ 'tb.downloadPdf' | message }}
+    </button>
+</div>
+</div>
+
