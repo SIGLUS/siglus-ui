@@ -44,7 +44,9 @@
             new LocalDatabase('orderables').removeAll();
             siglusHomeFacilityService.facility = null;
             currentUserService.clearCache();
+            var language = localStorageService.get('current_locale');
             localStorageService.clearAll();
+            localStorageService.add('current_locale', language);
             navigationStateService.clearPromise();
         };
 
