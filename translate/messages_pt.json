@@ -1738,7 +1738,7 @@
   "shipmentView.all": "Todos",
   "shipmentView.allLineItemsNotFulfilled": "Não poderá confirmar A REMESSA, se não tiver nenhum item preencchido",
   "shipmentView.allLineItemsSkipped": "Não é possível abastecer a ordem com todos os itens ignorados.",
-  "shipmentView.availableSoh": "stock existente disponível",
+  "shipmentView.availableSoh": "Stock existente disponível",
   "shipmentView.closed": "A ordem foi fechada, não pode abastecer uma ordem fechada. Por favor, volte a lista das ordens e actualize",
   "shipmentView.confirmPartialFulfilled.createSuborder": "Criar pendente",
   "shipmentView.confirmPartialFulfilled.message": "Os ${totalPartialLineItems} produtos não foram aviados na totalidade. Ao clicar \"criar pendente\", o sistema irá gerar um pendente para os produtos e quantidades não aviadas. O resto dos produtos irão para uma nova ordem de fornecimento e será emitida uma guia de remessa ao cliente. O cliente irá confirmar as quantidades recebidas e preencher o relatório de recepção electrónico.",
