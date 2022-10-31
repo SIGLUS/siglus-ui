@@ -32,7 +32,7 @@
             <td colspan="3" style="border-right: 1px solid #000;" class="report--title">
               <span class="report--title-font">
                 <!-- Issue Voucher Nº -->
-                {{vm.orderCode}}
+                {{vm.requisitionNo}}
               </span>
             </td>
           </tr>
@@ -148,7 +148,7 @@
           <tr>
             <td class="text__left report--title-font" style="height: 120px; padding: 0; vertical-align: top; padding: 8px 4px; border-right: 1px solid #000; border-left: 1px solid #000;">
               <div style="float: left;">{{ 'siglusIssueOrReceiveReport.no' | message }}</div>
-              <div class="N-input" style="text-align: center; float: right;">{{vm.orderCode}}</div>
+              <div class="N-input" style="text-align: center; float: right;">{{vm.podNum}}</div>
             </td>
           </tr>
           <tr>
@@ -164,7 +164,7 @@
               <td></td>
               <td></td>
               <td></td>
-              <td></td> 
+              <td></td>
               <td></td>
               <td></td>
               <td></td>
@@ -180,7 +180,7 @@
               <td class="text__left" colspan="9">{{ 'siglusIssueOrReceiveReport.filledInByTheSupplier' | message }}</td>
               <td style="width: 14px; border: none;  border-left: 1px solid #000;"></td>
               <td class="text__left" style="border-right: 1px solid #000;" colspan="2">{{ 'siglusIssueOrReceiveReport.filledInByTheClient' | message }}</td>
-              
+
             </tr>
             <tr>
               <td class="background-black black-width"></td>
@@ -222,7 +222,7 @@
               <td class="background-black black-width" style="font-size: 14px;">{{ $index + 1 }}</td>
               <td>{{ item.productCode }}</td>
               <td>{{ item.productName }}</td>
-            
+
               <td>{{ item.lotCode }}</td>
               <td>{{ item.expirationDate }}</td>
               <td>{{ item.orderedQuantity }}</td>

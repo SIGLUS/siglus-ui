@@ -14567,44 +14567,6 @@ describe('siglusAnalyticsReportCustomizeTBController', function() {
         });
     });
 
-    describe('getHistoryComments', function() {
-        it('should return right results when statusMessageDtos has at last one empty', function() {
-            var statusHistory = [
-                {
-                    statusMessageDto: {
-                        body: 'hello'
-                    }
-                },
-                {},
-                {}
-            ];
-
-            expect(this.vm.getHistoryComments(statusHistory)).toEqual('hello');
-        });
-
-        it('should return right results when statusMessageDtos all filled', function() {
-            var statusHistory = [
-                {
-                    statusMessageDto: {
-                        body: 'hello'
-                    }
-                },
-                {
-                    statusMessageDto: {
-                        body: 'world'
-                    }
-                },
-                {
-                    statusMessageDto: {
-                        body: 'wuhan'
-                    }
-                }
-            ];
-
-            expect(this.vm.getHistoryComments(statusHistory)).toEqual('hello.world.wuhan');
-        });
-    });
-
     describe('getSignaure', function() {
         it('should return right results when approve is undefined', function() {
             var signaure = {};
