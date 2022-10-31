@@ -124,7 +124,8 @@
             loadingModalService.open();
             siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                 isAdjustment: false,
-                extraData: true
+                extraData: true,
+                returnNoMovementLots: true
             }, [vm.selectedProduct.orderableId]).then(function(locationsInfo) {
                 locations = locations.concat(locationsInfo);
                 var lineItem = addAndRemoveReceiveLineItemIssueService.getAddProductRow(vm.selectedProduct, locations);
@@ -875,6 +876,11 @@
                                                 if (error.data &&
                                         error.data.businessErrorExtraData === 'subDrafts quantity not match') {
                                                     alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                                                } else if (
+                                                    // eslint-disable-next-line max-len
+                                                    _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
+                                                ) {
+                                                    alertService.error('openlmisModal.dateConflict');
                                                 }
                                             });
                                     });
@@ -906,6 +912,7 @@
 
         vm.downloadPrint = function() {
             var printLineItems = getLineItems();
+
             var newPrintLineItems = _.chain(printLineItems)
                 .map(function(item) {
                     var result = {};
@@ -913,7 +920,7 @@
                     result.productCode = _.get(item, ['productCode']);
                     result.lotCode = _.get(item, ['lot', 'lotCode'], null);
                     result.expirationDate = _.get(item, ['lot', 'expirationDate'], null);
-                    result.location = _.get(item, ['location', 'locationCode']);
+                    result.location = _.get(item, ['locationCode']);
                     var orderableLocationLotsMap = SiglusLocationCommonUtilsService
                         .getOrderableLocationLotsMap(locations);
                     var totalQuantity = getSoh(item, orderableLocationLotsMap);

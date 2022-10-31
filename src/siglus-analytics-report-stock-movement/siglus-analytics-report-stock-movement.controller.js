@@ -28,9 +28,9 @@
         .module('siglus-analytics-report-stock-movement')
         .controller('siglusAnalyticsReportStockMovementController', controller);
 
-    controller.$inject = ['$stateParams', 'stockMovements', 'facility'];
+    controller.$inject = ['$stateParams', 'stockMovements', 'facility', 'messageService'];
 
-    function controller($stateParams, stockMovements, facility) {
+    function controller($stateParams, stockMovements, facility, messageService) {
         var vm = this;
         vm.$onInit = onInit;
         vm.exportExcel = exportExcel;
@@ -54,7 +54,7 @@
             angular.forEach(stockMovement, function(item) {
                 var stockMovementItemArr = [];
                 stockMovementItemArr.push(item.dateOfMovement);
-                stockMovementItemArr.push(item.reason);
+                stockMovementItemArr.push(messageService.get(item.reason));
                 stockMovementItemArr.push(item.documentNumber);
                 var result = vm.concatStockMovementItemArrByType(item);
                 stockMovementItemArr =  stockMovementItemArr.concat(result);
@@ -64,9 +64,7 @@
                 stockMovementArr.push(stockMovementItemArr);
             });
 
-            return  _.sortBy(stockMovementArr, function(item) {
-                return item[0];
-            }).reverse();
+            return stockMovementArr;
         }
 
         vm.concatStockMovementItemArrByType = function(item) {

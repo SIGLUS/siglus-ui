@@ -1,21 +1,21 @@
 <div class="soh-product-detail-print">
     <div class="header-container">
         <div class="report-title">
-            <div>{{'sohLocationPrint.title' | message }}</div>
+            <div>{{'sohLocationPrint.title.lotLevel' | message }}</div>
             <div style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</div>
         </div>
         <div class="report-info-container">
-            <div class="report-info">{{ 'stockCard.facilityName' | message }}:{{vm.facility.name}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}:{{vm.facility.code}}</div>
-            <div class="report-info">{{ 'stockCard.program' | message }}:{{vm.program.name}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}:{{vm.program.code}}</div>
-            <div class="report-info">{{ 'sohLocationPrint.product' | message }}:{{vm.stockCard.orderable | productName}}</div>
-            <div class="report-info">{{ 'stockCard.productCode' | message }}:{{vm.stockCard.orderable.productCode}}</div>
-            <div class="report-info">{{ 'stockCard.stockOnHand' | message }}:{{vm.stockCard.stockOnHand}}</div>
-            <div class="report-info">{{ 'stockCard.lot' | message }}:{{vm.stockCard.lot.lotCode}}</div>
-            <div class="report-info">{{ 'stockCard.expiryDate' | message}}:{{vm.stockCard.lot.expirationDate | openlmisDate}}</div>
+            <div class="report-info">{{ 'stockCard.facilityName' | message }}: {{vm.facility.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.facilityCode' | message }}: {{vm.facility.code}}</div>
+            <div class="report-info">{{ 'stockCard.program' | message }}: {{vm.program.name}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.programCode' | message }}: {{vm.program.code}}</div>
+            <div class="report-info">{{ 'sohLocationPrint.product' | message }}: {{vm.stockCard.orderable | productName}}</div>
+            <div class="report-info">{{ 'stockCard.productCode' | message }}: {{vm.stockCard.orderable.productCode}}</div>
+            <div class="report-info">{{ 'stockCard.soh' | message }}: {{vm.stockCard.stockOnHand}}</div>
+            <div class="report-info">{{ 'stockCard.lot' | message }}: {{vm.stockCard.lot.lotCode}}</div>
+            <div class="report-info">{{ 'stockCard.expiryDate' | message}}: {{vm.stockCard.lot.expirationDate | openlmisDate}}</div>
             <div ng-if="vm.stockCard.extraData.locationCode" class="report-info">
-                {{ 'stockPhysicalInventoryDraft.location' | message }}:{{vm.stockCard.extraData.locationCode}}
+                {{ 'stockPhysicalInventoryDraft.location' | message }}: {{vm.stockCard.extraData.locationCode}}
             </div>
         </div>
     </div>

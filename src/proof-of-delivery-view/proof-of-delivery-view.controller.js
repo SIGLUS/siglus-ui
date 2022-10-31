@@ -18,22 +18,27 @@
     'use strict';
 
     /**
-     * @ngdoc controller
-     * @name proof-of-delivery-view.controller:ProofOfDeliveryViewController
-     *
-     * @description
-     * Controller that drives the POD view screen.
-     */
+   * @ngdoc controller
+   * @name proof-of-delivery-view.controller:ProofOfDeliveryViewController
+   *
+   * @description
+   * Controller that drives the POD view screen.
+   */
     angular
         .module('proof-of-delivery-view')
         .controller('ProofOfDeliveryViewController', ProofOfDeliveryViewController);
 
-    ProofOfDeliveryViewController.$inject = [ '$scope',
-        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS', 'orderLineItems', 'canEdit',
-        'ProofOfDeliveryPrinter', '$q', 'loadingModalService', 'proofOfDeliveryService', 'notificationService',
-        '$stateParams', 'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
-        'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment'];
+    ProofOfDeliveryViewController.$inject = ['$scope',
+        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
+        'orderLineItems', 'canEdit',
+        'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
+        'proofOfDeliveryService', 'notificationService',
+        '$stateParams', 'alertConfirmModalService', '$state',
+        'PROOF_OF_DELIVERY_STATUS', 'confirmService',
+        'confirmDiscardService', 'proofOfDeliveryManageService',
+        'openlmisDateFilter', 'fulfillingLineItemFactory',
+        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment',
+        'alertService', 'siglusSignatureWithLimitDateModalService', 'facility'];
 
     function ProofOfDeliveryViewController($scope
         , proofOfDelivery, order, reasons, messageService
@@ -42,7 +47,8 @@
         , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
         , confirmService, confirmDiscardService, proofOfDeliveryManageService
         , openlmisDateFilter, fulfillingLineItemFactory
-        , facilityFactory, siglusDownloadLoadingModalService, user, moment) {
+        , facilityFactory, siglusDownloadLoadingModalService, user, moment,
+                                           alertService, siglusSignatureWithLimitDateModalService, facility) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -53,9 +59,11 @@
         vm.submit = submit;
         vm.deleteDraft = deleteDraft;
         vm.returnBack = returnBack;
+        vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
+        vm.minDate = undefined;
         vm.getReason = function(reasonId) {
             // return 
             var reasonMap = _.reduce(reasons, function(r, c) {
@@ -66,79 +74,79 @@
         };
 
         /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name proofOfDelivery
-         * @type {Object}
-         *
-         * @description
-         * Holds Proof of Delivery.
-         */
+     * @ngdoc property
+     * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name proofOfDelivery
+     * @type {Object}
+     *
+     * @description
+     * Holds Proof of Delivery.
+     */
         vm.proofOfDelivery = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name order
-         * @type {Object}
-         *
-         * @description
-         * Holds Order from Proof of Delivery.
-         */
+     * @ngdoc property
+     * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name order
+     * @type {Object}
+     *
+     * @description
+     * Holds Order from Proof of Delivery.
+     */
         vm.order = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name orderLineItems
-         * @type {Object}
-         *
-         * @description
-         * Holds a map of Order Line Items with Proof of Delivery Line Items grouped by orderable.
-         */
+     * @ngdoc property
+     * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name orderLineItems
+     * @type {Object}
+     *
+     * @description
+     * Holds a map of Order Line Items with Proof of Delivery Line Items grouped by orderable.
+     */
         vm.orderLineItems = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name showVvmColumn
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if VVM Status column should be shown for current Proof of Delivery.
-         */
+     * @ngdoc property
+     * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name showVvmColumn
+     * @type {boolean}
+     *
+     * @description
+     * Indicates if VVM Status column should be shown for current Proof of Delivery.
+     */
         vm.showVvmColumn = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name canEdit
-         * @type {boolean}
-         *
-         * @description
-         * Indicates if PoD is in initiated status and if user has permission to edit it.
-         */
+     * @ngdoc property
+     * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name canEdit
+     * @type {boolean}
+     *
+     * @description
+     * Indicates if PoD is in initiated status and if user has permission to edit it.
+     */
         vm.canEdit = undefined;
 
         /**
-         * @ngdoc property
-         * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name reasons
-         * @type {Array}
-         *
-         * @description
-         * List of available stock reasons.
-         */
+     * @ngdoc property
+     * @propertyOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name reasons
+     * @type {Array}
+     *
+     * @description
+     * List of available stock reasons.
+     */
         vm.reasons = undefined;
 
         /**
-         * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name $onInit
-         *
-         * @description
-         * Initialization method of the ProofOfDeliveryViewController.
-         */
+     * @ngdoc method
+     * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name $onInit
+     *
+     * @description
+     * Initialization method of the ProofOfDeliveryViewController.
+     */
         function onInit() {
 
             vm.order = order;
@@ -154,12 +162,22 @@
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;
             vm.orderCode = order.orderCode;
+            vm.currentDate = moment().format('YYYY-MM-DD');
+            vm.facilityId = facility.id;
             facilityFactory.getUserHomeFacility()
                 .then(function(res) {
                     vm.facility = res;
                 });
+            siglusSignatureWithLimitDateModalService.getMovementDate(
+                vm.currentDate, facility.id
+            ).then(
+                function(result) {
+                    vm.minDate = result;
+                }
+            );
+
             vm.isMerge = $stateParams.actionType === 'MERGE'
-            || $stateParams.actionType === 'VIEW';
+          || $stateParams.actionType === 'VIEW';
 
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 save(true);
@@ -173,35 +191,36 @@
             $scope.$watch(function() {
                 return vm.proofOfDelivery;
             }, function(newValue, oldValue) {
-                $scope.needToConfirm =  !angular.equals(newValue, oldValue);
+                $scope.needToConfirm = !angular.equals(newValue, oldValue);
             }, true);
-            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+            confirmDiscardService.register($scope,
+                'openlmis.stockmanagement.stockCardSummaries');
             updateLabel();
         }
 
         /**
-         * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name getStatusDisplayName
-         *
-         * @description
-         * Returns translated status display name.
-         */
+     * @ngdoc method
+     * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name getStatusDisplayName
+     *
+     * @description
+     * Returns translated status display name.
+     */
         function getStatusDisplayName(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         }
 
         /**
-         * @ngdoc method
-         * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
-         * @name getReasonName
-         *
-         * @description
-         * Returns a name of the reason with the given ID.
-         *
-         * @param  {string} id the ID of the reason
-         * @return {string}    the name of the reason
-         */
+     * @ngdoc method
+     * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
+     * @name getReasonName
+     *
+     * @description
+     * Returns a name of the reason with the given ID.
+     *
+     * @param  {string} id the ID of the reason
+     * @return {string}    the name of the reason
+     */
         function getReasonName(id) {
             if (!id) {
                 return;
@@ -216,21 +235,27 @@
             $scope.needToConfirm = false;
             loadingModalService.open();
             proofOfDeliveryService.updateSubDraft($stateParams.podId,
-                $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE').then(function() {
-                if (!notReload) {
-                    notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
-                }
-                if (notReload) {
-                    var stateParams = angular.copy($stateParams);
-                    stateParams.actionType = 'DRAFT';
-                    $state.go($state.current.name, stateParams, {
-                        location: 'replace'
-                    });
-                }
+                $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE').then(
+                function() {
+                    if (!notReload) {
+                        notificationService.success(
+                            'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
+                        );
+                    }
+                    if (notReload) {
+                        var stateParams = angular.copy($stateParams);
+                        stateParams.actionType = 'DRAFT';
+                        $state.go($state.current.name, stateParams, {
+                            location: 'replace'
+                        });
+                    }
 
-            })
+                }
+            )
                 .catch(function() {
-                    notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
+                    notificationService.error(
+                        'proofOfDeliveryView.failedToSaveProofOfDelivery'
+                    );
                 })
                 .finally(loadingModalService.close);
         }
@@ -254,14 +279,20 @@
         function submitSubDraft() {
             loadingModalService.open();
             proofOfDeliveryService.updateSubDraft($stateParams.podId,
-                $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT').then(function() {
-                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
-                $state.go('^', $stateParams, {
-                    reload: true
-                });
-            })
+                $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT').then(
+                function() {
+                    notificationService.success(
+                        'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
+                    );
+                    $state.go('^', $stateParams, {
+                        reload: true
+                    });
+                }
+            )
                 .catch(function() {
-                    notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
+                    notificationService.error(
+                        'proofOfDeliveryView.failedToSaveProofOfDelivery'
+                    );
                 })
                 .finally(loadingModalService.close);
         }
@@ -293,10 +324,19 @@
                             reload: true
                         });
                     })
-                        .catch(function() {
-                            notificationService.error(
-                                'proofOfDeliveryView.failedToConfirmProofOfDelivery'
-                            );
+                        .catch(function(error) {
+                            if (
+                                // eslint-disable-next-line max-len
+                                _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
+                            ) {
+                                alertService.error('openlmisModal.dateConflict');
+
+                            } else {
+                                notificationService.error(
+                                    'proofOfDeliveryView.failedToConfirmProofOfDelivery'
+                                );
+                            }
+
                         })
                         .finally(loadingModalService.close);
                 });
@@ -308,7 +348,8 @@
             alertConfirmModalService.error(
                 'PhysicalInventoryDraftList.deleteDraftWarn',
                 '',
-                ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
+                ['PhysicalInventoryDraftList.cancel',
+                    'PhysicalInventoryDraftList.confirm']
             ).then(function() {
                 loadingModalService.open();
                 proofOfDeliveryService.deleteSubDraft($stateParams.podId,
@@ -334,12 +375,14 @@
             if ($stateParams.actionType === 'VIEW') {
                 $state.current.label = messageService.get('proofOfDeliveryManage.view');
             } else if ($stateParams.actionType === 'MERGE') {
-                $state.current.label = messageService.get('stockPhysicalInventoryDraft.mergeDraft');
+                $state.current.label = messageService.get(
+                    'stockPhysicalInventoryDraft.mergeDraft'
+                );
             } else {
                 $state.current.label =
-                        messageService.get('stockPhysicalInventoryDraft.draft')
-                        + ' '
-                        + $stateParams.draftNum;
+            messageService.get('stockPhysicalInventoryDraft.draft')
+            + ' '
+            + $stateParams.draftNum;
             }
         }
 

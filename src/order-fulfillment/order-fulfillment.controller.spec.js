@@ -22,6 +22,7 @@ describe('OrderFulfillmentController', function() {
         module('order-fulfillment');
         module('referencedata-facility');
         module('referencedata-program');
+        module('siglus-facility-view-radio-confirm-modal');
 
         inject(function($injector) {
             $controller = $injector.get('$controller');
@@ -66,6 +67,7 @@ describe('OrderFulfillmentController', function() {
                 orderingFacilities: orderingFacilities,
                 programs: programs,
                 orders: orders,
+                orderList: orders,
                 homeFacility: {}
             });
         });
@@ -154,7 +156,10 @@ describe('OrderFulfillmentController', function() {
                 status: null,
                 requestingFacilityId: null,
                 page: 0,
-                programId: vm.program.id
+                programId: vm.program.id,
+                orderList: orders,
+                programs: programs,
+                homeFacility: {}
             }, {
                 reload: true
             });
@@ -169,7 +174,10 @@ describe('OrderFulfillmentController', function() {
                 status: ORDER_STATUS.FULFILLING,
                 requestingFacilityId: null,
                 page: 0,
-                programId: null
+                programId: null,
+                orderList: orders,
+                programs: programs,
+                homeFacility: {}
             }, {
                 reload: true
             });
@@ -184,7 +192,10 @@ describe('OrderFulfillmentController', function() {
                 status: null,
                 requestingFacilityId: vm.orderingFacility.id,
                 page: 0,
-                programId: null
+                programId: null,
+                orderList: orders,
+                programs: programs,
+                homeFacility: {}
             }, {
                 reload: true
             });
@@ -203,6 +214,7 @@ describe('OrderFulfillmentController', function() {
             orderingFacilities: orderingFacilities,
             programs: programs,
             orders: orders,
+            orderList: orders,
             homeFacility: {}
         });
         vm.$onInit();

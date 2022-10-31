@@ -38,7 +38,8 @@
         // SIGLUS-REFACTOR: starts here
         'select-products-modal',
         'siglus-order-status-messages',
-        'siglus-shipment-confirm-modal'
+        'siglus-shipment-confirm-modal',
+        'siglus-pick-pack-print'
         // SIGLUS-REFACTOR: starts here
     ]);
 

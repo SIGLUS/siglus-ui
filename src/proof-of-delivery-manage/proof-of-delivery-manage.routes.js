@@ -38,6 +38,7 @@
                 FULFILLMENT_RIGHTS.SHIPMENTS_EDIT
             ],
             resolve: {
+
                 // SIGLUS-REFACTOR: starts here
                 facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();

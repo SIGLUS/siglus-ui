@@ -418,3 +418,12 @@
 </section>
 
 <ng-include src="'siglus-locatioin-physical-inventory-draft/physical-inventory-draft-toolbar.html'"></ng-include>
+
+<siglus-batch-print-pallet-label
+        line-items="vm.printLineItems"
+        is-batch-print="true"
+        print-type="'Inventory'"
+        split-number="100"
+        facility-name="vm.facility.name">
+</siglus-batch-print-pallet-label>
+

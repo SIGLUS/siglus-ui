@@ -32,7 +32,7 @@
         </td>
         <td  class="empty-line" colspan={{7}}>
           {{'malaria.year' | message}}{{": "}}
-          <span >{{vm.requisition.processingPeriod.startDate |
+          <span >{{vm.requisition.processingPeriod.endDate |
             openlmisDate:'yyyy'}}</span>
         </td>
       </tr>
@@ -79,7 +79,7 @@
         <td colspan="5" class="text__left empty-line">
           <span>{{'malaria.date'|message}}</span>
           :
-          <span class="font-bold">&nbsp;{{vm.requisition.statusChanges.SUBMITTED.changeDate | openlmisDate:'MMM yyyy'}}</span>
+          <span class="font-bold">&nbsp;{{vm.requisition.statusChanges.SUBMITTED.changeDate | openlmisDate:'d MMM yyyy'}}</span>
         </td>
       </tr>
       <tr>

@@ -25,6 +25,7 @@ describe('shipmentViewService', function() {
 
     beforeEach(function() {
         module('order');
+        module('siglus-alert-confirm-modal');
         module('shipment-view', function($provide) {
             shipmentRepositoryMock = jasmine.createSpyObj('shipmentRepository', [
                 'getByOrderId', 'getDraftByOrderId', 'createDraft'

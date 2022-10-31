@@ -90,6 +90,13 @@
                 priority: 72
             },
             {
+                name: 'openlmis.analyticsReport.mmtbRegimens',
+                label: 'analyticsReportMetabase.mmtbRegimens.title',
+                url: '/mmtbRegimens',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMTB_REGIMENS_REPORT,
+                priority: 71
+            },
+            {
                 name: 'openlmis.analyticsReport.malariaConsumptionData',
                 label: 'analyticsReportMetabase.malariaConsumptionData.title',
                 url: '/malariaConsumptionData',

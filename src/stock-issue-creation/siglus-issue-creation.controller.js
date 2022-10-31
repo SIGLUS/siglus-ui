@@ -653,6 +653,11 @@
                     loadingModalService.close();
                     if (error.data && error.data.businessErrorExtraData === 'subDrafts quantity not match') {
                         alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    } else if (
+                        // eslint-disable-next-line max-len
+                        _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
+                    ) {
+                        alertService.error('openlmisModal.dateConflict');
                     }
                 });
         }

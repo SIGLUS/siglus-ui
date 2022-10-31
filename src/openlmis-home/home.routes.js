@@ -49,18 +49,14 @@
                         return systemNotificationService.getSystemNotifications();
                     }
                 },
-                isLocalMachine: function() {
-                    return false;
+                isLocalMachine: function(homeImportAndExportService, $stateParams) {
+                    if (_.isUndefined($stateParams.isLocalMachine)) {
+                        return homeImportAndExportService.getMachineType().then(function(res) {
+                            return !_.get(res, ['data', 'onlineWeb']);
+                        });
+                    }
+                    return $stateParams.isLocalMachine;
                 }
-                // isLocalMachine: function(SiglusOpenlmisMainStateFactory, $stateParams) {
-                //     if (_.isUndefined($stateParams.isLocalMachine)) {
-                //         return SiglusOpenlmisMainStateFactory.getFacilityDevice().then(function(res) {
-                //             $stateParams.isLocalMachine = res;
-                //             return res;
-                //         });
-                //     }
-                //     return $stateParams.isLocalMachine;
-                // }
             }
         });
 

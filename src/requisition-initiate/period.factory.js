@@ -87,7 +87,8 @@
                 rnrId: (period.requisitionId) ? period.requisitionId : null,
                 // SIGLUS-REFACTOR: starts here
                 currentPeriodRegularRequisitionAuthorized: period.currentPeriodRegularRequisitionAuthorized,
-                id: period.id
+                id: period.id,
+                requisitionExtraData: period.requisitionExtraData
                 // SIGLUS-REFACTOR: ends here
             };
         }
