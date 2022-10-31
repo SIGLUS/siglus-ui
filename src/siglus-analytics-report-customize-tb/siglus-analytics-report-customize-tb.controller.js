@@ -96,9 +96,7 @@
                 $filter('orderBy')(_.get(vm.requisition.patientLineItems[0], ['columns', 'columns']), 'displayOrder');
             vm.quantificationPart3 = {};
             vm.getValueByKey = getValueByKey;
-            vm.getHistoryComments = getHistoryComments;
             vm.getSignaure = getSignaure;
-            // vm.setBarCodeDom = setBarCodeDom;
             getPatientData();
             vm.draftStatusMessages =
                 getDraftStatusMessages(getHistoryComments(requisition.statusHistory));
