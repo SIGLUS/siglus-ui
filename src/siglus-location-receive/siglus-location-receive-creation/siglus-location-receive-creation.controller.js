@@ -842,6 +842,36 @@
             });
         }
 
+        function getSumQuantity(items) {
+            var total = 0;
+            _.each(items, function(item) {
+                total = total + item.quantity;
+            });
+            return total;
+        }
+        function getDownloadLineItems() {
+            var downloadLineItems = [];
+            _.each(vm.displayItems, function(orderableItems) {
+                var validItems = orderableItems.filter(function(item) {
+                    return !item.isMainGroup;
+                });
+                var groupByLot = _.chain(validItems)
+                    .groupBy(function(item) {
+                        return _.get(item, ['lot', 'lotCode'], '');
+                    })
+                    .values()
+                    .value();
+                _.each(groupByLot, function(lotItems) {
+                    var downloadLineItem = angular.copy(lotItems[0]);
+                    downloadLineItem.lotCode = _.get(downloadLineItem, ['lot', 'lotCode'], '');
+                    downloadLineItem.expirationDate = _.get(downloadLineItem, ['lot', 'expirationDate'], '');
+                    downloadLineItem.quantity = getSumQuantity(lotItems);
+                    downloadLineItems.push(downloadLineItem);
+                });
+            });
+            return downloadLineItems;
+        }
+
         vm.submit = function() {
             if (isTableFormValid()) {
                 if (isMerge) {
@@ -850,6 +880,7 @@
                             if (result) {
                                 vm.downloadPrint();
                             }
+                            vm.downloadLineItems = getDownloadLineItems();
                             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                                 .then(function(data) {
                                     loadingModalService.open();
