@@ -148,11 +148,7 @@
                 PDF.addImage(pageData, 'JPEG', 5, 0, imgWidth, imgHeight);
 
                 PDF.save(
-                    getPdfName(
-                        requisition.processingPeriod.startDate,
-                        facility.name,
-                        vm.facility.code
-                    )
+                    vm.requisition.requisitionNumber + '.pdf'
                 );
                 siglusDownloadLoadingModalService.close();
             });
