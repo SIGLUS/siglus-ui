@@ -101,13 +101,6 @@
             vm.draftStatusMessages =
                 getDraftStatusMessages(getHistoryComments(requisition.statusHistory));
         }
-        function getHistoryComments(statusHistory) {
-            var historyCommentsStr = _.reduce(statusHistory, function(r, c) {
-                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
-                return r;
-            }, '');
-            return historyCommentsStr.substr(0, historyCommentsStr.length - 1);
-        }
         function getDraftStatusMessages(draftStatusMessage) {
             var arr = ['', '', '', '', '', '', ''];
             if (draftStatusMessage.length > 63) {
