@@ -2596,5 +2596,6 @@
   "proofOfDeliveryView.notAllowedRejectReasonId": "The rejection reason is not allowed to be selected.",
   "proofOfDeliveryView.duplicateLocation": "The locations to receive the same lot cannot be repeated, please enter a new one.",
   "proofOfDeliveryView.duplicateLocationForKit": "The locations to receive Kit cannot be repeated, please enter a new one.",
-  "proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted": "Submit Successfully!"
+  "proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted": "Submit Successfully!",
+  "printTemplate.initialTitle":"${facilityName} - Rascunho ${number}"
 }
