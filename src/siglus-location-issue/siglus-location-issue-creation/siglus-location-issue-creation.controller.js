@@ -803,9 +803,14 @@
         function getDownloadLineItems() {
             var downloadLineItems = [];
             _.each(vm.displayItems, function(orderableItems) {
-                var validItems = orderableItems.filter(function(item) {
-                    return !item.isMainGroup;
-                });
+                var validItems;
+                if (orderableItems.length > 1) {
+                    validItems = orderableItems.filter(function(item) {
+                        return !item.isMainGroup;
+                    });
+                } else {
+                    validItems = orderableItems;
+                }
                 var groupByLot = _.chain(validItems)
                     .groupBy(function(item) {
                         return _.get(item, ['lot', 'lotCode'], '');
@@ -831,7 +836,18 @@
                             if (result) {
                                 vm.downloadPrint();
                             }
+                            vm.type = 'issue';
                             vm.downloadLineItems = getDownloadLineItems();
+                            vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
+                                var price = c.price * 100;
+                                r = r + c.quantity * price;
+                                return r;
+                            }, 0);
+                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                            vm.supplier = vm.facility.name;
+                            vm.client = _.indexOf(vm.destinationName, 'Outros') === 1
+                                ? vm.destinationName.split(':')[1] : vm.destinationName;
+
                             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                                 .then(function(data) {
                                     loadingModalService.open();
@@ -841,7 +857,11 @@
                                         return item.subDraftId;
                                     }));
 
-                                    downloadPdf();
+                                    vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                                    vm.signature = data.signature;
+                                    setTimeout(function() {
+                                        downloadPdf();
+                                    }, 200);
                                     deferred.promise.then(function() {
                                         siglusStockIssueLocationService
                                             .mergeSubmitDraft($stateParams.programId, getLineItems(),
