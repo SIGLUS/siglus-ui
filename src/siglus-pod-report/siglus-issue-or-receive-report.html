@@ -218,7 +218,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr id="calcTr" ng-repeat="item in vm.addedLineItems">
+            <tr id="calcTr" ng-repeat="item in (vm.isLocation ? vm.downloadLineItems : vm.addedLineItems)">
               <td class="background-black black-width" style="font-size: 14px;">{{ $index + 1 }}</td>
               <td>{{ item.productCode }}</td>
               <td>{{ item.productName }}</td>
@@ -241,7 +241,7 @@
       </section>
       <section id="sectionThird" class="section-third">
         <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
-        <div class="issue-voucher" style="text-align: center;">{{ vm.totalPriceValue / 100}}</div>
+        <div class="issue-voucher" style="text-align: center;">{{ (vm.totalPriceValue / 100).toFixed(2)}}</div>
       </section>
       <section id="sectionFouth" class="section-fouth">
         <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.preparedBy }}</div>
