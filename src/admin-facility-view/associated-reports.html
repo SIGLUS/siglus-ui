@@ -27,7 +27,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="program in vm.facilityWithPrograms.reportTypes">
-                <td>{{program.name}}</td>
+                <td>{{ vm.reportMap[program.programCode] }}</td>
                 <td><input type="checkbox" ng-model="program.active"/></td>
                 <td><input type="date" min-date="program.previousPeriodStartDateSinceRecentSubmit" ng-model="program.startDate"/></td>
             </tr>
