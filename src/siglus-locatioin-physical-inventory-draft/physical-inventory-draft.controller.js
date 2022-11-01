@@ -609,21 +609,11 @@
             return lineItem.$errors.quantityInvalid;
         };
         vm.print = function() {
-            var PRINT_URL;
-            if (vm.locationManagementOption === 'product') {
-                localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
-                PRINT_URL = $window.location.href.split('/?')[0]
-                    + '/draft/report'
-                    + '?'
-                    + $window.location.href.split('/?')[1];
-            } else {
-                localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.groupedCategories));
-                PRINT_URL = $window.location.href.split('/?')[0]
-                    + '/draft/print'
-                    + '?'
-                    + $window.location.href.split('/?')[1]
-                    + '&isInitialInventory=' + vm.isInitialInventory;
-            }
+            localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
+            var PRINT_URL = $window.location.href.split('/?')[0]
+                + '/draft/report'
+                + '?'
+                + $window.location.href.split('/?')[1];
             $window.open(
                 PRINT_URL,
                 '_blank'
