@@ -704,6 +704,8 @@
                 return r;
             }, 0);
             vm.isLocation = true;
+            vm.receivedBy = vm.proofOfDelivery.receivedBy;
+            vm.receivedDate = vm.proofOfDelivery.receivedDate;
             downloadPrint();
             confirmService.confirm(
                 'proofOfDeliveryView.confirm.message',
