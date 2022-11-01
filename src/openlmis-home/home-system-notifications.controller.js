@@ -86,7 +86,11 @@
                                 var data = res.data;
                                 vm.localMachineVersion = _.get(data, 'localMachineVersion');
                                 vm.connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
-                                $rootScope.$emit('localMachine-online');
+                                if (vm.connectedOnlineWeb) {
+                                    $rootScope.$emit('localMachine-online');
+                                } else {
+                                    $rootScope.$emit('localMachine-offline');
+                                }
                             })
                             .catch(function(error) {
                                 console.log(error);
