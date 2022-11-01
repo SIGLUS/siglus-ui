@@ -154,7 +154,7 @@
          * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
          * @name facilityName
          * @type {string}
-         * 
+         *
          * @description
          * The name of the requesting facility for which the Proofs of Delivery are shown.
          */
@@ -165,7 +165,7 @@
          * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
          * @name programName
          * @type {string}
-         * 
+         *
          * @description
          * The name of the program for which the Proofs of Delivery are shown.
          */
@@ -802,9 +802,28 @@
                                 vm.deliveredBy = res.deliveredBy;
                                 vm.receivedBy = res.receivedBy;
                                 vm.receivedDate = res.receivedDate;
-                                vm.fileName = res.fileName;
-                                vm.requisitionId = res.requisitionId;
+                                vm.podNum = '';
+                                var flag = order.orderCode.slice(-2) || '';
+                                if (flag.startsWith('-')) {
+                                    flag = flag.replace('-', '0');
+                                }
+                                if (flag.endsWith('E') || flag.endsWith('R')) {
+                                    flag = '01';
+                                }
+                                if (order.status === 'SHIPPED') {
+                                    vm.fileName = 'GR.' + res.requisitionNum + '_' + flag;
+                                    vm.requisitionNo = 'GR.' + res.requisitionNum + '/' + flag;
+                                }
+
+                                if (order.status === 'RECEIVED') {
+                                    vm.fileName = 'RR.' + res.requisitionNum + '_' + flag;
+                                    vm.requisitionNo = 'GR.' + res.requisitionNum + '/' + flag;
+                                    vm.podNum = 'RR.' + res.requisitionNum + '/' + flag;
+                                }
                                 vm.requisitionNum = res.requisitionNum;
+
+                                vm.requisitionId = res.requisitionId;
+
                             });
                             proofOfDeliveryService.get(pod.id).then(function(result) {
                                 fulfillingLineItemFactory

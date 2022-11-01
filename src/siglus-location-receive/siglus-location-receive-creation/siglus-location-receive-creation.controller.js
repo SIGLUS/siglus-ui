@@ -842,6 +842,41 @@
             });
         }
 
+        function getSumQuantity(items) {
+            var total = 0;
+            _.each(items, function(item) {
+                total = total + item.quantity;
+            });
+            return total;
+        }
+        function getDownloadLineItems() {
+            var downloadLineItems = [];
+            _.each(vm.displayItems, function(orderableItems) {
+                var validItems;
+                if (orderableItems.length > 1) {
+                    validItems = orderableItems.filter(function(item) {
+                        return !item.isMainGroup;
+                    });
+                } else {
+                    validItems = orderableItems;
+                }
+                var groupByLot = _.chain(validItems)
+                    .groupBy(function(item) {
+                        return _.get(item, ['lot', 'lotCode'], '');
+                    })
+                    .values()
+                    .value();
+                _.each(groupByLot, function(lotItems) {
+                    var downloadLineItem = angular.copy(lotItems[0]);
+                    downloadLineItem.lotCode = _.get(downloadLineItem, ['lot', 'lotCode'], '');
+                    downloadLineItem.expirationDate = _.get(downloadLineItem, ['lot', 'expirationDate'], '');
+                    downloadLineItem.quantity = getSumQuantity(lotItems);
+                    downloadLineItems.push(downloadLineItem);
+                });
+            });
+            return downloadLineItems;
+        }
+
         vm.submit = function() {
             if (isTableFormValid()) {
                 if (isMerge) {
@@ -850,6 +885,19 @@
                             if (result) {
                                 vm.downloadPrint();
                             }
+
+                            vm.type = 'receive';
+                            vm.downloadLineItems = getDownloadLineItems();
+                            vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
+                                var price = c.price * 100;
+                                r = r + c.quantity * price;
+                                return r;
+                            }, 0);
+                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                            vm.client = vm.facility.name;
+                            vm.supplier = vm.initialDraftInfo.sourceName === 'Outros'
+                                ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
+
                             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                                 .then(function(data) {
                                     loadingModalService.open();
@@ -859,7 +907,12 @@
                                         return item.subDraftId;
                                     }));
 
-                                    downloadPdf();
+                                    vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                                    vm.signature = data.signature;
+                                    setTimeout(function() {
+                                        downloadPdf();
+                                    }, 200);
+
                                     deferred.promise.then(function() {
                                         siglusStockIssueLocationService
                                             .mergeSubmitDraft($stateParams.programId, getLineItems(),
