@@ -25,8 +25,8 @@
      * Controller for managing requisitions.
      */
     angular
-        .module('requisition-view')
-        .controller('RequisitionViewController', RequisitionViewController);
+    .module('requisition-view')
+    .controller('RequisitionViewController', RequisitionViewController);
 
     RequisitionViewController.$inject = [
         '$state', 'requisition', 'requisitionValidator', 'requisitionService', 'loadingModalService', 'alertService',
@@ -40,13 +40,13 @@
     ];
 
     function RequisitionViewController($state, requisition, requisitionValidator, requisitionService,
-                                       loadingModalService, alertService, notificationService, confirmService,
-                                       offlineService, $window, requisitionUrlFactory, $filter, $scope,
-                                       RequisitionWatcher, accessTokenFactory, messageService, stateTrackerService,
-                                       RequisitionStockCountDateModal, localStorageFactory, canSubmit,
-                                       canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
-                                       facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       siglusSignatureModalService) {
+        loadingModalService, alertService, notificationService, confirmService,
+        offlineService, $window, requisitionUrlFactory, $filter, $scope,
+        RequisitionWatcher, accessTokenFactory, messageService, stateTrackerService,
+        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
+        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
+        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
+        siglusSignatureModalService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -304,10 +304,10 @@
             }
 
             confirmService.confirm('requisitionView.updateWarning', 'requisitionView.update')
-                .then(function() {
-                    requisitionService.removeOfflineRequisition(requisition.id);
-                    $state.reload();
-                });
+            .then(function() {
+                requisitionService.removeOfflineRequisition(requisition.id);
+                $state.reload();
+            });
         }
 
         /**
@@ -323,7 +323,8 @@
          */
         function syncRnr() {
             var loadingPromise = loadingModalService.open();
-            saveRnr().then(function() {
+            saveRnr()
+            .then(function() {
                 loadingPromise.then(function() {
                     notificationService.success('requisitionView.sync.success');
                 });
@@ -346,23 +347,44 @@
          * indicates a version conflict.
          */
         function syncRnrAndPrint() {
-            if (vm.displaySyncButton) {
-                var popup = $window.open('', '_blank');
-                popup.document.write(messageService.get('requisitionView.sync.pending'));
-                var loadingPromise = loadingModalService.open();
-                saveRnr().then(function() {
-                    watcher.disableWatcher();
-                    loadingPromise.then(function() {
-                        notificationService.success('requisitionView.sync.success');
-                    });
-                    popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
-                    reloadState();
-                }, function(response) {
-                    handleSaveError(response.status);
-                    popup.close();
-                });
+            const status = vm.requisition.status;
+            if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
+                || status === 'RELEASED_WITHOUT_ORDER') {
+                const programCodeToReportNameMap = {
+                    'VC': 'Balance Requisition',
+                    'TR': 'MMIT',
+                    'ML': 'Malaria',
+                    'T': 'MMIA',
+                    'TB': 'MMTB'
+                };
+                const printUrl = $window.location.host
+                    + $window.location.pathname
+                    + '#!/'
+                    + 'analyticsReports/requisitionAndMonthly/'
+                    + programCodeToReportNameMap[vm.program.code]
+                    + '/'
+                    + vm.requisition.id;
+                $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
             } else {
-                $window.open(accessTokenFactory.addAccessToken(vm.getPrintUrl()), '_blank');
+                if (vm.displaySyncButton) {
+                    var popup = $window.open('', '_blank');
+                    popup.document.write(messageService.get('requisitionView.sync.pending'));
+                    var loadingPromise = loadingModalService.open();
+                    saveRnr()
+                    .then(function() {
+                        watcher.disableWatcher();
+                        loadingPromise.then(function() {
+                            notificationService.success('requisitionView.sync.success');
+                        });
+                        popup.location.href = accessTokenFactory.addAccessToken(vm.getPrintUrl());
+                        reloadState();
+                    }, function(response) {
+                        handleSaveError(response.status);
+                        popup.close();
+                    });
+                } else {
+                    $window.open(accessTokenFactory.addAccessToken(vm.getPrintUrl()), '_blank');
+                }
             }
         }
 
@@ -376,6 +398,7 @@
             vm.commentsRequired = !requisitionValidator.validateTotalEqualOfRegimen(requisition);
             vm.forceOpen = vm.commentsRequired;
         }
+
         // #441: ends here
 
         /**
@@ -394,28 +417,31 @@
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 siglusSignatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                    .then(function(signature) {
-                        if (!vm.requisition.extraData.signaure) {
-                            vm.requisition.extraData.signaure = {};
-                        }
-                        vm.requisition.extraData.signaure.submit = signature;
-                        if (vm.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenSubmit);
-                        } else {
-                            saveThenSubmit();
-                        }
-                    });
+                .then(function(signature) {
+                    if (!vm.requisition.extraData.signaure) {
+                        vm.requisition.extraData.signaure = {};
+                    }
+                    vm.requisition.extraData.signaure.submit = signature;
+                    if (vm.program.enableDatePhysicalStockCountCompleted) {
+                        var modal = new RequisitionStockCountDateModal(vm.requisition);
+                        modal.then(saveThenSubmit);
+                    } else {
+                        saveThenSubmit();
+                    }
+                });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 failWithMessage(vm.requisition.$error)();
             }
+
             // #431: ends here
 
             function saveThenSubmit() {
                 var loadingPromise = loadingModalService.open();
-                vm.requisition.$save().then(function() {
-                    vm.requisition.$submit().then(function() {
+                vm.requisition.$save()
+                .then(function() {
+                    vm.requisition.$submit()
+                    .then(function() {
                         watcher.disableWatcher();
                         loadingPromise.then(function() {
                             notificationService.success('requisitionView.submit.success');
@@ -445,25 +471,28 @@
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 siglusSignatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                    .then(function(signature) {
-                        vm.requisition.extraData.signaure.authorize = signature;
-                        if (vm.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenAuthorize);
-                        } else {
-                            saveThenAuthorize();
-                        }
-                    });
+                .then(function(signature) {
+                    vm.requisition.extraData.signaure.authorize = signature;
+                    if (vm.program.enableDatePhysicalStockCountCompleted) {
+                        var modal = new RequisitionStockCountDateModal(vm.requisition);
+                        modal.then(saveThenAuthorize);
+                    } else {
+                        saveThenAuthorize();
+                    }
+                });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 failWithMessage(vm.requisition.$error)();
             }
+
             // #431: ends here
 
             function saveThenAuthorize() {
                 var loadingPromise = loadingModalService.open();
-                vm.requisition.$save().then(function() {
-                    vm.requisition.$authorize().then(function() {
+                vm.requisition.$save()
+                .then(function() {
+                    vm.requisition.$authorize()
+                    .then(function() {
                         watcher.disableWatcher();
                         loadingPromise.then(function() {
                             notificationService.success('requisitionView.authorize.success');
@@ -494,31 +523,35 @@
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 siglusSignatureModalService.confirm('requisitionView.submit.confirmWithSignature')
-                    .then(function(signature) {
-                        if (!vm.requisition.extraData.signaure) {
-                            vm.requisition.extraData.signaure = {
-                                submit: signature
-                            };
-                        }
-                        vm.requisition.extraData.signaure.authorize = signature;
-                        if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenSubmitThenAuthorize);
-                        } else {
-                            saveThenSubmitThenAuthorize();
-                        }
-                    });
+                .then(function(signature) {
+                    if (!vm.requisition.extraData.signaure) {
+                        vm.requisition.extraData.signaure = {
+                            submit: signature
+                        };
+                    }
+                    vm.requisition.extraData.signaure.authorize = signature;
+                    if (vm.requisition.program.enableDatePhysicalStockCountCompleted) {
+                        var modal = new RequisitionStockCountDateModal(vm.requisition);
+                        modal.then(saveThenSubmitThenAuthorize);
+                    } else {
+                        saveThenSubmitThenAuthorize();
+                    }
+                });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 failWithMessage(vm.requisition.$error)();
             }
+
             // #431: ends here
 
             function saveThenSubmitThenAuthorize() {
                 var loadingPromise = loadingModalService.open();
-                vm.requisition.$save().then(function() {
-                    vm.requisition.$submit().then(function() {
-                        vm.requisition.$authorize().then(function() {
+                vm.requisition.$save()
+                .then(function() {
+                    vm.requisition.$submit()
+                    .then(function() {
+                        vm.requisition.$authorize()
+                        .then(function() {
                             watcher.disableWatcher();
                             loadingPromise.then(function() {
                                 notificationService.success('requisitionView.authorize.success');
@@ -533,6 +566,7 @@
                 });
             }
         }
+
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -549,9 +583,11 @@
             confirmService.confirmDestroy(
                 'requisitionView.delete.confirm',
                 'requisitionView.delete.label'
-            ).then(function() {
+            )
+            .then(function() {
                 var loadingPromise = loadingModalService.open();
-                vm.requisition.$remove().then(function() {
+                vm.requisition.$remove()
+                .then(function() {
                     watcher.disableWatcher();
                     loadingPromise.then(function() {
                         notificationService.success('requisitionView.delete.success');
@@ -577,17 +613,17 @@
             validateTotalEqualOfRegimen();
             if (requisitionValidator.siglusValidRequisition(requisition)) {
                 siglusSignatureModalService.confirm('requisitionView.approve.confirmWithSignature')
-                    .then(function(signature) {
-                        var approveSignatures = vm.requisition.extraData.signaure.approve || [];
-                        approveSignatures.push(signature);
-                        vm.requisition.extraData.signaure.approve = approveSignatures;
-                        if (vm.program.enableDatePhysicalStockCountCompleted) {
-                            var modal = new RequisitionStockCountDateModal(vm.requisition);
-                            modal.then(saveThenApprove);
-                        } else {
-                            saveThenApprove();
-                        }
-                    });
+                .then(function(signature) {
+                    var approveSignatures = vm.requisition.extraData.signaure.approve || [];
+                    approveSignatures.push(signature);
+                    vm.requisition.extraData.signaure.approve = approveSignatures;
+                    if (vm.program.enableDatePhysicalStockCountCompleted) {
+                        var modal = new RequisitionStockCountDateModal(vm.requisition);
+                        modal.then(saveThenApprove);
+                    } else {
+                        saveThenApprove();
+                    }
+                });
             } else {
                 $scope.$broadcast('openlmis-form-submit');
                 // #431: alert before signature pop up
@@ -597,8 +633,10 @@
 
             function saveThenApprove() {
                 var loadingPromise = loadingModalService.open();
-                vm.requisition.$save().then(function() {
-                    vm.requisition.$approve().then(function() {
+                vm.requisition.$save()
+                .then(function() {
+                    vm.requisition.$approve()
+                    .then(function() {
                         watcher.disableWatcher();
                         loadingPromise.then(function() {
                             notificationService.success('requisitionView.approve.success');
@@ -610,6 +648,7 @@
                 });
             }
         }
+
         // #231: ends here
 
         /**
@@ -626,18 +665,19 @@
             confirmService.confirmDestroy(
                 'requisitionView.reject.confirm',
                 'requisitionView.reject.label'
-            ).then(function() {
+            )
+            .then(function() {
                 loadingModalService.open();
                 vm.requisition.$save()
-                    .then(function() {
-                        return vm.requisition.$reject();
-                    })
-                    .then(function() {
-                        watcher.disableWatcher();
-                        notificationService.success('requisitionView.reject.success');
-                        stateTrackerService.goToPreviousState('openlmis.requisitions.approvalList');
-                    })
-                    .catch(loadingModalService.close);
+                .then(function() {
+                    return vm.requisition.$reject();
+                })
+                .then(function() {
+                    watcher.disableWatcher();
+                    notificationService.success('requisitionView.reject.success');
+                    stateTrackerService.goToPreviousState('openlmis.requisitions.approvalList');
+                })
+                .catch(loadingModalService.close);
             });
         }
 
@@ -655,9 +695,11 @@
             confirmService.confirm(
                 'requisitionView.skip.confirm',
                 'requisitionView.skip.label'
-            ).then(function() {
+            )
+            .then(function() {
                 var loadingPromise = loadingModalService.open();
-                vm.requisition.$skip().then(function() {
+                vm.requisition.$skip()
+                .then(function() {
                     watcher.disableWatcher();
                     loadingPromise.then(function() {
                         notificationService.success('requisitionView.skip.success');
@@ -666,6 +708,7 @@
                 }, failWithMessage('requisitionView.skip.failure'));
             });
         }
+
         /**
          * @ngdoc method
          * @methodOf requisition-view.controller:RequisitionViewController
