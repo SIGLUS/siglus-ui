@@ -192,6 +192,8 @@
             }
             var selectedItem = angular.copy(vm.selectedOrderableGroup[0]);
             var addedItems = angular.copy(vm.addedItems);
+            // TODO always set new added product soh 0 in physical inventory
+            selectedItem.$previewSOH = undefined;
             selectedItem.$errors = {};
             selectedItem.skipped = false;
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
