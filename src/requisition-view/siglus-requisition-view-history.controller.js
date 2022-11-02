@@ -143,8 +143,28 @@
         }
 
         function print() {
-            var url = requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
-            $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+            var status = vm.requisition.status;
+            if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
+                || status === 'RELEASED_WITHOUT_ORDER') {
+                var programCodeToReportNameMap = {
+                    VC: 'Balance Requisition',
+                    TR: 'MMIT',
+                    ML: 'Malaria',
+                    T: 'MMIA',
+                    TB: 'MMTB'
+                };
+                var printUrl = $window.location.host
+                    + $window.location.pathname
+                    + '#!/'
+                    + 'analyticsReports/requisitionAndMonthly/'
+                    + programCodeToReportNameMap[vm.program.code]
+                    + '/'
+                    + vm.requisition.id;
+                $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
+            } else {
+                var url = requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
+                $window.open(accessTokenFactory.addAccessToken(url), '_blank');
+            }
         }
 
         function getDescriptionForColumn(column) {

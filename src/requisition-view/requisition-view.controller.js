@@ -346,7 +346,25 @@
          * indicates a version conflict.
          */
         function syncRnrAndPrint() {
-            if (vm.displaySyncButton) {
+            var status = vm.requisition.status;
+            if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
+                || status === 'RELEASED_WITHOUT_ORDER') {
+                var programCodeToReportNameMap = {
+                    VC: 'Balance Requisition',
+                    TR: 'MMIT',
+                    ML: 'Malaria',
+                    T: 'MMIA',
+                    TB: 'MMTB'
+                };
+                var printUrl = $window.location.host
+                    + $window.location.pathname
+                    + '#!/'
+                    + 'analyticsReports/requisitionAndMonthly/'
+                    + programCodeToReportNameMap[vm.program.code]
+                    + '/'
+                    + vm.requisition.id;
+                $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
+            } else if (vm.displaySyncButton) {
                 var popup = $window.open('', '_blank');
                 popup.document.write(messageService.get('requisitionView.sync.pending'));
                 var loadingPromise = loadingModalService.open();
