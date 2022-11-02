@@ -1302,7 +1302,9 @@
             vm.updateProgress();
 
             lineItem.$previewSOH = undefined;
-            setSohForLineItem(lineItem);
+            if (vm.locationManagementOption === 'product') {
+                setSohForLineItem(lineItem);
+            }
         });
 
         function refreshLotOptions() {
