@@ -121,10 +121,10 @@
                         if (currentEnableStatus === cachedEnableStatus) {
                             if (initUser.homeFacilityId && currentEnableStatus) {
                                 doInitialMoveProduct();
+                            } else if (checkInitialInventoryStatus()) {
+                                event.preventDefault();
+                                checkDraftIsStarter();
                             }
-                            // else {
-                            //     checkDraftIsStarter();
-                            // }
                         } else {
                             var message = currentEnableStatus ? 'interceptor.currentIsNotStockManagement'
                                 : 'interceptor.currentIsNotLocationManagement';
@@ -193,15 +193,9 @@
 
                                 }
                             })
-                            .catch(function() {
-                                loadingModalService.close();
-                            })
                             .finally(loadingModalService.close);
 
                     })
-                        .catch(function() {
-                            loadingModalService.close();
-                        })
                         .finally(loadingModalService.close);
                 } else {
                     currentUserService.clearCache();
