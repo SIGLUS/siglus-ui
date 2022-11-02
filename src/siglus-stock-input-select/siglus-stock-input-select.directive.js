@@ -85,9 +85,9 @@
                             var selectedItem = orderableGroupService
                                 .findByLotInOrderableGroup(selectedOrderableGroup, lineItem.lot);
 
+                            lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
                             // if auto generate, then no selectedItem、
                             setTimeout(function() {
-                                lineItem.$previewSOH = selectedItem ? selectedItem.stockOnHand : null;
                                 $scope.hideAllSelect();
                             }, 100);
                         };
