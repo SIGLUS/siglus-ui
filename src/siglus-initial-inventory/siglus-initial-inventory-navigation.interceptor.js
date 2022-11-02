@@ -121,6 +121,8 @@
                         if (currentEnableStatus === cachedEnableStatus) {
                             if (initUser.homeFacilityId && currentEnableStatus) {
                                 doInitialMoveProduct();
+                            } else {
+                                checkDraftIsStarter();
                             }
                         } else {
                             var message = currentEnableStatus ? 'interceptor.currentIsNotStockManagement'
