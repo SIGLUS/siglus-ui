@@ -153,9 +153,7 @@
                     T: 'MMIA',
                     TB: 'MMTB'
                 };
-                var printUrl = $window.location.host
-                    + $window.location.pathname
-                    + '#!/'
+                var printUrl = '#!/'
                     + 'analyticsReports/requisitionAndMonthly/'
                     + programCodeToReportNameMap[vm.program.code]
                     + '/'
