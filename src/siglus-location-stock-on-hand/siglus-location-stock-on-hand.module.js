@@ -28,7 +28,10 @@
         'siglus-soh-product-detail',
         'siglus-soh-lot-detail',
         'siglus-soh-location-detail',
-        'siglus-soh-product-print'
+        'siglus-soh-product-print',
+        'siglus-soh-location-detail-print',
+        'siglus-soh-lot-detail-print',
+        'siglus-soh-product-detail-print'
     ]);
 
 })();
