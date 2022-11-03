@@ -653,7 +653,7 @@
         };
 
         vm.validateLocation = function(lineItem) {
-            if (lineItem.locationCode) {
+            if (!lineItem.locationCode) {
                 lineItem.$errors.locationInvalid = messageService
                     .get('stockPhysicalInventoryDraft.required');
             }
@@ -749,8 +749,8 @@
             if (!anyError && $stateParams.locationManagementOption === 'product') {
                 _.chain(vm.draft.lineItems).flatten()
                     .each(function(item) {
-                        if (!item.orderable.id) {
-                            if (!(item.orderable && item.orderable.isKit)) {
+                        if (item.orderable && item.orderable.id) {
+                            if (!item.orderable.isKit) {
                                 anyError = vm.validateLotCode(item) || anyError;
                                 anyError = vm.validExpirationDate(item) || anyError;
                             }
