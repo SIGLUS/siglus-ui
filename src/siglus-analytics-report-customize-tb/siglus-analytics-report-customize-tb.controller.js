@@ -37,7 +37,8 @@
         '$timeout',
         '$q',
         'siglusDownloadLoadingModalService',
-        '$filter'
+        '$filter',
+        '$stateParams'
     ];
 
     function controller(
@@ -49,12 +50,14 @@
         $timeout,
         $q,
         siglusDownloadLoadingModalService,
-        $filter
+        $filter,
+        $stateParams
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
+        vm.showBreadCrumb = undefined;
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
@@ -69,6 +72,10 @@
             vm.productLineItems = requisition.requisitionLineItems;
             // requisition.requisitionLineItems;
             services = requisition.testConsumptionLineItems;
+            vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
+            if (vm.showBreadCrumb) {
+                hideBreadcrumb();
+            }
             vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.creationDate = getCreationDate(requisition.createdDate);
@@ -374,6 +381,10 @@
                 });
             });
         };
+
+        function hideBreadcrumb() {
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        }
     }
 
 })();

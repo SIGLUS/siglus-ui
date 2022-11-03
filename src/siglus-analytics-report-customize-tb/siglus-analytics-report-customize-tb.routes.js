@@ -26,10 +26,13 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.tb', {
-            url: '/MMTB/:rnr',
+            url: '/MMTB/:rnr?showBreadCrumb',
             showInNavigation: false,
             label: 'tb.title',
             priority: 9,
+            params: {
+                showBreadCrumb: undefined
+            },
             views: {
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportCustomizeTBController',

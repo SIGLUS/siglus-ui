@@ -36,7 +36,8 @@
         'SIGLUS_SECTION_TYPES',
         '$timeout',
         '$q',
-        'siglusDownloadLoadingModalService'
+        'siglusDownloadLoadingModalService',
+        '$stateParams'
     ];
 
     function controller(
@@ -47,12 +48,14 @@
         SIGLUS_SECTION_TYPES,
         $timeout,
         $q,
-        siglusDownloadLoadingModalService
+        siglusDownloadLoadingModalService,
+        $stateParams
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
+        vm.showBreadCrumb = undefined;
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
@@ -64,6 +67,10 @@
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
+            vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
+            if (vm.showBreadCrumb) {
+                hideBreadcrumb();
+            }
             vm.productLineItems = getProductLineItems(requisition.requisitionLineItems);
             services = requisition.testConsumptionLineItems;
             vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
@@ -210,10 +217,10 @@
             // because  vm.requisition.usageTemplate.patient label can edit
             // if choose fixed label
             // the label changed  and the date will not get
-            // get new Map to match name and label 
-            // the name should not change 
+            // get new Map to match name and label
+            // the name should not change
 
-            //  *  
+            //  *
             //  * newSection2 : Tipo de dispensa - Dispensa para 6 Meses (DS)
             //  * newSection3 : Tipo de dispensa - Dispensa para 3 Meses (DT)
             //  * newSection4 : Tipo de dispensa - Dispensa Mensal(DM)
@@ -472,6 +479,10 @@
                 });
             });
         };
+
+        function hideBreadcrumb() {
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        }
     }
 
 })();
