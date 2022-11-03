@@ -44,7 +44,7 @@
             new LocalDatabase('orderables').removeAll();
             siglusHomeFacilityService.facility = null;
             currentUserService.clearCache();
-            localStorageService.clearAllStorage();
+            loginService.clearAllStorage();
             navigationStateService.clearPromise();
         };
 
