@@ -26,8 +26,8 @@
     angular.module('siglus-soh-lot-detail', [
         'stockmanagement',
         'openlmis-auth',
-        'stock-reasons-modal',
-        'siglus-soh-lot-detail-print'
+        'stock-reasons-modal'
+
     ]);
 
 })();
