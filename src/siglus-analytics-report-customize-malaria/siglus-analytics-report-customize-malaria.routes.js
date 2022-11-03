@@ -26,10 +26,13 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.malaria', {
-            url: '/Malaria/:rnr',
+            url: '/Malaria/:rnr?showBreadCrumb',
             showInNavigation: false,
             label: 'malaria.title',
             priority: 9,
+            params: {
+                showBreadCrumb: undefined
+            },
             views: {
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportCustomizeMalariaController',

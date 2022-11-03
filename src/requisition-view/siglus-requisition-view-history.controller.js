@@ -157,7 +157,9 @@
                     + 'analyticsReports/requisitionAndMonthly/'
                     + programCodeToReportNameMap[vm.program.code]
                     + '/'
-                    + vm.requisition.id;
+                    + vm.requisition.id
+                    + '?'
+                    + 'showBreadCrumb=false';
                 $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
             } else {
                 var url = requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
