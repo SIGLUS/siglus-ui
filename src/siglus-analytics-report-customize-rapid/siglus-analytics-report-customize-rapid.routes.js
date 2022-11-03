@@ -26,10 +26,13 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.rapid', {
-            url: '/MMIT/:rnr',
+            url: '/MMIT/:rnr?showBreadCrumb',
             showInNavigation: false,
             label: 'rapid.title',
             priority: 9,
+            params: {
+                showBreadCrumb: undefined
+            },
             views: {
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportCustomizeRapidController',

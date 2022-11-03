@@ -18,7 +18,7 @@
     'use strict';
 
     angular
-        .module('siglus-location-physical-inventory-report')
+        .module('shipment-view-report')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS'];

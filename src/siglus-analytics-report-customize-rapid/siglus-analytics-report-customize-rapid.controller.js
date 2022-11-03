@@ -34,7 +34,8 @@
         'openlmisDateFilter',
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
-        'siglusDownloadLoadingModalService'
+        'siglusDownloadLoadingModalService',
+        '$stateParams'
     ];
 
     function controller(
@@ -43,13 +44,15 @@
         openlmisDateFilter,
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
-        siglusDownloadLoadingModalService
+        siglusDownloadLoadingModalService,
+        $stateParams
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
         vm.comments = undefined;
+        vm.showBreadCrumb = undefined;
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
@@ -61,6 +64,10 @@
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
+            vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
+            if (vm.showBreadCrumb) {
+                hideBreadcrumb();
+            }
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
@@ -153,6 +160,10 @@
                 siglusDownloadLoadingModalService.close();
             });
         };
+
+        function hideBreadcrumb() {
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        }
     }
 
 })();

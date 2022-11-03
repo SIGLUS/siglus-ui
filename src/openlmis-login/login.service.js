@@ -49,12 +49,14 @@
     ) {
 
         var postLoginActions = [],
-            postLogoutActions = [];
+            postLogoutActions = [],
+            excludeKeys = ['LAST_SYNC_TIME', 'current_locale'];
 
         this.login = login;
         this.logout = logout;
         this.registerPostLoginAction = registerPostLoginAction;
         this.registerPostLogoutAction = registerPostLogoutAction;
+        this.clearAllStorage = clearAllStorage;
 
         /**
          * @ngdoc method
@@ -160,11 +162,22 @@
                 .finally(function() {
                     authorizationService.clearAccessToken();
                     authorizationService.clearUser();
-                    localStorageService.clearAll();
+                    clearAllStorage();
                     deferred.resolve();
                 });
 
             return deferred.promise;
+        }
+
+        function clearAllStorage() {
+            var keyToValueMap = {};
+            excludeKeys.forEach(function(excludeKey) {
+                keyToValueMap[excludeKey] = localStorageService.get(excludeKey);
+            });
+            localStorageService.clearAll();
+            for (var key in keyToValueMap) {
+                localStorageService.add(key, keyToValueMap[key]);
+            }
         }
 
         /**

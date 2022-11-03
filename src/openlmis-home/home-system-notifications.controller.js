@@ -172,14 +172,15 @@
         vm.sync = function() {
             homeImportAndExportService.getSyncResults()
                 .then(function(res) {
-                    vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime'])).format('YYYY-MM-DD HH:MM:SS');
-                    localStorageService.add(LAST_SYNC_TIME, vm.lastSyncTime);
                     var errors = _.get(res, ['data', 'errors']);
                     if (errors && errors.length > 0) {
                         vm.syncMessage = 'openlmisHome.syncedFailed';
                         vm.errors = errors;
                     } else {
                         vm.syncMessage = 'openlmisHome.syncedSuccessfully';
+                        vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime']))
+                            .format('YYYY-MM-DD HH:mm:ss');
+                        localStorageService.add(LAST_SYNC_TIME, vm.lastSyncTime);
                     }
                 });
         };

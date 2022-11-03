@@ -3,5 +3,6 @@
   "issueLocationCreation.lotDuplicated": "The locations to issue the same lot cannot be repeated, please enter a new one.",
   "issueLocationCreation.moreThanSoh": "The Quantity can't be larger than Stock on Hand.",
   "issueLocationCreation.inputPositiveNumber": "Please enter a positive number.",
-  "issueLocationCreation.submitSuccessfully": "Submit successfully"
+  "issueLocationCreation.submitSuccessfully": "Submit successfully",
+  "issueLocationCreation.lotExpired": "This lot has expired, it cannot be issued."
 }
