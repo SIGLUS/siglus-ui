@@ -70,12 +70,23 @@
         }
 
         vm.getBreadcrumbName = function(stateParams) {
-            var result = messageService.get('printTemplate.breadcrumbName.subDraft', {
-                number: stateParams.draftNum
-            });
-            if (stateParams.isMerged === 'true') {
+            var result;
+            if (vm.isInitialInventory) {
+                if (stateParams.isMerged === 'true') {
+                    result =  messageService.get('printTemplate.breadcrumbName.initialInventory.mergedDraft');
+                } else {
+                    result = messageService.get('printTemplate.breadcrumbName.initialInventory.subDraft', {
+                        number: stateParams.draftNum
+                    });
+                }
+            } else if (stateParams.isMerged === 'true') {
                 result =  messageService.get('printTemplate.breadcrumbName.mergedDraft');
+            } else {
+                result = messageService.get('printTemplate.breadcrumbName.subDraft', {
+                    number: stateParams.draftNum
+                });
             }
+
             return result;
         };
 
