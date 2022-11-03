@@ -43,7 +43,8 @@
         vm.$onInit = function() {
             new LocalDatabase('orderables').removeAll();
             siglusHomeFacilityService.facility = null;
-            currentUserService.clearAllStorage();
+            currentUserService.clearCache();
+            localStorageService.clearAllStorage();
             navigationStateService.clearPromise();
         };
 
