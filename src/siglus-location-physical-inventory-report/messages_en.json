@@ -4,5 +4,7 @@
     "printTemplate.breadcrumbName.mergedDraft": "Home / Location Management / Physical Inventory / Todos os produtos / Merged Draft",
     "printTemplate.breadcrumbName.initialInventory.subDraft": "Home / Location Management / Initial inventory / Todos os produtos / Draft ${number}",
     "printTemplate.breadcrumbName.initialInventory.mergedDraft": "Home / Location Management / Initial inventory / Todos os produtos / Merged Draft",
-    "printTemplate.initialTitle":"${facilityName}-Draft ${number}"
+    "printTemplate.initialTitle":"${facilityName}-Draft ${number}",
+    "printTemplate.locationList":"Location list",
+    "printTemplate.inventoryDetails":"Inventory Details"
 }
