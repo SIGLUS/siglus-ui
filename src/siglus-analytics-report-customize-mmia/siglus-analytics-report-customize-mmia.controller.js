@@ -101,6 +101,7 @@
             var patients = patientTemplateFactory();
             vm.patientList = patients.normalPatientList;
             vm.mergedPatientMap = patients.mergedPatientMap;
+            console.log(vm.mergedPatientMap);
             vm.getValueByKey = getValueByKey;
             vm.getHistoryComments = getHistoryComments;
             vm.getSignaure = getSignaure;
@@ -206,14 +207,37 @@
                     mergedPatientMap: {}
                 };
             }
+            // because  vm.requisition.usageTemplate.patient label can edit
+            // if choose fixed label
+            // the label changed  and the date will not get
+            // get new Map to match name and label 
+            // the name should not change 
+
+            //  *  
+            //  * newSection2 : Tipo de dispensa - Dispensa para 6 Meses (DS)
+            //  * newSection3 : Tipo de dispensa - Dispensa para 3 Meses (DT)
+            //  * newSection4 : Tipo de dispensa - Dispensa Mensal(DM)
+            //  * newSection7:Tipo de Dispensa - Ajuste
+            //  * 'Tipo de Dispensa - Mês Corrente',
+            //  * 'Tipo de Dispensa - Total de pacientes com tratamento',
+
+            var patientLabelNameMap = {};
+            _.each(vm.requisition.usageTemplate.patient, function(item) {
+                patientLabelNameMap[item.name] = item.label;
+            });
+
             var jugeArray = [
-                'Tipo de Dispensa - Dispensa Mensal (DM)',
-                'Tipo de Dispensa - Dispensa para 3 Mensal (DT)',
-                'Tipo de Dispensa - Dispensa para 6 Mensal (DS)',
-                'Tipo de Dispensa - Mês Corrente',
-                'Tipo de Dispensa - Total de pacientes com tratamento',
-                'Tipo de Dispensa - Ajuste'
+                // 'Tipo de Dispensa - Dispensa Mensal(DM)'
+                'newSection4',
+                // Tipo de dispensa - Dispensa para 6 Meses (DS)
+                'newSection2',
+                //Tipo de dispensa - Dispensa para 3 Meses (DT)
+                'newSection3',
+                // Tipo de Dispensa - Ajuste
+                'newSection7'
+
             ];
+
             return _.reduce(vm.requisition.usageTemplate.patient, function(r, c) {
                 var temp = _.find(vm.requisition.patientLineItems, function(item) {
                     return item.name === c.name;
@@ -222,8 +246,8 @@
                     return itm.isDisplayed;
                 });
                 temp.column = c;
-                if (_.contains(jugeArray, c.label)) {
-                    r.mergedPatientMap[c.label] = temp;
+                if (_.contains(jugeArray, c.name)) {
+                    r.mergedPatientMap[c.name] = temp;
                 } else {
                     r.normalPatientList.push(temp);
                 }

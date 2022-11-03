@@ -193,16 +193,16 @@
           <tr width="30px" height="30px">
             <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.5m">{{ 'mmia.5m' | message }}</td>
             <td class="bg-color-gray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 0)}}
+                {{vm.getValueByKey('newSection2', 0)}}
             </td>
             <td style="border: none"></td>
             <td style="border: none"></td>
-            <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Ajuste', 0)}}</td>
+            <td class="bg-color-gray">{{vm.getValueByKey('newSection7', 0)}}</td>
           </tr>
           <tr width="30px" height="30px">
               <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.4m">{{ 'mmia.4m' | message }}</td>
               <td class="bg-color-gray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 1)}}
+                {{vm.getValueByKey('newSection2', 1)}}
               </td>
               <td style="border: none"></td>
               <td style="border: none"></td>
@@ -211,7 +211,7 @@
           <tr width="30px" height="30px">
               <td style="text-align: right;padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.3m">{{ 'mmia.3m' | message }}</td>
               <td class="bg-color-gray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 2)}}
+                {{vm.getValueByKey('newSection2', 2)}}
               </td>
               <td class="bg-color-darkgray">DT</td>
               <td style="border: none"></td>
@@ -220,18 +220,18 @@
           <tr width="30px" height="30px">
               <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.2m">{{ 'mmia.2m' | message }}</td>
               <td class="bg-color-gray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 3)}}
+                {{vm.getValueByKey('newSection2', 3)}}
               </td>
-              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 0)}}</td>
+              <td class="bg-color-gray">{{vm.getValueByKey('newSection3', 0)}}</td>
               <td style="border: none"></td>
               <td style="border: none"></td>
           </tr>
           <tr width="30px" height="30px">
               <td style="text-align: right; padding-right: 4px;" openlmis-message="view.rnr.mmia.patient.md.1m">{{ 'mmia.1m' | message }}</td>
               <td class="bg-color-gray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 4)}}
+                {{vm.getValueByKey('newSection2', 4)}}
               </td>
-              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 1)}}</td>
+              <td class="bg-color-gray">{{vm.getValueByKey('newSection3', 1)}}</td>
               <td class="bg-color-darkgray">DM</td>
               <td style="border: none">Total</td>
           </tr>
@@ -240,15 +240,15 @@
                   {{ 'mmia.withm' | message }}
                 </td>
               <td class="bg-color-gray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 5)}}
+                {{vm.getValueByKey('newSection2', 5)}}
               </td>
-              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 2)}}</td>
-              <td class="bg-color-gray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 0)}}</td>
+              <td class="bg-color-gray">{{vm.getValueByKey('newSection3', 2)}}</td>
+              <td class="bg-color-gray">{{vm.getValueByKey('newSection4', 0)}}</td>
               <td class="bg-color-gray">
                   {{
-                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 5) +
-                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 2) +
-                    vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 0)
+                    vm.getValueByKey('newSection2', 5) +
+                    vm.getValueByKey('newSection3', 2) +
+                    vm.getValueByKey('newSection4', 0)
                   }}
               </td>
           </tr>
@@ -257,17 +257,17 @@
                 {{ 'mmia.total_patients_with_treatment' | message }}
               </td>
               <td class="bg-color-darkgray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 6)}}
+                {{vm.getValueByKey('newSection2', 6)}}
               </td>
               <td class="bg-color-darkgray">
-                {{vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 3)}}
+                {{vm.getValueByKey('newSection3', 3)}}
               </td>
-              <td class="bg-color-darkgray">{{vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 1)}}</td>
+              <td class="bg-color-darkgray">{{vm.getValueByKey('newSection4', 1)}}</td>
               <td class="bg-color-darkgray">
                 {{
-                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 6 Mensal (DS)', 6) +
-                    vm.getValueByKey('Tipo de Dispensa - Dispensa para 3 Mensal (DT)', 3) +
-                    vm.getValueByKey('Tipo de Dispensa - Dispensa Mensal (DM)', 1)
+                    vm.getValueByKey('newSection2', 6) +
+                    vm.getValueByKey('newSection3', 3) +
+                    vm.getValueByKey('newSection4', 1)
                 }}
               </td>
           </tr>

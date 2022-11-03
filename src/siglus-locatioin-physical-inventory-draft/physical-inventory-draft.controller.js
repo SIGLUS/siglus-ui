@@ -39,7 +39,8 @@
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
         'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
         'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService',
-        'siglusOrderableLotService', 'siglusPrintPalletLabelComfirmModalService'
+        'siglusOrderableLotService', 'siglusPrintPalletLabelComfirmModalService',
+        'siglusLocationCommonApiService'
     ];
 
     function controller($scope, $state, $stateParams, addProductsModalService, messageService,
@@ -52,7 +53,8 @@
                         siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
                         SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
                         allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
-                        siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService) {
+                        siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService,
+                        siglusLocationCommonApiService) {
         var vm = this;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
@@ -895,6 +897,7 @@
                 vm.validateLocation(lineItem);
             } else {
                 if (lineItem.locationCode) {
+                    setSohForLineItem(lineItem);
                     lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
                         return item.locationCode === lineItem.locationCode;
                     }).area;
@@ -909,6 +912,7 @@
                         label: lineItem.area
                     }];
                 } else {
+                    lineItem.$previewSOH = undefined;
                     lineItem.locationList =  lineItem.area
                         ? _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
                             return {
@@ -1099,6 +1103,38 @@
             // SIGLUS-REFACTOR: ends here
         }
 
+        function setSohForLineItem(lineItem) {
+            var lotId = _.get(lineItem, ['lot', 'id'], null);
+            var locationCode = _.get(lineItem, 'locationCode');
+            if ((lotId || lineItem.orderable.isKit) && locationCode) {
+                if (lineItem.locationSohInfos) {
+                    var locationLotsList = lineItem.locationSohInfos.find(function(locationSohInfo) {
+                        return locationSohInfo.locationCode === locationCode;
+                    });
+                    var lotSoh = _.find(_.get(locationLotsList, 'lots', []), function(lot) {
+                        return lot.lotId === lotId;
+                    });
+                    lineItem.$previewSOH = _.get(lotSoh, 'stockOnHand', undefined);
+                    lineItem.stockOnHand = lineItem.$previewSOH;
+                } else {
+                    siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                        isAdjustment: false,
+                        extraData: true
+                    }, [lineItem.orderable.id]).then(function(locationSohInfos) {
+                        lineItem.locationSohInfos = locationSohInfos;
+                        var locationLotsList = lineItem.locationSohInfos.find(function(locationSohInfo) {
+                            return locationSohInfo.locationCode === locationCode;
+                        });
+                        var lotSoh = _.find(_.get(locationLotsList, 'lots', []), function(lot) {
+                            return lot.lotId === lotId;
+                        });
+                        lineItem.$previewSOH = _.get(lotSoh, 'stockOnHand', undefined);
+                        lineItem.stockOnHand = lineItem.$previewSOH;
+                    });
+                }
+            }
+        }
+
         function addLot(lineItem) {
             var areaList = vm.areaList;
             var locationList = vm.allLocationList;
@@ -1264,6 +1300,11 @@
             vm.validExpirationDate(lineItem);
             vm.validateLocation(lineItem);
             vm.updateProgress();
+
+            lineItem.$previewSOH = undefined;
+            if (vm.locationManagementOption === 'product') {
+                setSohForLineItem(lineItem);
+            }
         });
 
         function refreshLotOptions() {
