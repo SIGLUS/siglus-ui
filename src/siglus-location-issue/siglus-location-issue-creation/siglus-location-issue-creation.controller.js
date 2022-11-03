@@ -181,7 +181,7 @@
             if (!item.$error.lotCodeError && item.lot) {
                 var lotExpiredDate = moment(item.lot.expirationDate);
                 if (moment().isAfter(lotExpiredDate)) {
-                    item.$error.lotCodeError = 'locationShipmentView.lotExpired';
+                    item.$error.lotCodeError = 'issueLocationCreation.lotExpired';
                 }
             }
         }

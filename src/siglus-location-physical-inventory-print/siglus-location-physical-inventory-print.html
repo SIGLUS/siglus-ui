@@ -1,0 +1,190 @@
+<section ng-if="!vm.isMerged && vm.isInitialInventory" class="location-physical-container" >
+    <div style="width: 1000px;text-align: center;">
+        <div style="font-size: 24px;font-weight: bolder;">{{ 'printTemplate.initialTitle' | message:{'facilityName':vm.facility.name ,'number':vm.draftNumber} }}</div>
+        <div style="font-weight: 600;">({{'shipmentViewReport.tips' | message}})</div>
+    </div>
+    <table class="text-center">
+        <tbody>
+            <tr class="text-bolder">
+                <td colspan="10">
+                   {{'printTemplate.locationList' | message}}
+                </td>
+            </tr>
+            <tr class="initial-td" ng-repeat="items in vm.locationList">
+                <td ng-repeat="item in items track by $index">{{item}}</td>
+            </tr>
+            <tr  class="text-bolder">
+                <td colspan="10">
+                   {{'printTemplate.inventoryDetails' | message}}
+                </td>
+            </tr>
+            <tr  class="text-bolder">
+                <td>{{'stockPhysicalInventoryDraft.location' | message}}</td>
+                <td>{{'stockPhysicalInventoryDraft.productCode' | message}}</td>
+                <td colspan="3">{{'shipmentViewReport.productName' | message}}</td>
+                <td colspan="3">{{'stockPhysicalInventoryDraft.lotCode' | message}}</td>
+                <td>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</td>
+                <td>{{'stockPhysicalInventoryDraft.currentStock' | message}}</td>
+            </tr>
+            <tr ng-repeat="n in vm.inInitialList track by $index">
+                <td></td>
+                <td></td>
+                <td colspan="3"></td>
+                <td colspan="3"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<section ng-if="!vm.isMerged && !vm.isInitialInventory" class="location-physical-container">
+    <div class="breadcrumb" style="font-size: 13px;">
+        {{ vm.breadcrumb }}
+    </div>
+    <div style="display: flex; align-items: center;">
+        <span style="font-size: 18px;">
+            {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName':
+            vm.facility.name, 'program': vm.program.name} }}
+        </span>
+        <span style="font-weight: 600; margin-left: 8px;">({{'shipmentViewReport.tips' | message}})</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>{{'stockPhysicalInventoryDraft.location' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories">
+            <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in groupedLineItems">
+                <td>{{lineItems[0].locationCode}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr ng-if="lineItems.length > 1" ng-repeat="lineItem in lineItems" ng-repeat-end>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr ng-if="lineItems.length === 1" ng-repeat="lineItems in groupedLineItems">
+                <td>{{lineItems[0].locationCode}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                  <td ng-if="!vm.isInitialInventory"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<section class="location-physical-container" ng-if="vm.isMerged">
+    <div class="breadcrumb" style="font-size: 13px;">
+        {{ vm.breadcrumb }}
+    </div>
+    <div style="display: flex; align-items: center;">
+        <span style="font-size: 18px;">
+            {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName':
+            vm.facility.name, 'program': vm.program.name} }}
+        </span>
+        <span style="font-weight: 600; margin-left: 8px;">({{'shipmentViewReport.tips' | message}})</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>{{'stockPhysicalInventoryDraft.location' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th ng-if="!vm.isInitialInventory">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
+                <th>{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories">
+            <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in groupedLineItems">
+                <td>{{lineItems[0].locationCode}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td ng-if="!vm.isInitialInventory">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+                <td>{{vm.calculate(lineItems, 'quantity')}}</td>
+                <td></td>
+            </tr>
+            <tr ng-if="lineItems.length > 1" ng-repeat="lineItem in lineItems" ng-repeat-end>
+                <td></td>
+                <td>{{lineItem.orderable.productCode}}</td>
+                <td>{{lineItem.orderable | productName}}</td>
+                <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
+                <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
+                <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
+                    {{lineItem.lot | siglusExpiredLotCode}}
+                </td>
+                <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
+                    {{lineItem.lot.expirationDate | openlmisDate}}
+                </td>
+                <td ng-if="!vm.isInitialInventory">
+                    {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
+                </td>
+                <td>
+                    {{lineItem.quantity}}
+                </td>
+                <td>
+                    {{lineItem.reasonFreeText}}
+                </td>
+            </tr>
+            <tr ng-if="lineItems.length === 1 && lineItems[0].orderable.productCode"
+                ng-repeat="lineItems in groupedLineItems">
+                <td>{{lineItems[0].locationCode}}</td>
+                <td>{{lineItems[0].orderable.productCode}}</td>
+                <td>{{lineItems[0].orderable | productName}}</td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+                    {{lineItems[0].lot | siglusExpiredLotCode}}
+                </td>
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+                    {{lineItems[0].lot.expirationDate | openlmisDate}}
+                </td>
+                <td ng-if="!vm.isInitialInventory">
+                    {{lineItems[0].isFromSelect ? lineItems[0].$previewSOH : lineItems[0].stockOnHand}}
+                </td>
+                <td>
+                    {{lineItems[0].quantity}}
+                </td>
+                <td>
+                    {{lineItems[0].reasonFreeText}}
+                </td>
+            </tr>
+            <tr ng-if="lineItems.length === 1 && !lineItems[0].orderable.productCode"
+                ng-repeat="lineItems in groupedLineItems">
+                <td>{{lineItems[0].locationCode}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td ng-if="!vm.isInitialInventory">
+                    
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</section>

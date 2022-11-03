@@ -611,11 +611,21 @@
             return lineItem.$errors.quantityInvalid;
         };
         vm.print = function() {
-            localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
-            var PRINT_URL = $window.location.href.split('/?')[0]
-                + '/draft/report'
-                + '?'
-                + $window.location.href.split('/?')[1];
+            var PRINT_URL;
+            if (vm.locationManagementOption === 'product') {
+                localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
+                PRINT_URL = $window.location.href.split('/?')[0]
+                    + '/draft/report'
+                    + '?'
+                    + $window.location.href.split('/?')[1];
+            } else {
+                localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.groupedCategories));
+                PRINT_URL = '#!/locationManagement/physicalInventory/draftList'
+                    + '/draft/print'
+                    + '?'
+                    + $window.location.href.split('/?')[1]
+                    + '&isInitialInventory=' + vm.isInitialInventory;
+            }
             $window.open(
                 PRINT_URL,
                 '_blank'
@@ -643,7 +653,7 @@
         };
 
         vm.validateLocation = function(lineItem) {
-            if (lineItem.locationCode) {
+            if (!lineItem.locationCode) {
                 lineItem.$errors.locationInvalid = messageService
                     .get('stockPhysicalInventoryDraft.required');
             }
@@ -739,8 +749,8 @@
             if (!anyError && $stateParams.locationManagementOption === 'product') {
                 _.chain(vm.draft.lineItems).flatten()
                     .each(function(item) {
-                        if (!item.orderable.id) {
-                            if (!(item.orderable && item.orderable.isKit)) {
+                        if (item.orderable && item.orderable.id) {
+                            if (!item.orderable.isKit) {
                                 anyError = vm.validateLotCode(item) || anyError;
                                 anyError = vm.validExpirationDate(item) || anyError;
                             }

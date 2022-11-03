@@ -26,10 +26,13 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.ViaClassica', {
-            url: '/Balance Requisition/:rnr',
+            url: '/Balance Requisition/:rnr?showBreadCrumb',
             showInNavigation: false,
             label: 'via.title',
             priority: 9,
+            params: {
+                showBreadCrumb: undefined
+            },
             views: {
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportCustomizeViaClassicaController',

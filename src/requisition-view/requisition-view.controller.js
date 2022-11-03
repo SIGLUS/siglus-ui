@@ -360,7 +360,9 @@
                     + 'analyticsReports/requisitionAndMonthly/'
                     + programCodeToReportNameMap[vm.program.code]
                     + '/'
-                    + vm.requisition.id;
+                    + vm.requisition.id
+                    + '?'
+                    + 'showBreadCrumb=false';
                 $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
             } else if (vm.displaySyncButton) {
                 var popup = $window.open('', '_blank');

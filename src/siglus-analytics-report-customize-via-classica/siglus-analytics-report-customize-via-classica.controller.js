@@ -30,17 +30,19 @@
 
     controller.$inject = [ 'requisition', 'facility', 'processingPeriod',
         'messageService',  'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService', 'siglusDownloadLoadingModalService'];
+        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService', 'siglusDownloadLoadingModalService',
+        '$stateParams'];
 
     function controller(requisition, facility, processingPeriod, messageService, lineItemsList,
                         columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter,
-                        requisitionService, siglusDownloadLoadingModalService) {
+                        requisitionService, siglusDownloadLoadingModalService, $stateParams) {
         var vm = this;
         vm.requisition = undefined;
         vm.facility = undefined;
         vm.processingPeriod = undefined;
         vm.lineItemsList = undefined;
         vm.columns = undefined;
+        vm.showBreadCrumb = undefined;
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
         vm.emergencyCount = '01';
@@ -49,12 +51,15 @@
             vm.facility = facility;
             vm.requisition = requisition;
             vm.processingPeriod = processingPeriod;
+            vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
             vm.requisitionType = messageService.get(
                 vm.isEmergency ? 'requisitionView.emergency' : 'requisitionView.regular'
             );
             vm.lineItemsList = lineItemsList;
             vm.columns = columns;
-
+            if (vm.showBreadCrumb) {
+                hideBreadcrumb();
+            }
             var collection = siglusTemplateConfigureService.
                 getSectionByName(vm.requisition.usageTemplate.kitUsage, SIGLUS_SECTION_TYPES.COLLECTION);
             var collectionColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(collection);
@@ -106,7 +111,7 @@
             var viaSignaureHeight = viaSignaure.offsetHeight;
             var viaPrintHeight = viaPrint.offsetHeight;
 
-            //A4[595.28,841.89] 
+            //A4[595.28,841.89]
             var leftOffsetConstant = 20;
             var topOffsetConstant = 20;
             var A4_WIDTH = 801.89,
@@ -309,6 +314,10 @@
                     siglusDownloadLoadingModalService.close();
                 });
             });
+        }
+
+        function hideBreadcrumb() {
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
         }
     }
 })();

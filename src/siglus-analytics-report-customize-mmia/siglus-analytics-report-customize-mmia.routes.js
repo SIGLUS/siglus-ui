@@ -26,10 +26,13 @@
     function routes($stateProvider) {
 
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.mmia', {
-            url: '/MMIA/:rnr',
+            url: '/MMIA/:rnr?showBreadCrumb',
             showInNavigation: false,
             label: 'mmia.title',
             priority: 9,
+            params: {
+                showBreadCrumb: undefined
+            },
             views: {
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportCustomizeMMIAController',

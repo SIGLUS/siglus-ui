@@ -30,11 +30,12 @@
 
     controller.$inject = [ 'requisition', 'facility', 'siglusColumnUtils',
         'siglusTemplateConfigureService', 'requisitionValidator',
-        'SIGLUS_SECTION_TYPES', 'siglusDownloadLoadingModalService', 'openlmisDateFilter'];
+        'SIGLUS_SECTION_TYPES', 'siglusDownloadLoadingModalService', 'openlmisDateFilter',
+        '$stateParams'];
 
     function controller(requisition, facility, siglusColumnUtils, siglusTemplateConfigureService,
                         requisitionValidator, SIGLUS_SECTION_TYPES,
-                        siglusDownloadLoadingModalService, openlmisDateFilter) {
+                        siglusDownloadLoadingModalService, openlmisDateFilter, $stateParams) {
         var vm = this;
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
@@ -57,10 +58,12 @@
         vm.yearAndMonth = undefined;
         vm.processingPeriodEndDate = undefined;
         vm.submitDate = undefined;
+        vm.showBreadCrumb = undefined;
         vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
             vm.requisition = requisition;
             vm.facility = facility;
+            vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
             vm.completedBy = vm.getCompletedBy(vm.requisition.extraData.signaure);
             vm.approvedBy = vm.getApprovedBy(vm.requisition.extraData.signaure);
             vm.sections = vm.requisition.usageTemplate.usageInformation;
@@ -68,6 +71,9 @@
             vm.availableProducts = vm.requisition.availableFullSupplyProducts;
             vm.addedProducts = vm.requisition.requisitionLineItems;
             vm.processingPeriodEndDate = vm.requisition.processingPeriod.endDate;
+            if (vm.showBreadCrumb) {
+                hideBreadcrumb();
+            }
             vm.submitDate = vm.getSubmitDate(vm.requisition.statusChanges.SUBMITTED.changeDate);
             extendLineItems();
             vm.firstService = _.first(vm.lineItems);
@@ -175,6 +181,9 @@
                 });
         }
 
+        function hideBreadcrumb() {
+            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        }
     }
 
 })();
