@@ -41,7 +41,7 @@
         vm.groupedCategories = [];
         vm.isMerged = undefined;
         vm.isInitialInventory = undefined;
-        vm.inInitialList = new Array(80);
+        vm.inInitialList = new Array(40);
         vm.locationList = [];
         vm.draftNumber = undefined;
         function onInit() {
@@ -67,6 +67,27 @@
                 .value();
             vm.locationList = newLocationList;
             vm.draftNumber = $stateParams.draftNum ? $stateParams.draftNum : null;
+        }
+        vm.calculate = function(lineItems, field) {
+            var allEmpty = _.every(lineItems, function(lineItem) {
+                return isEmpty(lineItem[field]);
+            });
+            if (allEmpty) {
+                return undefined;
+            }
+
+            return _.chain(lineItems).map(function(lineItem) {
+                return lineItem[field];
+            })
+                .compact()
+                .reduce(function(memo, num) {
+                    return parseInt(num) + memo;
+                }, 0)
+                .value();
+        };
+
+        function isEmpty(value) {
+            return value === '' || value === undefined || value === null;
         }
 
         vm.getBreadcrumbName = function(stateParams) {

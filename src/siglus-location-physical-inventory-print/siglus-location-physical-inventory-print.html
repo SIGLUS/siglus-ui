@@ -1,13 +1,13 @@
 <section ng-if="!vm.isMerged && vm.isInitialInventory" class="location-physical-container" >
     <div style="width: 1000px;text-align: center;">
         <div style="font-size: 24px;font-weight: bolder;">{{ 'printTemplate.initialTitle' | message:{'facilityName':vm.facility.name ,'number':vm.draftNumber} }}</div>
-        <div style="font-weight: 600;">(ctrl + p to print)</div>
+        <div style="font-weight: 600;">({{'shipmentViewReport.tips' | message}})</div>
     </div>
     <table class="text-center">
         <tbody>
             <tr class="text-bolder">
                 <td colspan="10">
-                    Location list
+                   {{'printTemplate.locationList' | message}}
                 </td>
             </tr>
             <tr class="initial-td" ng-repeat="items in vm.locationList">
@@ -15,7 +15,7 @@
             </tr>
             <tr  class="text-bolder">
                 <td colspan="10">
-                    Inventory Details
+                   {{'printTemplate.inventoryDetails' | message}}
                 </td>
             </tr>
             <tr  class="text-bolder">
@@ -46,7 +46,7 @@
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName':
             vm.facility.name, 'program': vm.program.name} }}
         </span>
-        <span style="font-weight: 600; margin-left: 8px;">(ctrl + p to print)</span>
+        <span style="font-weight: 600; margin-left: 8px;">({{'shipmentViewReport.tips' | message}})</span>
     </div>
     <table>
         <thead>
@@ -85,6 +85,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                  <td ng-if="!vm.isInitialInventory"></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -100,7 +101,7 @@
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName':
             vm.facility.name, 'program': vm.program.name} }}
         </span>
-        <span style="font-weight: 600; margin-left: 8px;">(ctrl + p to print)</span>
+        <span style="font-weight: 600; margin-left: 8px;">({{'shipmentViewReport.tips' | message}})</span>
     </div>
     <table>
         <thead>
@@ -110,6 +111,7 @@
                 <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
+                <th ng-if="!vm.isInitialInventory">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
             </tr>
@@ -121,7 +123,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                <td ng-if="!vm.isInitialInventory">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
+                <td>{{vm.calculate(lineItems, 'quantity')}}</td>
                 <td></td>
             </tr>
             <tr ng-if="lineItems.length > 1" ng-repeat="lineItem in lineItems" ng-repeat-end>
@@ -135,6 +138,9 @@
                 </td>
                 <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
                     {{lineItem.lot.expirationDate | openlmisDate}}
+                </td>
+                <td ng-if="!vm.isInitialInventory">
+                    {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
                 </td>
                 <td>
                     {{lineItem.quantity}}
@@ -156,6 +162,9 @@
                 <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
                     {{lineItems[0].lot.expirationDate | openlmisDate}}
                 </td>
+                <td ng-if="!vm.isInitialInventory">
+                    {{lineItems[0].isFromSelect ? lineItems[0].$previewSOH : lineItems[0].stockOnHand}}
+                </td>
                 <td>
                     {{lineItems[0].quantity}}
                 </td>
@@ -170,6 +179,9 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td ng-if="!vm.isInitialInventory">
+                    
+                </td>
                 <td></td>
                 <td></td>
             </tr>
