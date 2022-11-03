@@ -91,7 +91,7 @@
         </tbody>
     </table>
 </section>
-<section class="location-physical-container" ng-if="vm.isMerged && !vm.isInitialInventory">
+<section class="location-physical-container" ng-if="vm.isMerged">
     <div class="breadcrumb" style="font-size: 13px;">
         {{ vm.breadcrumb }}
     </div>
@@ -146,21 +146,21 @@
             <tr ng-if="lineItems.length === 1 && lineItems[0].orderable.productCode"
                 ng-repeat="lineItems in groupedLineItems">
                 <td>{{lineItems[0].locationCode}}</td>
-                <td>{{lineItem.orderable.productCode}}</td>
-                <td>{{lineItem.orderable | productName}}</td>
-                <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
-                <td ng-if="(lineItem.orderable && lineItem.orderable.isKit)"></td>
-                <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                    {{lineItem.lot | siglusExpiredLotCode}}
+                <td>{{lineItems[0].orderable.productCode}}</td>
+                <td>{{lineItems[0].orderable | productName}}</td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+                <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+                    {{lineItems[0].lot | siglusExpiredLotCode}}
                 </td>
-                <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
-                    {{lineItem.lot.expirationDate | openlmisDate}}
-                </td>
-                <td>
-                    {{lineItem.quantity}}
+                <td ng-if="!(lineItems[0].orderable && lineItems[0].orderable.isKit)">
+                    {{lineItems[0].lot.expirationDate | openlmisDate}}
                 </td>
                 <td>
-                    {{lineItem.reasonFreeText}}
+                    {{lineItems[0].quantity}}
+                </td>
+                <td>
+                    {{lineItems[0].reasonFreeText}}
                 </td>
             </tr>
             <tr ng-if="lineItems.length === 1 && !lineItems[0].orderable.productCode"
