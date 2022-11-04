@@ -154,28 +154,4 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
         });
 
     });
-
-    describe('getBreadcrumbName', function() {
-
-        it('should return result with draft number String', function() {
-            var stataParams = {
-                draftNum: '1',
-                isMerged: 'false'
-            };
-            var target = 'Home / Location Management / Physical Inventory / Todos os produtos / Draft 1';
-
-            expect(vm.getBreadcrumbName(stataParams)).toEqual(target);
-        });
-
-        it('should return result with merged String', function() {
-            var stataParams = {
-                draftNum: '1',
-                isMerged: 'true'
-            };
-            var target = 'Home / Location Management / Physical Inventory / Todos os produtos / Merged Draft';
-
-            expect(vm.getBreadcrumbName(stataParams)).toEqual(target);
-        });
-
-    });
 });

@@ -29,11 +29,11 @@
         .controller('LocationPhysicalInventoryPrintController', controller);
 
     controller.$inject = ['draft', '$scope', '$window', '$stateParams',
-        'facility', 'program', 'messageService'];
+        'facility', 'program'];
 
     function controller(
         draft, $scope, $window, $stateParams,
-        facility, program, messageService
+        facility, program
     ) {
 
         var vm = this;
@@ -51,7 +51,6 @@
             vm.program = program;
             vm.isMerged = $stateParams.isMerged === 'true';
             vm.isInitialInventory = $stateParams.isInitialInventory === 'true';
-            vm.breadcrumb = vm.getBreadcrumbName($stateParams);
             var newLocationList = _.chain(draft)
                 .keys()
                 .chunk(10)
@@ -89,27 +88,6 @@
         function isEmpty(value) {
             return value === '' || value === undefined || value === null;
         }
-
-        vm.getBreadcrumbName = function(stateParams) {
-            var result;
-            if (vm.isInitialInventory) {
-                if (stateParams.isMerged === 'true') {
-                    result =  messageService.get('printTemplate.breadcrumbName.initialInventory.mergedDraft');
-                } else {
-                    result = messageService.get('printTemplate.breadcrumbName.initialInventory.subDraft', {
-                        number: stateParams.draftNum
-                    });
-                }
-            } else if (stateParams.isMerged === 'true') {
-                result =  messageService.get('printTemplate.breadcrumbName.mergedDraft');
-            } else {
-                result = messageService.get('printTemplate.breadcrumbName.subDraft', {
-                    number: stateParams.draftNum
-                });
-            }
-
-            return result;
-        };
 
         var hideLayoutAndBreadcrumb = function() {
             document.getElementsByClassName('header')[0].style.display = 'none';

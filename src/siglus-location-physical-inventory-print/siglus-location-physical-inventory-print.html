@@ -38,9 +38,6 @@
     </table>
 </section>
 <section ng-if="!vm.isMerged && !vm.isInitialInventory" class="location-physical-container">
-    <div class="breadcrumb" style="font-size: 13px;">
-        {{ vm.breadcrumb }}
-    </div>
     <div style="display: flex; align-items: center;">
         <span style="font-size: 18px;">
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName':
@@ -50,11 +47,11 @@
     </div>
     <table>
         <thead>
-            <tr>
+            <tr >
                 <th>{{'stockPhysicalInventoryDraft.location' | message}}</th>
-                <th>{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
-                <th>{{'stockPhysicalInventoryDraft.product' | message}}</th>
-                <th>{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
+                <th class="min-width-150">{{'stockPhysicalInventoryDraft.productCode' | message}}</th>
+                <th class="min-width-150">{{'stockPhysicalInventoryDraft.product' | message}}</th>
+                <th class="min-width-150">{{'stockPhysicalInventoryDraft.lotCode' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
@@ -85,7 +82,6 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                  <td ng-if="!vm.isInitialInventory"></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -93,9 +89,6 @@
     </table>
 </section>
 <section class="location-physical-container" ng-if="vm.isMerged">
-    <div class="breadcrumb" style="font-size: 13px;">
-        {{ vm.breadcrumb }}
-    </div>
     <div style="display: flex; align-items: center;">
         <span style="font-size: 18px;">
             {{'stockPhysicalInventoryDraft.title' | message: {'facilityCode': vm.facility.code, 'facilityName':
@@ -113,7 +106,7 @@
                 <th>{{'stockPhysicalInventoryDraft.expiryDate' | message}}</th>
                 <th ng-if="!vm.isInitialInventory">{{'stockPhysicalInventoryDraft.soh' | message}}</th>
                 <th>{{'stockPhysicalInventoryDraft.currentStock' | message}}</th>
-                <th>{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
+                <th ng-if="!vm.isInitialInventory">{{'stockPhysicalInventoryDraft.reasonComments' | message}}</th>
             </tr>
         </thead>
         <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories">
@@ -125,7 +118,7 @@
                 <td></td>
                 <td ng-if="!vm.isInitialInventory">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
                 <td>{{vm.calculate(lineItems, 'quantity')}}</td>
-                <td></td>
+                <td ng-if="!vm.isInitialInventory"></td>
             </tr>
             <tr ng-if="lineItems.length > 1" ng-repeat="lineItem in lineItems" ng-repeat-end>
                 <td></td>
@@ -145,7 +138,7 @@
                 <td>
                     {{lineItem.quantity}}
                 </td>
-                <td>
+                <td ng-if="!vm.isInitialInventory">
                     {{lineItem.reasonFreeText}}
                 </td>
             </tr>
@@ -168,7 +161,7 @@
                 <td>
                     {{lineItems[0].quantity}}
                 </td>
-                <td>
+                <td ng-if="!vm.isInitialInventory">
                     {{lineItems[0].reasonFreeText}}
                 </td>
             </tr>
@@ -183,7 +176,7 @@
                     
                 </td>
                 <td></td>
-                <td></td>
+                <td ng-if="!vm.isInitialInventory"></td>
             </tr>
         </tbody>
     </table>
