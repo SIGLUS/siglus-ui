@@ -24,11 +24,8 @@
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS'];
 
     function routes($stateProvider) {
-        $stateProvider.state('openlmis.locationManagement.physicalInventory.draftList.draft.report', {
-            url: '/report',
-            showInNavigation: false,
-            label: 'printTemplate.title',
-            priority: 1,
+        $stateProvider.state('openlmis.locationManagement.physicalInventory.printByProduct', {
+            url: '/printByProduct?isMerged',
             views: {
                 '@openlmis': {
                     controller: 'SiglusLocationPhysicalInventoryReport',
