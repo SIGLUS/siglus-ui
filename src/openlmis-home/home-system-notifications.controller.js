@@ -174,10 +174,10 @@
                 .then(function(res) {
                     var errors = _.get(res, ['data', 'errors']);
                     if (errors && errors.length > 0) {
-                        vm.syncMessage = messageService.get('openlmisHome.syncedFailed');
+                        vm.syncMessage = 'openlmisHome.syncedFailed';
                         vm.errors = errors;
                     } else {
-                        vm.syncMessage = messageService.get('openlmisHome.syncedSuccessfully');
+                        vm.syncMessage = 'openlmisHome.syncedSuccessfully';
                         vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime']))
                             .format('YYYY-MM-DD HH:mm:ss');
                         localStorageService.add(LAST_SYNC_TIME, vm.lastSyncTime);
