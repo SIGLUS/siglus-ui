@@ -13,7 +13,7 @@
     "grunt:watch:dev": "grunt build:app watch --openlmisServerURL=https://dev.siglus.us --noTest --noStyleguide --noDocs --serve",
     "grunt:watch:keke": "grunt build:app watch --openlmisServerURL=http://10.205.19.44 --noTest --noStyleguide --noDocs --serve",
     "override-dev-ui": "rsync -a dev-ui-extension/ node_modules/dev-ui",
-    "postinstall": "cp -nr node_modules/dev-ui/node_modules . && cp .ui/.*lintrc ."
+    "postinstall": "cp -nr node_modules/dev-ui/node_modules . && cp ../dev-ui/.*lintrc ."
   },
   "dependencies": {}
 }
