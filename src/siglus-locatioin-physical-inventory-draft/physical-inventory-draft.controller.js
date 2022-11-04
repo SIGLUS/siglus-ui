@@ -634,37 +634,37 @@
 
         // 校验form表单的Lot Code的地方;
         vm.validateLotCode = function(lineItem) {
-            if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
-                if (!hasLot(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
-                } else if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
-                } else if (hasDuplicateLotCode(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
-                        ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
-                        : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-                } else {
-                    lineItem.$errors.lotCodeInvalid = false;
-                }
+            var lotCode = _.get(lineItem, ['lot', 'lotCode']);
+            if (!hasLot(lineItem)) {
+                lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+            } else if (lotCode && lotCode.length > SIGLUS_MAX_STRING_VALUE) {
+                lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
+            } else if (hasDuplicateLotCode(lineItem)) {
+                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
+                    ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
+                    : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
             } else {
                 lineItem.$errors.lotCodeInvalid = false;
             }
+
             return lineItem.$errors.lotCodeInvalid;
         };
 
         vm.validateLocation = function(lineItem) {
-            if (!lineItem.locationCode) {
+            if (lineItem.locationCode) {
+                lineItem.$errors.locationInvalid = '';
+            } else {
                 lineItem.$errors.locationInvalid = messageService
                     .get('stockPhysicalInventoryDraft.required');
             }
-            if (hasDuplicateLotCode(lineItem)) {
-                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
-                    ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
-                    : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-                // lineItem.$errors.locationInvalid = messageService
-                //     .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-            }
-            if (!hasDuplicateLotCode(lineItem) && lineItem.locationCode && lineItem.area) {
+            var relatedLineItems = draft.lineItems.filter(function(line) {
+                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id']);
+            });
+            _.forEach(relatedLineItems, function(line) {
+                vm.validateLotCode(line);
+            });
+            var isLotCodeDuplicate = hasDuplicateLotCode(lineItem);
+            if (!isLotCodeDuplicate && lineItem.locationCode && lineItem.area) {
                 lineItem.$errors.locationInvalid = '';
             }
             return lineItem.$errors.locationInvalid;
@@ -787,6 +787,14 @@
                 }
             });
             return draftLots;
+        }
+
+        function getRelatedLineItems(lineItem) {
+            return draft.lineItems.filter(function(line) {
+                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id'])
+                    && _.get(line, 'locationCode') === _.get(lineItem, 'locationCode')
+                    && _.get(lineItem, 'locationCode');
+            });
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -1306,7 +1314,10 @@
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             refreshLotOptions();
-            vm.validateLotCode(lineItem);
+            var relatedLineItems = getRelatedLineItems(lineItem);
+            _.forEach(relatedLineItems, function(line) {
+                vm.validateLotCode(line);
+            });
             vm.validExpirationDate(lineItem);
             vm.validateLocation(lineItem);
             vm.updateProgress();
