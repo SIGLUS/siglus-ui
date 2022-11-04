@@ -614,14 +614,14 @@
             var PRINT_URL;
             if (vm.locationManagementOption === 'product') {
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
-                PRINT_URL = $window.location.href.split('/?')[0]
-                    + '/draft/report'
+                PRINT_URL = '#!/locationManagement/physicalInventory'
+                    + '/printByProduct'
                     + '?'
                     + $window.location.href.split('/?')[1];
             } else {
                 localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.groupedCategories));
-                PRINT_URL = '#!/locationManagement/physicalInventory/draftList'
-                    + '/draft/print'
+                PRINT_URL = '#!/locationManagement/physicalInventory'
+                    + '/printByLocation'
                     + '?'
                     + $window.location.href.split('/?')[1]
                     + '&isInitialInventory=' + vm.isInitialInventory;

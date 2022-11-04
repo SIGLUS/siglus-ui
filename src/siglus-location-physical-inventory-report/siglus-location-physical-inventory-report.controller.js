@@ -27,9 +27,7 @@
         'draft',
         'facility',
         'program',
-        '$stateParams',
-        'localStorageService',
-        'messageService'
+        '$stateParams'
     ];
 
     function controller(
@@ -38,9 +36,7 @@
         draft,
         facility,
         program,
-        $stateParams,
-        localStorageService,
-        messageService
+        $stateParams
     ) {
         var vm = this;
         vm.$onInit = onInit;
@@ -52,7 +48,6 @@
             vm.facility = facility;
             vm.program = program;
             vm.isMerged = $stateParams.isMerged === 'true';
-            vm.breadcrumb = vm.getBreadcrumbName($stateParams);
         }
 
         var hideLayoutAndBreadcrumb = function() {
@@ -80,16 +75,6 @@
                     return parseInt(num) + memo;
                 }, 0)
                 .value();
-        };
-
-        vm.getBreadcrumbName = function(stateParams) {
-            var result = messageService.get('printTemplate.breadcrumbName.subDraft', {
-                number: stateParams.draftNum
-            });
-            if (stateParams.isMerged === 'true') {
-                result =  messageService.get('printTemplate.breadcrumbName.mergedDraft');
-            }
-            return result;
         };
 
         vm.getTbDataSource = function(data) {
