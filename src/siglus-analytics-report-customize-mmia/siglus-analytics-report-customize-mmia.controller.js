@@ -216,7 +216,7 @@
             }
             // because  vm.requisition.usageTemplate.patient label can edit
             // if choose fixed label
-            // the label changed  and the date will not get
+            // the label changed  and the data will not get
             // get new Map to match name and label
             // the name should not change
 
@@ -249,9 +249,14 @@
                 var temp = _.find(vm.requisition.patientLineItems, function(item) {
                     return item.name === c.name;
                 });
-                c.columns = _.filter(c.columns, function(itm) {
-                    return itm.isDisplayed;
-                });
+                c.columns = _.chain(c.columns)
+                    .filter(function(item) {
+                        return item.isDisplayed;
+                    })
+                    .sortBy(function(item) {
+                        return item.displayOrder;
+                    })
+                    .value();
                 temp.column = c;
                 if (_.contains(jugeArray, c.name)) {
                     r.mergedPatientMap[c.name] = temp;

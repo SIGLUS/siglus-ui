@@ -21,7 +21,8 @@
         .module('siglus-location-receive-creation')
         .controller('siglusLocationReceiveCreationController', siglusLocationReceiveCreationController);
 
-    siglusLocationReceiveCreationController.$inject = ['$stateParams', '$q', '$scope', '$state', 'DRAFT_TYPE',
+    siglusLocationReceiveCreationController.$inject = [
+        '$stateParams', '$q', '$scope', '$state', 'DRAFT_TYPE',
         'draftInfo', 'facility', 'reasons',
         'initialDraftInfo', 'locations', 'addedLineItems', 'productList', 'siglusStockUtilsService', 'displayItems',
         'siglusLocationCommonApiService', 'SiglusLocationCommonUtilsService',
@@ -29,22 +30,25 @@
         'loadingModalService', 'notificationService', 'paginationService', 'messageService', 'isMerge', 'moment',
         'siglusStockIssueLocationService', 'siglusRemainingProductsModalService', 'alertService',
         'siglusSignatureWithDateModalService', 'program', 'confirmDiscardService', 'siglusDownloadLoadingModalService',
-        'openlmisDateFilter', 'areaLocationInfo', 'siglusPrintPalletLabelComfirmModalService'];
+        'openlmisDateFilter', 'areaLocationInfo', 'siglusPrintPalletLabelComfirmModalService'
+    ];
 
-    function siglusLocationReceiveCreationController($stateParams, $q, $scope, $state, DRAFT_TYPE, draftInfo, facility,
-                                                     reasons, initialDraftInfo, locations, addedLineItems, productList,
-                                                     siglusStockUtilsService, displayItems,
-                                                     siglusLocationCommonApiService, SiglusLocationCommonUtilsService,
-                                                     siglusStockDispatchService,
-                                                     addAndRemoveReceiveLineItemIssueService, alertConfirmModalService,
-                                                     loadingModalService, notificationService, paginationService,
-                                                     messageService, isMerge,
-                                                     moment, siglusStockIssueLocationService,
-                                                     siglusRemainingProductsModalService, alertService,
-                                                     siglusSignatureWithDateModalService, program,
-                                                     confirmDiscardService,
-                                                     siglusDownloadLoadingModalService, openlmisDateFilter,
-                                                     areaLocationInfo, siglusPrintPalletLabelComfirmModalService) {
+    function siglusLocationReceiveCreationController(
+        $stateParams, $q, $scope, $state, DRAFT_TYPE, draftInfo, facility,
+        reasons, initialDraftInfo, locations, addedLineItems, productList,
+        siglusStockUtilsService, displayItems,
+        siglusLocationCommonApiService, SiglusLocationCommonUtilsService,
+        siglusStockDispatchService,
+        addAndRemoveReceiveLineItemIssueService, alertConfirmModalService,
+        loadingModalService, notificationService, paginationService,
+        messageService, isMerge,
+        moment, siglusStockIssueLocationService,
+        siglusRemainingProductsModalService, alertService,
+        siglusSignatureWithDateModalService, program,
+        confirmDiscardService,
+        siglusDownloadLoadingModalService, openlmisDateFilter,
+        areaLocationInfo, siglusPrintPalletLabelComfirmModalService
+    ) {
         var vm = this;
 
         vm.areaLocationInfo = areaLocationInfo;
@@ -258,14 +262,16 @@
 
         function validateLot(lineItem, lineItems, index) {
             lineItem.$errors.lotCodeInvalid = '';
-
+            lineItem.$errors.lotDateInvalid = '';
             validateBase(lineItems, function(item, $index) {
                 if (index === $index && _.isEmpty(_.get(item.lot, 'lotCode'))) {
                     item.$errors.lotCodeInvalid = 'openlmisForm.required';
+                    item.$errors.lotDateInvalid = 'openlmisForm.required';
                     return ;
                 }
 
                 item.$errors.lotCodeInvalid = '';
+                lineItem.$errors.lotDateInvalid = '';
             });
             lotOrLocationChangeEmitValidation(lineItem);
         }

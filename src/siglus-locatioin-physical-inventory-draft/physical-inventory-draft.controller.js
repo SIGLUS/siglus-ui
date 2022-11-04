@@ -614,14 +614,14 @@
             var PRINT_URL;
             if (vm.locationManagementOption === 'product') {
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
-                PRINT_URL = $window.location.href.split('/?')[0]
-                    + '/draft/report'
+                PRINT_URL = '#!/locationManagement/physicalInventory'
+                    + '/printByProduct'
                     + '?'
                     + $window.location.href.split('/?')[1];
             } else {
                 localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.groupedCategories));
-                PRINT_URL = '#!/locationManagement/physicalInventory/draftList'
-                    + '/draft/print'
+                PRINT_URL = '#!/locationManagement/physicalInventory'
+                    + '/printByLocation'
                     + '?'
                     + $window.location.href.split('/?')[1]
                     + '&isInitialInventory=' + vm.isInitialInventory;
@@ -634,37 +634,49 @@
 
         // 校验form表单的Lot Code的地方;
         vm.validateLotCode = function(lineItem) {
-            if (isEmpty(lineItem.stockOnHand) && !(lineItem.lot && lineItem.lot.id)) {
-                if (!hasLot(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
-                } else if (lineItem.lot.lotCode.length > SIGLUS_MAX_STRING_VALUE) {
-                    lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
-                } else if (hasDuplicateLotCode(lineItem)) {
-                    lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
-                        ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
-                        : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-                } else {
-                    lineItem.$errors.lotCodeInvalid = false;
-                }
+            var lotCode = _.get(lineItem, ['lot', 'lotCode']);
+            if (!hasLot(lineItem)) {
+                lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.required');
+            } else if (lotCode && lotCode.length > SIGLUS_MAX_STRING_VALUE) {
+                lineItem.$errors.lotCodeInvalid = messageService.get('stockPhysicalInventoryDraft.lotCodeTooLong');
+            } else if (hasDuplicateLotCode(lineItem)) {
+                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
+                    ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
+                    : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
             } else {
                 lineItem.$errors.lotCodeInvalid = false;
             }
+
+            return lineItem.$errors.lotCodeInvalid;
+        };
+        vm.validateDuplicateLotCode = function(lineItem) {
+            var errorByLocation = messageService
+                .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
+            var errorByProduct = messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+            if (hasDuplicateLotCode(lineItem)) {
+                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
+                    ? errorByLocation : errorByProduct;
+            } else if (lineItem.$errors.lotCodeInvalid === errorByLocation
+                    || lineItem.$errors.lotCodeInvalid === errorByProduct) {
+                lineItem.$errors.lotCodeInvalid = false;
+            }
+
             return lineItem.$errors.lotCodeInvalid;
         };
 
         vm.validateLocation = function(lineItem) {
-            if (!lineItem.locationCode) {
+            if (lineItem.locationCode) {
+                lineItem.$errors.locationInvalid = '';
+            } else {
                 lineItem.$errors.locationInvalid = messageService
                     .get('stockPhysicalInventoryDraft.required');
             }
-            if (hasDuplicateLotCode(lineItem)) {
-                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
-                    ? messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation')
-                    : messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-                // lineItem.$errors.locationInvalid = messageService
-                //     .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-            }
-            if (!hasDuplicateLotCode(lineItem) && lineItem.locationCode && lineItem.area) {
+            var relatedLineItems = getRelatedLineItems(lineItem);
+            _.forEach(relatedLineItems, function(line) {
+                vm.validateDuplicateLotCode(line);
+            });
+            var isLotCodeDuplicate = hasDuplicateLotCode(lineItem);
+            if (!isLotCodeDuplicate && lineItem.locationCode && lineItem.area) {
                 lineItem.$errors.locationInvalid = '';
             }
             return lineItem.$errors.locationInvalid;
@@ -787,6 +799,12 @@
                 }
             });
             return draftLots;
+        }
+
+        function getRelatedLineItems(lineItem) {
+            return draft.lineItems.filter(function(line) {
+                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id']);
+            });
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -1306,7 +1324,10 @@
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             refreshLotOptions();
-            vm.validateLotCode(lineItem);
+            var relatedLineItems = getRelatedLineItems(lineItem);
+            _.forEach(relatedLineItems, function(line) {
+                vm.validateDuplicateLotCode(line);
+            });
             vm.validExpirationDate(lineItem);
             vm.validateLocation(lineItem);
             vm.updateProgress();

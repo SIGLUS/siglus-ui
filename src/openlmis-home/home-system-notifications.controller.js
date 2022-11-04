@@ -184,6 +184,10 @@
                     }
                 });
         };
+
+        vm.getCurrentTime = function() {
+            return moment().format('YYYY-MM-DD HH:mm:ss');
+        };
     }
 
 })();
