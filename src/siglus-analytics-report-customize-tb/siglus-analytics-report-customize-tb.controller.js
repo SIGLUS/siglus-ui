@@ -227,7 +227,7 @@
             var footerNode = document.getElementById('footer');
             var outerNode = document.getElementById('outer');
             var contentWidth = node.offsetWidth;
-            var a4Height = 1250 / 585 * 781.89;
+            var a4Height = 1250 / 585 * 821.89;
             // var leftHeight = contentHeight - secondSectionNode.offsetHeight;
             var canUseHeight = a4Height
                 - headerNode.offsetHeight
@@ -302,7 +302,7 @@
                     };
                 }));
             });
-            var A4_HEIGHT = 801.89;
+            var A4_HEIGHT = 841.89;
             var promiseListLen = promiseList.length;
             $q.all(headerAndFooterPromiseList).then(function(reback) {
                 var offsetHeight = headerNode.offsetHeight;
