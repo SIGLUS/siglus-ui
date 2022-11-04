@@ -803,23 +803,30 @@
                                 vm.receivedBy = res.receivedBy;
                                 vm.receivedDate = res.receivedDate;
                                 vm.podNum = '';
-                                var flag = order.orderCode.slice(-2) || '';
-                                if (flag.startsWith('-')) {
-                                    flag = flag.replace('-', '0');
-                                }
-                                if (flag.endsWith('E') || flag.endsWith('R')) {
-                                    flag = '01';
-                                }
-                                if (order.status === 'SHIPPED') {
-                                    vm.fileName = 'GR.' + res.requisitionNum + '_' + flag;
-                                    vm.requisitionNo = 'GR.' + res.requisitionNum + '/' + flag;
+                                if (order.orderCode.indexOf('ORDEM') > -1) {
+                                    if (order.status === 'SHIPPED') {
+                                        vm.fileName = res.fileName.replace(/^OF/, 'GR');
+                                        vm.requisitionNo = order.orderCode;
+                                    }
+
+                                    if (order.status === 'RECEIVED') {
+                                        vm.fileName = res.fileName.replace(/^OF/, 'RR');
+                                        vm.requisitionNo = order.orderCode;
+                                        vm.podNum = order.orderCode;
+                                    }
+                                } else {
+                                    if (order.status === 'SHIPPED') {
+                                        vm.fileName =  order.orderCode.replace(/^OF/, 'GR').replaceAll('/', '_');
+                                        vm.requisitionNo = order.orderCode.replace(/^OF/, 'GR');
+                                    }
+
+                                    if (order.status === 'RECEIVED') {
+                                        vm.fileName =  order.orderCode.replace(/^OF/, 'RR').replaceAll('/', '_');
+                                        vm.requisitionNo = order.orderCode.replace(/^OF/, 'GR');
+                                        vm.podNum = order.orderCode.replace(/^OF/, 'RR');
+                                    }
                                 }
 
-                                if (order.status === 'RECEIVED') {
-                                    vm.fileName = 'RR.' + res.requisitionNum + '_' + flag;
-                                    vm.requisitionNo = 'GR.' + res.requisitionNum + '/' + flag;
-                                    vm.podNum = 'RR.' + res.requisitionNum + '/' + flag;
-                                }
                                 vm.requisitionNum = res.requisitionNum;
 
                                 vm.requisitionId = res.requisitionId;
