@@ -649,6 +649,20 @@
 
             return lineItem.$errors.lotCodeInvalid;
         };
+        vm.validateDuplicateLotCode = function(lineItem) {
+            var errorByLocation = messageService
+                .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
+            var errorByProduct = messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+            if (hasDuplicateLotCode(lineItem)) {
+                lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
+                    ? errorByLocation : errorByProduct;
+            } else if (lineItem.$errors.lotCodeInvalid === errorByLocation
+                    || lineItem.$errors.lotCodeInvalid === errorByProduct) {
+                lineItem.$errors.lotCodeInvalid = false;
+            }
+
+            return lineItem.$errors.lotCodeInvalid;
+        };
 
         vm.validateLocation = function(lineItem) {
             if (lineItem.locationCode) {
@@ -657,11 +671,9 @@
                 lineItem.$errors.locationInvalid = messageService
                     .get('stockPhysicalInventoryDraft.required');
             }
-            var relatedLineItems = draft.lineItems.filter(function(line) {
-                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id']);
-            });
+            var relatedLineItems = getRelatedLineItems(lineItem);
             _.forEach(relatedLineItems, function(line) {
-                vm.validateLotCode(line);
+                vm.validateDuplicateLotCode(line);
             });
             var isLotCodeDuplicate = hasDuplicateLotCode(lineItem);
             if (!isLotCodeDuplicate && lineItem.locationCode && lineItem.area) {
@@ -791,9 +803,7 @@
 
         function getRelatedLineItems(lineItem) {
             return draft.lineItems.filter(function(line) {
-                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id'])
-                    && _.get(line, 'locationCode') === _.get(lineItem, 'locationCode')
-                    && _.get(lineItem, 'locationCode');
+                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id']);
             });
         }
         // SIGLUS-REFACTOR: ends here
@@ -1316,7 +1326,7 @@
             refreshLotOptions();
             var relatedLineItems = getRelatedLineItems(lineItem);
             _.forEach(relatedLineItems, function(line) {
-                vm.validateLotCode(line);
+                vm.validateDuplicateLotCode(line);
             });
             vm.validExpirationDate(lineItem);
             vm.validateLocation(lineItem);
