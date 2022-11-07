@@ -91,7 +91,8 @@ describe('PhysicalInventoryDraftController', function() {
             };
 
             stateParams = {
-                id: 321
+                id: 321,
+                isAddProduct: true
             };
 
             lineItem1 = new PhysicalInventoryLineItemDataBuilder()
@@ -284,6 +285,7 @@ describe('PhysicalInventoryDraftController', function() {
     });
 
     it('should show modal for occurred date if no quantity missing', function() {
+        stateParams.isAddProduct = true;
         lineItem3.quantity = 123;
         lineItem3.stockAdjustments = [{
             quantity: 123,
@@ -302,6 +304,7 @@ describe('PhysicalInventoryDraftController', function() {
             lotCode: 'test1',
             expirationDate: '31/08/2019'
         };
+        lineItem1.quantity = 1;
         lineItem2.quantity = 456;
         lineItem2.lot = {
             id: 2,
