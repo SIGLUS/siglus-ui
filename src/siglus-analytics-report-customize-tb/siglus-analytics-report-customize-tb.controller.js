@@ -381,7 +381,7 @@
                             reback[3].data,
                             'JPEG',
                             5,
-                            (reback[2].nodeHeight * rate) * rate,
+                            reback[2].nodeHeight * rate,
                             585,
                             reback[3].nodeHeight * rate
                         );
