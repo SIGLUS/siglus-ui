@@ -43,6 +43,7 @@
         vm.localMachineVersion = undefined;
         vm.connectedOnlineWeb = true;
         vm.lastSyncTime = localStorageService.get(LAST_SYNC_TIME);
+        vm.syncFinishTime = '';
         vm.syncMessage = '';
         vm.errors = [];
         /**
@@ -172,6 +173,7 @@
         vm.sync = function() {
             homeImportAndExportService.getSyncResults()
                 .then(function(res) {
+                    vm.syncFinishTime = moment().format('YYYY-MM-DD HH:mm:ss');
                     var errors = _.get(res, ['data', 'errors']);
                     if (errors && errors.length > 0) {
                         vm.syncMessage = 'openlmisHome.syncedFailed';
@@ -183,10 +185,6 @@
                         localStorageService.add(LAST_SYNC_TIME, vm.lastSyncTime);
                     }
                 });
-        };
-
-        vm.getCurrentTime = function() {
-            return moment().format('YYYY-MM-DD HH:mm:ss');
         };
     }
 

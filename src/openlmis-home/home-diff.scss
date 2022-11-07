@@ -76,8 +76,12 @@
                 //background: rgba(0,0,0,0.8);
                 max-height: 300px;
                 overflow: scroll;
+                -ms-overflow-style: none;
                 width: 668px;
                 padding: 10px;
+            }
+            .error::-webkit-scrollbar {
+                display: none;
             }
         }
 
