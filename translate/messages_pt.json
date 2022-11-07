@@ -578,6 +578,7 @@
   "adminSupervisoryNodeEdit.description": "Descrição",
   "adminSupervisoryNodeEdit.edit": "Editar",
   "adminSupervisoryNodeEdit.editSupervisoryNode": "Editar nó de supervisão",
+  "adminSupervisoryNodeEdit.noPartnerNodes": "Nenhum nó de parceiro atribuído",
   "adminSupervisoryNodeEdit.facility": "Unidades Sanitária",
   "adminSupervisoryNodeEdit.failedToUpdateSupervisoryNode": "Falha ao actualizar Nó de Supervisão",
   "adminSupervisoryNodeEdit.name": "Nome",
