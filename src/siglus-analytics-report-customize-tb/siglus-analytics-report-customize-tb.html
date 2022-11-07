@@ -26,34 +26,34 @@
                     <h6>CENTRAL DE MEDICAMENTOS E ARTIGOS MEDICOS</h6>
                 </td>
                 <td colspan="4" class="col-5 align-center">
-                    <h2 style="font-weight: 800;">Mapa Mensal de Informação dos
-                        Medicamentos da Tuberculose</h2>
+                    <h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da TB</h2>
                 </td>
                 <td class="col-2">
                     &nbsp;
-                    <span openlmis-message="view.rnr.tb.month">Mês: </span>
+                    <span openlmis-message="view.rnr.tb.month">{{'tb.month' | message}}: </span>
                     <span> </span> {{vm.month}}
                 </td>
             </tr>
             <tr>
                 <td colspan="5" style="padding-left: 4px;"><span
-                        openlmis-message="view.rnr.province">Província</span>:{{vm.facility.geographicZone.parent.name}}
+                        openlmis-message="view.rnr.province">{{'tb.province' | message}}</span>:{{vm.facility.geographicZone.parent.name}}
                 </td>
                 <td colspan="4"></td>
                 <td rowspan="3">
                     &nbsp;
-                    <span openlmis-message="view.rnr.tb.year">Ano: </span>
+                    <span openlmis-message="view.rnr.tb.year">{{'tb.year' | message}}: </span>
                     <span>{{vm.year}}</span>
                 </td>
             </tr>
             <tr class="">
-                <td style="padding-left: 4px;" colspan="5"><span openlmis-message="view.rnr.district">Distrito</span>:
+                <td style="padding-left: 4px;" colspan="5"><span openlmis-message="view.rnr.district">{{'tb.district' |
+                        message}}</span>:
                     {{vm.facility.geographicZone.name}}</td>
                 <td colspan="5"></td>
             </tr>
             <tr class="">
                 <td colspan="5">
-                    <span openlmis-message="view.rnr.healthFacility">Unidade Sanitária</span>
+                    <span openlmis-message="view.rnr.healthFacility">{{'tb.hf' | message}}</span>
                     <span>: {{vm.facility.name}}</span>
                 </td>
                 <td colspan="5"></td>
@@ -61,22 +61,7 @@
             <tr>
                 <td colspan="11"></td>
             </tr>
-            <!-- <tr>
-            <td colspan="11" class="text-center" style="position: relative; background-color: rgb(130, 130, 130); font-weight: 700; font-size: 18px; color: #fff;">
-                Balancente dos Medicamentos usados no tratamento e profilaxia da Tuberculose
-            </td>
-        </tr>
-        <tr class="text-bold">
-         
-            <td class="text-center grey" colspan="4">MEDICAMENTO </td>
-            <td class="text-center grey">Unidade de Saída</td>
-            <td class="text-center grey">Saldo Inicial</td>
-            <td class="text-center grey">Entradas </td>
-            <td class="text-center grey">Saídas</td>
-            <td class="text-center grey">Perdas e ajustes</td>
-            <td class="text-center grey">Inventário</td>
-            <td class="text-center grey">Validade</td>
-        </tr> -->
+            
         </tbody>
         <tbody id="repeatTitle">
             <tr>
@@ -87,14 +72,14 @@
             </tr>
             <tr class="text-bold">
                 <!-- <td class="background-black text-center"></td> -->
-                <td class="text-center grey" colspan="4">MEDICAMENTO </td>
-                <td class="text-center grey">Unidade de Saída</td>
-                <td class="text-center grey">Saldo Inicial</td>
-                <td class="text-center grey">Entradas </td>
-                <td class="text-center grey">Saídas</td>
-                <td class="text-center grey">Perdas e ajustes</td>
-                <td class="text-center grey">Inventário</td>
-                <td class="text-center grey">Validade</td>
+                <td class="text-center grey" colspan="4">{{'tb.product' | message}}</td>
+                <td class="text-center grey">{{'tb.unit' | message}}</td>
+                <td class="text-center grey">{{'tb.initialStock' | message}}</td>
+                <td class="text-center grey">{{'tb.entries' | message}} </td>
+                <td class="text-center grey">{{'tb.issues' | message}}</td>
+                <td class="text-center grey">{{'tb.lossAndAdjustments' | message}}</td>
+                <td class="text-center grey">{{'tb.inventory' | message}}</td>
+                <td class="text-center grey">{{'tb.expireDate' | message}}</td>
             </tr>
         </tbody>
         <tbody>
@@ -126,32 +111,31 @@
                     color: #fff;
                     font-size: 18px;
                     font-weight: 700;
-                ">
-                        Número de dias dispensados nas diferentes fases do Tratamento
+                    ">
+                        {{'tb.treatmentTitle' | message}}
                     </span>
                 </td>
                 <td class="col-3 normal-td green-light text-center" colspan="3">
-                    <h2>Fases de Tratamento</h2>
+                    <h2>{{'tb.treatmentPhases' | message}}</h2>
                 </td>
                 <td class="green-light">
-                    <h3>N° Dias Dispensados</h3>
+                    <h3>{{'tb.treatmentDayOff' | message}}</h3>
                 </td>
                 <td style="border: none;"></td>
                 <td colspan="4" class="col-4 normal-td text-center"
                     style="color: #fff; background-color: black; font-size: 18px; font-weight: 700;">
-                    <i>Quantification if patients</i>
+                    <i>{{'tb.qop' | message}}</i>
                 </td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
-                <td class="col-2 text-center blue-light" colspan="2" rowspan="7">Adulto</td>
+                <td class="col-2 text-center blue-light" colspan="2" rowspan="7">{{'tb.treatmentAdult' | message}}</td>
                 <td class="blue-light" colspan="1">Sensível Intensiva</td>
                 <td class="blue-light">{{ vm.requisition.patientLineItems[3].columns.new.value }}</td>
                 <td style="border: none;"></td>
                 <td style="border: none;" colspan="4"></td>
                 <td style="border: none;"></td>
             </tr>
-            <!-- XR Intensiva -->
             <tr>
                 <td class="blue-light" colspan="1">Sensível Manutenção</td>
                 <td class="blue-light">
@@ -159,10 +143,10 @@
                 </td>
                 <td style="border: none;"></td>
                 <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="7">
-                    Pacientes Novos no Sector da TB
+                   {{'tb.newTBTitle' | message}}
                 </td>
-                <td class="text-center pink-light" colspan="2">Paciente / Tipo</td>
-                <td class="text-center pink-light">Total</td>
+                <td class="text-center pink-light" colspan="2">{{'tb.patienOrType' | message}}</td>
+                <td class="text-center pink-light">{{'tb.total' | message}}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
@@ -171,7 +155,7 @@
                     {{ vm.requisition.patientLineItems[3].columns.newColumn1.value }}
                 </td>
                 <td style="border: none;"></td>
-                <td colspan="2">Novo Adulto Sensivel</td>
+                <td colspan="2">{{'tb.newAS' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.new.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -182,7 +166,7 @@
                 </td>
                 <td style="border: none;"></td>
                 <!-- <td colspan="4"></td> -->
-                <td colspan="2">Novo Adulto MR</td>
+                <td colspan="2">{{'tb.newAM' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.newColumn0.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -193,7 +177,7 @@
                 </td>
                 <td style="border: none;"></td>
                 <!-- <td colspan="4"></td> -->
-                <td colspan="2">Novo Adulto XR</td>
+                <td colspan="2">{{'tb.newADX' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.newColumn1.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -204,7 +188,7 @@
                 </td>
                 <td style="border: none;"></td>
                 <!-- <td colspan="4"></td> -->
-                <td colspan="2">Novo Criança Sensivel</td>
+                <td colspan="2">{{'tb.newCS' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.newColumn2.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -215,18 +199,18 @@
                 </td>
                 <td style="border: none;"></td>
                 <!-- <td colspan="4"></td> -->
-                <td colspan="2">Novo Criança MR</td>
+                <td colspan="2">{{'tb.newCM' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.newColumn3.value }}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
-                <td class="col-2 text-center blue-deep" colspan="2" rowspan="7">Pediatrico</td>
+                <td class="col-2 text-center blue-deep" colspan="2" rowspan="7">{{'tb.treatmentPediatric'|message}}</td>
                 <td class="blue-deep" colspan="1">Sensível Intensiva</td>
                 <td class="blue-deep">
                     {{ vm.requisition.patientLineItems[4].columns.new.value }}
                 </td>
                 <td style="border: none;"></td>
-                <td colspan="2">Novo Criança XR</td>
+                <td colspan="2">{{'tb.newCX' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.newColumn4.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -237,7 +221,7 @@
                 </td>
                 <td style="border: none;"></td>
                 <td style="border: none;" colspan="2"></td>
-                <td style="border: none; text-align: right;">Total</td>
+                <td style="border: none; text-align: right;">{{'tb.total' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[5].columns.total.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -253,20 +237,18 @@
                 <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn1.value }}</td>
                 <td style="border: none;"></td>
                 <!-- <td colspan="4"></td> -->
-                <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="4">Seguimento
-                    Profilaxias
-                    (PUs e
-                    Farmácia
-                    Pública )</td>
+                <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="4">
+                    {{'tb.followTitle' | message}}
+                </td>
                 <td class="text-center pink-deep" colspan="2">Fases Profilaxias</td>
-                <td class="text-center pink-deep">Total</td>
+                <td class="text-center pink-deep">{{'tb.total' | message}}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
                 <td class="blue-deep" colspan="1">MR Manutenção</td>
                 <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn2.value }}</td>
                 <td style="border: none;"></td>
-                <td colspan="2">Início</td>
+                <td colspan="2">{{'tb.start' | message}}</td>
                 <td>
                     {{ vm.requisition.patientLineItems[0].columns.new.value }}
                 </td>
@@ -276,7 +258,7 @@
                 <td class="blue-deep" colspan="1">XR Manutenção</td>
                 <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn3.value }}</td>
                 <td style="border: none;"></td>
-                <td colspan="2">Contínua/Manutenção</td>
+                <td colspan="2">{{'tb.CM' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[0].columns.newColumn0.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -284,13 +266,13 @@
                 <td class="blue-deep" colspan="1">XR Intensiva</td>
                 <td class="blue-deep">{{ vm.requisition.patientLineItems[4].columns.newColumn4.value }}</td>
                 <td style="border: none;"></td>
-                <td colspan="2">Final/última Dispensa</td>
+                <td colspan="2">{{'tb.FL' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[0].columns.newColumn1.value }}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
                 <td style="border: none;" colspan="8"></td>
-                <td style="border: none; text-align: right;">Total</td>
+                <td style="border: none; text-align: right;">{{'tb.total' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[0].columns.total.value }}</td>
             </tr>
             <tr>
@@ -311,25 +293,25 @@
                     font-size: 18px;
                     font-weight: 700;
                 ">
-                        Consumos dos Medicamentos Profilacticos
+                       {{'tb.drugsTitle' | message}}
                     </span>
                 </td>
                 <td class="col-3 normal-td blue-deep text-center" colspan="2" rowspan="10">
-                    <h2>PUs e Farmacia Ambulatorio</h2>
+                    <h2> {{'tb.drugsPUs' | message}}</h2>
                 </td>
-                <td style="font-weight: 700;" class="green-light">Product</td>
+                <td style="font-weight: 700;" class="green-light">{{'tb.drugsProduct' | message}}</td>
                 <td class="green-light">
-                    <h3>No Dias Dispensados</h3>
+                    <h3>{{'tb.drugsNumber' | message}}</h3>
                 </td>
                 <td style="border: none;"></td>
                 <td style="font-size: 14px; font-weight: 700;" class="green" rowspan="3">
-                    Tipo de Dispensa dos Profilacticos
+                    {{'tb.typeProphylactics' | message}}
                 </td>
                 <td class="text-center pink-deep" colspan="2">
-                    Periodicidade da Dispensa
+                    {{'tb.dispensationFrequency' | message}}
                 </td>
                 <td class="text-center pink-deep">
-                    Total
+                    {{'tb.total' | message}}
                 </td>
                 <td style="border: none;"></td>
             </tr>
@@ -339,7 +321,7 @@
                     {{ vm.requisition.patientLineItems[2].columns.new.value }}
                 </td>
                 <td style="border: none;"></td>
-                <td colspan="2">Mensal</td>
+                <td colspan="2">{{'tb.monthly' | message}}</td>
                 <td>
                     {{ vm.requisition.patientLineItems[1].columns.new.value }}
                 </td>
@@ -351,7 +333,7 @@
                     {{ vm.requisition.patientLineItems[2].columns.newColumn0.value }}
                 </td>
                 <td style="border: none;"></td>
-                <td colspan="2">Trimenstral</td>
+                <td colspan="2">{{'tb.quarterly' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[1].columns.newColumn0.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -360,7 +342,7 @@
                 <td class="normal-td">
                     {{ vm.requisition.patientLineItems[2].columns.newColumn1.value }}
                 </td>
-                <td colspan="4" style="border: none; text-align: right;">Total</td>
+                <td colspan="4" style="border: none; text-align: right;">{{'tb.total' | message}}</td>
                 <td>{{ vm.requisition.patientLineItems[1].columns.total.value }}</td>
                 <td style="border: none;"></td>
             </tr>
@@ -385,7 +367,7 @@
                 </td>
                 <td style="border: none;"></td>
                 <td class="text-center" style="font-weight: 700; background-color: rgb(165, 168, 167);" colspan="4">
-                    Observacoes</td>
+                    {{'tb.observations' | message}}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
@@ -435,19 +417,20 @@
                     font-weight: 700;
                     padding: 0 6px;
                 ">
-                        Quantificaçao dos Utentes por Faixas Etarias
+                      {{'tb.ageGroupTitle' | message}}
                     </span>
                 </td>
-                <td class="green-light text-center" style="height: 35px; font-weight: 700;" colspan="2">Faixas Etarias
+                <td class="green-light text-center" style="height: 35px; font-weight: 700;" colspan="2">
+                    {{'tb.ageGroup' | message}}
                 </td>
-                <td style="font-weight: 700;" class="green-light text-center">Tratamento</td>
-                <td style="font-weight: 700;" class="green-light text-center">Profilaxia</td>
+                <td style="font-weight: 700;" class="green-light text-center">{{'tb.ageGroupTreatment' | message}}</td>
+                <td style="font-weight: 700;" class="green-light text-center">{{'tb.ageGroupProphylaxis' | message}}</td>
                 <td style="border: none;"></td>
                 <td colspan="4" class="only-bottom-line">{{ vm.draftStatusMessages[4] }}</td>
                 <td style="border: none;"></td>
             </tr>
             <tr>
-                <td style="height: 35px;" colspan="2">Adultos</td>
+                <td style="height: 35px;" colspan="2">{{'tb.ageGroupAdults' | message}}</td>
                 <td>{{ vm.ageGroupLineItems[2].columns.treatment.value }}</td>
                 <td>{{ vm.ageGroupLineItems[2].columns.prophylaxis.value }}</td>
                 <td style="border: none;"></td>
@@ -455,7 +438,7 @@
                 <td style="border: none;"></td>
             </tr>
             <tr>
-                <td style="height: 35px;" colspan="2">Criança < 25Kg</td>
+                <td style="height: 35px;" colspan="2">{{'tb.childlT25' | message}}</td>
                 <td>{{ vm.ageGroupLineItems[1].columns.treatment.value }}</td>
                 <td>{{ vm.ageGroupLineItems[1].columns.prophylaxis.value }}</td>
                 <td style="border: none;"></td>
@@ -463,7 +446,7 @@
                 <td style="border: none;"></td>
             </tr>
             <tr>
-                <td style="height: 35px;" colspan="2">Criança > 25Kg</td>
+                <td style="height: 35px;" colspan="2">{{'tb.childGT25' | message}}</td>
                 <td>{{ vm.ageGroupLineItems[0].columns.treatment.value }}</td>
                 <td>{{ vm.ageGroupLineItems[0].columns.prophylaxis.value }}</td>
                 <td colspan="6" style="border: none;"></td>
@@ -474,14 +457,14 @@
 
             <tr>
                 <td style="height: 48px; vertical-align: top;" colspan="3">
-                    Elaborado Por: {{vm.signaure.submit}}
+                    {{'tb.completedBy' | message}}: {{vm.signaure.submit}}
                 </td>
                 <td style="vertical-align: top;" colspan="2">
-                    Visto Por: {{vm.signaure.approve}}
+                    {{'tb.approvedBy' | message}}: {{vm.signaure.approve}}
                 </td>
                 <td style="border: none;"></td>
                 <td style="vertical-align: top;" colspan="4">
-                    Data de elaboração: {{vm.creationDate}}
+                    {{'tb.dateOfCreation' | message}}: {{vm.creationDate}}
                 </td>
                 <td style="border: none;"></td>
             </tr>
