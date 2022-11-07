@@ -164,11 +164,11 @@
         }
 
         function getCreationDate(date) {
-            return openlmisDateFilter(date, 'MMM')
-                + ' '
-                + openlmisDateFilter(date, 'yyyy')
-                + ' '
-                + openlmisDateFilter(date, 'dd');
+            return openlmisDateFilter(date, 'dd')
+            + ' '
+            + openlmisDateFilter(date, 'MMM')
+            + ' '
+            + openlmisDateFilter(date, 'yyyy');
         }
 
         function getPdfName(date, facilityName, id) {
