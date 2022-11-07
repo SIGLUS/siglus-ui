@@ -1,0 +1,32 @@
+<h2>{{'adminRoleList.roles' | message}}</h2>
+<section class="openlmis-table-container">
+    <button class="add" ui-sref=".createUpdate">{{'adminRoleList.createRole' | message}}</button>
+    <table>
+        <thead>
+        <tr>
+            <th>{{'adminRoleList.role' | message}}</th>
+            <th>{{'adminRoleList.roleType' | message}}</th>
+            <th>{{'adminRoleList.description' | message}}</th>
+            <th>{{'adminRoleList.numberOfUsers' | message}}</th>
+            <th>{{'adminRoleList.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="role in vm.rolesPage">
+            <td>{{role.name}}</td>
+            <td>{{role.rights[0].type | roleType}}</td>
+            <td>{{role.description}}</td>
+            <td>{{role.count}}</td>
+            <td>
+                <!-- SIGLUS-REFACTOR: starts here -->
+                <button class="primary" ui-sref=".createUpdate({roleId: role.id})">{{'adminRoleList.view' | message}}</button>
+                <!-- SIGLUS-REFACTOR: ends here -->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+        list="vm.roles"
+        paged-list="vm.rolesPage">
+    <openlmis-pagination/>
+</section>

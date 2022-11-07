@@ -1,0 +1,21 @@
+<h2>{{(vm.role.id ? 'adminRoleForm.updateRole' : 'adminRoleForm.createRole') | message}}</h2>
+<form id="newRoleForm">
+    <label>
+        <span>{{'adminRoleForm.roleType' | message}}</span>
+        <span>{{vm.type | roleType}}</span>
+    </label>
+    <label for="roleName">{{'adminRoleForm.name' | message}}</label>
+    <input id="roleName" class="form-control" ng-model="vm.role.name" required disabled/>
+    <label for="description">{{'adminRoleForm.description' | message}}</label>
+    <textarea id="description" ng-model="vm.role.description" required disabled></textarea>
+    <fieldset class="form-group">
+        <legend>Rights</legend>
+        <label ng-repeat="right in vm.rights" class="checkbox">
+           <input type="checkbox" ng-model="right.checked" ng-required="vm.isNoneSelected()" disabled/>
+           {{right.name | right}}
+        </label>
+    </fieldset>
+</form>
+<div class="openlmis-toolbar">
+    <button ui-sref="^">{{'adminRoleForm.cancel' | message}}</button>
+</div>
