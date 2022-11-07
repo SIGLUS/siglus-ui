@@ -131,24 +131,8 @@
                     lineItem.columns[columnName] = angular.merge({}, column, lineItem.columns[columnName]);
                 });
             });
-            console.log('123: ', vm.requisition.patientLineItems);
         }
-        // function setBarCodeDom() {
-        //     $timeout(function() {
-        //         angular.forEach(vm.productLineItems, function(item) {
-        //             if (item.id) {
-        //                 // eslint-disable-next-line no-undef
-        //                 JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
-        //                     height: 24,
-        //                     displayValue: true,
-        //                     fontSize: 10,
-        //                     marginTop: 10,
-        //                     marginBottom: 2
-        //                 });
-        //             }
-        //         });
-        //     }, 100);
-        // }
+
         function getValueByKey(key, index) {
             if (!vm.requisition.patientLineItems.length) {
                 return '';
@@ -163,7 +147,7 @@
 
         function getHistoryComments(statusHistory) {
             var historyCommentsStr = _.reduce(statusHistory, function(r, c) {
-                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
+                r = c.statusMessageDto ? r + c.statusMessageDto.body + '.' : r + '';
                 return r;
             }, '');
             return historyCommentsStr.substr(0, historyCommentsStr.length - 1);
@@ -303,7 +287,7 @@
                 }));
             });
             var A4_HEIGHT = 841.89;
-            var promiseListLen = promiseList.length;
+            //var promiseListLen = promiseList.length;
             $q.all(headerAndFooterPromiseList).then(function(reback) {
                 var offsetHeight = headerNode.offsetHeight;
                 var realHeight = 0;
@@ -322,12 +306,6 @@
                             );
                             pageNumber = pageNumber + 1;
                             PDF.addPage();
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT - 10
-                            );
                             PDF.addImage(
                                 reback[1].data,
                                 'JPEG',
@@ -350,32 +328,64 @@
                             585,
                             res.nodeHeight * rate
                         );
-                        if (promiseListLen - 1 === index) {
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString() + '-END',
-                                585 / 2,
-                                A4_HEIGHT - 10
-                            );
-                        }
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
-                    PDF.addImage(
-                        reback[2].data,
-                        'JPEG',
-                        5,
-                        (offsetHeight) * rate,
-                        585,
-                        reback[2].nodeHeight * rate
-                    );
-                    PDF.addImage(
-                        reback[3].data,
-                        'JPEG',
-                        5,
-                        (offsetHeight + reback[2].nodeHeight) * rate,
-                        585,
-                        reback[3].nodeHeight * rate
-                    );
+
+                    if (canUseHeight - offsetHeight > (reback[2].nodeHeight * rate + reback[3].nodeHeight * rate)) {
+                        PDF.setFontSize(10);
+                        PDF.text(
+                            pageNumber.toString() + '-END',
+                            585 / 2,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.addImage(
+                            reback[2].data,
+                            'JPEG',
+                            5,
+                            (offsetHeight) * rate,
+                            585,
+                            reback[2].nodeHeight * rate
+                        );
+                        PDF.addImage(
+                            reback[3].data,
+                            'JPEG',
+                            5,
+                            (offsetHeight + reback[2].nodeHeight) * rate,
+                            585,
+                            reback[3].nodeHeight * rate
+                        );
+                    } else {
+                        PDF.setFontSize(10);
+                        PDF.text(
+                            pageNumber.toString(),
+                            585 / 2,
+                            A4_HEIGHT - 10
+                        );
+                        pageNumber = pageNumber + 1;
+                        PDF.addPage();
+                        PDF.setFontSize(10);
+                        PDF.text(
+                            pageNumber.toString() + '-END',
+                            585 / 2,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.addImage(
+                            reback[2].data,
+                            'JPEG',
+                            5,
+                            0,
+                            585,
+                            reback[2].nodeHeight * rate
+                        );
+                        PDF.addImage(
+                            reback[3].data,
+                            'JPEG',
+                            5,
+                            (reback[2].nodeHeight * rate) * rate,
+                            585,
+                            reback[3].nodeHeight * rate
+                        );
+                    }
                     PDF.save(vm.requisition.requisitionNumber + '.pdf');
                     siglusDownloadLoadingModalService.close();
                 });
