@@ -108,7 +108,6 @@
             var patients = patientTemplateFactory();
             vm.patientList = patients.normalPatientList;
             vm.mergedPatientMap = patients.mergedPatientMap;
-            console.log(vm.mergedPatientMap);
             vm.getValueByKey = getValueByKey;
             vm.getHistoryComments = getHistoryComments;
             vm.getSignaure = getSignaure;
