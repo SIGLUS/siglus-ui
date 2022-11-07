@@ -599,7 +599,7 @@
         };
 
         vm.validateReasonFreeText = function(lineItem) {
-            if (vm.isFreeTextAllowed(lineItem)) {
+            if (vm.isFreeTextAllowed(lineItem) && !$stateParams.isAddProduct) {
                 lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
             } else {
                 lineItem.$errors.reasonFreeTextInvalid = false;
@@ -608,13 +608,14 @@
         };
 
         vm.isFreeTextAllowed = function(lineItem) {
+            var hasDiffMessage = Boolean(lineItem.$diffMessage.movementPopoverMessage);
             var isFreeTextAllowed = _.some(lineItem.stockAdjustments, function(stockAdjustment) {
                 return stockAdjustment.reason && stockAdjustment.reason.isFreeTextAllowed;
             });
             if (!isFreeTextAllowed) {
                 lineItem.reasonFreeText = undefined;
             }
-            return isFreeTextAllowed;
+            return isFreeTextAllowed || hasDiffMessage;
         };
 
         function isEmpty(value) {
