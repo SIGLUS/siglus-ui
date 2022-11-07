@@ -1,0 +1,58 @@
+<h2>{{'adminSupervisoryNodeList.supervisoryNodes' | message}}</h2>
+<section class="openlmis-table-container">
+    <form ng-submit="vm.search()">
+        <fieldset class="form-group">
+            <label for="supervisoryNodeName">{{'adminSupervisoryNodeList.name' | message}}</label>
+            <input type="text" id="supervisoryNodeName" ng-model="vm.supervisoryNodeName"/>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="geographicZone">{{'adminSupervisoryNodeList.geographicZone' | message}}</label>
+            <select id="geographicZone" ng-model="vm.geographicZone"
+                    ng-options="zone.id as zone.name for zone in vm.geographicZones">
+            </select>
+        </fieldset>
+        <input type="submit" value="{{'adminSupervisoryNodeList.search' | message}}"/>
+    </form>
+    <table>
+        <caption ng-if="!vm.supervisoryNodes || vm.supervisoryNodes.length === 0">
+            {{'adminSupervisoryNodeList.noSupervisoryNodes' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'adminSupervisoryNodeList.name' | message}}</th>
+                <th>{{'adminSupervisoryNodeList.code' | message}}</th>
+                <th>{{'adminSupervisoryNodeList.facility' | message}}</th>
+                <th>{{'adminSupervisoryNodeList.childNodes' | message}}</th>
+                <th>{{'adminSupervisoryNodeList.geographicZone' | message}}</th>
+                <th>{{'adminSupervisoryNodeList.partnerNodes' | message}}</th>
+                <th>{{'adminSupervisoryNodeList.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="supervisoryNode in vm.supervisoryNodes">
+                <td>{{supervisoryNode.name}}</td>
+                <td>{{supervisoryNode.code}}</td>
+                <td ng-if="supervisoryNode.facility">{{vm.facilitiesMap[supervisoryNode.facility.id].name}}</td>
+                <td ng-if="!supervisoryNode.facility"></td>
+                <td>{{supervisoryNode.childNodes.length}}</td>
+                <td ng-if="supervisoryNode.facility">{{vm.facilitiesMap[supervisoryNode.facility.id].geographicZone.name}}</td>
+                <td ng-if="!supervisoryNode.facility"></td>
+                <td ng-if="!supervisoryNode.partnerNodes.length"></td>
+                <td ng-if="supervisoryNode.partnerNodes.length === 1">
+                    {{vm.supervisoryNodesMap[supervisoryNode.partnerNodes[0].id].name}}
+                </td>
+                <td ng-if="supervisoryNode.partnerNodes.length > 1"
+                    popover-template="admin-supervisory-node-list/partner-nodes-popover.html"
+                    popover-title="{{'adminSupervisoryNodeList.partnerNodes' | message}}">
+                    {{supervisoryNode.partnerNodes | partnerNodesCount}}
+                </td>
+                <td>
+                    <!-- SIGLUS-REFACTOR: starts here -->
+                    <button class="primary" ui-sref="openlmis.administration.supervisoryNodes.edit({id: supervisoryNode.id})">{{'adminSupervisoryNodeList.view' | message}}</button>
+                    <!-- SIGLUS-REFACTOR: ends here -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination/>
+</section>

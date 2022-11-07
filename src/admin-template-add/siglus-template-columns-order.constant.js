@@ -45,7 +45,8 @@
             requestedQuantity: 13,
             authorizedQuantity: 14,
             suggestedQuantity: 15,
-            approvedQuantity: 16
+            estimatedQuantity: 16,
+            approvedQuantity: 17
         };
 
         return {
