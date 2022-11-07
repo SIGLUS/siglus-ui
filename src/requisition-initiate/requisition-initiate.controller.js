@@ -241,7 +241,8 @@
                 return item.code === PROGRAM_TYPE.VC;
             });
             var params = {
-                replaceId: (_.get(vm.program, 'code') === PROGRAM_TYPE.ML) ? viaOption.id : ''
+                // eslint-disable-next-line max-len
+                replaceId: (_.get(vm.program, 'code') === PROGRAM_TYPE.ML) || (_.get(vm.program, 'code') === PROGRAM_TYPE.MMC) ? viaOption.id : ''
             };
             return Object.assign({}, stateParams, params);
         };
