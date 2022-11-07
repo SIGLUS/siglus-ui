@@ -624,8 +624,7 @@
                     + '/printByLocation'
                     + '?'
                     + $window.location.href.split('/?')[1]
-                    + '&isInitialInventory=' + vm.isInitialInventory
-                    + '&draftNum=' + $stateParams.draftNum;
+                    + '&isInitialInventory=' + vm.isInitialInventory;
             }
             $window.open(
                 PRINT_URL,
