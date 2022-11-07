@@ -1,0 +1,66 @@
+<h2>{{'adminSupervisoryNodeEdit.editSupervisoryNode' | message}}</h2>
+<form id="editSupervisoryNode">
+    <label for="code">{{'adminSupervisoryNodeEdit.code' | message}}</label>
+    <input id="code" class="form-control" ng-model="vm.supervisoryNode.code" required disabled/>
+    <label for="supervisoryNodeName">{{'adminSupervisoryNodeEdit.supervisoryNodeName' | message}}</label>
+    <input id="supervisoryNodeName" class="form-control" ng-model="vm.supervisoryNode.name" required disabled/>
+    <label for="facility">{{'adminSupervisoryNodeEdit.associatedFacility' | message}}</label>
+    <select id="facility" class="form-control" ng-model="vm.supervisoryNode.facility" ng-options="facility as facility.name for (facilityId, facility) in vm.facilitiesMap track by facility.id" disabled></select>
+    <label for="parentSupervisoryNode">{{'adminSupervisoryNodeEdit.parentNode' | message}}</label>
+    <select id="parentSupervisoryNode" class="form-control" ng-model="vm.supervisoryNode.parentNode" ng-options="supervisoryNode as supervisoryNode.name for supervisoryNode in vm.getAvailableParentNodes() track by supervisoryNode.id" disabled></select>
+    <label for="description">{{'adminSupervisoryNodeEdit.description' | message}}</label>
+    <textarea id="description" ng-model="vm.supervisoryNode.description" disabled></textarea>
+</form>
+<label>{{'adminSupervisoryNodeEdit.childNodes' | message}}</label>
+<section class="openlmis-table-container">
+    <table>
+        <caption ng-if="!vm.nodesPage || vm.nodesPage.length === 0">
+            {{'adminSupervisoryNodeEdit.noChildNodes' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'adminSupervisoryNodeEdit.name' | message}}</th>
+                <th>{{'adminSupervisoryNodeEdit.code' | message}}</th>
+                <th>{{'adminSupervisoryNodeEdit.facility' | message}}</th>
+                <th>{{'adminSupervisoryNodeEdit.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="node in vm.nodesPage" ng-init="nodeDetails = vm.supervisoryNodesMap[node.id]">
+                <td>{{nodeDetails.name}}</td>
+                <td>{{nodeDetails.code}}</td>
+                <td ng-if="nodeDetails.facility">{{vm.facilitiesMap[nodeDetails.facility.id].name}}</td>
+                <td ng-if="!nodeDetails.facility"></td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination
+        list="vm.childNodes"
+        paged-list="vm.nodesPage"/>
+</section>
+<label>{{'adminSupervisoryNodeEdit.partnerNodes' | message}}</label>
+<section class="openlmis-table-container">
+    <table>
+        <caption ng-if="!vm.supervisoryNode.partnerNodes || !vm.supervisoryNode.partnerNodes.length">
+            {{'adminSupervisoryNodeEdit.noPartnerNodes' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'adminSupervisoryNodeEdit.name' | message}}</th>
+                <th>{{'adminSupervisoryNodeEdit.code' | message}}</th>
+                <th>{{'adminSupervisoryNodeEdit.facility' | message}}</th>
+                <th>{{'adminSupervisoryNodeEdit.actions' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="partnerNode in vm.supervisoryNode.partnerNodes">
+                <td>{{vm.supervisoryNodesMap[partnerNode.id].name}}</td>
+                <td>{{vm.supervisoryNodesMap[partnerNode.id].code}}</td>
+                <td>{{vm.facilitiesMap[vm.supervisoryNodesMap[partnerNode.id].facility.id].name}}</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<div class="openlmis-toolbar">
+    <button ng-click="vm.goToSupervisoryNodeList()">{{'adminSupervisoryNodeEdit.cancel' | message}}</button>
+</div>
