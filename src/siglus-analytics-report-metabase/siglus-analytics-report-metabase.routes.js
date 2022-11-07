@@ -27,8 +27,8 @@
 
         var reportLists = [
             {
-                name: 'openlmis.analyticsReport.sohReportByProduct',
-                label: 'analyticsReportMetabase.sohReportByProduct.title',
+                name: 'openlmis.analyticsReport.stockStatus',
+                label: 'analyticsReportMetabase.stockStatus.title',
                 url: '/sohReportByProduct',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_REPORT_BY_PRODUCT,
                 priority: 99
@@ -40,13 +40,13 @@
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT,
                 priority: 96
             },
-            {
-                name: 'openlmis.analyticsReport.stockStatus',
-                label: 'analyticsReportMetabase.stockStatus.title',
-                url: '/stockStatus',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT,
-                priority: 93
-            },
+            // {
+            //     name: 'openlmis.analyticsReport.stockStatus',
+            //     label: 'analyticsReportMetabase.stockStatus.title',
+            //     url: '/stockStatus',
+            //     dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT,
+            //     priority: 93
+            // },
             {
                 name: 'openlmis.analyticsReport.expiringProducts',
                 label: 'analyticsReportMetabase.expiringProducts.title',
