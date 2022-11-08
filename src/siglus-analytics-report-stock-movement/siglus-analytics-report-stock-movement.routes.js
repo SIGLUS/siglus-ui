@@ -25,7 +25,7 @@
 
     function routes($stateProvider) {
 
-        $stateProvider.state('openlmis.analyticsReport.sohReportByProduct.stockMovement', {
+        $stateProvider.state('openlmis.analyticsReport.stockStatus.stockMovement', {
             url: '/stockMovement?facilityId&orderableId&productName&productCode',
             showInNavigation: false,
             label: 'stock.movement.title',
