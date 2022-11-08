@@ -25,7 +25,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.physicalInventory.printByLocation', {
-            url: '/printByLocation?isInitialInventory&isMerged&draftNum',
+            url: '/printByLocation?isInitialInventory&isMerged&draftNum&programId',
             views: {
                 '@openlmis': {
                     controller: 'LocationPhysicalInventoryPrintController',
