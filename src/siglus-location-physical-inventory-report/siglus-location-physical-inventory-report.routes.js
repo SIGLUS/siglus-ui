@@ -25,7 +25,7 @@
 
     function routes($stateProvider) {
         $stateProvider.state('openlmis.locationManagement.physicalInventory.printByProduct', {
-            url: '/printByProduct?isMerged',
+            url: '/printByProduct?isMerged&programId',
             views: {
                 '@openlmis': {
                     controller: 'SiglusLocationPhysicalInventoryReport',
