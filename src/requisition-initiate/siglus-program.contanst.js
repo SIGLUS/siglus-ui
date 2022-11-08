@@ -31,6 +31,7 @@
     function program() {
         return {
             ML: 'ML',
+            MMC: 'MMC',
             VC: 'VC'
         };
     }
