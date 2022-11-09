@@ -599,7 +599,7 @@
         };
 
         vm.validateReasonFreeText = function(lineItem) {
-            if (vm.isFreeTextAllowed(lineItem) && !$stateParams.isAddProduct) {
+            if (vm.isFreeTextAllowed(lineItem)) {
                 lineItem.$errors.reasonFreeTextInvalid = isEmpty(lineItem.reasonFreeText);
             } else {
                 lineItem.$errors.reasonFreeTextInvalid = false;
