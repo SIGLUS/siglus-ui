@@ -181,6 +181,10 @@
             if (vm.requisition.extraData.isSaved || vm.requisition.$modified) {
                 return;
             }
+            var programCode = _.get(vm.program, 'code');
+            if (programCode !== 'VC' && programCode !== 'MMC') {
+                return;
+            }
             if (canSubmit && !vm.requisition.$isRejected()) {
                 angular.forEach(vm.requisition.requisitionLineItems, function(lineItem) {
                     lineItem.requestedQuantity = lineItem.theoreticalQuantityToRequest;
