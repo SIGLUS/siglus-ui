@@ -11,5 +11,6 @@
         "/openlmis-requisition-ui",
         "/openlmis-stockmanagement-ui",
         "/openlmis-fulfillment-ui"
-    ]
+    ],
+    "defaultLanguage": "pt"
 }
