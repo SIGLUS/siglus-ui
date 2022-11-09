@@ -92,7 +92,11 @@
                 });
             }
 
-            vm.programs = programs;
+            vm.programs = _.filter(programs, function(program) {
+
+                return program.code !== 'MMC' && program.code !== 'ML';
+            });
+
             vm.program = _.find(programs, function(p) {
                 return p.id === $stateParams.program;
             });
