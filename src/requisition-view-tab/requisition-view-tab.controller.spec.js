@@ -986,7 +986,7 @@ describe('ViewTabController', function() {
             this.initController();
 
             expect(this.vm.getDescriptionForColumn(this.columns[1]))
-                .toEqual(this.columns[1].definition + ' ' + 'requisitionViewTab.totalLossesAndAdjustment.disabled');
+                .toEqual(this.columns[1].definition);
         });
     });
 
