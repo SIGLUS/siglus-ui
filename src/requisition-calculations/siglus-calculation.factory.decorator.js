@@ -42,6 +42,7 @@
             C = TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
             E = TEMPLATE_COLUMNS.STOCK_ON_HAND,
             SQ = TEMPLATE_COLUMNS.SUGGESTED_QUANTITY,
+            EQ = TEMPLATE_COLUMNS.ESTIMATED_QUANTITY,
             EX = TEMPLATE_COLUMNS.EXPIRATION_DATE,
             J = TEMPLATE_COLUMNS.REQUESTED_QUANTITY,
             M = TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY,
@@ -52,6 +53,7 @@
         $delegate.theoreticalStockAtEndofPeriod = calculateTheoreticalStockAtEndOfPeriod;
         $delegate.difference = calculateDifference;
         $delegate.suggestedQuantity = calculateSuggestedQuantity;
+        $delegate.estimatedQuantity = calculateEstimatedQuantity;
         $delegate.expirationDate = calculateExpirationDate;
         $delegate.packsToShip = calculatePacksToShip;
         var helper = {
@@ -128,6 +130,10 @@
          */
         function calculateSuggestedQuantity(lineItem) {
             return getItem(lineItem, SQ);
+        }
+
+        function calculateEstimatedQuantity(lineItem) {
+            return getItem(lineItem, EQ);
         }
 
         /**
