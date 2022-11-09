@@ -207,7 +207,9 @@
          */
         function onInit() {
             vm.pods = pods;
-            vm.programs = programs;
+            vm.programs = _.filter(programs, function(program) {
+                return program.code !== 'ML';
+            });
             vm.requestingFacilities = requestingFacilities;
             vm.supplyingFacilities = supplyingFacilities;
             vm.program = getSelectedObjectById(programs, $stateParams.programId);
