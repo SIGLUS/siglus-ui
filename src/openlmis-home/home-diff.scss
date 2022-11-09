@@ -42,7 +42,7 @@
             font-size: 14px;
             margin-bottom: 30px;
             button {
-                width: 74px;
+                width: fit-content;
                 height: 36px;
             }
         }
@@ -125,7 +125,7 @@
         margin-top: 10px;
         cursor: pointer;
         display: block;
-        width: 74px;
+        width: fit-content;
         height: 36px;
         padding: 8px 16px;
         border-radius: 4px;
