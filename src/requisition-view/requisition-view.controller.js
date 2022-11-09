@@ -357,7 +357,7 @@
                     TB: 'MMTB'
                 };
                 var printUrl = '#!/'
-                    + 'analyticsReports/requisitionAndMonthly/'
+                    + 'requisitions/'
                     + programCodeToReportNameMap[vm.program.code]
                     + '/'
                     + vm.requisition.id
