@@ -71,11 +71,21 @@
                 var states = navigationStateService.roots[$scope.rootState];
                 var enableLocationManagement = _.get(angular.fromJson(localStorageService.get('homeFacility')),
                     'enableLocationManagement');
-                vm.states = _.filter(states, function(stateItem) {
-                    return !_.get(stateItem, ['name'], '').contains(
-                        enableLocationManagement ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
-                    );
-                });
+                var facilityDeviceType = _.get(angular.fromJson(localStorageService.get('homeFacility')),
+                    'facilityDeviceType');
+                vm.states =
+                    _.chain(states)
+                        .filter(function(stateItem) {
+                            return !_.get(stateItem, ['name'], '').contains(
+                                enableLocationManagement ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
+                            );
+                        })
+                        .filter(function(stateItem) {
+                            return facilityDeviceType === 'LOCAL_MACHINE' ?
+                                !_.get(stateItem, ['name'], '').contains('openlmis.analyticsReport')
+                                : true;
+                        })
+                        .value();
 
             } else {
                 vm.states = $scope.states;
