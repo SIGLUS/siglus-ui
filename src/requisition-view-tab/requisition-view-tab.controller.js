@@ -258,11 +258,6 @@
          * @return {string}                    the translated description of the column
          */
         function getDescriptionForColumn(column) {
-            if (requisition.template.populateStockOnHandFromStockCards &&
-                column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS) {
-                return column.definition + ' ' +
-                    messageService.get('requisitionViewTab.totalLossesAndAdjustment.disabled');
-            }
             return column.definition;
         }
 
