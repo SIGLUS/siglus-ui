@@ -2607,7 +2607,7 @@
   "orderFulfillment.closeConfirm": "Are you sure to close this fulfillment?",
   "orderFulfillment.startFulFillConfirm": "Are you sure to start the fulfillment of this period? If yes, the order of previous period will be expired, you cannot fulfill them.",
   "requisitionConvertToOrder.expiredMessage": "O período da requisição terminou. Por favor, feche a requisição sem emitir a ordem.",
-  "requisitionApproval.periodDuration": "Período oficial",
+  "requisitionApproval.periodDuration": "Período original",
   "requisitionApproval.actualPeriod": " Período efectivo",
   "siglusPrintPallet.downloadProcess": "Download process",
   "siglusPrintPallet.downloadProcessMessage": "The number of labels is too large and will be downloaded in batches. Please wait until the downloads is complete.",
