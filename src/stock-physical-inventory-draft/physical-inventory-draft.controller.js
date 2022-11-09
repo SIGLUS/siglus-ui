@@ -612,7 +612,7 @@
             var isFreeTextAllowed = _.some(lineItem.stockAdjustments, function(stockAdjustment) {
                 return stockAdjustment.reason && stockAdjustment.reason.isFreeTextAllowed;
             });
-            if (!isFreeTextAllowed) {
+            if (!isFreeTextAllowed && !hasDiffMessage) {
                 lineItem.reasonFreeText = undefined;
             }
             return isFreeTextAllowed || hasDiffMessage;
