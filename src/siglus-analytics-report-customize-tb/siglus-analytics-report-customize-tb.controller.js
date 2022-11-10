@@ -342,7 +342,9 @@
                             reback[2].data,
                             'JPEG',
                             5,
-                            (offsetHeight) * rate,
+                            pageNumber > 1
+                                ? (offsetHeight) * rate
+                                : (offsetHeight + reback[1].nodeHeight) * rate,
                             585,
                             reback[2].nodeHeight * rate
                         );
@@ -350,7 +352,9 @@
                             reback[3].data,
                             'JPEG',
                             5,
-                            (offsetHeight + reback[2].nodeHeight) * rate,
+                            pageNumber > 1
+                                ? (offsetHeight + reback[2].nodeHeight) * rate
+                                : (offsetHeight + reback[1].nodeHeight + reback[2].nodeHeight) * rate,
                             585,
                             reback[3].nodeHeight * rate
                         );
