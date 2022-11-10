@@ -91,8 +91,7 @@ describe('PhysicalInventoryDraftController', function() {
             };
 
             stateParams = {
-                id: 321,
-                isAddProduct: true
+                id: 321
             };
 
             lineItem1 = new PhysicalInventoryLineItemDataBuilder()
@@ -285,8 +284,10 @@ describe('PhysicalInventoryDraftController', function() {
     });
 
     it('should show modal for occurred date if no quantity missing', function() {
-        stateParams.isAddProduct = true;
         lineItem3.quantity = 123;
+        lineItem3.$diffMessage = {
+            movementPopoverMessage: undefined
+        };
         lineItem3.stockAdjustments = [{
             quantity: 123,
             reason: {
@@ -304,18 +305,26 @@ describe('PhysicalInventoryDraftController', function() {
             lotCode: 'test1',
             expirationDate: '31/08/2019'
         };
-        lineItem1.quantity = 1;
+        lineItem1.$diffMessage = {
+            movementPopoverMessage: undefined
+        };
         lineItem2.quantity = 456;
         lineItem2.lot = {
             id: 2,
             lotCode: 'test2',
             expirationDate: '31/08/2019'
         };
+        lineItem2.$diffMessage = {
+            movementPopoverMessage: undefined
+        };
         lineItem4.quantity = 789;
         lineItem4.lot = {
             id: 4,
             lotCode: 'test4',
             expirationDate: '31/08/2019'
+        };
+        lineItem4.$diffMessage = {
+            movementPopoverMessage: undefined
         };
         // SIGLUS-REFACTOR: ends here
         var deferred = $q.defer();
