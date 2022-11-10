@@ -258,7 +258,8 @@ describe('SiglusStockReceiveCreationController', function() {
                 $previewSOH: 2,
                 isKit: false,
                 lot: {
-                    lotCode: 'FAKE-LOTE-08L14-122017'
+                    lotCode: 'FAKE-LOTE-08L14-122017',
+                    expirationDate: '2500-12-31'
                 },
                 occurredDate: '2022-08-01',
                 orderableId: 'ba08a234-4881-472f-af02-fcc0c7ab5d04',
