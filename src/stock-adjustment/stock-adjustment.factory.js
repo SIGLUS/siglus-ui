@@ -98,7 +98,6 @@
                         var orderableId = draftLineItem.orderableId;
                         var selectedOrderableGroup = getOrderableGroup(orderableId, orderableGroups);
                         var lotOptions = orderableGroupService.lotsOfWithNull(selectedOrderableGroup);
-
                         newItem.orderableId = orderableId;
                         newItem.lotOptions = lotOptions;
                         newItem.isKit = !!(newItem.orderable && newItem.orderable.isKit);
@@ -123,6 +122,17 @@
                     newItem.reason = _.find(filteredReasons, function(reason) {
                         return reason.id === draftLineItem.reasonId;
                     });
+                    if (_.get(newItem, ['reason', 'reasonType']) === 'DEBIT') {
+                        newItem.lotOptions = _.chain(newItem.lotOptions)
+                            .filter(function(lotItem) {
+                                return getStockOnHand(
+                                    orderableGroups,
+                                    draftLineItem.orderableId,
+                                    _.get(lotItem, ['id'])
+                                )  > 0;
+                            })
+                            .value();
+                    }
                     newLineItems.push(newItem);
                 });
                 return newLineItems;
