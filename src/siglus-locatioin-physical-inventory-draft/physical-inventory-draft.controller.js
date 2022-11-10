@@ -619,7 +619,7 @@
                     + '?'
                     + $window.location.href.split('/?')[1];
             } else {
-                localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.groupedCategories));
+                localStorageService.add('locationPhysicalInventory', JSON.stringify(displayLineItemsGroup));
                 PRINT_URL = '#!/locationManagement/physicalInventory'
                     + '/printByLocation'
                     + '?'

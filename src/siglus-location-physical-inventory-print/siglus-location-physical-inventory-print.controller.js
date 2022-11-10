@@ -29,11 +29,11 @@
         .controller('LocationPhysicalInventoryPrintController', controller);
 
     controller.$inject = ['draft', '$scope', '$window', '$stateParams',
-        'facility', 'program'];
+        'facility', 'program', '$filter'];
 
     function controller(
         draft, $scope, $window, $stateParams,
-        facility, program
+        facility, program, $filter
     ) {
 
         var vm = this;
@@ -46,12 +46,12 @@
         vm.draftNumber = undefined;
         function onInit() {
             hideLayoutAndBreadcrumb();
-            vm.groupedCategories = draft;
+            vm.groupedCategories = $filter('siglusGroupByAllProductProgramProductCategoryByLocation')(draft);
             vm.facility = facility;
             vm.program = program;
             vm.isMerged = $stateParams.isMerged === 'true';
             vm.isInitialInventory = $stateParams.isInitialInventory === 'true';
-            var newLocationList = _.chain(draft)
+            var newLocationList = _.chain(vm.groupedCategories)
                 .keys()
                 .chunk(10)
                 .map(function(item) {
