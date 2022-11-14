@@ -531,9 +531,16 @@
             }
         }
 
-        function prepareRequisition(requisition) {
-            var offlineRequisition = getOfflineRequisition(requisition.id);
-            requisition = offlineRequisition ? offlineRequisition : requisition;
+        function prepareRequisition(requisitionFromServer) {
+            var offlineRequisition = getOfflineRequisition(requisitionFromServer.id);
+            var requisition;
+            if (offlineRequisition) {
+                requisition = angular.copy(offlineRequisition);
+                // template should from server
+                requisition.template = requisitionFromServer.template;
+            } else {
+                requisition = requisitionFromServer;
+            }
 
             var statusMessages = offlineStatusMessages.search({
                 requisitionId: requisition.id
