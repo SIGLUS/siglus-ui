@@ -45,16 +45,19 @@
         offlineService
     ) {
         var vm = this;
+        var IS_OFFLINE = 'IS_OFFLINE';
         $rootScope.$on('localMachine-online', function() {
             $scope.isOffline = false;
+            localStorageService.add(IS_OFFLINE, 'false');
         });
         $rootScope.$on('localMachine-offline', function() {
             $scope.isOffline = true;
+            localStorageService.add(IS_OFFLINE, 'true');
         });
 
         $rootScope.isLocalMachine = undefined;
         vm.$onInit = function() {
-            $scope.isOffline = false;
+            $scope.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
             $scope.testString = OpenlmisMainStateService.testString;
             if (vm.isLocalMachine === undefined) {
                 OpenlmisMainStateService.getMachineType().then(function(res) {

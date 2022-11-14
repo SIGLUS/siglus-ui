@@ -38,10 +38,11 @@
 
         var vm = this;
 
+        var IS_OFFLINE = 'IS_OFFLINE';
         var LAST_SYNC_TIME = 'LAST_SYNC_TIME';
         vm.$onInit = onInit;
         vm.localMachineVersion = undefined;
-        vm.connectedOnlineWeb = true;
+        vm.connectedOnlineWeb = localStorageService.get(IS_OFFLINE) === 'false';
         vm.lastSyncTime = localStorageService.get(LAST_SYNC_TIME);
         vm.syncFinishTime = '';
         vm.syncMessage = '';
@@ -65,7 +66,7 @@
          * @description
          * Indicates offline connection.
          */
-        vm.isOffline = undefined;
+        vm.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
         vm.isLocalMachine = undefined;
         /**
          * @ngdoc method
@@ -76,7 +77,7 @@
          * Method that is executed on initiating HomeSystemNotificationsController.
          */
         function onInit() {
-            vm.isOffline = offlineService.isOffline();
+            vm.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
             vm.homePageSystemNotifications = homePageSystemNotifications;
             if (Boolean(localStorageService.get('isLocalMachine')) === true) {
                 vm.isLocalMachine = true;
