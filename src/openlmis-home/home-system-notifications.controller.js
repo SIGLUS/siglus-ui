@@ -30,11 +30,11 @@
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
         'loadingModalService', 'notificationService', 'alertService', 'messageService', 'localStorageService',
-        'isLocalMachine', 'moment', '$rootScope'];
+        'moment', '$rootScope'];
 
     function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
                         loadingModalService, notificationService, alertService, messageService,
-                        localStorageService, isLocalMachine, moment, $rootScope) {
+                        localStorageService, moment, $rootScope) {
 
         var vm = this;
 
@@ -76,21 +76,28 @@
          * Method that is executed on initiating HomeSystemNotificationsController.
          */
         function onInit() {
-            vm.isLocalMachine = isLocalMachine;
             vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
-            vm.sync();
+            if (Boolean(localStorageService.get('isLocalMachine')) === true) {
+                vm.isLocalMachine = true;
+                vm.sync();
+            }
         }
+
+        $rootScope.$on('isLocationMachine', function() {
+            vm.isLocalMachine = true;
+            vm.sync();
+        });
 
         $rootScope.$on('localMachine-online', function(_event, args) {
             vm.connectedOnlineWeb = true;
             vm.localMachineVersion = _.get(args, 'localMachineVersion');
-            vm.isOffline = true;
+            vm.isOffline = false;
 
         });
         $rootScope.$on('localMachine-offLine', function() {
             vm.connectedOnlineWeb = false;
-            vm.isOffline = false;
+            vm.isOffline = true;
         });
 
         vm.file = undefined;

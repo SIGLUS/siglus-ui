@@ -38,6 +38,15 @@
                     controllerAs: 'vm',
                     templateUrl: 'openlmis-home/home.html'
                 }
+            },
+            resolve: {
+                homePageSystemNotifications: function(
+                    offlineService, systemNotificationService
+                ) {
+                    if (!offlineService.isOffline()) {
+                        return systemNotificationService.getSystemNotifications();
+                    }
+                }
             }
         });
 
