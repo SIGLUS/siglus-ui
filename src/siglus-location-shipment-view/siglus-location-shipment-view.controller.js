@@ -242,7 +242,7 @@
         function validateFillQuantity(currentItem) {
             currentItem.$error.quantityShippedError = '';
             var quantityShipped = currentItem.quantityShipped;
-            if (!_.isNumber(currentItem.quantityShipped) || currentItem.quantityShipped === 0) {
+            if (!_.isNumber(currentItem.quantityShipped)) {
                 currentItem.$error.quantityShippedError = 'locationShipmentView.inputPositiveNumber';
                 return;
             }
@@ -676,6 +676,21 @@
         vm.submit = _.throttle(submit, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
+
+        function haveFulfilledLineItem(shipmentList, unskippedLineItems) {
+            return _.some(unskippedLineItems, function(lineItem) {
+                return getTotalQuantityShipped(lineItem);
+            });
+        }
+
+        function getTotalQuantityShipped(orderLineItem) {
+            var totalQuantityShipped = 0;
+            orderLineItem.forEach(function(lineItem) {
+                totalQuantityShipped = totalQuantityShipped + lineItem.quantityShipped;
+            });
+            return totalQuantityShipped;
+        }
+
         function submit() {
             if (isTableFormValid()) {
                 var unskippedLineItems = _.filter(vm.displayTableLineItems, function(lineItems) {
@@ -683,6 +698,10 @@
                 });
                 if (unskippedLineItems.length === 0) {
                     return alertService.error('shipmentView.allLineItemsSkipped');
+                }
+
+                if (!haveFulfilledLineItem(vm.displayTableLineItems, unskippedLineItems)) {
+                    return alertService.error('shipmentView.allLineItemsNotFulfilled');
                 }
 
                 return orderService.getStatus(vm.order.id).then(function(result) {
