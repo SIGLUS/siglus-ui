@@ -38,7 +38,6 @@
 
         var vm = this;
 
-        var IS_OFFLINE = 'IS_OFFLINE';
         var LAST_SYNC_TIME = 'LAST_SYNC_TIME';
         vm.$onInit = onInit;
         vm.localMachineVersion = undefined;
@@ -66,28 +65,28 @@
          * @description
          * Indicates offline connection.
          */
-        vm.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
+        vm.isOffline = undefined;
         vm.handleIfLocalMachine = function() {
             if ($rootScope.timer === undefined) {
                 $rootScope.timer = setInterval(function() {
-                    homeImportAndExportService.getLocalMachineBaseInfo()
-                        .then(function(res) {
-                            var data = res.data;
-                            vm.localMachineVersion = _.get(data, 'localMachineVersion');
-                            vm.connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
-                            if (vm.connectedOnlineWeb) {
-                                $rootScope.$emit('localMachine-online');
-                                vm.isOffline = false;
-                            } else {
+                    if (!vm.isOffline) {
+                        homeImportAndExportService.getLocalMachineBaseInfo()
+                            .then(function(res) {
+                                var data = res.data;
+                                vm.localMachineVersion = _.get(data, 'localMachineVersion');
+                                vm.connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
+                                if (vm.connectedOnlineWeb) {
+                                    $rootScope.$emit('localMachine-online');
+                                } else {
+                                    $rootScope.$emit('localMachine-offline');
+                                }
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                                vm.connectedOnlineWeb = false;
                                 $rootScope.$emit('localMachine-offline');
-                                vm.isOffline = true;
-                            }
-                        })
-                        .catch(function(error) {
-                            console.log(error);
-                            vm.connectedOnlineWeb = false;
-                            $rootScope.$emit('localMachine-offline');
-                        });
+                            });
+                    }
                 }, 5000);
             }
 
@@ -104,7 +103,7 @@
          * Method that is executed on initiating HomeSystemNotificationsController.
          */
         function onInit() {
-            vm.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
+            vm.isOffline = offlineService.isOffline();
             vm.homePageSystemNotifications = homePageSystemNotifications;
 
             if (vm.isLocalMachine === undefined) {
@@ -126,11 +125,11 @@
             vm.isOffline = true;
             $rootScope.$emit('localMachine-offline');
         });
-        // $rootScope.$on('openlmis.online', function() {
-        //     vm.connectedOnlineWeb = true;
-        //     vm.isOffline = false;
-        //     $rootScope.$emit('localMachine-online');
-        // });
+        $rootScope.$on('openlmis.online', function() {
+            vm.connectedOnlineWeb = true;
+            vm.isOffline = false;
+            $rootScope.$emit('localMachine-online');
+        });
 
         vm.file = undefined;
 
