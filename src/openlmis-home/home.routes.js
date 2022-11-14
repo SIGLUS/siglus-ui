@@ -38,25 +38,6 @@
                     controllerAs: 'vm',
                     templateUrl: 'openlmis-home/home.html'
                 }
-            },
-            params: {
-                isLocalMachine: undefined
-            },
-            resolve: {
-                homePageSystemNotifications: function(paginationService, SystemNotificationResource, $stateParams,
-                    offlineService, systemNotificationService) {
-                    if (!offlineService.isOffline()) {
-                        return systemNotificationService.getSystemNotifications();
-                    }
-                },
-                isLocalMachine: function(homeImportAndExportService, $stateParams) {
-                    if (_.isUndefined($stateParams.isLocalMachine)) {
-                        return homeImportAndExportService.getMachineType().then(function(res) {
-                            return !_.get(res, ['data', 'onlineWeb']);
-                        });
-                    }
-                    return $stateParams.isLocalMachine;
-                }
             }
         });
 
