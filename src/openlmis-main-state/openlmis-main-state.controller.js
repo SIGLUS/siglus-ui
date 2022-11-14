@@ -32,14 +32,18 @@
         '$scope',
         'localStorageService',
         'homeImportAndExportService',
-        '$rootScope'
+        '$rootScope',
+        'offlineService',
+        'isLocalMachine'
     ];
 
     function SiglusOpenlmisMainStateController(
         $scope,
         localStorageService,
         homeImportAndExportService,
-        $rootScope
+        $rootScope,
+        offlineService,
+        isLocalMachine
     ) {
         var vm = this;
         $rootScope.$on('localMachine-online', function() {
@@ -49,19 +53,47 @@
             $scope.isOffline = true;
         });
 
-        vm.isLocalMachine = false;
+        $rootScope.isLocalMachine = undefined;
         vm.$onInit = function() {
             $scope.isOffline = false;
-            // console.log(homeImportAndExportService.testString);
             $scope.testString = homeImportAndExportService.testString;
+            $rootScope.isLocalMachine = isLocalMachine;
+            var isOffline = offlineService.isOffline();
+            if ($rootScope.isLocalMachine) {
+                var timer = setInterval(function() {
+                    if (!isOffline) {
+                        homeImportAndExportService.getLocalMachineBaseInfo()
+                            .then(function(res) {
+                                var data = res.data;
+                                var localMachineVersion = _.get(data, 'localMachineVersion');
+                                var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
+                                if (connectedOnlineWeb) {
+                                    $rootScope.$emit('localMachine-online', {
+                                        localMachineVersion: localMachineVersion
+                                    });
+                                } else {
+                                    $rootScope.$emit('localMachine-offline');
+                                }
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+
+                                $rootScope.$emit('localMachine-offline');
+                            });
+                    }
+                }, 5000);
+
+                $rootScope.$on('$stateChangeStart', function(_e, _toState) {
+                    if (_.contains(_toState.name, 'auth')) {
+                        clearInterval(timer);
+                    }
+                });
+            }
         };
         $scope.$watch(function() {
             return homeImportAndExportService.testString;
         }, function() {
             $scope.testString = homeImportAndExportService.testString;
-        });
-        $scope.$watch('$rootScope.isLocalMachine', function() {
-            vm.isLocalMachine = $rootScope.isLocalMachine;
         });
     }
 
