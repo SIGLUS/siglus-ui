@@ -1,16 +1,16 @@
-<div ng-controller="HeaderController as vm" class="openlmis-header" ng-class="{'is-offline':isOffline === true}" offline>
+<div ng-controller="HeaderController as vm" class="openlmis-header" ng-class="{'is-offline':isOffline}" offline>
     <h1 class="logo">{{'openlmisHeader.appHeader' | message}}</h1>
     <div class="openlmis-header-actions">
         <div class="openlmis-header-info">
             <!-- #330: users can get notifications of the work that they need to do -->
-            <siglus-notification ng-if="isOffline === false"/>
+            <siglus-notification ng-if="!isOffline"/>
             <!-- #330: ends here -->
-            <a ui-sref="openlmis.home" ng-if="isOffline === false">
+            <a ui-sref="openlmis.home" ng-if="!isOffline">
                 <openlmis-system-notifications-indicator></openlmis-system-notifications-indicator>
             </a>
             <openlmis-app-cache></openlmis-app-cache>
         </div>
-        <div class="status-offline" ng-if="isOffline === true">
+        <div class="status-offline" ng-if="isOffline">
             <span class="offline-status-indicator">{{'openlmisHeader.youAreOffline' | message}}</span>
             <a ng-click="vm.checkConnection()">{{'openlmisHeader.checkConnection' | message}}</a>
         </div>
