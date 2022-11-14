@@ -4,9 +4,9 @@
     <openlmis-logout class="navbar-right"></openlmis-logout>
     <openlmis-locale class="navbar-right locale-container"></openlmis-locale>
     <div ng-if="isLocalMachine" class="net-status-container">
-        <div ng-if="isOffline" class="net-status-title">{{ 'openlmisMainState.offline' | message }}</div>
-        <div ng-if="!isOffline" class="net-status-title">{{ 'openlmisMainState.online' | message }}</div>
-        <div ng-if="isOffline" class="net-status-light"></div>
-        <div ng-if="!isOffline" class="net-status-light" style="background-color: #2FCF3F;"></div>
+        <div ng-if="isOffline === true" class="net-status-title">{{ 'openlmisMainState.offline' | message }}</div>
+        <div ng-if="isOffline === false" class="net-status-title">{{ 'openlmisMainState.online' | message }}</div>
+        <div ng-if="isOffline === true" class="net-status-light"></div>
+        <div ng-if="isOffline === false" class="net-status-light" style="background-color: #2FCF3F;"></div>
     </div>
 </div>
