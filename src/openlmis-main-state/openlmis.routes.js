@@ -43,25 +43,8 @@
             resolve: {
                 states: function(navigationStateService) {
                     return navigationStateService.setUpStatesAvailability();
-                },
-                homePageSystemNotifications: function(
-                    offlineService, systemNotificationService
-                ) {
-                    if (!offlineService.isOffline()) {
-                        return systemNotificationService.getSystemNotifications();
-                    }
-                },
-                isLocalMachine: function(homeImportAndExportService, $stateParams) {
-                    if (_.isUndefined($stateParams.isLocalMachine)) {
-                        return homeImportAndExportService.getMachineType().then(function(res) {
-                            return !_.get(res, ['data', 'onlineWeb']);
-                        })
-                            .catch(function(err) {
-                                console.log(err);
-                            });
-                    }
-                    return $stateParams.isLocalMachine;
                 }
+
             }
         });
 

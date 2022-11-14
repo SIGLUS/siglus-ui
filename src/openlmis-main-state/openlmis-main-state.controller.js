@@ -31,19 +31,18 @@
     SiglusOpenlmisMainStateController.$inject = [
         '$scope',
         'localStorageService',
-        'homeImportAndExportService',
+        'OpenlmisMainStateService',
         '$rootScope',
-        'offlineService',
-        'isLocalMachine'
+        'offlineService'
+
     ];
 
     function SiglusOpenlmisMainStateController(
         $scope,
         localStorageService,
-        homeImportAndExportService,
+        OpenlmisMainStateService,
         $rootScope,
-        offlineService,
-        isLocalMachine
+        offlineService
     ) {
         var vm = this;
         $rootScope.$on('localMachine-online', function() {
@@ -56,44 +55,67 @@
         $rootScope.isLocalMachine = undefined;
         vm.$onInit = function() {
             $scope.isOffline = false;
-            $scope.testString = homeImportAndExportService.testString;
-            $rootScope.isLocalMachine = isLocalMachine;
+            $scope.testString = OpenlmisMainStateService.testString;
+            if (vm.isLocalMachine === undefined) {
+                OpenlmisMainStateService.getMachineType().then(function(res) {
+                    var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+                    vm.isLocalMachine = isLocalMachine;
+                    $rootScope.isLocalMachine = isLocalMachine;
+                    if (vm.isLocalMachine) {
+                        $rootScope.$emit('isLocationMachine');
+                        localStorageService.add('isLocalMachine', true);
+                        vm.handleIfLocalMachine();
+                    } else {
+                        localStorageService.add('isLocalMachine', false);
+                    }
+                });
+            } else if (vm.isLocalMachine) {
+                vm.handleIfLocalMachine();
+            }
+
+        };
+
+        vm.handleIfLocalMachine = function() {
             var isOffline = offlineService.isOffline();
             if ($rootScope.isLocalMachine) {
-                var timer = setInterval(function() {
-                    if (!isOffline) {
-                        homeImportAndExportService.getLocalMachineBaseInfo()
-                            .then(function(res) {
-                                var data = res.data;
-                                var localMachineVersion = _.get(data, 'localMachineVersion');
-                                var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
-                                if (connectedOnlineWeb) {
-                                    $rootScope.$emit('localMachine-online', {
-                                        localMachineVersion: localMachineVersion
-                                    });
-                                } else {
-                                    $rootScope.$emit('localMachine-offline');
-                                }
-                            })
-                            .catch(function(error) {
-                                console.log(error);
+                if ($rootScope.timer === undefined) {
+                    $rootScope.timer = setInterval(function() {
+                        if (!isOffline) {
+                            OpenlmisMainStateService.getLocalMachineBaseInfo()
+                                .then(function(res) {
+                                    var data = res.data;
+                                    var localMachineVersion = _.get(data, 'localMachineVersion');
+                                    var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
+                                    if (connectedOnlineWeb) {
+                                        $rootScope.$emit('localMachine-online', {
+                                            localMachineVersion: localMachineVersion
+                                        });
+                                    } else {
+                                        $rootScope.$emit('localMachine-offline');
+                                    }
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
 
-                                $rootScope.$emit('localMachine-offline');
-                            });
-                    }
-                }, 5000);
+                                    $rootScope.$emit('localMachine-offline');
+                                });
+                        }
+                    }, 5000);
+                }
 
                 $rootScope.$on('$stateChangeStart', function(_e, _toState) {
-                    if (_.contains(_toState.name, 'auth')) {
-                        clearInterval(timer);
+                    if (_toState.name.contains('auth')) {
+                        clearInterval($rootScope.timer);
+                        $rootScope.timer = undefined;
                     }
                 });
             }
         };
+
         $scope.$watch(function() {
-            return homeImportAndExportService.testString;
+            return OpenlmisMainStateService.testString;
         }, function() {
-            $scope.testString = homeImportAndExportService.testString;
+            $scope.testString = OpenlmisMainStateService.testString;
         });
     }
 
