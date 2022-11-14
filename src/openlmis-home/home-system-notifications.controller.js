@@ -30,11 +30,11 @@
 
     controller.$inject = ['homePageSystemNotifications', 'offlineService', 'homeImportAndExportService',
         'loadingModalService', 'notificationService', 'alertService', 'messageService', 'localStorageService',
-        'isLocalMachine', 'moment', '$rootScope'];
+        'moment', '$rootScope'];
 
     function controller(homePageSystemNotifications, offlineService, homeImportAndExportService,
                         loadingModalService, notificationService, alertService, messageService,
-                        localStorageService, isLocalMachine, moment, $rootScope) {
+                        localStorageService, moment, $rootScope) {
 
         var vm = this;
 
@@ -66,21 +66,9 @@
          * Indicates offline connection.
          */
         vm.isOffline = undefined;
-        vm.isLocalMachine = isLocalMachine;
-        /**
-         * @ngdoc method
-         * @methodOf home-system-notifications.controller:HomeSystemNotificationsController
-         * @name $onInit
-         *
-         * @description
-         * Method that is executed on initiating HomeSystemNotificationsController.
-         */
-        function onInit() {
-            vm.isOffline = offlineService.isOffline();
-            vm.homePageSystemNotifications = homePageSystemNotifications;
-            $rootScope.isLocalMachine = isLocalMachine;
-            if (isLocalMachine) {
-                var timer = setInterval(function() {
+        vm.handleIfLocalMachine = function() {
+            if ($rootScope.timer === undefined) {
+                $rootScope.timer = setInterval(function() {
                     if (!vm.isOffline) {
                         homeImportAndExportService.getLocalMachineBaseInfo()
                             .then(function(res) {
@@ -100,11 +88,37 @@
                             });
                     }
                 }, 5000);
-
-                $rootScope.$on('$stateChangeStart', function() {
-                    clearInterval(timer);
-                });
             }
+
+            $rootScope.$on('$stateChangeStart', function() {
+                clearInterval($rootScope.timer);
+            });
+        };
+        /**
+         * @ngdoc method
+         * @methodOf home-system-notifications.controller:HomeSystemNotificationsController
+         * @name $onInit
+         *
+         * @description
+         * Method that is executed on initiating HomeSystemNotificationsController.
+         */
+        function onInit() {
+            vm.isOffline = offlineService.isOffline();
+            vm.homePageSystemNotifications = homePageSystemNotifications;
+
+            if (vm.isLocalMachine === undefined) {
+                homeImportAndExportService.getMachineType().then(function(res) {
+                    var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+                    vm.isLocalMachine = isLocalMachine;
+                    $rootScope.isLocalMachine = isLocalMachine;
+                    if (vm.isLocalMachine) {
+                        vm.handleIfLocalMachine();
+                    }
+                });
+            } else if (vm.isLocalMachine) {
+                vm.handleIfLocalMachine();
+            }
+
         }
         $rootScope.$on('openlmis.offline', function() {
             vm.connectedOnlineWeb = false;
