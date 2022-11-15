@@ -649,35 +649,43 @@
 
             return lineItem.$errors.lotCodeInvalid;
         };
+        function isErrorEqual(source, error1, error2) {
+            return source === error1 || source === error2;
+        }
         vm.validateDuplicateLotCode = function(lineItem) {
             var errorByLocation = messageService
                 .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
             var errorByProduct = messageService.get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-            if (hasDuplicateLotCode(lineItem)) {
+            var isKit = _.get(lineItem, ['orderable', 'isKit']);
+            if (isKit) {
+                var hasDplicateLocation = getRelatedLineItemsWithSameLocation(lineItem).length > 1;
+                if (hasDplicateLocation) {
+                    lineItem.$errors.locationInvalid = $stateParams.locationManagementOption === 'location'
+                        ? errorByLocation : errorByProduct;
+                } else if (isErrorEqual(lineItem.$errors.locationInvalid, errorByLocation, errorByProduct)) {
+                    lineItem.$errors.locationInvalid = '';
+                }
+            } else if (hasDuplicateLotCode(lineItem)) {
                 lineItem.$errors.lotCodeInvalid = $stateParams.locationManagementOption === 'location'
                     ? errorByLocation : errorByProduct;
-            } else if (lineItem.$errors.lotCodeInvalid === errorByLocation
-                    || lineItem.$errors.lotCodeInvalid === errorByProduct) {
-                lineItem.$errors.lotCodeInvalid = false;
+            } else if (isErrorEqual(lineItem.$errors.lotCodeInvalid, errorByLocation, errorByProduct)) {
+                lineItem.$errors.lotCodeInvalid = '';
             }
 
-            return lineItem.$errors.lotCodeInvalid;
+            return isKit ? lineItem.$errors.locationInvalid : lineItem.$errors.lotCodeInvalid;
         };
 
         vm.validateLocation = function(lineItem) {
-            if (lineItem.locationCode) {
-                lineItem.$errors.locationInvalid = '';
-            } else {
-                lineItem.$errors.locationInvalid = messageService
-                    .get('stockPhysicalInventoryDraft.required');
-            }
             var relatedLineItems = getRelatedLineItems(lineItem);
             _.forEach(relatedLineItems, function(line) {
                 vm.validateDuplicateLotCode(line);
             });
-            var isLotCodeDuplicate = hasDuplicateLotCode(lineItem);
-            if (!isLotCodeDuplicate && lineItem.locationCode && lineItem.area) {
+            if (lineItem.locationCode &&
+                lineItem.$errors.locationInvalid === messageService.get('stockPhysicalInventoryDraft.required')) {
                 lineItem.$errors.locationInvalid = '';
+            } else if (!lineItem.locationCode) {
+                lineItem.$errors.locationInvalid = messageService
+                    .get('stockPhysicalInventoryDraft.required');
             }
             return lineItem.$errors.locationInvalid;
         };
@@ -804,6 +812,12 @@
         function getRelatedLineItems(lineItem) {
             return draft.lineItems.filter(function(line) {
                 return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id']);
+            });
+        }
+        function getRelatedLineItemsWithSameLocation(lineItem) {
+            return draft.lineItems.filter(function(line) {
+                return _.get(line, ['orderable', 'id']) === _.get(lineItem, ['orderable', 'id'])
+                    && _.get(line, 'locationCode') === _.get(lineItem, 'locationCode');
             });
         }
         // SIGLUS-REFACTOR: ends here
