@@ -37,10 +37,14 @@
                     controllerAs: 'vm'
                 }
             },
+            params: {
+                isLocalMachine: undefined
+            },
             resolve: {
                 states: function(navigationStateService) {
                     return navigationStateService.setUpStatesAvailability();
                 }
+
             }
         });
 
