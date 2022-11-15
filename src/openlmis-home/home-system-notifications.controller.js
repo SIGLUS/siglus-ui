@@ -38,10 +38,11 @@
 
         var vm = this;
 
+        var IS_OFFLINE = 'IS_OFFLINE';
         var LAST_SYNC_TIME = 'LAST_SYNC_TIME';
         vm.$onInit = onInit;
         vm.localMachineVersion = undefined;
-        vm.connectedOnlineWeb = true;
+        vm.connectedOnlineWeb = localStorageService.get(IS_OFFLINE) === 'false';
         vm.lastSyncTime = localStorageService.get(LAST_SYNC_TIME);
         vm.syncFinishTime = '';
         vm.syncMessage = '';
@@ -65,35 +66,8 @@
          * @description
          * Indicates offline connection.
          */
-        vm.isOffline = undefined;
-        vm.handleIfLocalMachine = function() {
-            if ($rootScope.timer === undefined) {
-                $rootScope.timer = setInterval(function() {
-                    if (!vm.isOffline) {
-                        homeImportAndExportService.getLocalMachineBaseInfo()
-                            .then(function(res) {
-                                var data = res.data;
-                                vm.localMachineVersion = _.get(data, 'localMachineVersion');
-                                vm.connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
-                                if (vm.connectedOnlineWeb) {
-                                    $rootScope.$emit('localMachine-online');
-                                } else {
-                                    $rootScope.$emit('localMachine-offline');
-                                }
-                            })
-                            .catch(function(error) {
-                                console.log(error);
-                                vm.connectedOnlineWeb = false;
-                                $rootScope.$emit('localMachine-offline');
-                            });
-                    }
-                }, 5000);
-            }
-
-            $rootScope.$on('$stateChangeStart', function() {
-                clearInterval($rootScope.timer);
-            });
-        };
+        vm.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
+        vm.isLocalMachine = undefined;
         /**
          * @ngdoc method
          * @methodOf home-system-notifications.controller:HomeSystemNotificationsController
@@ -103,39 +77,33 @@
          * Method that is executed on initiating HomeSystemNotificationsController.
          */
         function onInit() {
-            vm.isOffline = offlineService.isOffline();
+            vm.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
             vm.homePageSystemNotifications = homePageSystemNotifications;
-
-            if (vm.isLocalMachine === undefined) {
-                homeImportAndExportService.getMachineType().then(function(res) {
-                    var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
-                    vm.isLocalMachine = isLocalMachine;
-                    $rootScope.isLocalMachine = isLocalMachine;
-                    if (vm.isLocalMachine) {
-                        vm.handleIfLocalMachine();
-                    }
-                });
-            } else if (vm.isLocalMachine) {
-                vm.handleIfLocalMachine();
+            if (Boolean(localStorageService.get('isLocalMachine')) === true) {
+                vm.isLocalMachine = true;
+                vm.sync();
             }
-
         }
-        $rootScope.$on('openlmis.offline', function() {
+
+        $rootScope.$on('isLocationMachine', function() {
+            vm.isLocalMachine = true;
+            vm.sync();
+        });
+
+        $rootScope.$on('localMachine-online', function(_event, args) {
+            vm.connectedOnlineWeb = true;
+            vm.localMachineVersion = _.get(args, 'localMachineVersion');
+            vm.isOffline = false;
+
+        });
+        $rootScope.$on('localMachine-offLine', function() {
             vm.connectedOnlineWeb = false;
             vm.isOffline = true;
-            $rootScope.$emit('localMachine-offline');
-        });
-        $rootScope.$on('openlmis.online', function() {
-            vm.connectedOnlineWeb = true;
-            vm.isOffline = false;
-            $rootScope.$emit('localMachine-online');
         });
 
         vm.file = undefined;
-
         vm.import = function() {
             if (vm.file) {
-                console.log(vm.file);
                 loadingModalService.open();
                 return homeImportAndExportService.importData(vm.file).then(function() {
                     notificationService.success('openlmisHome.importSuccess');
