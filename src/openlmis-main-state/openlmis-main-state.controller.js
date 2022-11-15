@@ -31,37 +31,95 @@
     SiglusOpenlmisMainStateController.$inject = [
         '$scope',
         'localStorageService',
-        'homeImportAndExportService',
-        '$rootScope'
+        'OpenlmisMainStateService',
+        '$rootScope',
+        'offlineService'
+
     ];
 
     function SiglusOpenlmisMainStateController(
         $scope,
         localStorageService,
-        homeImportAndExportService,
-        $rootScope
+        OpenlmisMainStateService,
+        $rootScope,
+        offlineService
     ) {
         var vm = this;
+        var IS_OFFLINE = 'IS_OFFLINE';
         $rootScope.$on('localMachine-online', function() {
             $scope.isOffline = false;
+            localStorageService.add(IS_OFFLINE, 'false');
         });
         $rootScope.$on('localMachine-offline', function() {
             $scope.isOffline = true;
+            localStorageService.add(IS_OFFLINE, 'true');
         });
 
-        vm.isLocalMachine = false;
+        $rootScope.isLocalMachine = undefined;
         vm.$onInit = function() {
-            $scope.isOffline = false;
-            // console.log(homeImportAndExportService.testString);
-            $scope.testString = homeImportAndExportService.testString;
+            $scope.isOffline = localStorageService.get(IS_OFFLINE)
+                ? localStorageService.get(IS_OFFLINE) === 'true' : false;
+            $scope.testString = OpenlmisMainStateService.testString;
+            if (vm.isLocalMachine === undefined) {
+                OpenlmisMainStateService.getMachineType().then(function(res) {
+                    var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+                    vm.isLocalMachine = isLocalMachine;
+                    $rootScope.isLocalMachine = isLocalMachine;
+                    if (vm.isLocalMachine) {
+                        $rootScope.$emit('isLocationMachine');
+                        localStorageService.add('isLocalMachine', true);
+                        vm.handleIfLocalMachine();
+                    } else {
+                        localStorageService.add('isLocalMachine', false);
+                    }
+                });
+            } else if (vm.isLocalMachine) {
+                vm.handleIfLocalMachine();
+            }
+
         };
+
+        vm.handleIfLocalMachine = function() {
+            var isOffline = offlineService.isOffline();
+            if ($rootScope.isLocalMachine) {
+                if ($rootScope.timer === undefined) {
+                    $rootScope.timer = setInterval(function() {
+                        if (!isOffline) {
+                            OpenlmisMainStateService.getLocalMachineBaseInfo()
+                                .then(function(res) {
+                                    var data = res.data;
+                                    var localMachineVersion = _.get(data, 'localMachineVersion');
+                                    var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
+                                    if (connectedOnlineWeb) {
+                                        $rootScope.$emit('localMachine-online', {
+                                            localMachineVersion: localMachineVersion
+                                        });
+                                    } else {
+                                        $rootScope.$emit('localMachine-offline');
+                                    }
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
+
+                                    $rootScope.$emit('localMachine-offline');
+                                });
+                        }
+                    }, 5000);
+                }
+
+                $rootScope.$on('$stateChangeStart', function(_e, _toState) {
+                    if (_toState.name.contains('auth')) {
+                        clearInterval($rootScope.timer);
+                        $rootScope.timer = undefined;
+                    }
+                });
+            }
+        };
+
         $scope.$watch(function() {
-            return homeImportAndExportService.testString;
+            return OpenlmisMainStateService.testString;
         }, function() {
-            $scope.testString = homeImportAndExportService.testString;
-        });
-        $scope.$watch('$rootScope.isLocalMachine', function() {
-            vm.isLocalMachine = $rootScope.isLocalMachine;
+            $scope.testString = OpenlmisMainStateService.testString;
         });
     }
 

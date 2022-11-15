@@ -39,12 +39,10 @@
                     templateUrl: 'openlmis-home/home.html'
                 }
             },
-            params: {
-                isLocalMachine: undefined
-            },
             resolve: {
-                homePageSystemNotifications: function(paginationService, SystemNotificationResource, $stateParams,
-                    offlineService, systemNotificationService) {
+                homePageSystemNotifications: function(
+                    offlineService, systemNotificationService
+                ) {
                     if (!offlineService.isOffline()) {
                         return systemNotificationService.getSystemNotifications();
                     }

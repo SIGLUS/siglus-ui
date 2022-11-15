@@ -2670,5 +2670,9 @@
   "tb.observations": "Observações",
   "tb.completedBy": "Elaborado Por",
   "tb.approvedBy": "Visito Por",
-  "tb.dateOfCreation": "Data de elaboração"
+  "tb.dateOfCreation": "Data de elaboração",
+
+  "localmachine.invalid.file.type": "Por favor importe o ficheiro em formato .dat.",
+  "localmachine.file.may.be.modified": "O ficheiro está corrompido, por favor verifique-o ou contacte o administrador.",
+  "localmachine.file.receiver.not.match.current.facility": "Ficheiro/receptor não está correcto. Por favor importe o ficheiro correcto (da sua instalação)"
 }

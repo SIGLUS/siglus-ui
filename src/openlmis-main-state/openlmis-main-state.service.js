@@ -15,35 +15,20 @@
 (function() {
 
     angular
-        .module('openlmis-home')
-        .service('homeImportAndExportService', service);
+        .module('openlmis-main-state')
+        .service('OpenlmisMainStateService', service);
 
     service.$inject = ['$http', 'openlmisUrlFactory'];
 
     function service($http, openlmisUrlFactory) {
         this.testString = 'hello';
-        this.exportData = function() {
-            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/export'),
-                {
-                    responseType: 'arraybuffer'
-                });
+
+        this.getLocalMachineBaseInfo = function() {
+            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/basicInfo'));
         };
 
-        this.importData = function(file) {
-            var formData = new FormData();
-            formData.append('files', file);
-            return $http.post(openlmisUrlFactory('/api/siglusapi/localmachine/agent/events/import'), formData,
-                {
-                    transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': undefined
-                    }
-                });
-        };
-
-        this.getSyncResults = function() {
-            this.testString = 'world';
-            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/syncResults'));
+        this.getMachineType = function() {
+            return $http.get(openlmisUrlFactory('/api/siglusapi/machineType'));
         };
     }
 
