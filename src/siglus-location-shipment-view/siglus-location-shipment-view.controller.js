@@ -549,7 +549,10 @@
             return totalSoh === 0 && (lineItems.length - 1 === index);
         };
 
-        function validateRequired(lineItem) {
+        function validateRequired(lineItem, lineItems, index) {
+            if (vm.isEmptyRow(lineItem, lineItems, index)) {
+                return;
+            }
             if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
                 lineItem.$error.lotCodeError = 'openlmisForm.required';
             }
@@ -588,7 +591,7 @@
                     if (index === 0 && lineItems.length !== 1 || lineItem.skipped) {
                         lineItem.$error = {};
                     } else {
-                        validateRequired(lineItem);
+                        validateRequired(lineItem, lineItems, index);
                         if (lineItem.isKit) {
                             validateKitLocationDuplicated(lineItems, lineItem);
                         } else {
