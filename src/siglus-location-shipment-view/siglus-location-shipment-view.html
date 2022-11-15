@@ -85,7 +85,7 @@
                 <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)"
                     openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
                     popover="{{!lineItem.$error.lotCodeError && lineItem.$hint.lotCodeHint || '' | message}}">
-                    <select ng-model="lineItem.lot" no-auto-select="true" ng-disabled="lineItem.skipped"
+                    <select ng-model="lineItem.lot" no-auto-select="true" ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)"
                         ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
                         ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()">
                     </select>
@@ -99,7 +99,7 @@
                 lineItem.$error.lotCodeError === 'locationShipmentView.lotDuplicated'
                     ? lineItem.$error.lotCodeError
                     : (lineItem.$error.locationError || '') | message}}">
-                    <select ng-model="lineItem.location" no-auto-select="true" ng-disabled="lineItem.skipped"
+                    <select ng-model="lineItem.location" no-auto-select="true" ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)"
                         ng-options="location.locationCode for location in vm.getLocationList(lineItem) track by location.locationCode"
                         ng-change="vm.changeLocation(lineItem, lineItems, index)">
                     </select>
@@ -115,7 +115,7 @@
                 <td ng-if="vm.showEditableBlocks(lineItem, lineItems)">
                     <input positive-integer ng-model="lineItem.quantityShipped"
                         openlmis-invalid="{{lineItem.$error.quantityShippedError || '' | message}}"
-                        ng-change="vm.changeFillQuantity(lineItem)" ng-disabled="lineItem.skipped" />
+                        ng-change="vm.changeFillQuantity(lineItem)" ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)" />
                 </td>
                 <td>{{vm.getAvailableSoh(lineItems, index)}}</td>
                 <td>{{vm.getRemainingSoh(lineItems, index)}}</td>
