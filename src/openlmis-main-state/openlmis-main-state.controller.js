@@ -46,11 +46,11 @@
     ) {
         var vm = this;
         var IS_OFFLINE = 'IS_OFFLINE';
-        $rootScope.$on('localMachine-online', function() {
+        $rootScope.$on('isLocalMachineOnline', function() {
             $scope.isOffline = false;
             localStorageService.add(IS_OFFLINE, 'false');
         });
-        $rootScope.$on('localMachine-offline', function() {
+        $rootScope.$on('isLocalMachineOffline', function() {
             $scope.isOffline = true;
             localStorageService.add(IS_OFFLINE, 'true');
         });
@@ -66,6 +66,7 @@
                     vm.isLocalMachine = isLocalMachine;
                     $rootScope.isLocalMachine = isLocalMachine;
                     if (vm.isLocalMachine) {
+                        console.log('emit isLocationMachine');
                         $rootScope.$emit('isLocationMachine');
                         localStorageService.add('isLocalMachine', true);
                         vm.handleIfLocalMachine();
@@ -91,17 +92,19 @@
                                     var localMachineVersion = _.get(data, 'localMachineVersion');
                                     var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
                                     if (connectedOnlineWeb) {
-                                        $rootScope.$emit('localMachine-online', {
+                                        console.log('emit online')
+                                        $rootScope.$emit('isLocalMachineOnline', {
                                             localMachineVersion: localMachineVersion
                                         });
                                     } else {
-                                        $rootScope.$emit('localMachine-offline');
+                                        console.log('emit offline')
+                                        $rootScope.$emit('isLocalMachineOffline');
                                     }
                                 })
                                 .catch(function(error) {
                                     console.log(error);
 
-                                    $rootScope.$emit('localMachine-offline');
+                                    $rootScope.$emit('isLocalMachineOffline');
                                 });
                         }
                     }, 5000);
