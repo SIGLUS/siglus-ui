@@ -87,17 +87,22 @@
         }
 
         $rootScope.$on('isLocationMachine', function() {
+            console.log('receive local machine');
             vm.isLocalMachine = true;
             vm.sync();
         });
 
-        $rootScope.$on('localMachine-online', function(_event, args) {
+        $rootScope.$on('isLocalMachineOnline', function(_event, args) {
+            console.log('receive online')
             vm.connectedOnlineWeb = true;
             vm.localMachineVersion = _.get(args, 'localMachineVersion');
             vm.isOffline = false;
 
         });
-        $rootScope.$on('localMachine-offLine', function() {
+        // TODO can't accept event here!!!!
+        $rootScope.$on('isLocalMachineOffline', function() {
+            // if error happens not working
+            console.log('receive offline');
             vm.connectedOnlineWeb = false;
             vm.isOffline = true;
         });
