@@ -115,7 +115,8 @@
                             PDF.addImage(item.data, 'PNG', 0,
                                 0, 662, Number(item.offsetHeight));
                             if (index !== result.length - 1) {
-                                PDF.addPage([662.00, Number(printPalletLabels[index + 1].offsetHeight).toFixed(2)], 'p');
+                                PDF.addPage([662.00,
+                                    Number(printPalletLabels[index + 1].offsetHeight).toFixed(2)], 'p');
                             }
                         });
 
