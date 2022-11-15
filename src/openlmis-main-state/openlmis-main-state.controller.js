@@ -57,7 +57,8 @@
 
         $rootScope.isLocalMachine = undefined;
         vm.$onInit = function() {
-            $scope.isOffline = localStorageService.get(IS_OFFLINE) === 'true';
+            $scope.isOffline = localStorageService.get(IS_OFFLINE)
+                ? localStorageService.get(IS_OFFLINE) === 'true' : false;
             $scope.testString = OpenlmisMainStateService.testString;
             if (vm.isLocalMachine === undefined) {
                 OpenlmisMainStateService.getMachineType().then(function(res) {
