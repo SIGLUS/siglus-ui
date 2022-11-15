@@ -55,7 +55,7 @@
                     <select
                             ng-model="lineItem.lot"
                             no-auto-select="true"
-                            ng-options="lot.lotCode for lot in vm.getLotList(lineItem) track by lot.lotCode"
+                            ng-options=" (lot | siglusExpiredLotCode) for lot in vm.getLotList(lineItem) track by lot.lotCode"
                             ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()"
                     >
                     </select>

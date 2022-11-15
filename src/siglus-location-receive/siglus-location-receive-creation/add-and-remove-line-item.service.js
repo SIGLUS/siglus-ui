@@ -96,7 +96,7 @@
                 return product.orderableId === lineItem.orderableId;
             }), 'isKit');
             var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(lineItem.orderableId,
-                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
+                SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true));
             return {
                 $errors: {},
                 moveTo: {},
@@ -184,7 +184,7 @@
                     return product.orderableId === item.orderableId;
                 }), 'isKit');
                 var lotOptions = SiglusLocationCommonUtilsService.getAllLotList(item.orderableId,
-                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations));
+                    SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations, true));
                 return _.extend(baseInfo, {
                     $errors: {},
                     lot: lot,
