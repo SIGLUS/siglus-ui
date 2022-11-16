@@ -1382,6 +1382,7 @@
   "proofOfDeliveryView.expiringDate": "Prazo de validade",
   "proofOfDeliveryView.price": "Preço",
   "proofOfDeliveryView.value": "Valor",
+  "proofOfDeliveryView.Actions": "Acções",
   "referencedataLot.noLotDefined": "Nenhum lote foi definido",
   "referencedataRoles.administration": "Administração",
   "referencedataRoles.fulfillment": "Aviamento",

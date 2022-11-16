@@ -542,7 +542,10 @@
         };
 
         vm.isEmptyRow = function(lineItem, lineItems, index) {
-            var lots = SiglusLocationCommonUtilsService.getLotsByOrderableId(locations, lineItem.orderableId);
+            var lots = _.filter(SiglusLocationCommonUtilsService.getLotsByOrderableId(locations, lineItem.orderableId)
+                , function(item) {
+                    return moment().isBefore(moment(item.expirationDate));
+                });
             var totalSoh = _.reduce(lots, function(sum, lot) {
                 return sum + (lot.stockOnHand || 0);
             }, 0);
