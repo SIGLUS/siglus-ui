@@ -541,7 +541,7 @@
 
         function getPdfName(facilityName, nowTime) {
             var result = (
-                'Issue_'
+                'Saída_'
               + facilityName
               + '_'
               + nowTime
@@ -549,7 +549,7 @@
             );
             if (facilityName.indexOf('Outros') > -1) {
                 result = (
-                    'Issue_'
+                    'Saída_'
                   + facilityName.split(':')[1]
                   + '_'
                   + nowTime
