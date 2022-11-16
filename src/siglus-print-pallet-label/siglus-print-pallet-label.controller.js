@@ -111,14 +111,14 @@
 
         function getFileName() {
             if (vm.printType === 'pod') {
-                return 'Pallet_'
+                return 'Palete_'
                 + vm.podFileName + '_'
                 + moment().format('YYYY-MM-DD') + '_'
                 + moment().format('HH') + 'h'
                 + moment().format('mm') + 'min'
                 + '.pdf';
             }
-            return 'Pallet_'
+            return 'Palete_'
         + vm.printType + '_'
         + vm.facilityName + '_'
         + moment().format('YYYY-MM-DD') + '_'

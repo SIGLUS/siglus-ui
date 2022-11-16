@@ -154,8 +154,8 @@
         }
 
         function getFileName() {
-            var part = vm.totoalIndex > 1 ? '_part' + vm.currentIndex : '';
-            return 'Pallet_' + vm.printType + '_' + vm.facilityName + '_'
+            var part = vm.totoalIndex > 1 ? '_parte' + vm.currentIndex : '';
+            return 'Palete_' + vm.printType + '_' + vm.facilityName + '_'
               + moment().format('YYYY-MM-DD') + '_' + moment().format('HH') + 'h' + moment().format('mm') + 'min'
               + part + '.pdf';
         }
