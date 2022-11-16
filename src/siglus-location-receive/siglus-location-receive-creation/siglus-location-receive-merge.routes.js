@@ -129,6 +129,9 @@
                     return addAndRemoveReceiveLineItemIssueService.prepareAddedLineItems(draftInfo, locations,
                         productList);
                 },
+                orderablesPrice: function(siglusOrderableLotService) {
+                    return siglusOrderableLotService.getOrderablesPrice();
+                },
                 displayItems: function($stateParams, siglusLocationCommonFilterService, addedLineItems) {
                     var displayItems = siglusLocationCommonFilterService
                         .filterList($stateParams.keyword || '', addedLineItems);

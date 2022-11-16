@@ -50,7 +50,8 @@
                 moveTo: _.clone(lineItem.moveTo),
                 stockOnHand: lineItem.stockOnHand,
                 quantity: lineItem.quantity,
-                dispensable: lineItem.dispensable
+                dispensable: lineItem.dispensable,
+                price: lineItem.price
             };
         }
 
