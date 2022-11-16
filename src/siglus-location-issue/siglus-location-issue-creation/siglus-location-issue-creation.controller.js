@@ -30,7 +30,7 @@
         'loadingModalService', 'notificationService', 'paginationService', 'messageService', 'isMerge', 'moment',
         'siglusStockIssueLocationService', 'siglusRemainingProductsModalService', 'alertService',
         'siglusSignatureWithDateModalService', 'program', 'confirmDiscardService', 'siglusDownloadLoadingModalService',
-        'openlmisDateFilter', 'siglusPrintPalletLabelComfirmModalService'
+        'openlmisDateFilter', 'siglusPrintPalletLabelComfirmModalService', 'orderablesPrice'
     ];
 
     function siglusLocationIssueCreationController(
@@ -46,8 +46,13 @@
         siglusRemainingProductsModalService, alertService,
         siglusSignatureWithDateModalService, program, confirmDiscardService,
         siglusDownloadLoadingModalService, openlmisDateFilter,
-        siglusPrintPalletLabelComfirmModalService
+        siglusPrintPalletLabelComfirmModalService, orderablesPrice
     ) {
+        var orderablesPriceMap = orderablesPrice.data;
+        addedLineItems.forEach(function(lineItem) {
+            var orderableId = _.get(lineItem, ['orderable', 'id']);
+            lineItem.price = orderablesPriceMap[orderableId];
+        });
         var vm = this;
 
         vm.keyword = $stateParams.keyword;
@@ -822,6 +827,8 @@
                     downloadLineItem.lotCode = _.get(downloadLineItem, ['lot', 'lotCode'], '');
                     downloadLineItem.expirationDate = _.get(downloadLineItem, ['lot', 'expirationDate'], '');
                     downloadLineItem.quantity = getSumQuantity(lotItems);
+                    var orderableId = _.get(downloadLineItem, ['orderableId']);
+                    downloadLineItem.price = orderablesPriceMap[orderableId];
                     downloadLineItems.push(downloadLineItem);
                 });
             });
