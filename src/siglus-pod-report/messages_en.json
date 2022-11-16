@@ -50,5 +50,6 @@
   "siglusIssueOrReceiveReport.reason_for_adjustment": "Reason for adjustment",
   "siglusIssueOrReceiveReport.notes": "Notes",
   "siglusIssueOrReceiveReport.create_by": "Create by",
-  "siglusIssueOrReceiveReport.date": "Date"
+  "siglusIssueOrReceiveReport.date": "Date",
+  "siglusIssueOrReceiveReport.inconsistencies":"INCOSISTENCIES REPORT"
 }

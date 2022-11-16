@@ -29,12 +29,13 @@
 
     LoginController.$inject = [
         'loginService', 'modalDeferred', 'loadingModalService', '$rootScope', 'LocalDatabase',
-        'siglusHomeFacilityService', 'localStorageService', 'navigationStateService', 'currentUserService'
+        'siglusHomeFacilityService', 'localStorageService', 'navigationStateService', 'currentUserService',
+        'OpenlmisMainStateService'
     ];
 
     function LoginController(loginService, modalDeferred, loadingModalService, $rootScope, LocalDatabase,
                              siglusHomeFacilityService, localStorageService, navigationStateService,
-                             currentUserService) {
+                             currentUserService, OpenlmisMainStateService) {
 
         var vm = this;
 
@@ -63,7 +64,41 @@
             loginService.login(vm.username, vm.password)
                 .then(function() {
                     $rootScope.$emit('openlmis-auth.login');
-                    modalDeferred.resolve();
+                    return OpenlmisMainStateService.getMachineType().then(function(res) {
+                        var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+                        $rootScope.isLocalMachine = isLocalMachine;
+                        if (isLocalMachine) {
+                            console.log('emit isLocationMachine login');
+                            $rootScope.$emit('isLocationMachine');
+                            localStorageService.add('isLocalMachine', true);
+                            return OpenlmisMainStateService.getLocalMachineBaseInfo()
+                                .then(function(res) {
+                                    var data = res.data;
+                                    var localMachineVersion = _.get(data, 'localMachineVersion');
+                                    var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
+                                    if (connectedOnlineWeb) {
+                                        console.log('emit online');
+                                        $rootScope.$emit('isLocalMachineOnline', {
+                                            localMachineVersion: localMachineVersion
+                                        });
+                                    } else {
+                                        console.log('emit offline');
+                                        $rootScope.$emit('isLocalMachineOffline');
+                                    }
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
+
+                                    $rootScope.$emit('isLocalMachineOffline');
+                                })
+                                .finally(function() {
+                                    modalDeferred.resolve();
+                                });
+                        }
+                        localStorageService.add('isLocalMachine', false);
+                        modalDeferred.resolve();
+                    });
+
                 })
                 .catch(function(error) {
                     var errorMessageKey = _.get(error, ['data', 'messageKey']);

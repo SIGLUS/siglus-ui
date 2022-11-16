@@ -50,7 +50,7 @@
 
         var postLoginActions = [],
             postLogoutActions = [],
-            excludeKeys = ['LAST_SYNC_TIME', 'current_locale'];
+            excludeKeys = ['LAST_SYNC_TIME', 'current_locale', 'IS_OFFLINE'];
 
         this.login = login;
         this.logout = logout;
