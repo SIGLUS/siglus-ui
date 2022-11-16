@@ -59,7 +59,7 @@
   "adminFacilityView.changeToWeb":"Upgrade to Web",
   "adminFacilityView.changeToAndroid":"Change to Android",
   "adminFacilityView.changeToLocalMachine":"Change to Local Machine",
-  "adminFacilityView.changeToWebConfirm":"Are you sure to upgrade the device to Web Portal?",
+  "adminFacilityView.changeToWebConfirm":"Are you sure to upgrade the facility device to Web Portal?",
   "adminFacilityView.changeToAndroidConfirm":"Are you sure to change the facility device to Android?",
   "adminFacilityView.changeToLocalMachineConfirm":"Are you sure to change the facility device to Local Machine?",
   "adminFacilityView.eraseDeviceInfo":"Erase Device Info",

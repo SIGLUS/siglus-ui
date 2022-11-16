@@ -36,12 +36,12 @@
         <div ng-if="vm.syncMessage" class="sync-tips">
             <div ng-if="vm.syncMessage === 'openlmisHome.syncedSuccessfully'">
                 <i class="fa fa-check-circle"></i>
-                {{vm.syncMessage | message}} at {{vm.syncFinishTime}}
+                {{vm.syncMessage | message}} {{'openlmisHome.at' | message}} {{vm.syncFinishTime}}
             </div>
             <div ng-if="vm.syncMessage === 'openlmisHome.syncedFailed'" class="error">
                 <div>
                     <i class="fa fa-warning"></i>
-                    {{vm.syncMessage | message}} at {{vm.syncFinishTime}}
+                    {{vm.syncMessage | message}} {{'openlmisHome.at' | message}} {{vm.syncFinishTime}}
                 </div>
                 <div ng-repeat="error in vm.errors" class="sync-error-item">
                     <div ng-if="error.errorPayload.messageKey" class="sync-error-item-line">{{error.errorPayload.messageKey | message}}</div>
