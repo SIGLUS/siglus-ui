@@ -899,6 +899,7 @@
                                 r = r + c.quantity * price;
                                 return r;
                             }, 0);
+                            vm.totalPriceValue = _.isNaN(vm.totalPriceValue) ? 0 : vm.totalPriceValue;
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.client = vm.facility.name;
                             vm.supplier = vm.initialDraftInfo.sourceName === 'Outros'

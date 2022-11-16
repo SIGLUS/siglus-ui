@@ -26,13 +26,13 @@
             <strong>{{'stockCard.soh' | message}}</strong>
             {{vm.stockCard.stockOnHand}}
         </li>
-        <li ng-if="vm.stockCard.lot">
+        <li ng-if="vm.stockCard.lotCode">
             <strong>{{'stockCard.lot' | message}}</strong>
             {{vm.stockCard.lotCode}}
         </li>
-        <li ng-if="vm.stockCard.lot">
+        <li ng-if="vm.stockCard.expiryDate">
             <strong>{{'stockCard.expiryDate' | message}}</strong>
-            {{vm.stockCard.expirationDate | openlmisDate}}
+            {{vm.stockCard.expiryDate | openlmisDate}}
         </li>
         <li style="width: 224px;">
             <strong>{{'stockPhysicalInventoryDraft.location' | message}}</strong>
