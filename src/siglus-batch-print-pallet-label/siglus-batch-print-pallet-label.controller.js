@@ -107,7 +107,7 @@
                     $q.all(renderPrintList).then(function(result) {
                         // eslint-disable-next-line no-undef
                         var PDF = new jsPDF({
-                            orientation: 'l',
+                            orientation: 'p',
                             unit: 'pt',
                             format: [ 662.00, Number(result[0].offsetHeight).toFixed(2)]
                         });
@@ -115,8 +115,8 @@
                             PDF.addImage(item.data, 'PNG', 0,
                                 0, 662, Number(item.offsetHeight));
                             if (index !== result.length - 1) {
-                                PDF.addPage([662.00, Number(item.offsetHeight)
-                                    .toFixed(2)], 'l');
+                                PDF.addPage([662.00,
+                                    Number(printPalletLabels[index + 1].offsetHeight).toFixed(2)], 'p');
                             }
                         });
 

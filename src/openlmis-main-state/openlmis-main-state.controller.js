@@ -92,12 +92,12 @@
                                     var localMachineVersion = _.get(data, 'localMachineVersion');
                                     var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
                                     if (connectedOnlineWeb) {
-                                        console.log('emit online')
+                                        console.log('emit online');
                                         $rootScope.$emit('isLocalMachineOnline', {
                                             localMachineVersion: localMachineVersion
                                         });
                                     } else {
-                                        console.log('emit offline')
+                                        console.log('emit offline');
                                         $rootScope.$emit('isLocalMachineOffline');
                                     }
                                 })

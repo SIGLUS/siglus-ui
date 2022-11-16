@@ -93,7 +93,7 @@
         });
 
         $rootScope.$on('isLocalMachineOnline', function(_event, args) {
-            console.log('receive online')
+            console.log('receive online');
             vm.connectedOnlineWeb = true;
             vm.localMachineVersion = _.get(args, 'localMachineVersion');
             vm.isOffline = false;
