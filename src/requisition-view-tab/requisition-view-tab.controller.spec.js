@@ -75,7 +75,9 @@ describe('ViewTabController', function() {
         this.homeFacility = {};
         // SIGLUS-REFACTOR: ends here
         // #375: create requisition with test consumption section
-        this.program = {};
+        this.program = {
+            code: 'VC'
+        };
         // #375: ends here
 
         this.initController = initController;
