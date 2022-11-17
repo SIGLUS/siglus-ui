@@ -43,6 +43,7 @@
                     ng-if="!(vm.canEdit && vm.isUserInput(lineItem))"
                 >
                     <div ng-if="vm.canEdit && vm.isCalculated(lineItem)">{{vm.getTotal(project, outcome)}}</div>
+                    <div ng-if="vm.canEdit && !vm.isCalculated(lineItem)">{{outcome.value}}</div>
                     <div ng-if="!vm.canEdit">{{outcome.value}}</div>
                 </td>
                 <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
