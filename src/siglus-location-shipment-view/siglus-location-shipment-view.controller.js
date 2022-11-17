@@ -556,6 +556,11 @@
             if (vm.isEmptyRow(lineItem, lineItems, index)) {
                 return;
             }
+            if (lineItem.quantityShipped === 0) {
+                lineItem.$error = {};
+                return;
+            }
+
             if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
                 lineItem.$error.lotCodeError = 'openlmisForm.required';
             }

@@ -34,10 +34,11 @@
         '$stateParams',
         'facility',
         'stockCard',
-        'program'
+        'program',
+        'STOCKREASON'
     ];
 
-    function controller($scope, $window, $stateParams, facility, stockCard, program) {
+    function controller($scope, $window, $stateParams, facility, stockCard, program, STOCKREASON) {
         var vm = this;
         vm.facility = undefined;
         vm.stockCard = undefined;
@@ -51,6 +52,10 @@
             vm.isArchived = $stateParams.isArchived;
             document.getElementsByClassName('header')[0].style.display = 'none';
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        };
+
+        vm.getReason = function(reason) {
+            return _.get(STOCKREASON, reason, null);
         };
 
         $scope.$on('$destroy', function() {

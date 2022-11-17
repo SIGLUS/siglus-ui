@@ -177,7 +177,7 @@
                 });
             }
             return lineItem.reason.isPhysicalReason()
-                ? messageService.get('stockCard.physicalInventory')
+                ? 'Inventário físico'
                 : stockCardDataService.addPrefixForAdjustmentReason(lineItem.reason).name;
         }
 
