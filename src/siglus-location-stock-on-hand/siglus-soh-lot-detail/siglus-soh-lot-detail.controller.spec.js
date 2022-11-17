@@ -128,9 +128,9 @@ describe('siglusSohLotDetailController', function() {
                 }
             };
 
-            vm.getReason(lineItem);
+            var result =  vm.getReason(lineItem);
 
-            expect(messageService.get).toHaveBeenCalledWith('stockCard.physicalInventory');
+            expect(result).toEqual('Inventário físico');
         });
 
         it('should return [Ajustes Positivos] Ajustes Positivos error message when category is not PHYSICAL_INVENTORY',
