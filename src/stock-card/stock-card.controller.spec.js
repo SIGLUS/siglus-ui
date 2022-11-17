@@ -211,8 +211,7 @@ describe('StockCardController', function() {
                 reason: new ReasonDataBuilder().buildPhysicalInventoryReason()
             };
 
-            expect(vm.getReason(lineItem)).toEqual('test message');
-            expect(messageService.get).toHaveBeenCalledWith('stockCard.physicalInventory');
+            expect(vm.getReason(lineItem)).toEqual('Inventário físico');
         });
 
         it('should get reason name', function() {
