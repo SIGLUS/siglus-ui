@@ -30,11 +30,13 @@
 
     controller.$inject = ['$scope', 'stockCard', '$state', '$window', 'stockCardService', 'confirmService',
         'loadingModalService', 'notificationService', '$stateParams', 'paginationService', 'stockCardDataService',
-        'localStorageService'];
+        'localStorageService', 'STOCKREASON'];
 
-    function controller($scope, stockCard, $state, $window, stockCardService, confirmService, loadingModalService,
-                        notificationService, $stateParams, paginationService, stockCardDataService,
-                        localStorageService) {
+    function controller(
+        $scope, stockCard, $state, $window, stockCardService, confirmService, loadingModalService,
+        notificationService, $stateParams, paginationService, stockCardDataService,
+        localStorageService, STOCKREASON
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -58,6 +60,9 @@
         vm.getProductName = function() {
             var unit = vm.stockCard.displayUnit;
             return _.isEmpty(unit) ? vm.stockCard.productName : vm.stockCard.productName + ' - ' + unit;
+        };
+        vm.getReason = function(reason) {
+            return _.get(STOCKREASON, reason, null);
         };
 
         vm.archive = function() {

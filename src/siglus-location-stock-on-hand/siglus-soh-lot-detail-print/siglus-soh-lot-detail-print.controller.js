@@ -85,7 +85,7 @@
                 });
             }
             return isPhysicalReason(_.get(lineItem.reason, 'reasonCategory'))
-                ? messageService.get('stockCard.physicalInventory')
+                ? 'Inventário físico'
                 : addPrefixForAdjustmentReason(lineItem.reason).name;
         }
     }

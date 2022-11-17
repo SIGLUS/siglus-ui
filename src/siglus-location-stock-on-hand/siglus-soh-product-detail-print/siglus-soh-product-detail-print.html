@@ -39,7 +39,7 @@
                     message: {name:lineItem.destinationName, freeText: lineItem.destinationFreeText}) : lineItem.destinationName}}
                 </td>
                 <td>
-                    {{ lineItem.reason | message }}
+                    {{vm.getReason(lineItem.reason)}}
                 </td>
                 <td style="text-align: right;">{{lineItem.movementQuantity}}</td>
                 <td style="text-align: right;">{{lineItem.productSoh}}</td>
