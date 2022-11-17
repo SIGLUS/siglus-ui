@@ -29,10 +29,10 @@
         .controller('SiglusSohProductDetailController', controller);
 
     controller.$inject = ['stockCard', '$state', '$window', 'stockCardService', 'confirmService', 'loadingModalService',
-        'notificationService', '$stateParams', 'paginationService', 'localStorageService'];
+        'notificationService', '$stateParams', 'paginationService', 'localStorageService', 'STOCKREASON'];
 
     function controller(stockCard, $state, $window,  stockCardService, confirmService, loadingModalService,
-                        notificationService, $stateParams, paginationService, localStorageService) {
+                        notificationService, $stateParams, paginationService, localStorageService, STOCKREASON) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -53,6 +53,10 @@
         vm.getProductName = function() {
             var unit = vm.stockCard.displayUnit;
             return _.isEmpty(unit) ? vm.stockCard.productName : vm.stockCard.productName + ' - ' + unit;
+        };
+
+        vm.getReason = function(reason) {
+            return _.get(STOCKREASON, reason, null);
         };
 
         vm.archive = function() {
