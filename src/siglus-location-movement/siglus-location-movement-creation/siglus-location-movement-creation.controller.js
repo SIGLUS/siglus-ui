@@ -269,9 +269,9 @@
 
         };
 
-        vm.addItem = function(lineItem, lineItems) {
+        vm.addItem = function(lineItem, lineItems, index) {
             if (vm.isVirtual) {
-                addAndRemoveLineItemService.addLineItemForVirtual(lineItem, lineItems);
+                addAndRemoveLineItemService.addLineItemForVirtual(lineItem, lineItems, index);
             } else {
                 addAndRemoveLineItemService.addLineItem(lineItem, lineItems);
             }
