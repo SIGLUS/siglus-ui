@@ -17,9 +17,11 @@
             <tr ng-repeat="lineItem in vm.regimenLineItems | orderBy: ['regimen.code', 'regimen.fullProductName']" ng-if="lineItem.regimen.regimenCategory.name === category.name">
                 <td ng-if="vm.hasCode">{{lineItem.regimen.code}}</td>
                 <td>{{lineItem.regimen.fullProductName}}</td>
-                <td ng-if="vm.canEdit" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'"
+<!--                TODO should display by Source-->
+                <td ng-if="vm.canEdit && vm.isUserInput(regimenColumn)" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'"
                     siglus-requisition-grid-cell
                     line-item-field="regimenColumn"></td>
+                <td ng-if="vm.canEdit && !vm.isUserInput(regimenColumn)" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'">{{regimenColumn.value}}</td>
                 <td ng-if="!vm.canEdit" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'">{{regimenColumn.value}}</td>
                 <td ng-if="vm.canEdit" class="text-center">
                     <button tabindex="-1" class="danger" ng-if="lineItem.regimen.isCustom" ng-click="vm.removeRegimen(lineItem)">{{'requisitionViewSection.remove' | message}}</button>

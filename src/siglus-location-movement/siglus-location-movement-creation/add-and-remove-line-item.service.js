@@ -109,14 +109,14 @@
             addRow(lineItem, lineItems);
         };
 
-        this.addLineItemForVirtual = function(lineItem, lineItems) {
+        this.addLineItemForVirtual = function(lineItem, lineItems, index) {
             var copied = angular.copy(lineItem);
             if (lineItems.length === 1) {
                 addRow(copied, lineItems);
                 lineItems[1].isFirst = true;
                 resetFirstRow(lineItem);
             }
-            lineItems.push(getRowTemplateDataForVirtualMovement(copied));
+            lineItems.splice(++index, 0, getRowTemplateDataForVirtualMovement(copied));
         };
 
         this.removeItem = function(lineItems, index) {

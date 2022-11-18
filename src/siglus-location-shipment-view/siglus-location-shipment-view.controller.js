@@ -544,6 +544,9 @@
         vm.isEmptyRow = function(lineItem, lineItems, index) {
             var lots = _.filter(SiglusLocationCommonUtilsService.getLotsByOrderableId(locations, lineItem.orderableId)
                 , function(item) {
+                    if (lineItem.isKit) {
+                        return true;
+                    }
                     return moment().isBefore(moment(item.expirationDate));
                 });
             var totalSoh = _.reduce(lots, function(sum, lot) {
