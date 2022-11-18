@@ -40,10 +40,12 @@
 
         function getInputColumnsMap(columns) {
             var filterColumns = _.filter(columns, function(column) {
-                return column.source === COLUMN_SOURCES.USER_INPUT && column.isDisplayed;
+                return column.source !== COLUMN_SOURCES.REFERENCE_DATA && column.isDisplayed;
             }).map(function(column) {
                 return angular.merge({}, column, {
-                    id: null
+                    id: null,
+                    value: column.source !== COLUMN_SOURCES.REFERENCE_DATA
+                        && column.source !== COLUMN_SOURCES.USER_INPUT ? 0 : undefined
                 });
             });
             return _.indexBy(filterColumns, 'name');

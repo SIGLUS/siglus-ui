@@ -168,7 +168,15 @@ describe('siglusRequisitionUtils', function() {
                     id: null,
                     isDisplayed: true,
                     name: 'approvedQuantity',
-                    source: 'USER_INPUT'
+                    source: 'USER_INPUT',
+                    value: undefined
+                },
+                adjustedConsumption: {
+                    isDisplayed: true,
+                    name: 'adjustedConsumption',
+                    source: 'CALCULATED',
+                    id: null,
+                    value: 0
                 }
             });
         });
