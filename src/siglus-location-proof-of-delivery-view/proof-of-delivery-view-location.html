@@ -237,16 +237,16 @@
       <dt>{{'proofOfDeliveryView.preparedBy' | message}}</dt>
       <dd>
         <div ng-if="vm.canEdit">
-          <input type="text" ng-model="vm.proofOfDelivery.preparedBy" disabled
-                 openlmis-invalid="{{vm.proofOfDelivery.validate(true).preparedBy | message}}"/>
+          <!--  openlmis-invalid="{{vm.proofOfDelivery.validate(true).preparedBy | message}}" -->
+          <input type="text" ng-model="vm.proofOfDelivery.preparedBy" disabled/>
         </div>
         <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.preparedBy}}</div>
       </dd>
       <dt>{{'proofOfDeliveryView.conferredBy' | message}}</dt>
       <dd>
         <div ng-if="vm.canEdit">
-          <input type="text" ng-model="vm.proofOfDelivery.conferredBy" disabled
-                 openlmis-invalid="{{vm.proofOfDelivery.validate(true).conferredBy | message}}"/>
+          <!-- openlmis-invalid="{{vm.proofOfDelivery.validate(true).conferredBy | message}}" -->
+          <input type="text" ng-model="vm.proofOfDelivery.conferredBy" disabled />
         </div>
         <div ng-if="!vm.canEdit">{{vm.proofOfDelivery.conferredBy}}</div>
       </dd>
