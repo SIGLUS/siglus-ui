@@ -68,6 +68,16 @@
                         var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
                         $rootScope.isLocalMachine = isLocalMachine;
                         if (isLocalMachine) {
+                            var homeFacilityId =
+                            _.get(
+                                angular.fromJson(localStorageService.get('currentUser')),
+                                'homeFacilityId'
+                            );
+                            if (_.isEmpty(homeFacilityId)) {
+                                vm.loginError = 'openlmisLogin.loginNotAdmin';
+                                loginService.logout();
+                                return;
+                            }
                             console.log('emit isLocationMachine login');
                             $rootScope.$emit('isLocationMachine');
                             localStorageService.add('isLocalMachine', true);
