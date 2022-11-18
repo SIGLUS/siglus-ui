@@ -29,11 +29,11 @@
                     index: '<',
                     errorField: '<'
                 },
-                controller: ['$scope',
-                    function($scope) {
+                controller: ['$scope', 'messageService',
+                    function($scope, messageService) {
                         $scope.field = $scope.errorField ? $scope.errorField : '$error';
                         $scope.selectedOption = undefined;
-
+                        var productEmpty = 'product.empty';
                         $scope.$watch('lineItem.moveTo.locationCode', function() {
                             if (!$scope.options) {
                                 $scope.options = $scope.lineItem.destLocationOptions.map(function(option) {
@@ -41,13 +41,14 @@
                                         return areaLocation.locationCode === option;
                                     });
                                     var isEmpty = _.get(target, 'isEmpty');
-                                    return isEmpty ? '[empty] ' + option : option;
+                                    return isEmpty ? '[' + messageService.get(productEmpty) + '] ' + option : option;
                                 });
                             }
                             var initValue = _.get($scope.lineItem, ['moveTo', 'locationCode']);
                             if (initValue) {
                                 $scope.selectedOption = _.find($scope.options, function(option) {
-                                    return option.replace('[empty] ', '') === initValue.replace('[empty] ', '');
+                                    return option.replace('[' + messageService.get(productEmpty) + '] ', '')
+                                    === initValue.replace('[' + messageService.get(productEmpty) + '] ', '');
                                 });
                             } else {
                                 $scope.selectedOption = undefined;
@@ -59,14 +60,15 @@
                                     return areaLocation.locationCode === option;
                                 });
                                 var isEmpty = _.get(target, 'isEmpty');
-                                return isEmpty ? '[empty] ' + option : option;
+                                return isEmpty ? '[' + messageService.get(productEmpty) + '] ' + option : option;
                             });
                         }, true);
 
                         $scope.changeMoveToLocation = function() {
                             if ($scope.selectedOption) {
                                 $scope.lineItem.moveTo = {};
-                                $scope.lineItem.moveTo.locationCode = $scope.selectedOption.replace('[empty] ', '');
+                                $scope.lineItem.moveTo.locationCode =
+                                 $scope.selectedOption.replace('[' + messageService.get(productEmpty) + '] ', '');
                             } else {
                                 $scope.lineItem.moveTo.locationCode = undefined;
                             }
