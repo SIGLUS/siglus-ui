@@ -3,5 +3,10 @@
   "stockCardSummaryList.program": "Program",
   "stockCardSummaryList.archivedProduct": "Archived Products",
   "stockCardSummaryList.archivedProductTitle": "Archived Products - ${facility} - ${program}",
-  "stockCardSummaryList.keyword": "Keywords"
+  "stockCardSummaryList.keyword": "Search",
+  "stockAdjustmentCreation.keyword": "Search",
+  "stockIssueCreation.keyword": "Search",
+  "stockPhysicalInventoryDraft.keyword": "Search",
+  "stockReceiveCreation.keyword": "Search",
+  "stockUnpackKitCreation.keyword": "Search"
 }
