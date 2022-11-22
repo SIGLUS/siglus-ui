@@ -28,9 +28,9 @@
         .module('openlmis-server-error-handler')
         .factory('serverErrorHandler', handler);
 
-    handler.$inject = ['$q', '$injector', '$timeout', '$rootScope'];
+    handler.$inject = ['$q', '$injector', '$timeout', '$rootScope', 'localStorageService'];
 
-    function handler($q, $injector, $timeout, $rootScope) {
+    function handler($q, $injector, $timeout, $rootScope, localStorageService) {
 
         var provider = {
             responseError: responseError
@@ -57,6 +57,9 @@
             var isBusinessError = _.get(response.data, 'isBusinessError', false);
             var businessErrorExtraData = _.get(response.data, 'businessErrorExtraData');
             var status = response.status;
+            if (status === 401) {
+                localStorageService.add('isInvalidToken', 'true');
+            }
             if (isBusinessError && mapper[businessErrorExtraData]) {
                 $injector.get('alertConfirmModalService').error(
                     mapper[businessErrorExtraData],
