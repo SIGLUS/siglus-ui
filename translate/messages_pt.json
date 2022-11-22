@@ -2683,6 +2683,9 @@
   "localmachine.file.receiver.not.match.current.facility": "Ficheiro/receptor não está correcto. Por favor importe o ficheiro correcto (da sua instalação)",
   "localmachine.no.data.need.to.be.exported": "Não há dados por exportar.",
   "localmachine.invalid.file.type.or.file.may.be.modified": "File may be modified",
+
+  "localmachine.network.error": "Network Error, por favor verifique a sua rede e tente de novo.",
+
   "product.empty":"Vazio",
   "product.archived":"Arquivado",
 

@@ -13,6 +13,7 @@
 	"localmachine.no.data.need.to.be.exported": "There is no data to be exported",
 	"localmachine.invalid.file.type.or.file.may.be.modified": "File may be modified",
 
+	"localmachine.network.error": "Network Error, please check your network and try again.",
 	"localmachine.invalid.file.type": "Please import the file in .dat format.",
 	"localmachine.file.may.be.modified": "The file is corrupted, please try to check your file or contact administrator.",
 	"localmachine.file.receiver.not.match.current.facility": "The receiver of the file you imported is not your facility, please import the file with your facility as the receiver.",
