@@ -242,7 +242,7 @@
       </section>
       <section id="sectionThird" class="section-third">
         <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
-        <div class="issue-voucher" style="text-align: center;">{{ vm.type ===  'issue' ? (vm.totalPriceValue / 100 ?vm.totalPriceValue / 100:"") : '' }}</div>
+        <div class="issue-voucher" style="text-align: center;">{{ vm.type ===  'issue' ? (vm.totalPriceValue / 100 ? (vm.totalPriceValue / 100).toFixed(2) : "") : '' }}</div>
       </section>
       <section id="sectionFouth" class="section-fouth">
         <div class="fouth-prepare">{{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.type === 'issue' ? vm.signature : '' }}</div>

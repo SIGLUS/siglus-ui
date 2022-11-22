@@ -609,7 +609,7 @@
 
         function getPdfName(facilityName, nowTime) {
             return (
-                'Receive_'
+                'Entrada_'
               + facilityName
               + '_'
               + nowTime
