@@ -91,11 +91,11 @@
                     }, orderableIds);
                 },
 
-                areaLocationInfo: function($stateParams, siglusLocationMovementService) {
+                areaLocationInfo: function($stateParams, siglusStockIssueLocationService) {
                     if ($stateParams.areaLocationInfo) {
                         return $stateParams.areaLocationInfo;
                     }
-                    return siglusLocationMovementService.getMovementLocationAreaInfo(undefined, true);
+                    return siglusStockIssueLocationService.getLocationAreaInfo(undefined, true);
                 },
                 addedLineItems: function(draftInfo, $stateParams, locations, addAndRemoveLineItemService,
                     productList) {

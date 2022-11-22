@@ -17,6 +17,7 @@
     'use strict';
 
     angular.module('siglus-stock-archived-product', [
-        'openlmis-modal'
+        'openlmis-modal',
+        'openlmis-i18n'
     ]);
 })();

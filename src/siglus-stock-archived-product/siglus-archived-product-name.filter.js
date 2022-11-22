@@ -30,15 +30,15 @@
     angular
         .module('siglus-stock-archived-product')
         .filter('siglusArchivedProductName', archivedProductNameFilter);
-
-    function archivedProductNameFilter() {
+    archivedProductNameFilter.$inject = ['messageService'];
+    function archivedProductNameFilter(messageService) {
         return function(orderable) {
             if (!orderable) {
                 return undefined;
             }
 
             if (orderable.archived) {
-                return '[Archived] ' + orderable.fullProductName;
+                return '[' + messageService.get('product.archived') + '] ' + orderable.fullProductName;
             }
             return orderable.fullProductName;
         };

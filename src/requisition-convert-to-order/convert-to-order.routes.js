@@ -61,9 +61,9 @@
                         var requisitionListCopy = angular.copy(requisitionList);
                         requisitionListCopy.content  = _.filter(requisitionList.content, function(item) {
                             // eslint-disable-next-line max-len
-                            return  stateParams.facilityId ? _.get(item, ['requisition', 'facility', 'id']) === stateParams.facilityId : true
+                            return  (stateParams.facilityId ? (_.get(item, ['requisition', 'facility', 'id']) === stateParams.facilityId) : true)
                             // eslint-disable-next-line max-len
-                            && stateParams.programId ? _.get(item, ['requisition', 'program', 'id']) === stateParams.programId : true;
+                            && (stateParams.programId ? (_.get(item, ['requisition', 'program', 'id']) === stateParams.programId) : true);
                         });
                         return requisitionListCopy;
                     });
