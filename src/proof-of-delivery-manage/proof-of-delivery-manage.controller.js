@@ -837,7 +837,7 @@
                             proofOfDeliveryService.get(pod.id).then(function(result) {
                                 fulfillingLineItemFactory
                                     // eslint-disable-next-line max-len
-                                    .groupByOrderable(result.lineItems, result.shipment.order.orderLineItems).then(function(
+                                    .groupByOrderableForPod(result.lineItems, result.shipment.order.orderLineItems).then(function(
                                         orderLineItems
                                     ) {
                                         var addedLineItems = [];

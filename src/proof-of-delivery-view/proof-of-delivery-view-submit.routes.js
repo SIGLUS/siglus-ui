@@ -59,7 +59,7 @@
                         orderLineItems: function(proofOfDelivery, order, fulfillingLineItemFactory, orderablesPrice) {
                             var orderablesPriceMap = orderablesPrice.data;
                             return fulfillingLineItemFactory
-                                .groupByOrderable(proofOfDelivery.lineItems, order.orderLineItems)
+                                .groupByOrderableForPod(proofOfDelivery.lineItems, order.orderLineItems)
                                 .then(function(res) {
                                     _.each(res, function(c) {
                                         _.each(c.groupedLineItems, function(_c) {
