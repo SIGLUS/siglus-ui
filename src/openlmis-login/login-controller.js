@@ -45,6 +45,10 @@
             new LocalDatabase('orderables').removeAll();
             siglusHomeFacilityService.facility = null;
             currentUserService.clearCache();
+            if (localStorageService.get('isInvalidToken') === 'true') {
+                localStorageService.remove('isInvalidToken');
+                location.reload();
+            }
             loginService.clearAllStorage();
             navigationStateService.clearPromise();
         };
