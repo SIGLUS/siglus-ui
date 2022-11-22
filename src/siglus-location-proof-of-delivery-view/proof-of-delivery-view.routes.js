@@ -76,7 +76,7 @@
                             addAndRemoveLineItemService,
                             orderablesPrice
                         ) {
-                            return fulfillingLineItemFactory.groupByOrderable(
+                            return fulfillingLineItemFactory.groupByOrderableForPod(
                                 proofOfDelivery.lineItems,
                                 order.orderLineItems
                             ).then(function(orderLineItems) {
