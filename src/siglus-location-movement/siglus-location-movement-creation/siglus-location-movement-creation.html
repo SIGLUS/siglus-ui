@@ -97,7 +97,7 @@
                                 ng-options="area for area in lineItem.destAreaOptions track by area"
                                 ng-change="vm.changeArea(lineItem, lineItems)">
                         </select>
-                        <siglus-location-select line-item="lineItem" line-items="lineItems" area-location-info="areaLocationInfo"></siglus-location-select>
+                        <siglus-location-select line-item="lineItem" line-items="lineItems" area-location-info="vm.areaLocationInfo"></siglus-location-select>
                     </div>
 
                 </td>
