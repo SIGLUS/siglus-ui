@@ -24,7 +24,7 @@
                 ng-if="!(vm.canEdit && vm.isUserInput(lineItem))"
             >
                 <div ng-if="vm.canEdit && vm.isCalculated(lineItem)">{{vm.getTotal(information.name, orderable.id)}}</div>
-                <div ng-if="!vm.canEdit">{{orderable.value}}</div>
+                <div ng-if="!vm.canEdit || (vm.canEdit && !vm.isCalculated(lineItem) && !vm.isUserInput(lineItem))">{{orderable.value}}</div>
             </td>
             <td ng-repeat-end ng-repeat="orderable in information.orderables | siglusOrderObjectBy : 'fullProductName'"
                 ng-if="vm.canEdit && vm.isUserInput(lineItem)" siglus-requisition-grid-cell line-item-field="orderable"
