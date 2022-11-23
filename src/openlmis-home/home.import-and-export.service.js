@@ -43,7 +43,7 @@
 
         this.getSyncResults = function() {
             this.testString = 'world';
-            return $http.get(openlmisUrlFactory('/api/siglusapi/localmachine/agent/syncResults'));
+            return $http.post(openlmisUrlFactory('/api/siglusapi/localmachine/agent/sync'));
         };
     }
 

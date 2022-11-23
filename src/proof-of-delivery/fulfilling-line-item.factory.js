@@ -94,20 +94,30 @@
             var additionalPodLineItem = proofOfDeliveryLineItems.filter(function(lineItem) {
                 return !_.contains(orderableIds, _.get(lineItem, ['orderable', 'id']));
             });
-            var additionalIds = additionalPodLineItem.map(function(lineItem) {
+
+            var additionalIds = _.uniq(additionalPodLineItem.map(function(lineItem) {
                 return _.get(lineItem, ['orderable', 'id']);
-            });
+            }));
+
             if (additionalIds.length > 0) {
                 orderableIds = orderableIds.concat(additionalIds);
+                var added = [];
                 additionalPodLineItem.forEach(function(lineItem) {
-                    orderLineItems.push({
-                        added: false,
-                        orderable: lineItem.orderable
-                    });
+                    // TODO add ordered quantity ....
+                    var orderableId = _.get(lineItem, ['orderable', 'id']);
+                    if (!_.contains(added, orderableId)) {
+                        orderLineItems.push({
+                            added: false,
+                            orderable: lineItem.orderable,
+                            orderedQuantity: 0,
+                            partialFulfilledQuantity: 0
+                        });
+                        added.push(orderableId);
+                    }
                 });
             }
             // SIGLUS-REFACTOR: end here
-
+            console.log('orderLineItems', orderLineItems);
             return new OrderableFulfillsResource().query({
                 id: orderableIds
             })
