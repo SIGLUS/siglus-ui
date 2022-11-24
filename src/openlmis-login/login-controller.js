@@ -42,6 +42,12 @@
         vm.doLogin = doLogin;
 
         vm.$onInit = function() {
+            // TODO currentUser not working, cause lots of test failed
+            var currencySettings = localStorage.getItem('openlmis.currencySettings');
+            if (currencySettings) {
+                console.log('localUserId', currencySettings);
+                location.reload();
+            }
             new LocalDatabase('orderables').removeAll();
             siglusHomeFacilityService.facility = null;
             currentUserService.clearCache();

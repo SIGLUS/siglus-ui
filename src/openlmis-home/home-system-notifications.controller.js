@@ -162,10 +162,10 @@
             homeImportAndExportService.getSyncResults()
                 .then(function(res) {
                     vm.syncFinishTime = moment().format('YYYY-MM-DD HH:mm:ss');
-                    var errors = _.get(res, ['data', 'errors']);
-                    if (errors && errors.length > 0) {
+                    var error = _.get(res, ['data', 'error']);
+                    if (error) {
                         vm.syncMessage = 'openlmisHome.syncedFailed';
-                        vm.errors = errors;
+                        vm.error = error;
                     } else {
                         vm.syncMessage = 'openlmisHome.syncedSuccessfully';
                         vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime']))
