@@ -47,7 +47,8 @@ describe('AddProductsModalController', function() {
                 modalDeferred: deferred,
                 orderableGroupService: _orderableGroupService_,
                 $scope: scope,
-                withLocation: ''
+                withLocation: '',
+                isInitialInventory: undefined
             });
         });
     });

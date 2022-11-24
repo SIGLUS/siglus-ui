@@ -30,11 +30,11 @@
 
     controller.$inject = ['items', 'hasLot', 'messageService',
         'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE',
-        'withLocation'];
+        'withLocation', 'isInitialInventory'];
 
     function controller(items, hasLot, messageService,
                         modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE,
-                        withLocation) {
+                        withLocation, isInitialInventory) {
         var vm = this;
 
         /**
@@ -48,6 +48,7 @@
          */
         vm.items = items;
         vm.withLocation = withLocation;
+        vm.isInitialInventory = isInitialInventory;
         /**
          * @ngdoc property
          * @propertyOf stock-add-products-modal.controller:AddProductsModalController

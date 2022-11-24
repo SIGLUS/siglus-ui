@@ -1817,6 +1817,7 @@
   "stockAddProductsModal.add": "Adicionar",
   "stockAddProductsModal.addProduct": "Adicionar produto",
   "stockAddProductsModal.addProducts": "Adicione ${num} artigos ao inventário físico",
+  "stockAddProductsModal.addProductsForInitialInventory": "Adicione ${num} artigos ao inventário inicial",
   "stockAddProductsModal.cancel": "Cancelar",
   "stockAddProductsModal.currentStock": "Stock actual",
   "stockAddProductsModal.expiryDate": "Data de validade",
@@ -2712,5 +2713,6 @@
   "openlmisDate.Sep":"Set",
   "openlmisDate.Oct":"Out",
   "openlmisDate.Nov":"Nov",
-  "openlmisDate.Dec":"Dez" 
+  "openlmisDate.Dec":"Dez",
+  "localmachine.failed": "falhou"
 }
