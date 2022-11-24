@@ -43,9 +43,9 @@
                     <i class="fa fa-warning"></i>
                     {{vm.syncMessage | message}} {{'openlmisHome.at' | message}} {{vm.syncFinishTime}}
                 </div>
-                <div ng-repeat="error in vm.errors" class="sync-error-item">
-                    <div ng-if="error.errorPayload.messageKey" class="sync-error-item-line">{{error.errorPayload.messageKey | message}}</div>
-                    <div ng-if="!error.errorPayload.messageKey" class="sync-error-item-line">{{error.type}} {{'localmachine.failed' | message}}</div>
+                <div ng-if="vm.error" class="sync-error-item">
+                    <div ng-if="vm.error.errorPayload.messageKey" class="sync-error-item-line">{{vm.error.errorPayload.messageKey | message}}</div>
+                    <div ng-if="!vm.error.errorPayload.messageKey" class="sync-error-item-line">{{vm.error.type}} {{'localmachine.failed' | message}}</div>
 <!--                    <div class="sync-error-item-line">{{error.errorPayload.errorName}}</div>-->
 <!--                    <div class="sync-error-item-line">{{error.errorPayload.rootStackTrace}}</div>-->
                 </div>
