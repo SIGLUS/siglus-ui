@@ -276,7 +276,7 @@
                 if (hasDupliatedItems) {
                     item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
                 } else {
-                    if (!_.get(item.lot, 'lotCode')) {
+                    if (!_.get(item.lot, 'lotCode') && !item.isKit) {
                         item.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
                         return ;
                     }
@@ -286,7 +286,7 @@
         };
 
         function validateLotExpired(item) {
-            if (!item.$errors.lotCodeInvalid && item.lot) {
+            if (!item.$errors.lotCodeInvalid && item.lot && !item.isKit) {
                 var lotExpiredDate = moment(item.lot.expirationDate);
                 if (moment().isAfter(lotExpiredDate)) {
                     item.$errors.lotCodeInvalid = 'receiveLocationCreation.lotExpired';
