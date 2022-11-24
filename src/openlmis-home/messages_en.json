@@ -17,5 +17,6 @@
 	"localmachine.invalid.file.type": "Please import the file in .dat format.",
 	"localmachine.file.may.be.modified": "The file is corrupted, please try to check your file or contact administrator.",
 	"localmachine.file.receiver.not.match.current.facility": "The receiver of the file you imported is not your facility, please import the file with your facility as the receiver.",
-	"openlmisHome.at": "at"
+	"openlmisHome.at": "at",
+	"localmachine.failed": "failed"
 }
