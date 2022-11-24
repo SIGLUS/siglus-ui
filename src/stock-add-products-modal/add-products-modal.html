@@ -80,8 +80,11 @@
 
             <div class="modal-footer">
                 <button ng-click="$hide()">{{'stockAddProductsModal.cancel' | message}}</button>
-                <button ng-click="vm.confirm()" class="primary">
+                <button ng-if="!vm.isInitialInventory" ng-click="vm.confirm()" class="primary">
                     {{'stockAddProductsModal.addProducts' | message: {'num': vm.addedItems.length} }}
+                </button>
+                <button ng-if="vm.isInitialInventory" ng-click="vm.confirm()" class="primary">
+                    {{'stockAddProductsModal.addProductsForInitialInventory' | message: {'num': vm.addedItems.length} }}
                 </button>
             </div>
 

@@ -1817,6 +1817,7 @@
   "stockAddProductsModal.add": "Adicionar",
   "stockAddProductsModal.addProduct": "Adicionar produto",
   "stockAddProductsModal.addProducts": "Adicione ${num} artigos ao inventário físico",
+  "stockAddProductsModal.addProductsForInitialInventory": "Adicione ${num} artigos ao inventário inicial",
   "stockAddProductsModal.cancel": "Cancelar",
   "stockAddProductsModal.currentStock": "Stock actual",
   "stockAddProductsModal.expiryDate": "Data de validade",

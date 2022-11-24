@@ -241,7 +241,8 @@
                 });
                 return !isInAdded;
             });
-            addProductsModalService.show(notYetAddedItems, vm.hasLot, true).then(function(addedItems) {
+            addProductsModalService.show(notYetAddedItems, vm.hasLot, true,
+                vm.isInitialInventory).then(function(addedItems) {
                 siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
                     draft.lineItems = draft.lineItems.concat(addedItems);
                     refreshLotOptions();
