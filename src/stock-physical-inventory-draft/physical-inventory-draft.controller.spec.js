@@ -249,7 +249,7 @@ describe('PhysicalInventoryDraftController', function() {
         vm.$onInit();
         vm.addProducts();
 
-        expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem4], true);
+        expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem4], true, undefined, undefined);
         // SIGLUS-REFACTOR: ends here
     });
 

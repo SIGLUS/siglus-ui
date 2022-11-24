@@ -43,7 +43,7 @@
          *
          * @return {Promise} resolved with selected products.
          */
-        function show(items, hasLot, withLocation) {
+        function show(items, hasLot, withLocation, isInitialInventory) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'AddProductsModalController',
@@ -59,6 +59,9 @@
                         },
                         withLocation: function() {
                             return withLocation;
+                        },
+                        isInitialInventory: function() {
+                            return isInitialInventory;
                         }
                     }
                 }
