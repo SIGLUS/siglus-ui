@@ -268,19 +268,15 @@
         vm.validateLotCodeDuplicated = function() {
             var groupItems = _.groupBy(vm.addedLineItems, 'orderableId');
             _.forEach(vm.addedLineItems, function(item) {
-                item.$errors.lotCodeInvalid = false;
+                if (item.$errors.lotCodeInvalid ===  messageService.get('stockReceiveCreation.itemDuplicated')) {
+                    item.$errors.lotCodeInvalid = false;
+                }
                 var hasDupliatedItems = _.size(_.filter(groupItems[item.orderableId], function(groupItem) {
                     var lotCode = _.get(groupItem, ['lot', 'lotCode']);
                     return lotCode && lotCode === _.get(item, ['lot', 'lotCode']);
                 })) > 1;
                 if (hasDupliatedItems) {
                     item.$errors.lotCodeInvalid = messageService.get('stockReceiveCreation.itemDuplicated');
-                } else {
-                    if (!_.get(item.lot, 'lotCode') && !item.isKit) {
-                        item.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
-                        return ;
-                    }
-                    validateLotExpired(item);
                 }
             });
         };
@@ -299,9 +295,12 @@
             if (lineItem.lot) {
                 lineItem.$errors.lotCodeInvalid = false;
             }
-            if (!lineItem.isKit) {
-                vm.validateLotCodeDuplicated();
+            if (!_.get(lineItem.lot, 'lotCode') && !lineItem.isKit) {
+                lineItem.$errors.lotCodeInvalid = messageService.get('openlmisForm.required');
+                return;
             }
+            validateLotExpired(lineItem);
+            vm.validateLotCodeDuplicated();
         };
 
         vm.validateLotDate = function(lineItem) {
@@ -317,16 +316,16 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name clearFreeText
-         *
-         * @description
-         * remove free text from given object.
-         *
-         * @param {Object} obj      given target to be changed.
-         * @param {String} property given property to be cleared.
-         */
+             * @ngdoc method
+             * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
+             * @name clearFreeText
+             *
+             * @description
+             * remove free text from given object.
+             *
+             * @param {Object} obj      given target to be changed.
+             * @param {String} property given property to be cleared.
+             */
         vm.clearFreeText = function(obj, property) {
             obj[property] = null;
         };
@@ -350,7 +349,7 @@
                     if (error.data.businessErrorExtraData === 'subDrafts quantity not match') {
                         alertService.error('stockIssueCreation.draftHasBeenUpdated');
                     } else if (
-                        // eslint-disable-next-line max-len
+                    // eslint-disable-next-line max-len
                         _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
                     ) {
                         alertService.error('openlmisModal.dateConflict');
@@ -377,10 +376,10 @@
         function getPdfName(facilityName, nowTime) {
             return (
                 'Entrada_'
-                + facilityName
-                + '_'
-                + nowTime
-                + '.pdf'
+                    + facilityName
+                    + '_'
+                    + nowTime
+                    + '.pdf'
             );
         }
         function downloadPdf() {
@@ -404,7 +403,7 @@
                     + sectionFouth.offsetHeight
                     + subInformation.offsetHeight
                     + PAGE_NUM_HEIGHT / rate;
-            // 分页部分的高度计算
+                // 分页部分的高度计算
             var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
             // 获取分页部分每行节点
             var needCalcTrNodes = document.querySelectorAll('#calcTr');
@@ -473,7 +472,7 @@
                     };
                 })
             ];
-            // 定义分页部分的promiseList
+                // 定义分页部分的promiseList
             var promiseList = [];
             // eslint-disable-next-line no-undef
             var PDF = new jsPDF('', 'pt', 'a4');
@@ -527,7 +526,7 @@
                                 4,
                                 (
                                     offsetHeight
-                                    + reback[2].nodeHeight
+                                        + reback[2].nodeHeight
                                 ) * rate,
                                 585,
                                 reback[3].nodeHeight * rate
@@ -538,8 +537,8 @@
                                 4,
                                 (
                                     offsetHeight
-                                    + reback[2].nodeHeight
-                                    + reback[3].nodeHeight
+                                        + reback[2].nodeHeight
+                                        + reback[3].nodeHeight
                                 ) * rate,
                                 585,
                                 reback[4].nodeHeight * rate
@@ -665,13 +664,13 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name orderableSelectionChanged
-         *
-         * @description
-         * Reset form status and change content inside lots drop down list.
-         */
+             * @ngdoc method
+             * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
+             * @name orderableSelectionChanged
+             *
+             * @description
+             * Reset form status and change content inside lots drop down list.
+             */
         vm.orderableSelectionChanged = function() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
@@ -688,16 +687,16 @@
         };
 
         /**
-         * @ngdoc method
-         * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
-         * @name getStatusDisplay
-         *
-         * @description
-         * Returns VVM status display.
-         *
-         * @param  {String} status VVM status
-         * @return {String}        VVM status display name
-         */
+             * @ngdoc method
+             * @methodOf stock-receive-creation.controller:SiglusStockReceiveCreationController
+             * @name getStatusDisplay
+             *
+             * @description
+             * Returns VVM status display.
+             *
+             * @param  {String} status VVM status
+             * @return {String}        VVM status display name
+             */
         vm.getStatusDisplay = function(status) {
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
@@ -773,6 +772,7 @@
                 vm.validateLot(item);
                 vm.validateLotDate(item);
             });
+
             return _.chain(vm.addedLineItems)
                 .groupBy(function(item) {
                     return item.lot ? item.lot.id : item.orderable.id;
@@ -883,7 +883,7 @@
             });
             vm.client = vm.facility.name;
             vm.supplier =
-                vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
+                    vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
         }
 
         function initStateParams() {
