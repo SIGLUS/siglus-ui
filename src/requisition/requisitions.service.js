@@ -536,8 +536,9 @@
             var requisition;
             if (offlineRequisition) {
                 requisition = angular.copy(offlineRequisition);
-                // template should from server
+                // template, age group should from server
                 requisition.template = requisitionFromServer.template;
+                requisition.ageGroupLineItems = requisitionFromServer.ageGroupLineItems;
             } else {
                 requisition = requisitionFromServer;
             }
