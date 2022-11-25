@@ -43,6 +43,7 @@
         $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
         $delegate.siglusValidRequisition = siglusValidRequisition;
         $delegate.validateTotalColumn = validateTotalColumn;
+        $delegate.validateAgeGroupLineItems = validateAgeGroupLineItems;
 
         return $delegate;
 
@@ -90,6 +91,8 @@
             isValid = validateUsageInformation(requisition) && isValid;
             isValid = validatePatient(requisition) && isValid;
             isValid = validateTestConsumption(requisition) && isValid;
+            isValid = validateAgeGroup(requisition) && isValid;
+
             return isValid;
         }
 
@@ -208,6 +211,24 @@
                         });
                         isValid = validateTestOutcomeField(fields) && isValid;
                     }
+                });
+            });
+            return isValid;
+        }
+
+        function validateAgeGroup(requisition) {
+            if (requisition.template.extension.enableAgeGroup && !requisition.emergency) {
+                return validateAgeGroupLineItems(requisition.ageGroupLineItems);
+            }
+            return true;
+        }
+
+        function validateAgeGroupLineItems(lineItems) {
+            var isValid = true;
+            lineItems.forEach(function(lineItem) {
+                _.values(lineItem.columns).forEach(function(column) {
+                    console.log('column', column);
+                    isValid = validateSiglusLineItemField(column) && isValid;
                 });
             });
             return isValid;
