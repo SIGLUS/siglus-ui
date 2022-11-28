@@ -59,6 +59,8 @@
 
         vm.isLocalMachine = Boolean(localStorageService.get('isLocalMachine')) === true;
 
+        $scope.isOffline = localStorageService.get(IS_OFFLINE)
+            ? localStorageService.get(IS_OFFLINE) === 'true' : false;
         vm.$onInit = function() {
             $scope.isOffline = localStorageService.get(IS_OFFLINE)
                 ? localStorageService.get(IS_OFFLINE) === 'true' : false;
