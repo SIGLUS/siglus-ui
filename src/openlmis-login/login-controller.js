@@ -87,6 +87,7 @@
                             console.log('emit isLocationMachine login');
                             $rootScope.$emit('isLocationMachine');
                             localStorageService.add('isLocalMachine', true);
+                            var IS_OFFLINE = 'IS_OFFLINE';
                             return OpenlmisMainStateService.getLocalMachineBaseInfo()
                                 .then(function(res) {
                                     var data = res.data;
@@ -97,9 +98,11 @@
                                         $rootScope.$emit('isLocalMachineOnline', {
                                             localMachineVersion: localMachineVersion
                                         });
+                                        localStorageService.add(IS_OFFLINE, 'false');
                                     } else {
                                         console.log('emit offline');
                                         $rootScope.$emit('isLocalMachineOffline');
+                                        localStorageService.add(IS_OFFLINE, 'true');
                                     }
                                 })
                                 .catch(function(error) {
