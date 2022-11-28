@@ -55,28 +55,30 @@
             localStorageService.add(IS_OFFLINE, 'true');
         });
 
-        $rootScope.isLocalMachine = undefined;
+        $rootScope.isLocalMachine = Boolean(localStorageService.get('isLocalMachine')) === true;
+
+        vm.isLocalMachine = Boolean(localStorageService.get('isLocalMachine')) === true;
+
+        $scope.isOffline = localStorageService.get(IS_OFFLINE)
+            ? localStorageService.get(IS_OFFLINE) === 'true' : false;
         vm.$onInit = function() {
             $scope.isOffline = localStorageService.get(IS_OFFLINE)
                 ? localStorageService.get(IS_OFFLINE) === 'true' : false;
             $scope.testString = OpenlmisMainStateService.testString;
-            if (vm.isLocalMachine === undefined) {
-                OpenlmisMainStateService.getMachineType().then(function(res) {
-                    var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
-                    vm.isLocalMachine = isLocalMachine;
-                    $rootScope.isLocalMachine = isLocalMachine;
-                    if (vm.isLocalMachine) {
-                        console.log('emit isLocationMachine');
-                        $rootScope.$emit('isLocationMachine');
-                        localStorageService.add('isLocalMachine', true);
-                        vm.handleIfLocalMachine();
-                    } else {
-                        localStorageService.add('isLocalMachine', false);
-                    }
-                });
-            } else if (vm.isLocalMachine) {
-                vm.handleIfLocalMachine();
-            }
+
+            OpenlmisMainStateService.getMachineType().then(function(res) {
+                var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+                vm.isLocalMachine = isLocalMachine;
+                $rootScope.isLocalMachine = isLocalMachine;
+                if (vm.isLocalMachine) {
+                    console.log('emit isLocationMachine');
+                    $rootScope.$emit('isLocationMachine');
+                    localStorageService.add('isLocalMachine', true);
+                    vm.handleIfLocalMachine();
+                } else {
+                    localStorageService.add('isLocalMachine', false);
+                }
+            });
 
         };
 
