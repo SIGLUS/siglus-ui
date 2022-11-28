@@ -68,7 +68,7 @@
          * Indicates offline connection.
          */
         vm.isOffline = localStorageService.get(IS_OFFLINE) ? localStorageService.get(IS_OFFLINE) === 'true' : false;
-        vm.isLocalMachine = undefined;
+        vm.isLocalMachine = Boolean(localStorageService.get('isLocalMachine')) === true;
         /**
          * @ngdoc method
          * @methodOf home-system-notifications.controller:HomeSystemNotificationsController
