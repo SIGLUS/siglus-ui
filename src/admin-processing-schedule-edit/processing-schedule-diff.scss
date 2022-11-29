@@ -4,5 +4,5 @@
 
 // some product name contains more than 1 blank, but html only show one blank add this class to let the name show correct.
 .white-space-pre {
-    white-space: pre;
+    white-space: pre-wrap;
 }
