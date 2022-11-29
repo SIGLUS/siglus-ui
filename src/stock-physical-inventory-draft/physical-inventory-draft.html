@@ -50,7 +50,7 @@
         <tbody ng-repeat="(category, groupedLineItems) in vm.groupedCategories"  tbody-title="{{category}}">
         <tr ng-if="lineItems.length > 1" ng-repeat-start="lineItems in groupedLineItems">
             <td>{{lineItems[0].orderable.productCode}}</td>
-            <td>{{lineItems[0].orderable | productName}}</td>
+            <td class="white-space-pre">{{lineItems[0].orderable | productName}}</td>
             <td></td>
             <td></td>
             <!-- SIGLUS-REFACTOR: starts here -->
@@ -69,7 +69,7 @@
         </tr>
         <tr ng-click="vm.focusedRowChanged(lineItem)" ng-repeat="lineItem in lineItems" ng-repeat-end>
             <td>{{lineItems.length > 1 ? '' : lineItem.orderable.productCode}}</td>
-            <td>{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
+            <td class="white-space-pre">{{lineItems.length > 1 ? '' : (lineItem.orderable | productName)}}</td>
             <td ng-if="!(lineItem.orderable && lineItem.orderable.isKit)">
                 <span ng-if="!vm.isEmpty(lineItem.stockCardId) || vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.lot | siglusExpiredLotCode}}</span>
                 <siglus-stock-input-select

@@ -18,7 +18,7 @@
         <tbody>
         <tr>
             <td>{{vm.kit.productCode}}</td>
-            <td>{{vm.kit.fullProductName}}</td>
+            <td class="white-space-pre">{{vm.kit.fullProductName}}</td>
             <td class="text-align-right">{{vm.kit.stockOnHand}}</td>
             <td ng-if="!vm.showProducts" class="digit-cell">
                 <input class="form-control"
@@ -65,7 +65,7 @@
             <tbody ng-repeat="products in vm.groupedProducts">
             <tr ng-if="products.length > 1">
                 <td>{{products[0].productCode}}</td>
-                <td>{{products[0].fullProductName}}</td>
+                <td class="white-space-pre">{{products[0].fullProductName}}</td>
                 <td></td>
                 <td></td>
                 <td class="text-align-right">{{products[0].quantityInKit*vm.kit.unpackQuantity}}</td>
@@ -77,7 +77,7 @@
             </tr>
             <tr ng-repeat="product in products">
                 <td>{{products.length > 1 ? '' : product.productCode}}</td>
-                <td>{{products.length > 1 ? '' : (product.fullProductName)}}</td>
+                <td class="white-space-pre">{{products.length > 1 ? '' : (product.fullProductName)}}</td>
                 <td>
                     <siglus-stock-input-select line-items="products" line-item="product" enable-input="true"></siglus-stock-input-select>
                 </td>

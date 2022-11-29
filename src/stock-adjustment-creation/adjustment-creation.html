@@ -55,7 +55,7 @@
             <tbody>
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
-                <td>{{lineItem.orderable | productName}}</td>
+                <td class="white-space-pre">{{lineItem.orderable | productName}}</td>
                 <td ng-if="!lineItem.isKit">
                     <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
                 </td>

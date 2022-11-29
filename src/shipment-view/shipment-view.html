@@ -83,7 +83,7 @@
                 </td>
                 <!-- #287: ends here-->
                 <td>{{tableLineItem.productCode}}</td>
-                <td>{{tableLineItem.productName}}</td>
+                <td class="white-space-pre">{{tableLineItem.productName}}</td>
                 <td ng-if="!tableLineItem.isLot"></td>
                 <td ng-if="tableLineItem.isLot">{{tableLineItem.lot | lotCode}}</td>
                 <!-- #370: hide VVM Status-->
