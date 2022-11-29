@@ -1,0 +1,59 @@
+<h2 ng-if="!vm.updateMode">{{'adminUserForm.addUser' | message}}</h2>
+<h2 ng-if="vm.updateMode">{{'adminUserForm.editUser' | message: {username: vm.initialUsername} }}</h2>
+<form id="newUserForm" ng-submit="vm.saveUser()">
+    <label for="username">{{'adminUserForm.username' | message}}</label>
+    <input id="username" ng-model="vm.user.username" type="text" required/>
+    <label for="email">{{'adminUserForm.email' | message}}</label>
+    <input id="email" ng-model="vm.user.email" type="email"/>
+    <p class="note" ng-if="vm.pendingVerificationEmail">
+        {{ 'adminUserForm.pendingVerificationEmail.info' | message: {email: vm.pendingVerificationEmail.emailAddress} }}
+    </p>
+    <fieldset class="form-group">
+        <label>
+            <input type="checkbox" ng-model="vm.user.verified" disabled/>
+            {{'adminUserForm.emailVerified' | message}}
+        </label>
+    </fieldset>
+    <fieldset class="form-group" ng-if="vm.updateMode">
+        <label>
+            <input type="checkbox" ng-model="vm.user.allowNotify" ng-disabled="!vm.user.email || !vm.user.verified"/>
+            {{'adminUserForm.allowNotifications' | message}}
+        </label>
+    </fieldset>
+    <p class="note" ng-if="vm.updateMode">{{'adminUserForm.allowNotifications.description.checked' | message}}</p>
+    <p class="note" ng-if="vm.updateMode">{{'adminUserForm.allowNotifications.description.unchecked' | message}}</p>
+    <label for="firstName">{{'adminUserForm.firstName' | message}}</label>
+    <input id="firstName" ng-model="vm.user.firstName" type="text" required/>
+    <label for="lastName">{{'adminUserForm.lastName' | message}}</label>
+    <input id="lastName" ng-model="vm.user.lastName" type="text" required/>
+    <label for="jobTitle">{{'adminUserForm.jobTitle' | message}}</label>
+    <input id="jobTitle" ng-model="vm.user.jobTitle" type="text"/>
+    <label for="phoneNumber">{{'adminUserForm.phoneNumber' | message}}</label>
+    <input id="phoneNumber" ng-model="vm.user.phoneNumber" type="text"/>
+    <fieldset class="form-group">
+        <legend>{{'adminUserForm.enabled' | message}}</legend>
+        <label class="radio">
+            <input type="radio" ng-model="vm.user.enabled"
+                ng-value="true" required/>
+            {{'adminUserForm.yes' | message}}
+        </label>
+        <label class="radio">
+            <input type="radio" ng-model="vm.user.enabled"
+                ng-value="false" required/>
+            {{'adminUserForm.no' | message}}
+        </label>
+    </fieldset>
+    <label>{{'adminUserForm.homeFacility' | message}}</label>
+    <select id="homeFacility" ng-model="vm.homeFacility" ng-change="vm.validHomeFacilityWithRoles()"
+        ng-options="facility.name for facility in vm.facilities track by facility.id"
+        ng-required="vm.user.homeFacility && vm.user.homeFacility.code"
+        no-auto-select="true">
+    </select>
+</form>
+<div class="openlmis-toolbar">
+    <button ui-sref="^">{{'adminUserForm.cancel' | message}}</button>
+    <div class="button-group primary">
+        <button class="primary" form="newUserForm" type="submit">{{(vm.updateMode ? 'adminUserForm.updateUser' : 'adminUserForm.createUser') | message}}</button>
+        <button ng-if="vm.updateMode && vm.pendingVerificationEmail" ng-click="vm.sendVerificationEmail()">{{ 'adminUserForm.sendVerificationEmail' | message }}</button>
+    </div>
+</div>

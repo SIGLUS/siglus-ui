@@ -367,6 +367,7 @@
             });
         };
 
+        // SIGLUS-REFACTOR: starts here
         /**
          * @ngdoc method
          * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController

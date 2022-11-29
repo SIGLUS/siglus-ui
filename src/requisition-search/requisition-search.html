@@ -24,11 +24,13 @@
                 ng-options="status.label as status.label | requisitionStatus for status in vm.statuses"
                 ng-model="vm.selectedStatus">
         </select>
-        <label class="checkbox">
+        <!--        SIGLUS-REFACTOR: starts here :remove offline column-->
+        <!-- <label class="checkbox">
             <input id="offlineSearch" type="checkbox" ng-model="vm.offline"
                    ng-disabled="vm.isOfflineDisabled()"/>
             {{'requisitionSearch.offline' | message}}
-        </label>
+        </label> -->
+        <!--        SIGLUS-REFACTOR: end here-->
         <fieldset>
             <legend>{{'requisitionSearch.dateInitiated' | message}}</legend>
             <label for=startDate>{{'requisitionSearch.from' | message}}</label>
