@@ -39,12 +39,11 @@
         var vm = this;
 
         var IS_OFFLINE = 'IS_OFFLINE';
-        var LAST_SYNC_TIME = 'LAST_SYNC_TIME';
         vm.$onInit = onInit;
         vm.localMachineVersion = undefined;
         vm.connectedOnlineWeb = localStorageService.get(IS_OFFLINE)
             ? localStorageService.get(IS_OFFLINE) === 'false' : true;
-        vm.lastSyncTime = localStorageService.get(LAST_SYNC_TIME);
+        vm.lastSyncTime = '';
         vm.syncFinishTime = '';
         vm.syncMessage = '';
         vm.errors = [];
@@ -159,6 +158,7 @@
         };
 
         vm.sync = function() {
+            loadingModalService.open();
             homeImportAndExportService.getSyncResults()
                 .then(function(res) {
                     vm.syncFinishTime = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -170,9 +170,9 @@
                         vm.syncMessage = 'openlmisHome.syncedSuccessfully';
                         vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime']))
                             .format('YYYY-MM-DD HH:mm:ss');
-                        localStorageService.add(LAST_SYNC_TIME, vm.lastSyncTime);
                     }
-                });
+                })
+                .finally(loadingModalService.close);
         };
     }
 
