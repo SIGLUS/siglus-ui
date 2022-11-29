@@ -71,7 +71,7 @@
       <tbody ng-repeat="orderLineItem in vm.orderLineItems | orderBy : 'orderable.fullProductName'">
       <tr class="is-secondary">
         <td>{{orderLineItem.orderable.productCode}}</td>
-        <td>{{orderLineItem.orderable.fullProductName}}</td>
+        <td class="white-space-pre">{{orderLineItem.orderable.fullProductName}}</td>
         <td></td>
         <td></td>
         <td>{{orderLineItem.orderedQuantity}}</td>
@@ -89,7 +89,7 @@
       </tr>
       <tr ng-repeat-start="groupOfFulfillingLineItems in orderLineItem.groupedLineItems | orderBy: '[0].orderable.fullProductName'">
         <td>{{groupOfFulfillingLineItems[0].orderable.productCode}}</td>
-        <td>{{groupOfFulfillingLineItems[0].orderable.fullProductName}}</td>
+        <td class="white-space-pre">{{groupOfFulfillingLineItems[0].orderable.fullProductName}}</td>
         <td></td>
         <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
         <td></td>

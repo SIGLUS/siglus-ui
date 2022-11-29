@@ -47,7 +47,7 @@
 
         <tr ng-class="{'is-secondary': lineItem.type === 'PRODUCT'}" ng-repeat="lineItem in group">
             <td>{{lineItem.productCode}}</td>
-            <td>{{lineItem.productName}}</td>
+            <td class="white-space-pre">{{lineItem.productName}}</td>
             <td>{{lineItem.lotCode}}</td>
             <td>{{lineItem.expirationDate}}</td>
             <td>{{lineItem.locationCode}}</td>

@@ -62,7 +62,7 @@
         <tr class="is-secondary" ng-if="vm.stockCardSummaries.length > 0" ng-repeat-start="summary in vm.stockCardSummaries">
             <!-- SIGLUS-REFACTOR: ends here -->
             <td>{{summary.orderable.productCode}}</td>
-            <td>{{summary.orderable.fullProductName}}</td>
+            <td class="white-space-pre">{{summary.orderable.fullProductName}}</td>
             <td></td>
             <td></td>
             <td>{{summary.orderable.isKit ? (summary.occurredDate | openlmisDate) : ''}}</td>
@@ -79,7 +79,7 @@
         </tr>
         <tr ng-repeat="stockCardDetail in summary.stockCardDetails | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
             <td>{{stockCardDetail.orderable.productCode}}</td>
-            <td>{{stockCardDetail.orderable.fullProductName}}</td>
+            <td class="white-space-pre">{{stockCardDetail.orderable.fullProductName}}</td>
             <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? stockCardDetail.lot.lotCode : ''}}</td>
             <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? (stockCardDetail.lot.expirationDate | openlmisDate) : ''}}</td>
             <td>{{stockCardDetail.occurredDate | openlmisDate}}</td>
