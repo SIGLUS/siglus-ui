@@ -48,7 +48,7 @@
             <tbody ng-repeat="lineItems in vm.items">
             <tr ng-repeat="(index, lineItem) in lineItems">
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
-                <td>{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
+                <td class="white-space-pre">{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <siglus-stock-input-select

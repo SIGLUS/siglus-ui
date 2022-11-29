@@ -80,7 +80,7 @@
                         ng-change="vm.changeSkipStatus(lineItem, lineItems)" ng-disabled="!vm.canSkip(lineItems)" />
                 </td>
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
-                <td>{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
+                <td class="white-space-pre">{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems)"></td>
                 <td ng-if="vm.showEditableBlockWithLots(lineItem, lineItems)"
                     openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"

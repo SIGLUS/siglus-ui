@@ -47,7 +47,7 @@
             <tbody ng-repeat="(outerIndex, lineItems) in vm.pagedLineItems">
             <tr ng-repeat="(index, lineItem) in lineItems" ng-repeat-end>
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
-                <td>{{lineItem.isMainGroup ? lineItem.productName : '' }}</td>
+                <td class="white-space-pre">{{lineItem.isMainGroup ? lineItem.productName : '' }}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                     <div ng-if="vm.isVirtual">{{lineItem.lot.lotCode}}</div>

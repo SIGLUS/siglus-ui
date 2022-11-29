@@ -16,7 +16,7 @@
             <tbody ng-repeat="category in vm.categories | orderBy: 'displayOrder'" tbody-title="{{category.name}}">
             <tr ng-repeat="lineItem in vm.regimenLineItems | orderBy: ['regimen.code', 'regimen.fullProductName']" ng-if="lineItem.regimen.regimenCategory.name === category.name">
                 <td ng-if="vm.hasCode">{{lineItem.regimen.code}}</td>
-                <td>{{lineItem.regimen.fullProductName}}</td>
+                <td  class="white-space-pre">{{lineItem.regimen.fullProductName}}</td>
 <!--                TODO should display by Source-->
                 <td ng-if="vm.canEdit && vm.isUserInput(regimenColumn)" ng-repeat="regimenColumn in lineItem.columns | orderObjectBy: 'displayOrder'"
                     siglus-requisition-grid-cell

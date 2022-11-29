@@ -50,7 +50,7 @@
             <tbody ng-repeat="(outerIndex, lineItems) in vm.pagedLineItems">
                 <tr ng-repeat="(index, lineItem) in lineItems">
                     <td>{{lineItem.isMainGroup ? lineItem.orderable.productCode : ''}}</td>
-                    <td>{{vm.getProductName(lineItem)}}</td>
+                    <td class="white-space-pre">{{vm.getProductName(lineItem)}}</td>
                     <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                     <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                         <siglus-stock-input-select line-items="lineItems" line-item="lineItem" enable-input="true">
