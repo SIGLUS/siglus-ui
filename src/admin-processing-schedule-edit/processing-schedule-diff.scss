@@ -6,3 +6,13 @@
 .white-space-pre {
     white-space: pre-wrap;
 }
+
+.page div[ui-view]>*:not(:last-child){
+    &.openlmis-toolbar{
+        margin-bottom: 0em;
+    }
+}
+
+.select2-results__option{
+    white-space: pre-wrap;
+}
