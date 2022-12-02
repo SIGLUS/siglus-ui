@@ -94,5 +94,14 @@ pipeline {
                 build job: '../siglus-reference-ui/release', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
             }
         }
+         stage('Notify to build reference-ui training') {
+            when {
+                branch 'training'
+            }
+            steps {
+                sh 'echo IMAGE_TAG: ${IMAGE_TAG}'
+                build job: '../siglus-reference-ui/training', wait: false, parameters: [[$class: 'StringParameterValue', name: 'SIGLUS_UI_IMAGE_TAG', value: "${env.IMAGE_TAG}"]]
+            }
+         }
     }
 }
