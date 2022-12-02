@@ -1,5 +1,5 @@
 {
-  "openlmisLogin.appHeader": "SIMAM - Sistema de Informação de Medicamentos e Artigos Médicos",
+  "openlmisLogin.appHeader": "SIMAM - Sistema de Informação de Medicamentos e Artigos Médicos on training environment",
   "openlmisLogin.forgotPassword": "Forgot password?",
   "openlmisLogin.password": "Password",
   "openlmisLogin.poweredBy": "Powered by ${openlmis}",
