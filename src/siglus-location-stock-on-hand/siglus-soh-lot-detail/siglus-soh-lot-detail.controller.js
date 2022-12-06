@@ -57,8 +57,10 @@
 
             var items = [];
             var previousSoh;
+
             angular.forEach(stockCard.lineItems, function(lineItem) {
-                if (lineItem.stockAdjustments.length > 0) {
+                if (lineItem.stockAdjustments.length > 0
+                    && !isPhysicalReason(_.get(lineItem.reason, 'reasonCategory'))) {
                     angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
                         var lineValue = angular.copy(lineItem);
                         if (i !== 0) {
@@ -107,16 +109,16 @@
         }
 
         function getReason(lineItem) {
-            lineItem.reason = new Reason(lineItem.reason);
-            if (lineItem.reasonFreeText) {
+            if (isPhysicalReason(_.get(lineItem.reason, 'reasonCategory'))) {
+                return 'Inventário físico';
+            } else if (lineItem.reasonFreeText) {
                 return messageService.get('stockCard.reasonAndFreeText', {
                     name: addPrefixForAdjustmentReason(lineItem.reason).name,
                     freeText: lineItem.reasonFreeText
                 });
             }
-            return isPhysicalReason(_.get(lineItem.reason, 'reasonCategory'))
-                ? 'Inventário físico'
-                : addPrefixForAdjustmentReason(lineItem.reason).name;
+            var reason = new Reason(lineItem.reason);
+            return addPrefixForAdjustmentReason(reason).name;
         }
     }
 })();
