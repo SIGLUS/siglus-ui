@@ -59,34 +59,32 @@
             var previousSoh;
 
             angular.forEach(stockCard.lineItems, function(lineItem) {
-                if (lineItem.stockAdjustments.length > 0) {
-                    if (isPhysicalReason(_.get(lineItem.reason, 'reasonCategory'))) {
+                if (isPhysicalReason(_.get(lineItem.reason, 'reasonCategory'))) {
+                    var lineValue = angular.copy(lineItem);
+                    var quantity = 0;
+                    lineItem.stockAdjustments.forEach(function(adjustment) {
+                        if (_.get(adjustment, ['reason', 'reasonType']) === 'DEBIT') {
+                            quantity = quantity - _.get(adjustment, 'quantity');
+                        }
+                        if (_.get(adjustment, ['reason', 'reasonType']) === 'CREDIT') {
+                            quantity = quantity + _.get(adjustment, 'quantity');
+                        }
+                    });
+                    lineValue.quantity = quantity;
+                    items.push(lineValue);
+                } else if (lineItem.stockAdjustments.length > 0) {
+                    // TODO what if multiple???
+                    angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
                         var lineValue = angular.copy(lineItem);
-                        var quantity = 0;
-                        lineItem.stockAdjustments.forEach(function(adjustment) {
-                            if (_.get(adjustment, ['reason', 'reasonType']) === 'DEBIT') {
-                                quantity = quantity - _.get(adjustment, 'quantity');
-                            }
-                            if (_.get(adjustment, ['reason', 'reasonType']) === 'CREDIT') {
-                                quantity = quantity + _.get(adjustment, 'quantity');
-                            }
-                        });
-                        lineValue.quantity = quantity;
+                        if (i !== 0) {
+                            lineValue.stockOnHand = previousSoh;
+                        }
+                        lineValue.reason = adjustment.reason;
+                        lineValue.quantity = adjustment.quantity;
+                        lineValue.stockAdjustments = [];
                         items.push(lineValue);
-                    } else {
-                        // TODO what if multiple???
-                        angular.forEach(lineItem.stockAdjustments.slice().reverse(), function(adjustment, i) {
-                            var lineValue = angular.copy(lineItem);
-                            if (i !== 0) {
-                                lineValue.stockOnHand = previousSoh;
-                            }
-                            lineValue.reason = adjustment.reason;
-                            lineValue.quantity = adjustment.quantity;
-                            lineValue.stockAdjustments = [];
-                            items.push(lineValue);
-                            previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
-                        });
-                    }
+                        previousSoh = lineValue.stockOnHand - getSignedQuantity(adjustment);
+                    });
                 } else {
                     items.push(lineItem);
                 }
