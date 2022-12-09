@@ -99,10 +99,11 @@
 
         });
         // TODO can't accept event here!!!!
-        $rootScope.$on('isLocalMachineOffline', function() {
+        $rootScope.$on('isLocalMachineOffline', function(_event, args) {
             // if error happens not working
             console.log('receive offline');
             vm.connectedOnlineWeb = false;
+            vm.localMachineVersion = _.get(args, 'localMachineVersion');
             vm.isOffline = true;
         });
 
