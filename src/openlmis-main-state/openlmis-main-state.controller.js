@@ -50,7 +50,8 @@
             $scope.isOffline = false;
             localStorageService.add(IS_OFFLINE, 'false');
         });
-        $rootScope.$on('isLocalMachineOffline', function() {
+        $rootScope.$on('isLocalMachineOffline', function(_event, args) {
+            $scope.localMachineVersion = _.get(args, 'localMachineVersion');
             $scope.isOffline = true;
             localStorageService.add(IS_OFFLINE, 'true');
         });
