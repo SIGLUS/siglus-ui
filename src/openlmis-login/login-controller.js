@@ -101,7 +101,9 @@
                                         localStorageService.add(IS_OFFLINE, 'false');
                                     } else {
                                         console.log('emit offline');
-                                        $rootScope.$emit('isLocalMachineOffline');
+                                        $rootScope.$emit('isLocalMachineOffline',  {
+                                            localMachineVersion: localMachineVersion
+                                        });
                                         localStorageService.add(IS_OFFLINE, 'true');
                                     }
                                 })

@@ -8,3 +8,10 @@
 #physical-inventory-list-program-sidebar .input-control.is-invalid {
   padding-right: 0.5em;
 }
+
+.openlmis-table-container {
+  padding-bottom: 40px;
+  .openlmis-flex-table.ps-container {
+    padding-bottom: 20px;
+  }
+}

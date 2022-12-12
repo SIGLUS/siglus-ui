@@ -100,7 +100,9 @@
                                         });
                                     } else {
                                         console.log('emit offline');
-                                        $rootScope.$emit('isLocalMachineOffline');
+                                        $rootScope.$emit('isLocalMachineOffline', {
+                                            localMachineVersion: localMachineVersion
+                                        });
                                     }
                                 })
                                 .catch(function(error) {
