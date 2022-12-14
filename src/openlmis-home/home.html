@@ -1,7 +1,7 @@
 <div class="home-page">
     <div style="
     text-align: center;
-    opacity: 0.4;
+    color: #d25555;
     ">Training environment</div>
     <!-- SIGLUS-REFACTOR: Add background-->
     <div class="bg"></div>
@@ -21,6 +21,7 @@
         <h2 class="power">
             {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}
         </h2>
+        <openlmis-app-cache></openlmis-app-cache>
     </div>
     <div class="usaid"></div>
     <div ng-if="vm.isLocalMachine" class="offline-container">
