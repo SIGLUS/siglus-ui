@@ -31,10 +31,10 @@
     controller.$inject = ['$window', 'stockCardSummaries', 'facility',
         'displayItems', 'user', 'siglusLocationCommonFilterService',
         'programs', 'paginationService',
-        '$stateParams', '$state', 'stockCardLineItems'];
+        '$stateParams', '$state', 'stockCardLineItems', '$rootScope'];
 
     function controller($window, stockCardSummaries, facility, displayItems, user, siglusLocationCommonFilterService,
-                        programs, paginationService, $stateParams, $state, stockCardLineItems) {
+                        programs, paginationService, $stateParams, $state, stockCardLineItems, $rootScope) {
         var vm = this;
 
         vm.stockCardSummaries = null;
@@ -145,5 +145,20 @@
             vm.keyword = '';
             reloadPage();
         };
+
+        vm.handleBackFromSohDetail = function(toState, fromState) {
+            if (toState.name === 'openlmis.locationManagement.stockOnHand' &&
+                (fromState.name === 'openlmis.locationManagement.stockOnHand.locationDetail' ||
+                fromState.name === 'openlmis.locationManagement.stockOnHand.lotDetail' ||
+                fromState.name === 'openlmis.locationManagement.stockOnHand.productDetail')
+            ) {
+                $state.reload();
+            }
+        };
+
+        // TODO should deregisterListener once leave
+        $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState) {
+            vm.handleBackFromSohDetail(toState, fromState);
+        });
     }
 })();
