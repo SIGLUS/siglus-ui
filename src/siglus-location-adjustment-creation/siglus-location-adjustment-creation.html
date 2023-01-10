@@ -36,12 +36,13 @@
                 <tr>
                     <th>{{'stockAdjustmentCreation.productCode' | message}}</th>
                     <th>{{'stockAdjustmentCreation.product' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.reason' | message}}</th>
+                    <th>{{'stockAdjustmentCreation.reasonComments' | message}}</th>
                     <th>{{'stockAdjustmentCreation.lotCode' | message}}</th>
                     <th style="min-width:130px;">{{'stockAdjustmentCreation.expiryDate' | message}}</th>
                     <th>{{'stockAdjustmentCreation.location' | message}}</th>
                     <th>{{'stockAdjustmentCreation.soh' | message}}</th>
-                    <th>{{'stockAdjustmentCreation.reason' | message}}</th>
-                    <th>{{'stockAdjustmentCreation.reasonComments' | message}}</th>
+
                     <th>{{'stockAdjustmentCreation.quantity' | message}}</th>
                     <th>{{'stockAdjustmentCreation.documentationNo' | message}}</th>
                     <th>{{'stockAdjustmentCreation.actions' | message}}</th>
@@ -51,6 +52,24 @@
                 <tr ng-repeat="(index, lineItem) in lineItems">
                     <td>{{lineItem.isMainGroup ? lineItem.orderable.productCode : ''}}</td>
                     <td class="white-space-pre">{{vm.getProductName(lineItem)}}</td>
+
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
+                        openlmis-invalid="{{lineItem.$errors.reasonInvalid | message}}"
+                        class="digit-cell">
+                        <select ng-model="lineItem.reason"
+                                ng-change="vm.validateReason(lineItem,lineItems);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
+                                ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.programId) track by reason.id"
+                                autofocus>
+                        </select>
+                    </td>
+
+                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
+                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
+                        <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
+                               ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100" />
+                    </td>
+
                     <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                     <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
                         <siglus-stock-input-select line-items="lineItems" line-item="lineItem" enable-input="true">
@@ -73,21 +92,6 @@
                         </select>
                     </td>
                     <td class="text-align-right">{{vm.getStockOnHand(lineItem, lineItems, index)}}</td>
-                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)"
-                        openlmis-invalid="{{lineItem.$errors.reasonInvalid | message}}"
-                        class="digit-cell">
-                        <select ng-model="lineItem.reason"
-                            ng-change="vm.validateReason(lineItem,lineItems);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItems);"
-                            ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.programId) track by reason.id"
-                            autofocus>
-                        </select>
-                    </td>
-                    <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)"></td>
-                    <td ng-if="!vm.showEmptyBlock(lineItem, lineItems, index)">
-                        <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
-                            ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100" />
-                    </td>
                     <td ng-if="vm.showEmptyBlock(lineItem, lineItems, index)">
                         {{vm.getTotalQuantity(lineItems)}}
                     </td>
