@@ -41,11 +41,11 @@
             <tr>
                 <th>{{vm.key('productCode') | message}}</th>
                 <th>{{vm.key('product') | message}}</th>
+                <th>{{vm.key('reason') | message}}</th>
+                <th>{{vm.key('reasonComments') | message}}</th>
                 <th>{{vm.key('lotCode') | message}}</th>
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
-                <th>{{vm.key('reason') | message}}</th>
-                <th>{{vm.key('reasonComments') | message}}</th>
                 <th>{{vm.key('quantity') | message}}</th>
                 <th ng-if="vm.showVVMStatusColumn">{{vm.key('vvmStatus') | message}}</th>
                 <th>{{vm.key('documentationNo') | message}}</th>
@@ -56,16 +56,6 @@
             <tr ng-repeat="lineItem in vm.items">
                 <td>{{lineItem.orderable.productCode}}</td>
                 <td class="white-space-pre">{{lineItem.orderable | productName}}</td>
-                <td ng-if="!lineItem.isKit">
-                    <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
-                </td>
-                <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
-                    <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
-                           ng-disabled="lineItem.lot.id"/>
-                </td>
-                <td ng-if="lineItem.isKit"></td>
-                <td ng-if="lineItem.isKit"></td>
-                <td class="text-align-right">{{lineItem.$previewSOH}}</td>
                 <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                     <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItem);"
@@ -77,6 +67,16 @@
                     <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
                            ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100"/>
                 </td>
+                <td ng-if="!lineItem.isKit">
+                    <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
+                </td>
+                <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
+                    <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
+                           ng-disabled="lineItem.lot.id"/>
+                </td>
+                <td ng-if="lineItem.isKit"></td>
+                <td ng-if="lineItem.isKit"></td>
+                <td class="text-align-right">{{lineItem.$previewSOH}}</td>
                 <!-- SIGLUS-REFACTOR: ends here -->
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
