@@ -29,10 +29,11 @@
         .controller('NavigationController', NavigationController);
 
     NavigationController.$inject = ['$scope', 'navigationStateService', 'currentUserHomeFacilityService',
-        'siglusHomeFacilityService', 'facilityFactory', 'localStorageService'];
+        'siglusHomeFacilityService', 'facilityFactory', 'localStorageService', 'OpenlmisMainStateService'];
 
     function NavigationController($scope, navigationStateService, currentUserHomeFacilityService,
-                                  siglusHomeFacilityService, facilityFactory, localStorageService) {
+                                  siglusHomeFacilityService, facilityFactory, localStorageService,
+                                  OpenlmisMainStateService) {
 
         var vm = this;
 
@@ -71,22 +72,24 @@
                 var states = navigationStateService.roots[$scope.rootState];
                 var enableLocationManagement = _.get(angular.fromJson(localStorageService.get('homeFacility')),
                     'enableLocationManagement');
-                var facilityDeviceType = _.get(angular.fromJson(localStorageService.get('homeFacility')),
-                    'facilityDeviceType');
-                vm.states =
-                    _.chain(states)
-                        .filter(function(stateItem) {
-                            return !_.get(stateItem, ['name'], '').contains(
-                                enableLocationManagement ? 'openlmis.stockmanagement' : 'openlmis.locationManagement'
-                            );
-                        })
-                        .filter(function(stateItem) {
-                            return facilityDeviceType === 'LOCAL_MACHINE' ?
-                                !_.get(stateItem, ['name'], '').contains('openlmis.analyticsReport')
-                                : true;
-                        })
-                        .value();
 
+                OpenlmisMainStateService.getMachineType().then(function(res) {
+                    var isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+                    vm.states =
+                        _.chain(states)
+                            .filter(function(stateItem) {
+                                return !_.get(stateItem, ['name'], '').contains(
+                                    enableLocationManagement ? 'openlmis.stockmanagement'
+                                        : 'openlmis.locationManagement'
+                                );
+                            })
+                            .filter(function(stateItem) {
+                                return isLocalMachine ?
+                                    !_.get(stateItem, ['name'], '').contains('openlmis.analyticsReport')
+                                    : true;
+                            })
+                            .value();
+                });
             } else {
                 vm.states = $scope.states;
             }
