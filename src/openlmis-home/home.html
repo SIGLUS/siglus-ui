@@ -17,7 +17,7 @@
         <h2 class="power">
             {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}
         </h2>
-        <h2 class="version">
+        <h2 ng-if="!vm.isLocalMachine" class="version">
             {{'adminFacilityView.version' | message}}: 2.0.0
         </h2>
         <openlmis-app-cache></openlmis-app-cache>
