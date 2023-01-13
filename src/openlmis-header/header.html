@@ -8,7 +8,6 @@
             <a ui-sref="openlmis.home" ng-if="!isOffline">
                 <openlmis-system-notifications-indicator></openlmis-system-notifications-indicator>
             </a>
-            <openlmis-app-cache></openlmis-app-cache>
         </div>
         <div class="status-offline" ng-if="isOffline">
             <span class="offline-status-indicator">{{'openlmisHeader.youAreOffline' | message}}</span>
