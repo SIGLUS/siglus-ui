@@ -343,7 +343,7 @@
             var contentWidth = node.offsetWidth;
             var contentHeight = node.offsetHeight;
             var a4Height = 1250 / 585 * 781.89;
-            var leftHeight = contentHeight - secondSectionNode.offsetHeight;
+            var leftHeight = contentHeight - secondSectionNode.offsetHeight - middleSectionNode.offsetHeight;
             var canUseHeight = a4Height - leftHeight;
             var secondSectionTrNodes = document.querySelectorAll('#calcTr');
             var secondSectionTrNodesArray = Array.from(secondSectionTrNodes);
@@ -410,6 +410,7 @@
                 var realHeight = 0;
                 var pageNumber = 1;
                 $q.all(promiseList).then(function(result) {
+
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
@@ -421,22 +422,7 @@
                                 A4_HEIGHT - 10
                             );
                             pageNumber = pageNumber + 1;
-                            PDF.addImage(
-                                reback[1].data,
-                                'JPEG',
-                                5,
-                                offsetHeight * rate,
-                                585,
-                                reback[1].nodeHeight * rate
-                            );
-                            PDF.addImage(
-                                reback[2].data,
-                                'JPEG',
-                                5,
-                                (offsetHeight + reback[1].nodeHeight) * rate,
-                                585,
-                                reback[2].nodeHeight * rate
-                            );
+
                             PDF.addPage();
                             PDF.setFontSize(10);
                             PDF.text(
@@ -450,16 +436,35 @@
                             realHeight = 0;
                         }
                         PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
+                        offsetHeight = offsetHeight + result[index].nodeHeight;
                         if (promiseListLen - 1 === index) {
+                            var shouldAddNewPage = offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight > canUseHeight;
                             PDF.setFontSize(10);
                             PDF.text(
-                                pageNumber.toString() + '-END',
+                                shouldAddNewPage ? pageNumber.toString() : pageNumber.toString() + '-END',
                                 585 / 2,
                                 A4_HEIGHT - 10
                             );
                         }
-                        offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
+
+                    if(offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight > canUseHeight ) {
+
+                        pageNumber = pageNumber + 1;
+
+                        PDF.addPage();
+                        PDF.setFontSize(10);
+                        PDF.text(
+                            pageNumber.toString() + '-END',
+                            585 / 2,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
+
+                        offsetHeight = firstSectionNode.offsetHeight;
+                        realHeight = 0;
+                    }
+
                     PDF.addImage(
                         reback[1].data,
                         'JPEG',
