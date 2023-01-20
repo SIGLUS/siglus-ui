@@ -414,7 +414,7 @@
                     PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
-                        if (realHeight > canUseHeight - 30) {
+                        if (realHeight > canUseHeight) {
                             PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
