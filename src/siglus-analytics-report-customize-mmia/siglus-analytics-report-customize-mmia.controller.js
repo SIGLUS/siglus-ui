@@ -438,7 +438,8 @@
                         PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                         if (promiseListLen - 1 === index) {
-                            var shouldAddNewPage = offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight > canUseHeight;
+                            var shouldAddNewPage = offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight
+                                > canUseHeight;
                             PDF.setFontSize(10);
                             PDF.text(
                                 shouldAddNewPage ? pageNumber.toString() : pageNumber.toString() + '-END',
@@ -448,7 +449,7 @@
                         }
                     });
 
-                    if(offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight > canUseHeight ) {
+                    if (offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight > canUseHeight) {
 
                         pageNumber = pageNumber + 1;
 
