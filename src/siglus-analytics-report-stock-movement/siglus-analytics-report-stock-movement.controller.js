@@ -49,12 +49,23 @@
             vm.province = facility.geographicZone.parent.name;
         }
 
+        function getOriginOrDestination(stockMovement) {
+            switch (stockMovement.type) {
+            case 'ISSUE':
+                return stockMovement.destinationName;
+            case 'RECEIVE':
+                return stockMovement.sourceName;
+            default:
+                return messageService.get(stockMovement.reason);
+            }
+        }
+
         function formatStockMovements(stockMovement) {
             var stockMovementArr = [];
             angular.forEach(stockMovement, function(item) {
                 var stockMovementItemArr = [];
                 stockMovementItemArr.push(item.dateOfMovement);
-                stockMovementItemArr.push(messageService.get(item.reason));
+                stockMovementItemArr.push(getOriginOrDestination(item));
                 stockMovementItemArr.push(item.documentNumber);
                 var result = vm.concatStockMovementItemArrByType(item);
                 stockMovementItemArr =  stockMovementItemArr.concat(result);
