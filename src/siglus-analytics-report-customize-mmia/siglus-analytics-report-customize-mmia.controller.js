@@ -430,7 +430,7 @@
                             );
                             PDF.text(
                                 vm.nowTime,
-                                450,
+                                470,
                                 A4_HEIGHT - 10
                             );
                             pageNumber = pageNumber + 1;
@@ -465,7 +465,7 @@
                             );
                             PDF.text(
                                 vm.nowTime,
-                                450,
+                                470,
                                 A4_HEIGHT - 10
                             );
                         }
@@ -488,7 +488,7 @@
                         );
                         PDF.text(
                             vm.nowTime,
-                            450,
+                            470,
                             A4_HEIGHT - 10
                         );
                         PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);
