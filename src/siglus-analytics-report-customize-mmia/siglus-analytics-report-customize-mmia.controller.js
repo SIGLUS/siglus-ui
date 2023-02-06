@@ -37,7 +37,8 @@
         '$timeout',
         '$q',
         'siglusDownloadLoadingModalService',
-        '$stateParams'
+        '$stateParams',
+        'messageService'
     ];
 
     function controller(
@@ -49,7 +50,8 @@
         $timeout,
         $q,
         siglusDownloadLoadingModalService,
-        $stateParams
+        $stateParams,
+        messageService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -336,15 +338,12 @@
         vm.downloadPdf = function() {
             siglusDownloadLoadingModalService.open();
             var node = document.getElementById('mmia-form');
-            var secondSectionNode = document.getElementById('secondSection');
             var middleSectionNode = document.getElementById('middleSection');
             var firstSectionNode = document.getElementById('firstSection');
             var footerSectionNode = document.getElementById('bottomSection');
             var contentWidth = node.offsetWidth;
-            var contentHeight = node.offsetHeight;
-            var a4Height = 1250 / 585 * 781.89;
-            var leftHeight = contentHeight - secondSectionNode.offsetHeight - middleSectionNode.offsetHeight;
-            var canUseHeight = a4Height - leftHeight;
+            var a4Height = 1250 / 585 * 821.89;
+            var canUseHeight = a4Height - firstSectionNode.offsetHeight;
             var secondSectionTrNodes = document.querySelectorAll('#calcTr');
             var secondSectionTrNodesArray = Array.from(secondSectionTrNodes);
             // eslint-disable-next-line no-undef
@@ -403,7 +402,7 @@
                     };
                 }));
             });
-            var A4_HEIGHT = 801.89;
+            var A4_HEIGHT = 841.89;
             var promiseListLen = promiseList.length;
             $q.all(headerAndFooterPromiseList).then(function(reback) {
                 var offsetHeight = firstSectionNode.offsetHeight;
@@ -415,10 +414,23 @@
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
+
+                            PDF.line(5, offsetHeight * rate, 589, offsetHeight * rate, 'FD');
+
                             PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
+                                A4_HEIGHT - 10
+                            );
+                            PDF.text(
+                                messageService.get('mmia.print_on_computer'),
+                                5,
+                                A4_HEIGHT - 10
+                            );
+                            PDF.text(
+                                vm.nowTime,
+                                478,
                                 A4_HEIGHT - 10
                             );
                             pageNumber = pageNumber + 1;
@@ -438,26 +450,45 @@
                         PDF.addImage(res.data, 'JPEG', 5, offsetHeight * rate, 585, res.nodeHeight * rate);
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                         if (promiseListLen - 1 === index) {
-                            var shouldAddNewPage = offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight
+                            var shouldAddNewPage = offsetHeight + middleSectionNode.offsetHeight
                                 > canUseHeight;
                             PDF.setFontSize(10);
                             PDF.text(
                                 shouldAddNewPage ? pageNumber.toString() : pageNumber.toString() + '-END',
-                                585 / 2,
+                                shouldAddNewPage ? 585 / 2 : 585 / 2 - 10,
+                                A4_HEIGHT - 10
+                            );
+                            PDF.text(
+                                messageService.get('mmia.print_on_computer'),
+                                5,
+                                A4_HEIGHT - 10
+                            );
+                            PDF.text(
+                                vm.nowTime,
+                                478,
                                 A4_HEIGHT - 10
                             );
                         }
                     });
 
-                    if (offsetHeight % A4_HEIGHT + middleSectionNode.offsetHeight > canUseHeight) {
-
+                    if (offsetHeight + middleSectionNode.offsetHeight > canUseHeight) {
                         pageNumber = pageNumber + 1;
 
                         PDF.addPage();
                         PDF.setFontSize(10);
                         PDF.text(
                             pageNumber.toString() + '-END',
-                            585 / 2,
+                            585 / 2 - 10,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            messageService.get('mmia.print_on_computer'),
+                            5,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            vm.nowTime,
+                            478,
                             A4_HEIGHT - 10
                         );
                         PDF.addImage(reback[0].data, 'JPEG', 5, 0, 585, reback[0].nodeHeight * rate);

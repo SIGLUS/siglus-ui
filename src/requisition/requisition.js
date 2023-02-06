@@ -187,6 +187,15 @@
             return !requisition.extraData.isSaved && canApprove(requisition) && requisition.isExternalApproval;
         }
 
+        function shouldApplyEstimatedQuantity(requisition) {
+            var programId = _.get(requisition, [ 'program', 'id']);
+            return requisition.template.getColumn(TEMPLATE_COLUMNS.ESTIMATED_QUANTITY).isDisplayed && [
+                '10845cb9-d365-4aaa-badd-b4fa39c6a26a',
+                'a24f19a8-3743-4a1a-a919-e8f97b5719ad',
+                'bff50392-0a46-4da3-8adc-d47a37fb6a9f'
+            ].includes(programId);
+        }
+
         function setDefaultApprovedQuantity(lineItem, requisition) {
             if (!(lineItem.skipped) && _.isUndefined(lineItem.approvedQuantity)) {
                 if (requisition.template.getColumn(TEMPLATE_COLUMNS.SUGGESTED_QUANTITY).isDisplayed) {
@@ -198,6 +207,8 @@
                     lineItem.approvedQuantity = lineItem.theoreticalQuantityToRequest;
                 } else if (requisition.template.getColumn(TEMPLATE_COLUMNS.REQUESTED_QUANTITY).isDisplayed) {
                     lineItem.approvedQuantity = lineItem.requestedQuantity;
+                } else if (shouldApplyEstimatedQuantity(requisition)) {
+                    lineItem.approvedQuantity = lineItem.estimatedQuantity;
                 } else {
                     lineItem.approvedQuantity = null;
                 }
