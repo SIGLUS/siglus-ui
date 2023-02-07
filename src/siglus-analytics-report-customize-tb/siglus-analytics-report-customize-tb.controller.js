@@ -39,7 +39,7 @@
         'siglusDownloadLoadingModalService',
         '$filter',
         '$stateParams',
-        'messageService',
+        'messageService'
     ];
 
     function controller(
