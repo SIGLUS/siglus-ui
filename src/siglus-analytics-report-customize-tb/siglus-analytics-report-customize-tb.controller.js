@@ -38,7 +38,8 @@
         '$q',
         'siglusDownloadLoadingModalService',
         '$filter',
-        '$stateParams'
+        '$stateParams',
+        'messageService'
     ];
 
     function controller(
@@ -51,7 +52,8 @@
         $q,
         siglusDownloadLoadingModalService,
         $filter,
-        $stateParams
+        $stateParams,
+        messageService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -298,12 +300,24 @@
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
+                            PDF.line(5, offsetHeight * rate, 589, offsetHeight * rate, 'FD');
                             PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
                                 585 / 2,
                                 A4_HEIGHT - 10
                             );
+                            PDF.text(
+                                messageService.get('mmia.print_on_computer'),
+                                5,
+                                A4_HEIGHT - 10
+                            );
+                            PDF.text(
+                                vm.nowTime,
+                                478,
+                                A4_HEIGHT - 10
+                            );
+
                             pageNumber = pageNumber + 1;
                             PDF.addPage();
                             PDF.addImage(
@@ -335,7 +349,17 @@
                         PDF.setFontSize(10);
                         PDF.text(
                             pageNumber.toString() + '-END',
-                            585 / 2,
+                            585 / 2 - 10,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            messageService.get('mmia.print_on_computer'),
+                            5,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            vm.nowTime,
+                            478,
                             A4_HEIGHT - 10
                         );
                         PDF.addImage(
@@ -370,7 +394,17 @@
                         PDF.setFontSize(10);
                         PDF.text(
                             pageNumber.toString() + '-END',
-                            585 / 2,
+                            585 / 2 - 10,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            messageService.get('mmia.print_on_computer'),
+                            5,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            vm.nowTime,
+                            478,
                             A4_HEIGHT - 10
                         );
                         PDF.addImage(
