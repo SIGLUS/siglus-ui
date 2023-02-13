@@ -300,7 +300,7 @@
                     _.forEach(result, function(res, index) {
                         realHeight = realHeight + result[index].nodeHeight;
                         if (realHeight > canUseHeight) {
-                            PDF.line(5, offsetHeight * rate, 589, offsetHeight * rate, 'FD');
+
                             PDF.setFontSize(10);
                             PDF.text(
                                 pageNumber.toString(),
@@ -345,7 +345,7 @@
                         offsetHeight = offsetHeight + result[index].nodeHeight;
                     });
 
-                    if (canUseHeight - offsetHeight > (reback[2].nodeHeight * rate + reback[3].nodeHeight * rate)) {
+                    if (canUseHeight - offsetHeight > reback[2].nodeHeight + reback[3].nodeHeight) {
                         PDF.setFontSize(10);
                         PDF.text(
                             pageNumber.toString() + '-END',
@@ -387,6 +387,16 @@
                         PDF.text(
                             pageNumber.toString(),
                             585 / 2,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            messageService.get('mmia.print_on_computer'),
+                            5,
+                            A4_HEIGHT - 10
+                        );
+                        PDF.text(
+                            vm.nowTime,
+                            478,
                             A4_HEIGHT - 10
                         );
                         pageNumber = pageNumber + 1;
