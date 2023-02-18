@@ -16,7 +16,7 @@ pipeline {
                 println "gradle: build"
                 withCredentials([file(credentialsId: 'settings.dev.env', variable: 'ENV_FILE')]) {
                     sh '''
-                        sudo rm -rf .env node_modules build .tmp lcov.info
+                        rm -rf .env node_modules build .tmp lcov.info
                         cp $ENV_FILE .env
                         docker-compose pull
                         docker-compose down --volumes
