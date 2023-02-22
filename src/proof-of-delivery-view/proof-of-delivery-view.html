@@ -22,7 +22,7 @@
     </li>
     <li>
       <strong>{{'proofOfDeliveryView.orderingFacility' | message}}</strong>
-      {{vm.order.facility.code}} - {{vm.order.facility.name}}
+      {{vm.order.supplyingFacility.name}}
     </li>
     <li>
       <strong>{{'proofOfDeliveryView.orderDate' | message}}</strong>
@@ -34,7 +34,7 @@
     </li>
     <li>
       <strong>{{'proofOfDeliveryView.supplyingFacility' | message}}</strong>
-      {{vm.order.supplyingFacility.name}}
+      {{vm.order.facility.code}} - {{vm.order.facility.name}}
     </li>
     <!-- #365: add requisition number-->
     <li ng-if="vm.order.requisitionNumber">
@@ -150,12 +150,12 @@
           {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
         </td>
         <!-- TODO -->
-        <td>{{ fulfillingLineItem.price }}</td>
-        <td>
+        <td style="white-space: nowrap">{{ fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}</td>
+        <td style="white-space: nowrap">
           {{
           fulfillingLineItem.price ?
               (fulfillingLineItem.quantityShipped * (fulfillingLineItem.price * 100).toFixed(2))
-              / 100 :
+              / 100 + ' MZM' :
               ''
           }}
         </td>
