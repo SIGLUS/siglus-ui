@@ -31,7 +31,7 @@
     function routes(selectProductsModalStateProvider, siglusAddRegimensModalStateProvider, REQUISITION_RIGHTS) {
         selectProductsModalStateProvider
             .stateWithAddOrderablesChildState('openlmis.requisitions.requisition.fullSupply', {
-                url: '/fullSupply?fullSupplyListPage&fullSupplyListSize',
+                url: '/fullSupply?fullSupplyListPage&fullSupplyListSize&keyword',
                 templateUrl: 'requisition-view-tab/requisition-view-tab.html',
                 controller: 'ViewTabController',
                 controllerAs: 'vm',
@@ -41,7 +41,7 @@
                     REQUISITION_RIGHTS.REQUISITION_VIEW
                 ],
                 resolve: {
-                    lineItems: function($filter, requisition) {
+                    lineItems: function($filter, requisition, $stateParams) {
                         var filterObject = requisition.template.hideSkippedLineItems() ?
                             {
                                 skipped: '!true',
@@ -55,6 +55,11 @@
                             };
                         var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
 
+                        if ($stateParams.keyword) {
+                            fullSupplyLineItems = fullSupplyLineItems.filter(function(lineItem) {
+                                return lineItem.orderable.fullProductName.includes($stateParams.keyword);
+                            });
+                        }
                         return $filter('orderBy')(fullSupplyLineItems, [
                             // eslint-disable-next-line max-len
                             // SIGLUS-REFACTOR: starts here :after add product or change page number, the product order will restore by this filter
