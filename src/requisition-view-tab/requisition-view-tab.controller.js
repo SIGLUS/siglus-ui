@@ -35,7 +35,8 @@
         '$stateParams', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
-        'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync'
+        'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync',
+        '$state'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -44,7 +45,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
-                               program, $scope, notificationService, offlineService, canSync) {
+                               program, $scope, notificationService, offlineService, canSync, $state) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -154,6 +155,20 @@
          * Holds the list of columns visible on this screen.
          */
         vm.columns = undefined;
+
+        vm.keyword = $stateParams.keyword;
+        vm.search = function() {
+            $stateParams.keyword = vm.keyword;
+            $state.go($state.current.name, $stateParams, {
+                reload: true
+            });
+        };
+        vm.cancelFilter = function() {
+            if (vm.keyword) {
+                vm.keyword = null;
+                vm.search();
+            }
+        };
 
         function onInit() {
             vm.lineItems = lineItems;
