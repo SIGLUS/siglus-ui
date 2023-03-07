@@ -82,7 +82,13 @@
             var result = [];
             switch (item.type) {
             case 'PHYSICAL_INVENTORY':
-                result = [null, null, null, null];
+                if (item.movementQuantity > 0) {
+                    result = [null, null, Math.abs(item.movementQuantity), null ];
+                } else if (item.movementQuantity < 0) {
+                    result = [null, Math.abs(item.movementQuantity), null, null ];
+                } else {
+                    result = [null, null, null, null];
+                }
                 break;
             case 'ISSUE':
                 result = [null, null, null, Math.abs(item.movementQuantity)];
