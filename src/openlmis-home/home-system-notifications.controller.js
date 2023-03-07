@@ -86,13 +86,11 @@
         }
 
         $rootScope.$on('isLocationMachine', function() {
-            console.log('receive local machine');
             vm.isLocalMachine = true;
             vm.sync();
         });
 
         $rootScope.$on('isLocalMachineOnline', function(_event, args) {
-            console.log('receive online');
             vm.connectedOnlineWeb = true;
             vm.localMachineVersion = _.get(args, 'localMachineVersion');
             vm.isOffline = false;
@@ -100,7 +98,6 @@
         });
 
         $rootScope.$on('isLocalMachineOffline', function(_event, args) {
-            console.log('receive offline training');
             vm.connectedOnlineWeb = false;
             vm.localMachineVersion = _.get(args, 'localMachineVersion');
             vm.isOffline = true;
@@ -151,7 +148,6 @@
                     var decoder = new TextDecoder('utf-8');
                     var unit8 = new window.Uint8Array(error.data);
                     var decoded = JSON.parse(decoder.decode(unit8));
-                    console.log('decoded error', decoded);
                     alertService.error(messageService.get(decoded.messageKey));
                 })
                 .finally(loadingModalService.close);
