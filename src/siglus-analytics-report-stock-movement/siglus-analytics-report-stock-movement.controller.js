@@ -82,6 +82,7 @@
             var result = [];
             switch (item.type) {
             case 'PHYSICAL_INVENTORY':
+            case 'ADJUSTMENT':
                 if (item.movementQuantity > 0) {
                     result = [null, null, Math.abs(item.movementQuantity), null ];
                 } else if (item.movementQuantity < 0) {
@@ -95,13 +96,6 @@
                 break;
             case 'RECEIVE':
                 result = [Math.abs(item.movementQuantity), null, null, null ];
-                break;
-            case 'ADJUSTMENT':
-                if (item.movementQuantity > 0) {
-                    result = [null, null, Math.abs(item.movementQuantity), null ];
-                } else {
-                    result = [null, Math.abs(item.movementQuantity), null, null ];
-                }
                 break;
             }
             return result;
