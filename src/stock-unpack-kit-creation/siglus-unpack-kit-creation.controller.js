@@ -176,7 +176,7 @@
         function getNewProduct(product) {
             return _.extend({}, angular.copy(product), {
                 $errors: {},
-                quantity: undefined,
+                quantity: product.quantityInKit * vm.kit.unpackQuantity,
                 quantityInvalid: false,
                 lot: null,
                 lotInvalid: false,
