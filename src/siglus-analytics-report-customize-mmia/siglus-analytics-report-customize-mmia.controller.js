@@ -66,6 +66,9 @@
         vm.getPdfName = getPdfName;
         vm.requisition = {};
         vm.mergedPatientMap = {};
+        vm.totalWithInThisMonth = undefined;
+        vm.totalWithTreatment = undefined;
+        vm.adjustmentValue = undefined;
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -115,6 +118,17 @@
             vm.getSignaure = getSignaure;
             vm.patientTemplateFactory = patientTemplateFactory;
             vm.setBarCodeDom = setBarCodeDom;
+            calculatePatientValues();
+        }
+
+        function calculatePatientValues() {
+            vm.totalWithInThisMonth = getValueByKey('newSection2', 5) +
+                getValueByKey('newSection3', 2) +
+                getValueByKey('newSection4', 0);
+            vm.totalWithTreatment = getValueByKey('newSection2', 6) +
+                getValueByKey('newSection3', 3) +
+                getValueByKey('newSection4', 1);
+            vm.adjustmentValue = (vm.totalWithTreatment / vm.totalWithInThisMonth).toFixed(2);
         }
         function setBarCodeDom() {
             $timeout(function() {
