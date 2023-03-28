@@ -33,7 +33,7 @@ describe('SiglusIssueDraftListController', function() {
     function prepareSpies() {
         confirmDeferred = $q.defer();
         spyOn(siglusStockIssueService, 'removeIssueDraft').andReturn($q.resolve());
-        spyOn(siglusStockIssueService, 'queryInitialDraftInfo').andReturn($q.resolve());
+        spyOn(siglusStockIssueService, 'getInitialDraftById').andReturn($q.resolve());
         spyOn(siglusStockIssueService, 'getDrafts').andReturn($q.resolve());
         spyOn(siglusStockIssueService, 'createDraft').andReturn(confirmDeferred.promise);
         spyOn(alertService, 'error');
@@ -112,8 +112,7 @@ describe('SiglusIssueDraftListController', function() {
             $stateParams.moduleType = 'stockmanagement';
             vm.$onInit();
 
-            expect(siglusStockIssueService.queryInitialDraftInfo).toHaveBeenCalledWith('000000-000000-000000-0000000',
-                '004f4232-cfb8-11e9-9398-0242ac130008', 'issue');
+            expect(siglusStockIssueService.getInitialDraftById).toHaveBeenCalledWith(undefined);
         });
 
         it('should only call refresh list method when initialDraftInfo exist in $stateParams', function() {

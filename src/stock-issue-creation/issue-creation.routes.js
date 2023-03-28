@@ -30,7 +30,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.stockmanagement.issue.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:draftId/create?page&size&keyword',
+            url: '/:draftId/create/:initialDraftId?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -73,9 +73,7 @@
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
                     }
-                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
-                        facility.id,
-                        $stateParams.draftType);
+                    return siglusStockIssueService.getInitialDraftById($stateParams.initialDraftId);
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, facility, existingStockOrderableGroupsFactory) {
