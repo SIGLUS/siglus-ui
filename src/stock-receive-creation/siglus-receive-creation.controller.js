@@ -893,6 +893,7 @@
             $stateParams.reasons = reasons;
             $stateParams.draft = draft;
             $stateParams.initialDraftInfo = initialDraftInfo;
+            $stateParams.initialDraftId = _.get(initialDraftInfo, 'id');
             $stateParams.mergedItems = mergedItems;
             // SIGLUS-REFACTOR: starts here
             $stateParams.orderableGroups = orderableGroups;
