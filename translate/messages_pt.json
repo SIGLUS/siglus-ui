@@ -1995,6 +1995,7 @@
   "stockIssueCreation.title": "${facilityCode} - ${facilityName} - ${program}",
   "stockIssueCreation.vvmStatus": "Estado do Monitor do Frasco de Vacina",
   "stockIssueCreation.draftHasBeenUpdated": "A lista de rascunhos foi atualizada. Verifique-a novamente antes de submeter o rascunho agregado.",
+  "stockIssueCreation.requestedQuantity": "Quantidade Pedida",
   "stockmanagement.lotOfOtherProducts": "Este código do lote foi usado noutros produtos",
   "stockmanagement.numberLargerThanSOH": "A quantidade não pode ser superior ao Stock Existente",
   "stockmanagement.numberTooLarge": "Este número é demasiado grande",

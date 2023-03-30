@@ -234,6 +234,7 @@
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
+                requestedQuantity: item.requestedQuantity,
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
@@ -261,6 +262,7 @@
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
+                requestedQuantity: item.requestedQuantity,
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
