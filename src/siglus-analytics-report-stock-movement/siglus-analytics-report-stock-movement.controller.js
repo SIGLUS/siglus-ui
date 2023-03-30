@@ -52,9 +52,13 @@
         function getOriginOrDestination(stockMovement) {
             switch (stockMovement.type) {
             case 'ISSUE':
-                return stockMovement.destinationName;
+                return stockMovement.destinationFreeText ?
+                    stockMovement.destinationName + ' - ' + stockMovement.destinationFreeText
+                    : stockMovement.destinationName;
             case 'RECEIVE':
-                return stockMovement.sourceName;
+                return stockMovement.sourceFreeText ?
+                    stockMovement.sourceName + ' - ' + stockMovement.sourceFreeText
+                    : stockMovement.sourceName;
             default:
                 return messageService.get(stockMovement.reason);
             }
