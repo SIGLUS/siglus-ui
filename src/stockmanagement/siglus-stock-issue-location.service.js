@@ -42,7 +42,7 @@
             queryDraft: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/initialDraft'),
-                isArray: false
+                isArray: true
             },
             post: {
                 url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation'),
@@ -51,6 +51,10 @@
             update: {
                 method: 'PUT',
                 url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/update')
+            },
+            getInitialDraftById: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/draftsWithLocation/initialDraft/:id')
             },
             delete: {
                 method: 'DELETE',
@@ -118,6 +122,14 @@
         this.getMergedDraft = getMergedDraft;
 
         this.getLocationAreaInfo = getLocationAreaInfo;
+
+        this.getInitialDraftById = getInitialDraftById;
+
+        function getInitialDraftById(id) {
+            return resource.getInitialDraftById({
+                id: id
+            }).$promise;
+        }
 
         function createDraft(data) {
             return resource.post(data).$promise;
@@ -241,6 +253,7 @@
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
+                requestedQuantity: item.requestedQuantity,
                 stockOnHand: item.stockOnHand,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText', null),
@@ -267,6 +280,7 @@
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
+                requestedQuantity: item.requestedQuantity,
                 occurredDate: formattedOccurredDate,
                 reasonId: _.get(item.reason, 'id', null),
                 reasonFreeText: _.get(item, 'reasonFreeText'),

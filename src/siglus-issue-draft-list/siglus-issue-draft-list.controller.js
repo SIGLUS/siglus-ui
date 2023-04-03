@@ -30,12 +30,13 @@
 
     controller.$inject = ['$scope', '$stateParams', 'user', 'programId', 'facility', '$state',
         'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
-        'alertConfirmModalService', 'siglusStockUtilsService', 'DRAFT_TYPE', 'siglusStockDispatchService'];
+        'alertConfirmModalService', 'siglusStockUtilsService', 'DRAFT_TYPE', 'siglusStockDispatchService',
+        'siglusStockIssueLocationService'];
 
     function controller($scope, $stateParams, user, programId, facility, $state,
                         alertService, confirmService, loadingModalService, siglusStockIssueService,
                         alertConfirmModalService, siglusStockUtilsService, DRAFT_TYPE,
-                        siglusStockDispatchService)  {
+                        siglusStockDispatchService, siglusStockIssueLocationService)  {
         var vm = this;
 
         vm.drafts = [];
@@ -151,13 +152,23 @@
                 vm.updateDraftList($stateParams.initialDraftInfo);
             } else {
                 loadingModalService.open();
-                siglusStockIssueService.getInitialDraftById($stateParams.initialDraftId)
-                    .then(function(initialDraftInfo) {
-                        vm.updateDraftList(initialDraftInfo);
-                    })
-                    .catch(function() {
-                        loadingModalService.close();
-                    });
+                if ($stateParams.moduleType === 'locationManagement') {
+                    siglusStockIssueLocationService.getInitialDraftById($stateParams.initialDraftId)
+                        .then(function(initialDraftInfo) {
+                            vm.updateDraftList(initialDraftInfo);
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
+                } else {
+                    siglusStockIssueService.getInitialDraftById($stateParams.initialDraftId)
+                        .then(function(initialDraftInfo) {
+                            vm.updateDraftList(initialDraftInfo);
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
+                }
             }
         };
 

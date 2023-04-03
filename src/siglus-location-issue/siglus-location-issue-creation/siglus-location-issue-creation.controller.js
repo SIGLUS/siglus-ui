@@ -348,6 +348,12 @@
             }, 0);
 
         };
+        vm.getRequestedQuantity = function(lineItems) {
+            return _.reduce(lineItems, function(quantity, item) {
+                return quantity + _.get(item, 'requestedQuantity') || 0;
+            }, 0);
+
+        };
 
         vm.showEmptyBlockWithKit = function(lineItem, lineItems, index) {
             return lineItem.isKit || (lineItems.length > 1 && index === 0);
