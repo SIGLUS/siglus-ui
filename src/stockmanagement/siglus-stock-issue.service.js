@@ -42,7 +42,11 @@
             queryDraft: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/initial'),
-                isArray: false
+                isArray: true
+            },
+            getInitialDraftById: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/drafts/initial/:id')
             },
             post: {
                 url: stockmanagementUrlFactory('/api/siglusapi/drafts/multi'),
@@ -111,8 +115,16 @@
 
         this.getMergedDraft = getMergedDraft;
 
+        this.getInitialDraftById = getInitialDraftById;
+
         function createDraft(data) {
             return resource.post(data).$promise;
+        }
+
+        function getInitialDraftById(id) {
+            return resource.getInitialDraftById({
+                id: id
+            }).$promise;
         }
 
         function getMergedDraft(initialDraftId) {
@@ -222,6 +234,7 @@
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
+                requestedQuantity: item.requestedQuantity,
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },
@@ -249,6 +262,7 @@
                 lotCode: _.get(item.lot, 'lotCode', null),
                 expirationDate: item.lot && item.lot.expirationDate ? item.lot.expirationDate : null,
                 quantity: item.quantity,
+                requestedQuantity: item.requestedQuantity,
                 extraData: {
                     vvmStatus: item.vvmStatus
                 },

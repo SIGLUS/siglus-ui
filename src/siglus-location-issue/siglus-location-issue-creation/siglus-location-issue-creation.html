@@ -41,6 +41,7 @@
                 <th>{{'stockPhysicalInventoryDraft.location' | message}}</th>
                 <th>{{'stockIssueCreation.soh' | message}}</th>
                 <th>{{'stockIssueCreation.quantity' | message}}</th>
+                <th>{{'stockIssueCreation.requestedQuantity' | message}}</th>
                 <th>{{'stockIssueCreation.actions' | message}}</th>
             </tr>
             </thead>
@@ -89,6 +90,11 @@
                            openlmis-invalid="{{lineItem.$error.quantityError || '' | message}}"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.changeQuantity(lineItem)"
+                           positive-integer/>
+                </td>
+                <td ng-if="vm.showEmptyBlock(lineItems, index)">{{vm.getRequestedQuantity(lineItems)}}</td>
+                <td ng-if="!vm.showEmptyBlock(lineItems, index)" class="digit-cell">
+                    <input class="form-control min-width-input" ng-model="lineItem.requestedQuantity"
                            positive-integer/>
                 </td>
                 <td style="max-width: 170px;">

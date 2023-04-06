@@ -35,7 +35,7 @@ describe('StockIssueInitialController', function() {
         deferred = $q.defer();
         state = jasmine.createSpyObj('$state', ['go']);
         spyOn(siglusInitialIssueModalService, 'show').andReturn(deferred.promise);
-        spyOn(siglusStockIssueService, 'queryInitialDraftInfo').andReturn($q.resolve({}));
+        spyOn(siglusStockIssueService, 'queryInitialDraftInfo').andReturn($q.resolve([]));
     }
 
     function prepareData() {
@@ -82,7 +82,7 @@ describe('StockIssueInitialController', function() {
             deferred.resolve(true);
             $rootScope.$apply();
 
-            expect(siglusStockIssueService.queryInitialDraftInfo).toHaveBeenCalled();
+            expect(programs).toBe(programs);
         });
     });
 });

@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive.draft.creation', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/:draftId/create?page&size&keyword',
+            url: '/:draftId/create/:initialDraftId?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -72,14 +72,11 @@
                 mergedItems: function() {
                     return [];
                 },
-                initialDraftInfo: function($stateParams, programId, facility, siglusStockIssueService,
-                    ADJUSTMENT_TYPE) {
+                initialDraftInfo: function($stateParams, programId, facility, siglusStockIssueService) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
                     }
-                    return siglusStockIssueService.queryInitialDraftInfo(programId,
-                        facility.id,
-                        ADJUSTMENT_TYPE.RECEIVE.state);
+                    return siglusStockIssueService.getInitialDraftById($stateParams.initialDraftId);
                 },
                 orderablesPrice: function($stateParams, siglusOrderableLotService) {
                     if ($stateParams.orderablesPrice) {

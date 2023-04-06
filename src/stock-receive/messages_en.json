@@ -3,5 +3,7 @@
   "stockReceive.continue": "Continue",
   "stockReceive.notStarted": "Not yet started",
   "stockReceive.draft": "Draft",
-  "stockReceive.status": "Status"
+  "stockReceive.status": "Status",
+  "stockReceive.sourceDestination": "Source",
+  "stockReceive.create": "Create Receive"
 }

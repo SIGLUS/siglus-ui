@@ -30,12 +30,13 @@
 
     controller.$inject = ['$scope', '$stateParams', 'user', 'programId', 'facility', '$state',
         'alertService', 'confirmService', 'loadingModalService', 'siglusStockIssueService',
-        'alertConfirmModalService', 'siglusStockUtilsService', 'DRAFT_TYPE', 'siglusStockDispatchService'];
+        'alertConfirmModalService', 'siglusStockUtilsService', 'DRAFT_TYPE', 'siglusStockDispatchService',
+        'siglusStockIssueLocationService'];
 
     function controller($scope, $stateParams, user, programId, facility, $state,
                         alertService, confirmService, loadingModalService, siglusStockIssueService,
                         alertConfirmModalService, siglusStockUtilsService, DRAFT_TYPE,
-                        siglusStockDispatchService)  {
+                        siglusStockDispatchService, siglusStockIssueLocationService)  {
         var vm = this;
 
         vm.drafts = [];
@@ -114,6 +115,7 @@
                 $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.merge', {
                     programId: programId,
                     initialDraftInfo: vm.initialDraftInfo,
+                    initialDraftId: _.get(vm.initialDraftInfo, 'id'),
                     facility: facility
                 });
             } else {
@@ -150,14 +152,23 @@
                 vm.updateDraftList($stateParams.initialDraftInfo);
             } else {
                 loadingModalService.open();
-                siglusStockDispatchService.queryInitialDraftInfo(programId,
-                    DRAFT_TYPE[$stateParams.moduleType][vm.draftType], $stateParams.moduleType, facility.id)
-                    .then(function(initialDraftInfo) {
-                        vm.updateDraftList(initialDraftInfo);
-                    })
-                    .catch(function() {
-                        loadingModalService.close();
-                    });
+                if ($stateParams.moduleType === 'locationManagement') {
+                    siglusStockIssueLocationService.getInitialDraftById($stateParams.initialDraftId)
+                        .then(function(initialDraftInfo) {
+                            vm.updateDraftList(initialDraftInfo);
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
+                } else {
+                    siglusStockIssueService.getInitialDraftById($stateParams.initialDraftId)
+                        .then(function(initialDraftInfo) {
+                            vm.updateDraftList(initialDraftInfo);
+                        })
+                        .catch(function() {
+                            loadingModalService.close();
+                        });
+                }
             }
         };
 
@@ -187,6 +198,7 @@
                             programId: programId,
                             draftId: _.get(draft, 'id', ''),
                             initialDraftInfo: vm.initialDraftInfo,
+                            initialDraftId: _.get(vm.initialDraftInfo, 'id'),
                             facility: facility
                         });
                     });
@@ -197,6 +209,7 @@
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,
+                initialDraftId: _.get(vm.initialDraftInfo, 'id'),
                 facility: facility
             });
         };
@@ -206,6 +219,7 @@
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,
+                initialDraftId: _.get(vm.initialDraftInfo, 'id'),
                 facility: facility
             });
         };

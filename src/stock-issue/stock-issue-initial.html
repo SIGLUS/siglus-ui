@@ -7,25 +7,29 @@
         <tr>
             <th style="min-width: 160px;">{{vm.key('program') | message}}</th>
             <th style="min-width: 160px;">{{vm.key('status') | message}}</th>
+            <th style="min-width: 160px;">{{vm.key('sourceDestination') | message}}</th>
+            <th style="min-width: 160px;">{{'stockIssue.documentNumber' | message}}</th>
             <th>{{vm.key('action') | message}}</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="program in vm.programs">
-            <td style="min-width: 160px;">{{program.name}}</td>
-            <td style="min-width: 160px;" >{{vm.key(vm.hasExistInitialDraft ? 'draft' : 'notStarted') | message}}</td>
+        <tr ng-repeat="draft in vm.initialDraftInfo">
+            <td style="min-width: 160px;">{{vm.program.name}}</td>
+            <td style="min-width: 160px;" >{{vm.key(draft.hasExistInitialDraft ? 'draft' : 'notStarted') | message}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
-            <td ng-if="vm.hasExistInitialDraft">
+            <td>{{draft.destinationName || draft.sourceName}}</td>
+            <td>{{draft.documentNumber}}</td>
+            <td ng-if="draft.hasExistInitialDraft">
 
                 <input
                         id="continueButton"
                         type="button"
                         value="{{'stockIssue.continue' | message}}"
                         class="primary"
-                        ng-click="vm.proceedForIssue(program)"
+                        ng-click="vm.proceedForIssue(draft)"
                 />
             </td>
-            <td ng-if="!vm.hasExistInitialDraft">
+            <td ng-if="!draft.hasExistInitialDraft">
                 <input
                         id="startButton"
                         type="button"
@@ -37,5 +41,8 @@
             </td>
         </tr>
         </tbody>
+        <button class="pull-right add" ng-click="vm.addNewIssue()">
+            {{vm.key('create') | message}}
+        </button>
     </table>
 </section>

@@ -7,5 +7,8 @@
   "stockIssue.status": "Status",
   "stockIssue.issueStart": "Start",
   "stockIssue.draftList": "Draft List",
-  "stockIssue.cancel": "Cancel"
+  "stockIssue.cancel": "Cancel",
+  "stockIssue.sourceDestination": "Destination",
+  "stockIssue.documentNumber": "Document Number",
+  "stockIssue.create": "Create Issue"
 }

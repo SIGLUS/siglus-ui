@@ -25,7 +25,7 @@
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS, SEARCH_OPTIONS, ADJUSTMENT_TYPE) {
         $stateProvider.state('openlmis.stockmanagement.receive.draft.merge', {
             // SIGLUS-REFACTOR: add draftId
-            url: '/merge?page&size&keyword',
+            url: '/merge/:initialDraftId?page&size&keyword',
             // SIGLUS-REFACTOR: ends here
             views: {
                 '@openlmis': {
@@ -75,7 +75,9 @@
                     if ($stateParams.mergedItems) {
                         return $stateParams.mergedItems;
                     }
-                    return siglusStockIssueService.getMergedDraft($stateParams.initialDraftId).catch(
+                    var initialDraftId = Array.isArray($stateParams.initialDraftId)
+                        ? $stateParams.initialDraftId[0] : $stateParams.initialDraftId;
+                    return siglusStockIssueService.getMergedDraft(initialDraftId).catch(
                         function(error) {
                             if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
                                 alertService.error('PhysicalInventoryDraftList.mergeError');
@@ -96,13 +98,11 @@
                     }
                     return siglusOrderableLotService.getOrderablesPrice();
                 },
-                initialDraftInfo: function($stateParams, facility, siglusStockIssueService, ADJUSTMENT_TYPE) {
+                initialDraftInfo: function($stateParams, facility, siglusStockIssueService) {
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
                     }
-                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
-                        facility.id,
-                        ADJUSTMENT_TYPE.RECEIVE.state);
+                    return siglusStockIssueService.getInitialDraftById($stateParams.initialDraftId);
                 },
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, programId, facility, mergedItems, orderableGroupService) {
