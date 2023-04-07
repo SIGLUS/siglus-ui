@@ -2352,6 +2352,7 @@
   "stockIssue.draftList": "Lista de rascunho",
   "stockIssue.sourceDestination": "Destino",
   "stockIssue.createIssue": "Criar Saida",
+  "stockIssue.documentNumber": "Número da documentação",
   "issueDraft.issueToTitle": "Aviar para ${destination} - ${document}",
   "issueDraft.selectFirst": "Crie um rascunho para iniciar aviamento",
   "issueDraft.draftNumber": "Número do rascunho",
