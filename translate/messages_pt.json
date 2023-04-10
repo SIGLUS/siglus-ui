@@ -1977,7 +1977,7 @@
   "stockIssueCreation.productHasNoLots": "Nenhum lote foi definido",
   "stockIssueCreation.productName": "Nome do produto",
   "stockIssueCreation.productWithDisplayUnit": "${fullProductName} - ${displayUnit}",
-  "stockIssueCreation.quantity": "Quantidade",
+  "stockIssueCreation.quantity": "Quantidade de Saídas",
   "stockIssueCreation.reason": "Motivo",
   "stockIssueCreation.reasonComments": "Comentários do motivo",
   "stockIssueCreation.remove": "Apagar",

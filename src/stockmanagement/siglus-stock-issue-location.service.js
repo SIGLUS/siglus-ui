@@ -234,6 +234,7 @@
 
                 subDrafts: subDrafts,
                 stockEvent: {
+                    initialDraftId: initDraftInfo.id,
                     programId: programId,
                     signature: signature,
                     facilityId: facilityId,

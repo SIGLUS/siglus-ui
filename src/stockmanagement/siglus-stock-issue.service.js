@@ -212,9 +212,9 @@
         function mergeSubmitDraft(programId, lineItems, signature, initDraftInfo, facilityId, subDrafts, occurredDate) {
             var formattedOccurredDate = siglusStockUtilsService.formatDate(occurredDate);
             var params = {
-
                 subDrafts: subDrafts,
                 stockEvent: {
+                    initialDraftId: initDraftInfo.id,
                     programId: programId,
                     signature: signature,
                     facilityId: facilityId,
