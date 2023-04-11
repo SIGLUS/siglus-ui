@@ -61,14 +61,14 @@
                 <td>{{lineItem.lot.lotCode}}</td>
                 <td>{{lineItem.lot.expirationDate | openlmisDate}}</td>
                 <td class="text-align-right">{{lineItem.$previewSOH}}</td>
+                <td class="digit-cell">
+                    <input class="form-control min-width-input" ng-model="lineItem.requestedQuantity"
+                           positive-integer/>
+                </td>
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
-                </td>
-                <td class="digit-cell">
-                    <input class="form-control min-width-input" ng-model="lineItem.requestedQuantity"
-                           positive-integer/>
                 </td>
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
