@@ -10,5 +10,6 @@
   "stockIssueCreation.issueExpiredLot": "Lot has expired, it cannot be issued",
   "stockIssueCreation.mergedDraft": "Merged Draft",
   "stockIssueCreation.draftHasBeenUpdated": "The draft list has been updated, please check it again before you submit the merged draft.",
-  "stockIssueCreation.requestedQuantity": "Requested Quantity"
+  "stockIssueCreation.requestedQuantity": "Requested Quantity",
+  "stockIssueCreation.quantity": "Issue Quantity"
 }
