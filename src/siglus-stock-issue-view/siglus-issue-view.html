@@ -24,8 +24,8 @@
                 <th>{{vm.key('expiryDate') | message}}</th>
                 <th ng-if="vm.isLocation">{{'stockPhysicalInventoryDraft.location' | message}}</th>
                 <th>{{vm.key('soh') | message}}</th>
-                <th>{{vm.key('quantity') | message}}</th>
                 <th ng-if="vm.isIssue">{{'stockIssueCreation.requestedQuantity' | message}}</th>
+                <th>{{vm.key('quantity') | message}}</th>
             </tr>
             </thead>
             <tbody>
@@ -36,8 +36,8 @@
                 <td>{{lineItem.expirationDate}}</td>
                 <td ng-if="vm.isLocation">{{lineItem.area + ' - ' + lineItem.locationCode}}</td>
                 <td>{{lineItem.stockOnHand}}</td>
-                <td>{{lineItem.quantity}}</td>
                 <td ng-if="vm.isIssue">{{lineItem.requestedQuantity}}</td>
+                <td>{{lineItem.quantity}}</td>
             </tr>
             </tbody>
         </table>
