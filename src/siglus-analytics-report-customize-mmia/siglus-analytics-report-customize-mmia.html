@@ -90,7 +90,7 @@
                 <tr ng-repeat="itm in vm.regimensAdults">
                     <td class="banner-text" style="width: 30px;">{{$index + 1}}</td>
                     <td class="bg-color-green rotateContainer" ng-if="$index === 0" rowspan="{{ vm.regimensAdults.length + 2 }}" style="width: 90px;">
-                        <div style="transform: rotate(-90deg);">Adultos & Adolescentes</div>
+                        <div style="transform: rotate(-90deg); right: -20px;">Adultos & Adolescentes</div>
                     </td>
                     <td class="bg-color-green" style="text-align: left;">{{ itm.regimen.fullProductName }}</td>
                     <td>{{ itm.columns.patients.value }}</td>
@@ -112,7 +112,7 @@
                 <tr ng-repeat="itm in vm.regimensPaediatrics">
                     <td class="banner-text" style="width: 30px;">{{vm.regimensAdults.length + $index + 1}}</td>
                     <td class="bg-color-lightyellow rotateContainer" ng-if="$index === 0" rowspan="{{ vm.regimensPaediatrics.length + 2 }}" style="width: 90px;">
-                        <div style="transform: rotate(-90deg);">Criança</div>
+                        <div style="transform: rotate(-90deg); right: 0px;">Criança</div>
                     </td>
                     <!-- <td ng-if="$index !== 0"></td> -->
                     <td class="bg-color-lightyellow" style="text-align: left;">{{ itm.regimen.fullProductName }}</td>
