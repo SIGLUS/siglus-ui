@@ -196,6 +196,7 @@
             selectedItem.$previewSOH = undefined;
             selectedItem.$errors = {};
             selectedItem.skipped = false;
+            selectedItem.stockOnHand = undefined;
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
             if (notAlreadyAdded) {
                 vm.addedItems = addedItems.concat(selectedItem);

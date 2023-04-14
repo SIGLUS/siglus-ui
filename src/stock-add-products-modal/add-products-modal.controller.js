@@ -112,6 +112,7 @@
             selectedItem.lot = undefined;
             // set stockCardId undefined
             selectedItem.stockCardId = undefined;
+            selectedItem.stockOnHand = undefined;
             // SIGLUS-REFACTOR: ends here -->
 
             var notAlreadyAdded = selectedItem && !_.contains(vm.addedItems, selectedItem);
