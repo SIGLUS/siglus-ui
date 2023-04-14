@@ -100,8 +100,8 @@
             vm.services = _.chain(services)
                 .sortBy('displayOrder')
                 .value();
-            vm.regimensAdults = getCategories(vm.requisition.regimenLineItems).Adults;
-            vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems).Paediatrics;
+            vm.regimensAdults = getCategories(vm.requisition.regimenLineItems)['Adulto'];
+            vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems)['Criança'];
             setBarCodeDom();
             var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
                 return item.name === 'summary';
