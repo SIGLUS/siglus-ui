@@ -320,7 +320,9 @@
                 programCode: vm.selectedReport.code,
                 name: 'Requisition',
                 facilityId: vm.facility.id
-            }, vm.selectedReport));
+            }, vm.selectedReport, {
+                id: undefined
+            }));
             vm.reports = _.filter(vm.reports, function(itm) {
                 return itm.code !== vm.selectedReport.code;
             });
