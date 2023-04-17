@@ -120,7 +120,7 @@
                     var stateParamsCopy = _.clone($stateParams);
                     stateParamsCopy.draft = physicalInventoryDataService.getDraft(facility.id);
                     stateParamsCopy.draft.lineItems = stateParamsCopy.draft.lineItems.filter(function(line) {
-                        return line.stockOnHand !== 0;
+                        return !(line.stockCardId && line.stockOnHand === 0);
                     });
                     return paginationService.registerList(validator, stateParamsCopy, function() {
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
