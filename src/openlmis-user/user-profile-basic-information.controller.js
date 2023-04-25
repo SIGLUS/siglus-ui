@@ -31,12 +31,12 @@
     controller.$inject = [
         'user', 'homeFacility', 'loadingModalService', 'notificationService',
         'userPasswordModalFactory', 'loginService', '$rootScope', '$state', 'alertService',
-        'authUserService', 'pendingVerificationEmail', '$window'
+        'authUserService', 'pendingVerificationEmail', '$window', 'OpenlmisMainStateService'
     ];
 
     function controller(user, homeFacility, loadingModalService, notificationService,
                         userPasswordModalFactory, loginService, $rootScope, $state, alertService,
-                        authUserService, pendingVerificationEmail, $window) {
+                        authUserService, pendingVerificationEmail, $window, OpenlmisMainStateService) {
 
         var vm = this;
 
@@ -45,6 +45,11 @@
         vm.restoreProfile = restoreProfile;
         vm.changePassword = changePassword;
         vm.sendVerificationEmail = sendVerificationEmail;
+
+        vm.isLocalMachine = false;
+        OpenlmisMainStateService.getMachineType().then(function(res) {
+            vm.isLocalMachine = Boolean(!_.get(res, ['data', 'onlineWeb']));
+        });
 
         /**
          * @ngdoc property

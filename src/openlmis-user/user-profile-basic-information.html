@@ -1,0 +1,51 @@
+<h3>{{'openlmisUser.basicInformation' | message}}</h3>
+<form id="user-profile-form" ng-submit="vm.updateProfile()">
+
+    <label for="user-username">{{'openlmisUser.username' | message}}</label>
+    <input id="user-username" type="text" ng-model="vm.user.username" disabled/>
+
+    <label for="user-job-title">{{'openlmisUser.jobTitle' | message}}</label>
+    <input id="user-job-title" type="text" ng-model="vm.user.jobTitle" disabled/>
+
+    <label for="user-home-facility">{{'openlmisUser.homeFacility' | message}}</label>
+    <input id="user-home-facility" type="text" ng-model="vm.homeFacility.name" disabled/>
+
+    <label for="user-first-name">{{'openlmisUser.firstName' | message}}</label>
+    <input id="user-first-name" type="text" ng-model="vm.user.firstName" required/>
+
+    <label for="user-last-name">{{'openlmisUser.lastName' | message}}</label>
+    <input id="user-last-name" type="text" ng-model="vm.user.lastName" required/>
+
+    <label for="user-email">{{'openlmisUser.email' | message}}</label>
+    <input id="user-email" type="email" ng-model="vm.user.email"/>
+    <p class="note" ng-if="vm.pendingVerificationEmail">
+        {{ 'openlmisUser.pendingVerificationEmail.info' | message: {email: vm.pendingVerificationEmail.emailAddress} }}
+    </p>
+
+    <fieldset class="form-group">
+        <label>
+            <input type="checkbox" ng-model="vm.user.verified" disabled/>
+            {{'openlmisUser.emailVerified' | message}}
+        </label>
+    </fieldset>
+    <fieldset class="form-group">
+        <label>
+            <input type="checkbox" ng-model="vm.user.allowNotify" ng-disabled="!vm.user.email || !vm.user.verified"/>
+            {{'openlmisUser.allowNotifications' | message}}
+        </label>
+    </fieldset>
+    <p class="note">{{'openlmisUser.allowNotifications.description.checked' | message}}</p>
+    <p class="note">{{'openlmisUser.allowNotifications.description.unchecked' | message}}</p>
+
+    <label for="user-phone-number">{{'openlmisUser.phoneNumber' | message}}</label>
+    <input id="user-phone-number" type="text" ng-model="vm.user.phoneNumber"/>
+
+</form>
+<div class="openlmis-toolbar">
+    <button ng-click="vm.restoreProfile()">{{'openlmisUser.cancel' | message}}</button>
+    <div class="button-group primary">
+        <button ng-disabled="vm.isLocalMachine" ng-if="vm.pendingVerificationEmail" ng-click="vm.sendVerificationEmail()">{{ 'openlmisUser.sendVerificationEmail' | message }}</button>
+        <button ng-disabled="vm.isLocalMachine" ng-click="vm.changePassword()">{{'openlmisUser.changePassword' | message}}</button>
+        <button ng-disabled="vm.isLocalMachine" class="primary" form="user-profile-form">{{'openlmisUser.updateProfile' | message}}</button>
+    </div>
+</div>

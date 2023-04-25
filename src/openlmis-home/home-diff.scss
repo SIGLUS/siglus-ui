@@ -179,3 +179,8 @@
         color: #000000;
     }
 }
+
+button[disabled='disabled'] {
+    cursor: not-allowed;
+    border: none;
+}
