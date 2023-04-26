@@ -30,11 +30,11 @@
 
     controller.$inject = [
         'digestConfigurations', 'userSubscriptions', 'UserSubscriptionResource', 'user', '$state', 'FunctionDecorator',
-        'NOTIFICATION_CHANNEL'
+        'NOTIFICATION_CHANNEL', 'OpenlmisMainStateService'
     ];
 
     function controller(digestConfigurations, userSubscriptions, UserSubscriptionResource, user, $state,
-                        FunctionDecorator, NOTIFICATION_CHANNEL) {
+                        FunctionDecorator, NOTIFICATION_CHANNEL, OpenlmisMainStateService) {
         var vm = this;
 
         vm.$onInit = onInit;
