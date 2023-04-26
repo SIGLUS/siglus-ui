@@ -1,0 +1,50 @@
+<h3>{{'openlmisUser.notificationSettings' | message}}</h3>
+<form id="digestSubscriptions" class="openlmis-table-container" ng-submit="vm.saveUserSubscriptions()">
+    <table>
+        <caption ng-if="!vm.digestConfigurations || vm.digestConfigurations.length === 0">
+            {{'openlmisUser.noDigestConfigurations' | message}}
+        </caption>
+        <thead>
+            <tr>
+                <th>{{'openlmisUser.notification' | message}}</th>
+                <th>{{'openlmisUser.channel' | message}}</th>
+                <th>{{'openlmisUser.useDigest' | message}}</th>
+                <th>{{'openlmisUser.schedule' | message}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="digestConfiguration in vm.digestConfigurations | orderBy : '$name'">
+                <td>{{digestConfiguration.tag | notificationTag}}</td>
+                <td>
+                    <select
+                        ng-model="vm.userSubscriptionsMap[digestConfiguration.id].preferredChannel"
+                        ng-options="channel as (vm.getChannelLabel(channel) |message) for channel in vm.channels"
+                        openlmis-invalid="{{vm.validateSubscription(vm.userSubscriptionsMap[digestConfiguration.id]) | message}}"
+                        required>
+                    </select>
+                </td>
+                <td>
+                    <input
+                        type="checkbox"
+                        ng-model="vm.userSubscriptionsMap[digestConfiguration.id].useDigest" />
+                </td>
+                <td>
+                    <openlmis-cron-selection
+                        ng-required="vm.userSubscriptionsMap[digestConfiguration.id].useDigest"
+                        ng-disabled="!vm.userSubscriptionsMap[digestConfiguration.id].useDigest"
+                        ng-model="vm.userSubscriptionsMap[digestConfiguration.id].cronExpression" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+<div class="openlmis-toolbar">
+    <div class="button-group primary">
+        <button
+            ng-disabled="vm.isLocalMachine"
+            class="primary"
+            form="digestSubscriptions">
+            {{'openlmisUser.updateSubscriptions' | message }}
+        </button>
+    </div>
+</div>
