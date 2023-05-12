@@ -63,7 +63,7 @@
                 <svg ng-if="item.id" style="display: inline;" width="100%" height="100%" viewBox="0 0 100 100" display="inline" preserveAspectRatio="none" preserveAspectRatio="none meet" id="{{'barcode_' + item.orderable.productCode}}"></svg>
             </td>
             <td class="{{params[item.categoryName]['productPrimaryName']}}">{{item.orderable.fullProductName}}</td>
-            <td>{{item.orderable.dispensable.displayUnit}}</td>
+            <td>{{item.orderable.unit || item.orderable.dispensable.displayUnit}}</td>
             <td>{{item.beginningBalance}}</td>
             <td>{{item.totalReceivedQuantity}}</td>
             <td>{{item.totalConsumedQuantity}}</td>

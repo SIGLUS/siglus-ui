@@ -44,7 +44,9 @@
                     return currentUserService.getUserInfo();
                 },
                 requisition: function($stateParams, requisitionService) {
-                    return requisitionService.get($stateParams.rnr);
+                    return requisitionService.get($stateParams.rnr).then(function(requisition) {
+                        return requisitionService.setOrderableUnitForRequisition(requisition);
+                    });
                 },
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);

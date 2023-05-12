@@ -33,14 +33,15 @@
         '$filter', 'requisitionCacheService',
         // SIGLUS-REFACTOR: starts here
         'OrderableResource', 'FacilityTypeApprovedProductResource', 'periodService', 'siglusArchivedProductService',
-        'siglusArchivedProductCacheService'
+        'siglusArchivedProductCacheService', 'programService', '$http', 'openlmisUrlFactory'
         // SIGLUS-REFACTOR: ends here
     ];
 
     function service($q, $resource, requisitionUrlFactory, Requisition, dateUtils, localStorageFactory, offlineService,
                      $filter, requisitionCacheService,
                      OrderableResource, FacilityTypeApprovedProductResource, periodService,
-                     siglusArchivedProductService, siglusArchivedProductCacheService) {
+                     siglusArchivedProductService, siglusArchivedProductCacheService, programService,
+                     $http, openlmisUrlFactory) {
 
         var onlineOnlyRequisitions = localStorageFactory('onlineOnly'),
             offlineStatusMessages = localStorageFactory('statusMessages');
@@ -119,7 +120,8 @@
             removeOfflineRequisition: removeOfflineRequisition,
             // SIGLUS-REFACTOR: starts here
             getOrderableLineItem: getOrderableLineItem,
-            getWithoutStatusMessages: getWithoutStatusMessages
+            getWithoutStatusMessages: getWithoutStatusMessages,
+            setOrderableUnitForRequisition: setOrderableUnitForRequisition
             // SIGLUS-REFACTOR: ends here
         };
 
@@ -550,6 +552,39 @@
             return extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages);
         }
 
+        function getProgramOrderableExtensionByCode(code) {
+            return $http.get(openlmisUrlFactory('/api/siglusapi/orderables/unit?programCode=' + code))
+                .then(function(response) {
+                    return response.data;
+                });
+        }
+
+        function setOrderableUnitForRequisition(requisition) {
+            var uniqueProgramIds = _.uniq(requisition.requisitionLineItems.map(function(lineItem) {
+                return _.first(lineItem.orderable.programs).programId;
+            }));
+            return programService.getAll().then(function(programs) {
+                var uniqueCodes = uniqueProgramIds.map(function(id) {
+                    return _.find(programs, {
+                        id: id
+                    }).code;
+                });
+                var promises = uniqueCodes.map(function(code) {
+                    return getProgramOrderableExtensionByCode(code);
+                });
+                return $q.all(promises).then(function(results) {
+                    var orderableIdToUnit = {};
+                    _.flatten(results).forEach(function(p) {
+                        orderableIdToUnit[p.orderableId] = p.unit;
+                    });
+                    requisition.requisitionLineItems.forEach(function(lineItem) {
+                        lineItem.orderable.unit = orderableIdToUnit[lineItem.orderable.id];
+                    });
+                    return $q.resolve(requisition);
+                });
+            });
+        }
+
         function extendLineItemsWithOrderablesAndFtaps(requisition, statusMessages) {
             var identities = getResourcesFromLineItems(requisition, true);
             return $q.all([getByVersionIdentities(identities, new OrderableResource()),
@@ -562,7 +597,6 @@
                             }
                         });
                     });
-
                     requisition.processingPeriod = result[1];
                     return requisition;
                 })
