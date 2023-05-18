@@ -38,6 +38,7 @@
                         MMIT: 'openlmis.analyticsReport.requisitionAndMonthly.rapid',
                         'Requisição Balancete': 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica',
                         'Balance Requisition': 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica',
+                        MMC: 'openlmis.analyticsReport.requisitionAndMonthly.ViaClassica',
                         MMIA: 'openlmis.analyticsReport.requisitionAndMonthly.mmia',
                         MMTB: 'openlmis.analyticsReport.requisitionAndMonthly.tb'
                     };
