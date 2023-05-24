@@ -541,6 +541,10 @@
             var repository = new StockCardSummaryRepository(
                 new FullStockCardSummaryRepositoryImpl(locationManagementOption)
             );
+
+            if (programId === 'a6257d40-58c5-11ed-b15f-acde48001122') {
+                programId = 'dce17f2e-af3e-40ad-8e00-3496adef44c3';
+            }
             // #225: cant view detail page when not have stock view right
             return repository.query(flag ? {
                 programId: programId,
