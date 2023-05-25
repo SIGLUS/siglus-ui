@@ -242,7 +242,7 @@
             });
             var params = {
                 // eslint-disable-next-line max-len
-                replaceId: (_.get(vm.program, 'code') === PROGRAM_TYPE.ML) || (_.get(vm.program, 'code') === PROGRAM_TYPE.MMC) ? viaOption.id : ''
+                replaceId: (_.get(vm.program, 'code') === PROGRAM_TYPE.ML) ? viaOption.id : ''
             };
             return Object.assign({}, stateParams, params);
         };
