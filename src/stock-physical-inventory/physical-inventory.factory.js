@@ -40,6 +40,8 @@
     function factory($q, physicalInventoryService, SEARCH_OPTIONS, $filter, StockCardSummaryRepository,
                      FullStockCardSummaryRepositoryImpl, loadingModalService, $state, alertService,
                      currentUserService, navigationStateService, STOCKMANAGEMENT_RIGHTS) {
+        var mmcProgramId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+        var viaProgramId = 'dce17f2e-af3e-40ad-8e00-3496adef44c3';
 
         return {
             getDrafts: getDrafts,
@@ -424,7 +426,8 @@
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
                 var stockCardId = summary.stockCard && summary.stockCard.id;
-                var programId = _.first(summary.orderable.programs).programId;
+                var programId = physicalInventory.programId === mmcProgramId ?
+                    mmcProgramId : _.first(summary.orderable.programs).programId;
                 stockCardLineItems.push({
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
@@ -474,7 +477,7 @@
                             area: item.area,
                             id: item.id,
                             locationCode: item.locationCode,
-                            programId: _.first(summary.orderable.programs).programId
+                            programId: physicalInventory.programId
                         });
                     } else if (locationManagementOption === 'location' && !summary) {
                         var newItem = angular.merge(item, {
@@ -542,8 +545,8 @@
                 new FullStockCardSummaryRepositoryImpl(locationManagementOption)
             );
 
-            if (programId === 'a6257d40-58c5-11ed-b15f-acde48001122') {
-                programId = 'dce17f2e-af3e-40ad-8e00-3496adef44c3';
+            if (programId === mmcProgramId) {
+                programId = viaProgramId;
             }
             // #225: cant view detail page when not have stock view right
             return repository.query(flag ? {
