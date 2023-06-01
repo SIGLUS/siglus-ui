@@ -43,7 +43,9 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService) {
-                    return requisitionService.getWithoutStatusMessages($stateParams.rnr);
+                    return requisitionService.getWithoutStatusMessages($stateParams.rnr).then(function(requisition) {
+                        return requisitionService.setOrderableUnitForRequisition(requisition);
+                    });
                 },
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);

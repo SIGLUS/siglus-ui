@@ -85,7 +85,7 @@
         <tbody>
             <tr id="calcTr" ng-repeat="(index, product) in vm.productLineItems">
                 <td class="col-4 normal-td green-dark" colspan="4">{{ product.orderable.fullProductName }}</td>
-                <td class="normal-td green-dark">{{product.orderable.dispensable.displayUnit}}</td>
+                <td class="normal-td green-dark">{{product.orderable.unit || product.orderable.dispensable.displayUnit}}</td>
                 <td class="normal-td">{{product.beginningBalance}}</td>
                 <td class="normal-td">{{product.totalReceivedQuantity}}</td>
                 <td class="normal-td">{{product.totalConsumedQuantity}}</td>

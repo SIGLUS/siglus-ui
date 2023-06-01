@@ -13,10 +13,11 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
-describe('openlmis.requisitions.requisition.fullSupply state', function() {
+describe('openlmis.requisitions.requisition.nonFullSupply state', function() {
 
     beforeEach(function() {
         module('requisition-view');
+        module('referencedata-facility-type-approved-product');
 
         inject(function($injector) {
             this.UserDataBuilder = $injector.get('UserDataBuilder');
@@ -55,25 +56,25 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
             .withProcessingPeriod(this.period)
             .withRequisitionLineItems([
                 new this.RequisitionLineItemDataBuilder()
-                    .fullSupplyForProgram(this.program)
+                    .nonFullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson(),
                 new this.RequisitionLineItemDataBuilder()
-                    .nonFullSupplyForProgram(this.program)
+                    .fullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson(),
                 new this.RequisitionLineItemDataBuilder()
-                    .fullSupplyForProgram(this.program)
+                    .nonFullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson(),
                 new this.RequisitionLineItemDataBuilder()
-                    .nonFullSupplyForProgram(this.program)
+                    .fullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson(),
                 new this.RequisitionLineItemDataBuilder()
-                    .fullSupplyForProgram(this.program)
+                    .nonFullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson(),
                 new this.RequisitionLineItemDataBuilder()
-                    .fullSupplyForProgram(this.program)
+                    .nonFullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson(),
                 new this.RequisitionLineItemDataBuilder()
-                    .fullSupplyForProgram(this.program)
+                    .nonFullSupplyForProgram(requisitionDataBuilder.program)
                     .buildJson()
             ]);
 
@@ -105,14 +106,14 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
         this.requisition.template.getColumns.andReturn(this.columns);
     });
 
-    it('should prepare full supply line items', function() {
-        this.goToUrl('/requisition/requisition-id/fullSupply?fullSupplyListPage=0&fullSupplyListSize=2');
+    it('should prepare non full supply line items', function() {
+        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('lineItems')).toEqual(this.lineItems);
     });
 
     it('should prepare page items', function() {
-        this.goToUrl('/requisition/requisition-id/fullSupply?fullSupplyListPage=1&fullSupplyListSize=2');
+        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=1&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('items')).toEqual([
             this.lineItems[2],
@@ -121,18 +122,16 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
     });
 
     it('should prepare columns', function() {
-        this.goToUrl('/requisition/requisition-id/fullSupply?fullSupplyListPage=0&fullSupplyListSize=2');
+        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('columns')).toEqual(this.columns);
-        // SIGLUS-REFACTOR: starts here
-        expect(this.requisition.template.getColumns).toHaveBeenCalled();
-        // SIGLUS-REFACTOR: ends here
+        expect(this.requisition.template.getColumns).toHaveBeenCalledWith(true);
     });
 
-    it('should set full supply flag to true', function() {
-        this.goToUrl('/requisition/requisition-id/fullSupply?fullSupplyListPage=0&fullSupplyListSize=2');
+    it('should set full supply flag to false', function() {
+        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
 
-        expect(this.getResolvedValue('fullSupply')).toEqual(true);
+        expect(this.getResolvedValue('fullSupply')).toEqual(false);
     });
 
     function goToUrl(url) {

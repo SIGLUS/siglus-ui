@@ -94,7 +94,7 @@
 
             vm.programs = _.filter(programs, function(program) {
 
-                return program.code !== 'MMC' && program.code !== 'ML';
+                return  program.code !== 'ML';
             });
 
             vm.program = _.find(programs, function(p) {

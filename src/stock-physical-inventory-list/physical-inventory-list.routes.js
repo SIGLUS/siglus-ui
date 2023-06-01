@@ -55,7 +55,7 @@
                     ]).then(function(responses) {
                         return responses[0].concat(
                             _.filter(responses[1], function(item) {
-                                return item.code !== 'ML' && item.code !== 'MMC';
+                                return item.code !== 'ML';
                             })
                         );
                     });

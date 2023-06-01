@@ -89,7 +89,10 @@
             });
 
             updateCellContents();
-
+            function isIntegerInput() {
+                return column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
+                    !requisition.template.populateStockOnHandFromStockCards && !scope.isReadOnly;
+            }
             function updateCellContents() {
                 var templateUrl = '';
                 if (column.name === TEMPLATE_COLUMNS.SKIPPED) {
@@ -97,8 +100,7 @@
                     // #199: product sections for column changes
                 } else if (column.name === TEMPLATE_COLUMNS.EXPIRATION_DATE) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-date.html';
-                } else if (column.name === TEMPLATE_COLUMNS.TOTAL_LOSSES_AND_ADJUSTMENTS &&
-                    !requisition.template.populateStockOnHandFromStockCards && !scope.isReadOnly) {
+                } else if (isIntegerInput()) {
                     templateUrl = 'requisition-product-grid/siglus-product-grid-cell-input-integer.html';
                     // #199: ends here
                 } else if (column.$type === COLUMN_TYPES.NUMERIC && !scope.isReadOnly) {
@@ -107,6 +109,8 @@
                     templateUrl = 'requisition-product-grid/product-grid-cell-input-text.html';
                 } else if (column.$type === COLUMN_TYPES.CURRENCY) {
                     templateUrl = 'requisition-product-grid/product-grid-cell-currency.html';
+                } else if (column.name === TEMPLATE_COLUMNS.UNIT_UNIT_OF_ISSUE) {
+                    templateUrl = 'requisition-product-grid/product-grid-cell-unit.html';
                 } else {
                     templateUrl = 'requisition-product-grid/product-grid-cell-text.html';
                 }

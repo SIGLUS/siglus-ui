@@ -29,7 +29,7 @@
                 var productCode = lineItem.orderable.productCode;
                 var month = ('0' + (date.getMonth() + 1)).slice(-2);
                 var year = date.getFullYear();
-                var lotCodeKey = 'SEM-LOTE-' + productCode + '-' + month + year;
+                var lotCodeKey = 'SEM-LOTE-' + productCode.toUpperCase() + '-' + month + year;
 
                 var previous = dateLotMapping[productCode + lineItem.lot.expirationDate];
 

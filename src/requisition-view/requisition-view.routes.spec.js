@@ -73,6 +73,7 @@ describe('openlmis.requisitions.requisition state', function() {
 
         spyOn(this.currentUserService, 'getUserInfo').andReturn(this.$q.resolve(this.user));
         spyOn(this.requisitionService, 'get').andReturn(this.$q.resolve(this.requisition));
+        spyOn(this.requisitionService, 'setOrderableUnitForRequisition').andReturn(this.$q.resolve(this.requisition));
         spyOn(this.programService, 'get').andReturn(this.$q.when(this.program));
         spyOn(this.facilityService, 'get').andReturn(this.$q.resolve(this.facility));
         spyOn(this.periodService, 'get').andReturn(this.$q.resolve(this.period));
