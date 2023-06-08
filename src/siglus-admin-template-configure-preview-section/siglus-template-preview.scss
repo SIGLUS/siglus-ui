@@ -90,3 +90,11 @@
 .template-preview-section {
     margin-bottom: 2em;
 }
+
+
+table td[popover] {
+    display: table-cell;
+    border: inherit;
+    border-top: #ddd 1px solid;
+    border-left: #ddd 1px solid;
+}
