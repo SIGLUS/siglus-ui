@@ -102,3 +102,7 @@ table td[popover] {
 [popover] {
     color: inherit;
 }
+
+th[popover]:not(:popover-open):not(dialog[open]) {
+    display: table-cell
+}
