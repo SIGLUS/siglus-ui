@@ -414,6 +414,11 @@
             return physicalInventoryService.saveDraft(physicalInventory);
         }
 
+        function getProgramId(physicalInventory, summary) {
+            return physicalInventory.programId === mmcProgramId ?
+                mmcProgramId : _.first(summary.orderable.programs).programId;
+        }
+
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(
             physicalInventory,
@@ -426,8 +431,7 @@
             var stockCardLineItems = [];
             angular.forEach(summaries, function(summary) {
                 var stockCardId = summary.stockCard && summary.stockCard.id;
-                var programId = physicalInventory.programId === mmcProgramId ?
-                    mmcProgramId : _.first(summary.orderable.programs).programId;
+                var programId = getProgramId(physicalInventory, summary);
                 stockCardLineItems.push({
                     stockOnHand: summary.stockOnHand,
                     lot: summary.lot,
@@ -477,7 +481,7 @@
                             area: item.area,
                             id: item.id,
                             locationCode: item.locationCode,
-                            programId: physicalInventory.programId
+                            programId: getProgramId(physicalInventory, summary)
                         });
                     } else if (locationManagementOption === 'location' && !summary) {
                         var newItem = angular.merge(item, {
