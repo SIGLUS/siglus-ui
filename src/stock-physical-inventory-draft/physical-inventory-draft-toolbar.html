@@ -4,7 +4,7 @@
             {{'stockInitialInventory.goBack' | message}}
         </button>
         <button ng-if="!vm.isMergeDraft && vm.actionType !== 'SUBMITTED'" class="danger" ng-click="vm.delete()">
-            {{'stockInitialInventory.delete' | message}}
+            {{'stockInitialInventoryDraft.delete' | message}}
         </button>
         <button ng-if="vm.isMergeDraft && vm.actionType !== 'SUBMITTED'" class="defaul" ng-click="vm.delete()">
             {{'stockInitialInventory.cancel' | message}}

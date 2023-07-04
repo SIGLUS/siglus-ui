@@ -135,6 +135,12 @@
             });
         }
 
+        vm.getErrorMsg = function() {
+            if (!vm.program) {
+                return 'requisitionInitiate.noProgram';
+            }
+        };
+
         // SIGLUS-REFACTOR: delete method
         // /**
         //  * @ngdoc method

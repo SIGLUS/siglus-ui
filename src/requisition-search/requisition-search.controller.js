@@ -200,6 +200,12 @@
             }
         }
 
+        vm.getErrorMsg = function() {
+            if (!vm.selectedFacility) {
+                return 'requisitionSearch.noFacility';
+            }
+        };
+
         /**
          * @ngdoc method
          * @methodOf requisition-search.controller:RequisitionViewController

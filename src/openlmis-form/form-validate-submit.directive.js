@@ -41,7 +41,10 @@
             link: link,
             priority: -1,
             require: 'form',
-            restrict: 'E'
+            restrict: 'E',
+            scope: {
+                onFormError: '&onFormError'
+            }
         };
         return directive;
 
@@ -51,7 +54,10 @@
                     event.stopImmediatePropagation();
                     if (attrs.hideMessageDialog !== 'true') {
                         $timeout(function() {
-                            alertService.error(messageService.get('openlmisForm.formInvalid'));
+                            if (scope.onFormError && scope.onFormError()) {
+                                return alertService.error(messageService.get(scope.onFormError()));
+                            }
+                            return alertService.error(messageService.get('openlmisForm.formInvalid'));
                         }, 10);
                     }
 

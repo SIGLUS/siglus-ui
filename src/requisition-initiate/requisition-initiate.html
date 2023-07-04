@@ -3,7 +3,7 @@
 <!-- SIGLUS-REFACTOR: starts here -->
 <div class="requisition-tab-container">
 <!-- SIGLUS-REFACTOR: ends here -->
-    <form class="sidebar" ng-submit="vm.loadPeriods()">
+    <form class="sidebar" ng-submit="vm.loadPeriods()" on-form-error="vm.getErrorMsg()">
         <openlmis-facility-program-select
                 is-supervised="vm.isSupervised"
                 facility="vm.facility"

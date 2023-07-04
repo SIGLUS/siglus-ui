@@ -13,5 +13,6 @@
   "requisitionInitiate.confirm.button": "Physical Inventory",
   "requisitionInitiate.submitDuration": "Submit Duration",
   "requisitionInitiate.noFirstStockMovement": "There is no stock card of any product under this program, you cannot process the requisition/report.",
-  "requisitionInitiate.noReportTypeStartDate": "You cannot process the requisition/report before the report start date is configured, please contact the administrator."
+  "requisitionInitiate.noReportTypeStartDate": "You cannot process the requisition/report before the report start date is configured, please contact the administrator.",
+  "requisitionInitiate.noProgram": "Select a program"
 }

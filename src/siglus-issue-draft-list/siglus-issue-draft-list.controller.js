@@ -125,7 +125,7 @@
 
         vm.deleteDrafts = function() {
             alertConfirmModalService.error(
-                'PhysicalInventoryDraftList.deleteWarn',
+                'issueDraft.deleteWarn',
                 '',
                 ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
             ).then(function() {

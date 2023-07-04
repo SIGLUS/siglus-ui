@@ -11,5 +11,6 @@
   "issueDraft.create": "Create Draft",
   "issueDraft.exceedTenDraftHint": "At most 10 drafts can be created, you cannot create more drafts.",
   "issueDraft.confirmRemove": "Do you want to remove this draft?",
-  "stockIssue.submitted": "Submitted"
+  "stockIssue.submitted": "Submitted",
+  "issueDraft.deleteWarn": "Once delete all the drafts, the existing process will lose and cannot be recovered."
 }

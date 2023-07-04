@@ -1,4 +1,5 @@
 {
   "requisitionSearch.endDate": "End Date",
-  "requisitionSearch.startDate": "Start Date"
+  "requisitionSearch.startDate": "Start Date",
+  "requisitionSearch.noFacility": "Select a facility"
 }

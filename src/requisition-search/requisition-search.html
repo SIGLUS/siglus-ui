@@ -2,7 +2,7 @@
 <div ng-if="vm.error" class="alert is-info" ng-show="vm.error">
     {{vm.error | message}}
 </div>
-<form class="sidebar" ng-submit="vm.search()">
+<form class="sidebar" ng-submit="vm.search()" on-form-error="vm.getErrorMsg()">
     <label for="facility">{{'requisitionSearch.facility' | message}}</label>
     <select id="facility" placeholder="{{'requisitionSearch.selectFacility' | message}}"
             ng-model="vm.selectedFacility"
