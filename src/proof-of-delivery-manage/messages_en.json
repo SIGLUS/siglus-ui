@@ -5,5 +5,6 @@
     "proofOfDeliveryManage.orderDate": "Order Date",
     "proofOfDeliveryManage.orderNumber": "Order No.",
     "proofOfDeliveryManage.orderStatus": "Order Status",
-    "proofOfDeliveryManage.supplyingDepot": "Supplying Depot"
+    "proofOfDeliveryManage.supplyingDepot": "Supplying Depot",
+    "proofOfDeliveryManage.invalidForm": "This form is invalid"
 }

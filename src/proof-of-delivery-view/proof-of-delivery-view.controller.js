@@ -231,6 +231,10 @@
             })[0].name;
         }
 
+        vm.getErrorMsg = function() {
+            return 'proofOfDeliveryView.invalidForm';
+        };
+
         function save(notReload) {
             $scope.needToConfirm = false;
             loadingModalService.open();
@@ -346,7 +350,7 @@
         function deleteDraft() {
             $scope.needToConfirm = false;
             alertConfirmModalService.error(
-                'PhysicalInventoryDraftList.deleteDraftWarn',
+                'proofOfDeliveryView.deleteDraftWarn',
                 '',
                 ['PhysicalInventoryDraftList.cancel',
                     'PhysicalInventoryDraftList.confirm']

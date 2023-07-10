@@ -269,6 +269,11 @@
                     loadingModalService.close();
                 });
         }
+
+        vm.getErrorMsg = function() {
+            return 'proofOfDeliveryManage.invalidForm';
+        };
+
         // function getPdfName(facilityName, nowTime) {
         //     return (
         //         'Issue_'

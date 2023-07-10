@@ -1,4 +1,7 @@
 {
+  "proofOfDeliveryView.delete": "Delete",
+  "proofOfDeliveryView.invalidForm": "This form is invalid",
+  "proofOfDeliveryView.deleteDraftWarn": "Once delete the draft, all the data in this draft will be cleared and cannot be recovered.",
   "proofOfDeliveryView.partialFulfilledQuantity": "Partial Fulfilled",
   "proofOfDeliveryView.requisitionNumber": "Requisition number",
   "proofOfDeliveryView.fnm":"FNM",

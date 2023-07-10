@@ -1,7 +1,7 @@
 <h2 ng-if="vm.facilityName && vm.programName">{{'proofOfDeliveryManage.managePodsForFacility' | message:{facility: vm.facilityName, program: vm.programName} }}</h2>
 <h2 ng-if="!vm.facilityName && vm.programName">{{'proofOfDeliveryManage.managePodsForProgram' | message:{program: vm.programName} }}</h2>
 <h2 ng-if="!vm.facilityName && !vm.programName">{{'proofOfDeliveryManage.managePods' | message}}</h2>
-<form class="sidebar" ng-submit="vm.loadOrders()">
+<form class="sidebar" ng-submit="vm.loadOrders()" on-form-error="vm.getErrorMsg()">
     <fieldset class="form-group" ng-if="vm.requestingFacilities.length > 0">
         <label for="requestingFacility">{{'proofOfDeliveryManage.requestingFacility' | message}}</label>
         <!-- #579: the "Supplying facility" field is automatically fille-->

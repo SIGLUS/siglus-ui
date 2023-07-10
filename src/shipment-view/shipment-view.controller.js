@@ -215,6 +215,10 @@
             $window.open(PRINT_URL, '_blank');
         }
 
+        vm.getErrorMsg = function() {
+            return 'shipmentView.invalidForm';
+        };
+
         // #264: warehouse clerk can add product to orders
         function addProducts() {
             var availableProducts = getAvailableProducts();

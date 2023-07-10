@@ -45,7 +45,7 @@
   </ul>
 </aside>
 
-<form id="proof-of-delivery-form" ng-submit="vm.submit()">
+<form id="proof-of-delivery-form" ng-submit="vm.submit()" on-form-error="vm.getErrorMsg()">
   <div class="openlmis-table-container">
     <table class="openlmis-table">
       <thead>
@@ -217,7 +217,7 @@
     </button>
     <button ng-if="!vm.isMerge && vm.actionType !== 'SUBMITTED'" class="danger"
             ng-click="vm.deleteDraft()">
-      {{'stockInitialInventory.delete' | message}}
+      {{'proofOfDeliveryView.delete' | message}}
     </button>
     <button ng-if="vm.isMerge && vm.actionType !== 'SUBMITTED'" class="defaul"
             ng-click="vm.returnBack()">
