@@ -2,5 +2,6 @@
   "requisitionView.submit.confirmWithSignature": "Enter your initials and then submit the requisition",
   "requisitionView.approve.confirmWithSignature": "Enter your initials and then approve the requisition",
   "requisitionView.save.label": "Save",
-  "requisitionView.requisitionNumber": "Requisition number"
+  "requisitionView.requisitionNumber": "Requisition number",
+  "requisitionView.delete.menu.label": "Delete"
 }

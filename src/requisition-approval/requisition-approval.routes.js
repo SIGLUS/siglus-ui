@@ -28,7 +28,7 @@
         $stateProvider.state('openlmis.requisitions.approvalList', {
             showInNavigation: true,
             isOffline: true,
-            label: 'requisitionApproval.approve',
+            label: 'requisitionApproval.route.approve',
             // #368: The approver can filter the requisitions by facility
             url: '/approvalList?page&size&program&facility&offline&sort',
             // #368: ends here

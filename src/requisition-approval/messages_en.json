@@ -2,6 +2,6 @@
   "requisitionApproval.endDate": "End Date",
   "requisitionApproval.startDate": "Start Date",
   "requisitionApproval.periodDuration": "Period Duration",
-  "requisitionApproval.actualPeriod": "Actual Period"
-
+  "requisitionApproval.actualPeriod": "Actual Period",
+  "requisitionApproval.route.approve": "Approve Client Req"
 }
