@@ -53,10 +53,7 @@
                         programId: order.program.id,
                         facilityId: order.supplyingFacility.id,
                         orderableId: orderableIds
-                    })
-                        .then(function(page) {
-                            return page.content;
-                        });
+                    });
                 },
                 // #372: Improving Fulfilling Order performance
                 shipment: function(shipmentViewService, order, stockCardSummaries) {

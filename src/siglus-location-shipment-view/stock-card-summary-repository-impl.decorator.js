@@ -31,9 +31,9 @@
             $provide.decorator('StockCardSummaryRepositoryImpl', decorator);
         });
 
-    decorator.$inject = ['$delegate', 'StockCardResource', 'siglusProductOrderableGroupService'];
+    decorator.$inject = ['$delegate', 'StockCardResource', 'siglusProductOrderableGroupService', 'STOCKMANAGEMENT_RIGHTS'];
 
-    function decorator($delegate, StockCardResource, siglusProductOrderableGroupService) {
+    function decorator($delegate, StockCardResource, siglusProductOrderableGroupService, STOCKMANAGEMENT_RIGHTS) {
         var StockCardSummaryRepositoryImpl = $delegate;
 
         StockCardSummaryRepositoryImpl.prototype.queryWithStockCards = queryWithStockCards;
@@ -83,10 +83,20 @@
         }
 
         function queryWithStockCards(params) {
-            return this.query(params)
+            var paramsCopy = {};
+            paramsCopy.facilityId = params.facilityId;
+            paramsCopy.programId = '00000000-0000-0000-0000-000000000000';
+            paramsCopy.nonEmptyOnly = true;
+            paramsCopy.excludeArchived = true;
+            paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
+            paramsCopy.page = 0;
+            paramsCopy.size = 2147483647;
+            return siglusProductOrderableGroupService.queryStockOnHandsInfo(paramsCopy)
                 .then(function(page) {
                     var stockCardIds = new Set();
-                    page.content.forEach(function(summary) {
+                    page.forEach(function(summary) {
+                        summary.canFulfillForMe = summary.stockCardDetails;
+                        summary.stockCardDetails = [];
                         summary.canFulfillForMe.forEach(function(canFulfillForMe) {
                             stockCardIds.add(canFulfillForMe.stockCard.id);
                         });
@@ -101,7 +111,7 @@
                                 return stockCardsMap;
                             }, {});
 
-                            page.content.forEach(function(summary) {
+                            page.forEach(function(summary) {
                                 summary.canFulfillForMe.forEach(function(canFulfillForMe) {
                                     canFulfillForMe.stockCard = stockCardsMap[canFulfillForMe.stockCard.id];
                                 });

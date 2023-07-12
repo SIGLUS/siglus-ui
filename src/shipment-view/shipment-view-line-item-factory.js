@@ -90,7 +90,6 @@
                                 return  (_.get(canFulfillForMeItem, ['orderable', 'isKit'])
                                 &&  _.get(canFulfillForMeItem, ['stockOnHand' ], 0) > 0) ||
                                (_.get(canFulfillForMeItem, ['lot' ])
-                                && _.get(canFulfillForMeItem, ['stockOnHand' ], 0) > 0
                                 && moment()
                                 //eslint-disable-next-line max-len
                                     .isBefore(moment(_.get(canFulfillForMeItem, ['lot', 'expirationDate'])).add(1, 'd')));
@@ -116,6 +115,20 @@
                     });
                 });
             sortLotLineItems(shipmentViewLineItemGroups);
+
+            shipmentViewLineItemGroups.forEach(function (shipmentViewLineItemGroup) {
+                var shipmentViewLineItems = _.flatten(shipmentViewLineItemGroup.lineItems.map(function (lineItem) {
+                    return _.get(lineItem, 'lineItems', []);
+                }));
+                if (shipmentViewLineItems && shipmentViewLineItems.length > 0) {
+                    var isQuantityInput = _.some(shipmentViewLineItems, function(shipmentViewLineItem) {
+                        return _.get(shipmentViewLineItem, ['shipmentLineItem', 'quantityShipped'], 0) > 0;
+                    });
+                    if (isQuantityInput && _.get(shipmentViewLineItemGroup, 'noStockAvailable')) {
+                        shipmentViewLineItemGroup.noStockAvailable = false;
+                    }
+                }
+            })
 
             return flatten(shipmentViewLineItemGroups);
         }
@@ -180,7 +193,8 @@
                         lotId
                     );
 
-                if (shipmentLineItem) {
+                if (shipmentLineItem && (_.get(canFulfillForMe, ['stockOnHand' ], 0) > 0 || shipmentLineItem.quantityShipped > 0)) {
+
                     lotLineItems.push(new ShipmentViewLineItem({
                         lot: canFulfillForMe.lot,
                         vvmStatus: getVvmStatus(canFulfillForMe),
