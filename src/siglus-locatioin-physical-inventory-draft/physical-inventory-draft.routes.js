@@ -118,15 +118,12 @@
                                                     var tempLots = _.filter(array, function(lot) {
                                                         return lot.orderableId === lineItem.orderable.id;
                                                     });
-                                                    var tempSoh = '';
-                                                    if (tempLots.length === 1) {
-                                                        tempSoh = tempLots[0].stockOnHand;
-                                                    } else if (tempLots.length > 1) {
-                                                        tempSoh = _.find(tempLots, function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
-                                                        }).stockOnHand;
+                                                    var targetLot = _.find(tempLots, function(item) {
+                                                        return item.lotCode === lineItem.lot.lotCode;
+                                                    });
+                                                    if (targetLot) {
+                                                        lineItem.stockOnHand = _.get(targetLot, 'stockOnHand', 0);
                                                     }
-                                                    lineItem.stockOnHand = tempSoh;
                                                     lineItem.area = lineItem.area ?
                                                         lineItem.area :
                                                         _.get(
