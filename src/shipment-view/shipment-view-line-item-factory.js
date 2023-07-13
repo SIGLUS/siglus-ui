@@ -116,8 +116,8 @@
                 });
             sortLotLineItems(shipmentViewLineItemGroups);
 
-            shipmentViewLineItemGroups.forEach(function (shipmentViewLineItemGroup) {
-                var shipmentViewLineItems = _.flatten(shipmentViewLineItemGroup.lineItems.map(function (lineItem) {
+            shipmentViewLineItemGroups.forEach(function(shipmentViewLineItemGroup) {
+                var shipmentViewLineItems = _.flatten(shipmentViewLineItemGroup.lineItems.map(function(lineItem) {
                     return _.get(lineItem, 'lineItems', []);
                 }));
                 if (shipmentViewLineItems && shipmentViewLineItems.length > 0) {
@@ -128,7 +128,7 @@
                         shipmentViewLineItemGroup.noStockAvailable = false;
                     }
                 }
-            })
+            });
 
             return flatten(shipmentViewLineItemGroups);
         }
@@ -193,7 +193,8 @@
                         lotId
                     );
 
-                if (shipmentLineItem && (_.get(canFulfillForMe, ['stockOnHand' ], 0) > 0 || shipmentLineItem.quantityShipped > 0)) {
+                if (shipmentLineItem
+                    && (_.get(canFulfillForMe, ['stockOnHand' ], 0) > 0 || shipmentLineItem.quantityShipped > 0)) {
 
                     lotLineItems.push(new ShipmentViewLineItem({
                         lot: canFulfillForMe.lot,
