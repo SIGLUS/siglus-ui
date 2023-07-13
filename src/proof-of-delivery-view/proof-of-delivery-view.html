@@ -228,8 +228,8 @@
     <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">{{'stockPhysicalInventoryDraft.save'
     | message}}
     </button>
-    <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" form="proof-of-delivery-form">{{'stockPhysicalInventoryDraft.submit'
-    | message}}
+    <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" form="proof-of-delivery-form">
+      {{(vm.isMerge ? 'stockPhysicalInventoryDraft.mergeApprove' : 'stockPhysicalInventoryDraft.submit') | message}}
     </button>
   </div>
 </div>

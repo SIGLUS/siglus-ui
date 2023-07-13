@@ -1,4 +1,5 @@
 {
+  "shipmentView.deleteDraftButton": "Delete Draft",
   "shipmentView.products": "Product(s)",
   "shipmentView.addProduct": "Add Product",
   "shipmentView.noProductsToAdd.label": "Warning",
