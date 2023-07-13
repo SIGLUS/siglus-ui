@@ -117,15 +117,18 @@
             sortLotLineItems(shipmentViewLineItemGroups);
 
             shipmentViewLineItemGroups.forEach(function(shipmentViewLineItemGroup) {
-                var shipmentViewLineItems = _.flatten(shipmentViewLineItemGroup.lineItems.map(function(lineItem) {
-                    return _.get(lineItem, 'lineItems', []);
-                }));
-                if (shipmentViewLineItems && shipmentViewLineItems.length > 0) {
-                    var isQuantityInput = _.some(shipmentViewLineItems, function(shipmentViewLineItem) {
-                        return _.get(shipmentViewLineItem, ['shipmentLineItem', 'quantityShipped'], 0) > 0;
-                    });
-                    if (isQuantityInput && _.get(shipmentViewLineItemGroup, 'noStockAvailable')) {
-                        shipmentViewLineItemGroup.noStockAvailable = false;
+                if (shipmentViewLineItemGroup.lineItems
+                    && shipmentViewLineItemGroup.lineItems.length > 0) {
+                    var shipmentViewLineItems = _.flatten(shipmentViewLineItemGroup.lineItems.map(function(lineItem) {
+                        return _.get(lineItem, 'lineItems', []);
+                    }));
+                    if (shipmentViewLineItems && shipmentViewLineItems.length > 0) {
+                        var isQuantityInput = _.some(shipmentViewLineItems, function(shipmentViewLineItem) {
+                            return _.get(shipmentViewLineItem, ['shipmentLineItem', 'quantityShipped'], 0) > 0;
+                        });
+                        if (isQuantityInput && _.get(shipmentViewLineItemGroup, 'noStockAvailable')) {
+                            shipmentViewLineItemGroup.noStockAvailable = false;
+                        }
                     }
                 }
             });
