@@ -31,9 +31,11 @@
             $provide.decorator('StockCardSummaryRepositoryImpl', decorator);
         });
 
-    decorator.$inject = ['$delegate', 'StockCardResource', 'siglusProductOrderableGroupService', 'STOCKMANAGEMENT_RIGHTS'];
+    decorator.$inject = ['$delegate', 'StockCardResource', 'siglusProductOrderableGroupService',
+        'STOCKMANAGEMENT_RIGHTS'];
 
-    function decorator($delegate, StockCardResource, siglusProductOrderableGroupService, STOCKMANAGEMENT_RIGHTS) {
+    function decorator($delegate, StockCardResource, siglusProductOrderableGroupService,
+                       STOCKMANAGEMENT_RIGHTS) {
         var StockCardSummaryRepositoryImpl = $delegate;
 
         StockCardSummaryRepositoryImpl.prototype.queryWithStockCards = queryWithStockCards;
