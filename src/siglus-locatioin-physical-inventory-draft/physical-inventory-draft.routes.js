@@ -116,10 +116,10 @@
                                                         []
                                                     );
                                                     var tempLots = _.filter(array, function(lot) {
-                                                        return lot.orderableId === lineItem.orderable.id;
+                                                        return lot.orderableId === _.get(lineItem, ['orderable', 'id'], undefined);;
                                                     });
                                                     var targetLot = _.find(tempLots, function(item) {
-                                                        return item.lotCode === lineItem.lot.lotCode;
+                                                        return item.lotCode === _.get(lineItem, ['lot', 'lotCode'], undefined);
                                                     });
                                                     if (targetLot) {
                                                         lineItem.stockOnHand = _.get(targetLot, 'stockOnHand', 0);
