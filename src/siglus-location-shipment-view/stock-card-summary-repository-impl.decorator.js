@@ -56,7 +56,15 @@
          * @param {Object} params the search parameters
          */
         function queryWithStockCardsForLocation(params) {
-            return siglusProductOrderableGroupService.queryStockOnHandsInfo(params).then(function(page) {
+            var paramsCopy = {};
+            paramsCopy.facilityId = params.facilityId;
+            paramsCopy.programId = '00000000-0000-0000-0000-000000000000';
+            paramsCopy.nonEmptyOnly = true;
+            paramsCopy.excludeArchived = true;
+            paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
+            paramsCopy.page = 0;
+            paramsCopy.size = 2147483647;
+            return siglusProductOrderableGroupService.queryStockOnHandsInfo(paramsCopy).then(function(page) {
                 var stockCardIds = new Set();
                 _.forEach(page, function(summary) {
                     summary.stockCardDetails.forEach(function(stockCardDetail) {
