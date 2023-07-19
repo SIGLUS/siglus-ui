@@ -117,7 +117,7 @@
                                                     );
                                                     var tempLots = _.filter(array, function(lot) {
                                                         return lot.orderableId ===
-                                                            _.get(lineItem, ['orderable', 'id'], undefined);;
+                                                            _.get(lineItem, ['orderable', 'id'], undefined);
                                                     });
                                                     var targetLot = _.find(tempLots, function(item) {
                                                         return item.lotCode ===
