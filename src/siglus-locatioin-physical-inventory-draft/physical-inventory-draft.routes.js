@@ -121,7 +121,7 @@
                                                     });
                                                     var targetLot = _.find(tempLots, function(item) {
                                                         return item.lotCode ===
-                                                            _.get(lineItem, ['lot', 'lotCode'], undefined);
+                                                            _.get(lineItem, ['lot', 'lotCode'], null);
                                                     });
                                                     if (targetLot) {
                                                         lineItem.stockOnHand = _.get(targetLot, 'stockOnHand', 0);
