@@ -95,7 +95,7 @@
                             ['createdDate'],
                             stateParams.sort[0] === ['createdDate,desc'][0]
                         );
-                        console.log('fulfill reload2')
+                        console.log('fulfill reload2');
                         return orderListCopy;
                     });
                 }
