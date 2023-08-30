@@ -135,6 +135,7 @@
          * setting data to be available on the view.
          */
         function onInit() {
+            console.log('fulfill reload3');
             $state.go('openlmis.orders.fulfillment', $stateParams, {
                 notify: false
             });
@@ -194,7 +195,9 @@
                 'PhysicalInventoryDraftList.cancel').then(function() {
                 loadingModalService.open();
                 orderRepository.closeOrder(orderId).then(function() {
+                    console.log('fulfill reload1');
                     loadOrders();
+                    $state.reload();
                 })
                     .finally(loadingModalService.close);
             });
