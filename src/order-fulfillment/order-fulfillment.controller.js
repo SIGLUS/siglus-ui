@@ -194,7 +194,7 @@
                 'PhysicalInventoryDraftList.cancel').then(function() {
                 loadingModalService.open();
                 orderRepository.closeOrder(orderId).then(function() {
-                    $state.reload();
+                    loadOrders();
                 })
                     .finally(loadingModalService.close);
             });
