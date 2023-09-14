@@ -32,12 +32,14 @@
     // #368: add facilities, selectedFacility
     controller.$inject = [
         '$state', 'requisitions', '$stateParams', 'programs', 'selectedProgram', 'alertService', 'offlineService',
-        'localStorageFactory', 'isBatchApproveScreenActive', 'facilities', 'selectedFacility'
+        'localStorageFactory', 'isBatchApproveScreenActive', 'facilities', 'selectedFacility', 'requisitionService',
+        'loadingModalService'
     ];
     // #368: ends here
 
     function controller($state, requisitions, $stateParams, programs, selectedProgram, alertService, offlineService,
-                        localStorageFactory, isBatchApproveScreenActive, facilities, selectedFacility) {
+                        localStorageFactory, isBatchApproveScreenActive, facilities, selectedFacility,
+                        requisitionService, loadingModalService) {
 
         var vm = this,
             offlineRequisitions = localStorageFactory('requisitions');
@@ -48,6 +50,7 @@
         vm.toggleSelectAll = toggleSelectAll;
         vm.viewSelectedRequisitions = viewSelectedRequisitions;
         vm.isFullRequisitionAvailable = isFullRequisitionAvailable;
+        vm.closeRequisitionsForApproval = closeRequisitionsForApproval;
 
         /**
          * @ngdoc property
@@ -257,6 +260,14 @@
                 id: requisitionId
             });
             return !vm.offline || vm.offline && offlineRequisition.length > 0;
+        }
+
+        function closeRequisitionsForApproval() {
+            loadingModalService.open();
+            requisitionService.closeRequisitionsForApproval().then(function() {
+                $state.reload();
+            })
+                .finally(loadingModalService.close);
         }
     }
 

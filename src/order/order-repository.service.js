@@ -38,6 +38,7 @@
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         orderRepository.searchFulfill = searchFulfill;
         orderRepository.closeOrder = closeOrder;
+        orderRepository.batchClose = batchClose;
         // #447: ends here
 
         /**
@@ -120,6 +121,10 @@
             return orderService.closeOrder(orderId).then(function(response) {
                 return response;
             });
+        }
+
+        function batchClose() {
+            return orderService.batchClose();
         }
     }
 

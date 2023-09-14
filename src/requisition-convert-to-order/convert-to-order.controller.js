@@ -48,6 +48,7 @@
         vm.convertToOrder = convertToOrder;
         vm.releaseWithoutOrder = releaseWithoutOrder;
         vm.search = search;
+        vm.batchClose = batchClose;
 
         /**
          * @ngdoc property
@@ -159,6 +160,14 @@
          */
         function releaseWithoutOrder(requisition) {
             release(false, requisition);
+        }
+
+        function batchClose() {
+            loadingModalService.open();
+            requisitionService.batchClose().then(function() {
+                $state.reload();
+            })
+                .finally(loadingModalService.close);
         }
 
         /**

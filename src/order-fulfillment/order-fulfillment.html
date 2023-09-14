@@ -17,6 +17,7 @@
             ng-options="orderStatus for orderStatus in vm.orderStatuses"></select>
     <input type="submit" class="btn btn-primary" value="{{'orderFulfillment.search' | message}}"/>
   </form>
+  <button class="danger" ng-click="vm.batchCloseFulfillment()">Close All Expired Orders</button>
   <table>
     <caption ng-if="!vm.orders.length">{{'orderFulfillment.noOrdersFound' | message}}</caption>
     <thead>

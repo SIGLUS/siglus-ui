@@ -65,6 +65,10 @@
             closeOrder: {
                 method: 'PUT',
                 url: fulfillmentUrlFactory('/api/siglusapi/orders/:id')
+            },
+            batchClose: {
+                method: 'POST',
+                url: fulfillmentUrlFactory('/api/siglusapi/orders/batchClose')
             }
         });
 
@@ -77,6 +81,7 @@
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         this.searchFulfill = searchFulfill;
         this.closeOrder = closeOrder;
+        this.batchClose = batchClose;
         // #447: ends here
 
         /**
@@ -140,6 +145,11 @@
                 id: orderId
             }, {}).$promise;
         }
+
+        function batchClose() {
+            return resource.batchClose().$promise;
+        }
+
         // #401: get closed & suborder status from backend
         /**
          * @ngdoc method

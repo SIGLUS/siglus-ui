@@ -45,6 +45,7 @@
         vm.$onInit = onInit;
         vm.loadOrders = loadOrders;
         vm.closeFulfillment = closeFulfillment;
+        vm.batchCloseFulfillment = batchCloseFulfillment;
 
         /**
          * @ngdoc property
@@ -201,6 +202,15 @@
                 })
                     .finally(loadingModalService.close);
             });
+        }
+
+        function batchCloseFulfillment() {
+            loadingModalService.open();
+            orderRepository.batchClose().then(function() {
+                loadOrders();
+                $state.reload();
+            })
+                .finally(loadingModalService.close);
         }
     }
 })();

@@ -13,6 +13,7 @@
 		</select>
 		<input type="submit" value="{{'requisitionConvertToOrder.search' | message}}"/>
 	</form>
+	<button class="danger" ng-click="vm.batchClose()">Close All Expired Requisitions</button>
 	<table>
 		<caption ng-if="vm.infoMessage">{{vm.infoMessage | message}}</caption>
 		<thead>

@@ -104,6 +104,14 @@
                 url: requisitionUrlFactory('/api/siglusapi/requisitions/createLineItem'),
                 method: 'POST',
                 isArray: true
+            },
+            batchClose: {
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/batchClose'),
+                method: 'POST'
+            },
+            closeRequisitionsForApproval: {
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/closeRequisitionsForApproval'),
+                method: 'POST'
             }
             // SIGLUS-REFACTOR: ends here
         });
@@ -121,7 +129,9 @@
             // SIGLUS-REFACTOR: starts here
             getOrderableLineItem: getOrderableLineItem,
             getWithoutStatusMessages: getWithoutStatusMessages,
-            setOrderableUnitForRequisition: setOrderableUnitForRequisition
+            setOrderableUnitForRequisition: setOrderableUnitForRequisition,
+            batchClose: batchClose,
+            closeRequisitionsForApproval: closeRequisitionsForApproval
             // SIGLUS-REFACTOR: ends here
         };
 
@@ -132,6 +142,14 @@
             return resource.getOrderableLineItem({
                 requisitionId: requisitionId
             }, orderableIds).$promise;
+        }
+
+        function batchClose() {
+            return resource.batchClose().$promise;
+        }
+
+        function closeRequisitionsForApproval() {
+            return resource.closeRequisitionsForApproval().$promise;
         }
         // SIGLUS-REFACTOR: ends here
         /**
