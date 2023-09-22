@@ -3,5 +3,6 @@
   "requisitionApproval.startDate": "Start Date",
   "requisitionApproval.periodDuration": "Period Duration",
   "requisitionApproval.actualPeriod": "Actual Period",
-  "requisitionApproval.route.approve": "Approve Client Req"
+  "requisitionApproval.route.approve": "Approve Client Req",
+  "requisitionApproval.close.all.expired.requisitions": "Close All Expired Requisitions"
 }

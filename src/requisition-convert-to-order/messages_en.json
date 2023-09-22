@@ -5,5 +5,6 @@
   "requisitionConvertToOrder.convertToOrder.confirm": "Are you sure you want to convert this R&R to order?",
   "requisitionConvertToOrder.convertToOrder.success": "The requisition has been successfully converted to an order",
   "requisitionConvertToOrder.releaseWithoutOrder.success": "The requisition has been successfully released without order",
-  "requisitionConvertToOrder.releaseWithoutOrder.confirm": "Are you sure you want to release this R&R without order?"
+  "requisitionConvertToOrder.releaseWithoutOrder.confirm": "Are you sure you want to release this R&R without order?",
+  "requisitionConvertToOrder.close.all.expired.requisitions": "Close All Expired Requisitions"
 }

@@ -21,7 +21,7 @@
         </select>
         <input class="btn btn-primary" type="submit" value="{{'requisitionApproval.search' | message}}"/>
     </form>
-    <button class="danger" ng-click="vm.closeRequisitionsForApproval()">Close All Expired Requisitions</button>
+    <button class="danger" ng-click="vm.closeRequisitionsForApproval()"> {{ 'requisitionApproval.close.all.expired.requisitions' | message }}</button>
     <table>
         <caption ng-if="!vm.requisitions.length">
             {{'requisitionApproval.noRnrPendingForApproval' | message}}
