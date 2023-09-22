@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@bower_components/perfect-scrollbar": "noraesae/perfect-scrollbar-bower#0.6.12",
-    "@bower_components/bower-iframe-resizer": "davidjbradshaw/iframe-resizer#^4.3.2",
+    "@bower_components/bower-iframe-resizer": "davidjbradshaw/iframe-resizer#4.3.2",
     "@bower_components/dom-to-image":"SIGLUS/siglus-dom2image.git#^1.0.3",
     "@bower_components/jsPDF": "parallax/jsPDF#^1.5.3",
     "@bower_components/underscore": "jashkenas/underscore#^1.13.4",
