@@ -70,6 +70,7 @@
             THEORETICAL_QUANTITY_TO_REQUEST: 'theoreticalQuantityToRequest',
             THEORETICAL_STOCK_AT_END_OF_PERIOD: 'theoreticalStockAtEndofPeriod',
             EXPIRATION_DATE: 'expirationDate',
+            ESTIMATED_QUANTITY_TO_REQUEST: 'estimatedQuantityToRequest',
             // SIGLUS-REFACTOR: ends here
             getStockBasedColumns: getStockBasedColumns
         };

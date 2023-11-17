@@ -43,6 +43,7 @@
             E = TEMPLATE_COLUMNS.STOCK_ON_HAND,
             SQ = TEMPLATE_COLUMNS.SUGGESTED_QUANTITY,
             EQ = TEMPLATE_COLUMNS.ESTIMATED_QUANTITY,
+            EQTR = TEMPLATE_COLUMNS.ESTIMATED_QUANTITY_TO_REQUEST,
             EX = TEMPLATE_COLUMNS.EXPIRATION_DATE,
             J = TEMPLATE_COLUMNS.REQUESTED_QUANTITY,
             M = TEMPLATE_COLUMNS.CALCULATED_ORDER_QUANTITY,
@@ -80,6 +81,9 @@
          * @return {Number}          the calculated Total Theoretical Quantity to request
          */
         function calculateTheoreticalQuantityToRequest(lineItem) {
+            if (!_.isUndefined(getItem(lineItem, EQTR))) {
+                return getItem(lineItem, EQTR);
+            }
             var result = 2 * getItem(lineItem, C) - getItem(lineItem, E);
             return _.max([result, 0]);
         }
