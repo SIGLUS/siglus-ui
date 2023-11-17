@@ -81,7 +81,7 @@
          * @return {Number}          the calculated Total Theoretical Quantity to request
          */
         function calculateTheoreticalQuantityToRequest(lineItem) {
-            if (!_.isUndefined(getItem(lineItem, EQTR))) {
+            if (!_.isUndefined(_.get(lineItem, EQTR))) {
                 return getItem(lineItem, EQTR);
             }
             var result = 2 * getItem(lineItem, C) - getItem(lineItem, E);
