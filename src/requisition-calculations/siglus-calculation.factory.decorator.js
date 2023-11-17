@@ -34,9 +34,9 @@
         $provide.decorator('calculationFactory', decorator);
     }
 
-    decorator.$inject = ['$delegate', 'TEMPLATE_COLUMNS', 'facilityFactory', '$rootScope'];
+    decorator.$inject = ['$delegate', 'TEMPLATE_COLUMNS'];
 
-    function decorator($delegate, TEMPLATE_COLUMNS, facilityFactory, $rootScope) {
+    function decorator($delegate, TEMPLATE_COLUMNS) {
         var A = TEMPLATE_COLUMNS.BEGINNING_BALANCE,
             B = TEMPLATE_COLUMNS.TOTAL_RECEIVED_QUANTITY,
             C = TEMPLATE_COLUMNS.TOTAL_CONSUMED_QUANTITY,
@@ -66,21 +66,7 @@
         };
         $delegate.__ = helper;
 
-        $delegate.shouldApplyNewFormula = false;
-
-        $rootScope.$on('openlmis-auth.login', function() {
-            setShouldApplyNewFormula();
-        });
-        setShouldApplyNewFormula();
-
         return $delegate;
-
-        function setShouldApplyNewFormula() {
-            facilityFactory.getUserHomeFacility().then(function(facility) {
-                var type = _.get(facility, ['type', 'code']);
-                $delegate.shouldApplyNewFormula = ['DPM', 'AI', 'HC'].includes(type);
-            });
-        }
 
         /**
          * @ngdoc method
@@ -94,12 +80,7 @@
          * @return {Number}          the calculated Total Theoretical Quantity to request
          */
         function calculateTheoreticalQuantityToRequest(lineItem) {
-            var result;
-            if ($delegate.shouldApplyNewFormula) {
-                result = 5 * getItem(lineItem, C) - getItem(lineItem, E);
-            } else {
-                result = 2 * getItem(lineItem, C) - getItem(lineItem, E);
-            }
+            var result = 2 * getItem(lineItem, C) - getItem(lineItem, E);
             return _.max([result, 0]);
         }
 
