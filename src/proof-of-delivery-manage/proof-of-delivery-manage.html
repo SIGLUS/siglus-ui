@@ -53,7 +53,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="order in vm.pods | orderBy:'-createdDate' ">
-                <td>{{order.orderCode}}</td>
+                <td>{{order.orderCode.replace(/^OF/, 'GR')}}</td>
                 <!-- SIGLUS-REFACTOR: starts here -->
                 <td>{{order.status | orderStatus}}</td>
                 <!-- SIGLUS-REFACTOR: ends here -->

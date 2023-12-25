@@ -805,7 +805,7 @@
                                 vm.supplierDistrict = res.supplierDistrict;
                                 vm.supplierProvince = res.supplierProvince;
                                 vm.requisitionDate = openlmisDateFilter(res.requisitionDate, 'yyyy-MM-dd');
-                                vm.issueVoucherDate = openlmisDateFilter(res.issueVoucherDate, 'yyyy-MM-dd');
+                                vm.issueVoucherDate = openlmisDateFilter(res.createdDate, 'yyyy-MM-dd');
                                 vm.deliveredBy = res.deliveredBy;
                                 vm.receivedBy = res.receivedBy;
                                 vm.receivedDate = res.receivedDate;
