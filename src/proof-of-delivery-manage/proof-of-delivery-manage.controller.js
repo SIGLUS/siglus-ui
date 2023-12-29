@@ -834,6 +834,10 @@
                                     }
                                 }
 
+                                if (order.issueVoucherNumber) {
+                                    vm.requisitionNo = order.issueVoucherNumber;
+                                }
+
                                 vm.requisitionNum = res.requisitionNum;
 
                                 vm.requisitionId = res.requisitionId;
