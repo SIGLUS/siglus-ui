@@ -4,6 +4,7 @@
     "proofOfDeliveryManage.start": "Start",
     "proofOfDeliveryManage.orderDate": "Order Date",
     "proofOfDeliveryManage.orderNumber": "Order No.",
+    "proofOfDeliveryManage.issueVoucherNumber": "Issue Voucher Number",
     "proofOfDeliveryManage.orderStatus": "Order Status",
     "proofOfDeliveryManage.supplyingDepot": "Supplying Depot",
     "proofOfDeliveryManage.invalidForm": "This form is invalid"

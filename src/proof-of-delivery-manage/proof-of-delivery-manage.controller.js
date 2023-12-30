@@ -835,7 +835,7 @@
                                 }
 
                                 if (order.issueVoucherNumber) {
-                                    vm.requisitionNo = order.issueVoucherNumber;
+                                    vm.issueVoucherNumber = order.issueVoucherNumber;
                                 }
 
                                 vm.requisitionNum = res.requisitionNum;
