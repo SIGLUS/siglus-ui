@@ -41,7 +41,6 @@
         <thead>
             <tr>
                 <th>{{'proofOfDeliveryManage.orderNumber' | message}}</th>
-                <th>{{'proofOfDeliveryManage.issueVoucherNumber' | message}}</th>
                 <th>{{'proofOfDeliveryManage.orderStatus' | message}}</th>
                 <th>{{'proofOfDeliveryManage.requestingFacility' | message}}</th>
                 <th>{{'proofOfDeliveryManage.supplyingDepot' | message}}</th>
@@ -54,8 +53,12 @@
         </thead>
         <tbody>
             <tr ng-repeat="order in vm.pods | orderBy:'-createdDate' ">
-                <td>{{order.orderCode}}</td>
-                <td>{{order.issueVoucherNumber}}</td>
+                <td>
+                    {{order.orderCode}}
+                    <br ng-if="order.issueVoucherNumber">
+                    <br ng-if="order.issueVoucherNumber">
+                    {{order.issueVoucherNumber ? order.issueVoucherNumber :''}}
+                </td>
                 <!-- SIGLUS-REFACTOR: starts here -->
                 <td>{{order.status | orderStatus}}</td>
                 <!-- SIGLUS-REFACTOR: ends here -->
