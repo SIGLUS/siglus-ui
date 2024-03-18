@@ -67,7 +67,8 @@
                 <!-- #400: ends here -->
                 <th>{{'shipmentView.suggestedQuantity' | message}}</th>
                 <th>{{'shipmentView.fillQuantityInPack' | message}}</th>
-                <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.availableSoh' | message}}</th>
+                <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.reservedSOH' | message}}</th>
+                <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.totalSOH' | message}}</th>
                 <th popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">{{'shipmentView.remainingSoh' | message}}</th>
             </tr>
         </thead>
@@ -100,6 +101,7 @@
                     <!-- #287: ends here-->
                     <div ng-show="!vm.shipment.isEditable()">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
                 </td>
+                <td>{{tableLineItem.getReservedQuantity()}}</td>
                 <td>{{tableLineItem.getAvailableSoh(vm.showInDoses())}}</td>
                 <td>{{tableLineItem.getRemainingSoh(vm.showInDoses())}}</td>
             </tr>

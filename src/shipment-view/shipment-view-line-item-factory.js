@@ -176,8 +176,9 @@
                         netContent: orderable.netContent,
                         // #287: Warehouse clerk can skip some products in order
                         isKit: summary.orderable.isKit,
-                        skipped: skipped
+                        skipped: skipped,
                         // #287: ends here
+                        reservedStock: lotLineItems[0].reservedStock
                     }));
                 }
             });
@@ -205,8 +206,9 @@
                         shipmentLineItem: shipmentLineItem,
                         netContent: orderable.netContent,
                         // #287: Warehouse clerk can skip some products in order
-                        skipped: skipped
+                        skipped: skipped,
                         // #287: ends here
+                        reservedStock: canFulfillForMe.reservedStock
                     }));
                 }
             });

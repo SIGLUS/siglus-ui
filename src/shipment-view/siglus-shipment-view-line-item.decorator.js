@@ -38,6 +38,7 @@
     function decorator($delegate) {
 
         ShipmentViewLineItem.prototype = $delegate.prototype;
+        ShipmentViewLineItem.prototype.getReservedQuantity = getReservedQuantity;
 
         return ShipmentViewLineItem;
 
@@ -61,6 +62,23 @@
             this.netContent = config.netContent;
             this.isLot = !config.isKit;
             this.skipped = config.skipped;
+            this.reservedStock = config.reservedStock;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf shipment-view.ShipmentViewLineItem
+         * @name getReservedQuantity
+         *
+         * @description
+         * Returns the reservedStock of the shipment-line-item.
+         * Using method to be consistent with shipment-line-item-group.
+         * this.getFillQuantity() is in old code repo (openlmis-fulfillment-ui)
+         *
+         * @return {number}         reservedStock of the current shipment-line-item.
+         */
+        function getReservedQuantity() {
+            return this.reservedStock + this.getFillQuantity() || 0;
         }
 
     }

@@ -37,6 +37,7 @@
         ShipmentViewLineItemGroup.prototype.getAvailableSoh = getAvailableSoh;
         ShipmentViewLineItemGroup.prototype.getFillQuantity = getFillQuantity;
         ShipmentViewLineItemGroup.prototype.getOrderQuantity = getOrderQuantity;
+        ShipmentViewLineItemGroup.prototype.getReservedQuantity = getReservedQuantity;
 
         return ShipmentViewLineItemGroup;
 
@@ -97,6 +98,22 @@
         function getFillQuantity() {
             return this.lineItems.reduce(function(fillQuantity, lineItem) {
                 return fillQuantity + lineItem.getFillQuantity();
+            }, 0);
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf shipment-view.ShipmentViewLineItemGroup
+         * @name getReservedQuantity
+         *
+         * @description
+         * Returns a sum of all reserved quantities for the children line items/line item groups.
+         *
+         * @return {number}          the sum of all reserved quantities for the whole group
+         */
+        function getReservedQuantity() {
+            return this.lineItems.reduce(function(reservedQuantity, lineItem) {
+                return reservedQuantity + lineItem.getReservedQuantity();
             }, 0);
         }
 
