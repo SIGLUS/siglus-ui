@@ -1329,7 +1329,7 @@
   "proofOfDeliveryManage.noPodsFound": "Não foram encontrados comprovativos de entrega.",
   "proofOfDeliveryManage.noProgramAvailable": "Não existem programas para esta Unidade Sanitária. Contacte o administrador.",
   "proofOfDeliveryManage.orderDate": "Data da ordem",
-  "proofOfDeliveryManage.shipDate": "Data do voucher",
+  "proofOfDeliveryManage.shipDate": "Data do remessa",
   "proofOfDeliveryManage.orderNumber": "Nº da ordem",
   "proofOfDeliveryManage.orderStatus": "Estado",
   "proofOfDeliveryManage.period": "Período",
