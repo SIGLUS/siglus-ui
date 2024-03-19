@@ -3,6 +3,7 @@
     "proofOfDeliveryManage.continue": "Continue",
     "proofOfDeliveryManage.start": "Start",
     "proofOfDeliveryManage.orderDate": "Order Date",
+    "proofOfDeliveryManage.shipDate": "Voucher Date",
     "proofOfDeliveryManage.orderNumber": "Order No.",
     "proofOfDeliveryManage.issueVoucherNumber": "Issue Voucher Number",
     "proofOfDeliveryManage.orderStatus": "Order Status",
