@@ -130,6 +130,13 @@
                 url: '/systemUpdate',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT,
                 priority: 57
+            },
+            {
+                name: 'openlmis.analyticsReport.user',
+                label: 'analyticsReportMetabase.user.title',
+                url: '/user',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT,
+                priority: 54
             }
         ];
 
