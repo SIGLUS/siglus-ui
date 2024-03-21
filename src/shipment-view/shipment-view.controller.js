@@ -207,12 +207,14 @@
          * @return {Promise} the promise resolved when print is successful, rejected otherwise
          */
         function printShipment() {
-            localStorageService.add('dataForPrint', angular.toJson({
-                order: vm.order,
-                tableLineItems: generateTableLineItemsForPrint()
-            }));
-            var PRINT_URL = $window.location.href.split('!/')[0] + '!/orders/pickPackListPrint';
-            $window.open(PRINT_URL, '_blank');
+            vm.shipment.save().then(function() {
+                localStorageService.add('dataForPrint', angular.toJson({
+                    order: vm.order,
+                    tableLineItems: generateTableLineItemsForPrint()
+                }));
+                var PRINT_URL = $window.location.href.split('!/')[0] + '!/orders/pickPackListPrint';
+                $window.open(PRINT_URL, '_blank');
+            });
         }
 
         vm.getErrorMsg = function() {
