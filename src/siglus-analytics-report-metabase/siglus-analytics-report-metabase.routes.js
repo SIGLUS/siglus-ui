@@ -21,9 +21,9 @@
         .module('siglus-analytics-report-metabase')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'SIGLUS_METABASE_DASHBOARD_NAME'];
+    routes.$inject = ['$stateProvider', 'SIGLUS_METABASE_DASHBOARD_NAME', 'ADMINISTRATION_RIGHTS'];
 
-    function routes($stateProvider, SIGLUS_METABASE_DASHBOARD_NAME) {
+    function routes($stateProvider, SIGLUS_METABASE_DASHBOARD_NAME, ADMINISTRATION_RIGHTS) {
 
         var reportLists = [
             {
@@ -130,13 +130,6 @@
                 url: '/systemUpdate',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT,
                 priority: 57
-            },
-            {
-                name: 'openlmis.analyticsReport.user',
-                label: 'analyticsReportMetabase.user.title',
-                url: '/user',
-                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT,
-                priority: 54
             }
         ];
 
@@ -193,6 +186,33 @@
                         .getTracerDrugFilterInfo().then(function(data) {
                             return data;
                         });
+                }
+            }
+        });
+
+        $stateProvider.state('openlmis.analyticsReport.user', {
+            url: '/user',
+            showInNavigation: true,
+            priority: 54,
+            accessRights: [
+                ADMINISTRATION_RIGHTS.USERS_MANAGE
+            ],
+            label: 'analyticsReportMetabase.user.title',
+            views: {
+                '@openlmis': {
+                    controller: 'siglusAnalyticsReportMetabaseController',
+                    controllerAs: 'vm',
+                    templateUrl: 'siglus-analytics-report-metabase/siglus-analytics-report-metabase.html'
+                }
+            },
+            resolve: {
+                analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    var analyticsReportMetabaseResource;
+                    analyticsReportMetabaseResource = analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT);
+                    return analyticsReportMetabaseResource.then(function(data) {
+                        return data;
+                    });
                 }
             }
         });

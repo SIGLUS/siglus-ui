@@ -27,7 +27,8 @@
         'ui.router',
         'openlmis-i18n',
         'openlmis-date',
-        'siglus-analytics-report'
+        'siglus-analytics-report',
+        'openlmis-rights'
     ]);
 
 })();
