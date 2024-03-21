@@ -181,9 +181,17 @@ describe('ShipmentViewController', function() {
             spyOn($window, 'open').andReturn(popup);
         });
 
-        it('should show information when saving shipment', function() {
+        it('should open print page after saving', function() {
+            var mockShipment = {
+                save: function() {
+                    return $q.when();
+                }
+            };
+            vm.shipment = mockShipment;
+
             vm.printShipment();
 
+            expect(mockShipment.save).toHaveBeenCalled();
             expect($window.open).toHaveBeenCalled();
         });
     });
