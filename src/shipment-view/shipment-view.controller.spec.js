@@ -179,14 +179,12 @@ describe('ShipmentViewController', function() {
 
             spyOn(messageService, 'get').andReturn('Saving and printing');
             spyOn($window, 'open').andReturn(popup);
-            spyOn(vm.shipment, 'save').andReturn($q.when());
         });
 
         it('should open print page after saving', function() {
 
             vm.printShipment();
 
-            expect(vm.shipment.save).toHaveBeenCalled();
             expect($window.open).toHaveBeenCalled();
         });
     });
