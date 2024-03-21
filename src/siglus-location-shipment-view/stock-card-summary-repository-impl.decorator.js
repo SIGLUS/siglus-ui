@@ -101,6 +101,7 @@
             paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
             paramsCopy.page = 0;
             paramsCopy.size = 2147483647;
+            paramsCopy.orderId = params.orderId;
             return siglusProductOrderableGroupService.queryStockOnHandsInfo(paramsCopy)
                 .then(function(page) {
                     var stockCardIds = new Set();

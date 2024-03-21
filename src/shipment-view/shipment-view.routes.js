@@ -52,7 +52,8 @@
                     return new StockCardSummaryRepositoryImpl().queryWithStockCards({
                         programId: order.program.id,
                         facilityId: order.supplyingFacility.id,
-                        orderableId: orderableIds
+                        orderableId: orderableIds,
+                        orderId: order.id
                     });
                 },
                 // #372: Improving Fulfilling Order performance
