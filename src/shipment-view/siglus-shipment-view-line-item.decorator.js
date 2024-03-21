@@ -39,6 +39,7 @@
 
         ShipmentViewLineItem.prototype = $delegate.prototype;
         ShipmentViewLineItem.prototype.getReservedQuantity = getReservedQuantity;
+        ShipmentViewLineItem.prototype.getItemRemainingSoh = getItemRemainingSoh;
 
         return ShipmentViewLineItem;
 
@@ -79,6 +80,24 @@
          */
         function getReservedQuantity() {
             return this.reservedStock + this.getFillQuantity() || 0;
+        }
+
+        /**
+         * @ngdoc method
+         * @methodOf shipment-view.ShipmentViewLineItem
+         * @name getItemRemainingSoh
+         *
+         * @description
+         * Returns the remaining stock after fulfilling the order.
+         * to see old repo: openlmis-fulfillment-ui
+         *
+         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
+         *                           doses or in packs
+         * @return {number}          the remaining stock after fulfilling the order
+         */
+        function getItemRemainingSoh(inDoses) {
+            var remainingQuantityInPacks = this.getAvailableSoh() - this.getReservedQuantity();
+            return this.recalculateQuantity(remainingQuantityInPacks, inDoses);
         }
 
     }
