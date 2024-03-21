@@ -55,6 +55,7 @@
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
         vm.getVvmStatusLabel = VVM_STATUS.$getDisplayName;
         vm.printShipment = printShipment;
+        vm.saveAndPrintShipment = saveAndPrintShipment;
         // #264: warehouse clerk can add product to orders
         vm.addProducts = addProducts;
         // #264: ends here
@@ -207,14 +208,16 @@
          * @return {Promise} the promise resolved when print is successful, rejected otherwise
          */
         function printShipment() {
-            vm.shipment.save().then(function() {
-                localStorageService.add('dataForPrint', angular.toJson({
-                    order: vm.order,
-                    tableLineItems: generateTableLineItemsForPrint()
-                }));
-                var PRINT_URL = $window.location.href.split('!/')[0] + '!/orders/pickPackListPrint';
-                $window.open(PRINT_URL, '_blank');
-            });
+            localStorageService.add('dataForPrint', angular.toJson({
+                order: vm.order,
+                tableLineItems: generateTableLineItemsForPrint()
+            }));
+            var PRINT_URL = $window.location.href.split('!/')[0] + '!/orders/pickPackListPrint';
+            $window.open(PRINT_URL, '_blank');
+        }
+
+        function saveAndPrintShipment() {
+            vm.shipment.save().then(this.printShipment());
         }
 
         vm.getErrorMsg = function() {
