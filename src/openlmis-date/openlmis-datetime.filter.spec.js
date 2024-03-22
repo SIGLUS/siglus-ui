@@ -35,20 +35,30 @@ describe('openlmisDatetimeFilter', function() {
         spyOn(this.moment, 'tz').andCallThrough();
     });
 
-    it('should return date in format and timezone specified', function() {
-        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'medium', 'UTC')).toEqual('Oct 1, 2017 12:55:12 PM');
+    it('should return date with default datetimeFormat and timezone', function() {
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z')).toEqual('01/10/2017 04:55:12-0800');
     });
 
-    it('should return date in format specified and timezone from setting', function() {
-        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'short')).toEqual('10/1/17 12:55 PM');
+    it('should return date with given datetimeFormat and default timezone', function() {
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'medium')).toEqual('Oct 1, 2017 4:55:12 AM');
+
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'short')).toEqual('10/1/17 4:55 AM');
     });
 
-    it('should return date in timezone specified and format from setting', function() {
+    it('should return date with default datetimeFormat and given timezone', function() {
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', undefined)).toEqual('01/10/2017 04:55:12-0800');
+
         expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', undefined, 'UTC'))
             .toEqual('01/10/2017 12:55:12+0000');
+
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', undefined, 'Asia/Shanghai'))
+            .toEqual('01/10/2017 20:55:12+0800');
     });
 
-    it('should return date in format and timezone from settings', function() {
-        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z')).toEqual('01/10/2017 12:55:12+0000');
+    it('should return date with given datetimeFormat and timezone', function() {
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'short', 'Asia/Shanghai'))
+            .toEqual('10/1/17 8:55 PM');
+
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'medium', 'UTC')).toEqual('Oct 1, 2017 12:55:12 PM');
     });
 });
