@@ -51,12 +51,12 @@ describe('openlmisDatetimeFilter', function() {
         expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', undefined, 'UTC'))
             .toEqual('01/10/2017 12:55:12+0000');
 
-        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', undefined, 'Asia/Shanghai'))
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', undefined, 'UTC+8'))
             .toEqual('01/10/2017 20:55:12+0800');
     });
 
     it('should return date with given datetimeFormat and timezone', function() {
-        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'short', 'Asia/Shanghai'))
+        expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'short', 'UTC+8'))
             .toEqual('10/1/17 8:55 PM');
 
         expect(this.openlmisDateTimeFilter('2017-10-01T12:55:12Z', 'medium', 'UTC')).toEqual('Oct 1, 2017 12:55:12 PM');
