@@ -1802,6 +1802,7 @@
   "shipmentView.none": "Nenhum",
   "shipmentView.noProductsToAdd.label": "Aviso",
   "shipmentView.noProductsToAdd.message": "Não há mais produtos por adicionar. Todos os produtos disponíveis já foram adicionados na ordem",
+  "shipmentView.saveDraftError.label": "Stock insuficiente. Pressione 'Ok' para actualizar o formulário.",
   "shipmentView.noStockAvailable": "Sem stock disponível",
   "shipmentView.order": "Ordem",
   "shipmentView.orderQuantity": "Quantidade aprovada",

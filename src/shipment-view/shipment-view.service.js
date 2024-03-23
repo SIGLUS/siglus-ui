@@ -134,8 +134,17 @@
 
                         return response;
                     })
-                    .catch(function() {
-                        notificationService.error('shipmentView.failedToSaveDraft');
+                    .catch(function(error) {
+                        if (error.data.messageKey && error.data.messageKey ===
+                            'siglusapi.error.shipment.order.line items.invalid') {
+                            alertService.error(
+                                'shipmentView.saveDraftError.label',
+                                '',
+                                'OK'
+                            );
+                        } else {
+                            notificationService.error('shipmentView.failedToSaveDraft');
+                        }
                         loadingModalService.close();
                         return $q.reject();
                     });
