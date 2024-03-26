@@ -39,6 +39,7 @@
         ShipmentViewLineItemGroup.prototype.getOrderQuantity = getOrderQuantity;
         ShipmentViewLineItemGroup.prototype.getReservedQuantity = getReservedQuantity;
         ShipmentViewLineItemGroup.prototype.getItemRemainingSoh = getItemRemainingSoh;
+        ShipmentViewLineItemGroup.prototype.hasKeyword = hasKeyword;
 
         return ShipmentViewLineItemGroup;
 
@@ -152,6 +153,13 @@
                 return;
             }
             return this.recalculateQuantity(this.orderQuantity, inDoses);
+        }
+
+        function hasKeyword(keyword) {
+            if (!keyword || this.productCode.contains(keyword) || this.productName.contains(keyword)) {
+                return true;
+            }
+            return false;
         }
     }
 

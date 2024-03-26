@@ -39,7 +39,7 @@
     </button>
 </div>
 <!-- #264: ends here -->
-<form class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()" on-form-error="vm.getErrorMsg()">
+<section class="openlmis-table-container" id="shipmentForm" ng-submit="vm.shipment.confirm()" on-form-error="vm.getErrorMsg()">
     <quantity-unit-toggle class="is-primary quantity-unit-btn" quantity-unit="vm.quantityUnit"></quantity-unit-toggle>
     <!-- #287: Warehouse clerk can skip some products in order-->
     <h4>{{'shipmentView.skip' | message}}</h4>
@@ -48,6 +48,18 @@
         <li><a ng-click="vm.unskipAllLineItems()">{{'shipmentView.none' | message}}</a></li>
     </ul>
     <!-- #287: ends here-->
+    <form>
+        <fieldset>
+            <label for="search">{{'stockReceiveCreation.keyword' | message}}</label>
+            <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
+        </fieldset>
+        <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
+               ng-click="vm.cancelFilter()"/>
+        <input type="submit"
+               ng-click="vm.search()"
+               ng-keydown="$event.keyCode === 13 && vm.search()"
+               value="{{'stockReceiveCreation.search' | message}}"/>
+    </form>
     <table>
         <thead>
             <tr>
@@ -73,7 +85,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="tableLineItem in vm.tableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="11">
+            <tr ng-repeat="tableLineItem in vm.displayTableLineItems" ng-class="{'is-secondary': tableLineItem.isMainGroup}" empty-row="tableLineItem.noStockAvailable" empty-row-message="{{'shipmentView.noStockAvailable' | message}}" empty-row-col-span="11">
                 <!-- #287: Warehouse clerk can skip some products in order-->
                 <td>
                     <input type="checkbox" ng-if="tableLineItem.isMainGroup" ng-model="tableLineItem.skipped" ng-change="vm.changeSkipStatus(tableLineItem)" ng-disabled="!vm.canSkip(tableLineItem)" />
@@ -107,7 +119,7 @@
             </tr>
         </tbody>
     </table>
-</form>
+</section>
 <div ng-show="vm.shipment.isEditable()" class="openlmis-toolbar">
     <!-- #462: add back to previous button -->
     <siglus-go-back />

@@ -70,6 +70,9 @@
                 tableLineItems: function(ShipmentViewLineItemFactory, shipment, stockCardSummaries) {
                     return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
                 },
+                displayTableLineItems: function(shipmentViewService, tableLineItems, $stateParams) {
+                    return shipmentViewService.searchDisplayItems(tableLineItems, $stateParams.keyword);
+                },
                 // #264: warehouse clerk can add product to orders
                 updatedOrder: function(shipment, order, stockCardSummaries) {
                     var shipmentOrder = shipment.order;

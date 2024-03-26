@@ -34,7 +34,7 @@
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
         'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory', 'siglusShipmentConfirmModalService',
-        '$stateParams', 'alertConfirmModalService'
+        '$stateParams', 'alertConfirmModalService', 'ShipmentViewLineItemGroup'
         // #400: ends here
     ];
     // #287: ends here
@@ -43,7 +43,8 @@
         ShipmentRepository, notificationService, stateTrackerService,
         $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
         messageService, orderService, $resource, fulfillmentUrlFactory,
-        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService
+        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService,
+        ShipmentViewLineItemGroup
     ) {
 
         var shipmentRepository = new ShipmentRepository();
@@ -51,6 +52,7 @@
         this.getShipmentForOrder = getShipmentForOrder;
         this.getSuggestedQuantity = getSuggestedQuantity;
         this.getPickPackInfo = getPickPackInfo;
+        this.searchDisplayItems = searchDisplayItems;
 
         /**
          * @ngdoc method
@@ -302,6 +304,23 @@
                             });
                     });
             };
+        }
+
+        function searchDisplayItems(shipmentViewLineItems, keyword) {
+            if (!keyword) {
+                return shipmentViewLineItems;
+            }
+            var displayItems = [];
+            var show = false;
+            shipmentViewLineItems.forEach(function(lineItem) {
+                if (lineItem instanceof ShipmentViewLineItemGroup) {
+                    show = lineItem.hasKeyword(keyword);
+                }
+                if (show) {
+                    displayItems.push(lineItem);
+                }
+            });
+            return displayItems;
         }
 
     }

@@ -29,25 +29,25 @@
         .controller('ShipmentViewController', ShipmentViewController);
 
     ShipmentViewController.$inject = [
-        'shipment', 'loadingModalService', '$state', '$window', 'fulfillmentUrlFactory',
+        'shipment', 'loadingModalService', '$state', '$window', '$scope', '$stateParams', 'fulfillmentUrlFactory',
         'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT', 'tableLineItems',
-        'VVM_STATUS',
+        'displayTableLineItems', 'VVM_STATUS',
         // #264: warehouse clerk can add product to orders
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService'
+        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService', 'shipmentViewService'
         // #287: ends here
     ];
 
-    function ShipmentViewController(shipment, loadingModalService, $state, $window,
+    function ShipmentViewController(shipment, loadingModalService, $state, $window, $scope, $stateParams,
                                     fulfillmentUrlFactory, messageService, accessTokenFactory,
-                                    updatedOrder, QUANTITY_UNIT, tableLineItems, VVM_STATUS,
+                                    updatedOrder, QUANTITY_UNIT, tableLineItems, displayTableLineItems, VVM_STATUS,
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, ShipmentViewLineItemFactory, orderService,
                                     ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity,
-                                    localStorageService) {
+                                    localStorageService, shipmentViewService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -127,6 +127,7 @@
                 tableLineItems;
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
+            vm.displayTableLineItems = displayTableLineItems;
         }
 
         function setSuggestedQuantity(items) {
@@ -377,5 +378,28 @@
             return !value || !value.toString().trim();
         }
         // #287: ends here
+
+        function searchTable() {
+            $stateParams.keyword = vm.keyword;
+            // console.log("reload page with keyword:" + vm.keyword);
+            vm.displayTableLineItems = shipmentViewService.searchDisplayItems(tableLineItems, $stateParams.keyword);
+        }
+
+        vm.search = function() {
+            searchTable();
+        };
+
+        vm.cancelFilter = function() {
+            vm.keyword = null;
+            searchTable();
+        };
+
+        $scope.$watch(function() {
+            return vm.keyword;
+        }, function(newValue, oldValue) {
+            if (oldValue && !newValue && $stateParams.keyword) {
+                searchTable();
+            }
+        });
     }
 })();
