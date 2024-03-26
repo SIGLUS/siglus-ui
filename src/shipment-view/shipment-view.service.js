@@ -34,8 +34,9 @@
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
         'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory', 'siglusShipmentConfirmModalService',
-        '$stateParams', 'alertConfirmModalService', 'ShipmentViewLineItemGroup'
+        '$stateParams', 'alertConfirmModalService', 'ShipmentViewLineItemGroup',
         // #400: ends here
+        'StockCardSummaryRepositoryImpl'
     ];
     // #287: ends here
 
@@ -43,7 +44,7 @@
         ShipmentRepository, notificationService, stateTrackerService,
         $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
         messageService, orderService, $resource, fulfillmentUrlFactory,
-        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService,
+        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService, StockCardSummaryRepositoryImpl,
         ShipmentViewLineItemGroup
     ) {
 
@@ -78,7 +79,6 @@
                     shipment.save = decorateSave(shipment.save);
                     shipment.confirm = decorateConfirm(shipment.confirm);
                     shipment.delete = decorateDelete(shipment.delete);
-
                     return shipment;
                 });
         }
@@ -143,14 +143,46 @@
                                 'shipmentView.saveDraftError.label',
                                 '',
                                 'OK'
-                            );
+                            ).then(function() {
+                                loadingModalService.open();
+                                new StockCardSummaryRepositoryImpl.queryWithStockCards($stateParams.summaryRequestBody)
+                                    .then(function(summaries) {
+                                        updateLineItemsReservedStock($stateParams.tableLineItems, summaries);
+                                    })
+                                    .finally(function() {
+                                        loadingModalService.close();
+                                    });
+                            });
                         } else {
                             notificationService.error('shipmentView.failedToSaveDraft');
                         }
-                        loadingModalService.close();
                         return $q.reject();
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
                     });
             };
+        }
+
+        function updateLineItemsReservedStock(lineItems, summaries) {
+            lineItems.forEach(function(lineItem) {
+                if (!lineItem.isMainGroup) {
+                    var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
+                    var currentItemLotId = lineItem.lot.id;
+
+                    var summary = summaries.find(function(summary) {
+                        return summary.orderable.id === currentItemOrderableId;
+                    });
+
+                    if (summary) {
+                        var lineItemCardDetail = summary.stockCardDetails.find(function(stockCardDetail) {
+                            stockCardDetail.lot.id === currentItemLotId;
+                        });
+                    }
+
+                    lineItem.reservedStock = lineItemCardDetail.reservedStock;
+                }
+            });
         }
 
         function decorateConfirm(originalConfirm) {

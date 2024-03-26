@@ -37,8 +37,9 @@
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService', 'shipmentViewService'
+        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService', 'shipmentViewService',
         // #287: ends here
+        '$stateParams'
     ];
 
     function ShipmentViewController(shipment, loadingModalService, $state, $window, $scope, $stateParams,
@@ -54,6 +55,7 @@
         vm.showInDoses = showInDoses;
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
         vm.getVvmStatusLabel = VVM_STATUS.$getDisplayName;
+        vm.save = save;
         vm.printShipment = printShipment;
         vm.saveAndPrintShipment = saveAndPrintShipment;
         // #264: warehouse clerk can add product to orders
@@ -218,7 +220,12 @@
         }
 
         function saveAndPrintShipment() {
-            vm.shipment.save().then(this.printShipment());
+            vm.save().then(this.printShipment());
+        }
+
+        function save() {
+            $stateParams.tableLineItems = tableLineItems;
+            return vm.shipment.save();
         }
 
         vm.getErrorMsg = function() {
