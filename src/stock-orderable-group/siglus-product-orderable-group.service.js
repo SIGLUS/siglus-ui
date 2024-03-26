@@ -42,6 +42,13 @@
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummaries/integration/summary'),
                 isArray: true
+            },
+            queryStockOnHandsInfoWithLocation: {
+                method: 'GET',
+                url: stockmanagementUrlFactory(
+                    'http://localhost/api/siglusapi/stockCardSummariesWithLocation/integration/summary'
+                ),
+                isArray: true
             }
         });
 
@@ -53,5 +60,8 @@
             return resource.queryStockOnHandsInfo(params).$promise;
         };
 
+        this.queryStockOnHandsInfoWithLocation = function(params) {
+            return resource.queryStockOnHandsInfo(params).$promise;
+        };
     }
 })();

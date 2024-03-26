@@ -47,7 +47,7 @@
         /**
          * @ngdoc method
          * @methodOf shipment-view.StockCardSummaryRepositoryImpl
-         * @name queryWithStockCards
+         * @name queryWithStockCardsForLocation
          *
          * @description
          * Queries OpenLMIS server and fetches a list of matching stock card summaries extended with
@@ -64,32 +64,34 @@
             paramsCopy.rightName = STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW;
             paramsCopy.page = 0;
             paramsCopy.size = 2147483647;
-            return siglusProductOrderableGroupService.queryStockOnHandsInfo(paramsCopy).then(function(page) {
-                var stockCardIds = new Set();
-                _.forEach(page, function(summary) {
-                    summary.stockCardDetails.forEach(function(stockCardDetail) {
-                        stockCardIds.add(stockCardDetail.stockCard.id);
-                    });
-                });
-
-                return new StockCardResource().query({
-                    id: Array.from(stockCardIds)
-                })
-                    .then(function(response) {
-                        var stockCardsMap = response.content.reduce(function(stockCardsMap, stockCard) {
-                            stockCardsMap[stockCard.id] = stockCard;
-                            return stockCardsMap;
-                        }, {});
-
-                        _.forEach(page, function(summary) {
-                            _.forEach(summary.stockCardDetails, function(stockCardDetail) {
-                                stockCardDetail.stockCard = stockCardsMap[stockCardDetail.stockCard.id];
-                            });
+            paramsCopy.orderId = params.orderId;
+            return siglusProductOrderableGroupService.queryStockOnHandsInfoWithLocation(paramsCopy)
+                .then(function(page) {
+                    var stockCardIds = new Set();
+                    _.forEach(page, function(summary) {
+                        summary.stockCardDetails.forEach(function(stockCardDetail) {
+                            stockCardIds.add(stockCardDetail.stockCard.id);
                         });
-
-                        return page;
                     });
-            });
+
+                    return new StockCardResource().query({
+                        id: Array.from(stockCardIds)
+                    })
+                        .then(function(response) {
+                            var stockCardsMap = response.content.reduce(function(stockCardsMap, stockCard) {
+                                stockCardsMap[stockCard.id] = stockCard;
+                                return stockCardsMap;
+                            }, {});
+
+                            _.forEach(page, function(summary) {
+                                _.forEach(summary.stockCardDetails, function(stockCardDetail) {
+                                    stockCardDetail.stockCard = stockCardsMap[stockCardDetail.stockCard.id];
+                                });
+                            });
+
+                            return page;
+                        });
+                });
         }
 
         function queryWithStockCards(params) {
