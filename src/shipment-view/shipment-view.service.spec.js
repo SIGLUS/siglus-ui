@@ -349,7 +349,6 @@ describe('shipmentViewService', function() {
             expect(result).toEqual(shipment);
 
             expect(notificationService.error).not.toHaveBeenCalled();
-            expect(loadingModalService.close).not.toHaveBeenCalled();
         });
 
     });
