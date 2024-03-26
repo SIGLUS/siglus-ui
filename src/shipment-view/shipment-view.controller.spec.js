@@ -86,13 +86,17 @@ describe('ShipmentViewController', function() {
                 )
                 .buildJson()
         ];
+        var shipmentViewService = jasmine.createSpyObj('shipmentViewService', ['searchDisplayItems']);
+        var mockScope = $rootScope.$new();
         vm = $controller('ShipmentViewController', {
+            $scope: mockScope,
             shipment: shipment,
             tableLineItems: tableLineItems,
             updatedOrder: order,
             stockCardSummaries: stockCardSummaries,
             suggestedQuatity: suggestedQuatity,
-            displayTableLineItems: tableLineItems
+            displayTableLineItems: tableLineItems,
+            shipmentViewService: shipmentViewService
         });
         // #264: ends here
     });
