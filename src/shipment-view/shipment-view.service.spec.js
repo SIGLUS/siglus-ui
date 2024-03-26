@@ -315,7 +315,11 @@ describe('shipmentViewService', function() {
         });
 
         it('should show error on failure', function() {
-            originalSave.andReturn($q.reject());
+            originalSave.andReturn($q.reject({
+                data: {
+                    messageKey: 'other messages'
+                }
+            }));
 
             shipment.save();
             $rootScope.$apply();
