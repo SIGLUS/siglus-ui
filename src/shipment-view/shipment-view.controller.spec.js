@@ -91,7 +91,8 @@ describe('ShipmentViewController', function() {
             tableLineItems: tableLineItems,
             updatedOrder: order,
             stockCardSummaries: stockCardSummaries,
-            suggestedQuatity: suggestedQuatity
+            suggestedQuatity: suggestedQuatity,
+            displayTableLineItems: tableLineItems
         });
         // #264: ends here
     });
