@@ -37,7 +37,7 @@
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService', 'shipmentViewService',
+        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService',
         // #287: ends here
         '$stateParams'
     ];
@@ -48,7 +48,7 @@
                                     selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
                                     stockCardSummaries, ShipmentViewLineItemFactory, orderService,
                                     ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity,
-                                    localStorageService, shipmentViewService) {
+                                    localStorageService) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -387,26 +387,29 @@
         // #287: ends here
 
         function searchTable() {
-            $stateParams.keyword = vm.keyword;
-            // console.log("reload page with keyword:" + vm.keyword);
-            vm.displayTableLineItems = shipmentViewService.searchDisplayItems(tableLineItems, $stateParams.keyword);
+            if (!vm.keyword) {
+                return vm.tableLineItems;
+            }
+            var displayItems = [];
+            var show = false;
+            vm.tableLineItems.forEach(function(lineItem) {
+                if (lineItem instanceof ShipmentViewLineItemGroup) {
+                    show = lineItem.hasKeyword(vm.keyword);
+                }
+                if (show) {
+                    displayItems.push(lineItem);
+                }
+            });
+            return displayItems;
         }
 
         vm.search = function() {
-            searchTable();
+            vm.displayTableLineItems = searchTable();
         };
 
         vm.cancelFilter = function() {
             vm.keyword = null;
-            searchTable();
+            vm.displayTableLineItems = searchTable();
         };
-
-        $scope.$watch(function() {
-            return vm.keyword;
-        }, function(newValue, oldValue) {
-            if (oldValue && !newValue && $stateParams.keyword) {
-                searchTable();
-            }
-        });
     }
 })();

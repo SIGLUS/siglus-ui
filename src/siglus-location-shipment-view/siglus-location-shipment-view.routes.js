@@ -136,6 +136,9 @@
                                     locations, order);
                         });
                     },
+                    filterDisplayTableLineItems: function(displayTableLineItems) {
+                        return displayTableLineItems;
+                    },
 
                     updatedOrder: function(shipment, order, stockCardSummaries, loadingModalService) {
                         var shipmentOrder = order;

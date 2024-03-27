@@ -90,6 +90,7 @@ describe('SiglusLocationShipmentViewController', function() {
             updatedOrder: {},
             stockCardSummaries: stockCardSummaries,
             displayTableLineItems: [],
+            filterDisplayTableLineItems: [],
             order: order,
             locations: [],
             orderableLotsLocationMap: {

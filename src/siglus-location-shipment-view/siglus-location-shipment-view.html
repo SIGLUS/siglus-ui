@@ -44,6 +44,18 @@
         <li><a ng-click="vm.skipAllLineItems()">{{'shipmentView.all' | message}}</a></li>
         <li><a ng-click="vm.unskipAllLineItems()">{{'shipmentView.none' | message}}</a></li>
     </ul>
+    <form>
+        <fieldset>
+            <label for="search">{{'stockReceiveCreation.keyword' | message}}</label>
+            <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
+        </fieldset>
+        <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
+               ng-click="vm.cancelFilter()"/>
+        <input type="submit"
+               ng-click="vm.search()"
+               ng-keydown="$event.keyCode === 13 && vm.search()"
+               value="{{'stockReceiveCreation.search' | message}}"/>
+    </form>
     <table suppress-tr-openlmis-invalid>
         <thead>
             <tr>
@@ -134,7 +146,7 @@
                 </td>
             </tr>
         </tbody>
-        <openlmis-pagination list="vm.displayTableLineItems" paged-list="vm.pagedLineItems">
+        <openlmis-pagination list="vm.filterDisplayTableLineItems" paged-list="vm.pagedLineItems">
         </openlmis-pagination>
     </table>
 </div>

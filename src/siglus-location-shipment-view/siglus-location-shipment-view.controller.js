@@ -34,7 +34,7 @@
         'messageService', 'updatedOrder', 'QUANTITY_UNIT',
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
         'stockCardSummaries', 'orderService',
-        'displayTableLineItems',
+        'displayTableLineItems', 'filterDisplayTableLineItems',
         '$stateParams', 'order', 'moment', 'SiglusLocationViewService',
         'prepareRowDataService', 'SiglusLocationCommonUtilsService',
         'notificationService', 'confirmService',
@@ -51,7 +51,7 @@
         selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
         stockCardSummaries,
         orderService,
-        displayTableLineItems, $stateParams,
+        displayTableLineItems, filterDisplayTableLineItems, $stateParams,
         order, moment,
         SiglusLocationViewService,
         prepareRowDataService,
@@ -98,6 +98,7 @@
             vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantity(displayTableLineItems) :
                 displayTableLineItems;
+            vm.filterDisplayTableLineItems = filterDisplayTableLineItems;
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
@@ -879,5 +880,28 @@
                 });
         };
 
+        function searchTable() {
+            if (!vm.keyword) {
+                return vm.displayTableLineItems;
+            }
+            return vm.displayTableLineItems.filter(function(item) {
+                if (item instanceof Array && item.length >= 1) {
+                    var productName = _.get(item[0], ['productName']);
+                    var productCode = _.get(item[0], ['productCode']);
+                    return (!productCode && productCode.contains(vm.keyword)) ||
+                        (!productName && productName.contains(vm.keyword));
+                }
+                return false;
+            });
+        }
+
+        vm.search = function() {
+            vm.filterDisplayTableLineItems = searchTable();
+        };
+
+        vm.cancelFilter = function() {
+            vm.keyword = null;
+            vm.filterDisplayTableLineItems = searchTable();
+        };
     }
 })();
