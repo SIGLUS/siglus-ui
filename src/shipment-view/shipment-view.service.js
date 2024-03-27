@@ -164,20 +164,19 @@
 
         function updateLineItemsReservedStock(lineItems, summaries) {
             lineItems.forEach(function(lineItem) {
+                var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
+                var currentItemLotId = lineItem.lot.id;
+
+                var summary = summaries.find(function(summary) {
+                    return summary.orderable.id === currentItemOrderableId;
+                });
+                var lineItemCardDetail = summary.stockCardDetails.find(function(stockCardDetail) {
+                    stockCardDetail.lot.id === currentItemLotId;
+                });
+
+                lineItem.shipmentLineItem.stockOnHand = lineItemCardDetail.stockOnHand;
+
                 if (!lineItem.isMainGroup) {
-                    var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
-                    var currentItemLotId = lineItem.lot.id;
-
-                    var summary = summaries.find(function(summary) {
-                        return summary.orderable.id === currentItemOrderableId;
-                    });
-
-                    if (summary) {
-                        var lineItemCardDetail = summary.stockCardDetails.find(function(stockCardDetail) {
-                            stockCardDetail.lot.id === currentItemLotId;
-                        });
-                    }
-
                     lineItem.reservedStock = lineItemCardDetail.reservedStock;
                 }
             });
