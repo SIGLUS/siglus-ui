@@ -42,7 +42,8 @@
                 location: isFirstRowToLineItem ? location : null,
                 netContent: currentItem.netContent,
                 skipped: currentItem.skipped,
-                orderableId: currentItem.orderableId
+                orderableId: currentItem.orderableId,
+                reservedStock: currentItem.reservedStock
             };
         }
 
@@ -65,7 +66,6 @@
         };
 
         function getDataTemplate(orderLineItem, lineItem, locations, isFirstRow) {
-
             var lot = SiglusLocationCommonUtilsService.getLotByLotId(locations, _.get(lineItem, ['lot', 'id']));
             if (lot) {
                 lot.id = _.get(lot, 'lotId');
@@ -91,11 +91,13 @@
                 quantityShipped: _.get(lineItem, 'quantityShipped', 0),
                 isMainGroup: isFirstRow,
                 netContent: _.get(orderLineItem, ['orderable', 'netContent']),
-                skipped: _.get(orderLineItem, 'skipped')
+                skipped: _.get(orderLineItem, 'skipped'),
+                reservedStock: _.get(lineItem, ['canFulfillForMe', 'reservedStock'], 0)
             };
         }
 
         this.prepareGroupLineItems = function(shipment, locations, order) {
+            // build map: item.orderable.id -> [item1, item2, ...]
             var groupOrderLineItems = _.chain(shipment.lineItems)
                 .groupBy(function(item)  {
                     return item.orderable.id;
@@ -113,7 +115,6 @@
                 } else if (lineItems.length === 1) {
                     result[index].push(getDataTemplate(orderLineItem, lineItems[0], locations, true));
                     result[index][0].isMainGroup = true;
-
                 } else {
                     result[index].push(getDataTemplate(orderLineItem, undefined, locations, true));
                     _.forEach(lineItems, function(lineItem) {
@@ -143,7 +144,8 @@
                     quantityShipped: 0,
                     isMainGroup: true,
                     netContent: orderable.netContent,
-                    skipped: false
+                    skipped: false,
+                    reservedStock: 0
                 };
             });
 

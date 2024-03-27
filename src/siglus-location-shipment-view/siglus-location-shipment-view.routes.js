@@ -74,7 +74,8 @@
                         return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation({
                             programId: order.program.id,
                             facilityId: order.supplyingFacility.id,
-                            orderableId: orderableIds
+                            orderableId: orderableIds,
+                            orderId: order.id
                         })
                             .then(function(page) {
                                 return page;

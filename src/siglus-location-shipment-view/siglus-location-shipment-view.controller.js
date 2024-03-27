@@ -94,7 +94,6 @@
         function onInit() {
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
-            vm.displayTableLineItems = displayTableLineItems;
             vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantity(displayTableLineItems) :
                 displayTableLineItems;
@@ -356,8 +355,20 @@
         };
 
         vm.getRemainingSoh = function(lineItems, index) {
-            var quantity = vm.getAvailableSoh(lineItems, index) - vm.getFillQuantity(lineItems, index);
+            var quantity = vm.getAvailableSoh(lineItems, index) - vm.getReservedSoh(lineItems, index);
             return quantity < 0 ? 0 : quantity;
+        };
+
+        vm.getReservedSoh = function(lineItems, index) {
+            // for main group with multiple lineItems
+            if (index === 0 && lineItems.length > 1) {
+                var itemReservedStockSum = _.reduce(lineItems, function(reservedStock, lineItem) {
+                    return reservedStock + lineItem.reservedStock;
+                }, 0);
+                return itemReservedStockSum + vm.getFillQuantity(lineItems, index);
+            }
+
+            return lineItems[index].reservedStock + vm.getFillQuantity(lineItems, index);
         };
 
         function showInDoses() {
@@ -407,7 +418,6 @@
                 products: availableProducts
             })
                 .then(function(selectedProducts) {
-
                     loadingModalService.open();
                     siglusLocationCommonApiService.getOrderableLocationLotsInfo({
                         isAdjustment: false,
@@ -419,7 +429,6 @@
                             locations = locations.concat(locationsInfo);
                             var addedProductRows = prepareRowDataService.prepareAddProductLineItem(selectedProducts);
                             var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
-
                             vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
                             vm.displayTableLineItems = vm.displayTableLineItems.concat(
                                 _.map(addedProductRows, function(item) {

@@ -74,7 +74,11 @@
                 <th>{{'shipmentView.fillQuantityInPack' | message}}</th>
                 <th
                     popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
-                    {{'shipmentView.availableSoh' | message}}
+                    {{'shipmentView.reservedSOH' | message}}
+                </th>
+                <th
+                    popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
+                    {{'shipmentView.totalSOH' | message}}
                 </th>
                 <th
                     popover="{{'shipmentView.quantitiesProvidedIn' | message}} {{vm.getSelectedQuantityUnitKey() | message}}">
@@ -129,6 +133,7 @@
                         openlmis-invalid="{{lineItem.$error.quantityShippedError || '' | message}}"
                         ng-change="vm.changeFillQuantity(lineItem)" ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)" />
                 </td>
+                <td>{{vm.getReservedSoh(lineItems, index)}}</td>
                 <td>{{vm.getAvailableSoh(lineItems, index)}}</td>
                 <td>{{vm.getRemainingSoh(lineItems, index)}}</td>
                 <td>
@@ -138,7 +143,7 @@
                         {{'locationShipmentView.addItem' | message}}
                     </button>
 
-                    <button  
+                    <button
                         ng-if="(lineItems.length === 1 && lineItem.added) || (index > 0)" class="danger stock-actions"
                         ng-disabled="lineItem.skipped" ng-click="vm.removeItem(lineItems, index)">
                         {{'stockPhysicalInventoryDraft.remove' | message}}
