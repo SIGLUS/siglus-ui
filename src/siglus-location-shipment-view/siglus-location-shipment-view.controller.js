@@ -888,8 +888,7 @@
                 if (item instanceof Array && item.length >= 1) {
                     var productName = _.get(item[0], ['productName']);
                     var productCode = _.get(item[0], ['productCode']);
-                    return (!productCode && productCode.contains(vm.keyword)) ||
-                        (!productName && productName.contains(vm.keyword));
+                    return productCode.contains(vm.keyword) || productName.contains(vm.keyword);
                 }
                 return false;
             });
