@@ -44,7 +44,8 @@
             REQUISITION_DATA_REPORT: 'requisition_data_report',
             RAPID_TEST_CONSUMPTION_DATA_REPORT: 'rapid_test_consumption_data_report',
             TRACER_DRUG_REPORT: 'tracer_drug_report',
-            USER_REPORT: 'user_report'
+            USER_REPORT: 'user_report',
+            USER_ACCESS_REPORT: 'user_access_report'
         };
     }
 

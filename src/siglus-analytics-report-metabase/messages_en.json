@@ -15,5 +15,6 @@
   "analyticsReportMetabase.requisitionData.title":"Requisition Data Report",
   "analyticsReportMetabase.rapidTestConsumptionData.title":"Rapid Test Consumption Data Report",
   "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report",
-  "analyticsReportMetabase.user.title":"User Report"
+  "analyticsReportMetabase.user.title":"User Report",
+  "analyticsReportMetabase.userAccess.title":"User Access Report"
 }

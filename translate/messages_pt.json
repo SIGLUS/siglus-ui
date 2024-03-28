@@ -2317,6 +2317,7 @@
   "analyticsReportMetabase.requisitionData.title": "Relatório de dados da requisição",
   "analyticsReportMetabase.tracerDrug.title": "Relatório de Produtos Sentinela",
   "analyticsReportMetabase.user.title":"Relatório do Utilizador",
+  "analyticsReportMetabase.userAccess.title":"Relatório de Acesso do Usuário",
   "stockRemainingProductsModal.productCode": "Código de produto",
   "stockRemainingProductsModal.product": "Produto",
   "stockRemainingProductsModal.currentStock": "Stock actual",
