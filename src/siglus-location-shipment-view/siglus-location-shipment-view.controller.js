@@ -248,7 +248,7 @@
                 return;
             }
 
-            if (quantityShipped > getSohByOrderableLocation(currentItem)) {
+            if (quantityShipped + currentItem.reservedStock > getSohByOrderableLocation(currentItem)) {
                 currentItem.$error.quantityShippedError = 'shipment.fillQuantityCannotExceedStockOnHand';
             }
         }

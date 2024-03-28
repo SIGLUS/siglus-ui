@@ -40,6 +40,7 @@
         ShipmentViewLineItem.prototype = $delegate.prototype;
         ShipmentViewLineItem.prototype.getReservedQuantity = getReservedQuantity;
         ShipmentViewLineItem.prototype.getItemRemainingSoh = getItemRemainingSoh;
+        ShipmentViewLineItem.prototype.isInvalid = isInvalid;
 
         return ShipmentViewLineItem;
 
@@ -100,5 +101,14 @@
             return this.recalculateQuantity(remainingQuantityInPacks, inDoses);
         }
 
+        function isInvalid() {
+            var errors = this.shipmentLineItem.isInvalid();
+            if (!errors &&
+                this.reservedStock + this.shipmentLineItem.quantityShipped > this.shipmentLineItem.stockOnHand) {
+                errors = {};
+                errors.quantityShipped = 'shipment.fillQuantityCannotExceedStockOnHand';
+            }
+            return errors;
+        }
     }
 })();
