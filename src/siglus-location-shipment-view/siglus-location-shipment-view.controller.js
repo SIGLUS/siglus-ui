@@ -41,7 +41,7 @@
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
         'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME',
-        'alertConfirmModalService'
+        'alertConfirmModalService', 'StockCardSummaryRepositoryImpl'
     ];
 
     function SiglusLocationShipmentViewController(
@@ -61,7 +61,7 @@
         localStorageService, $window, facility,
         siglusPrintPalletLabelComfirmModalService,
         suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME,
-        alertConfirmModalService
+        alertConfirmModalService, StockCardSummaryRepositoryImpl
     ) {
         var vm = this;
 
@@ -73,6 +73,7 @@
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
         vm.canSkip = canSkip;
+        vm.saveAndPrintShipment = saveAndPrintShipment;
         vm.order = undefined;
         vm.facility = undefined;
 
@@ -375,13 +376,24 @@
             return vm.quantityUnit === QUANTITY_UNIT.DOSES;
         }
 
-        vm.printShipment = function printShipment() {
+        function saveAndPrintShipment() {
+            loadingModalService.open();
+            SiglusLocationViewService.saveDraft(buildSaveParams())
+                .then(function() {
+                    printShipment();
+                })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+        }
+
+        function printShipment() {
             var cachedData =  _.chain(vm.displayTableLineItems)
                 .map(function(group) {
                     return _.filter(group, function(lineItem) {
                         return (lineItem.isMainGroup && group.length > 1) ||
-                          lineItem.quantityShipped > 0 && (lineItem.isKit || lineItem.lot
-                          && moment().isBefore(moment(lineItem.lot.expirationDate)));
+                            lineItem.quantityShipped > 0 && (lineItem.isKit || lineItem.lot
+                                && moment().isBefore(moment(lineItem.lot.expirationDate)));
                     });
                 })
                 .filter(function(group) {
@@ -398,7 +410,7 @@
                 PRINT_URL,
                 '_blank'
             );
-        };
+        }
 
         /**
          * @ngdoc method
@@ -883,11 +895,49 @@
                     $stateParams.stockCardSummaries = null;
                     reloadParams();
                 })
-                .catch(function() {
-                    notificationService.error('shipmentView.failedToSaveDraft');
+                .catch(function(error) {
+                    if (error.data.messageKey && error.data.messageKey ===
+                        'siglusapi.error.shipment.order.line items.invalid') {
+                        alertService.error(
+                            'shipmentView.saveDraftError.label',
+                            '',
+                            'OK'
+                        ).then(function() {
+                            new StockCardSummaryRepositoryImpl()
+                                .queryWithStockCardsForLocation($stateParams.summaryRequestBody)
+                                .then(function(summaries) {
+                                    updateLineItemsReservedAndTotalStock(vm.displayTableLineItems, summaries);
+                                });
+                        });
+                    } else {
+                        notificationService.error('shipmentView.failedToSaveDraft');
+                    }
+                })
+                .finally(function() {
                     loadingModalService.close();
                 });
         };
+
+        function updateLineItemsReservedAndTotalStock(lineItemGroupList, summaries) {
+            lineItemGroupList.forEach(function(lineItemGroup) {
+                var currentGroupOrderableId = lineItemGroup[0].orderableId;
+
+                var summary = summaries.find(function(summary) {
+                    return summary.orderable.id === currentGroupOrderableId;
+                });
+
+                lineItemGroup.forEach(function(lineItem) {
+                    if (!lineItem.isMainGroup) {
+                        var currentLotId = lineItem.lot.id;
+                        var lineItemCardDetail = summary.stockCardDetails.find(function(detail) {
+                            return detail.lot.id  === currentLotId;
+                        });
+                        lineItem.lot.stockOnHand = lineItemCardDetail.stockOnHand;
+                        lineItem.reservedStock = lineItemCardDetail.reservedStock;
+                    }
+                });
+            });
+        }
 
         function searchTable() {
             if (!vm.keyword) {

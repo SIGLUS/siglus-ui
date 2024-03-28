@@ -4,6 +4,7 @@
   "shipmentView.addProduct": "Add Product",
   "shipmentView.noProductsToAdd.label": "Warning",
   "shipmentView.noProductsToAdd.message": "There are no more products to add. All available products have already been added into this order.",
+  "shipmentView.saveDraftError.label": "Insufficient inventory. Please click 'OK' to refresh the form.",
   "shipmentView.selectTooMany": "You can just add no more than 10 products per emergency order",
   "shipmentView.skip": "Skip",
   "shipmentView.all": "All",

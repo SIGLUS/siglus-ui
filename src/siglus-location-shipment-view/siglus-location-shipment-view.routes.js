@@ -71,12 +71,15 @@
                             return orderable.id;
                         });
 
-                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation({
+                        var requestBody = {
                             programId: order.program.id,
                             facilityId: order.supplyingFacility.id,
                             orderableId: orderableIds,
                             orderId: order.id
-                        })
+                        };
+                        $stateParams.summaryRequestBody = requestBody;
+
+                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation(requestBody)
                             .then(function(page) {
                                 return page;
                             });

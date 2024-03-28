@@ -142,13 +142,9 @@
                                 '',
                                 'OK'
                             ).then(function() {
-                                loadingModalService.open();
                                 new StockCardSummaryRepositoryImpl.queryWithStockCards($stateParams.summaryRequestBody)
                                     .then(function(summaries) {
-                                        updateLineItemsReservedStock($stateParams.tableLineItems, summaries);
-                                    })
-                                    .finally(function() {
-                                        loadingModalService.close();
+                                        updateLineItemsReservedAndTotalStock($stateParams.tableLineItems, summaries);
                                     });
                             });
                         } else {
@@ -162,7 +158,7 @@
             };
         }
 
-        function updateLineItemsReservedStock(lineItems, summaries) {
+        function updateLineItemsReservedAndTotalStock(lineItems, summaries) {
             lineItems.forEach(function(lineItem) {
                 var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
                 var currentItemLotId = lineItem.lot.id;

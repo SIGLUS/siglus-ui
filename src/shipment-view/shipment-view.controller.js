@@ -220,11 +220,11 @@
         }
 
         function saveAndPrintShipment() {
-            vm.save().then(this.printShipment());
+            save().then(this.printShipment());
         }
 
         function save() {
-            $stateParams.tableLineItems = tableLineItems;
+            $stateParams.tableLineItems = vm.tableLineItems;
             return vm.shipment.save();
         }
 
