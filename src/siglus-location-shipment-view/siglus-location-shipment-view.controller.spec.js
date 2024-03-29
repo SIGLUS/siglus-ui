@@ -461,13 +461,14 @@ describe('SiglusLocationShipmentViewController', function() {
             expect(lineItem.$error.quantityShippedError).toEqual('locationShipmentView.inputPositiveNumber');
         });
 
-        it('should return quantityShippedError  when quantity shipped is more than soh', function() {
+        it('should return quantityShippedError when quantity shipped is more than soh', function() {
             lineItem.isKit = true;
             lineItem.orderableId = '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a';
             lineItem.location = {
                 locationCode: 'AA28B'
             };
             lineItem.quantityShipped = 334;
+            lineItem.reservedStock = 0;
             var lineItems = [
                 lineItem,
                 _.clone(lineItem)
