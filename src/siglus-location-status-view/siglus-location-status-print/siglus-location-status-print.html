@@ -1,0 +1,35 @@
+<div class="shipment-view-container location-status-print">
+    <div class="breadcrumb" style="font-size: 13px;">
+    </div>
+    <div style="display: flex; align-items: center;">
+        <div>
+            <div class="shipment-view-report-title">
+                <div>{{'locationStatus.title' | message }}</div>
+                <div style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</div>
+            </div>
+            <div class="location-status-facility">
+                <div class="shipment-view-report-info">{{ 'adminFacilityAdd.facilityName' | message }}: {{vm.facility.name}}</div>
+                <div class="shipment-view-report-info">{{ 'adminFacilityAdd.facilityCode' | message }}: {{vm.facility.code}}</div>
+            </div>
+            <div class="soh-product-print-sub-title">
+                {{vm.facility.code}}-{{vm.facility.name}}
+            </div>
+        </div>
+    </div>
+    <section>
+        <table border cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th class="text__left" style="width: 163px;">{{'stockAdjustmentCreation.location' | message}}</th>
+                <th class="text__left" style="width: 100px;">{{'shipmentView.status' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="lineItem in vm.displayItems">
+                    <td>{{lineItem.locationCode}}</td>
+                    <td>{{lineItem.locationStatus}}</td>
+                </tr>
+                </tbody>
+        </table>
+    </section>
+</div>

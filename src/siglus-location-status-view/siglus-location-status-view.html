@@ -1,0 +1,37 @@
+<h2>{{'shipmentView.title' | message:{orderCode: vm.order.orderCode} }}</h2>
+<section class="openlmis-table-container">
+    <button class="primary" ng-click="vm.printLocations()">{{'stockCardSummaryList.print' | message}}</button>
+    <form>
+        <fieldset>
+            <label for="search">{{'stockReceiveCreation.keyword' | message}}</label>
+            <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
+        </fieldset>
+        <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
+               ng-click="vm.cancelFilter()"/>
+        <input type="submit"
+               ng-click="vm.search()"
+               ng-keydown="$event.keyCode === 13 && vm.search()"
+               value="{{'stockReceiveCreation.search' | message}}"/>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>{{'stockAdjustmentCreation.location' | message}}</th>
+                <th>{{'shipmentView.status' | message}}</th>
+            </tr>
+        </thead>
+        <tbody >
+        <tr ng-repeat="item in vm.pagedLineItems">
+            <td>{{item.locationCode}}</td>
+            <td ng-if="vm.itemLocationStatus(item)">Occupied</td>
+            <td ng-if="!vm.itemLocationStatus(item)">Empty</td>
+        </tr>
+        </tbody>
+        <openlmis-pagination list="vm.displayLocationStatus" paged-list="vm.pagedLineItems">
+        </openlmis-pagination>
+    </table>
+</section>
+
+<siglus-print-pallet-label line-items="vm.printLineItems" print-type="'Pedido'" facility-name="vm.facility.name">
+
+</siglus-print-pallet-label>
