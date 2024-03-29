@@ -162,7 +162,7 @@
             validateBase(lineItems, function(item, $index) {
                 if (index === $index && _.isEmpty(item.lot)) {
                     item.$error.lotCodeError = 'openlmisForm.required';
-                    return ;
+                    return;
                 }
                 item.$error.lotCodeError = '';
                 item.$hint.lotCodeHint = '';

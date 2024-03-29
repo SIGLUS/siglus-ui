@@ -303,26 +303,26 @@ describe('FacilityViewController', function() {
                 );
             });
 
-    // it('should go to facility list after successful save', function() {
-    //     this.vm.saveFacilityDetails();
-    //     this.$rootScope.$apply();
-    //
-    //     expect(this.$state.go).toHaveBeenCalledWith(
-    //         'openlmis.administration.facilities', {}, {
-    //             reload: true
-    //         }
-    //     );
-    // });
-
-    // it('should show success notification after successful save',
-    //     function() {
-    //         this.vm.saveFacilityDetails();
-    //         this.$rootScope.$apply();
-    //
-    //         expect(this.notificationService.success).toHaveBeenCalledWith(
-    //             'adminFacilityView.saveFacility.success'
-    //         );
-    //     });
+        // it('should go to facility list after successful save', function() {
+        //     this.vm.saveFacilityDetails();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(this.$state.go).toHaveBeenCalledWith(
+        //         'openlmis.administration.facilities', {}, {
+        //             reload: true
+        //         }
+        //     );
+        // });
+        //
+        // it('should show success notification after successful save',
+        //     function() {
+        //         this.vm.saveFacilityDetails();
+        //         this.$rootScope.$apply();
+        //
+        //         expect(this.notificationService.success).toHaveBeenCalledWith(
+        //             'adminFacilityView.saveFacility.success'
+        //         );
+        //     });
     });
 
     describe('addProgram', function() {

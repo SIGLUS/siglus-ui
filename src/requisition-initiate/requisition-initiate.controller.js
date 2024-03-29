@@ -141,90 +141,6 @@
             }
         };
 
-        // SIGLUS-REFACTOR: delete method
-        // /**
-        //  * @ngdoc method
-        //  * @methodOf requisition-initiate.controller:RequisitionInitiateController
-        //  * @name initRnr
-        //  *
-        //  * @description
-        //  * Responsible for initiating a requisition for a specified period. If
-        //  * creating the requisition is successful, then the user is sent to the
-        //  * requisition view page. Otherwise an error message is shown.
-        //  *
-        //  * @param {Object} selectedPeriod a period to initiate or proceed with the requisition for
-        //  */
-        // function initRnr(selectedPeriod) {
-        //     var user = authorizationService.getUser();
-        //
-        //     vm.error = '';
-        //
-        //     loadingModalService.open();
-        //     permissionService.hasPermission(user.user_id, {
-        //         right: REQUISITION_RIGHTS.REQUISITION_CREATE,
-        //         programId: vm.program.id,
-        //         facilityId: vm.facility.id
-        //     })
-        //         .then(function() {
-        //             requisitionService.initiate(vm.facility.id, vm.program.id, selectedPeriod.id, vm.emergency, key)
-        //                 .then(function(data) {
-        //                     goToInitiatedRequisition(data);
-        //                 })
-        //                 .catch(function() {
-        //                     notificationService.error('requisitionInitiate.couldNotInitiateRequisition');
-        //                     loadingModalService.close();
-        //                     key = uuidGenerator.generate();
-        //                 });
-        //         })
-        //         .catch(function() {
-        //             notificationService.error('requisitionInitiate.noPermissionToInitiateRequisition');
-        //             loadingModalService.close();
-        //         });
-        // }
-        //
-        // /**
-        //  * @ngdoc method
-        //  * @methodOf requisition-initiate.controller:RequisitionInitiateController
-        //  * @name periodHasRequisition
-        //  *
-        //  * @description
-        //  * Checks a period object to make sure no requisition is associated with
-        //  * the period.
-        //  *
-        //  * @param {Object} period a period to check if it has a requisition
-        //  */
-        // function periodHasRequisition(period) {
-        //     if (period.rnrId) {
-        //         return true;
-        //     }
-        //     return false;
-        //
-        // }
-        //
-        // /**
-        //  * @ngdoc method
-        //  * @methodOf requisition-initiate.controller:RequisitionInitiateController
-        //  * @name goToRequisition
-        //  *
-        //  * @description
-        //  * Directs a user to the requisition view data for a specific period
-        //  *
-        //  * @param {Object} id A requisition id
-        //  */
-        // function goToRequisition(id) {
-        //     $state.go('openlmis.requisitions.requisition.fullSupply', {
-        //         rnr: id
-        //     });
-        // }
-        //
-        // function goToInitiatedRequisition(requisition) {
-        //     $state.go('openlmis.requisitions.requisition.fullSupply', {
-        //         rnr: requisition.id,
-        //         requisition: requisition
-        //     });
-        // }
-        // SIGLUS-REFACTOR: ends here
-
         // SIGLUS-REFACTOR: add new method
         vm.goToHistory = function() {
             $state.go('openlmis.requisitions.initRnr.history', $state.params);
@@ -234,7 +150,7 @@
             return $state.current.name === 'openlmis.requisitions.initRnr.history';
         };
 
-        vm.goToRequsition = function() {
+        vm.goToRequisition = function() {
             $state.go('openlmis.requisitions.initRnr.requisition', vm.getMLProgramParam($state.params));
         };
 

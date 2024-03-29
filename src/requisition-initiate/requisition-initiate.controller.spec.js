@@ -258,7 +258,7 @@ describe('RequisitionInitiateController', function() {
     it('should change page to openlmis.requisitions.initRnr.requisition', function() {
         spyOn(this.$state, 'go');
 
-        this.vm.goToRequsition();
+        this.vm.goToRequisition();
 
         expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
             replaceId: ''

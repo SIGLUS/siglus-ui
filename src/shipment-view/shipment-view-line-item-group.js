@@ -93,8 +93,6 @@
          * @description
          * Returns a sum of all fill quantities for the children line items/line item groups.
          *
-         * @param  {boolean} inDoses flag defining whether the returned value should be returned in
-         *                           doses or in packs
          * @return {number}          the sum of all fill quantities for the whole group
          */
         function getFillQuantity() {

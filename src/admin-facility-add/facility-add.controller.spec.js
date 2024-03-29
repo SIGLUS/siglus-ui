@@ -137,30 +137,30 @@ describe('FacilityAddController', function() {
             expect(this.vm.facility.enabled).toBe(true);
         });
 
-    // it('should copy facility', function() {
-    //     this.vm.$onInit();
-    //
-    //     expect(this.vm.facility).toEqual(this.facility);
-    //     expect(this.vm.facility).not.toBe(this.facility);
-    // });
+        // it('should copy facility', function() {
+        //     this.vm.$onInit();
+        //
+        //     expect(this.vm.facility).toEqual(this.facility);
+        //     expect(this.vm.facility).not.toBe(this.facility);
+        // });
 
     });
 
     describe('save', function() {
 
-    // it('should prompt user to add programs', function() {
-    //     this.FacilityRepository.prototype.create.andReturn(
-    //         this.$q.when(this.facility)
-    //     );
-    //     this.vm.save();
-    //     this.$rootScope.$apply();
-    //
-    //     expect(this.confirmService.confirm).toHaveBeenCalledWith(
-    //         'Do you want to add programs to Assumane, Lichinga Cidade?',
-    //         'adminFacilityAdd.addPrograms',
-    //         'adminFacilityAdd.cancel'
-    //     );
-    // });
+        // it('should prompt user to add programs', function() {
+        //     this.FacilityRepository.prototype.create.andReturn(
+        //         this.$q.when(this.facility)
+        //     );
+        //     this.vm.save();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(this.confirmService.confirm).toHaveBeenCalledWith(
+        //         'Do you want to add programs to Assumane, Lichinga Cidade?',
+        //         'adminFacilityAdd.addPrograms',
+        //         'adminFacilityAdd.cancel'
+        //     );
+        // });
 
         it('should open loading modal if user refuses to add programs',
             function() {
@@ -172,47 +172,47 @@ describe('FacilityAddController', function() {
                 expect(this.loadingModalService.open).toHaveBeenCalled();
             });
 
-    // it('should show notification if facility was saved successfully',
-    //     function() {
-    //         this.vm.save();
-    //
-    //         this.confirmDeferred.reject();
-    //         this.saveDeferred.resolve();
-    //         this.$rootScope.$apply();
-    //
-    //         expect(this.notificationService.success).toHaveBeenCalledWith(
-    //             'adminFacilityAdd.facilityHasBeenSaved'
-    //         );
-    //     });
-    //
-    // it('should show notification if facility save has failed', function() {
-    //     this.vm.save();
-    //
-    //     this.confirmDeferred.reject();
-    //     this.saveDeferred.reject();
-    //     this.$rootScope.$apply();
-    //
-    //     expect(this.notificationService.error).toHaveBeenCalledWith(
-    //         'adminFacilityAdd.failedToSaveFacility'
-    //     );
-    // });
+        // it('should show notification if facility was saved successfully',
+        //     function() {
+        //         this.vm.save();
+        //
+        //         this.confirmDeferred.reject();
+        //         this.saveDeferred.resolve();
+        //         this.$rootScope.$apply();
+        //
+        //         expect(this.notificationService.success).toHaveBeenCalledWith(
+        //             'adminFacilityAdd.facilityHasBeenSaved'
+        //         );
+        //     });
+        //
+        // it('should show notification if facility save has failed', function() {
+        //     this.vm.save();
+        //
+        //     this.confirmDeferred.reject();
+        //     this.saveDeferred.reject();
+        //     this.$rootScope.$apply();
+        //
+        //     expect(this.notificationService.error).toHaveBeenCalledWith(
+        //         'adminFacilityAdd.failedToSaveFacility'
+        //     );
+        // });
 
-    // it('should take to the user to add programs page if user agrees to it',
-    //     function() {
-    //         this.FacilityRepository.prototype.create.andReturn(
-    //             this.$q.when(this.facility)
-    //         );
-    //         this.vm.save();
-    //
-    //         this.confirmDeferred.resolve();
-    //         this.$rootScope.$apply();
-    //
-    //         expect(this.$state.go).toHaveBeenCalledWith(
-    //             'openlmis.administration.facilities.facility.programs', {
-    //                 facility: this.facility
-    //             }
-    //         );
-    //     });
+        // it('should take to the user to add programs page if user agrees to it',
+        //     function() {
+        //         this.FacilityRepository.prototype.create.andReturn(
+        //             this.$q.when(this.facility)
+        //         );
+        //         this.vm.save();
+        //
+        //         this.confirmDeferred.resolve();
+        //         this.$rootScope.$apply();
+        //
+        //         expect(this.$state.go).toHaveBeenCalledWith(
+        //             'openlmis.administration.facilities.facility.programs', {
+        //                 facility: this.facility
+        //             }
+        //         );
+        //     });
 
     });
 

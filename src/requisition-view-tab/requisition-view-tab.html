@@ -12,11 +12,11 @@
             can-edit="vm.userCanEdit"
             is-emergency="vm.requisition.emergency"
             ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency"
-    />
+    ></siglus-consultation-number>
     <kit-usage sections="vm.requisition.usageTemplate.kitUsage"
                line-items="vm.requisition.kitUsageLineItems"
                can-edit="vm.userCanEdit"
-               ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
+               ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"></kit-usage>
     <div class="toolbar-wrapper" ng-class="{'has-skipbar' : vm.requisition.template.extension.enableProduct && vm.showSkipControls}">
         <div class="toolbar skipbar" ng-if="vm.requisition.template.extension.enableProduct && vm.showSkipControls">
             <h4>{{'requisitionViewTab.skip' | message}}</h4>
@@ -82,7 +82,7 @@
                 list="vm.lineItems"
                 paged-list="vm.items"
                 pagination-id="vm.paginationId"
-                on-page-change="vm.cacheRequisition"/>
+                on-page-change="vm.cacheRequisition"></openlmis-pagination>
     </div>
     <siglus-regimen sections="vm.requisition.usageTemplate.regimen"
                     regimen-line-items="vm.requisition.regimenLineItems"
@@ -97,7 +97,7 @@
                available-products="vm.requisition.availableFullSupplyProducts"
                added-products="vm.requisition.requisitionLineItems"
                can-edit="vm.userCanEdit"
-               ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"/>
+               ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"></usage-information>
     <!-- #399: Facility user can create requisition with patient section-->
     <siglus-patient sections="vm.requisition.usageTemplate.patient"
                     line-items="vm.requisition.patientLineItems"
@@ -112,7 +112,7 @@
             line-items="vm.requisition.testConsumptionLineItems"
             can-edit="vm.userCanEdit"
             ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
-    />
+    ></siglus-test-consumption>
     <!-- #375: ends here -->
 
     <!-- to13 #149: create requisition with age group section -->
@@ -122,6 +122,6 @@
             line-items="vm.requisition.ageGroupLineItems"
             can-edit="vm.userCanEdit"
             ng-if="vm.requisition.template.extension.enableAgeGroup && !vm.requisition.emergency"
-    />
-    <!-- to13 #149: ends here>
+    ></siglus-age-group>
+    <!-- to13 #149: ends here -->
 </div>

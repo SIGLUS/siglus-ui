@@ -63,6 +63,7 @@
          * notifications for success/unsuccessful actions.
          *
          * @param  {Order}   order the order to get the shipment for
+         * @param  {Array}   stockCardSummaries stockCard info from /integration/summary api
          * @return {Promise}       the promise resolving to a decorated Shipment
          */
         // #372: Improving Fulfilling Order performance

@@ -44,18 +44,18 @@
         'SiglusLocationCommonUtilsService',
         'alertService', 'printInfo', 'siglusSignatureWithLimitDateModalService'];
 
-    function ProofOfDeliveryViewControllerWithLocation($scope
-        , proofOfDelivery, order, reasons, messageService
+    function ProofOfDeliveryViewControllerWithLocation(
+        $scope, proofOfDelivery, order, reasons, messageService
         , VVM_STATUS, orderLineItems, canEdit, ProofOfDeliveryPrinter
         , $q, loadingModalService, proofOfDeliveryService, notificationService
         , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
         , confirmService, confirmDiscardService, proofOfDeliveryManageService
         , openlmisDateFilter, fulfillingLineItemFactory
         , facilityFactory, siglusDownloadLoadingModalService, user, moment
-        , orderablesPrice, facility, locations, areaLocationInfo,
-                                                       addAndRemoveLineItemService
-        , SiglusLocationCommonUtilsService, alertService, printInfo,
-                                                       siglusSignatureWithLimitDateModalService) {
+        , orderablesPrice, facility, locations, areaLocationInfo
+        , addAndRemoveLineItemService, SiglusLocationCommonUtilsService, alertService, printInfo
+        , siglusSignatureWithLimitDateModalService
+    ) {
 
         if (canEdit) {
             orderLineItems.forEach(function(orderLineItem) {
@@ -81,7 +81,7 @@
         vm.minDate = undefined;
         vm.fileName = undefined;
         vm.getReason = function(reasonId) {
-            // return 
+            // return
             var reasonMap = _.reduce(reasons, function(r, c) {
                 r[c.id] = c.name;
                 return r;
@@ -680,10 +680,8 @@
                     downloadLineItem.productName = _.get(downloadLineItem, ['orderable', 'fullProductName'], '');
                     downloadLineItem.lotCode = _.get(downloadLineItem, ['lot', 'lotCode'], '');
                     downloadLineItem.expirationDate = _.get(downloadLineItem, ['lot', 'expirationDate'], '');
-
                     downloadLineItem.orderedQuantity = orderLineItem.orderedQuantity;
                     downloadLineItem.partialFulfilledQuantity = orderLineItem.partialFulfilledQuantity;
-                    downloadLineItem.quantityShipped = downloadLineItem.quantityShipped;
                     downloadLineItem.quantityAccepted = getSumQuantityAccepted(lotItems);
                     downloadLineItems.push(downloadLineItem);
                 });
