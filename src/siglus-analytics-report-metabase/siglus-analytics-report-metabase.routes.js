@@ -31,6 +31,7 @@
                 label: 'analyticsReportMetabase.stockStatus.title',
                 url: '/sohReportByProduct',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_REPORT_BY_PRODUCT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.STOCK_STATUS,
                 priority: 99
             },
             {
@@ -38,6 +39,7 @@
                 label: 'analyticsReportMetabase.sohByLot.title',
                 url: '/sohByLot',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SOH_BY_LOT_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.SOH_BY_LOT,
                 priority: 96
             },
             // {
@@ -52,6 +54,7 @@
                 label: 'analyticsReportMetabase.expiringProducts.title',
                 url: '/expiringProducts',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRING_PRODUCTS_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.EXPIRING_PRODUCTS,
                 priority: 90
             },
             {
@@ -59,6 +62,7 @@
                 label: 'analyticsReportMetabase.expiredProducts.title',
                 url: '/expiredProducts',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_PRODUCTS_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.EXPIRED_PRODUCTS,
                 priority: 87
             },
             {
@@ -66,6 +70,7 @@
                 label: 'analyticsReportMetabase.historicalData.title',
                 url: '/historicalData',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.HISTORICAL_DATA_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.HISTORICAL_DATA,
                 priority: 81
             },
             {
@@ -73,6 +78,7 @@
                 label: 'analyticsReportMetabase.requisitionAndMonthly.title',
                 url: '/requisitionAndMonthly',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_MONTHLY_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.REQUISITIONS_MONTHLY,
                 priority: 78
             },
             {
@@ -80,6 +86,7 @@
                 label: 'analyticsReportMetabase.requisitionData.title',
                 url: '/requisitionData',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.REQUISITION_DATA_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.REQUISITION_DATA,
                 priority: 75
             },
             {
@@ -87,6 +94,7 @@
                 label: 'analyticsReportMetabase.mmiaRegimens.title',
                 url: '/mmiaRegimens',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMIA_REGIMENS_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.MMIA_REGIMENS,
                 priority: 72
             },
             {
@@ -94,6 +102,7 @@
                 label: 'analyticsReportMetabase.mmtbRegimens.title',
                 url: '/mmtbRegimens',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MMTB_REGIMENS_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.MMTB_REGIMENS,
                 priority: 71
             },
             {
@@ -101,6 +110,7 @@
                 label: 'analyticsReportMetabase.malariaConsumptionData.title',
                 url: '/malariaConsumptionData',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.MALARIA_CONSUMPTION_DATA_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.MALARIA_CONSUMPTION_DATA,
                 priority: 69
             },
             {
@@ -108,6 +118,7 @@
                 label: 'analyticsReportMetabase.rapidTestConsumptionData.title',
                 url: '/rapidTestConsumptionData',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.RAPID_TEST_CONSUMPTION_DATA_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.RAPID_TEST_CONSUMPTION_DATA,
                 priority: 66
             },
             {
@@ -115,6 +126,7 @@
                 label: 'analyticsReportMetabase.fulfillment.title',
                 url: '/fulfillment',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.FULFILLMENT_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.FULFILLMENT,
                 priority: 63
             },
             {
@@ -122,6 +134,7 @@
                 label: 'analyticsReportMetabase.systemVersion.title',
                 url: '/systemVersion',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_VERSION_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.SYSTEM_VERSION,
                 priority: 60
             },
             {
@@ -129,6 +142,7 @@
                 label: 'analyticsReportMetabase.systemUpdate.title',
                 url: '/systemUpdate',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.SYSTEM_UPDATE_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.SYSTEM_UPDATE,
                 priority: 57
             },
             {
@@ -136,6 +150,7 @@
                 label: 'analyticsReportMetabase.userAccess.title',
                 url: '/userAccess',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.USER_ACCESS_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.USER_ACCESS,
                 priority: 51
             }
         ];
@@ -155,6 +170,7 @@
                 },
                 resolve: {
                     analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                        analyticsReportMetabaseService.recordUserAccess(item.recordName);
                         var analyticsReportMetabaseResource;
                         analyticsReportMetabaseResource = analyticsReportMetabaseService
                             .getMetabaseUrl(item.dashboardName);
@@ -181,6 +197,9 @@
             },
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    analyticsReportMetabaseService.recordUserAccess(
+                        SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT.TRACER_DRUG_REPORT
+                    );
                     var analyticsReportMetabaseResource;
                     analyticsReportMetabaseResource = analyticsReportMetabaseService
                         .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT);
@@ -214,6 +233,9 @@
             },
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
+                    analyticsReportMetabaseService.recordUserAccess(
+                        SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.USER
+                    );
                     var analyticsReportMetabaseResource;
                     analyticsReportMetabaseResource = analyticsReportMetabaseService
                         .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT);

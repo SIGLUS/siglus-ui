@@ -28,9 +28,9 @@
         .module('siglus-analytics-report-metabase')
         .service('analyticsReportMetabaseService', service);
 
-    service.$inject = ['$resource', 'analyticsReportUrlFactory', 'moment'];
+    service.$inject = ['$resource', 'analyticsReportUrlFactory', 'moment', '$http'];
 
-    function service($resource, analyticsReportUrlFactory, moment) {
+    function service($resource, analyticsReportUrlFactory, moment, $http) {
         var resource = $resource(
             analyticsReportUrlFactory('/api/siglusapi/dashboard'), {}, {
                 get: {
@@ -54,6 +54,8 @@
         this.getMetabaseUrl = getMetabaseUrl;
         this.getTracerDrugFilterInfo = getTracerDrugFilterInfo;
         this.exportTracerDrugReport = exportTracerDrugReport;
+        this.recordUserAccess = recordUserAccess;
+
         /**
          * @ngdoc method
          * @methodOf siglus-analytics-report-metabase.analyticsReportMetabaseService
@@ -105,6 +107,16 @@
             a.setAttribute('download', filename);
             a.click();
             URL.revokeObjectURL(objectUrl);
+        }
+
+        function recordUserAccess(reportName) {
+            return $http({
+                method: 'POST',
+                url: analyticsReportUrlFactory('/api/siglusapi/reports/records'),
+                params: {
+                    reportName: reportName
+                }
+            });
         }
 
     }

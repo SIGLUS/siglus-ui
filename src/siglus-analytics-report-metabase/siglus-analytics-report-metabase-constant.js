@@ -45,7 +45,30 @@
             RAPID_TEST_CONSUMPTION_DATA_REPORT: 'rapid_test_consumption_data_report',
             TRACER_DRUG_REPORT: 'tracer_drug_report',
             USER_REPORT: 'user_report',
-            USER_ACCESS_REPORT: 'user_access_report'
+            USER_ACCESS_REPORT: 'user_access_report',
+            RECORD_REPORT_NAME: recordReportName()
+        };
+    }
+
+    function recordReportName() {
+        return {
+            STOCK_STATUS: 'STOCK_STATUS',
+            SOH_BY_LOT: 'SOH_BY_LOT',
+            EXPIRING_PRODUCTS: 'EXPIRING_PRODUCTS',
+            EXPIRED_PRODUCTS: 'EXPIRED_PRODUCTS',
+            TRACER_DRUG: 'TRACER_DRUG',
+            HISTORICAL_DATA: 'HISTORICAL_DATA',
+            REQUISITIONS_MONTHLY: 'REQUISITIONS_MONTHLY',
+            REQUISITION_DATA: 'REQUISITION_DATA',
+            MMIA_REGIMENS: 'MMIA_REGIMENS',
+            MMTB_REGIMENS: 'MMTB_REGIMENS',
+            MALARIA_CONSUMPTION_DATA: 'MALARIA_CONSUMPTION_DATA',
+            RAPID_TEST_CONSUMPTION_DATA: 'RAPID_TEST_CONSUMPTION_DATA',
+            FULFILLMENT: 'FULFILLMENT',
+            SYSTEM_VERSION: 'SYSTEM_VERSION',
+            SYSTEM_UPDATE: 'SYSTEM_UPDATE',
+            USER: 'USER',
+            USER_ACCESS: 'USER_ACCESS'
         };
     }
 
