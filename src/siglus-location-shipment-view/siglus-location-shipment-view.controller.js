@@ -81,6 +81,7 @@
         vm.quantityUnit = undefined;
 
         vm.displayTableLineItems = undefined;
+        vm.keyword = '';
 
         vm.getLotList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getValidLotList(lineItem,
@@ -102,6 +103,7 @@
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
+            vm.keyword = $stateParams.keyword;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
@@ -307,6 +309,8 @@
         };
 
         function reloadParams() {
+            $stateParams.page = 0;
+            $stateParams.keyword = vm.keyword;
             $state.go($state.current.name, $stateParams, {
                 reload: true
             });
@@ -939,27 +943,13 @@
             });
         }
 
-        function searchTable() {
-            if (!vm.keyword) {
-                return vm.displayTableLineItems;
-            }
-            return vm.displayTableLineItems.filter(function(item) {
-                if (item instanceof Array && item.length >= 1) {
-                    var productName = _.get(item[0], ['productName']);
-                    var productCode = _.get(item[0], ['productCode']);
-                    return productCode.contains(vm.keyword) || productName.contains(vm.keyword);
-                }
-                return false;
-            });
-        }
-
         vm.search = function() {
-            vm.filterDisplayTableLineItems = searchTable();
+            reloadParams();
         };
 
         vm.cancelFilter = function() {
             vm.keyword = null;
-            vm.filterDisplayTableLineItems = searchTable();
+            reloadParams();
         };
     }
 })();

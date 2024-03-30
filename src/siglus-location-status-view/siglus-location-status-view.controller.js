@@ -46,6 +46,7 @@
         vm.displayLocationStatus = [];
 
         function onInit() {
+            vm.keyword = $stateParams.keyword;
             vm.facility = facility;
             vm.locationStatus = locationStatus;
             vm.displayLocationStatus = displayLocationStatus;

@@ -47,7 +47,8 @@
                     shipment: undefined,
                     order: undefined,
                     displayTableLineItems: undefined,
-                    locations: undefined
+                    locations: undefined,
+                    keyword: undefined
                 },
                 areAllRightsRequired: false,
                 resolve: {
@@ -120,9 +121,13 @@
                         var id = $stateParams.id;
                         return shipmentViewService.getSuggestedQuantity(id);
                     },
-                    displayTableLineItems: function(paginationService, $stateParams, shipment,
-                        order, locations, prepareRowDataService) {
-
+                    displayTableLineItems: function($stateParams, shipment, order, locations, prepareRowDataService) {
+                        return $stateParams.displayTableLineItems
+                            ? $stateParams.displayTableLineItems
+                            : prepareRowDataService.prepareGroupLineItems(shipment, locations, order);
+                    },
+                    filterDisplayTableLineItems: function(paginationService, displayTableLineItems, $stateParams,
+                        siglusLocationCommonFilterService) {
                         var validator = function(group) {
                             return _.every(group, function(lineItem) {
                                 return _.chain(lineItem.$error).keys()
@@ -134,14 +139,9 @@
                         };
 
                         return paginationService.registerList(validator, angular.copy($stateParams), function() {
-                            return $stateParams.displayTableLineItems
-                                ? $stateParams.displayTableLineItems
-                                : prepareRowDataService.prepareGroupLineItems(shipment,
-                                    locations, order);
+                            return siglusLocationCommonFilterService
+                                .filterList($stateParams.keyword, displayTableLineItems);
                         });
-                    },
-                    filterDisplayTableLineItems: function(displayTableLineItems) {
-                        return displayTableLineItems;
                     },
 
                     updatedOrder: function(shipment, order, stockCardSummaries, loadingModalService) {
