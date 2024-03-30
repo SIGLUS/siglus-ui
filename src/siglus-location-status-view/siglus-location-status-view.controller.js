@@ -29,22 +29,24 @@
         .controller('SiglusLocationStatusController', SiglusLocationStatusController);
 
     SiglusLocationStatusController.$inject = [
-        '$scope', '$state', '$stateParams', '$window', 'user', 'facility',
+        '$scope', '$state', '$stateParams', '$window', 'facility',
         'locationStatus', 'displayLocationStatus'
     ];
 
     function SiglusLocationStatusController(
-        $scope, $state, $stateParams, $window, user, facility,
+        $scope, $state, $stateParams, $window, facility,
         locationStatus, displayLocationStatus
     ) {
         var vm = this;
 
         vm.$onInit = onInit;
+        vm.keyword = '';
         vm.facility = undefined;
+        vm.locationStatus = null;
+        vm.displayLocationStatus = [];
 
         function onInit() {
             vm.facility = facility;
-            vm.user = user;
             vm.locationStatus = locationStatus;
             vm.displayLocationStatus = displayLocationStatus;
         }
@@ -54,23 +56,23 @@
             return status === 'Occupied';
         };
 
-        function searchTable() {
-            if (!vm.keyword) {
-                return vm.locationStatus;
-            }
-            return vm.locationStatus.filter(function(item) {
-                var locationCode = _.get(item, ['locationCode']);
-                return locationCode.contains(vm.keyword);
+        function reloadPage() {
+            $stateParams.facility = facility;
+            $stateParams.keyword = vm.keyword;
+            $stateParams.locationStatus = vm.locationStatus;
+            $stateParams.pageNumber = 0;
+            $state.go($state.current.name, $stateParams, {
+                reload: true
             });
         }
 
         vm.search = function() {
-            vm.displayLocationStatus = searchTable();
+            reloadPage();
         };
 
         vm.cancelFilter = function() {
             vm.keyword = null;
-            vm.displayLocationStatus = searchTable();
+            reloadPage();
         };
 
         vm.printLocations = function() {

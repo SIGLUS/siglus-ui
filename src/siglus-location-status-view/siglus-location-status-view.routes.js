@@ -43,27 +43,27 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
-                user: function(authorizationService, $stateParams) {
-                    if ($stateParams.user) {
-                        return $stateParams.user;
+                facility: function(facilityFactory, $stateParams) {
+                    if ($stateParams.facility) {
+                        return $stateParams.facility;
                     }
-                    return authorizationService.getUser();
-                },
-                facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
                 locationStatus: function(SiglusLocationStatusService, paginationService, $stateParams, facility) {
+                    if ($stateParams.locationStatus) {
+                        return $stateParams.locationStatus;
+                    }
                     return SiglusLocationStatusService.getAllLocationInfo(facility.id);
                 },
-                displayLocationStatus: function(locationStatus) {
-                    return locationStatus;
-                    //  paginationFactory, paginationService
-                    // return paginationService.registerList(null, $stateParams, function() {
-                    //     return locationInfos;
-                    // }, {
-                    //     customPageParamName: 'pageNumber',
-                    //     customSizeParamName: 'pageSize'
-                    // });
+                displayLocationStatus: function(locationStatus, siglusLocationCommonFilterService,
+                    $stateParams, paginationService) {
+                    return paginationService.registerList(null, $stateParams, function() {
+                        return  siglusLocationCommonFilterService
+                            .filterListByLocation($stateParams.keyword, locationStatus);
+                    }, {
+                        customPageParamName: 'pageNumber',
+                        customSizeParamName: 'pageSize'
+                    });
                 }
             }
         });

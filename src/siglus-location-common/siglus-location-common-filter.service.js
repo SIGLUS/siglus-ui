@@ -47,6 +47,25 @@
                 return !_.isEmpty(item);
             });
         };
+
+        this.filterListByLocation = function(keyword, addedLineItems) {
+            var result = [];
+
+            if (_.isEmpty(keyword)) {
+                result = addedLineItems;
+            } else {
+                keyword = keyword.trim().toLowerCase();
+                result = _.map(addedLineItems, function(lineItem) {
+                    var isMatched = String(lineItem['locationCode'].toLowerCase()).includes(keyword);
+                    return isMatched ? lineItem : [];
+                });
+
+            }
+
+            return _.filter(result, function(item) {
+                return !_.isEmpty(item);
+            });
+        };
     }
 
 })();
