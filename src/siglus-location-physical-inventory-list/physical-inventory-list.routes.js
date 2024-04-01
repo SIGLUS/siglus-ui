@@ -60,10 +60,16 @@
                         );
                     });
                 },
-                programId: function() {
-                    return '00000000-0000-0000-0000-000000000000';
+                programId: function($stateParams) {
+                    if ($stateParams.programId) {
+                        return $stateParams.programId;
+                    }
+                    return undefined;
                 },
                 drafts: function(physicalInventoryService, $stateParams, facility, programId) {
+                    if (!programId) {
+                        return [];
+                    }
                     return physicalInventoryService.getDraftByLocation(facility.id, programId)
                         .then(function(drafts) {
                             var vmDrafts = _.isEmpty(drafts) ?  [{
