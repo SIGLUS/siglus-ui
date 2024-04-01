@@ -1,4 +1,4 @@
-<h2>{{'shipmentView.title' | message:{orderCode: vm.order.orderCode} }}</h2>
+<h2>{{'locationStatus.title' | message}} -- {{vm.facility.name}}</h2>
 <section class="openlmis-table-container">
     <button class="primary" ng-click="vm.printLocations()">{{'stockCardSummaryList.print' | message}}</button>
     <form>
@@ -23,8 +23,8 @@
         <tbody >
         <tr ng-repeat="item in vm.pagedLineItems">
             <td>{{item.locationCode}}</td>
-            <td ng-if="vm.itemLocationStatus(item)">Occupied</td>
-            <td ng-if="!vm.itemLocationStatus(item)">Empty</td>
+            <td ng-if="vm.itemLocationStatus(item)">{{'locationStatus.status.occupied' | message}}</td>
+            <td ng-if="!vm.itemLocationStatus(item)">{{'locationStatus.status.empty' | message}}</td>
         </tr>
         </tbody>
         <openlmis-pagination list="vm.displayLocationStatus" paged-list="vm.pagedLineItems">

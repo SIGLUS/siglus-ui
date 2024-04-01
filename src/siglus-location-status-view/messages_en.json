@@ -1,0 +1,5 @@
+{
+    "locationStatus.title": "Location Status",
+    "locationStatus.status.occupied":"Occupied",
+    "locationStatus.status.empty":"Empty"
+}

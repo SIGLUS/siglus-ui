@@ -26,7 +26,7 @@
     function config($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.locationStatus', {
             url: '/location-status?pageNumber&pageSize&keyword',
-            label: 'locationManagement.locationStatus',
+            label: 'locationStatus.title',
             priority: 1,
             showInNavigation: true,
             views: {
