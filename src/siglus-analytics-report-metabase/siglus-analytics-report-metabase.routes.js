@@ -198,7 +198,7 @@
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
                     analyticsReportMetabaseService.recordUserAccess(
-                        SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT.TRACER_DRUG_REPORT
+                        SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.TRACER_DRUG
                     );
                     var analyticsReportMetabaseResource;
                     analyticsReportMetabaseResource = analyticsReportMetabaseService

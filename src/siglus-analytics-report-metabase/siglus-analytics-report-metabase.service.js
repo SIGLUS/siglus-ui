@@ -115,9 +115,9 @@
                 url: analyticsReportUrlFactory('/api/siglusapi/reports/records'),
                 params: {
                     reportName: reportName
-                }
+                },
+                ignoreAuthModule: true
             });
         }
-
     }
 })();
