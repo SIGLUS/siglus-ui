@@ -35,6 +35,9 @@
                     }
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+                params: {
+                    programId: undefined
+                },
                 resolve: {
                     facility: function(facilityFactory) {
                         return facilityFactory.getUserHomeFacility();
@@ -56,8 +59,7 @@
                         }
                         return result;
                     },
-                    draftList: function(siglusPhysicalInventoryDraftListService, programs,
-                        facility, $stateParams) {
+                    draftList: function(siglusPhysicalInventoryDraftListService, facility, $stateParams) {
                         if (_.isUndefined(facility)) {
                             return [];
                         }

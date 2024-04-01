@@ -1,6 +1,7 @@
 {
   "stockPhysicalInventory.stockManagement": "Stock Management",
   "stockPhysicalInventory.physicalInventory": "Physical inventory",
+  "stockPhysicalInventory.history": "History",
   "stockPhysicalInventory.title": "Physical inventory for ${facility} - ${program}",
   "stockPhysicalInventory.initialTitle": "Initial inventory for ${facility} - ${program}",
   "stockPhysicalInventory.noPhysicalInventoryFound": "No physical inventory found.",
@@ -8,6 +9,7 @@
   "stockPhysicalInventory.status": "Status",
   "stockPhysicalInventory.actions": "Actions",
   "stockPhysicalInventory.start": "Start",
+  "stockPhysicalInventory.dateCompleted": "Date completed",
   "stockPhysicalInventory.continue": "Continue",
   "stockPhysicalInventory.view": "View",
   "stockPhysicalInventory.notStarted": "Not yet started",

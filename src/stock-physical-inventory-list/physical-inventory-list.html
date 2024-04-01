@@ -4,45 +4,36 @@
   'facility': vm.facility.name, 'program': vm.program.name
 } }}
 </h2>
-<h2 ng-hide="vm.facility && vm.program">{{'stockPhysicalInventory.physicalInventory'
-| message}}</h2>
+<h2 ng-hide="vm.facility && vm.program">
+  {{'stockPhysicalInventory.physicalInventory' | message}}
+</h2>
 
-<form ng-submit="vm.searchProgram()" class="sidebar" id="physical-inventory-list-program-sidebar">
-  <label for="selectProgram">{{'stockPhysicalInventory.program' | message}}</label>
-  <select
-      id="selectProgram"
-      ng-model="vm.program"
-      ng-options="p.name for p in vm.programs"
-      placeholder="{{'stockPhysicalInventory.selectProgram' | message}}"
-      required
-  >
-  </select>
-  <input type="submit" value="{{'stockPhysicalInventory.search' | message}}"/>
-</form>
-<!--SIGLUS-REFACTOR: ends here-->
+<div class="physical-inventory-tab-container">
+  <form ng-submit="vm.searchProgram()" class="sidebar" id="physical-inventory-list-program-sidebar">
+    <label for="selectProgram">{{'stockPhysicalInventory.program' | message}}</label>
+    <select
+        id="selectProgram"
+        ng-model="vm.program"
+        ng-options="p.name for p in vm.programs"
+        placeholder="{{'stockPhysicalInventory.selectProgram' | message}}"
+        required
+    >
+    </select>
+    <input type="submit" value="{{'stockPhysicalInventory.search' | message}}"/>
+  </form>
+  <!--SIGLUS-REFACTOR: ends here-->
 
-<section class="openlmis-table-container">
-  <table>
-    <caption ng-if="vm.drafts.length === 0">
-      {{'stockPhysicalInventory.selectFirst' | message}}
-    </caption>
-    <thead>
-    <tr>
-      <th style="min-width:160px">{{'stockPhysicalInventory.program' | message}}</th>
-      <th style="min-width:160px">{{'stockPhysicalInventory.status' | message}}</th>
-      <th class="col-sticky sticky-right">{{'stockPhysicalInventory.actions' | message}}</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-if="vm.drafts.length > 0">
-      <td>{{vm.getProgramName(vm.drafts[0].programId)}}</td>
-      <td>{{vm.getDraftStatus(vm.drafts[0].isStarter)}}</td>
-      <td>
-        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(vm.drafts[0].isStarter, vm.drafts[0].id)"
-               value="{{(vm.drafts[0].isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
-               class="primary fullwidth-primary-btn"/>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</section>
+  <div class="physical-inventory-table-tab">
+    <nav>
+      <ul>
+        <li ng-class="{'active': vm.isInventory()}" ng-click="vm.goToInventory()">
+          {{'stockPhysicalInventory.physicalInventory' | message}}
+        </li>
+        <li ng-class="{'active': vm.isHistory()}" ng-click="vm.goToHistory()">
+          {{'stockPhysicalInventory.history' | message}}
+        </li>
+      </ul>
+    </nav>
+    <div ui-view></div>
+  </div>
+</div>

@@ -92,11 +92,11 @@
         this.createDraftList = createDraftList;
 
         // eslint-disable-next-line no-unused-vars
-        function getDraftList(facility, isDraft, program, groupNum) {
+        function getDraftList(facility, isDraft, programId, groupNum) {
             return resource.query({
                 facility: facility,
                 isDraft: isDraft,
-                program: program,
+                program: programId,
                 groupNum: groupNum
             }).$promise.then(function(response) {
                 siglusStockEventService.formatResponse(response);

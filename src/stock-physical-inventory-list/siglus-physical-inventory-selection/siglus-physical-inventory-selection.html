@@ -1,0 +1,25 @@
+<section class="openlmis-table-container">
+  <table>
+    <caption ng-if="!vm.drafts.length">
+      {{'stockPhysicalInventory.selectFirst' | message}}
+    </caption>
+    <thead>
+    <tr>
+      <th style="min-width:160px">{{'stockPhysicalInventory.program' | message}}</th>
+      <th style="min-width:160px">{{'stockPhysicalInventory.status' | message}}</th>
+      <th class="col-sticky sticky-right">{{'stockPhysicalInventory.actions' | message}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-if="vm.drafts.length > 0">
+      <td>{{vm.program.name}}</td>
+      <td>{{vm.getDraftStatus(vm.drafts[0].isStarter)}}</td>
+      <td>
+        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(vm.drafts[0])"
+               value="{{(vm.drafts[0].isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
+               class="primary fullwidth-primary-btn"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>

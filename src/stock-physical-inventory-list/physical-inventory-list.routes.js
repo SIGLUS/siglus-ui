@@ -20,53 +20,101 @@
         .module('stock-physical-inventory-list')
         .config(routes);
 
-    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    routes.$inject = ['$urlRouterProvider', '$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
-        $stateProvider.state('openlmis.stockmanagement.physicalInventory', {
-            url: '/physicalInventory?programId',
-            label: 'stockPhysicalInventory.physicalInventory',
-            priority: 3,
-            showInNavigation: true,
-            views: {
-                '@openlmis': {
-                    templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',
-                    controller: 'PhysicalInventoryListController',
-                    controllerAs: 'vm'
-                }
-            },
-            params: {
-                drafts: undefined
-            },
-            accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
-            resolve: {
-                user: function(authorizationService) {
-                    return authorizationService.getUser();
-                },
-                facility: function(facilityFactory) {
-                    return facilityFactory.getUserHomeFacility();
-                },
-                // // SIGLUS-REFACTOR: starts here
-                programs: function(user, $q, programService, stockProgramUtilService) {
-                    return $q.all([
-                        programService.getAllProductsProgram(),
-                        stockProgramUtilService.getPrograms(user.user_id,
-                            STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
-                    ]).then(function(responses) {
-                        return responses[0].concat(
-                            _.filter(responses[1], function(item) {
-                                return item.code !== 'ML';
-                            })
-                        );
-                    });
-                },
-                programId: function($stateParams) {
-                    if ($stateParams.programId) {
-                        return $stateParams.programId;
+    function routes($urlRouterProvider, $stateProvider, STOCKMANAGEMENT_RIGHTS) {
+        $stateProvider
+            .state('openlmis.stockmanagement.physicalInventory', {
+                url: '/physicalInventory',
+                label: 'stockPhysicalInventory.physicalInventory',
+                priority: 3,
+                showInNavigation: true,
+                views: {
+                    '@openlmis': {
+                        templateUrl: 'stock-physical-inventory-list/physical-inventory-list.html',
+                        controller: 'PhysicalInventoryListController',
+                        controllerAs: 'vm'
                     }
-                    return undefined;
+                },
+                accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+                params: {
+                    facility: undefined
+                },
+                resolve: {
+                    user: function(authorizationService) {
+                        return authorizationService.getUser();
+                    },
+                    facility: function($stateParams, facilityFactory) {
+                        if ($stateParams.facility) {
+                            return $stateParams.facility;
+                        }
+                        return facilityFactory.getUserHomeFacility().then(function(facility) {
+                            return facility;
+                        });
+                    },
+                    programs: function(user, $q, programService, stockProgramUtilService) {
+                        return $q.all([
+                            programService.getAllProductsProgram(),
+                            stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
+                        ]).then(function(responses) {
+                            return responses[0].concat(
+                                _.filter(responses[1], function(item) {
+                                    return item.code !== 'ML';
+                                })
+                            );
+                        });
+                    },
+                    programId: function($rootScope) {
+                        return $rootScope.programId;
+                    },
+                    program: function(programs, programId) {
+                        return programs.find(function(program) {
+                            return program.id === programId;
+                        }, undefined);
+                    }
                 }
-            }
-        });
+            })
+            .state('openlmis.stockmanagement.physicalInventory.selection', {
+                url: '/selection?programId',
+                controller: 'SiglusPhysicalInventorySelectionController',
+                controllerAs: 'vm',
+                templateUrl: 'stock-physical-inventory-list/' +
+                    'siglus-physical-inventory-selection/siglus-physical-inventory-selection.html',
+                accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+                params: {
+                    programId: undefined,
+                    facility: undefined
+                },
+                resolve: {
+                    drafts: function(physicalInventoryService, programId, facility) {
+                        if (!programId) {
+                            return [];
+                        }
+                        return physicalInventoryService.getDraft(programId, facility.id)
+                            .then(function(drafts) {
+                                return _.isEmpty(drafts) ? [{
+                                    programId: programId,
+                                    isStarter: true
+                                }] : drafts;
+                            });
+                    }
+                }
+            })
+            .state('openlmis.stockmanagement.physicalInventory.history', {
+                url: '/history?programId',
+                controller: 'SiglusPhysicalInventoryHistoryController',
+                controllerAs: 'vm',
+                templateUrl: 'stock-physical-inventory-list/' +
+                    'siglus-physical-inventory-history/siglus-physical-inventory-history.html',
+                params: {
+                    programId: undefined
+                },
+                resolve: {
+                    historyList: function() {
+                        // TODO: get history list from api
+                        return ['123'];
+                    }
+                }
+            });
     }
 })();
