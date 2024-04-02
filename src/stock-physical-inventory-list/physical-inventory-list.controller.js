@@ -207,9 +207,9 @@
             return conflictProgramNames.join(',');
         }
 
-        vm.validateDraftStatus = function(isStarter) {
+        vm.validateDraftStatus = function(isStarter, draftId) {
             loadingModalService.open();
-            physicalInventoryService.validateConflictProgram(programId, facility.id)
+            physicalInventoryService.validateConflictProgram(programId, facility.id, draftId)
                 .then(function(data) {
                     if (data.canStartInventory) {
                         if (isStarter) {

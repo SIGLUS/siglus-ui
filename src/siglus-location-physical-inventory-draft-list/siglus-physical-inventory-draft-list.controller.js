@@ -84,7 +84,7 @@
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType = item.status;
             stateParams.draftNum = item.groupNum;
-            if (vm.isInitialInventory) {
+            if (item.status === 'NOT_YET_STARTED') {
                 return  $state.go('openlmis.locationManagement.initialInventory.draft', stateParams);
             }
 

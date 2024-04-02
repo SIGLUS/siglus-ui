@@ -38,7 +38,7 @@
       <td>{{vm.getProgramName(vm.drafts[0].programId)}}</td>
       <td>{{vm.getDraftStatus(vm.drafts[0].isStarter)}}</td>
       <td>
-        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(vm.drafts[0].isStarter)"
+        <input id="proceedButton" type="button" ng-click="vm.validateDraftStatus(vm.drafts[0].isStarter, vm.drafts[0].id)"
                value="{{(vm.drafts[0].isStarter ? 'stockPhysicalInventory.start' : 'stockPhysicalInventory.continue') | message}}"
                class="primary fullwidth-primary-btn"/>
       </td>

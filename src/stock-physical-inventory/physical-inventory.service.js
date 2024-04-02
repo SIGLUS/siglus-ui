@@ -238,10 +238,11 @@
                 .$promise;
         }
 
-        function validateConflictProgram(program, facility) {
+        function validateConflictProgram(program, facility, draft) {
             return resource.validateConflictProgram({
                 program: program,
                 facility: facility,
+                draft: draft,
                 isDraft: true
             })
                 .$promise;

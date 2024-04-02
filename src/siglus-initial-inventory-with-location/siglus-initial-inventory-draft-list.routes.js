@@ -43,11 +43,6 @@
                 },
                 params: {
                     canInitialInventory: true,
-                    program: {
-                        code: 'ALL',
-                        id: '00000000-0000-0000-0000-000000000000',
-                        name: 'Todos os produtos'
-                    },
                     locationManagementOption: 'location'
                 },
 
@@ -81,7 +76,7 @@
                         return siglusPhysicalInventoryDraftListService.getDraftList(
                             facility.id,
                             isDraft,
-                            $stateParams.program.id
+                            $stateParams.programId
                         );
                     }
                 }

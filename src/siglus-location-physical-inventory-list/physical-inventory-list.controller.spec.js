@@ -154,7 +154,7 @@ describe('LocationPhysicalInventoryListController', function() {
     describe('validateDraftStatus', function() {
         it('should do initial draft input config when current program has no draft', function() {
 
-            vm.validateDraftStatus(true);
+            vm.validateDraftStatus(true, null);
 
             deferred.resolve({
                 canStartInventory: true,
@@ -167,7 +167,7 @@ describe('LocationPhysicalInventoryListController', function() {
 
         it('should enter draft list page when current program has draft', function() {
 
-            vm.validateDraftStatus(false);
+            vm.validateDraftStatus(false, null);
 
             deferred.resolve({
                 canStartInventory: true,
@@ -182,7 +182,7 @@ describe('LocationPhysicalInventoryListController', function() {
 
         it('should alert error hint when validate is false', function() {
 
-            vm.validateDraftStatus(false);
+            vm.validateDraftStatus(false, null);
 
             deferred.resolve({
                 canStartInventory: false,
