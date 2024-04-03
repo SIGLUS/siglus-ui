@@ -92,12 +92,12 @@ describe('siglusLocationPhysicalInventoryDraftListController', function() {
             vm.isInitialInventory = false;
             var item = {
                 subDraftId: [1, 2],
-                status: 'NOT_YET_STARTED',
+                status: 'DRAFT',
                 groupNum: '1'
             };
             var params = {
                 subDraftIds: '1,2',
-                actionType: 'NOT_YET_STARTED',
+                actionType: 'DRAFT',
                 draftNum: '1'
             };
             vm.clickActions(item);
