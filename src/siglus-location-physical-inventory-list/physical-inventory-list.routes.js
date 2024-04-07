@@ -49,7 +49,7 @@
                 // // SIGLUS-REFACTOR: starts here
                 programs: function(user, $q, programService, stockProgramUtilService) {
                     return $q.all([
-                        // programService.getAllProductsProgram(),
+                        programService.getAllProductsProgram(),
                         stockProgramUtilService.getPrograms(user.user_id,
                             STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
                     ]).then(function(responses) {
