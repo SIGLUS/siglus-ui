@@ -70,7 +70,7 @@
                     if (!programId) {
                         return [];
                     }
-                    return physicalInventoryService.getDraft(programId, facility.id)
+                    return physicalInventoryService.getDraftByLocation(facility.id, programId)
                         .then(function(drafts) {
                             var vmDrafts = _.isEmpty(drafts) ?  [{
                                 programId: programId,
