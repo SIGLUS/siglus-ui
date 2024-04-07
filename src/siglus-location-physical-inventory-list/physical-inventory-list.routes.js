@@ -50,11 +50,14 @@
                 programs: function(user, $q, programService, stockProgramUtilService) {
                     return $q.all([
                         // programService.getAllProductsProgram(),
-                        stockProgramUtilService.getPrograms(user.user_id, STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
+                        stockProgramUtilService.getPrograms(user.user_id,
+                            STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW)
                     ]).then(function(responses) {
-                        return _.filter(responses[0], function(item) {
-                            return item.code !== 'ML';
-                        });
+                        return responses[0].concat(
+                            _.filter(responses[1], function(item) {
+                                return item.code !== 'ML';
+                            })
+                        );
                     });
                 },
                 programId: function($stateParams) {
