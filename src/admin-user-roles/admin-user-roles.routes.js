@@ -56,6 +56,16 @@
                 },
                 roleRightsMap: function(roles, ObjectMapper) {
                     return new ObjectMapper().map(roles, 'rights');
+                },
+                availableGeographicList: function(UserRolesReportService) {
+                    return UserRolesReportService.getAvailableGeographicList().then(function(result) {
+                        return result;
+                    });
+                },
+                userGeographicList: function(user, UserRolesReportService) {
+                    return UserRolesReportService.getUserGeographicList(user.id).then(function(result) {
+                        return result;
+                    });
                 }
             },
             views: {
@@ -70,7 +80,7 @@
         $stateProvider.state('openlmis.administration.users.roles.' + ROLE_TYPES.REPORTS, {
             label: ROLE_TYPES.getLabel(ROLE_TYPES.REPORTS),
             url: '/reports?page&size',
-            controller: 'UserRolesTabController',
+            controller: 'UserRolesReportController',
             controllerAs: 'vm',
             templateUrl: 'admin-user-roles/user-roles-report.html',
             resolve: {
@@ -85,16 +95,6 @@
                 filteredRoles: function(roles, tab) {
                     return roles.filter(function(role) {
                         return role.type === tab;
-                    });
-                },
-                availableGeographicList: function(UserRolesReportService) {
-                    return UserRolesReportService.getAvailableGeographicList().then(function(result) {
-                        return result;
-                    });
-                },
-                userGeographicList: function(user, UserRolesReportService) {
-                    return UserRolesReportService.getUserGeographicList(user.id).then(function(result) {
-                        return result;
                     });
                 }
             }
