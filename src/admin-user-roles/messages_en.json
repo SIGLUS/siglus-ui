@@ -1,3 +1,5 @@
 {
-  "adminUserRoles.roleReportViewerInvalid": "Report viewer role can't be added to the user which has been associated with a specific facility"
+  "adminUserRoles.roleReportViewerInvalid": "Report viewer role can't be added to the user which has been associated with a specific facility",
+  "adminUserRoles.geographicProvince": "Province",
+  "adminUserRoles.geographicDistrict": "District"
 }

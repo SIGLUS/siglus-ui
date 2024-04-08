@@ -1,5 +1,17 @@
 <form class="form-inline" ng-if="vm.editable" ng-submit="vm.addRole()" reload-form>
 	<div class="form-group">
+		<label for="province">{{'province' | message}}</label>
+		<select id="province" ng-model=""
+				ng-options="">
+		</select>
+	</div>
+	<div class="form-group">
+		<label for="district">{{'district' | message}}</label>
+		<select id="district" ng-model=""
+				ng-options="" ng-disabled="true">
+		</select>
+	</div>
+	<div class="form-group">
 		<label for="role">{{'adminUserRoles.role' | message}}</label>
 		<select id="role" ng-model="vm.selectedRole"
 				ng-options="role as role.name for role in vm.filteredRoles" required>
@@ -14,6 +26,8 @@
 		</caption>
 		<thead>
 		<tr>
+			<th >{{'adminUserRoles.geographicProvince' | message}}</th>
+			<th >{{'adminUserRoles.geographicDistrict' | message}}</th>
 			<th openlmis-popover="{{'adminUserRoles.hoveringOverRolesWillRevealRightsAssignedToThen' | message}}">
 				{{'adminUserRoles.role' | message}}
 			</th>
@@ -22,6 +36,8 @@
 		</thead>
 		<tbody>
 		<tr ng-repeat="roleAssignment in vm.items | orderBy : '$name'">
+			<td>{{roleAssignment.province}}</td>
+			<td>{{roleAssignment.district}}</td>
 			<td popover-template="admin-user-roles/user-role-right-popover.html"
 				popover-title="{{'adminUserRoles.assignedRights' | message}}">
 				{{roleAssignment.roleName}}
@@ -34,5 +50,6 @@
 	</table>
 	<openlmis-pagination
 			list="vm.roleAssignments"
-			paged-list="vm.items"/>
+			paged-list="vm.items">
+	</openlmis-pagination>
 </section>

@@ -842,6 +842,8 @@
   "adminUserRoles.updateFailed": "Falha ao actualizar as funções do usuário",
   "adminUserRoles.updateSuccessful": "Funções do utilizador actualizadas com sucesso!",
   "adminUserRoles.user": "Utilizador",
+  "adminUserRoles.geographicProvince": "Província",
+  "adminUserRoles.geographicDistrict": "Districto",
   "archivedProduct.close": "Fechar",
   "archivedProduct.message": "Ao adicionar o produto arquivado à lista e submeter, o produto arquivado será automaticamente ativado e adicionado de volta ao stock existente",
   "archivedProduct.title": "Você adicionou um produto arquivado",

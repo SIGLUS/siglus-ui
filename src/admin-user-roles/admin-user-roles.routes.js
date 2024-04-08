@@ -67,10 +67,42 @@
             }
         });
 
+        $stateProvider.state('openlmis.administration.users.roles.' + ROLE_TYPES.REPORTS, {
+            label: ROLE_TYPES.getLabel(ROLE_TYPES.REPORTS),
+            url: '/reports?page&size',
+            controller: 'UserRolesTabController',
+            controllerAs: 'vm',
+            templateUrl: 'admin-user-roles/user-roles-report.html',
+            resolve: {
+                tab: function() {
+                    return ROLE_TYPES.REPORTS;
+                },
+                roleAssignments: function(paginationService, $stateParams, user, tab) {
+                    return paginationService.registerList(null, $stateParams, function() {
+                        return user.getRoleAssignments(tab);
+                    });
+                },
+                filteredRoles: function(roles, tab) {
+                    return roles.filter(function(role) {
+                        return role.type === tab;
+                    });
+                },
+                availableGeographicList: function(UserRolesReportService) {
+                    return UserRolesReportService.getAvailableGeographicList().then(function(result) {
+                        return result;
+                    });
+                },
+                userGeographicList: function(user, UserRolesReportService) {
+                    return UserRolesReportService.getUserGeographicList(user.id).then(function(result) {
+                        return result;
+                    });
+                }
+            }
+        });
+
         addStateForRoleType(ROLE_TYPES.SUPERVISION, '/supervision?page&size', 'user-roles-supervision.html');
         addStateForRoleType(ROLE_TYPES.ORDER_FULFILLMENT, '/fulfillment?page&size', 'user-roles-fulfillment.html');
         addStateForRoleType(ROLE_TYPES.GENERAL_ADMIN, '/admin?page&size', 'user-roles-tab.html');
-        addStateForRoleType(ROLE_TYPES.REPORTS, '/reports?page&size', 'user-roles-tab.html');
 
         function addStateForRoleType(type, url, templateFile) {
             $stateProvider.state('openlmis.administration.users.roles.' + type, {
