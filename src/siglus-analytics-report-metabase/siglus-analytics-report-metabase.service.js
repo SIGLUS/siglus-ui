@@ -116,7 +116,7 @@
                 params: {
                     reportName: reportName
                 },
-                ignoreAuthModule: true
+                ignoreAlert: true
             });
         }
     }

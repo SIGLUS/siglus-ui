@@ -80,7 +80,7 @@
          * @return {Promise}          Rejected promise
          */
         function responseError(response) {
-            if (response.config.ignoreAuthModule) {
+            if (response.config.ignoreAlert || response.config.ignoreAuthModule) {
                 return $q.reject(response);
             }
             if (response.status === 401) {
