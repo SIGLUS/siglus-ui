@@ -37,6 +37,7 @@ describe('openlmis.administration.users.roles', function() {
             this.$templateCache = $injector.get('$templateCache');
             this.ROLE_TYPES = $injector.get('ROLE_TYPES');
             this.paginationService = $injector.get('paginationService');
+            this.UserRolesReportService = $injector.get('UserRolesReportService');
         });
 
         this.roles = [
@@ -86,6 +87,8 @@ describe('openlmis.administration.users.roles', function() {
         spyOn(this.userRoleAssignmentFactory, 'getUser').andReturn(this.$q.resolve(this.user));
         spyOn(this.$templateCache, 'get').andCallThrough();
         spyOn(this.paginationService, 'registerUrl').andReturn(this.$q.resolve([this.user]));
+        spyOn(this.UserRolesReportService, 'getAvailableGeographicList').andReturn(this.$q.resolve([]));
+        spyOn(this.UserRolesReportService, 'getUserGeographicList').andReturn(this.$q.resolve([]));
 
         this.goToUrl = goToUrl;
         this.getResolvedValue = getResolvedValue;
@@ -224,13 +227,7 @@ describe('openlmis.administration.users.roles', function() {
         it('should use template', function() {
             this.goToUrl('/administration/users/' + this.user.id + '/roles/reports');
 
-            expect(this.$templateCache.get).toHaveBeenCalledWith('admin-user-roles/user-roles-tab.html');
-        });
-
-        it('should resolve tab', function() {
-            this.goToUrl('/administration/users/' + this.user.id + '/roles/reports');
-
-            expect(this.getResolvedValue('tab')).toEqual(this.ROLE_TYPES.REPORTS);
+            expect(this.$templateCache.get).toHaveBeenCalledWith('admin-user-roles/user-roles-report.html');
         });
 
         it('should resolve programs', function() {

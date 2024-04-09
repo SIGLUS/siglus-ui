@@ -84,17 +84,14 @@
             controllerAs: 'vm',
             templateUrl: 'admin-user-roles/user-roles-report.html',
             resolve: {
-                tab: function() {
-                    return ROLE_TYPES.REPORTS;
-                },
-                roleAssignments: function(paginationService, $stateParams, user, tab) {
+                roleAssignments: function(paginationService, $stateParams, user) {
                     return paginationService.registerList(null, $stateParams, function() {
-                        return user.getRoleAssignments(tab);
+                        return user.getRoleAssignments(ROLE_TYPES.REPORTS);
                     });
                 },
-                filteredRoles: function(roles, tab) {
+                filteredRoles: function(roles) {
                     return roles.filter(function(role) {
-                        return role.type === tab;
+                        return role.type === ROLE_TYPES.REPORTS;
                     });
                 }
             }
