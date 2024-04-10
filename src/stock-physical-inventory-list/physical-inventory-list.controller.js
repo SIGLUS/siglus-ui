@@ -17,13 +17,6 @@
 
     'use strict';
 
-    /**
-   * @ngdoc controller
-   * @name stock-physical-inventory-list.controller:PhysicalInventoryListController
-   *
-   * @description
-   * Controller for managing physical inventory.
-   */
     angular
         .module('stock-physical-inventory-list')
         .controller('PhysicalInventoryListController', controller);
@@ -46,15 +39,6 @@
             $state.go('openlmis.stockmanagement.physicalInventory.selection');
         }
 
-        /**
-         * @ngdoc method
-         * @propertyOf PhysicalInventoryListController
-         * @name searchProgram
-         *
-         * @description
-         * To reload page with selected program and current facility.
-         * Physical inventory list will be retrieved in reloading.
-         */
         function searchProgram() {
             $rootScope.programId = vm.program.id;
             $state.go($state.current.name, {
