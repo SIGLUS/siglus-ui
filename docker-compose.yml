@@ -1,7 +1,7 @@
 version: "2"
 services:
   siglus-ui:
-    image: siglusdevops/dev-ui:9.0.2
+    image: siglusdevops/dev-ui:9.0.5-3
     dns:
       - 8.8.8.8
     ports:
