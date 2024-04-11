@@ -84,16 +84,16 @@
                         [{
                             provinceId: vm.selectedProvince.provinceId,
                             provinceName: vm.selectedProvince.provinceName,
-                            districtId: vm.selectedDistrict.districtId,
-                            districtName: vm.selectedDistrict.districtName
+                            districtId: vm.selectedDistrict ? vm.selectedDistrict.districtId : ALL_GEOGRAPHIC_UUID,
+                            districtName: vm.selectedDistrict ? vm.selectedDistrict.districtName : ALL_GEOGRAPHIC_NAME
                         }]
                     );
                 } else {
                     addReportViewRole(
                         vm.selectedProvince.provinceId,
                         vm.selectedProvince.provinceName,
-                        vm.selectedDistrict.districtId,
-                        vm.selectedDistrict.districtName
+                        vm.selectedDistrict ? vm.selectedDistrict.districtId : ALL_GEOGRAPHIC_UUID,
+                        vm.selectedDistrict ? vm.selectedDistrict.districtName : ALL_GEOGRAPHIC_NAME
                     );
                 }
                 reloadState();
@@ -135,7 +135,7 @@
             if (!selectedProvince) {
                 return undefined;
             }
-            var districtList = _.groupBy(availableGeographicList, 'provinceId')[selectedProvince.provinceId];
+            var districtList = _.groupBy(availableGeographicList, 'provinceId')[selectedProvince.provinceId] || [];
             districtList.unshift({
                 districtId: ALL_GEOGRAPHIC_UUID,
                 districtName: ALL_GEOGRAPHIC_NAME
