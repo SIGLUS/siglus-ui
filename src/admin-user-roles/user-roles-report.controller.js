@@ -39,6 +39,7 @@
         vm.removeReportViewRole = removeReportViewRole;
         vm.addRole = addRole;
         vm.onProvinceChange = onProvinceChange;
+        vm.getGeographicNameById = getGeographicNameById;
 
         vm.filteredRoles = undefined;
         vm.selectedRole = undefined;
@@ -166,6 +167,13 @@
             if (_.some(geographicList, currentRole)) {
                 throw new Error('referencedataRoles.roleAlreadyAssigned');
             }
+        }
+
+        function getGeographicNameById(geographicRole, id) {
+            if (id === ALL_GEOGRAPHIC_UUID) {
+                return ALL_GEOGRAPHIC_NAME;
+            }
+            return id === geographicRole.provinceId ? geographicRole.provinceName : geographicRole.districtName;
         }
     }
 })();

@@ -38,8 +38,8 @@
 		</thead>
 		<tbody>
 		<tr ng-repeat="(index, roleGeographic) in vm.items | orderBy : '$name'">
-			<td>{{roleGeographic.provinceName}}</td>
-			<td>{{roleGeographic.districtName}}</td>
+			<td>{{vm.getGeographicNameById(roleGeographic, roleGeographic.provinceId)}}</td>
+			<td>{{vm.getGeographicNameById(roleGeographic, roleGeographic.districtId)}}</td>
 			<td popover-template="admin-user-roles/user-role-right-popover.html"
 				popover-title="{{'adminUserRoles.assignedRights' | message}}">
 				{{vm.roleAssignments[0].roleName}}
