@@ -23,12 +23,12 @@
 
     controller.$inject = [
         'user', '$stateParams', '$q', '$state', '$filter', 'notificationService',
-        'confirmService', 'roleAssignments', 'filteredRoles', 'availableGeographicList'
+        'confirmService', 'roleAssignments', 'filteredRoles', 'availableGeographicList', 'ROLE_TYPES', 'geographicList'
     ];
 
     function controller(
         user, $stateParams, $q, $state, $filter, notificationService,
-        confirmService, roleAssignments, filteredRoles, availableGeographicList
+        confirmService, roleAssignments, filteredRoles, availableGeographicList, ROLE_TYPES, geographicList
     ) {
 
         var vm = this;
@@ -36,44 +36,65 @@
         var ALL_GEOGRAPHIC_NAME = 'Todos(ALL)';
 
         vm.$onInit = onInit;
-        vm.removeRole = removeRole;
+        vm.removeReportViewRole = removeReportViewRole;
         vm.addRole = addRole;
         vm.onProvinceChange = onProvinceChange;
 
         vm.filteredRoles = undefined;
         vm.selectedRole = undefined;
         vm.editable = undefined;
+        vm.roleAssignments = undefined;
 
         vm.availableProvince = undefined;
         vm.selectedProvince = undefined;
         vm.availableDistrict = undefined;
         vm.selectedDistrict = undefined;
         vm.isDistrictSelectDisabled = undefined;
+        vm.geographicList = undefined;
 
         function onInit() {
-            vm.roleAssignments = roleAssignments;
             vm.filteredRoles = filteredRoles;
             vm.editable = true;
-            vm.showErrorColumn = roleAssignments.filter(function(role) {
-                return role.errors && role.errors.length;
-            }).length > 0;
             vm.availableProvince = buildProvinceSelectList(availableGeographicList);
             vm.isDistrictSelectDisabled = true;
+            vm.roleAssignments = roleAssignments;
+            vm.geographicList = geographicList;
         }
 
         function addRole() {
             try {
-                // TODO: add role with Geographic
-                // user.addRoleAssignment(
-                //     vm.selectedRole.id,
-                //     vm.selectedRole.name, roleType, programId, programName,
-                //     supervisoryNodeId, supervisoryNodeName, warehouseId, warehouseName,
-                //     reportViewProvinceId, reportViewDistrictId
-                // );
-                // user.addRoleAssignment(
-                //     vm.selectedProgram ? vm.selectedProgram.id : undefined,
-                //     vm.selectedProgram ? vm.selectedProgram.name : undefined
-                // );
+                if (_.isEmpty(roleAssignments)) {
+                    user.addRoleAssignment(
+                        vm.selectedRole.id,
+                        vm.selectedRole.name,
+                        ROLE_TYPES.REPORTS,
+                        // programId
+                        undefined,
+                        //programName
+                        undefined,
+                        //supervisoryNodeId
+                        undefined,
+                        // supervisoryNodeName
+                        undefined,
+                        //warehouseId
+                        undefined,
+                        //warehouseName
+                        undefined,
+                        [{
+                            provinceId: vm.selectedProvince.provinceId,
+                            provinceName: vm.selectedProvince.provinceName,
+                            districtId: vm.selectedDistrict.districtId,
+                            districtName: vm.selectedDistrict.districtName
+                        }]
+                    );
+                } else {
+                    addReportViewRole(
+                        vm.selectedProvince.provinceId,
+                        vm.selectedProvince.provinceName,
+                        vm.selectedDistrict.districtId,
+                        vm.selectedDistrict.districtName
+                    );
+                }
                 reloadState();
                 return $q.resolve();
             } catch (error) {
@@ -82,17 +103,9 @@
             }
         }
 
-        function removeRole(roleAssignment) {
-            confirmService.confirmDestroy('adminUserRoles.removeRole.question', 'adminUserRoles.removeRole.label')
-                .then(function() {
-                    user.removeRoleAssignment(roleAssignment);
-                    reloadState();
-                });
-        }
-
         function reloadState() {
-            $state.go($state.current.name, $stateParams, {
-                reload: true
+            $state.go('openlmis.administration.users.roles.' + ROLE_TYPES.REPORTS, $stateParams, {
+                reload: 'openlmis.administration.users.roles.' + ROLE_TYPES.REPORTS
             });
         }
 
@@ -127,6 +140,32 @@
                 districtName: ALL_GEOGRAPHIC_NAME
             });
             return districtList;
+        }
+
+        function removeReportViewRole(index) {
+            confirmService.confirmDestroy('adminUserRoles.removeRole.question', 'adminUserRoles.removeRole.label')
+                .then(function() {
+                    user.removeGeographicRoleForReportView(index);
+                    reloadState();
+                });
+        }
+
+        function addReportViewRole(provinceId, provinceName, districtId, districtName) {
+            var currentRole = {
+                provinceId: provinceId,
+                provinceName: provinceName,
+                districtId: districtId,
+                districtName: districtName
+            };
+
+            validateRoleGeographicDuplicate(currentRole);
+            user.addGeographicRoleForReportView(currentRole);
+        }
+
+        function validateRoleGeographicDuplicate(currentRole) {
+            if (_.some(geographicList, currentRole)) {
+                throw new Error('referencedataRoles.roleAlreadyAssigned');
+            }
         }
     }
 })();

@@ -42,6 +42,9 @@
         $delegate.prototype.addRoleAssignment = addRoleAssignment;
         $delegate.prototype.removeRoleAssignment = removeRoleAssignment;
         $delegate.prototype.addRoleAssignments = addRoleAssignments;
+        $delegate.prototype.addGeographicListToRoleAssignments = addGeographicListToRoleAssignments;
+        $delegate.prototype.addGeographicRoleForReportView = addGeographicRoleForReportView;
+        $delegate.prototype.removeGeographicRoleForReportView = removeGeographicRoleForReportView;
 
         return $delegate;
 
@@ -62,11 +65,17 @@
          * @param {String} supervisoryNodeName the name of the supervisory node that will be assigned with role
          * @param {String} warehouseId         the UUID of the warehouse that will be assigned with role
          * @param {String} warehouseName       the name of the warehouse that will be assigned with role
+         * @param {Array}  reportViewGeographicList      the list of the province and district for report view role
          */
-        function addRoleAssignment(roleId, roleName, roleType, programId, programName,
-                                   supervisoryNodeId, supervisoryNodeName, warehouseId, warehouseName) {
-            validateRoleAssignment(this, roleId, roleName, roleType, programId, programName,
-                supervisoryNodeId, supervisoryNodeName, warehouseId);
+        function addRoleAssignment(
+            roleId, roleName, roleType, programId, programName,
+            supervisoryNodeId, supervisoryNodeName, warehouseId, warehouseName,
+            reportViewGeographicList
+        ) {
+            validateRoleAssignment(
+                this, roleId, roleName, roleType, programId, programName,
+                supervisoryNodeId, supervisoryNodeName, warehouseId, reportViewGeographicList
+            );
             this.roleAssignments.push(new RoleAssignment(this,
                 roleId,
                 warehouseId,
@@ -76,7 +85,8 @@
                 roleType,
                 programName,
                 supervisoryNodeName,
-                warehouseName));
+                warehouseName,
+                reportViewGeographicList));
         }
 
         /**
@@ -132,6 +142,7 @@
     function isRoleAlreadyAssigned(roleAssignments, roleId, programId, supervisoryNodeId, warehouseId) {
         var alreadyExist = false;
         roleAssignments.forEach(function(existingRoleAssignment) {
+            // TODO: [optimize] return when meet first true
             alreadyExist = alreadyExist ||
                 (existingRoleAssignment.roleId === roleId &&
                     isRoleAssignmentDuplicated(programId, supervisoryNodeId, warehouseId, existingRoleAssignment));
@@ -165,6 +176,29 @@
     }
 
     function hasFieldValue(existingValue, newValue) {
+        // TODO: use _.isEmpty()
         return !(newValue || existingValue) || existingValue === newValue;
     }
+
+    function addGeographicListToRoleAssignments(geographicList) {
+        // TODO: [optimize] only reportView role needs reportViewGeographicList
+        this.roleAssignments.forEach(function(roleAssignment) {
+            roleAssignment.reportViewGeographicList = _.isEmpty(geographicList) ? [] : geographicList;
+        });
+    }
+
+    function addGeographicRoleForReportView(geographicRole) {
+        // TODO: [optimize] only reportView role needs add geographicRole
+        // TODO: may need sort
+        this.roleAssignments.forEach(function(roleAssignment) {
+            roleAssignment.reportViewGeographicList.push(geographicRole);
+        });
+    }
+
+    function removeGeographicRoleForReportView(index) {
+        this.roleAssignments.forEach(function(roleAssignment) {
+            roleAssignment.reportViewGeographicList.splice(index, 1);
+        });
+    }
+
 })();

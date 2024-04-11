@@ -23,7 +23,7 @@
 </form>
 <section class="openlmis-table-container">
 	<table>
-		<caption ng-if="!vm.roleAssignments || vm.roleAssignments.length === 0">
+		<caption ng-if="!vm.roleAssignments || vm.roleAssignments.length === 0 || vm.geographicList.length === 0">
 			{{'adminUserRoles.noRolesAssigned' | message}}
 		</caption>
 		<thead>
@@ -37,21 +37,21 @@
 		</tr>
 		</thead>
 		<tbody>
-		<tr ng-repeat="roleAssignment in vm.items | orderBy : '$name'">
-			<td>{{roleAssignment.province}}</td>
-			<td>{{roleAssignment.district}}</td>
+		<tr ng-repeat="(index, roleGeographic) in vm.items | orderBy : '$name'">
+			<td>{{roleGeographic.provinceName}}</td>
+			<td>{{roleGeographic.districtName}}</td>
 			<td popover-template="admin-user-roles/user-role-right-popover.html"
 				popover-title="{{'adminUserRoles.assignedRights' | message}}">
-				{{roleAssignment.roleName}}
+				{{vm.roleAssignments[0].roleName}}
 			</td>
 			<td ng-if="vm.editable">
-				<button class="danger" ng-click="vm.removeRole(roleAssignment)">{{'adminUserRoles.removeRole.label' | message}}</button>
+				<button class="danger" ng-click="vm.removeReportViewRole(index)">{{'adminUserRoles.removeRole.label' | message}}</button>
 			</td>
 		</tr>
 		</tbody>
 	</table>
 	<openlmis-pagination
-			list="vm.roleAssignments"
+			list="vm.geographicList"
 			paged-list="vm.items">
 	</openlmis-pagination>
 </section>

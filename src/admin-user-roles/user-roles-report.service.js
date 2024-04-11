@@ -28,18 +28,21 @@
         .module('admin-user-roles')
         .service('UserRolesReportService', service);
 
-    service.$inject = ['$resource', '$http', 'openlmisUrlFactory'];
+    service.$inject = ['$resource', '$http', 'openlmisUrlFactory', 'ROLE_TYPES', 'RoleAssignment'];
 
     function service($resource, $http, openlmisUrlFactory) {
         var resource = $resource(
-            openlmisUrlFactory('/api/siglusapi/geographicInfo'), {}, {
-                get: {
+            openlmisUrlFactory('/api/siglusapi/users/:id/reportView'), {}, {
+                getUserReportViewRoles: {
                     method: 'GET',
                     isArray: true
                 },
-                getGeographicListByUserId: {
+                saveUserReportViewRoles: {
+                    method: 'POST'
+                },
+                getAvailableGeographicList: {
                     method: 'GET',
-                    url: openlmisUrlFactory('/api/siglusapi/users/:id/reportView'),
+                    url: openlmisUrlFactory('/api/siglusapi/geographicInfo'),
                     isArray: true
                 }
             }
@@ -49,13 +52,21 @@
         this.getUserGeographicList = getUserGeographicList;
 
         function getAvailableGeographicList() {
-            return resource.get().$promise;
+            return resource.getAvailableGeographicList().$promise;
         }
 
         function getUserGeographicList(userId) {
-            return resource.getGeographicListByUserId({
+            return resource.getUserReportViewRoles({
                 id: userId
             }).$promise;
+        }
+
+        function saveUserReportViewRoles(userId, geographicList) {
+            return resource.saveUserReportViewRoles({
+                id: userId,
+                geographicInfoDtos: geographicList
+            }).$promise;
+
         }
     }
 })();

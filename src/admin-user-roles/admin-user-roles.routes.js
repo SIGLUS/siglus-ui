@@ -63,8 +63,9 @@
                     });
                 },
                 userGeographicList: function(user, UserRolesReportService) {
-                    return UserRolesReportService.getUserGeographicList(user.id).then(function(result) {
-                        return result;
+                    return UserRolesReportService.getUserGeographicList(user.id).then(function(geographicList) {
+                        user.addGeographicListToRoleAssignments(geographicList);
+                        return geographicList;
                     });
                 }
             },
@@ -85,8 +86,11 @@
             templateUrl: 'admin-user-roles/user-roles-report.html',
             resolve: {
                 roleAssignments: function(paginationService, $stateParams, user) {
+                    return user.getRoleAssignments(ROLE_TYPES.REPORTS);
+                },
+                geographicList: function(paginationService, $stateParams, roleAssignments) {
                     return paginationService.registerList(null, $stateParams, function() {
-                        return user.getRoleAssignments(ROLE_TYPES.REPORTS);
+                        return _.isEmpty(roleAssignments) ? [] : roleAssignments[0].reportViewGeographicList;
                     });
                 },
                 filteredRoles: function(roles) {

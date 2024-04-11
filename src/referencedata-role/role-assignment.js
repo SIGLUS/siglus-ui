@@ -42,20 +42,24 @@
          * @description
          * Creates a new instance of the RoleAssignment class.
          *
-         * @param  {Object}  user                the user object.
-         * @param  {String}  roleId              the UUID of the role
-         * @param  {String}  warehouseId         the UUID of the warehouse for fulfillment role
-         * @param  {String}  supervisoryNodeId   the UUID of the supervisory node for supervision role
-         * @param  {String}  programId           the UUID of the program for supervision role
-         * @param  {String}  roleName            the name of the supervision role
-         * @param  {String}  roleType            the type of the supervision role
-         * @param  {String}  programName         the name of the program for supervision role
-         * @param  {String}  supervisoryNodeName the UUID of the program for supervision role
-         * @param  {String}  warehouseName       the UUID of the program for supervision role
+         * @param  {Object}  user                    the user object.
+         * @param  {String}  roleId                  the UUID of the role
+         * @param  {String}  warehouseId             the UUID of the warehouse for fulfillment role
+         * @param  {String}  supervisoryNodeId       the UUID of the supervisory node for supervision role
+         * @param  {String}  programId               the UUID of the program for supervision role
+         * @param  {String}  roleName                the name of the supervision role
+         * @param  {String}  roleType                the type of the supervision role
+         * @param  {String}  programName             the name of the program for supervision role
+         * @param  {String}  supervisoryNodeName     the UUID of the program for supervision role
+         * @param  {String}  warehouseName           the UUID of the program for supervision role
+         * @param  {Array}   reportViewGeographicList      the list of the province and district for report view role
+         *
          * @return {Object}                      the user role assignment object
          */
-        function RoleAssignment(user, roleId, warehouseId, supervisoryNodeId, programId, roleName,
-                                roleType, programName, supervisoryNodeName, warehouseName) {
+        function RoleAssignment(
+            user, roleId, warehouseId, supervisoryNodeId, programId, roleName,
+            roleType, programName, supervisoryNodeName, warehouseName, reportViewGeographicList
+        ) {
             this.roleId = roleId;
             this.warehouseId = warehouseId;
             this.supervisoryNodeId = supervisoryNodeId;
@@ -66,6 +70,7 @@
             this.supervisoryNodeName = supervisoryNodeName;
             this.warehouseName = warehouseName;
             this.errors = [];
+            this.reportViewGeographicList = reportViewGeographicList;
 
             validateRoleAssignment(this, user);
         }
