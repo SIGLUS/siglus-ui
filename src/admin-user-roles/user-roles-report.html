@@ -3,14 +3,14 @@
 		<label for="province">{{'adminUserRoles.geographicProvince' | message}}</label>
 		<select id="province" ng-model="vm.selectedProvince"
 				ng-options="province as province.provinceName for province in vm.availableProvince"
-				ng-change="vm.onProvinceChange()">
+				ng-change="vm.onProvinceChange()" required>
 		</select>
 	</div>
 	<div class="form-group">
 		<label for="district">{{'adminUserRoles.geographicDistrict' | message}}</label>
 		<select id="district" ng-model="vm.selectedDistrict"
 				ng-options="district as district.districtName for district in vm.availableDistrict"
-				ng-disabled="vm.isDistrictSelectDisabled">
+				ng-disabled="vm.isDistrictSelectDisabled" required>
 		</select>
 	</div>
 	<div class="form-group">

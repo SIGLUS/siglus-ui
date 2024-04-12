@@ -164,7 +164,10 @@
         }
 
         function validateRoleGeographicDuplicate(currentRole) {
-            if (_.some(geographicList, currentRole)) {
+            if (_.some(geographicList, function(existedGeographicRole) {
+                return existedGeographicRole.provinceId === currentRole.provinceId &&
+                    existedGeographicRole.districtId === currentRole.districtId;
+            })) {
                 throw new Error('referencedataRoles.roleAlreadyAssigned');
             }
         }
