@@ -48,7 +48,7 @@
             });
         };
 
-        this.filterListByLocation = function(keyword, addedLineItems) {
+        this.filterListByLocation = function(keyword, status, addedLineItems) {
             var result = [];
 
             if (_.isEmpty(keyword)) {
@@ -59,7 +59,16 @@
                     var isMatched = String(lineItem['locationCode'].toLowerCase()).includes(keyword);
                     return isMatched ? lineItem : [];
                 });
+            }
 
+            if (true === status) {
+                result = _.map(result, function(lineItem) {
+                    return 'Occupied' === lineItem['locationStatus'] ? lineItem : [];
+                });
+            } else if (false === status) {
+                result = _.map(result, function(lineItem) {
+                    return 'Occupied' === lineItem['locationStatus'] ? [] : lineItem;
+                });
             }
 
             return _.filter(result, function(item) {

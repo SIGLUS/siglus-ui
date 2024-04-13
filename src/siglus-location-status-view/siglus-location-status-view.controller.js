@@ -30,27 +30,39 @@
 
     SiglusLocationStatusController.$inject = [
         '$scope', '$state', '$stateParams', '$window', 'facility',
-        'locationStatus', 'displayLocationStatus'
+        'locationStatus', 'displayLocationStatus', 'messageService'
     ];
 
     function SiglusLocationStatusController(
         $scope, $state, $stateParams, $window, facility,
-        locationStatus, displayLocationStatus
+        locationStatus, displayLocationStatus, messageService
     ) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.keyword = '';
+        vm.selectedStatus = undefined;
         vm.facility = undefined;
         vm.locationStatus = null;
         vm.displayLocationStatus = [];
 
         function onInit() {
             vm.keyword = $stateParams.keyword;
+            vm.selectedStatus = $stateParams.selectedStatus;
             vm.facility = facility;
             vm.locationStatus = locationStatus;
             vm.displayLocationStatus = displayLocationStatus;
         }
+
+        vm.getStatusDisplay = function(status) {
+            if (true === status) {
+                return messageService.get('locationStatus.status.occupied');
+            }
+            if (false === status) {
+                return messageService.get('locationStatus.status.empty');
+            }
+            return status;
+        };
 
         vm.itemLocationStatus = function(item) {
             var status = _.get(item, ['locationStatus']);
@@ -60,6 +72,7 @@
         function reloadPage() {
             $stateParams.facility = facility;
             $stateParams.keyword = vm.keyword;
+            $stateParams.selectedStatus = vm.selectedStatus;
             $stateParams.locationStatus = vm.locationStatus;
             $stateParams.pageNumber = 0;
             $state.go($state.current.name, $stateParams, {
@@ -73,6 +86,7 @@
 
         vm.cancelFilter = function() {
             vm.keyword = null;
+            vm.selectedStatus = null;
             reloadPage();
         };
 

@@ -39,7 +39,8 @@
             params: {
                 pageNumber: '0',
                 pageSize: '20',
-                keyword: undefined
+                keyword: undefined,
+                selectedStatus: undefined
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_CARDS_VIEW],
             resolve: {
@@ -59,7 +60,7 @@
                     $stateParams, paginationService) {
                     return paginationService.registerList(null, $stateParams, function() {
                         return  siglusLocationCommonFilterService
-                            .filterListByLocation($stateParams.keyword, locationStatus);
+                            .filterListByLocation($stateParams.keyword, $stateParams.selectedStatus, locationStatus);
                     }, {
                         customPageParamName: 'pageNumber',
                         customSizeParamName: 'pageSize'

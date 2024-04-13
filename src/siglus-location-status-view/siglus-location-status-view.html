@@ -3,9 +3,14 @@
     <button class="primary" ng-click="vm.printLocations()">{{'stockCardSummaryList.print' | message}}</button>
     <form>
         <fieldset>
-            <label for="search">{{'stockReceiveCreation.keyword' | message}}</label>
+            <label for="search">{{'stockAdjustmentCreation.location' | message}}</label>
             <input id="search" type="text" ng-model="vm.keyword" maxlength="50"/>
         </fieldset>
+        <label for=status>{{'requisitionSearch.status' | message}}</label>
+        <select id="status" placeholder="{{'requisitionSearch.selectStatus' | message}}"
+                ng-options="status as vm.getStatusDisplay(status) for status in [true, false]"
+                ng-model="vm.selectedStatus">
+        </select>
         <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}"
                ng-click="vm.cancelFilter()"/>
         <input type="submit"
