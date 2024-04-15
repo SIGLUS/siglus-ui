@@ -65,9 +65,7 @@
         function saveUserReportViewRoles(userId, geographicList) {
             return resource.saveUserReportViewRoles({
                 id: userId
-            }, {
-                geographicInfoDtos: geographicList
-            }).$promise;
+            }, geographicList).$promise;
         }
     }
 })();
