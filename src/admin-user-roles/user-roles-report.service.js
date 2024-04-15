@@ -50,6 +50,7 @@
 
         this.getAvailableGeographicList = getAvailableGeographicList;
         this.getUserGeographicList = getUserGeographicList;
+        this.saveUserReportViewRoles = saveUserReportViewRoles;
 
         function getAvailableGeographicList() {
             return resource.getAvailableGeographicList().$promise;
@@ -63,10 +64,10 @@
 
         function saveUserReportViewRoles(userId, geographicList) {
             return resource.saveUserReportViewRoles({
-                id: userId,
+                id: userId
+            }, {
                 geographicInfoDtos: geographicList
             }).$promise;
-
         }
     }
 })();

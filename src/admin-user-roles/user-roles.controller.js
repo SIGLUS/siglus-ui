@@ -28,9 +28,11 @@
         .module('admin-user-roles')
         .controller('UserRolesController', controller);
 
-    controller.$inject = ['user', 'loadingModalService', '$state', 'notificationService', 'ROLE_TYPES'];
+    controller.$inject = [
+        'user', 'loadingModalService', '$state', 'notificationService', 'ROLE_TYPES', 'UserRolesReportService'
+    ];
 
-    function controller(user, loadingModalService, $state, notificationService, ROLE_TYPES) {
+    function controller(user, loadingModalService, $state, notificationService, ROLE_TYPES, UserRolesReportService) {
 
         var vm = this;
 
@@ -88,10 +90,18 @@
             var loadingPromise = loadingModalService.open(true);
 
             return vm.user.save().then(function() {
-                loadingPromise.then(function() {
-                    notificationService.success('adminUserRoles.updateSuccessful');
-                });
-                goToUserList();
+                // TODO: get reportViewGeographicList from report view roleAssignments
+                if  (vm.user.roleAssignments[0] && vm.user.roleAssignments[0].reportViewGeographicList) {
+                    var reportViewRoles = vm.user.roleAssignments[0].reportViewGeographicList;
+                    UserRolesReportService.saveUserReportViewRoles(vm.user.id, reportViewRoles).then(function() {
+                        loadingPromise.then(function() {
+                            notificationService.success('adminUserRoles.updateSuccessful');
+                            goToUserList();
+                        });
+                    });
+                } else {
+                    goToUserList();
+                }
             }, function() {
                 notificationService.error('adminUserRoles.updateFailed');
             })
