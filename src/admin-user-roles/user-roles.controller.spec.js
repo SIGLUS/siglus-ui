@@ -28,12 +28,25 @@ describe('UserRolesController', function() {
             this.UserDataBuilder = $injector.get('UserDataBuilder');
             this.notificationService = $injector.get('notificationService');
             this.loadingModalService = $injector.get('loadingModalService');
+            this.UserRolesReportService = $injector.get('UserRolesReportService');
         });
 
         this.user = new this.UserDataBuilder()
             .withSupervisionRoleAssignment('role-id-1', 'node-id-1', 'program-id-1')
             .withGeneralAdminRoleAssignment('role-id-2')
             .build();
+        // TODO: get reportViewGeographicList from report view roleAssignments
+        this.user.roleAssignments[0].reportViewGeographicList = [{
+            districtId: '00000000-0000-0000-0000-000000000000',
+            districtName: null,
+            provinceId: '00000000-0000-0000-0000-000000000000',
+            provinceName: null
+        }, {
+            districtId: 'adc02066-cfaf-11e9-9398-0242ac130008',
+            districtName: 'ANCUABE',
+            provinceId: '3f2debb0-cfaf-11e9-9398-0242ac130008',
+            provinceName: 'CABO DELGADO'
+        }];
 
         spyOn(this.notificationService, 'error');
         spyOn(this.notificationService, 'success');
@@ -41,6 +54,7 @@ describe('UserRolesController', function() {
         spyOn(this.loadingModalService, 'open');
         spyOn(this.$state, 'go').andReturn();
         spyOn(this.user, 'save');
+        spyOn(this.UserRolesReportService, 'saveUserReportViewRoles');
 
         this.vm = this.$controller('UserRolesController', {
             user: this.user
@@ -72,6 +86,7 @@ describe('UserRolesController', function() {
     describe('saveUser', function() {
 
         beforeEach(function() {
+            this.UserRolesReportService.saveUserReportViewRoles.andReturn(this.$q.resolve());
             this.user.save.andReturn(this.$q.when(true));
             this.loadingModalService.open.andReturn(this.$q.when(true));
             this.vm.saveUserRoles();
