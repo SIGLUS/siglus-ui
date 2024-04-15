@@ -35,18 +35,6 @@ describe('UserRolesController', function() {
             .withSupervisionRoleAssignment('role-id-1', 'node-id-1', 'program-id-1')
             .withGeneralAdminRoleAssignment('role-id-2')
             .build();
-        // TODO: get reportViewGeographicList from report view roleAssignments
-        this.user.roleAssignments[0].reportViewGeographicList = [{
-            districtId: '00000000-0000-0000-0000-000000000000',
-            districtName: null,
-            provinceId: '00000000-0000-0000-0000-000000000000',
-            provinceName: null
-        }, {
-            districtId: 'adc02066-cfaf-11e9-9398-0242ac130008',
-            districtName: 'ANCUABE',
-            provinceId: '3f2debb0-cfaf-11e9-9398-0242ac130008',
-            provinceName: 'CABO DELGADO'
-        }];
 
         spyOn(this.notificationService, 'error');
         spyOn(this.notificationService, 'success');

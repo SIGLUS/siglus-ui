@@ -30,7 +30,7 @@
 
     service.$inject = ['$resource', '$http', 'openlmisUrlFactory', 'ROLE_TYPES', 'RoleAssignment'];
 
-    function service($resource, $http, openlmisUrlFactory) {
+    function service($resource, $http, openlmisUrlFactory, ROLE_TYPES) {
         var resource = $resource(
             openlmisUrlFactory('/api/siglusapi/users/:id/reportView'), {}, {
                 getUserReportViewRoles: {
@@ -62,9 +62,16 @@
             }).$promise;
         }
 
-        function saveUserReportViewRoles(userId, geographicList) {
+        function saveUserReportViewRoles(user) {
+            var geographicList = [];
+            var reportViewRoleAssignments = user.getRoleAssignments(ROLE_TYPES.REPORTS);
+            if (!_.isEmpty(reportViewRoleAssignments)) {
+                var reportViewRoleAssignment = reportViewRoleAssignments[0];
+                geographicList = reportViewRoleAssignment.reportViewGeographicList;
+            }
+
             return resource.saveUserReportViewRoles({
-                id: userId
+                id: user.id
             }, geographicList).$promise;
         }
     }

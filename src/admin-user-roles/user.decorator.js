@@ -36,8 +36,8 @@
 
     var reportViewerRoleId = 'a598b9b4-1dd8-11ed-84e1-acde48001122';
 
-    decorator.$inject = ['$delegate', 'RoleAssignment'];
-    function decorator($delegate, RoleAssignment) {
+    decorator.$inject = ['$delegate', 'RoleAssignment', 'ROLE_TYPES'];
+    function decorator($delegate, RoleAssignment, ROLE_TYPES) {
 
         $delegate.prototype.addRoleAssignment = addRoleAssignment;
         $delegate.prototype.removeRoleAssignment = removeRoleAssignment;
@@ -137,17 +137,37 @@
                 throw new Error('referencedataRoles.roleAlreadyAssigned');
             }
         }
+
+        function addGeographicListToRoleAssignments(geographicList) {
+            var reportViewRoleAssignments = this.getRoleAssignments(ROLE_TYPES.REPORTS);
+            if (!_.isEmpty(reportViewRoleAssignments)) {
+                var reportViewRoleAssignment = reportViewRoleAssignments[0];
+                reportViewRoleAssignment.reportViewGeographicList = _.isEmpty(geographicList) ? [] : geographicList;
+            }
+        }
+
+        function addGeographicRoleForReportView(geographicRole) {
+            var reportViewRoleAssignments = this.getRoleAssignments(ROLE_TYPES.REPORTS);
+            if (!_.isEmpty(reportViewRoleAssignments)) {
+                var reportViewRoleAssignment = reportViewRoleAssignments[0];
+                reportViewRoleAssignment.reportViewGeographicList.push(geographicRole);
+            }
+        }
+
+        function removeGeographicRoleForReportView(index) {
+            var reportViewRoleAssignments = this.getRoleAssignments(ROLE_TYPES.REPORTS);
+            if (!_.isEmpty(reportViewRoleAssignments)) {
+                var reportViewRoleAssignment = reportViewRoleAssignments[0];
+                reportViewRoleAssignment.reportViewGeographicList.splice(index, 1);
+            }
+        }
     }
 
     function isRoleAlreadyAssigned(roleAssignments, roleId, programId, supervisoryNodeId, warehouseId) {
-        var alreadyExist = false;
-        roleAssignments.forEach(function(existingRoleAssignment) {
-            // TODO: [optimize] return when meet first true
-            alreadyExist = alreadyExist ||
-                (existingRoleAssignment.roleId === roleId &&
-                    isRoleAssignmentDuplicated(programId, supervisoryNodeId, warehouseId, existingRoleAssignment));
+        return _.some(roleAssignments, function(roleAssignment) {
+            return roleAssignment.roleId === roleId &&
+                isRoleAssignmentDuplicated(programId, supervisoryNodeId, warehouseId, roleAssignment);
         });
-        return alreadyExist;
     }
 
     function isRoleAssignmentInvalid(programId, supervisoryNodeId, warehouseId) {
@@ -176,29 +196,6 @@
     }
 
     function hasFieldValue(existingValue, newValue) {
-        // TODO: use _.isEmpty()
-        return !(newValue || existingValue) || existingValue === newValue;
+        return (_.isUndefined(newValue) && _.isUndefined(existingValue)) || existingValue === newValue;
     }
-
-    function addGeographicListToRoleAssignments(geographicList) {
-        // TODO: [optimize] only reportView role needs reportViewGeographicList
-        this.roleAssignments.forEach(function(roleAssignment) {
-            roleAssignment.reportViewGeographicList = _.isEmpty(geographicList) ? [] : geographicList;
-        });
-    }
-
-    function addGeographicRoleForReportView(geographicRole) {
-        // TODO: [optimize] only reportView role needs add geographicRole
-        // TODO: may need sort
-        this.roleAssignments.forEach(function(roleAssignment) {
-            roleAssignment.reportViewGeographicList.push(geographicRole);
-        });
-    }
-
-    function removeGeographicRoleForReportView(index) {
-        this.roleAssignments.forEach(function(roleAssignment) {
-            roleAssignment.reportViewGeographicList.splice(index, 1);
-        });
-    }
-
 })();
