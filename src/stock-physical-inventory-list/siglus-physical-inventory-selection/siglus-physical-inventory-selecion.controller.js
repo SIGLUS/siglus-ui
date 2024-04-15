@@ -66,7 +66,7 @@
                     if (data.canStartInventory) {
                         if (draft.isStarter) {
                             loadingModalService.close();
-                            SiglusPhysicalInventoryCreationService.show('', '', facility);
+                            SiglusPhysicalInventoryCreationService.show(program.id, '', facility);
                         } else {
                             $state.go(
                                 'openlmis.stockmanagement.physicalInventory.draftList', {
