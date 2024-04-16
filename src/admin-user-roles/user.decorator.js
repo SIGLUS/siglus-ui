@@ -196,6 +196,6 @@
     }
 
     function hasFieldValue(existingValue, newValue) {
-        return (_.isUndefined(newValue) && _.isUndefined(existingValue)) || existingValue === newValue;
+        return (_.isEmpty(newValue) && _.isEmpty(existingValue)) || existingValue === newValue;
     }
 })();
