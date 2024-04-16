@@ -159,6 +159,9 @@
             if (!_.isEmpty(reportViewRoleAssignments)) {
                 var reportViewRoleAssignment = reportViewRoleAssignments[0];
                 reportViewRoleAssignment.reportViewGeographicList.splice(index, 1);
+                if (_.isEmpty(reportViewRoleAssignment.reportViewGeographicList)) {
+                    this.removeRoleAssignment(reportViewRoleAssignment);
+                }
             }
         }
     }
