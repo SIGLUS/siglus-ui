@@ -1,0 +1,4 @@
+{
+  "stockPhysicalInventoryHistory.viewPhysicalInventory": "view Physical Inventory",
+  "stockPhysicalInventoryHistory.title": "Physical Inventory for ${programName} (${facilityName})"
+}

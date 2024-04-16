@@ -111,6 +111,9 @@
                     facility: undefined
                 },
                 resolve: {
+                    facility: function($stateParams) {
+                        return $stateParams.facility;
+                    },
                     historyList: function() {
                         // TODO: get history list from api
                         return [{

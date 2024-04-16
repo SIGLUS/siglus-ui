@@ -12,36 +12,22 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
+
 (function() {
 
     'use strict';
 
     angular
-        .module('stock-physical-inventory-list')
-        .controller('SiglusPhysicalInventoryHistoryController', SiglusPhysicalInventoryHistoryController);
+        .module('siglus-physical-inventory-history-detail')
+        .controller('PhysicalInventoryHistoryDetailController', controller);
 
-    SiglusPhysicalInventoryHistoryController.$inject = [
-        '$state', '$stateParams', 'historyList', 'program', 'facility'
+    controller.$inject = [
+        '$state', 'facility', 'program'
     ];
 
-    function SiglusPhysicalInventoryHistoryController(
-        $state, $stateParams, historyList, program, facility
-    ) {
+    function controller($state, facility, program) {
         var vm = this;
-
-        vm.historyList = historyList;
+        vm.facility = facility;
         vm.program = program;
-
-        vm.viewHistoryDetail = viewHistoryDetail;
-
-        function viewHistoryDetail() {
-            $state.go('openlmis.stockmanagement.physicalInventory.history.detail', {
-                program: vm.program,
-                facility: facility
-            }, {
-                reload: true
-            });
-        }
     }
 })();
-
