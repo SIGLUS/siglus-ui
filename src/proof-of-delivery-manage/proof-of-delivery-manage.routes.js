@@ -75,7 +75,7 @@
                         //     stateParams.supplyingFacilityId = supplyingFacilities[0].id;
                         // }
                         // #370: sort the pod with status and created date
-                        stateParams.sort = 'createdDate,desc';
+                        stateParams.sort = ['createdDate,desc', 'orderCode,desc'];
                         // #370: ends here
                         if (stateParams.programId &&
                             (stateParams.supplyingFacilityId || stateParams.requestingFacilityId)) {

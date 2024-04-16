@@ -47,6 +47,7 @@
                 <th>{{'proofOfDeliveryManage.program' | message}}</th>
                 <th>{{'proofOfDeliveryManage.period' | message}}</th>
                 <th>{{'proofOfDeliveryManage.orderDate' | message}}</th>
+                <th>{{'proofOfDeliveryManage.shipDate' | message}}</th>
                 <th>{{'proofOfDeliveryManage.emergency' | message}}</th>
                 <th class="col-sticky sticky-right">{{'proofOfDeliveryManage.actions' | message}}</th>
             </tr>
@@ -67,6 +68,7 @@
                 <td>{{order.program.name}}</td>
                 <td>{{order.processingPeriod.name}}</td>
                 <td>{{order.createdDate | openlmisDate}}</td>
+                <td>{{order.shipDate | openlmisDate}}</td>
                 <td class="col-emergency">
                     <i ng-class="{'icon-ok': order.emergency}"></i>
                 </td>
