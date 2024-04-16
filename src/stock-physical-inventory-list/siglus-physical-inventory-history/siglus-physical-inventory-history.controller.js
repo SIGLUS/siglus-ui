@@ -31,14 +31,10 @@
 
         vm.historyList = historyList;
         vm.program = program;
-        vm.openRnr = openRnr;
 
-        console.log('historyList', historyList);
+        vm.viewHistoryDetail = viewHistoryDetail;
 
-        function openRnr(requisitionId) {
-            $state.go('openlmis.requisitions.history', {
-                rnr: requisitionId
-            });
+        function viewHistoryDetail() {
         }
     }
 })();

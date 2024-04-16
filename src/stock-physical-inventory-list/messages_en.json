@@ -18,5 +18,6 @@
   "stockPhysicalInventory.search": "Search",
   "stockPhysicalInventory.selectProgram": "Select Program",
   "stockPhysicalInventory.selectFirst": "Please select the program to start physical inventory.",
+  "stockPhysicalInventory.noHistory": "There is no history",
   "stockPhysicalInventory.conflictProgram": "Please finish the physical inventory of ${programName} first"
 }

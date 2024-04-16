@@ -20,9 +20,9 @@
         .module('stock-physical-inventory-list')
         .config(routes);
 
-    routes.$inject = ['$urlRouterProvider', '$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
+    routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS'];
 
-    function routes($urlRouterProvider, $stateProvider, STOCKMANAGEMENT_RIGHTS) {
+    function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider
             .state('openlmis.stockmanagement.physicalInventory', {
                 url: '/physicalInventory',
@@ -107,12 +107,22 @@
                 templateUrl: 'stock-physical-inventory-list/' +
                     'siglus-physical-inventory-history/siglus-physical-inventory-history.html',
                 params: {
-                    programId: undefined
+                    programId: undefined,
+                    facility: undefined
                 },
                 resolve: {
                     historyList: function() {
                         // TODO: get history list from api
-                        return ['123'];
+                        return [{
+                            program: 'MTB',
+                            dateCompleted: '21/11/2023'
+                        }, {
+                            program: 'MTB',
+                            dateCompleted: '21/11/2023'
+                        }, {
+                            program: 'MTB',
+                            dateCompleted: '21/11/2023'
+                        }];
                     }
                 }
             });

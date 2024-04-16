@@ -2025,6 +2025,7 @@
   "stockPhysicalInventory.draft": "Rascunho",
   "stockPhysicalInventory.noPhysicalInventoryFound": "Nenhum inventário físico foi encontrado.",
   "stockPhysicalInventory.notStarted": "Ainda não iniciado",
+  "stockPhysicalInventory.noHistory": "Sem Histórico",
   "stockPhysicalInventory.physicalInventory": "Inventário físico",
   "stockPhysicalInventory.history": "Histórico",
   "stockPhysicalInventory.dateCompleted": "data de conclusão",
