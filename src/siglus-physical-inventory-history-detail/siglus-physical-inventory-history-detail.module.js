@@ -16,6 +16,12 @@
 (function() {
     'use strict';
 
+    /**
+     * @module siglus-physical-inventory-draft-list
+     *
+     * @description
+     * Responsible for physical inventory draft list screen.
+     */
     angular.module('siglus-physical-inventory-history-detail', [
         'stock-physical-inventory-list'
     ]);

@@ -35,11 +35,9 @@
         vm.viewHistoryDetail = viewHistoryDetail;
 
         function viewHistoryDetail() {
-            $state.go('openlmis.stockmanagement.physicalInventory.history.detail', {
+            $state.go('openlmis.stockmanagement.history', {
                 program: vm.program,
                 facility: facility
-            }, {
-                reload: true
             });
         }
     }

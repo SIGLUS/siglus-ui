@@ -29,5 +29,30 @@
         var vm = this;
         vm.facility = facility;
         vm.program = program;
+        vm.print = print;
+
+        vm.detail = {
+            items: [
+                {
+                    productCode: '001',
+                    productName: '1',
+                    lotCode: '2022xxx',
+                    expiryDate: '2024xxx',
+                    stockOnHand: '100',
+                    currentStock: '200',
+                    reasons: 'reasons'
+                }, {
+                    productCode: '001',
+                    productName: '1',
+                    lotCode: '2022xxx',
+                    expiryDate: '2024xxx',
+                    stockOnHand: '100',
+                    currentStock: '200',
+                    reasons: 'reasons'
+                }
+            ]
+        };
+
+        function print() {}
     }
 })();

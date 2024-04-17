@@ -24,12 +24,17 @@
 
     function routes($stateProvider) {
         $stateProvider
-            .state('openlmis.stockmanagement.physicalInventory.history.detail', {
-                url: '/detail',
+            .state('openlmis.stockmanagement.history', {
+                url: '/history',
                 label: 'stockPhysicalInventoryHistory.viewPhysicalInventory',
-                templateUrl: 'siglus-physical-inventory-history-detail/siglus-physical-inventory-history-detail.html',
-                controller: 'PhysicalInventoryHistoryDetailController',
-                controllerAs: 'vm',
+                views: {
+                    '@openlmis': {
+                        templateUrl: 'siglus-physical-inventory-history-detail/' +
+                            'siglus-physical-inventory-history-detail.html',
+                        controller: 'PhysicalInventoryHistoryDetailController',
+                        controllerAs: 'vm'
+                    }
+                },
                 params: {
                     facility: undefined,
                     program: undefined
