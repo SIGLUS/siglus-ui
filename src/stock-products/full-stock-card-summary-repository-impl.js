@@ -129,33 +129,23 @@
                             content: []
                         });
                     }
-                    var orderableIds = identities.map(function(orderable) {
-                        return orderable.id;
+                    var tradeItemIds = getTradeItemIdsSet(orderablePage, givenOrderableIds);
+                    var deferred = $q.defer();
+                    deferred.resolve({
+                        content: []
                     });
-                    var allOrderable = orderableIds.concat(givenOrderableIds);
-                    return siglusOrderableLotService.getLotsByOrderableIds(allOrderable)
-                        .then(function(lots) {
-                            return handleMissingStocklessProducts(facilityId, summaries, orderablePage, {
-                                content: lots.data
+                    var promise = deferred.promise;
+                    if (tradeItemIds.length > 0) {
+                        return  LotResource.query({
+                            tradeItemId: tradeItemIds
+                        })
+                            .then(function(lotPage) {
+                                return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
                             });
-                        });
-                    // var tradeItemIds = getTradeItemIdsSet(orderablePage, givenOrderableIds);
-                    // var deferred = $q.defer();
-                    // deferred.resolve({
-                    //     content: []
-                    // });
-                    // var promise = deferred.promise;
-                    // if (tradeItemIds.length > 0) {
-                    //     return  LotResource.query({
-                    //         tradeItemId: tradeItemIds
-                    //     })
-                    //         .then(function(lotPage) {
-                    //             return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
-                    //         });
-                    // }
-                    // return promise.then(function(lotPage) {
-                    //     return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
-                    // });
+                    }
+                    return promise.then(function(lotPage) {
+                        return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
+                    });
                 });
         }
 
@@ -188,11 +178,11 @@
         // }
         // SIGLUS-REFACTOR: ends here
 
-        // function addIfNotExist(array, item) {
-        //     if (array.indexOf(item) === -1) {
-        //         array.push(item);
-        //     }
-        // }
+        function addIfNotExist(array, item) {
+            if (array.indexOf(item) === -1) {
+                array.push(item);
+            }
+        }
 
         function mapLotsByTradeItems(lots, orderables) {
             return orderables.reduce(function(map, orderable) {
@@ -262,18 +252,18 @@
             });
         }
 
-        // function getTradeItemIdsSet(orderables, givenOrderableIds) {
-        //     return orderables.filter(function(orderable) {
-        //         if (givenOrderableIds) {
-        //             return _.contains(givenOrderableIds, orderable.id);
-        //         }
-        //         return true;
-        //     }).reduce(function(ids, orderable) {
-        //         if (orderable.identifiers.tradeItem) {
-        //             addIfNotExist(ids, orderable.identifiers.tradeItem);
-        //         }
-        //         return ids;
-        //     }, []);
-        // }
+        function getTradeItemIdsSet(orderables, givenOrderableIds) {
+            return orderables.filter(function(orderable) {
+                if (givenOrderableIds) {
+                    return _.contains(givenOrderableIds, orderable.id);
+                }
+                return true;
+            }).reduce(function(ids, orderable) {
+                if (orderable.identifiers.tradeItem) {
+                    addIfNotExist(ids, orderable.identifiers.tradeItem);
+                }
+                return ids;
+            }, []);
+        }
     }
 })();
