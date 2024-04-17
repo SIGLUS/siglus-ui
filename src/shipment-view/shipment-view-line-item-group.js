@@ -154,10 +154,9 @@
         }
 
         function hasKeyword(keyword) {
-            if (!keyword || this.productCode.contains(keyword) || this.productName.contains(keyword)) {
-                return true;
-            }
-            return false;
+            return !keyword
+                || this.productCode.toLowerCase().contains(keyword.toLowerCase())
+                || this.productName.toLowerCase().contains(keyword.toLowerCase());
         }
     }
 
