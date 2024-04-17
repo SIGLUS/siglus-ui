@@ -17,7 +17,7 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
     var fullStockCardSummaryRepositoryImpl, FullStockCardSummaryRepositoryImpl, lotResourceMock, $q, $rootScope,
         orderableResourceMock, orderableFulfillsResourceMock, stockCardSummaryResourceMock, PageDataBuilder,
-        StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder, LotDataBuilder,
+        StockCardSummaryDataBuilder, CanFulfillForMeEntryDataBuilder, OrderableDataBuilder,
         ObjectReferenceDataBuilder, siglusOrderableLotService,
         // SIGLUS-REFACTOR: starts here
         siglusArchivedProductService;
@@ -67,7 +67,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             CanFulfillForMeEntryDataBuilder = $injector.get('CanFulfillForMeEntryDataBuilder');
             PageDataBuilder = $injector.get('PageDataBuilder');
             OrderableDataBuilder = $injector.get('OrderableDataBuilder');
-            LotDataBuilder = $injector.get('LotDataBuilder');
             ObjectReferenceDataBuilder = $injector.get('ObjectReferenceDataBuilder');
             $rootScope = $injector.get('$rootScope');
             $q = $injector.get('$q');
@@ -163,34 +162,6 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
             ]
         ));
         // SIGLUS-REFACTOR: ends here
-        // siglusOrderableLotServiceMock.getLotsByOrderableIds.andReturn($q.resolve(
-        //     [
-        //         new LotDataBuilder().withId('lot-1')
-        //             .withTradeItemId('trade-item-2')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-2')
-        //             .withTradeItemId('trade-item-2')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-3')
-        //             .withTradeItemId('trade-item-2')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-4')
-        //             .withTradeItemId('trade-item-3')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-5')
-        //             .withTradeItemId('trade-item-3')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-6')
-        //             .withTradeItemId('trade-item-4')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-7')
-        //             .withTradeItemId('trade-item-6')
-        //             .build(),
-        //         new LotDataBuilder().withId('lot-8')
-        //             .withTradeItemId('trade-item-6')
-        //             .build()
-        //     ]
-        // ));
 
         fullStockCardSummaryRepositoryImpl = new FullStockCardSummaryRepositoryImpl();
     });
@@ -270,7 +241,9 @@ describe('FullStockCardSummaryRepositoryImpl', function() {
 
         it('should build proper response', function() {
             spyOn(siglusArchivedProductService, 'getArchivedOrderables').andReturn($q.resolve([]));
-            spyOn(siglusOrderableLotService, 'getLotsByOrderableIds').andReturn($q.resolve({'data': []}));
+            spyOn(siglusOrderableLotService, 'getLotsByOrderableIds').andReturn($q.resolve({
+                data: []
+            }));
             var result;
             fullStockCardSummaryRepositoryImpl.query({
                 facilityId: 'facilityId',
