@@ -11,5 +11,6 @@
   "stockPhysicalInventoryHistory.expiryDate": "Expiry Date",
   "stockPhysicalInventoryHistory.stockOnHand": "Stock On Hand",
   "stockPhysicalInventoryHistory.currentStock": "Current Stock",
-  "stockPhysicalInventoryHistory.reasons": "Reasons"
+  "stockPhysicalInventoryHistory.reasons": "Reasons",
+  "stockPhysicalInventoryHistory.print": "Print History"
 }

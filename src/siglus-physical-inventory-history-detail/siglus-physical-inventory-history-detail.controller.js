@@ -22,10 +22,10 @@
         .controller('PhysicalInventoryHistoryDetailController', controller);
 
     controller.$inject = [
-        '$state', 'facility', 'program'
+        '$state', 'facility', 'program', '$window'
     ];
 
-    function controller($state, facility, program) {
+    function controller($state, facility, program, $window) {
         var vm = this;
         vm.facility = facility;
         vm.program = program;
@@ -53,6 +53,8 @@
             ]
         };
 
-        function print() {}
+        function print() {
+            $window.open('#!/stockmanagement/history/print', '_blank');
+        }
     }
 })();
