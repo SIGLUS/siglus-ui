@@ -25,5 +25,37 @@
 
     function controller($state, $stateParams) {
         var vm = this;
+
+        vm.detail = {
+            items: [
+                {
+                    productCode: '001',
+                    productName: '1',
+                    lotCode: '2022xxx',
+                    expiryDate: '2024xxx',
+                    stockOnHand: '100',
+                    currentStock: '200',
+                    reasons: 'reasons'
+                }, {
+                    productCode: '001',
+                    productName: '1',
+                    lotCode: '2022xxx',
+                    expiryDate: '2024xxx',
+                    stockOnHand: '100',
+                    currentStock: '200',
+                    reasons: 'reasons'
+                }
+            ]
+        };
+
+        vm.$onInit = onInit;
+
+        function onInit() {
+            hideBreadcrumb();
+        }
+
+        function hideBreadcrumb() {
+            document.querySelector('openlmis-breadcrumbs').style.display = 'none';
+        }
     }
 })();

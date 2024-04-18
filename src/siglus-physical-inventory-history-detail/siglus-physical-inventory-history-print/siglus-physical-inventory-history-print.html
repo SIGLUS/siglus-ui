@@ -1,2 +1,93 @@
+<div id="print-form" class="print-form">
 
-<div>Hello World</div>
+	<table id="firstSection" class="border-all-bold head-section">
+
+		<tbody id="header">
+			<tr>
+				<td rowspan="4" class="background-black left-header">
+					<div class="text-nowrap">CMAM</div>
+				</td>
+				<td class="col-1">
+					<span class="view-table-logo"></span>
+				</td>
+				<td colspan="4" style="padding-left: 4px;">
+					<h6>{{ 'rapid.republic_of_mozambique' | message }}</h6>
+					<h6>{{ 'rapid.ministry_of_health' | message }}</h6>
+					<h6>{{ 'rapid.central_medicines_and_medical_articles' | message }}</h6>
+				</td>
+				<td colspan="4" class="col-5">
+					<h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da TB</h2>
+				</td>
+				<td class="col-2">
+					&nbsp;
+					<span>{{'tb.month' | message}}: </span>
+					<span> </span>{{vm.month}}
+				</td>
+			</tr>
+			<tr>
+				<td colspan="5" style="padding-left: 4px;">
+					<span>{{'tb.province' | message}}</span>: {{vm.facility.geographicZone.parent.name}}
+				</td>
+				<td colspan="4"></td>
+				<td rowspan="3">
+					&nbsp;
+					<span>{{'tb.year' | message}}: </span>
+					<span>{{vm.year}}</span>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding-left: 4px;" colspan="5">
+					<span>{{'tb.district' | message}}</span>
+					: {{vm.facility.geographicZone.name}}
+				</td>
+				<td colspan="5"></td>
+			</tr>
+			<tr class="">
+				<td colspan="5">
+					<span>{{'tb.hf'| message}}</span>
+					<span>: {{vm.facility.name}}</span>
+				</td>
+				<td colspan="5"></td>
+			</tr>
+			<tr>
+				<td colspan="11"></td>
+			</tr>
+		</tbody>
+
+		<tbody id="table-header">
+			<tr class="text-bold">
+				<td class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.productCode' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.product' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.reasons' | message}}</td>
+			</tr>
+		</tbody>
+
+		<tbody>
+			<tr ng-repeat="item in vm.detail.items">
+				<td class="col-4 normal-td green-dark" colspan="4">{{item.productCode}}</td>
+				<td class="normal-td green-dark">{{item.productName}}</td>
+				<td class="normal-td">{{item.lotCode}}</td>
+				<td class="normal-td">{{item.expiryDate}}</td>
+				<td class="normal-td">{{item.stockOnHand}}</td>
+				<td class="normal-td">{{item.currentStock}}</td>
+				<td class="normal-td">{{item.reasons}}</td>
+			</tr>
+		</tbody>
+
+	</table>
+
+	<div id="outer">
+		<div style="font-size: 14px;">
+			<div>
+				Mapa Mensal de Prenchimento Obrigatorio
+			</div>
+			<div>
+				Versão 001 Setembro 2022
+			</div>
+		</div>
+	</div>
+</div>

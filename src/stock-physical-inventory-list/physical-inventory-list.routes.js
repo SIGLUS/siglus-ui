@@ -82,8 +82,7 @@
                     'siglus-physical-inventory-selection/siglus-physical-inventory-selection.html',
                 accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
                 params: {
-                    programId: undefined,
-                    facility: undefined
+                    programId: undefined
                 },
                 resolve: {
                     drafts: function(physicalInventoryService, programId, facility) {
@@ -107,13 +106,9 @@
                 templateUrl: 'stock-physical-inventory-list/' +
                     'siglus-physical-inventory-history/siglus-physical-inventory-history.html',
                 params: {
-                    programId: undefined,
-                    facility: undefined
+                    programId: undefined
                 },
                 resolve: {
-                    facility: function($stateParams) {
-                        return $stateParams.facility;
-                    },
                     historyList: function() {
                         // TODO: get history list from api
                         return [{
