@@ -21,9 +21,9 @@
         .module('siglus-physical-inventory-history-detail')
         .controller('PhysicalInventoryHistoryPrintController', controller);
 
-    controller.$inject = ['$state', '$stateParams'];
+    controller.$inject = [];
 
-    function controller($state, $stateParams) {
+    function controller() {
         var vm = this;
 
         vm.detail = {

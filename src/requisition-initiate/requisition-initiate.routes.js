@@ -42,28 +42,6 @@
                 REQUISITION_RIGHTS.REQUISITION_DELETE,
                 REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
             ]
-            // SIGLUS-REFACTOR: starts here
-            // resolve: {
-            //     periods: function(periodFactory, $stateParams) {
-            //         if ($stateParams.program && $stateParams.facility) {
-            //             return periodFactory.get(
-            //                 $stateParams.program,
-            //                 $stateParams.facility,
-            //                 $stateParams.emergency === 'true'
-            //             );
-            //         }
-            //         return undefined;
-            //     },
-            //     canInitiateRnr: function(requisitionInitiateFactory, $stateParams) {
-            //         if ($stateParams.program && $stateParams.facility) {
-            //             return requisitionInitiateFactory.canInitiate(
-            //                 $stateParams.program, $stateParams.facility
-            //             );
-            //         }
-            //         return false;
-            //     }
-            // }
-            // SIGLUS-REFACTOR: ends here
         });
     }
 

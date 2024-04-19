@@ -28,7 +28,7 @@
         .module('admin-user-roles')
         .service('UserRolesReportService', service);
 
-    service.$inject = ['$resource', '$http', 'openlmisUrlFactory', 'ROLE_TYPES', 'RoleAssignment'];
+    service.$inject = ['$resource', '$http', 'openlmisUrlFactory', 'ROLE_TYPES'];
 
     function service($resource, $http, openlmisUrlFactory, ROLE_TYPES) {
         var resource = $resource(
