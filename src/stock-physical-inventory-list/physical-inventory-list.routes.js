@@ -71,7 +71,28 @@
                         return programs.find(function(program) {
                             return program.id === programId;
                         }, undefined);
+                    },
+                    drafts: function(physicalInventoryService, programId, facility) {
+                        if (!programId) {
+                            return [];
+                        }
+                        return physicalInventoryService.getDraft(programId, facility.id)
+                            .then(function(drafts) {
+                                return _.isEmpty(drafts) ? [{
+                                    programId: programId,
+                                    isStarter: true
+                                }] : drafts;
+                            });
+                    },
+                    historyList: function(SiglusPhysicalInventoryHistoryService, program) {
+                        if (!program) {
+                            return [];
+                        }
+                        return SiglusPhysicalInventoryHistoryService.getHistoryList().then(function(historyList) {
+                            return historyList;
+                        });
                     }
+
                 }
             })
             .state('openlmis.stockmanagement.physicalInventory.selection', {
@@ -85,17 +106,10 @@
                     programId: undefined
                 },
                 resolve: {
-                    drafts: function(physicalInventoryService, programId, facility) {
-                        if (!programId) {
-                            return [];
-                        }
-                        return physicalInventoryService.getDraft(programId, facility.id)
-                            .then(function(drafts) {
-                                return _.isEmpty(drafts) ? [{
-                                    programId: programId,
-                                    isStarter: true
-                                }] : drafts;
-                            });
+                    program: function(programs, $stateParams) {
+                        return programs.find(function(program) {
+                            return program.id === $stateParams.programId;
+                        }, undefined);
                     }
                 }
             })
@@ -109,18 +123,13 @@
                     programId: undefined
                 },
                 resolve: {
-                    historyList: function() {
-                        // TODO: get history list from api
-                        return [{
-                            program: 'MTB',
-                            dateCompleted: '21/11/2023'
-                        }, {
-                            program: 'MTB',
-                            dateCompleted: '21/11/2023'
-                        }, {
-                            program: 'MTB',
-                            dateCompleted: '21/11/2023'
-                        }];
+                    program: function(programs, $stateParams) {
+                        return programs.find(function(program) {
+                            return program.id === $stateParams.programId;
+                        }, undefined);
+                    },
+                    filteredHistoryList: function(SiglusPhysicalInventoryHistoryService, program, historyList) {
+                        return SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(program.name, historyList);
                     }
                 }
             });

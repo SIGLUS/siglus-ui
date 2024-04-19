@@ -21,15 +21,15 @@
         .controller('SiglusPhysicalInventoryHistoryController', SiglusPhysicalInventoryHistoryController);
 
     SiglusPhysicalInventoryHistoryController.$inject = [
-        '$state', '$stateParams', 'historyList', 'program', 'facility'
+        '$state', '$stateParams', 'filteredHistoryList', 'program', 'facility'
     ];
 
     function SiglusPhysicalInventoryHistoryController(
-        $state, $stateParams, historyList, program, facility
+        $state, $stateParams, filteredHistoryList, program, facility
     ) {
         var vm = this;
 
-        vm.historyList = historyList;
+        vm.historyList = filteredHistoryList;
         vm.program = program;
 
         vm.viewHistoryDetail = viewHistoryDetail;

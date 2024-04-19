@@ -36,14 +36,17 @@
         vm.searchProgram = searchProgram;
 
         function onInit() {
-            $state.go('openlmis.stockmanagement.physicalInventory.selection');
+            if (vm.isHistory()) {
+                vm.goToHistory();
+            } else {
+                vm.goToInventory();
+            }
         }
 
         function searchProgram() {
             $rootScope.programId = vm.program.id;
             $state.go($state.current.name, {
-                programId: vm.program.id,
-                facility: vm.facility
+                programId: vm.program.id
             }, {
                 reload: true
             });

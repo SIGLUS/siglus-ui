@@ -9,14 +9,14 @@
 		<thead>
 		<tr>
 			<th style="min-width:160px">{{'stockPhysicalInventory.program' | message}}</th>
-			<th style="min-width:160px">{{'stockPhysicalInventory.status' | message}}</th>
+			<th style="min-width:160px">{{'stockPhysicalInventory.dateCompleted' | message}}</th>
 			<th class="col-sticky sticky-right">{{'stockPhysicalInventory.actions' | message}}</th>
 		</tr>
 		</thead>
 		<tbody>
 		<tr ng-repeat="historyItem in vm.historyList">
-			<td>{{historyItem.program}}</td>
-			<td>{{historyItem.dateCompleted}}</td>
+			<td>{{historyItem.programName}}</td>
+			<td>{{historyItem.completedDate}}</td>
 			<td>
 				<input id="proceedButton" type="button" ng-click="vm.viewHistoryDetail()"
 					   value="{{'stockPhysicalInventory.view' | message}}"
