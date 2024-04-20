@@ -30,10 +30,11 @@
         return StockCardSummaryResource;
 
         function StockCardSummaryResource(locationManagementOption) {
-            var url = locationManagementOption === 'location' ?
-                '/api/siglusapi/stockCardSummariesWithLocation' :
-                '/api/siglusapi/stockCardSummaries';
-            this.super(url);
+            if (locationManagementOption) {
+                this.super('/api/siglusapi/stockCardSummariesWithLocation');
+            } else {
+                this.super('/api/siglusapi/stockCardSummaries');
+            }
         }
     }
 })();

@@ -121,8 +121,9 @@
                 var stateParams = angular.copy($stateParams);
                 stateParams.isMerged = true;
                 stateParams.subDraftIds = _.map(vm.draftList.subDrafts, function(item) {
-                    return item.subDraftId[0];
-                }).join(',');
+                    return item.subDraftId;
+                }).flat()
+                    .join(',');
                 if (vm.isInitialInventory) {
                     return $state.go('openlmis.locationManagement.initialInventory.draft', stateParams);
                 }

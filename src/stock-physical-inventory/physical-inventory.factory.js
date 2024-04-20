@@ -214,34 +214,14 @@
                     allLineOrderableIds = _.filter(allLineOrderableIds, function(item) {
                         return item;
                     });
-                    if (locationManagementOption === 'location') {
-                        return getStockProducts(
-                            physicalInventory.programId,
-                            physicalInventory.facilityId,
-                            id,
-                            flag,
-                            allLineOrderableIds,
-                            locationManagementOption
-                        )
-                            .then(function(summaries) {
-                                var draftToReturn = {
-                                    programId: physicalInventory.programId,
-                                    facilityId: physicalInventory.facilityId,
-                                    lineItems: []
-                                };
-                                prepareLineItems(
-                                    physicalInventory,
-                                    summaries,
-                                    draftToReturn,
-                                    true,
-                                    locationManagementOption
-                                );
-                                draftToReturn.id = physicalInventory.id;
-                                return draftToReturn;
-                            });
-                    }
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId, id, flag,
-                        allLineOrderableIds)
+                    return getStockProducts(
+                        physicalInventory.programId,
+                        physicalInventory.facilityId,
+                        id,
+                        flag,
+                        allLineOrderableIds,
+                        locationManagementOption
+                    )
                         .then(function(summaries) {
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
