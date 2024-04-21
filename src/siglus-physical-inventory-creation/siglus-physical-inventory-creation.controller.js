@@ -114,7 +114,8 @@
                                 'openlmis.locationManagement.physicalInventory.draftList',
                                 stateParamsCopy
                             ) : $state.go(
-                                'openlmis.stockmanagement.physicalInventory.draftList'
+                                'openlmis.stockmanagement.physicalInventory.draftList',
+                                stateParamsCopy
                             );
                         }
                         modalDeferred.resolve();
@@ -155,7 +156,8 @@
                                 'openlmis.locationManagement.physicalInventory.draftList',
                                 stateParamsCopy
                             ) : $state.go(
-                                'openlmis.stockmanagement.physicalInventory.draftList'
+                                'openlmis.stockmanagement.physicalInventory.draftList',
+                                stateParamsCopy
                             );
                         }
                     })

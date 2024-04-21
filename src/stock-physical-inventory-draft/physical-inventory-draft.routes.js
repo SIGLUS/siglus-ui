@@ -79,7 +79,7 @@
                     }
                     $stateParams.draft = undefined;
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        if ($stateParams.subDraftIds && !$stateParams.isMerged) {
+                        if ($stateParams.subDraftIds) {
                             var id = $stateParams.subDraftIds.length > 1
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
