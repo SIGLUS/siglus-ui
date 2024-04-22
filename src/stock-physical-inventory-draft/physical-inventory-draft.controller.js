@@ -171,7 +171,7 @@
          * @description
          * Holds line items grouped by category.
          */
-        vm.groupedCategories = false;
+        vm.groupedCategories = undefined;
 
         /**
          * @ngdoc property
@@ -503,9 +503,7 @@
                 $scope.$broadcast('openlmis-form-submit');
                 alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             } else {
-                if (
-                    $stateParams.draftNum
-                ) {
+                if ($stateParams.draftNum) {
                     subDraftSubmit();
                     return;
                 }
@@ -515,9 +513,9 @@
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
 
-                    physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
+                    physicalInventoryService.submitPhysicalInventory(_.assign({}, draft, {
                         summaries: []
-                    }))
+                    }), false, buildHistoryData())
                         .then(function() {
                             // rep logic
                             if (vm.isInitialInventory) {
@@ -969,5 +967,53 @@
             }
         });
         // SIGLUS-REFACTOR: ends here
+
+        function buildHistoryData() {
+            var historyData = [];
+            vm.displayLineItemsGroup.forEach(function(displayLineItems) {
+                var currentProduct = displayLineItems[0].orderable;
+
+                if (displayLineItems.length > 1) {
+                    historyData.push({
+                        productCode: currentProduct.productCode,
+                        productName: currentProduct.fullProductName,
+                        lotCode: null,
+                        expiryDate: null,
+                        stockOnHand: displayLineItems.reduce(function(acc, lineItem) {
+                            return acc + lineItem.stockOnHand;
+                        }),
+                        currentStock: displayLineItems.reduce(function(acc, lineItem) {
+                            return acc + lineItem.quantity;
+                        }),
+                        reasons: null,
+                        comments: null
+                    });
+                    historyData.concat(buildLineItemListData(displayLineItems));
+                } else {
+                    var lineItem = buildLineItemListData(displayLineItems)[0];
+                    historyData.push(_.assign(lineItem, {
+                        productCode: currentProduct.productCode,
+                        productName: currentProduct.fullProductName
+                    }));
+                }
+            });
+
+            return historyData;
+        }
+
+        function buildLineItemListData(lineItemList) {
+            return lineItemList.map((function(lineItem) {
+                return {
+                    productCode: null,
+                    productName: null,
+                    lotCode: lineItem.lot.lotCode,
+                    expiryDate: lineItem.lot.expiryDate,
+                    stockOnHand: lineItem.stockOnHand,
+                    currentStock: lineItem.quantity,
+                    reasons: [lineItem.stockAdjustments[0].reason.name, lineItem.$diffMessage.movementPopoverMessage],
+                    comments: lineItem.reasonFreeText
+                };
+            }));
+        }
     }
 })();

@@ -49,39 +49,33 @@
          */
         function createFromPhysicalInventory(physicalInventory) {
             var physicalInventoryCopy = angular.copy(physicalInventory);
-            physicalInventoryCopy.lineItems = physicalInventory.lineItems
-            // SIGLUS-REFACTOR: starts here
-                /*.filter(function(item) {
-                    return item.isAdded;
-                })*/
-            // SIGLUS-REFACTOR: ends here
-                .map(function(item) {
-                    var stockAdjustments = [];
+            physicalInventoryCopy.lineItems = physicalInventory.lineItems.map(function(item) {
+                var stockAdjustments = [];
 
-                    if (item.stockAdjustments) {
-                        stockAdjustments = _.map(item.stockAdjustments, function(adjustment) {
-                            return new StockEventAdjustment(adjustment.reason.id, adjustment.quantity);
-                        });
-                    }
+                if (item.stockAdjustments) {
+                    stockAdjustments = _.map(item.stockAdjustments, function(adjustment) {
+                        return new StockEventAdjustment(adjustment.reason.id, adjustment.quantity);
+                    });
+                }
 
-                    return new StockEventLineItem(
-                        item.orderable.id, item.lot ? item.lot.id : null,
-                        item.quantity, physicalInventory.occurredDate,
-                        {
-                            vvmStatus: item.vvmStatus,
-                            stockCardId: item.stockCardId
-                        }, stockAdjustments,
-                        // SIGLUS-REFACTOR: starts here
-                        item.reasonFreeText,
-                        item.lot ? item.lot.lotCode : null,
-                        item.lot ? item.lot.expirationDate : null, item.stockCardId,
-                        item.programId,
-                        item.area,
-                        item.locationCode,
-                        item.skipped ? item.skipped : null
-                        // SIGLUS-REFACTOR: ends here
-                    );
-                });
+                return new StockEventLineItem(
+                    item.orderable.id, item.lot ? item.lot.id : null,
+                    item.quantity, physicalInventory.occurredDate,
+                    {
+                        vvmStatus: item.vvmStatus,
+                        stockCardId: item.stockCardId
+                    }, stockAdjustments,
+                    // SIGLUS-REFACTOR: starts here
+                    item.reasonFreeText,
+                    item.lot ? item.lot.lotCode : null,
+                    item.lot ? item.lot.expirationDate : null, item.stockCardId,
+                    item.programId,
+                    item.area,
+                    item.locationCode,
+                    item.skipped ? item.skipped : null
+                    // SIGLUS-REFACTOR: ends here
+                );
+            });
             return _.extend(new StockEvent(physicalInventoryCopy), {
                 subDraftIds: physicalInventoryCopy.subDraftIds
             });

@@ -577,13 +577,17 @@
             // SIGLUS-REFACTOR: ends here
         }
 
-        function submit(physicalInventory, withLocation) {
+        function submit(physicalInventory, withLocation, historyData) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory, withLocation);
+            var submitData = _.assign({}, event, {
+                historyData: historyData
+            });
+
             if (withLocation) {
-                return siglusStockEventService.locationSubmit(event);
+                return siglusStockEventService.locationSubmit(submitData);
             }
             // SIGLUS-REFACTOR: starts here
-            return siglusStockEventService.submit(event);
+            return siglusStockEventService.submit(submitData);
             // SIGLUS-REFACTOR: ends here
         }
 
