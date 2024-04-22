@@ -992,10 +992,13 @@
                 if (!item.$errors) {
                     item.$errors = {};
                 }
-            });
-            _.forEach(draft.lineItems, function(item) {
                 if (!item.$diffMessage) {
                     item.$diffMessage = {};
+                }
+                if (!vm.isInitialInventory && item.quantity !== null) {
+                    var diff = stockReasonsCalculations.calculateDifference(item);
+                    buildMovementMessage(item, diff);
+                    vm.validateReasonFreeText(item);
                 }
             });
             _.forEach(draft.summaries, function(summary) {
@@ -1005,14 +1008,6 @@
                 if (summary.lot && summary.lot.id && summary.lot.lotCode) {
                     vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
                 }
-            });
-            _.forEach(draft.lineItems, function(item) {
-                if (!vm.isInitialInventory && item.quantity !== null) {
-                    var diff = stockReasonsCalculations.calculateDifference(item);
-                    buildMovementMessage(item, diff);
-                    vm.validateReasonFreeText(item);
-                }
-
             });
         }
 
