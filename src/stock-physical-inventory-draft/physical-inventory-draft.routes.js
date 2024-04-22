@@ -118,13 +118,13 @@
                             .value();
                     };
                     var stateParamsCopy = _.clone($stateParams);
-                    stateParamsCopy.draft = physicalInventoryDataService.getDraft(facility.id);
-                    stateParamsCopy.draft.lineItems = stateParamsCopy.draft.lineItems.filter(function(line) {
+                    var draftCopy = physicalInventoryDataService.getDraft(facility.id);
+                    draftCopy.lineItems = draftCopy.lineItems.filter(function(line) {
                         return !(line.stockCardId && line.stockOnHand === 0);
                     });
                     return paginationService.registerList(validator, stateParamsCopy, function() {
                         var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
-                            stateParamsCopy.draft.lineItems);
+                            draftCopy.lineItems);
                         var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
                         // SIGLUS-REFACTOR: starts here
                         var groups = _.chain(lineItems)
