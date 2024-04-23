@@ -974,8 +974,8 @@
                 province: vm.facility.geographicZone.parent.name,
                 district: vm.facility.geographicZone.name,
                 healthFacility: vm.facility.name,
-                completedBy: resolvedData.signature,
-                approvedBy: resolvedData.signature,
+                submittedBy: resolvedData.signature,
+                signature: resolvedData.signature,
                 creationDate: resolvedData.occurredDate,
                 lineItemsData: buildLineItemsData()
             };

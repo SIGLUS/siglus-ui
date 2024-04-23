@@ -130,9 +130,9 @@
                         }, undefined);
                     },
                     filteredHistoryList: function(SiglusPhysicalInventoryHistoryService, program, historyList) {
-                        return program ? [] : SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(
+                        return program ?  SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(
                             program.name, historyList
-                        );
+                        ) : [];
                     }
                 }
             });
