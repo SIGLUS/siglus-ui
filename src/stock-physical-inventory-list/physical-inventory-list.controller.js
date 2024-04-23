@@ -44,7 +44,6 @@
         }
 
         function searchProgram() {
-            $rootScope.programId = vm.program.id;
             $state.go($state.current.name, {
                 programId: vm.program.id
             }, {

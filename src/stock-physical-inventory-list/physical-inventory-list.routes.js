@@ -38,7 +38,8 @@
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
                 params: {
-                    facility: undefined
+                    facility: undefined,
+                    programId: undefined
                 },
                 resolve: {
                     user: function(authorizationService) {
@@ -64,8 +65,8 @@
                             );
                         });
                     },
-                    programId: function($rootScope) {
-                        return $rootScope.programId;
+                    programId: function($stateParams) {
+                        return $stateParams.programId;
                     },
                     program: function(programs, programId) {
                         return programs.find(function(program) {
@@ -129,7 +130,9 @@
                         }, undefined);
                     },
                     filteredHistoryList: function(SiglusPhysicalInventoryHistoryService, program, historyList) {
-                        return SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(program.name, historyList);
+                        return program ? [] : SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(
+                            program.name, historyList
+                        );
                     }
                 }
             });
