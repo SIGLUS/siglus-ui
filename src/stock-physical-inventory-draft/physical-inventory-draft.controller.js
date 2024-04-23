@@ -719,10 +719,13 @@
                 if (!item.$errors) {
                     item.$errors = {};
                 }
-            });
-            _.forEach(draft.lineItems, function(item) {
                 if (!item.$diffMessage) {
                     item.$diffMessage = {};
+                }
+                if (!vm.isInitialInventory && item.quantity !== null) {
+                    var diff = stockReasonsCalculations.calculateDifference(item);
+                    buildMovementMessage(item, diff);
+                    vm.validateReasonFreeText(item);
                 }
             });
             _.forEach(draft.summaries, function(summary) {
@@ -732,14 +735,6 @@
                 if (summary.lot && summary.lot.id) {
                     vm.existLotCode.push(summary.lot.id);
                 }
-            });
-            _.forEach(draft.lineItems, function(item) {
-                if (!vm.isInitialInventory && item.quantity !== null) {
-                    var diff = stockReasonsCalculations.calculateDifference(item);
-                    buildMovementMessage(item, diff);
-                    vm.validateReasonFreeText(item);
-                }
-
             });
         }
 
@@ -1005,7 +1000,7 @@
                         reasons: null,
                         comments: null
                     });
-                    lineItemsData.concat(buildLotItemListData(displayLineItems));
+                    lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems));
                 } else {
                     var lineItem = buildLotItemListData(displayLineItems)[0];
                     lineItemsData.push(_.assign(lineItem, {
@@ -1028,7 +1023,8 @@
                     currentStock: lineItem.quantity,
                     reasons: {
                         reason: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].reason.name : null,
-                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
+                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null,
+                        diffQuantity: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].quantity : null
                     },
                     comments: lineItem.reasonFreeText
                 };
