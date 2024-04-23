@@ -254,6 +254,7 @@
                     });
                     vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
                     vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
+                    vm.displayTableLineItems = vm.displayTableLineItems.concat(addedTableLineItems);
                 });
         }
 
