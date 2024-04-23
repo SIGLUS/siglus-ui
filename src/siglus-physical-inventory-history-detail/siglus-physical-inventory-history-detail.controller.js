@@ -36,7 +36,7 @@
         vm.buildDiffReasonMessage = buildDiffReasonMessage;
 
         function formatDate(dateString) {
-            return moment(dateString).format('DD/MM/YYYY');
+            return dateString ? moment(dateString).format('DD/MM/YYYY') : '';
         }
 
         function buildDiffReasonMessage(lineItem) {
