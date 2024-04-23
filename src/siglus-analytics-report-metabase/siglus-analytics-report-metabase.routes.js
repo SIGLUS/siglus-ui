@@ -170,11 +170,8 @@
                 },
                 resolve: {
                     analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                        analyticsReportMetabaseService.recordUserAccess(item.recordName);
-                        var analyticsReportMetabaseResource;
-                        analyticsReportMetabaseResource = analyticsReportMetabaseService
-                            .getMetabaseUrl(item.dashboardName);
-                        return analyticsReportMetabaseResource.then(function(data) {
+                        return analyticsReportMetabaseService.getMetabaseUrl(item.dashboardName).then(function(data) {
+                            analyticsReportMetabaseService.recordUserAccess(item.recordName);
                             return data;
                         });
                     }
@@ -197,15 +194,13 @@
             },
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    analyticsReportMetabaseService.recordUserAccess(
-                        SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.TRACER_DRUG
-                    );
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
+                    return analyticsReportMetabaseService
+                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT).then(function(data) {
+                            analyticsReportMetabaseService.recordUserAccess(
+                                SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.TRACER_DRUG
+                            );
+                            return data;
+                        });
                 },
                 filterInfo: function(analyticsReportMetabaseService) {
                     return analyticsReportMetabaseService
@@ -233,15 +228,13 @@
             },
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    analyticsReportMetabaseService.recordUserAccess(
-                        SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.USER
-                    );
-                    var analyticsReportMetabaseResource;
-                    analyticsReportMetabaseResource = analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT);
-                    return analyticsReportMetabaseResource.then(function(data) {
-                        return data;
-                    });
+                    return analyticsReportMetabaseService.getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT)
+                        .then(function(data) {
+                            analyticsReportMetabaseService.recordUserAccess(
+                                SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.USER
+                            );
+                            return data;
+                        });
                 }
             }
         });
