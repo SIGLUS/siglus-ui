@@ -515,7 +515,7 @@
 
                     physicalInventoryService.submitPhysicalInventory(_.assign({}, draft, {
                         summaries: []
-                    }), false, buildHistoryData())
+                    }), false, buildHistoryData(resolvedData))
                         .then(function() {
                             // rep logic
                             if (vm.isInitialInventory) {
@@ -968,13 +968,27 @@
         });
         // SIGLUS-REFACTOR: ends here
 
-        function buildHistoryData() {
-            var historyData = [];
+        function buildHistoryData(resolvedData) {
+            return {
+                program: vm.program.name,
+                province: vm.facility.geographicZone.parent.name,
+                district: vm.facility.geographicZone.name,
+                healthFacility: vm.facility.name,
+                completedBy: resolvedData.signature,
+                approvedBy: resolvedData.signature,
+                creationDate: resolvedData.occurredDate,
+                lineItemsData: buildLineItemsData()
+            };
+        }
+
+        function buildLineItemsData() {
+            var lineItemsData = [];
+
             vm.displayLineItemsGroup.forEach(function(displayLineItems) {
                 var currentProduct = displayLineItems[0].orderable;
 
                 if (displayLineItems.length > 1) {
-                    historyData.push({
+                    lineItemsData.push({
                         productCode: currentProduct.productCode,
                         productName: currentProduct.fullProductName,
                         lotCode: null,
@@ -988,21 +1002,20 @@
                         reasons: null,
                         comments: null
                     });
-                    historyData.concat(buildLineItemListData(displayLineItems));
+                    lineItemsData.concat(buildLotItemListData(displayLineItems));
                 } else {
-                    var lineItem = buildLineItemListData(displayLineItems)[0];
-                    historyData.push(_.assign(lineItem, {
+                    var lineItem = buildLotItemListData(displayLineItems)[0];
+                    lineItemsData.push(_.assign(lineItem, {
                         productCode: currentProduct.productCode,
                         productName: currentProduct.fullProductName
                     }));
                 }
             });
-
-            return historyData;
+            return lineItemsData;
         }
 
-        function buildLineItemListData(lineItemList) {
-            return lineItemList.map((function(lineItem) {
+        function buildLotItemListData(itemList) {
+            return itemList.map((function(lineItem) {
                 return {
                     productCode: null,
                     productName: null,
@@ -1010,7 +1023,10 @@
                     expiryDate: lineItem.lot.expiryDate,
                     stockOnHand: lineItem.stockOnHand,
                     currentStock: lineItem.quantity,
-                    reasons: [lineItem.stockAdjustments[0].reason.name, lineItem.$diffMessage.movementPopoverMessage],
+                    reasons: {
+                        reason: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].reason.name : null,
+                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
+                    },
                     comments: lineItem.reasonFreeText
                 };
             }));

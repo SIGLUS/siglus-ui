@@ -580,7 +580,7 @@
         function submit(physicalInventory, withLocation, historyData) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory, withLocation);
             var submitData = _.assign({}, event, {
-                historyData: historyData
+                historyData: JSON.stringify(historyData)
             });
 
             if (withLocation) {
