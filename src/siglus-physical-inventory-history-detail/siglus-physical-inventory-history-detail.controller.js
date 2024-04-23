@@ -22,38 +22,24 @@
         .controller('PhysicalInventoryHistoryDetailController', controller);
 
     controller.$inject = [
-        '$state', 'facility', 'program', '$window'
+        '$state', 'facility', 'program', '$window', 'historyData', 'moment', '$rootScope'
     ];
 
-    function controller($state, facility, program, $window) {
+    function controller($state, facility, program, $window, historyData, moment, $rootScope) {
         var vm = this;
         vm.facility = facility;
         vm.program = program;
-        vm.print = print;
+        vm.historyData = historyData;
 
-        vm.detail = {
-            items: [
-                {
-                    productCode: '001',
-                    productName: '1',
-                    lotCode: '2022xxx',
-                    expiryDate: '2024xxx',
-                    stockOnHand: '100',
-                    currentStock: '200',
-                    reasons: 'reasons'
-                }, {
-                    productCode: '001',
-                    productName: '1',
-                    lotCode: '2022xxx',
-                    expiryDate: '2024xxx',
-                    stockOnHand: '100',
-                    currentStock: '200',
-                    reasons: 'reasons'
-                }
-            ]
-        };
+        vm.print = print;
+        vm.formatDate = formatDate;
+
+        function formatDate(dateString) {
+            return moment(dateString).format('DD/MM/YYYY');
+        }
 
         function print() {
+            $rootScope.historyData = vm.historyData;
             $window.open('#!/stockmanagement/history/print', '_blank');
         }
     }

@@ -2,8 +2,8 @@
   "stockPhysicalInventoryHistory.viewPhysicalInventory": "view Physical Inventory",
   "stockPhysicalInventoryHistory.title": "Physical Inventory for ${programName} (${facilityName})",
   "stockPhysicalInventoryHistory.dateCompleted": "Date completed",
-  "stockPhysicalInventoryHistory.approvedBy": "Approved by",
-  "stockPhysicalInventoryHistory.operatedBy": "Operated by",
+  "stockPhysicalInventoryHistory.submittedBy": "Submitted by",
+  "stockPhysicalInventoryHistory.signature": "Signature",
   "stockPhysicalInventoryHistory.region": "Region",
   "stockPhysicalInventoryHistory.product": "Product",
   "stockPhysicalInventoryHistory.productCode": "Product Code",
@@ -12,5 +12,6 @@
   "stockPhysicalInventoryHistory.stockOnHand": "Stock On Hand",
   "stockPhysicalInventoryHistory.currentStock": "Current Stock",
   "stockPhysicalInventoryHistory.reasons": "Reasons",
+  "stockPhysicalInventoryHistory.comments": "Comments",
   "stockPhysicalInventoryHistory.print": "Print History"
 }

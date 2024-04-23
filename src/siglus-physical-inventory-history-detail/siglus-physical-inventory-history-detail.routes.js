@@ -37,7 +37,8 @@
                 },
                 params: {
                     facility: undefined,
-                    program: undefined
+                    program: undefined,
+                    historyId: undefined
                 },
                 resolve: {
                     facility: function($stateParams) {
@@ -45,6 +46,12 @@
                     },
                     program: function($stateParams) {
                         return $stateParams.program;
+                    },
+                    historyData: function($stateParams, SiglusPhysicalInventoryHistoryService) {
+                        return SiglusPhysicalInventoryHistoryService.getHistoryDetail($stateParams.historyId)
+                            .then(function(detail) {
+                                return detail;
+                            });
                     }
                 }
             });

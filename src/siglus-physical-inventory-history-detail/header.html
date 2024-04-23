@@ -1,20 +1,20 @@
 <aside class="history-detail-info">
 	<ul>
 		<li>
-			<strong>{{'stockPhysicalInventoryHistory.dateCompleted' | message}}</strong>
-			{{'stockPhysicalInventoryHistory.dateCompleted'}}
+			<strong>{{ 'stockPhysicalInventoryHistory.dateCompleted' | message }}</strong>
+			{{ vm.formatDate(vm.historyData.creationDate) }}
 		</li>
 		<li>
-			<strong>{{'stockPhysicalInventoryHistory.approvedBy'|message}}</strong>
-			'stockPhysicalInventoryHistory.approvedBy'
+			<strong>{{ 'stockPhysicalInventoryHistory.submittedBy'|message }}</strong>
+			{{ vm.historyData.submittedBy }}
 		</li>
 		<li>
-			<strong>{{'stockPhysicalInventoryHistory.operatedBy' | message}}</strong>
-			'stockPhysicalInventoryHistory.operatedBy'
+			<strong>{{ 'stockPhysicalInventoryHistory.signature' | message }}</strong>
+			{{ vm.historyData.signature }}
 		</li>
 		<li>
-			<strong>{{'stockPhysicalInventoryHistory.region' | message}}</strong>
-			'stockPhysicalInventoryHistory.region'
+			<strong>{{ 'stockPhysicalInventoryHistory.region' | message }}</strong>
+			{{ vm.historyData.district }}
 		</li>
 	</ul>
 </aside>

@@ -988,17 +988,20 @@
                 var currentProduct = displayLineItems[0].orderable;
 
                 if (displayLineItems.length > 1) {
+                    var stockOnHandSum = 0;
+                    var currentStockSum = 0;
+                    displayLineItems.forEach(function(lineItem) {
+                        stockOnHandSum = stockOnHandSum + lineItem.stockOnHand;
+                        currentStockSum = currentStockSum + lineItem.quantity;
+                    });
+
                     lineItemsData.push({
                         productCode: currentProduct.productCode,
                         productName: currentProduct.fullProductName,
                         lotCode: null,
-                        expiryDate: null,
-                        stockOnHand: displayLineItems.reduce(function(acc, lineItem) {
-                            return acc + lineItem.stockOnHand;
-                        }),
-                        currentStock: displayLineItems.reduce(function(acc, lineItem) {
-                            return acc + lineItem.quantity;
-                        }),
+                        expirationDate: null,
+                        stockOnHand: stockOnHandSum,
+                        currentStock: currentStockSum,
                         reasons: null,
                         comments: null
                     });
@@ -1020,7 +1023,7 @@
                     productCode: null,
                     productName: null,
                     lotCode: lineItem.lot.lotCode,
-                    expiryDate: lineItem.lot.expiryDate,
+                    expirationDate: lineItem.lot.expirationDate,
                     stockOnHand: lineItem.stockOnHand,
                     currentStock: lineItem.quantity,
                     reasons: {

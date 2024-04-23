@@ -36,15 +36,26 @@
                 getHistoryList: {
                     method: 'GET',
                     isArray: true
+                },
+                getHistoryDetail: {
+                    method: 'GET',
+                    url: openlmisUrlFactory('/api/siglusapi/physicalInventories/histories/:id')
                 }
             }
         );
 
         this.getHistoryList = getHistoryList;
+        this.getHistoryDetail = getHistoryDetail;
         this.filterHistoryByProgram = filterHistoryByProgram;
 
         function getHistoryList() {
             return resource.getHistoryList().$promise;
+        }
+
+        function getHistoryDetail(historyId) {
+            return resource.getHistoryDetail({
+                id: historyId
+            }).$promise;
         }
 
         function filterHistoryByProgram(programName, historyList) {
