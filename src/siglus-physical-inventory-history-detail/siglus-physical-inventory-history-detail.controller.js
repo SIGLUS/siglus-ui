@@ -22,10 +22,10 @@
         .controller('PhysicalInventoryHistoryDetailController', controller);
 
     controller.$inject = [
-        '$state', 'facility', 'program', '$window', 'historyData', 'moment', '$rootScope'
+        '$state', 'facility', 'program', '$window', 'historyData', 'moment', 'messageService'
     ];
 
-    function controller($state, facility, program, $window, historyData, moment, $rootScope) {
+    function controller($state, facility, program, $window, historyData, moment, messageService) {
         var vm = this;
         vm.facility = facility;
         vm.program = program;
@@ -33,13 +33,33 @@
 
         vm.print = print;
         vm.formatDate = formatDate;
+        vm.buildDiffReasonMessage = buildDiffReasonMessage;
 
         function formatDate(dateString) {
             return moment(dateString).format('DD/MM/YYYY');
         }
 
+        function buildDiffReasonMessage(lineItem) {
+            var diff = lineItem.currentStock - lineItem.stockOnHand;
+            if (!lineItem.reasons || diff === 0) {
+                return '';
+            }
+            if (diff > 0) {
+                return messageService.get(
+                    'stockPhysicalInventoryHistory.PositiveAdjustmentMessage', {
+                        diffQuantity: Math.abs(diff).toString()
+                    }
+                );
+            }
+            return messageService.get(
+                'stockPhysicalInventoryHistory.NegativeAdjustmentMessage', {
+                    diffQuantity: Math.abs(diff).toString()
+                }
+            );
+
+        }
+
         function print() {
-            $rootScope.historyData = vm.historyData;
             $window.open('#!/stockmanagement/history/print', '_blank');
         }
     }

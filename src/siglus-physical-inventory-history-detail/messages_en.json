@@ -13,5 +13,7 @@
   "stockPhysicalInventoryHistory.currentStock": "Current Stock",
   "stockPhysicalInventoryHistory.reasons": "Reasons",
   "stockPhysicalInventoryHistory.comments": "Comments",
+  "stockPhysicalInventoryHistory.PositiveAdjustmentMessage": "Positive adjustment of ${diffQuantity} will be made",
+  "stockPhysicalInventoryHistory.NegativeAdjustmentMessage": "Negative adjustment of ${diffQuantity} will be made",
   "stockPhysicalInventoryHistory.print": "Print History"
 }

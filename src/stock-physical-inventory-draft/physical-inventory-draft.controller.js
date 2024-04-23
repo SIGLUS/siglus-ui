@@ -1023,8 +1023,7 @@
                     currentStock: lineItem.quantity,
                     reasons: {
                         reason: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].reason.name : null,
-                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null,
-                        diffQuantity: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].quantity : null
+                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
                     },
                     comments: lineItem.reasonFreeText
                 };
