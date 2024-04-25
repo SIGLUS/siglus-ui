@@ -156,7 +156,7 @@
             {
                 name: 'openlmis.analyticsReport.expiredRemovedProducts',
                 label: 'analyticsReportMetabase.expiredRemovedProducts.title',
-                url: '/userAccess',
+                url: '/expiredRemovedProducts',
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_REMOVED_PRODUCTS_REPORT,
                 recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.EXPIRED_REMOVED_PRODUCTS,
                 priority: 48
