@@ -136,19 +136,12 @@
                     .then(function(response) {
                         notificationService.success('shipmentView.draftHasBeenSaved');
                         $state.reload();
-
                         return response;
                     })
                     .catch(function(error) {
-                        if (error.data.messageKey && error.data.messageKey ===
+                        if (_.get(error, ['data', 'messageKey']) ===
                             'siglusapi.error.shipment.order.line items.invalid') {
-                            alertService.error(
-                                'shipmentView.saveDraftError.label',
-                                '',
-                                'OK'
-                            ).then(function() {
-                                refreshCallback();
-                            });
+                            handleStockError();
                         } else {
                             notificationService.error('shipmentView.failedToSaveDraft');
                         }
@@ -209,6 +202,9 @@
                                                     reload: true
                                                 });
                                             });
+                                    } else if (_.get(err, ['data', 'messageKey']) ===
+                                        'siglusapi.error.shipment.order.line items.invalid') {
+                                        handleStockError();
                                     } else {
                                         var notificationErrorText = isPartialFulfilled ?
                                             'shipmentView.failedToCreateSuborder' :
@@ -220,6 +216,16 @@
                 })
                     .finally(loadingModalService.close);
             };
+        }
+
+        function handleStockError() {
+            alertService.error(
+                'shipmentView.saveDraftError.label',
+                '',
+                'OK'
+            ).then(function() {
+                refreshCallback();
+            });
         }
 
         function createOrder(isPartialFulfilled, shipment, signature, originalConfirm) {
