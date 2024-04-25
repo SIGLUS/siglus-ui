@@ -34,9 +34,8 @@
         'loadingModalService', 'ShipmentFactory', 'confirmService', '$q', 'alertService',
         // #400: add messageService
         'messageService', 'orderService', '$resource', 'fulfillmentUrlFactory', 'siglusShipmentConfirmModalService',
-        '$stateParams', 'alertConfirmModalService',
+        '$stateParams', 'alertConfirmModalService'
         // #400: ends here
-        'StockCardSummaryRepositoryImpl'
     ];
     // #287: ends here
 
@@ -44,14 +43,19 @@
         ShipmentRepository, notificationService, stateTrackerService,
         $state, loadingModalService, ShipmentFactory, confirmService, $q, alertService,
         messageService, orderService, $resource, fulfillmentUrlFactory,
-        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService, StockCardSummaryRepositoryImpl
+        siglusShipmentConfirmModalService, $stateParams, alertConfirmModalService
     ) {
 
         var shipmentRepository = new ShipmentRepository();
+        var refreshCallback = undefined;
 
         this.getShipmentForOrder = getShipmentForOrder;
         this.getSuggestedQuantity = getSuggestedQuantity;
         this.getPickPackInfo = getPickPackInfo;
+
+        this.addRefreshListener = function(callback) {
+            refreshCallback = callback;
+        };
 
         /**
          * @ngdoc method
@@ -143,10 +147,7 @@
                                 '',
                                 'OK'
                             ).then(function() {
-                                new StockCardSummaryRepositoryImpl.queryWithStockCards($stateParams.summaryRequestBody)
-                                    .then(function(summaries) {
-                                        updateLineItemsReservedAndTotalStock($stateParams.tableLineItems, summaries);
-                                    });
+                                refreshCallback();
                             });
                         } else {
                             notificationService.error('shipmentView.failedToSaveDraft');
@@ -157,26 +158,6 @@
                         loadingModalService.close();
                     });
             };
-        }
-
-        function updateLineItemsReservedAndTotalStock(lineItems, summaries) {
-            lineItems.forEach(function(lineItem) {
-                var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
-                var currentItemLotId = lineItem.lot.id;
-
-                var summary = summaries.find(function(summary) {
-                    return summary.orderable.id === currentItemOrderableId;
-                });
-                var lineItemCardDetail = summary.stockCardDetails.find(function(stockCardDetail) {
-                    stockCardDetail.lot.id === currentItemLotId;
-                });
-
-                lineItem.shipmentLineItem.stockOnHand = lineItemCardDetail.stockOnHand;
-
-                if (!lineItem.isMainGroup) {
-                    lineItem.reservedStock = lineItemCardDetail.reservedStock;
-                }
-            });
         }
 
         function decorateConfirm(originalConfirm) {

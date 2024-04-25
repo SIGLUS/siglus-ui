@@ -37,18 +37,20 @@
         'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService',
+        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService', 'shipmentViewService',
         // #287: ends here
-        '$stateParams'
+        'StockCardSummaryRepositoryImpl'
     ];
 
-    function ShipmentViewController(shipment, loadingModalService, $state, $window, $scope, $stateParams,
-                                    fulfillmentUrlFactory, messageService, accessTokenFactory,
-                                    updatedOrder, QUANTITY_UNIT, tableLineItems, displayTableLineItems, VVM_STATUS,
-                                    selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-                                    stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-                                    ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity,
-                                    localStorageService) {
+    function ShipmentViewController(
+        shipment, loadingModalService, $state, $window, $scope, $stateParams,
+        fulfillmentUrlFactory, messageService, accessTokenFactory,
+        updatedOrder, QUANTITY_UNIT, tableLineItems, displayTableLineItems, VVM_STATUS,
+        selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
+        stockCardSummaries, ShipmentViewLineItemFactory, orderService,
+        ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity,
+        localStorageService, shipmentViewService, StockCardSummaryRepositoryImpl
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -130,6 +132,37 @@
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.displayTableLineItems = displayTableLineItems;
+            shipmentViewService.addRefreshListener(updateLineItemsReservedAndTotalStock);
+        }
+
+        function updateLineItemsReservedAndTotalStock() {
+            loadingModalService.open();
+
+            new StockCardSummaryRepositoryImpl()
+                .queryWithStockCards($stateParams.summaryRequestBody)
+                .then(function(summaries) {
+                    vm.tableLineItems.forEach(function(lineItem) {
+                        if (lineItem instanceof ShipmentViewLineItemGroup) {
+                            return;
+                        }
+                        var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
+                        var currentItemLotId = lineItem.lot.id;
+
+                        var summary = summaries.find(function(summary) {
+                            return summary.orderable.id === currentItemOrderableId;
+                        });
+                        var lineItemCardDetail = summary.canFulfillForMe.find(function(stockCardDetail) {
+                            return stockCardDetail.lot.id === currentItemLotId;
+                        });
+
+                        lineItem.shipmentLineItem.stockOnHand = lineItemCardDetail.stockOnHand;
+                        lineItem.reservedStock = lineItemCardDetail.reservedStock;
+                    });
+                })
+                .finally(function() {
+                    vm.cancelFilter();
+                    loadingModalService.close();
+                });
         }
 
         function setSuggestedQuantity(items) {
@@ -208,7 +241,6 @@
          * @description
          * Prints the shipment.
          *
-         * @return {Promise} the promise resolved when print is successful, rejected otherwise
          */
         function printShipment() {
             localStorageService.add('dataForPrint', angular.toJson({
@@ -220,11 +252,12 @@
         }
 
         function saveAndPrintShipment() {
-            save().then(this.printShipment());
+            save().then(function() {
+                printShipment();
+            });
         }
 
         function save() {
-            $stateParams.tableLineItems = vm.tableLineItems;
             return vm.shipment.save();
         }
 
