@@ -178,60 +178,31 @@
                         return alertService.error('shipmentView.closed');
                     }
                     var totalPartialLineItems = getPartialFulfilledLineItems(shipment, unskippedLineItems);
-                    if (!result.closed && totalPartialLineItems) {
-                        return siglusShipmentConfirmModalService.confirm(
-                            messageService.get('shipmentView.confirmPartialFulfilled.message', {
-                                totalPartialLineItems: totalPartialLineItems
-                            }), 'shipmentView.confirmPartialFulfilled.createSuborder'
-                        )
-                            .then(function(signature) {
-                                return shipment.createSuborder(signature)
-                                    .then(function() {
-                                        notificationService.success('shipmentView.suborderHasBeenConfirmed');
-                                        stateTrackerService.goToPreviousState('openlmis.orders.view');
-                                    })
-                                    .catch(function(err) {
-                                        // eslint-disable-next-line max-len
-                                        if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                    var isPartialFulfilled = !result.closed && totalPartialLineItems;
 
-                                            alertConfirmModalService.error(
-                                                'orderFulfillment.expiredMessage',
-                                                '',
-                                                ['adminFacilityList.close',
-                                                    'adminFacilityList.confirm']
-                                            )
-                                                .then(function() {
-                                                    $state.go('openlmis.orders.fulfillment', $stateParams, {
-                                                        reload: true
-                                                    });
-                                                });
+                    var confirmModalContent =  isPartialFulfilled ?
+                        messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                            totalPartialLineItems: totalPartialLineItems
+                        }) : 'shipmentView.confirmShipment.question';
 
-                                        } else {
-                                            notificationService.error('shipmentView.failedToCreateSuborder');
-                                        }
-                                    })
-                                    .finally(loadingModalService.close);
-                            });
-                    }
-                    // #400: ends here
-                    return siglusShipmentConfirmModalService.confirm(
-                        'shipmentView.confirmShipment.question',
-                        'shipmentView.confirmShipment'
-                    )
+                    var confirmModalButtonText = isPartialFulfilled ?
+                        'shipmentView.confirmPartialFulfilled.createSuborder' : 'shipmentView.confirmShipment';
+
+                    return siglusShipmentConfirmModalService.confirm(confirmModalContent, confirmModalButtonText)
                         .then(function(signature) {
-                            return originalConfirm.apply(shipment, [signature])
+                            createOrder(isPartialFulfilled, shipment, signature, originalConfirm)
                                 .then(function() {
-                                    notificationService.success('shipmentView.shipmentHasBeenConfirmed');
+                                    var notificationText = isPartialFulfilled ?
+                                        'shipmentView.suborderHasBeenConfirmed' :
+                                        'shipmentView.shipmentHasBeenConfirmed';
+                                    notificationService.success(notificationText);
                                     stateTrackerService.goToPreviousState('openlmis.orders.view');
                                 })
                                 .catch(function(err) {
-                                    // eslint-disable-next-line max-len
                                     if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
                                         alertConfirmModalService.error(
-                                            'orderFulfillment.expiredMessage',
-                                            '',
-                                            ['adminFacilityList.close',
-                                                'adminFacilityList.confirm']
+                                            'orderFulfillment.expiredMessage', '',
+                                            ['adminFacilityList.close', 'adminFacilityList.confirm']
                                         )
                                             .then(function() {
                                                 $state.go('openlmis.orders.fulfillment', $stateParams, {
@@ -239,14 +210,23 @@
                                                 });
                                             });
                                     } else {
-                                        notificationService.error('shipmentView.failedToConfirmShipment');
+                                        var notificationErrorText = isPartialFulfilled ?
+                                            'shipmentView.failedToCreateSuborder' :
+                                            'shipmentView.failedToConfirmShipment';
+                                        notificationService.error(notificationErrorText);
                                     }
-                                })
-                                .finally(loadingModalService.close);
+                                });
                         });
                 })
                     .finally(loadingModalService.close);
             };
+        }
+
+        function createOrder(isPartialFulfilled, shipment, signature, originalConfirm) {
+            if (isPartialFulfilled) {
+                return shipment.createSuborder(signature);
+            }
+            return originalConfirm.apply(shipment, [signature]);
         }
 
         // #287: Warehouse clerk can skip some products in order
