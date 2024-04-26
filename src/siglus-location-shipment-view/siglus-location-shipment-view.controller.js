@@ -723,6 +723,7 @@
         function submit() {
             if (!isTableFormValid()) {
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
+                return;
             }
             var unskippedLineItems = _.filter(vm.displayTableLineItems, function(lineItems) {
                 return !lineItems[0].skipped;
@@ -881,7 +882,6 @@
                     }
                 })
                 .finally(function() {
-                    vm.cancelFilter();
                     loadingModalService.close();
                 });
         };
@@ -893,33 +893,43 @@
         function handleStockError() {
             alertService.error('shipmentView.saveDraftError.label', '', 'OK')
                 .then(function() {
-                    alertService.error('shipmentView.saveDraftError.label', '', 'OK').then(function() {
-                        new StockCardSummaryRepositoryImpl()
-                            .queryWithStockCardsForLocation($stateParams.summaryRequestBody)
-                            .then(function(summaries) {
-                                updateLineItemsReservedAndTotalStock(vm.displayTableLineItems, summaries);
-                            });
-                    });
+                    loadingModalService.open();
+                    new StockCardSummaryRepositoryImpl()
+                        .queryWithStockCardsForLocation($stateParams.summaryRequestBody)
+                        .then(function(summaries) {
+                            updateLineItemsReservedAndTotalStock(summaries);
+                            vm.cancelFilter();
+                        })
+                        .catch(function(error) {
+                            notificationService.error(error);
+                            throw new Error(error);
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
+                        });
                 });
         }
 
-        function updateLineItemsReservedAndTotalStock(lineItemGroupList, summaries) {
-            lineItemGroupList.forEach(function(lineItemGroup) {
+        function updateLineItemsReservedAndTotalStock(summaries) {
+            vm.displayTableLineItems.forEach(function(lineItemGroup) {
                 var currentGroupOrderableId = lineItemGroup[0].orderableId;
-
                 var summary = summaries.find(function(summary) {
                     return summary.orderable.id === currentGroupOrderableId;
                 });
 
                 lineItemGroup.forEach(function(lineItem) {
-                    if (!lineItem.isMainGroup) {
-                        var currentLotId = lineItem.lot.id;
-                        var lineItemCardDetail = summary.stockCardDetails.find(function(detail) {
-                            return detail.lot.id  === currentLotId;
-                        });
-                        lineItem.lot.stockOnHand = lineItemCardDetail.stockOnHand;
-                        lineItem.reservedStock = lineItemCardDetail.reservedStock;
+                    if (lineItemGroup.length > 1 && lineItem.isMainGroup) {
+                        return;
                     }
+                    if (!lineItem.lot || !lineItem.location.locationCode) {
+                        return;
+                    }
+                    var currentLotId = lineItem.lot.id;
+                    var lineItemCardDetail = summary.stockCardDetails.find(function(detail) {
+                        return detail.lot.id  === currentLotId;
+                    });
+                    lineItem.lot.stockOnHand = lineItemCardDetail.stockOnHand;
+                    lineItem.reservedStock = lineItemCardDetail.reservedStock;
                 });
             });
         }

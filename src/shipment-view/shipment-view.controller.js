@@ -158,9 +158,12 @@
                         lineItem.shipmentLineItem.stockOnHand = lineItemCardDetail.stockOnHand;
                         lineItem.reservedStock = lineItemCardDetail.reservedStock;
                     });
+                    vm.cancelFilter();
+                })
+                .catch(function(error) {
+                    throw new Error(error);
                 })
                 .finally(function() {
-                    vm.cancelFilter();
                     loadingModalService.close();
                 });
         }
