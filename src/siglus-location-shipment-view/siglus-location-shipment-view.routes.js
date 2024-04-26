@@ -62,7 +62,6 @@
                             });
                         }
                         return $stateParams.order;
-
                     },
                     stockCardSummaries: function($stateParams, StockCardSummaryRepositoryImpl, order) {
                         if ($stateParams.stockCardSummaries) {
@@ -98,7 +97,6 @@
                             extraData: true
                         }, orderableIds);
                     },
-
                     shipment: function(SiglusLocationViewService, order, stockCardSummaries,
                         $stateParams, ORDER_STATUS) {
                         if (!$stateParams.shipment) {
@@ -112,10 +110,8 @@
                             if (order.status === ORDER_STATUS.FULFILLING) {
                                 return SiglusLocationViewService.getDraftByOrderId(order, stockCardSummaries);
                             }
-
                         }
                         return $stateParams.shipment;
-
                     },
                     suggestedQuatity: function(shipmentViewService, $stateParams) {
                         var id = $stateParams.id;
