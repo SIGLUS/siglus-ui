@@ -171,7 +171,7 @@
                         return alertService.error('shipmentView.closed');
                     }
                     var totalPartialLineItems = getPartialFulfilledLineItems(shipment, unskippedLineItems);
-                    var isPartialFulfilled = !result.closed && totalPartialLineItems;
+                    var isPartialFulfilled = !result.closed && totalPartialLineItems > 0;
 
                     var confirmModalContent =  isPartialFulfilled ?
                         messageService.get('shipmentView.confirmPartialFulfilled.message', {
@@ -219,13 +219,10 @@
         }
 
         function handleStockError() {
-            alertService.error(
-                'shipmentView.saveDraftError.label',
-                '',
-                'OK'
-            ).then(function() {
-                refreshCallback();
-            });
+            alertService.error('shipmentView.saveDraftError.label', '', 'OK')
+                .then(function() {
+                    refreshCallback();
+                });
         }
 
         function createOrder(isPartialFulfilled, shipment, signature, originalConfirm) {
