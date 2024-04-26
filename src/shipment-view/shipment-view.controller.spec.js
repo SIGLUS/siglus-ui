@@ -23,8 +23,9 @@ describe('ShipmentViewController', function() {
         CanFulfillForMeEntryDataBuilder,
         // #264: ends here
         // #287: Warehouse clerk can skip some products in order
-        ShipmentLineItem, ShipmentLineItemDataBuilder, suggestedQuatity;
+        ShipmentLineItem, ShipmentLineItemDataBuilder, suggestedQuatity,
         // #287: ends here
+        shipmentViewService, alertConfirmModalService;
 
     beforeEach(function() {
         module('shipment-view');
@@ -34,6 +35,7 @@ describe('ShipmentViewController', function() {
         // #287: Warehouse clerk can skip some products in order
         module('shipment');
         // #287: ends here
+        module('siglus-alert-confirm-modal');
         inject(function($injector) {
             $q = $injector.get('$q');
             $controller = $injector.get('$controller');
@@ -56,6 +58,8 @@ describe('ShipmentViewController', function() {
             ShipmentLineItem = $injector.get('ShipmentLineItem');
             ShipmentLineItemDataBuilder = $injector.get('ShipmentLineItemDataBuilder');
             // #287: ends here
+            shipmentViewService = $injector.get('shipmentViewService');
+            alertConfirmModalService = $injector.get('alertConfirmModalService');
         });
 
         shipment = new ShipmentDataBuilder().build();
@@ -86,6 +90,7 @@ describe('ShipmentViewController', function() {
                 )
                 .buildJson()
         ];
+        shipmentViewService.alertConfirmModalService = alertConfirmModalService;
         var mockScope = $rootScope.$new();
         vm = $controller('ShipmentViewController', {
             $scope: mockScope,
@@ -94,7 +99,8 @@ describe('ShipmentViewController', function() {
             updatedOrder: order,
             stockCardSummaries: stockCardSummaries,
             suggestedQuatity: suggestedQuatity,
-            displayTableLineItems: tableLineItems
+            displayTableLineItems: tableLineItems,
+            shipmentViewService: shipmentViewService
         });
         // #264: ends here
     });
