@@ -88,9 +88,11 @@
                                     stockCardDetail.stockCard = stockCardsMap[stockCardDetail.stockCard.id];
                                 });
                             });
-
                             return page;
                         });
+                })
+                .catch(function(error) {
+                    throw new Error(error);
                 });
         }
 
@@ -129,9 +131,11 @@
                                     canFulfillForMe.stockCard = stockCardsMap[canFulfillForMe.stockCard.id];
                                 });
                             });
-
                             return page;
                         });
+                })
+                .catch(function(error) {
+                    throw new Error(error);
                 });
         }
     }

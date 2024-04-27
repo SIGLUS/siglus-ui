@@ -924,12 +924,22 @@
                     if (!lineItem.lot || !lineItem.location.locationCode) {
                         return;
                     }
-                    var currentLotId = lineItem.lot.id;
-                    var lineItemCardDetail = summary.stockCardDetails.find(function(detail) {
+
+                    var locationCode = _.get(lineItem, ['location', 'locationCode']);
+                    var currentLotId = _.get(lineItem, ['lot', 'id']);
+
+                    var targetLotDetail = summary.stockCardDetails.find(function(detail) {
                         return detail.lot.id  === currentLotId;
                     });
-                    lineItem.lot.stockOnHand = lineItemCardDetail.stockOnHand;
-                    lineItem.reservedStock = lineItemCardDetail.reservedStock;
+
+                    var targetLotDetailWithLocation = targetLotDetail.lotLocationSohDtoList.find(
+                        function(detailWithLocation) {
+                            return  detailWithLocation.locationCode === locationCode;
+                        }
+                    );
+
+                    lineItem.lot.stockOnHand = _.get(targetLotDetailWithLocation, ['stockOnHand']);
+                    lineItem.reservedStock = _.get(targetLotDetailWithLocation, ['reservedStock']);
                 });
             });
         }

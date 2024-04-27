@@ -45,9 +45,7 @@
             },
             queryStockOnHandsInfoWithLocation: {
                 method: 'GET',
-                url: stockmanagementUrlFactory(
-                    'http://localhost/api/siglusapi/stockCardSummariesWithLocation/integration/summary'
-                ),
+                url: stockmanagementUrlFactory('/api/siglusapi/stockCardSummariesWithLocation/integration/summary'),
                 isArray: true
             }
         });
@@ -61,7 +59,7 @@
         };
 
         this.queryStockOnHandsInfoWithLocation = function(params) {
-            return resource.queryStockOnHandsInfo(params).$promise;
+            return resource.queryStockOnHandsInfoWithLocation(params).$promise;
         };
     }
 })();
