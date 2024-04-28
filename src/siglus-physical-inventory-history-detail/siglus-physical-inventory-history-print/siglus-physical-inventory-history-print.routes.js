@@ -25,7 +25,7 @@
     function routes($stateProvider) {
         $stateProvider
             .state('openlmis.stockmanagement.print', {
-                url: '/history/print?showBreadCrumb=false',
+                url: '/physicalInventory/history/detail/print/:historyId',
                 label: 'stockPhysicalInventoryHistory.print',
                 views: {
                     '@openlmis': {
@@ -35,7 +35,16 @@
                         controllerAs: 'vm'
                     }
                 },
-                resolve: {}
+                resolve: {
+                    historyData: function($stateParams, SiglusPhysicalInventoryHistoryService, localStorageService) {
+                        var historyData = JSON.parse(localStorageService.get('historyData'));
+                        return historyData ? historyData :
+                            SiglusPhysicalInventoryHistoryService.getHistoryDetail($stateParams.id)
+                                .then(function(detail) {
+                                    return detail;
+                                });
+                    }
+                }
             });
     }
 })();

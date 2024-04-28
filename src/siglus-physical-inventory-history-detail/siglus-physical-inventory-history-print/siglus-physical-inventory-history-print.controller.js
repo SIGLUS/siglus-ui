@@ -21,32 +21,13 @@
         .module('siglus-physical-inventory-history-detail')
         .controller('PhysicalInventoryHistoryPrintController', controller);
 
-    controller.$inject = [];
+    controller.$inject = ['historyData', 'moment'];
 
-    function controller() {
+    function controller(historyData, moment) {
         var vm = this;
 
-        vm.detail = {
-            items: [
-                {
-                    productCode: '001',
-                    productName: '1',
-                    lotCode: '2022xxx',
-                    expiryDate: '2024xxx',
-                    stockOnHand: '100',
-                    currentStock: '200',
-                    reasons: 'reasons'
-                }, {
-                    productCode: '001',
-                    productName: '1',
-                    lotCode: '2022xxx',
-                    expiryDate: '2024xxx',
-                    stockOnHand: '100',
-                    currentStock: '200',
-                    reasons: 'reasons'
-                }
-            ]
-        };
+        vm.historyData = historyData;
+        vm.creationDate = buildDetailDate();
 
         vm.$onInit = onInit;
 
@@ -56,6 +37,14 @@
 
         function hideBreadcrumb() {
             document.querySelector('openlmis-breadcrumbs').style.display = 'none';
+        }
+
+        function buildDetailDate() {
+            var creationDate = moment(historyData.creationDate);
+            return {
+                year: creationDate.year(),
+                monthFullName: creationDate.format('MMMM')
+            };
         }
     }
 })();

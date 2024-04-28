@@ -25,7 +25,7 @@
     function routes($stateProvider) {
         $stateProvider
             .state('openlmis.stockmanagement.history', {
-                url: '/history',
+                url: '/physicalInventory/history/detail?historyId',
                 label: 'stockPhysicalInventoryHistory.viewPhysicalInventory',
                 views: {
                     '@openlmis': {
@@ -47,8 +47,11 @@
                     program: function($stateParams) {
                         return $stateParams.program;
                     },
-                    historyData: function($stateParams, SiglusPhysicalInventoryHistoryService) {
-                        return SiglusPhysicalInventoryHistoryService.getHistoryDetail($stateParams.historyId)
+                    historyId: function($stateParams) {
+                        return $stateParams.historyId;
+                    },
+                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService) {
+                        return SiglusPhysicalInventoryHistoryService.getHistoryDetail(historyId)
                             .then(function(detail) {
                                 return detail;
                             });

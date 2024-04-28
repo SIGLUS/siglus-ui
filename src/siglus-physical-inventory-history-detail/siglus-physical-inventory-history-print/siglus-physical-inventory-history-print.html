@@ -16,36 +16,35 @@
 					<h6>{{ 'rapid.central_medicines_and_medical_articles' | message }}</h6>
 				</td>
 				<td colspan="4" class="col-5">
-					<h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da TB</h2>
+					<h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da {{vm.historyData.program}}</h2>
 				</td>
 				<td class="col-2">
 					&nbsp;
 					<span>{{'tb.month' | message}}: </span>
-					<span> </span>{{vm.month}}
+					<span> </span>{{vm.creationDate.monthFullName}}
 				</td>
 			</tr>
 			<tr>
 				<td colspan="5" style="padding-left: 4px;">
-					<span>{{'tb.province' | message}}</span>: {{vm.facility.geographicZone.parent.name}}
+					<span>{{'tb.province' | message}}</span>: {{vm.historyData.province}}
 				</td>
 				<td colspan="4"></td>
 				<td rowspan="3">
 					&nbsp;
 					<span>{{'tb.year' | message}}: </span>
-					<span>{{vm.year}}</span>
+					<span>{{vm.creationDate.year}}</span>
 				</td>
 			</tr>
 			<tr>
 				<td style="padding-left: 4px;" colspan="5">
-					<span>{{'tb.district' | message}}</span>
-					: {{vm.facility.geographicZone.name}}
+					<span>{{'tb.district' | message}}</span>: {{vm.historyData.district}}
 				</td>
 				<td colspan="5"></td>
 			</tr>
 			<tr class="">
 				<td colspan="5">
 					<span>{{'tb.hf'| message}}</span>
-					<span>: {{vm.facility.name}}</span>
+					<span>: {{vm.historyData.healthFacility}}</span>
 				</td>
 				<td colspan="5"></td>
 			</tr>
@@ -56,28 +55,29 @@
 
 		<tbody id="table-header">
 			<tr class="text-bold">
-				<td class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.productCode' | message}}</td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.product' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</td>
+				<td class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.product' | message}}</td>
 				<td class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</td>
 				<td class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </td>
 				<td class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</td>
 				<td class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</td>
 				<td class="text-center grey">{{'stockPhysicalInventoryHistory.reasons' | message}}</td>
+				<td class="text-center grey">{{'stockPhysicalInventoryHistory.comments' | message}}</td>
 			</tr>
 		</tbody>
 
 		<tbody>
-			<tr ng-repeat="item in vm.detail.items">
+			<tr ng-repeat="item in vm.historyData.lineItemsData">
 				<td class="col-4 normal-td green-dark" colspan="4">{{item.productCode}}</td>
 				<td class="normal-td green-dark">{{item.productName}}</td>
 				<td class="normal-td">{{item.lotCode}}</td>
-				<td class="normal-td">{{item.expiryDate}}</td>
+				<td class="normal-td">{{item.expirationDate}}</td>
 				<td class="normal-td">{{item.stockOnHand}}</td>
 				<td class="normal-td">{{item.currentStock}}</td>
 				<td class="normal-td">{{item.reasons}}</td>
+				<td class="normal-td">{{item.comments}}</td>
 			</tr>
 		</tbody>
-
 	</table>
 
 	<div id="outer">

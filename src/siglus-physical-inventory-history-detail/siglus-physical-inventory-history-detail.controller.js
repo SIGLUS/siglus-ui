@@ -22,10 +22,14 @@
         .controller('PhysicalInventoryHistoryDetailController', controller);
 
     controller.$inject = [
-        '$state', 'facility', 'program', '$window', 'historyData', 'moment', 'messageService'
+        '$state', 'facility', 'program', '$window', 'historyId', 'historyData', 'moment', 'messageService',
+        'localStorageService'
     ];
 
-    function controller($state, facility, program, $window, historyData, moment, messageService) {
+    function controller(
+        $state, facility, program, $window, historyId, historyData, moment, messageService,
+        localStorageService
+    ) {
         var vm = this;
         vm.facility = facility;
         vm.program = program;
@@ -60,7 +64,8 @@
         }
 
         function print() {
-            $window.open('#!/stockmanagement/history/print', '_blank');
+            localStorageService.add('historyData', JSON.stringify(historyData));
+            $window.open('#!/stockmanagement/physicalInventory/history/detail/print/' + historyId, '_blank');
         }
     }
 })();
