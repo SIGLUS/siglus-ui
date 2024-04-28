@@ -211,10 +211,12 @@
                                             'shipmentView.failedToConfirmShipment';
                                         notificationService.error(notificationErrorText);
                                     }
+                                })
+                                .finally(function() {
+                                    loadingModalService.close();
                                 });
                         });
-                })
-                    .finally(loadingModalService.close);
+                });
             };
         }
 
