@@ -29,7 +29,7 @@
                     <td>{{ item.currentStock }}</td>
                     <td class="reasons-cell">
                         <p>{{ item.reasons ? item.reasons.reason : '' }}</p>
-                        <p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.buildDiffReasonMessage(item) : '' }}</p>
+                        <p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
                     </td>
                     <td>{{ item.comments }}</td>
                 </tr>

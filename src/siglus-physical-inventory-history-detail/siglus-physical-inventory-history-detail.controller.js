@@ -23,44 +23,24 @@
 
     controller.$inject = [
         '$state', 'facility', 'program', '$window', 'historyId', 'historyData', 'moment', 'messageService',
-        'localStorageService'
+        'localStorageService', 'SiglusPhysicalInventoryHistoryDetailService'
     ];
 
     function controller(
         $state, facility, program, $window, historyId, historyData, moment, messageService,
-        localStorageService
+        localStorageService, SiglusPhysicalInventoryHistoryDetailService
     ) {
         var vm = this;
         vm.facility = facility;
         vm.program = program;
         vm.historyData = historyData;
+        vm.service = SiglusPhysicalInventoryHistoryDetailService;
 
         vm.print = print;
         vm.formatDate = formatDate;
-        vm.buildDiffReasonMessage = buildDiffReasonMessage;
 
         function formatDate(dateString) {
             return dateString ? moment(dateString).format('DD/MM/YYYY') : '';
-        }
-
-        function buildDiffReasonMessage(lineItem) {
-            var diff = lineItem.currentStock - lineItem.stockOnHand;
-            if (!lineItem.reasons || diff === 0) {
-                return '';
-            }
-            if (diff > 0) {
-                return messageService.get(
-                    'stockPhysicalInventoryHistory.PositiveAdjustmentMessage', {
-                        diffQuantity: Math.abs(diff).toString()
-                    }
-                );
-            }
-            return messageService.get(
-                'stockPhysicalInventoryHistory.NegativeAdjustmentMessage', {
-                    diffQuantity: Math.abs(diff).toString()
-                }
-            );
-
         }
 
         function print() {

@@ -1,87 +1,104 @@
 <div id="print-form" class="print-form">
 
-	<table id="firstSection" class="border-all-bold head-section">
-
+	<table id="headerSection" class="border-all-bold head-section">
 		<tbody id="header">
-			<tr>
-				<td rowspan="4" class="background-black left-header">
-					<div class="text-nowrap">CMAM</div>
-				</td>
-				<td class="col-1">
-					<span class="view-table-logo"></span>
-				</td>
-				<td colspan="4" style="padding-left: 4px;">
-					<h6>{{ 'rapid.republic_of_mozambique' | message }}</h6>
-					<h6>{{ 'rapid.ministry_of_health' | message }}</h6>
-					<h6>{{ 'rapid.central_medicines_and_medical_articles' | message }}</h6>
-				</td>
-				<td colspan="4" class="col-5">
-					<h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da {{vm.historyData.program}}</h2>
-				</td>
-				<td class="col-2">
-					&nbsp;
-					<span>{{'tb.month' | message}}: </span>
-					<span> </span>{{vm.creationDate.monthFullName}}
-				</td>
-			</tr>
-			<tr>
-				<td colspan="5" style="padding-left: 4px;">
-					<span>{{'tb.province' | message}}</span>: {{vm.historyData.province}}
-				</td>
-				<td colspan="4"></td>
-				<td rowspan="3">
-					&nbsp;
-					<span>{{'tb.year' | message}}: </span>
-					<span>{{vm.creationDate.year}}</span>
-				</td>
-			</tr>
-			<tr>
-				<td style="padding-left: 4px;" colspan="5">
-					<span>{{'tb.district' | message}}</span>: {{vm.historyData.district}}
-				</td>
-				<td colspan="5"></td>
-			</tr>
-			<tr class="">
-				<td colspan="5">
-					<span>{{'tb.hf'| message}}</span>
-					<span>: {{vm.historyData.healthFacility}}</span>
-				</td>
-				<td colspan="5"></td>
-			</tr>
-			<tr>
-				<td colspan="11"></td>
-			</tr>
+		<tr>
+			<td rowspan="4" class="background-black left-header">
+				<div class="text-nowrap">CMAM</div>
+			</td>
+			<td class="col-1">
+				<span class="view-table-logo"></span>
+			</td>
+			<td colspan="4" style="padding-left: 4px;">
+				<h6>{{ 'rapid.republic_of_mozambique' | message }}</h6>
+				<h6>{{ 'rapid.ministry_of_health' | message }}</h6>
+				<h6>{{ 'rapid.central_medicines_and_medical_articles' | message }}</h6>
+			</td>
+			<td colspan="4" class="col-5">
+				<h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da {{vm.historyData.program}}</h2>
+			</td>
+			<td class="col-2">
+				&nbsp;
+				<span>{{'tb.month' | message}}: </span>
+				<span> </span>{{vm.creationDate.monthFullName}}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" style="padding-left: 4px;">
+				<span>{{'tb.province' | message}}</span>: {{vm.historyData.province}}
+			</td>
+			<td colspan="4"></td>
+			<td rowspan="3">
+				&nbsp;
+				<span>{{'tb.year' | message}}: </span>
+				<span>{{vm.creationDate.year}}</span>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding-left: 4px;" colspan="5">
+				<span>{{'tb.district' | message}}</span>: {{vm.historyData.district}}
+			</td>
+			<td colspan="5"></td>
+		</tr>
+		<tr class="">
+			<td colspan="5">
+				<span>{{'tb.hf'| message}}</span>
+				<span>: {{vm.historyData.healthFacility}}</span>
+			</td>
+			<td colspan="5"></td>
+		</tr>
+		<tr>
+			<td colspan="11"></td>
+		</tr>
 		</tbody>
+	</table>
 
-		<tbody id="table-header">
+	<table id="lineItemSection" class="border-all-bold head-section">
+
+		<thead id="table-header">
 			<tr class="text-bold">
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</td>
-				<td class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.product' | message}}</td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.reasons' | message}}</td>
-				<td class="text-center grey">{{'stockPhysicalInventoryHistory.comments' | message}}</td>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</th>
+				<th class="text-center grey" ng-style="{'width' : '25%'}">{{'stockPhysicalInventoryHistory.product' | message}}</th>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</th>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </th>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</th>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
+				<th class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.reasons' | message}}</th>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.comments' | message}}</th>
 			</tr>
-		</tbody>
-
+		</thead>
 		<tbody>
 			<tr ng-repeat="item in vm.historyData.lineItemsData">
-				<td class="col-4 normal-td green-dark" colspan="4">{{item.productCode}}</td>
-				<td class="normal-td green-dark">{{item.productName}}</td>
+				<td class="normal-td green-dark">{{item.productCode}}</td>
+				<td class="normal-td green-dark" style="width: 25%">{{item.productName}}</td>
 				<td class="normal-td">{{item.lotCode}}</td>
 				<td class="normal-td">{{item.expirationDate}}</td>
 				<td class="normal-td">{{item.stockOnHand}}</td>
 				<td class="normal-td">{{item.currentStock}}</td>
-				<td class="normal-td">{{item.reasons}}</td>
+				<td class="normal-td" colspan="4">
+					<p>{{ item.reasons ? item.reasons.reason : '' }}</p>
+					<p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
+				</td>
 				<td class="normal-td">{{item.comments}}</td>
 			</tr>
+		</tbody>
+		<tbody id="footer">
+		<tr>
+			<td style="height: 48px; vertical-align: top;" colspan="2">
+				{{'tb.completedBy' | message}}: {{vm.historyData.submittedBy}}
+			</td>
+			<td style="vertical-align: top;" colspan="3">
+				{{'tb.approvedBy' | message}}: {{vm.historyData.signature}}
+			</td>
+			<td style="vertical-align: top;" colspan="7">
+				{{'tb.dateOfCreation' | message}}: {{vm.creationDate.dateInShort}}
+			</td>
+		</tr>
 		</tbody>
 	</table>
 
 	<div id="outer">
-		<div style="font-size: 14px;">
+		<div class="outer-section">
 			<div>
 				Mapa Mensal de Prenchimento Obrigatorio
 			</div>
@@ -89,5 +106,11 @@
 				Versão 001 Setembro 2022
 			</div>
 		</div>
+	</div>
+
+	<div id="download-pdf-section" class="align-right" style="clear: both;">
+		<button class="btn btn-primary btn-download btn-download-pdf" ng-click="vm.downloadPdf()">
+			{{ 'mmia.downloadPdf' | message }}
+		</button>
 	</div>
 </div>
