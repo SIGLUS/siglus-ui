@@ -2669,6 +2669,7 @@
   "locationStatus.table.status": "Estado",
   "locationStatus.status.occupied": "Ocupado",
   "locationStatus.status.empty": "Vazio",
+  "expiredProducts.title": "Produtos Expirados",
   "tb.title": "MMTB",
   "tb.month": "Mês",
   "tb.year": "Ano",

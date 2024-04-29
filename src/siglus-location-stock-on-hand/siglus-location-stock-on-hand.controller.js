@@ -50,6 +50,7 @@
         vm.stockCardLineItems = null;
 
         vm.print = print;
+        vm.removeExpiredProducts = removeExpiredProducts;
 
         vm.$onInit = function() {
             vm.stockCardSummaries = stockCardSummaries;
@@ -92,6 +93,10 @@
                 PRINT_URL,
                 '_blank'
             );
+        }
+
+        function removeExpiredProducts() {
+            $state.go('openlmis.stockmanagement.expiredProducts');
         }
 
         function updateStateParams() {

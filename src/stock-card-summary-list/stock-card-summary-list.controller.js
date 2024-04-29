@@ -45,6 +45,7 @@
         vm.loadStockCardSummaries = loadStockCardSummaries;
         vm.viewSingleCard = viewSingleCard;
         vm.print = print;
+        vm.removeExpiredProducts = removeExpiredProducts;
 
         // SIGLUS-REFACTOR: starts here
         vm.viewProductStockCard = viewProductStockCard;
@@ -185,6 +186,10 @@
                 PRINT_URL,
                 '_blank'
             );
+        }
+
+        function removeExpiredProducts() {
+            $state.go('openlmis.stockmanagement.expiredProducts');
         }
 
         function viewProductStockCard(orderableId) {

@@ -17,6 +17,7 @@
 
 <section class="openlmis-table-container">
     <button class="primary" ng-disabled="!vm.stockCardSummaries.length" ng-show="!vm.isArchivedProducts" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
+    <button class="primary" ng-click="vm.removeExpiredProducts()">{{'expiredProducts.title' | message}}</button>
     <form>
         <label for="searchFor">{{'stockCardSummaryList.keyword' | message}}</label>
         <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
