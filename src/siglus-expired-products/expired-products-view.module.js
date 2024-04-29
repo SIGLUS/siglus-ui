@@ -18,6 +18,7 @@
 
     angular.module('siglus-expired-products', [
         'openlmis-pagination',
-        'ui.router'
+        'ui.router',
+        'openlmis-table'
     ]);
 })();

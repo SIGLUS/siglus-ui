@@ -1,2 +1,56 @@
+<section class="openlmis-table-container">
+    <button class="primary" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
 
+    <h4>{{'shipmentView.skip' | message}}</h4>
+    <ul>
+        <li><a ng-click="vm.skipAllLineItems()">{{'shipmentView.all' | message}}</a></li>
+        <li><a ng-click="vm.unskipAllLineItems()">{{'shipmentView.none' | message}}</a></li>
+    </ul>
+    <form>
+        <label for="searchFor">{{'stockCardSummaryList.keyword' | message}}</label>
+        <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
+        <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.cancelFilter()"/>
+        <input type="submit"
+               ng-click="vm.filterList()"
+               ng-keydown="$event.keyCode === 13 && vm.filterList()"
+               value="{{'stockCardSummaryList.search' | message}}"/>
+    </form>
+
+    <table class="expired-products-table">
+        <thead>
+        <tr>
+            <th>{{'shipmentView.skip' | message}}</th>
+            <th>{{'stockCardSummaryList.productCode' | message}}</th>
+            <th>{{'stockCardSummaryList.product' | message}}</th>
+            <th>{{'stockCardSummaryList.lotCode' | message}}</th>
+            <th>{{'stockCardSummaryList.expiryDate' | message}}</th>
+            <th ng-if="vm.enableLocation">{{'stockPhysicalInventoryDraft.location' | message}}</th>
+            <th>{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            <th>{{'stockCardSummaryList.actions' | message}}</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lineItem in vm.pagedLineItems">
+                <td>
+                    <input type="checkbox" ng-model="lineItem.skipped" ng-change="vm.changeSkipStatus(lineItem)">
+                </td>
+                <td>{{lineItem.productCode}}</td>
+                <td class="white-space-pre">{{lineItem.productName}}</td>
+                <td>{{lineItem.lotCode}}</td>
+                <td>{{lineItem.expirationDate}}</td>
+                <td ng-if="vm.enableLocation">{{lineItem.locationCode}}</td>
+                <td class="text-align-right">{{lineItem.soh}}</td>
+                <td>
+                    <button type="button"
+                            ng-click="vm.viewDetail(lineItem)"
+                            class="primary">
+                        {{'stockCardSummaryList.view'| message}}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <openlmis-pagination list="vm.displayItems" paged-list="vm.pagedLineItems">
+    </openlmis-pagination>
+</section>
 

@@ -28,24 +28,50 @@
         .module('siglus-expired-products')
         .controller('ExpiredProductsViewController', controller);
 
-    controller.$inject = ['$stateParams', 'facility'];
+    controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'expiredProducts', 'displayItems'];
 
-    function controller($stateParams, facility) {
+    function controller($state, $stateParams, $window, facility, expiredProducts, displayItems) {
         var vm = this;
 
-        vm.facility = facility;
+        vm.keyword = '';
+        vm.facility = undefined;
+        vm.expiredProducts = [];
+        vm.displayItems = [];
         vm.$onInit = onInit;
+        vm.enableLocation = false;
 
-        /**
-         * @ngdoc method
-         * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-         * @name onInit
-         *
-         * @description
-         * Responsible for oninit physical inventory status.
-         *
-         */
         function onInit() {
+            vm.facility = facility;
+            vm.expiredProducts = expiredProducts;
+            vm.displayItems = displayItems;
+            vm.enableLocation = angular.copy(
+                facility.enableLocationManagement
+            );
         }
+
+        function reloadPage() {
+            $stateParams.facility = facility;
+            $stateParams.keyword = vm.keyword;
+            $stateParams.pageNumber = 0;
+            $state.go($state.current.name, $stateParams, {
+                reload: true
+            });
+        }
+
+        vm.search = function() {
+            reloadPage();
+        };
+
+        vm.cancelFilter = function() {
+            vm.keyword = null;
+            reloadPage();
+        };
+
+        vm.print = function() {
+            var PRINT_URL = $window.location.href.split('!/')[0]
+                + '!/'
+                + 'stockmanagement/expiredProductPrint';
+            $window.open(PRINT_URL, '_blank');
+        };
     }
 })();

@@ -36,6 +36,10 @@
                         controllerAs: 'vm'
                     }
                 },
+                params: {
+                    pageNumber: '0',
+                    pageSize: '20'
+                },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
                 resolve: {
                     user: function(authorizationService) {
@@ -43,6 +47,27 @@
                     },
                     facility: function(facilityFactory) {
                         return facilityFactory.getUserHomeFacility();
+                    },
+                    expiredProducts: function(facility, $stateParams, expiredProductsViewService) {
+                        if ($stateParams.expiredProducts) {
+                            return $stateParams.expiredProducts;
+                        }
+                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id);
+                        return $stateParams.expiredProducts;
+                    },
+                    displayItems: function(expiredProducts, $stateParams, paginationService,
+                        siglusLocationCommonFilterService) {
+                        var paginationParams = {
+                            pageNumber: $stateParams.pageNumber,
+                            pageSize: $stateParams.pageSize
+                        };
+                        return paginationService.registerList(null, paginationParams, function() {
+                            return siglusLocationCommonFilterService
+                                .filterList($stateParams.keyword, expiredProducts);
+                        }, {
+                            customPageParamName: 'pageNumber',
+                            customSizeParamName: 'pageSize'
+                        });
                     }
                 }
             })
@@ -58,6 +83,10 @@
                         controllerAs: 'vm'
                     }
                 },
+                params: {
+                    pageNumber: '0',
+                    pageSize: '20'
+                },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
                 resolve: {
                     user: function(authorizationService) {
@@ -65,6 +94,27 @@
                     },
                     facility: function(facilityFactory) {
                         return facilityFactory.getUserHomeFacility();
+                    },
+                    expiredProducts: function(facility, $stateParams, expiredProductsViewService) {
+                        if ($stateParams.expiredProducts) {
+                            return $stateParams.expiredProducts;
+                        }
+                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id);
+                        return $stateParams.expiredProducts;
+                    },
+                    displayItems: function(expiredProducts, $stateParams, paginationService,
+                        siglusLocationCommonFilterService) {
+                        var paginationParams = {
+                            pageNumber: $stateParams.pageNumber,
+                            pageSize: $stateParams.pageSize
+                        };
+                        return paginationService.registerList(null, paginationParams, function() {
+                            return siglusLocationCommonFilterService
+                                .filterList($stateParams.keyword, expiredProducts);
+                        }, {
+                            customPageParamName: 'pageNumber',
+                            customSizeParamName: 'pageSize'
+                        });
                     }
                 }
             });
