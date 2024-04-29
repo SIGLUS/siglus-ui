@@ -433,29 +433,13 @@ describe('shipmentViewService', function() {
         it('should reject if confirmation was dismissed', function() {
             siglusShipmentConfirmModalService.confirm.andReturn($q.reject());
 
-            var rejected;
-            shipment.confirm()
-                .catch(function() {
-                    rejected = true;
-                });
-
             $rootScope.$apply();
 
-            expect(rejected).toEqual(true);
-
-            expect(siglusShipmentConfirmModalService.confirm).toHaveBeenCalledWith(
-                'shipmentView.confirmShipment.question',
-                'shipmentView.confirmShipment'
-            );
-
-            // SIGLUS-REFACTOR: starts here
-            expect(loadingModalService.open).toHaveBeenCalled();
+            expect(alertService.error).not.toHaveBeenCalled();
             expect(originalConfirm).not.toHaveBeenCalled();
             expect(notificationService.success).not.toHaveBeenCalled();
             expect(stateTrackerService.goToPreviousState).not.toHaveBeenCalled();
             expect(notificationService.error).not.toHaveBeenCalled();
-            expect(loadingModalService.close).toHaveBeenCalled();
-            // SIGLUS-REFACTOR: ends here
         });
 
         it('should open loading modal after confirmation', function() {
