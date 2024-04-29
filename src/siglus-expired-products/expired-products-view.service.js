@@ -50,6 +50,26 @@
                 return expiredProducts;
             });
         }
+
+        this.filterList = function(keyword, lineItems) {
+            var result = [];
+
+            if (_.isEmpty(keyword)) {
+                result = lineItems;
+            } else {
+                keyword = keyword.trim().toLowerCase();
+                result = _.map(lineItems, function(lineItem) {
+                    var isMatched = _.some([lineItem.productName, lineItem.productCode], function(value) {
+                        return String(value.toLowerCase()).includes(keyword);
+                    });
+                    return isMatched ? lineItem : null;
+                });
+
+            }
+            return _.filter(result, function(item) {
+                return !_.isEmpty(item);
+            });
+        };
     }
 
 })();

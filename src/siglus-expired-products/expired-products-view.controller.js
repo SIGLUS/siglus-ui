@@ -37,10 +37,14 @@
         vm.facility = undefined;
         vm.expiredProducts = [];
         vm.displayItems = [];
-        vm.$onInit = onInit;
         vm.enableLocation = false;
+        vm.$onInit = onInit;
+        vm.skipAllLineItems = skipAllLineItems;
+        vm.unskipAllLineItems = unskipAllLineItems;
+        vm.changeSkipStatus = changeSkipStatus;
 
         function onInit() {
+            vm.keyword = $stateParams.keyword;
             vm.facility = facility;
             vm.expiredProducts = expiredProducts;
             vm.displayItems = displayItems;
@@ -72,6 +76,36 @@
                 + '!/'
                 + 'stockmanagement/expiredProductPrint';
             $window.open(PRINT_URL, '_blank');
+        };
+
+        function skipAllLineItems() {
+            vm.displayItems.forEach(function(tableLineItem) {
+                tableLineItem.skipped = true;
+            });
+        }
+
+        function unskipAllLineItems() {
+            vm.displayItems.forEach(function(tableLineItem) {
+                tableLineItem.skipped = false;
+            });
+        }
+
+        function changeSkipStatus(tableLineItem) {
+            tableLineItem.skipped = !tableLineItem.skipped;
+        }
+
+        vm.viewDetail = function(lineItem) {
+            if (vm.enableLocation) {
+                $state.go('openlmis.locationManagement.stockOnHand.locationDetail', {
+                    stockCardId: lineItem.stockCardId,
+                    locationCode: lineItem.locationCode
+                });
+            } else {
+                $state.go('openlmis.locationManagement.stockOnHand.lotDetail', {
+                    stockCardId: lineItem.stockCardId
+                });
+            }
+
         };
     }
 })();

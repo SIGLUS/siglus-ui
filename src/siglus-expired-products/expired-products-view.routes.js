@@ -38,7 +38,8 @@
                 },
                 params: {
                     pageNumber: '0',
-                    pageSize: '20'
+                    pageSize: '20',
+                    keyword: undefined
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
                 resolve: {
@@ -56,14 +57,13 @@
                         return $stateParams.expiredProducts;
                     },
                     displayItems: function(expiredProducts, $stateParams, paginationService,
-                        siglusLocationCommonFilterService) {
+                        expiredProductsViewService) {
                         var paginationParams = {
                             pageNumber: $stateParams.pageNumber,
                             pageSize: $stateParams.pageSize
                         };
                         return paginationService.registerList(null, paginationParams, function() {
-                            return siglusLocationCommonFilterService
-                                .filterList($stateParams.keyword, expiredProducts);
+                            return expiredProductsViewService.filterList($stateParams.keyword, expiredProducts);
                         }, {
                             customPageParamName: 'pageNumber',
                             customSizeParamName: 'pageSize'
@@ -85,7 +85,8 @@
                 },
                 params: {
                     pageNumber: '0',
-                    pageSize: '20'
+                    pageSize: '20',
+                    keyword: undefined
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
                 resolve: {
@@ -103,14 +104,13 @@
                         return $stateParams.expiredProducts;
                     },
                     displayItems: function(expiredProducts, $stateParams, paginationService,
-                        siglusLocationCommonFilterService) {
+                        expiredProductsViewService) {
                         var paginationParams = {
                             pageNumber: $stateParams.pageNumber,
                             pageSize: $stateParams.pageSize
                         };
                         return paginationService.registerList(null, paginationParams, function() {
-                            return siglusLocationCommonFilterService
-                                .filterList($stateParams.keyword, expiredProducts);
+                            return expiredProductsViewService.filterList($stateParams.keyword, expiredProducts);
                         }, {
                             customPageParamName: 'pageNumber',
                             customSizeParamName: 'pageSize'

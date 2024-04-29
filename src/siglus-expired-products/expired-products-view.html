@@ -11,8 +11,8 @@
         <input id="searchFor" type="text" ng-model="vm.keyword" maxlength="50"/>
         <input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.cancelFilter()"/>
         <input type="submit"
-               ng-click="vm.filterList()"
-               ng-keydown="$event.keyCode === 13 && vm.filterList()"
+               ng-click="vm.search()"
+               ng-keydown="$event.keyCode === 13 && vm.search()"
                value="{{'stockCardSummaryList.search' | message}}"/>
     </form>
 
