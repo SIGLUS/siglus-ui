@@ -1,6 +1,6 @@
 <div id="print-form" class="print-form">
 
-	<table id="headerSection" class="border-all-bold head-section">
+	<table id="header-section" class="border-all-bold head-section">
 		<tbody id="header">
 		<tr>
 			<td rowspan="4" class="background-black left-header">
@@ -53,9 +53,9 @@
 		</tbody>
 	</table>
 
-	<table id="lineItemSection" class="border-all-bold head-section">
+	<table id="lineItem-section" class="border-all-bold head-section">
 
-		<thead id="table-header">
+		<thead id="lineItem-header">
 			<tr class="text-bold">
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</th>
 				<th class="text-center grey" ng-style="{'width' : '25%'}">{{'stockPhysicalInventoryHistory.product' | message}}</th>
@@ -68,7 +68,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="item in vm.historyData.lineItemsData">
+			<tr id="calcTr" ng-repeat="item in vm.historyData.lineItemsData">
 				<td class="normal-td green-dark">{{item.productCode}}</td>
 				<td class="normal-td green-dark" style="width: 25%">{{item.productName}}</td>
 				<td class="normal-td">{{item.lotCode}}</td>
