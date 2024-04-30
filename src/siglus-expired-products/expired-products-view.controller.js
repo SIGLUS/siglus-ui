@@ -28,9 +28,11 @@
         .module('siglus-expired-products')
         .controller('ExpiredProductsViewController', controller);
 
-    controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'expiredProducts', 'displayItems'];
+    controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'expiredProducts', 'displayItems',
+        'siglusSignatureWithDateModalService'];
 
-    function controller($state, $stateParams, $window, facility, expiredProducts, displayItems) {
+    function controller($state, $stateParams, $window, facility, expiredProducts, displayItems,
+                        siglusSignatureWithDateModalService) {
         var vm = this;
 
         vm.keyword = '';
@@ -109,7 +111,16 @@
                     facility: vm.facility.id
                 });
             }
+        };
 
+        vm.generatePickPackList = function() {
+        };
+
+        vm.confirmRemove = function() {
+            siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
+                .then(function(resolvedData) {
+                    console.log(resolvedData);
+                });
         };
     }
 })();
