@@ -98,11 +98,15 @@
             if (vm.enableLocation) {
                 $state.go('openlmis.locationManagement.stockOnHand.locationDetail', {
                     stockCardId: lineItem.stockCardId,
-                    locationCode: lineItem.locationCode
+                    locationCode: lineItem.locationCode,
+                    program: lineItem.programId,
+                    facility: vm.facility.id
                 });
             } else {
-                $state.go('openlmis.locationManagement.stockOnHand.lotDetail', {
-                    stockCardId: lineItem.stockCardId
+                $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+                    stockCardId: lineItem.stockCardId,
+                    program: lineItem.programId,
+                    facility: vm.facility.id
                 });
             }
 
