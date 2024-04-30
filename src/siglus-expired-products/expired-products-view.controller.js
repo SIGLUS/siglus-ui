@@ -74,7 +74,7 @@
         vm.print = function() {
             var PRINT_URL = $window.location.href.split('!/')[0]
                 + '!/'
-                + 'stockmanagement/expiredProductPrint';
+                + 'stockmanagement/expiredProductsPrint';
             $window.open(PRINT_URL, '_blank');
         };
 

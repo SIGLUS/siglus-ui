@@ -1,0 +1,21 @@
+.soh-product-print{
+    .shipment-view-report-title{
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .location-status-facility{
+        display: flex;
+        flex-wrap: wrap;
+        &>div{
+            min-width: 40%;
+            padding-left: 20px;
+            font-size:16px;
+        }
+    }
+
+    .soh-product-print-sub-title{
+        margin: 10px 0px;
+        font-size: 16px;
+    }
+}

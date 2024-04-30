@@ -1,0 +1,43 @@
+<div class="shipment-view-container expired-products-print">
+    <div class="breadcrumb" style="font-size: 13px;">
+    </div>
+    <div style="display: flex; align-items: center;">
+        <div>
+            <div class="shipment-view-report-title">
+                <div>{{'expiredProducts.title.report' | message }}</div>
+                <div style="font-weight: 600; font-size: 15px;">({{ 'shipmentViewReport.tips' | message }})</div>
+            </div>
+            <div class="location-status-facility">
+                <div class="shipment-view-report-info">{{ 'adminFacilityAdd.facilityName' | message }}: {{vm.facility.name}}</div>
+                <div class="shipment-view-report-info">{{ 'adminFacilityAdd.facilityCode' | message }}: {{vm.facility.code}}</div>
+            </div>
+            <div class="soh-product-print-sub-title">
+                {{vm.facility.code}}-{{vm.facility.name}}
+            </div>
+        </div>
+    </div>
+    <section>
+        <table border cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th class="text__left" style="width: 150px;">{{'stockCardSummaryList.productCode' | message}}</th>
+                <th class="text__left" style="width: 350px;">{{'stockCardSummaryList.product' | message}}</th>
+                <th class="text__left" style="width: 200px;">{{'stockCardSummaryList.lotCode' | message}}</th>
+                <th class="text__left" style="width: 150px;">{{'stockCardSummaryList.expiryDate' | message}}</th>
+                <th class="text__left" style="width: 150px;" ng-if="vm.enableLocation">{{'stockPhysicalInventoryDraft.location' | message}}</th>
+                <th class="text__left" style="width: 150px;">{{'stockCardSummaryList.stockOnHand' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="lineItem in vm.displayItems">
+                    <td>{{lineItem.productCode}}</td>
+                    <td class="white-space-pre">{{lineItem.productName}}</td>
+                    <td>{{lineItem.lotCode}}</td>
+                    <td>{{lineItem.expirationDate}}</td>
+                    <td ng-if="vm.enableLocation">{{lineItem.locationCode}}</td>
+                    <td class="text-align-right">{{lineItem.soh}}</td>
+                </tr>
+                </tbody>
+        </table>
+    </section>
+</div>

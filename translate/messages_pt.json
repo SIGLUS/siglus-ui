@@ -2670,6 +2670,7 @@
   "locationStatus.status.occupied": "Ocupado",
   "locationStatus.status.empty": "Vazio",
   "expiredProducts.title": "Produtos Expirados",
+  "expiredProducts.title.report":"Eelatório de Produtos Expirados",
   "tb.title": "MMTB",
   "tb.month": "Mês",
   "tb.year": "Ano",
