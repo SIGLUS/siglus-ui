@@ -39,7 +39,7 @@
                     historyData: function($stateParams, SiglusPhysicalInventoryHistoryService, localStorageService) {
                         var historyData = JSON.parse(localStorageService.get('historyData'));
                         return historyData ? historyData :
-                            SiglusPhysicalInventoryHistoryService.getHistoryDetail($stateParams.id)
+                            SiglusPhysicalInventoryHistoryService.getHistoryDetail($stateParams.historyId)
                                 .then(function(detail) {
                                     return detail;
                                 });
