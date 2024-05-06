@@ -27,9 +27,9 @@
         .module('siglus-expired-products')
         .service('expiredProductsViewService', ExpiredProductsViewService);
 
-    ExpiredProductsViewService.inject = ['$filter', '$resource', 'stockmanagementUrlFactory'];
+    ExpiredProductsViewService.inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'localStorageService'];
 
-    function ExpiredProductsViewService($resource, stockmanagementUrlFactory) {
+    function ExpiredProductsViewService($resource, stockmanagementUrlFactory, localStorageService) {
         var resource = $resource(stockmanagementUrlFactory(), {}, {
             get: {
                 method: 'GET',
@@ -39,6 +39,10 @@
         });
 
         this.getExpiredProducts = getExpiredProducts;
+        this.savePickPackDatas = savePickPackDatas;
+        this.getPickPackFacility = getPickPackFacility;
+        this.getPickPackDatas = getPickPackDatas;
+
         function getExpiredProducts(facilityId) {
             return resource.get({
                 id: facilityId,
@@ -70,6 +74,19 @@
                 return !_.isEmpty(item);
             });
         };
+
+        function savePickPackDatas(facility, pickPackDatas) {
+            localStorageService.add('expiredProductForPickPackFacility', angular.toJson(facility));
+            localStorageService.add('expiredProductForPickPackDatas', angular.toJson(pickPackDatas));
+        }
+
+        function getPickPackFacility() {
+            return angular.fromJson(localStorageService.get('expiredProductForPickPackFacility'));
+        }
+
+        function getPickPackDatas() {
+            return angular.fromJson(localStorageService.get('expiredProductForPickPackDatas'));
+        }
     }
 
 })();

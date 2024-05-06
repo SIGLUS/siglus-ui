@@ -32,7 +32,7 @@
         <tbody>
             <tr ng-repeat="lineItem in vm.pagedLineItems">
                 <td>
-                    <input type="checkbox" ng-model="lineItem.skipped" ng-change="vm.changeSkipStatus(lineItem)">
+                    <input type="checkbox" ng-model="lineItem.skipped">
                 </td>
                 <td>{{lineItem.productCode}}</td>
                 <td class="white-space-pre">{{lineItem.productName}}</td>

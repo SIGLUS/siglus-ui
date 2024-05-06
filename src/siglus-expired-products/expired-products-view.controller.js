@@ -29,10 +29,10 @@
         .controller('ExpiredProductsViewController', controller);
 
     controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'expiredProducts', 'displayItems',
-        'siglusSignatureWithDateModalService'];
+        'siglusSignatureWithDateModalService', 'expiredProductsViewService'];
 
     function controller($state, $stateParams, $window, facility, expiredProducts, displayItems,
-                        siglusSignatureWithDateModalService) {
+                        siglusSignatureWithDateModalService, expiredProductsViewService) {
         var vm = this;
 
         vm.keyword = '';
@@ -43,7 +43,7 @@
         vm.$onInit = onInit;
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
-        vm.changeSkipStatus = changeSkipStatus;
+        // vm.changeSkipStatus = changeSkipStatus;
 
         function onInit() {
             vm.keyword = $stateParams.keyword;
@@ -92,10 +92,6 @@
             });
         }
 
-        function changeSkipStatus(tableLineItem) {
-            tableLineItem.skipped = !tableLineItem.skipped;
-        }
-
         vm.viewDetail = function(lineItem) {
             if (vm.enableLocation) {
                 $state.go('openlmis.locationManagement.stockOnHand.locationDetail', {
@@ -114,6 +110,14 @@
         };
 
         vm.generatePickPackList = function() {
+            var datas = vm.displayItems.filter(function(item) {
+                return !item.skipped;
+            });
+            expiredProductsViewService.savePickPackDatas(vm.facility, datas);
+            var PRINT_URL = $window.location.href.split('!/')[0]
+                + '!/'
+                + 'stockmanagement/expiredProductsPickPack';
+            $window.open(PRINT_URL, '_blank');
         };
 
         vm.confirmRemove = function() {

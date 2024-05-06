@@ -14,13 +14,12 @@
  */
 
 (function() {
+
     'use strict';
 
-    angular.module('siglus-expired-products', [
-        'openlmis-pagination',
-        'ui.router',
-        'openlmis-table',
-        'expired-products-print',
-        'expired-products-pick-pack'
+    angular.module('expired-products-pick-pack', [
+
     ]);
+
 })();
+
