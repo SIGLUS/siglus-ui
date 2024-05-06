@@ -55,7 +55,6 @@
         }
 
         function downloadPdf() {
-            var rootNode = document.getElementById('print-form');
             var headerNode = document.getElementById('header-section');
             var lineItemHeaderNode = document.getElementById('lineItem-header');
             var lineItemNodeList = Array.from(document.querySelectorAll('#calcTr'));
@@ -63,7 +62,7 @@
             var outerNode = document.getElementById('outer');
 
             DownloadPdfService.downloadPdf(
-                rootNode, headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode
+                headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode
             );
         }
     }

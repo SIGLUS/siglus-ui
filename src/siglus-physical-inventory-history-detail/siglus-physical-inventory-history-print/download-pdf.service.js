@@ -24,245 +24,130 @@
     service.$inject = ['siglusDownloadLoadingModalService', 'messageService', '$q', 'moment'];
 
     function service(siglusDownloadLoadingModalService, messageService, $q, moment) {
+        // A4: 595.28 x 841.89 (PostScript Point)
+        var REAL_A4_HEIGHT = 842;
+        var REAL_A4_WIDTH = 595;
+        var MARGIN_LEFT = 5;
+        var REAL_CONTENT_WIDTH = REAL_A4_WIDTH - MARGIN_LEFT * 2;
+
+        var CONTENT_WIDTH_PIX = 1250;
+        var SHRINK_RATIO = REAL_CONTENT_WIDTH / CONTENT_WIDTH_PIX;
+        // eslint-disable-next-line no-undef
+        var PDF = new jsPDF('', 'pt', 'a4');
+        var pageNumber = 1;
+
         this.downloadPdf = downloadPdf;
 
         function downloadPdf(
-            rootNode, headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode
+            headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode
         ) {
             siglusDownloadLoadingModalService.open();
+            initPDF();
 
-            var contentWidth = rootNode.offsetWidth;
-            // A4: 595.28 x 841.89 (PostScript Point)
-            var REAL_A4_HEIGHT = 841.89;
-            var IMAGE_WIDTH_PIX = 1250;
-            var PDF_CONTENT_WIDTH_PIX = 585;
-            var SHRINK_RATIO = PDF_CONTENT_WIDTH_PIX / IMAGE_WIDTH_PIX;
-
-            var a4Height = 1250 / 585 * REAL_A4_HEIGHT;
-            var canUseHeight = a4Height
+            var CONTENT_HEIGHT_PIX = REAL_A4_HEIGHT / SHRINK_RATIO;
+            var currentPageAvailableHeight = CONTENT_HEIGHT_PIX
                 - headerNode.offsetHeight
                 - lineItemHeaderNode.offsetHeight;
 
-            var lineItemToImagePromiseList =  [];
-
-            _.forEach(lineItemNodeList, function(lineItemNode) {
-                // eslint-disable-next-line no-undef
-                lineItemToImagePromiseList.push(domtoimage.toPng(lineItemNode, {
-                    scale: 1,
-                    width: contentWidth,
-                    height: lineItemNode.offsetHeight + 1
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: lineItemNode.offsetWidth,
-                        nodeHeight: lineItemNode.offsetHeight
-                    };
-                }));
+            var lineItemToImagePromiseList =  _.map(lineItemNodeList, function(lineItemNode) {
+                return getElementToImagePromise(lineItemNode, CONTENT_WIDTH_PIX, lineItemNode.offsetHeight + 1);
             });
 
-            // eslint-disable-next-line no-undef
-            var PDF = new jsPDF('', 'pt', 'a4');
-
             var headerFooterPromiseList = [
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(headerNode, {
-                    scale: 1,
-                    width: 1250,
-                    height: headerNode.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: headerNode.offsetWidth,
-                        nodeHeight: headerNode.offsetHeight
-                    };
-                })
-                    .catch((function(error) {
-                        throw new Error(error);
-                    })),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(lineItemHeaderNode, {
-                    scale: 1,
-                    width: 1250,
-                    height: lineItemHeaderNode.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: lineItemHeaderNode.offsetWidth,
-                        nodeHeight: lineItemHeaderNode.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(footerNode, {
-                    scale: 1,
-                    width: 1250,
-                    height: footerNode.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: footerNode.offsetWidth,
-                        nodeHeight: footerNode.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(outerNode, {
-                    scale: 1,
-                    width: 1250,
-                    height: outerNode.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: outerNode.offsetWidth,
-                        nodeHeight: outerNode.offsetHeight
-                    };
-                })
+                getElementToImagePromise(headerNode, CONTENT_WIDTH_PIX),
+                getElementToImagePromise(lineItemHeaderNode, CONTENT_WIDTH_PIX),
+                getElementToImagePromise(footerNode, CONTENT_WIDTH_PIX),
+                getElementToImagePromise(outerNode, CONTENT_WIDTH_PIX)
             ];
 
             $q.all(headerFooterPromiseList)
                 .then(function(result) {
+                    var headerNodeResult = result[0];
+                    var lineItemHeaderNodeResult = result[1];
+                    var footerNodeResult = result[2];
+                    var outerNodeResult = result[3];
+
                     var offsetHeight = headerNode.offsetHeight;
-                    var realHeight = 0;
-                    var pageNumber = 1;
-                    PDF.addImage(result[0].data, 'JPEG', 5, 0, 585, result[0].nodeHeight * SHRINK_RATIO);
+                    var lineItemsUsedHeight = 0;
+
                     PDF.addImage(
-                        result[1].data, 'JPEG', 5, offsetHeight * SHRINK_RATIO, 585, result[1].nodeHeight * SHRINK_RATIO
+                        headerNodeResult.data, 'JPEG', MARGIN_LEFT, 0,
+                        REAL_CONTENT_WIDTH, headerNodeResult.nodeHeight * SHRINK_RATIO
                     );
+                    PDF.addImage(
+                        lineItemHeaderNodeResult.data, 'JPEG', MARGIN_LEFT, offsetHeight * SHRINK_RATIO,
+                        REAL_CONTENT_WIDTH, lineItemHeaderNodeResult.nodeHeight * SHRINK_RATIO
+                    );
+
                     $q.all(lineItemToImagePromiseList)
                         .then(function(lineItemResultList) {
                             _.forEach(lineItemResultList, function(lineItemResult) {
-                                realHeight = realHeight + lineItemResult.nodeHeight;
-                                if (realHeight <= canUseHeight) {
-                                    PDF.addImage(lineItemResult.data, 'JPEG', 5,
-                                        pageNumber > 1
-                                            ? offsetHeight * SHRINK_RATIO
-                                            : (offsetHeight + result[1].nodeHeight) * SHRINK_RATIO,
-                                        585, lineItemResult.nodeHeight * SHRINK_RATIO);
-                                    offsetHeight = offsetHeight + lineItemResult.nodeHeight;
-                                } else {
-                                    PDF.setFontSize(10);
-                                    PDF.text(
-                                        messageService.get('mmia.print_on_computer'),
-                                        5,
-                                        REAL_A4_HEIGHT - 10
-                                    );
-                                    PDF.text(
-                                        pageNumber.toString(),
-                                        585 / 2,
-                                        REAL_A4_HEIGHT - 10
-                                    );
-                                    PDF.text(
-                                        buildCurrentDateTime(),
-                                        478,
-                                        REAL_A4_HEIGHT - 10
-                                    );
-
-                                    pageNumber = pageNumber + 1;
-                                    PDF.addPage();
+                                lineItemsUsedHeight = lineItemsUsedHeight + lineItemResult.nodeHeight;
+                                var needNewPage = lineItemsUsedHeight > currentPageAvailableHeight;
+                                if (needNewPage) {
+                                    addNewPage();
                                     PDF.addImage(
-                                        result[1].data,
-                                        'JPEG',
-                                        5,
-                                        0,
-                                        585,
-                                        (result[1].nodeHeight) * SHRINK_RATIO
+                                        lineItemHeaderNodeResult.data, 'JPEG', MARGIN_LEFT, 0,
+                                        REAL_CONTENT_WIDTH, (lineItemHeaderNodeResult.nodeHeight) * SHRINK_RATIO
                                     );
-                                    offsetHeight = result[1].nodeHeight;
-                                    realHeight = 0;
+                                    offsetHeight = lineItemHeaderNodeResult.nodeHeight;
+                                    lineItemsUsedHeight = 0;
                                 }
-                            });
-                            if (canUseHeight - offsetHeight > result[2].nodeHeight + result[3].nodeHeight) {
-                                PDF.setFontSize(10);
-                                PDF.text(
-                                    messageService.get('mmia.print_on_computer'),
-                                    5,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                PDF.text(
-                                    pageNumber.toString() + '-END',
-                                    585 / 2 - 10,
-                                    REAL_A4_HEIGHT - 10
-                                );
 
-                                PDF.text(
-                                    buildCurrentDateTime(),
-                                    478,
-                                    REAL_A4_HEIGHT - 10
-                                );
+                                PDF.addImage(lineItemResult.data, 'JPEG', MARGIN_LEFT,
+                                    pageNumber === 1
+                                        ? (offsetHeight + lineItemHeaderNodeResult.nodeHeight) * SHRINK_RATIO
+                                        : offsetHeight * SHRINK_RATIO,
+                                    REAL_CONTENT_WIDTH, lineItemResult.nodeHeight * SHRINK_RATIO);
+                                offsetHeight = offsetHeight +  lineItemResult.nodeHeight;
+                            });
+
+                            var isCurrentPageAvailable =
+                                currentPageAvailableHeight >
+                                footerNodeResult.nodeHeight + outerNodeResult.nodeHeight + offsetHeight;
+                            // add bottom & outer
+                            if (isCurrentPageAvailable) {
                                 PDF.addImage(
-                                    result[2].data,
+                                    footerNodeResult.data,
                                     'JPEG',
-                                    5,
+                                    MARGIN_LEFT,
                                     pageNumber > 1
                                         ? (offsetHeight) * SHRINK_RATIO
-                                        : (offsetHeight + result[1].nodeHeight) * SHRINK_RATIO,
-                                    585,
-                                    result[2].nodeHeight * SHRINK_RATIO
+                                        : (offsetHeight + lineItemHeaderNodeResult.nodeHeight) * SHRINK_RATIO,
+                                    REAL_CONTENT_WIDTH,
+                                    footerNodeResult.nodeHeight * SHRINK_RATIO
                                 );
                                 PDF.addImage(
-                                    result[3].data,
+                                    outerNodeResult.data,
                                     'JPEG',
-                                    5,
+                                    MARGIN_LEFT,
                                     pageNumber > 1
-                                        ? (offsetHeight + result[2].nodeHeight) * SHRINK_RATIO
-                                        : (offsetHeight + result[1].nodeHeight + result[2].nodeHeight) * SHRINK_RATIO,
-                                    585,
-                                    result[3].nodeHeight * SHRINK_RATIO
+                                        ? (offsetHeight + footerNodeResult.nodeHeight) * SHRINK_RATIO
+                                        : (
+                                            offsetHeight +
+                                            lineItemHeaderNodeResult.nodeHeight +
+                                            footerNodeResult.nodeHeight
+                                        ) * SHRINK_RATIO,
+                                    REAL_CONTENT_WIDTH,
+                                    outerNodeResult.nodeHeight * SHRINK_RATIO
                                 );
                             } else {
-                                PDF.setFontSize(10);
-                                PDF.text(
-                                    pageNumber.toString(),
-                                    585 / 2,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                PDF.text(
-                                    messageService.get('mmia.print_on_computer'),
-                                    5,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                PDF.text(
-                                    buildCurrentDateTime(),
-                                    478,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                pageNumber = pageNumber + 1;
-                                PDF.addPage();
-                                PDF.setFontSize(10);
-                                PDF.text(
-                                    pageNumber.toString() + '-END',
-                                    585 / 2 - 10,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                PDF.text(
-                                    messageService.get('mmia.print_on_computer'),
-                                    5,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                PDF.text(
-                                    buildCurrentDateTime(),
-                                    478,
-                                    REAL_A4_HEIGHT - 10
-                                );
-                                PDF.addImage(
-                                    result[2].data,
-                                    'JPEG',
-                                    5,
-                                    0,
-                                    585,
-                                    result[2].nodeHeight * SHRINK_RATIO
-                                );
-                                PDF.addImage(
-                                    result[3].data,
-                                    'JPEG',
-                                    5,
-                                    result[2].nodeHeight * SHRINK_RATIO,
-                                    585,
-                                    result[3].nodeHeight * SHRINK_RATIO
-                                );
+                                addNewPage();
+                                addFooterAndOuterImage(footerNodeResult, outerNodeResult);
                             }
+
+                            addPageBottomText(
+                                pageNumber.toString() + '-END',
+                                messageService.get('mmia.print_on_computer'),
+                                buildCurrentDateTime()
+                            );
                             PDF.save('hello.pdf');
                         })
                         .catch(function(error) {
                             throw new Error(error);
+                        })
+                        .finally(function() {
+                            PDF = null;
                         });
                 })
                 .catch(function(error) {
@@ -271,6 +156,74 @@
                 .finally(function() {
                     siglusDownloadLoadingModalService.close();
                 });
+        }
+
+        function initPDF() {
+            // eslint-disable-next-line no-undef
+            PDF = new jsPDF('', 'pt', 'a4');
+            pageNumber = 1;
+        }
+
+        function getElementToImagePromise(element, width, height) {
+            var imageHeight = height ? height : element.offsetHeight;
+            // eslint-disable-next-line no-undef
+            return domtoimage.toPng(element, {
+                scale: 1,
+                width: width,
+                height: imageHeight
+            })
+                .then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: element.offsetWidth,
+                        nodeHeight: element.offsetHeight
+                    };
+                })
+                .catch(function(error) {
+                    throw new Error(error);
+                });
+        }
+
+        function addPageBottomText(pageNumberText, leftText, rightText) {
+            PDF.setFontSize(10);
+            PDF.text(
+                leftText,
+                MARGIN_LEFT,
+                REAL_A4_HEIGHT - 10
+            );
+            PDF.text(
+                pageNumberText,
+                REAL_CONTENT_WIDTH / 2,
+                REAL_A4_HEIGHT - 10
+            );
+            PDF.text(
+                rightText,
+                478,
+                REAL_A4_HEIGHT - 10
+            );
+        }
+
+        function addFooterAndOuterImage(footerResult, outerResult) {
+            PDF.addImage(
+                footerResult.data, 'JPEG',
+                MARGIN_LEFT, 0,
+                REAL_CONTENT_WIDTH, footerResult.nodeHeight * SHRINK_RATIO
+            );
+            PDF.addImage(
+                outerResult.data, 'JEPG',
+                MARGIN_LEFT, footerResult.nodeHeight,
+                REAL_CONTENT_WIDTH, outerResult.nodeHeight * SHRINK_RATIO
+            );
+        }
+
+        function addNewPage() {
+            addPageBottomText(
+                pageNumber.toString(),
+                messageService.get('mmia.print_on_computer'),
+                buildCurrentDateTime()
+            );
+            pageNumber = pageNumber + 1;
+            PDF.addPage();
         }
 
         function buildCurrentDateTime() {
