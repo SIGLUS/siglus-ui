@@ -1,5 +1,4 @@
 <section class="openlmis-table-container">
-    <button class="primary" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
 
     <h4>{{'shipmentView.skip' | message}}</h4>
     <ul>
@@ -15,6 +14,7 @@
                ng-keydown="$event.keyCode === 13 && vm.search()"
                value="{{'stockCardSummaryList.search' | message}}"/>
     </form>
+    <button class="primary" ng-click="vm.print()">{{'stockCardSummaryList.print' | message}}</button>
 
     <table class="expired-products-table">
         <thead>
