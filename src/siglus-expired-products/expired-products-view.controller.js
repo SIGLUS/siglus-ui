@@ -29,10 +29,10 @@
         .controller('ExpiredProductsViewController', controller);
 
     controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'expiredProducts', 'displayItems',
-        'siglusSignatureWithDateModalService', 'expiredProductsViewService'];
+        'siglusSignatureWithDateModalService', 'expiredProductsViewService', 'loadingModalService'];
 
     function controller($state, $stateParams, $window, facility, expiredProducts, displayItems,
-                        siglusSignatureWithDateModalService, expiredProductsViewService) {
+                        siglusSignatureWithDateModalService, expiredProductsViewService, loadingModalService) {
         var vm = this;
 
         vm.keyword = '';
@@ -43,7 +43,6 @@
         vm.$onInit = onInit;
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
-        // vm.changeSkipStatus = changeSkipStatus;
 
         function onInit() {
             vm.keyword = $stateParams.keyword;
@@ -109,11 +108,14 @@
             }
         };
 
-        vm.generatePickPackList = function() {
-            var datas = vm.displayItems.filter(function(item) {
+        function selectedLineItems() {
+            return vm.displayItems.filter(function(item) {
                 return !item.skipped;
             });
-            expiredProductsViewService.savePickPackDatas(vm.facility, datas);
+        }
+
+        vm.generatePickPackList = function() {
+            expiredProductsViewService.savePickPackDatas(vm.facility, selectedLineItems());
             var PRINT_URL = $window.location.href.split('!/')[0]
                 + '!/'
                 + 'stockmanagement/expiredProductsPickPack';
@@ -123,7 +125,15 @@
         vm.confirmRemove = function() {
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                 .then(function(resolvedData) {
-                    console.log(resolvedData);
+                    loadingModalService.open();
+                    expiredProductsViewService.removeSelectedLots(vm.facility.id, selectedLineItems())
+                        .then(function() {
+                            console.log(resolvedData);
+                            // TODO generate pdf
+                        })
+                        .finally(function() {
+                            loadingModalService.close();
+                        });
                 });
         };
     }

@@ -35,13 +35,18 @@
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/facility/:id/lots'),
                 isArray: true
+            },
+            remove: {
+                method: 'POST',
+                url: stockmanagementUrlFactory('/api/siglusapi/facility/:id/lots/remove')
             }
         });
 
         this.getExpiredProducts = getExpiredProducts;
-        this.savePickPackDatas = savePickPackDatas;
-        this.getPickPackFacility = getPickPackFacility;
-        this.getPickPackDatas = getPickPackDatas;
+        this.removeSelectedLots = removeSelectedLots;
+        this.savePickPackDatas = savePickPackDatasToLocalStorage;
+        this.getPickPackFacility = getPickPackFacilityFromLocalStorage;
+        this.getPickPackDatas = getPickPackDatasFromLocalStorage;
 
         function getExpiredProducts(facilityId) {
             return resource.get({
@@ -53,6 +58,27 @@
                 });
                 return expiredProducts;
             });
+        }
+
+        function removeExpiredProducts(facilityId, lots) {
+            return resource.remove({
+                id: facilityId
+            }, {
+                lotType: 'expired',
+                lots: lots
+            });
+        }
+
+        function removeSelectedLots(facilityId, lineItems) {
+            var lots = lineItems.map(function(lineItem) {
+                return {
+                    stockCardId: lineItem.stockCardId,
+                    quantity: lineItem.soh,
+                    locationCode: lineItem.locationCode,
+                    area: lineItem.area
+                };
+            });
+            return removeExpiredProducts(facilityId, lots);
         }
 
         this.filterList = function(keyword, lineItems) {
@@ -75,16 +101,16 @@
             });
         };
 
-        function savePickPackDatas(facility, pickPackDatas) {
+        function savePickPackDatasToLocalStorage(facility, pickPackDatas) {
             localStorageService.add('expiredProductForPickPackFacility', angular.toJson(facility));
             localStorageService.add('expiredProductForPickPackDatas', angular.toJson(pickPackDatas));
         }
 
-        function getPickPackFacility() {
+        function getPickPackFacilityFromLocalStorage() {
             return angular.fromJson(localStorageService.get('expiredProductForPickPackFacility'));
         }
 
-        function getPickPackDatas() {
+        function getPickPackDatasFromLocalStorage() {
             return angular.fromJson(localStorageService.get('expiredProductForPickPackDatas'));
         }
     }
