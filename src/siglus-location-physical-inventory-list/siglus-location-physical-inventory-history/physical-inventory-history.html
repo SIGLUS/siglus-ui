@@ -18,7 +18,7 @@
 			<td>{{historyItem.programName}}</td>
 			<td>{{historyItem.completedDate}}</td>
 			<td>
-				<input id="proceedButton" type="button" ng-click="vm.viewHistoryDetail()"
+				<input id="proceedButton" type="button" ng-click="vm.viewHistoryDetail(historyItem)"
 					   value="{{'stockPhysicalInventory.view' | message}}"
 					   class="primary fullwidth-primary-btn"/>
 			</td>

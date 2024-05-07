@@ -13,6 +13,7 @@
                     <th>{{ 'stockPhysicalInventoryHistory.product' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.lotCode' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.expiryDate' | message }}</th>
+                    <th ng-if="vm.historyData.withLocation">{{ 'stockPhysicalInventoryHistory.location' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.stockOnHand' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.currentStock' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.reasons' | message }}</th>
@@ -25,6 +26,7 @@
                     <td>{{ item.productName }}</td>
                     <td>{{ item.lotCode }}</td>
                     <td>{{ vm.formatDate(item.expirationDate) }}</td>
+                    <td ng-if="vm.historyData.withLocation">{{ item.location }}</td>
                     <td>{{ item.stockOnHand }}</td>
                     <td>{{ item.currentStock }}</td>
                     <td class="reasons-cell">

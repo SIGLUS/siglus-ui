@@ -34,6 +34,7 @@
         'siglus-physical-inventory-draft-list',
         'siglus-location-management',
         // SIGLUS-REFACTOR: ends here
-        'stock-physical-inventory-list'
+        'stock-physical-inventory-list',
+        'siglus-physical-inventory-history-detail'
     ]);
 })();

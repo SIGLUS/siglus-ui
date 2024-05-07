@@ -61,6 +61,7 @@
 				<th class="text-center grey" ng-style="{'width' : '25%'}">{{'stockPhysicalInventoryHistory.product' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </th>
+				<th class="text-center grey" ng-if="vm.historyData.withLocation">{{'stockPhysicalInventoryHistory.location' | message}} </th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
 				<th class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.reasons' | message}}</th>
@@ -73,6 +74,7 @@
 				<td class="normal-td green-dark" style="width: 25%">{{item.productName}}</td>
 				<td class="normal-td">{{item.lotCode}}</td>
 				<td class="normal-td">{{item.expirationDate}}</td>
+				<td class="normal-td" ng-if="vm.historyData.withLocation">{{item.location}}</td>
 				<td class="normal-td">{{item.stockOnHand}}</td>
 				<td class="normal-td">{{item.currentStock}}</td>
 				<td class="normal-td" colspan="4">

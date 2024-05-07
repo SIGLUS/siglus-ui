@@ -33,10 +33,11 @@
         vm.program = program;
         vm.viewHistoryDetail = viewHistoryDetail;
 
-        function viewHistoryDetail() {
+        function viewHistoryDetail(historyItem) {
             $state.go('openlmis.stockmanagement.history', {
                 program: vm.program,
-                facility: facility
+                facility: facility,
+                historyId: historyItem.id
             });
         }
     }

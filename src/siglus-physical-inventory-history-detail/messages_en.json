@@ -9,6 +9,7 @@
   "stockPhysicalInventoryHistory.productCode": "Product Code",
   "stockPhysicalInventoryHistory.lotCode": "Lot Code",
   "stockPhysicalInventoryHistory.expiryDate": "Expiry Date",
+  "stockPhysicalInventoryHistory.location": "Location",
   "stockPhysicalInventoryHistory.stockOnHand": "Stock On Hand",
   "stockPhysicalInventoryHistory.currentStock": "Current Stock",
   "stockPhysicalInventoryHistory.reasons": "Reasons",
