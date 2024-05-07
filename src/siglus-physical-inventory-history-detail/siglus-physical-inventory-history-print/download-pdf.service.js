@@ -28,14 +28,13 @@
         var REAL_A4_HEIGHT = 842;
         var REAL_A4_WIDTH = 595;
         var MARGIN_LEFT = 5;
+        var MARGIN_HEIGHT = 5;
         var REAL_CONTENT_WIDTH = REAL_A4_WIDTH - MARGIN_LEFT * 2;
-
         var CONTENT_WIDTH_PIX = 1250;
         var SHRINK_RATIO = REAL_CONTENT_WIDTH / CONTENT_WIDTH_PIX;
-        // eslint-disable-next-line no-undef
-        var PDF = new jsPDF('', 'pt', 'a4');
-        var pageNumber = 1;
-        var usedHeight = 0;
+        // leave space for bottom text
+        var CONTENT_HEIGHT_PIX = REAL_A4_HEIGHT / SHRINK_RATIO - 50;
+        var PDF, pageNumber, usedHeight;
 
         this.downloadPdf = downloadPdf;
 
@@ -45,7 +44,6 @@
             siglusDownloadLoadingModalService.open();
             initPDF();
 
-            var CONTENT_HEIGHT_PIX = REAL_A4_HEIGHT / SHRINK_RATIO;
             var lineItemToImagePromiseList =  _.map(lineItemNodeList, function(lineItemNode) {
                 return getElementToImagePromise(lineItemNode, CONTENT_WIDTH_PIX, lineItemNode.offsetHeight + 1);
             });
@@ -115,7 +113,7 @@
             // eslint-disable-next-line no-undef
             PDF = new jsPDF('', 'pt', 'a4');
             pageNumber = 1;
-            usedHeight = 0;
+            usedHeight = MARGIN_HEIGHT;
         }
 
         function getElementToImagePromise(element, width, height) {
@@ -165,7 +163,7 @@
             );
             pageNumber = pageNumber + 1;
             PDF.addPage();
-            usedHeight = 0;
+            usedHeight = MARGIN_HEIGHT;
         }
 
         function addImageToPDF(imageNodeResult) {

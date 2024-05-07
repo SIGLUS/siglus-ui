@@ -218,8 +218,8 @@
             var canUseHeight = a4Height
                 - headerNode.offsetHeight
                 - repeatTitleNode.offsetHeight;
-            var neddCalcNodes = document.querySelectorAll('#calcTr');
-            var neddCalcNodesArray = Array.from(neddCalcNodes);
+            var needCalcNodes = document.querySelectorAll('#calcTr');
+            var needCalcNodesArray = Array.from(needCalcNodes);
             // eslint-disable-next-line no-undef
             var PDF = new jsPDF('', 'pt', 'a4');
             var rate = 585 / 1250;
@@ -274,7 +274,7 @@
                     };
                 })
             ];
-            _.forEach(neddCalcNodesArray, function(item) {
+            _.forEach(needCalcNodesArray, function(item) {
                 // eslint-disable-next-line no-undef
                 promiseList.push(domtoimage.toPng(item, {
                     scale: 1,
