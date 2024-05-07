@@ -26,7 +26,6 @@
         $stateProvider
             .state('openlmis.stockmanagement.print', {
                 url: '/physicalInventory/history/detail/print/:historyId',
-                label: 'stockPhysicalInventoryHistory.print',
                 views: {
                     '@openlmis': {
                         templateUrl: 'siglus-physical-inventory-history-detail/' +

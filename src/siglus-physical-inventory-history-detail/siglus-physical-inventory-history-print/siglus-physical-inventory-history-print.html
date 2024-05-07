@@ -10,39 +10,39 @@
 				<span class="view-table-logo"></span>
 			</td>
 			<td colspan="4" style="padding-left: 4px;">
-				<h6>{{ 'rapid.republic_of_mozambique' | message }}</h6>
-				<h6>{{ 'rapid.ministry_of_health' | message }}</h6>
-				<h6>{{ 'rapid.central_medicines_and_medical_articles' | message }}</h6>
+				<h6>{{ 'stockPhysicalInventoryHistory.republicOfMozambique' | message }}</h6>
+				<h6>{{ 'stockPhysicalInventoryHistory.ministryOfHealth' | message }}</h6>
+				<h6>{{ 'stockPhysicalInventoryHistory.centralMedicinesAndMedicalArticles' | message }}</h6>
 			</td>
 			<td colspan="4" class="col-5">
 				<h2 style="font-weight: 800;">Mapa Mensal de Medicamentos da {{vm.historyData.program}}</h2>
 			</td>
 			<td class="col-2">
 				&nbsp;
-				<span>{{'tb.month' | message}}: </span>
+				<span>{{'stockPhysicalInventoryHistory.month' | message}}: </span>
 				<span> </span>{{vm.creationDate.monthFullName}}
 			</td>
 		</tr>
 		<tr>
 			<td colspan="5" style="padding-left: 4px;">
-				<span>{{'tb.province' | message}}</span>: {{vm.historyData.province}}
+				<span>{{'stockPhysicalInventoryHistory.province' | message}}</span>: {{vm.historyData.province}}
 			</td>
 			<td colspan="4"></td>
 			<td rowspan="3">
 				&nbsp;
-				<span>{{'tb.year' | message}}: </span>
+				<span>{{'stockPhysicalInventoryHistory.year' | message}}: </span>
 				<span>{{vm.creationDate.year}}</span>
 			</td>
 		</tr>
 		<tr>
 			<td style="padding-left: 4px;" colspan="5">
-				<span>{{'tb.district' | message}}</span>: {{vm.historyData.district}}
+				<span>{{'stockPhysicalInventoryHistory.district' | message}}</span>: {{vm.historyData.district}}
 			</td>
 			<td colspan="5"></td>
 		</tr>
 		<tr class="">
 			<td colspan="5">
-				<span>{{'tb.hf'| message}}</span>
+				<span>{{'stockPhysicalInventoryHistory.healthFacility'| message}}</span>
 				<span>: {{vm.historyData.healthFacility}}</span>
 			</td>
 			<td colspan="5"></td>
@@ -85,13 +85,13 @@
 		<tbody id="footer">
 		<tr>
 			<td style="height: 48px; vertical-align: top;" colspan="2">
-				{{'tb.completedBy' | message}}: {{vm.historyData.submittedBy}}
+				{{'stockPhysicalInventoryHistory.submittedBy' | message}}: {{vm.historyData.submittedBy}}
 			</td>
 			<td style="vertical-align: top;" colspan="3">
-				{{'tb.approvedBy' | message}}: {{vm.historyData.signature}}
+				{{'stockPhysicalInventoryHistory.signature' | message}}: {{vm.historyData.signature}}
 			</td>
 			<td style="vertical-align: top;" colspan="7">
-				{{'tb.dateOfCreation' | message}}: {{vm.creationDate.dateInShort}}
+				{{'stockPhysicalInventoryHistory.dateOfCreation' | message}}: {{vm.creationDate.dateInShort}}
 			</td>
 		</tr>
 		</tbody>
@@ -110,7 +110,7 @@
 
 	<div id="download-pdf-section" class="align-right" style="clear: both;">
 		<button class="btn btn-primary btn-download btn-download-pdf" ng-click="vm.downloadPdf()">
-			{{ 'mmia.downloadPdf' | message }}
+			{{ 'stockPhysicalInventoryHistory.downloadPDF' | message }}
 		</button>
 	</div>
 </div>

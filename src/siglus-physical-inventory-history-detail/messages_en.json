@@ -15,5 +15,14 @@
   "stockPhysicalInventoryHistory.comments": "Comments",
   "stockPhysicalInventoryHistory.PositiveAdjustmentMessage": "Positive adjustment of ${diffQuantity} will be made",
   "stockPhysicalInventoryHistory.NegativeAdjustmentMessage": "Negative adjustment of ${diffQuantity} will be made",
-  "stockPhysicalInventoryHistory.print": "Print History"
+  "stockPhysicalInventoryHistory.dateOfCreation": "Date of creation",
+  "stockPhysicalInventoryHistory.downloadPDF": "Download PDF",
+  "stockPhysicalInventoryHistory.republicOfMozambique": "REPUBLIC OF MOZAMBIQUE",
+  "stockPhysicalInventoryHistory.ministryOfHealth": "MINISTRY OF HEALTH",
+  "stockPhysicalInventoryHistory.centralMedicinesAndMedicalArticles": "CENTRAL MEDICINES AND MEDICAL ARTICLES",
+  "stockPhysicalInventoryHistory.month": "Month",
+  "stockPhysicalInventoryHistory.year": "Year",
+  "stockPhysicalInventoryHistory.province": "Province",
+  "stockPhysicalInventoryHistory.district": "District",
+  "stockPhysicalInventoryHistory.healthFacility": "Health Facility"
 }
