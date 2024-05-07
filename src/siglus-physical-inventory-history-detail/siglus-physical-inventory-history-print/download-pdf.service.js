@@ -35,6 +35,7 @@
         // eslint-disable-next-line no-undef
         var PDF = new jsPDF('', 'pt', 'a4');
         var pageNumber = 1;
+        var usedHeight = 0;
 
         this.downloadPdf = downloadPdf;
 
@@ -45,10 +46,6 @@
             initPDF();
 
             var CONTENT_HEIGHT_PIX = REAL_A4_HEIGHT / SHRINK_RATIO;
-            var currentPageAvailableHeight = CONTENT_HEIGHT_PIX
-                - headerNode.offsetHeight
-                - lineItemHeaderNode.offsetHeight;
-
             var lineItemToImagePromiseList =  _.map(lineItemNodeList, function(lineItemNode) {
                 return getElementToImagePromise(lineItemNode, CONTENT_WIDTH_PIX, lineItemNode.offsetHeight + 1);
             });
@@ -67,80 +64,36 @@
                     var footerNodeResult = result[2];
                     var outerNodeResult = result[3];
 
-                    var offsetHeight = headerNode.offsetHeight;
-                    var lineItemsUsedHeight = 0;
-
-                    PDF.addImage(
-                        headerNodeResult.data, 'JPEG', MARGIN_LEFT, 0,
-                        REAL_CONTENT_WIDTH, headerNodeResult.nodeHeight * SHRINK_RATIO
-                    );
-                    PDF.addImage(
-                        lineItemHeaderNodeResult.data, 'JPEG', MARGIN_LEFT, offsetHeight * SHRINK_RATIO,
-                        REAL_CONTENT_WIDTH, lineItemHeaderNodeResult.nodeHeight * SHRINK_RATIO
-                    );
+                    addImageToPDF(headerNodeResult);
+                    addImageToPDF(lineItemHeaderNodeResult);
 
                     $q.all(lineItemToImagePromiseList)
                         .then(function(lineItemResultList) {
                             _.forEach(lineItemResultList, function(lineItemResult) {
-                                lineItemsUsedHeight = lineItemsUsedHeight + lineItemResult.nodeHeight;
-                                var needNewPage = lineItemsUsedHeight > currentPageAvailableHeight;
+                                var needNewPage = usedHeight + lineItemResult.nodeHeight > CONTENT_HEIGHT_PIX;
                                 if (needNewPage) {
                                     addNewPage();
-                                    PDF.addImage(
-                                        lineItemHeaderNodeResult.data, 'JPEG', MARGIN_LEFT, 0,
-                                        REAL_CONTENT_WIDTH, (lineItemHeaderNodeResult.nodeHeight) * SHRINK_RATIO
-                                    );
-                                    offsetHeight = lineItemHeaderNodeResult.nodeHeight;
-                                    lineItemsUsedHeight = 0;
+                                    addImageToPDF(lineItemHeaderNodeResult);
                                 }
-
-                                PDF.addImage(lineItemResult.data, 'JPEG', MARGIN_LEFT,
-                                    pageNumber === 1
-                                        ? (offsetHeight + lineItemHeaderNodeResult.nodeHeight) * SHRINK_RATIO
-                                        : offsetHeight * SHRINK_RATIO,
-                                    REAL_CONTENT_WIDTH, lineItemResult.nodeHeight * SHRINK_RATIO);
-                                offsetHeight = offsetHeight +  lineItemResult.nodeHeight;
+                                addImageToPDF(lineItemResult);
                             });
 
-                            var isCurrentPageAvailable =
-                                currentPageAvailableHeight >
-                                footerNodeResult.nodeHeight + outerNodeResult.nodeHeight + offsetHeight;
                             // add bottom & outer
-                            if (isCurrentPageAvailable) {
-                                PDF.addImage(
-                                    footerNodeResult.data,
-                                    'JPEG',
-                                    MARGIN_LEFT,
-                                    pageNumber > 1
-                                        ? (offsetHeight) * SHRINK_RATIO
-                                        : (offsetHeight + lineItemHeaderNodeResult.nodeHeight) * SHRINK_RATIO,
-                                    REAL_CONTENT_WIDTH,
-                                    footerNodeResult.nodeHeight * SHRINK_RATIO
-                                );
-                                PDF.addImage(
-                                    outerNodeResult.data,
-                                    'JPEG',
-                                    MARGIN_LEFT,
-                                    pageNumber > 1
-                                        ? (offsetHeight + footerNodeResult.nodeHeight) * SHRINK_RATIO
-                                        : (
-                                            offsetHeight +
-                                            lineItemHeaderNodeResult.nodeHeight +
-                                            footerNodeResult.nodeHeight
-                                        ) * SHRINK_RATIO,
-                                    REAL_CONTENT_WIDTH,
-                                    outerNodeResult.nodeHeight * SHRINK_RATIO
-                                );
-                            } else {
+                            var needNewPage =
+                                usedHeight + footerNodeResult.nodeHeight + outerNodeResult.nodeHeight
+                                > CONTENT_HEIGHT_PIX;
+                            if (needNewPage) {
                                 addNewPage();
-                                addFooterAndOuterImage(footerNodeResult, outerNodeResult);
                             }
+                            addImageToPDF(footerNodeResult);
+                            addImageToPDF(outerNodeResult);
 
                             addPageBottomText(
                                 pageNumber.toString() + '-END',
                                 messageService.get('mmia.print_on_computer'),
                                 buildCurrentDateTime()
                             );
+
                             PDF.save('hello.pdf');
                         })
                         .catch(function(error) {
@@ -162,6 +115,7 @@
             // eslint-disable-next-line no-undef
             PDF = new jsPDF('', 'pt', 'a4');
             pageNumber = 1;
+            usedHeight = 0;
         }
 
         function getElementToImagePromise(element, width, height) {
@@ -203,19 +157,6 @@
             );
         }
 
-        function addFooterAndOuterImage(footerResult, outerResult) {
-            PDF.addImage(
-                footerResult.data, 'JPEG',
-                MARGIN_LEFT, 0,
-                REAL_CONTENT_WIDTH, footerResult.nodeHeight * SHRINK_RATIO
-            );
-            PDF.addImage(
-                outerResult.data, 'JEPG',
-                MARGIN_LEFT, footerResult.nodeHeight,
-                REAL_CONTENT_WIDTH, outerResult.nodeHeight * SHRINK_RATIO
-            );
-        }
-
         function addNewPage() {
             addPageBottomText(
                 pageNumber.toString(),
@@ -224,6 +165,15 @@
             );
             pageNumber = pageNumber + 1;
             PDF.addPage();
+            usedHeight = 0;
+        }
+
+        function addImageToPDF(imageNodeResult) {
+            PDF.addImage(
+                imageNodeResult.data, 'JPEG', MARGIN_LEFT, usedHeight * SHRINK_RATIO,
+                REAL_CONTENT_WIDTH, imageNodeResult.nodeHeight * SHRINK_RATIO
+            );
+            usedHeight = usedHeight + imageNodeResult.nodeHeight;
         }
 
         function buildCurrentDateTime() {
