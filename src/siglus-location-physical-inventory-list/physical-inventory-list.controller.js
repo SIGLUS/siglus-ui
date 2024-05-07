@@ -27,202 +27,88 @@
     angular
         .module('siglus-location-physical-inventory-list')
         .controller('LocationPhysicalInventoryListController', controller);
-    controller.$inject = ['$stateParams', 'facility', 'programs', 'programId',
-        'messageService',
-        '$state', 'physicalInventoryService', 'physicalInventoryFactory',
-        'FunctionDecorator', 'SiglusPhysicalInventoryCreationService', 'alertService',
-        'loadingModalService', 'drafts'];
 
-    function controller($stateParams, facility, programs, programId, messageService,
-                        $state, physicalInventoryService, physicalInventoryFactory,
-                        FunctionDecorator, SiglusPhysicalInventoryCreationService, alertService,
-                        loadingModalService, drafts) {
+    controller.$inject = ['facility', 'programs', 'programId', 'program', '$state', 'drafts'];
+
+    function controller(facility, programs, programId, program, $state, drafts) {
         var vm = this;
 
         /**
-     * @ngdoc property
-     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name facility
-     * @type {Object}
-     *
-     * @description
-     * Holds user's home facility.
-     */
+         * @ngdoc property
+         * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
+         * @name facility
+         * @type {Object}
+         *
+         * @description
+         * Holds user's home facility.
+         */
         vm.facility = facility;
-        vm.$onInit = onInit;
+
         /**
-     * @ngdoc property
-     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name programs
-     * @type {Array}
-     *
-     * @description
-     * Holds available programs for home facility.
-     */
+         * @ngdoc property
+         * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
+         * @name programs
+         * @type {Array}
+         *
+         * @description
+         * Holds available programs for home facility.
+         */
         vm.programs = programs;
         // SIGLUS-REFACTOR: starts here
-        vm.drafts = $stateParams.drafts || [];
 
-        // SIGLUS-REFACTOR: ends here
-        vm.editDraft = new FunctionDecorator()
-            .decorateFunction(editDraft)
-            .withLoading(true)
-            .getDecoratedFunction();
+        vm.program = program;
+        vm.drafts = drafts;
+        vm.$onInit = onInit;
 
         /**
-     * @ngdoc method
-     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name getProgramName
-     *
-     * @description
-     * Responsible for getting program name based on id.
-     *
-     * @param {String} id Program UUID
-     */
-        vm.getProgramName = function(id) {
-            return _.find(vm.programs, function(program) {
-                return program.id === id;
-            }).name;
-        };
+         * @ngdoc method
+         * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
+         * @name onInit
+         *
+         * @description
+         * Responsible for oninit physical inventory status.
+         *
+         */
+        function onInit() {
+            if (vm.isHistory()) {
+                vm.goToHistory();
+            } else {
+                vm.goToInventory();
+            }
+        }
 
         /**
-     * @ngdoc method
-     * @methodOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name searchProgram
-     *
-     * @description
-     * Responsible for retrieving Stock Card Summaries based on selected program and facility.
-     */
-
+         * @ngdoc method
+         * @methodOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
+         * @name searchProgram
+         *
+         * @description
+         * Responsible for retrieving Stock Card Summaries based on selected program and facility.
+         */
         // SIGLUS-REFACTOR: starts here
         vm.searchProgram = function searchProgram() {
-            $state.go('openlmis.locationManagement.physicalInventory', {
-                programId: vm.program.id,
-                drafts: _.clone(vm.drafts)
+            $state.go($state.current.name, {
+                programId: vm.program.id
+            }, {
+                reload: true
             });
         };
         // SIGLUS-REFACTOR: ends here
 
-        /**
-     * @ngdoc method
-     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name getDraftStatus
-     *
-     * @description
-     * Responsible for getting physical inventory status.
-     *
-     * @param {Boolean} isStarter Indicates starter or saved draft.
-     */
-        vm.getDraftStatus = function(isStarter) {
-            if (isStarter) {
-                return messageService.get('stockPhysicalInventory.notStarted');
-            }
-            return messageService.get('stockPhysicalInventory.draft');
-
+        vm.isHistory = function() {
+            return $state.current.name === 'openlmis.locationManagement.physicalInventory.history';
         };
 
-        /**
-     * @ngdoc method
-     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name onInit
-     *
-     * @description
-     * Responsible for oninit physical inventory status.
-     *
-     */
+        vm.goToHistory = function() {
+            $state.go('openlmis.locationManagement.physicalInventory.history', $state.params);
+        };
 
-        function onInit() {
-            vm.program = _.find(programs, function(program) {
-                return program.id === programId;
-            });
-            vm.drafts = drafts;
-        }
+        vm.isInventory = function() {
+            return $state.current.name === 'openlmis.locationManagement.physicalInventory.selection';
+        };
 
-        /**
-     * @ngdoc method
-     * @propertyOf siglus-location-physical-inventory-list.controller:LocationPhysicalInventoryListController
-     * @name editDraft
-     *
-     * @description
-     * Navigating to draft physical inventory.
-     *
-     * @param {Object} draft Physical inventory draft
-     */
-        function editDraft(draft) {
-            var program = _.find(vm.programs, function(program) {
-                return program.id === draft.programId;
-            });
-            return physicalInventoryFactory.getDraft(draft.programId,
-                draft.facilityId).then(function(draft) {
-                if (draft.id) {
-                    $state.go(
-                        'openlmis.locationManagement.physicalInventory.draft', {
-                            id: draft.id,
-                            draft: draft,
-                            program: program,
-                            facility: facility
-                        }
-                    );
-                } else {
-                    physicalInventoryService.createDraft(program.id,
-                        facility.id).then(
-                        function(data) {
-                            draft.id = data.id;
-                            $state.go(
-                                'openlmis.locationManagement.physicalInventory.draft',
-                                {
-                                    id: draft.id,
-                                    draft: draft,
-                                    program: program,
-                                    facility: facility
-                                }
-                            );
-                        }
-                    );
-                }
-            });
-        }
-
-        function getConflictDisplayName(data) {
-            var conflictProgramNames = _.chain(vm.programs)
-                .filter(function(program) {
-                    return _.include(data, program.id);
-                })
-                .map('name')
-                .uniq()
-                .value();
-            return conflictProgramNames.join(',');
-        }
-
-        vm.validateDraftStatus = function(isStarter, draftId) {
-            loadingModalService.open();
-            physicalInventoryService.validateConflictProgram(programId, facility.id, draftId)
-                .then(function(data) {
-                    if (data.canStartInventory) {
-                        if (isStarter) {
-                            loadingModalService.close();
-                            SiglusPhysicalInventoryCreationService.show('', 'location', facility);
-                        } else {
-                            var stateParamsCopy = angular.copy($stateParams);
-                            stateParamsCopy.locationManagementOption = drafts[0].locationOption;
-                            $state.go(
-                                'openlmis.locationManagement.physicalInventory.draftList',
-                                stateParamsCopy
-                            );
-                        }
-                    } else {
-                        loadingModalService.close();
-                        alertService.error(
-                            'stockPhysicalInventory.conflictProgram',
-                            '',
-                            '',
-                            {
-                                programName: getConflictDisplayName(data.containDraftProgramsList)
-                            }
-                        );
-                    }
-                });
-
+        vm.goToInventory = function() {
+            $state.go('openlmis.locationManagement.physicalInventory.selection', $state.params);
         };
 
     }

@@ -1,0 +1,28 @@
+<section class="openlmis-table-container">
+	<table>
+		<caption ng-if="!vm.program">
+			{{'stockPhysicalInventory.selectFirst' | message}}
+		</caption>
+		<caption ng-if="vm.program && vm.historyList.length === 0">
+			{{'stockPhysicalInventory.noHistory' | message}}
+		</caption>
+		<thead>
+		<tr>
+			<th style="min-width:160px">{{'stockPhysicalInventory.program' | message}}</th>
+			<th style="min-width:160px">{{'stockPhysicalInventory.dateCompleted' | message}}</th>
+			<th class="col-sticky sticky-right">{{'stockPhysicalInventory.actions' | message}}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="historyItem in vm.historyList">
+			<td>{{historyItem.programName}}</td>
+			<td>{{historyItem.completedDate}}</td>
+			<td>
+				<input id="proceedButton" type="button" ng-click="vm.viewHistoryDetail()"
+					   value="{{'stockPhysicalInventory.view' | message}}"
+					   class="primary fullwidth-primary-btn"/>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</section>

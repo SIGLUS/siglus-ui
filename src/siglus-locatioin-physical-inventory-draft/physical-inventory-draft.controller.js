@@ -557,11 +557,11 @@
                             draft.occurredDate = resolvedData.occurredDate;
                             draft.signature = resolvedData.signature;
                             draft.lineItems = _.filter(draft.lineItems, function(item) {
-                                return !item.skipped || item.skipped === undefined;
+                                return !item.skipped;
                             });
-                            physicalInventoryService.submitPhysicalInventory(_.extend({}, draft, {
+                            physicalInventoryService.submitPhysicalInventory(_.assign({}, draft, {
                                 summaries: []
-                            }), true)
+                            }), true, buildHistoryData(resolvedData))
                                 .then(function() {
                                     if (vm.isInitialInventory) {
                                         currentUserService.clearCache();
@@ -1368,5 +1368,76 @@
             }
         });
         // SIGLUS-REFACTOR: ends here
+
+        function buildHistoryData(resolvedData) {
+            return {
+                // TODO: by product / location?
+                withLocation: true,
+                program: vm.program.name,
+                province: vm.facility.geographicZone.parent.name,
+                district: vm.facility.geographicZone.name,
+                healthFacility: vm.facility.name,
+                submittedBy: resolvedData.signature,
+                signature: resolvedData.signature,
+                creationDate: resolvedData.occurredDate,
+                lineItemsData: buildLineItemsData()
+            };
+        }
+
+        function buildLineItemsData() {
+            var lineItemsData = [];
+
+            vm.displayLineItemsGroup.forEach(function(displayLineItems) {
+                var currentProduct = displayLineItems[0].orderable;
+
+                if (displayLineItems.length > 1) {
+                    var stockOnHandSum = 0;
+                    var currentStockSum = 0;
+                    displayLineItems.forEach(function(lineItem) {
+                        stockOnHandSum = stockOnHandSum + lineItem.stockOnHand;
+                        currentStockSum = currentStockSum + lineItem.quantity;
+                    });
+
+                    lineItemsData.push({
+                        productCode: currentProduct.productCode,
+                        productName: currentProduct.fullProductName,
+                        lotCode: null,
+                        expirationDate: null,
+                        stockOnHand: stockOnHandSum,
+                        currentStock: currentStockSum,
+                        reasons: null,
+                        comments: null,
+                        location: null
+                    });
+                    lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems));
+                } else {
+                    var lineItem = buildLotItemListData(displayLineItems)[0];
+                    lineItemsData.push(_.assign(lineItem, {
+                        productCode: currentProduct.productCode,
+                        productName: currentProduct.fullProductName
+                    }));
+                }
+            });
+            return lineItemsData;
+        }
+
+        function buildLotItemListData(lineItems) {
+            return lineItems.map(function(lineItem) {
+                return {
+                    productCode: null,
+                    productName: null,
+                    lotCode: lineItem.lot.lotCode,
+                    expirationDate: lineItem.lot.expirationDate,
+                    stockOnHand: lineItem.stockOnHand,
+                    currentStock: lineItem.quantity,
+                    reasons: {
+                        reason: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].reason.name : null,
+                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
+                    },
+                    comments: lineItem.reasonFreeText,
+                    location: lineItem.area + ' - ' + lineItem.locationCode
+                };
+            });
+        }
     }
 })();

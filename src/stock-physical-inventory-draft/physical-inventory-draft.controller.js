@@ -1012,8 +1012,8 @@
             return lineItemsData;
         }
 
-        function buildLotItemListData(itemList) {
-            return itemList.map((function(lineItem) {
+        function buildLotItemListData(lineItems) {
+            return lineItems.map(function(lineItem) {
                 return {
                     productCode: null,
                     productName: null,
@@ -1027,7 +1027,7 @@
                     },
                     comments: lineItem.reasonFreeText
                 };
-            }));
+            });
         }
     }
 })();

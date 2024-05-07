@@ -12,28 +12,33 @@
  * the GNU Affero General Public License along with this program. If not, see
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
-
 (function() {
+
     'use strict';
 
-    /**
-   * @module siglus-location-physical-inventory-list
-   *
-   * @description
-   * Responsible for physical inventory list screen.
-   */
-    angular.module('siglus-location-physical-inventory-list', [
-        'stockmanagement',
-        'stock-program-util',
-        'referencedata-facility',
-        'referencedata-program',
-        'stock-physical-inventory',
-        'openlmis-function-decorator',
-        // SIGLUS-REFACTOR: starts here
-        'siglus-physical-inventory-creation',
-        'siglus-physical-inventory-draft-list',
-        'siglus-location-management',
-        // SIGLUS-REFACTOR: ends here
-        'stock-physical-inventory-list'
-    ]);
+    angular
+        .module('siglus-location-physical-inventory-list')
+        .controller('LocationPhysicalInventoryHistoryController', controller);
+
+    controller.$inject = [
+        '$state', '$stateParams', 'program', 'facility', 'filteredHistoryList'
+    ];
+
+    function controller(
+        $state, $stateParams, program, facility, filteredHistoryList
+    ) {
+        var vm = this;
+
+        vm.historyList = filteredHistoryList;
+        vm.program = program;
+        vm.viewHistoryDetail = viewHistoryDetail;
+
+        function viewHistoryDetail() {
+            $state.go('openlmis.stockmanagement.history', {
+                program: vm.program,
+                facility: facility
+            });
+        }
+    }
 })();
+

@@ -24,7 +24,7 @@
 
     function routes($stateProvider, STOCKMANAGEMENT_RIGHTS) {
         $stateProvider.state('openlmis.locationManagement.physicalInventory', {
-            url: '/physicalInventory?programId',
+            url: '/physicalInventory',
             label: 'stockPhysicalInventory.physicalInventory',
             priority: 3,
             showInNavigation: true,
@@ -36,7 +36,8 @@
                 }
             },
             params: {
-                drafts: undefined
+                drafts: undefined,
+                programId: undefined
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             resolve: {
@@ -61,10 +62,12 @@
                     });
                 },
                 programId: function($stateParams) {
-                    if ($stateParams.programId) {
-                        return $stateParams.programId;
-                    }
-                    return undefined;
+                    return $stateParams.programId;
+                },
+                program: function(programs, programId) {
+                    return programs.find(function(program) {
+                        return program.id === programId;
+                    }, undefined);
                 },
                 drafts: function(physicalInventoryService, $stateParams, facility, programId) {
                     if (!programId) {
@@ -81,8 +84,56 @@
                             $stateParams.drafts = _.clone(vmDrafts);
                             return vmDrafts;
                         });
+                },
+                historyList: function(SiglusPhysicalInventoryHistoryService, program) {
+                    if (!program) {
+                        return [];
+                    }
+                    return SiglusPhysicalInventoryHistoryService.getHistoryList().then(function(historyList) {
+                        return historyList;
+                    });
                 }
             }
-        });
+        })
+            .state('openlmis.locationManagement.physicalInventory.selection', {
+                url: '/selection?programId',
+                templateUrl: 'siglus-location-physical-inventory-list/' +
+                'siglus-location-physical-inventory-selection/physical-inventory-selection.html',
+                controller: 'LocationPhysicalInventorySelectionController',
+                controllerAs: 'vm',
+                params: {
+                    programId: undefined
+                },
+                accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
+                resolve: {
+                    program: function(programs, $stateParams) {
+                        return programs.find(function(program) {
+                            return program.id === $stateParams.programId;
+                        }, undefined);
+                    }
+                }
+            })
+            .state('openlmis.locationManagement.physicalInventory.history', {
+                url: '/history?programId',
+                templateUrl: 'siglus-location-physical-inventory-list/' +
+                    'siglus-location-physical-inventory-history/physical-inventory-history.html',
+                controller: 'LocationPhysicalInventoryHistoryController',
+                controllerAs: 'vm',
+                params: {
+                    programId: undefined
+                },
+                resolve: {
+                    program: function(programs, $stateParams) {
+                        return programs.find(function(program) {
+                            return program.id === $stateParams.programId;
+                        }, undefined);
+                    },
+                    filteredHistoryList: function(SiglusPhysicalInventoryHistoryService, program, historyList) {
+                        return program ? SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(
+                            program.name, historyList
+                        ) : [];
+                    }
+                }
+            });
     }
 })();
