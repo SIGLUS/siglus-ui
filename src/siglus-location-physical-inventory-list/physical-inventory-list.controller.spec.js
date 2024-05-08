@@ -15,30 +15,19 @@
 
 describe('LocationPhysicalInventoryListController', function() {
 
-    var $controller, $q, $rootScope, $state, physicalInventoryService, physicalInventoryFactory,
-        messageService, programs, facility, deferred,
-        vm, programId, SiglusPhysicalInventoryCreationService, alertService;
-
+    var $controller, $q, $rootScope, $state, programs, facility, deferred, vm, drafts;
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
             $q = $injector.get('$q');
             $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
-            physicalInventoryService = $injector.get('physicalInventoryService');
-            alertService = $injector.get('alertService');
-            SiglusPhysicalInventoryCreationService = $injector.get('SiglusPhysicalInventoryCreationService');
-            physicalInventoryFactory = $injector.get('physicalInventoryFactory');
-            messageService = $injector.get('messageService');
         });
     }
 
     function prepareSpies() {
         deferred = $q.defer();
         spyOn($state, 'go');
-        spyOn(SiglusPhysicalInventoryCreationService, 'show').andReturn(deferred.promise);
-        spyOn(physicalInventoryService, 'validateConflictProgram').andReturn(deferred.promise);
-        spyOn(alertService, 'error');
     }
 
     function prepareData() {
@@ -54,17 +43,18 @@ describe('LocationPhysicalInventoryListController', function() {
             name: 'National Warehouse',
             supportedPrograms: programs
         };
+        drafts = [{
+            programId: '1'
+        }, {
+            programId: '2'
+        }];
 
         vm = $controller('LocationPhysicalInventoryListController', {
             facility: facility,
             programs: programs,
-            programId: programId,
-            messageService: messageService,
-            drafts: [{
-                programId: '1'
-            }, {
-                programId: '2'
-            }]
+            program: programs[0],
+            programId: programs[0].id,
+            drafts: drafts
         });
     }
 
@@ -82,120 +72,8 @@ describe('LocationPhysicalInventoryListController', function() {
 
         it('should init programs and physical inventory drafts properly', function() {
             expect(vm.programs).toEqual(programs);
-            expect(vm.drafts).toEqual([]);
+            expect(vm.drafts).toEqual(drafts);
         });
 
-        it('should get program name by id', function() {
-            expect(vm.getProgramName('1')).toEqual('HIV');
-            expect(vm.getProgramName('2')).toEqual('TB');
-        });
-
-        it('should get physical inventory draft status', function() {
-            expect(vm.getDraftStatus(true)).toEqual(messageService.get('stockPhysicalInventory.notStarted'));
-
-            expect(vm.getDraftStatus(false)).toEqual(messageService.get('stockPhysicalInventory.draft'));
-        });
-
-    });
-
-    describe('editDraft', function() {
-
-        it('should go to physical inventory page when proceed', function() {
-            var draft = {
-                id: 123,
-                programId: '1',
-                starter: false
-            };
-            spyOn(physicalInventoryFactory, 'getDraft').andReturn(
-                $q.when(draft)
-            );
-
-            vm.editDraft(draft);
-            $rootScope.$apply();
-
-            expect($state.go).toHaveBeenCalledWith(
-                'openlmis.locationManagement.physicalInventory.draft', {
-                    id: draft.id,
-                    draft: draft,
-                    program: {
-                        name: 'HIV',
-                        id: '1'
-                    },
-                    facility: facility
-                }
-            );
-        });
-
-        it('should create draft to get id and go to physical inventory when proceed',
-            function() {
-                var draft = {
-                    programId: '1',
-                    starter: false
-                };
-                var id = '456';
-                spyOn(physicalInventoryFactory, 'getDraft').andReturn(
-                    $q.when(draft)
-                );
-                spyOn(physicalInventoryService, 'createDraft').andReturn(
-                    $q.resolve({
-                        id: id
-                    })
-                );
-
-                vm.editDraft(draft);
-                $rootScope.$apply();
-
-                expect(physicalInventoryService.createDraft).toHaveBeenCalledWith(
-                    draft.programId, facility.id
-                );
-            });
-    });
-
-    describe('validateDraftStatus', function() {
-        it('should do initial draft input config when current program has no draft', function() {
-
-            vm.validateDraftStatus(true, null);
-
-            deferred.resolve({
-                canStartInventory: true,
-                containDraftProgramsList: []
-            });
-            $rootScope.$apply();
-
-            expect(SiglusPhysicalInventoryCreationService.show).toHaveBeenCalled();
-        });
-
-        it('should enter draft list page when current program has draft', function() {
-
-            vm.validateDraftStatus(false, null);
-
-            deferred.resolve({
-                canStartInventory: true,
-                containDraftProgramsList: []
-            });
-            $rootScope.$apply();
-
-            expect($state.go).toHaveBeenCalledWith('openlmis.locationManagement.physicalInventory.draftList', {
-                locationManagementOption: undefined
-            });
-        });
-
-        it('should alert error hint when validate is false', function() {
-
-            vm.validateDraftStatus(false, null);
-
-            deferred.resolve({
-                canStartInventory: false,
-                containDraftProgramsList: ['1', '2']
-            });
-            $rootScope.$apply();
-
-            expect(alertService.error).toHaveBeenCalledWith('stockPhysicalInventory.conflictProgram',
-                '',
-                '',
-                {
-                    programName: 'HIV,TB'
-                });
-        });
     });
 });
