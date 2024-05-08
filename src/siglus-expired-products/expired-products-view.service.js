@@ -48,16 +48,96 @@
         this.getPickPackFacility = getPickPackFacilityFromLocalStorage;
         this.getPickPackDatas = getPickPackDatasFromLocalStorage;
 
-        function getExpiredProducts(facilityId) {
+        var LineItemTypeProduct = 'Product';
+        var LineItemTypeLot = 'Lot';
+        var LineItemTypeLocation = 'Location';
+
+        function getExpiredProducts(facilityId, enableLocation) {
             return resource.get({
                 id: facilityId,
                 expired: true
             }).$promise.then(function(expiredProducts) {
+                var itemType = enableLocation ? LineItemTypeLocation : LineItemTypeLot;
                 expiredProducts.forEach(function(product) {
                     product.skipped = false;
+                    product.itemType = itemType;
                 });
-                return expiredProducts;
+                return groupByExpiredProduct(expiredProducts, enableLocation);
             });
+        }
+
+        function groupByExpiredProduct(expiredProducts, enableLocation) {
+            var productsMap = expiredProducts.reduce(function(acc, expiredProduct) {
+                if (!acc[expiredProduct.orderableId]) {
+                    acc[expiredProduct.orderableId] = [];
+                }
+                acc[expiredProduct.orderableId].push(expiredProduct);
+                return acc;
+            }, {});
+            var result = [];
+            for (var key in productsMap) {
+                var values = productsMap[key];
+                var lots = groupByExpiredProductLot(values, enableLocation);
+                var total = lots.reduce(function(acc, value) {
+                    return acc + value.soh;
+                }, 0);
+                var productItem = {
+                    programId: values[0].programId,
+                    programName: values[0].programName,
+                    programCode: values[0].programCode,
+                    productName: values[0].productName,
+                    orderableId: values[0].orderableId,
+                    productCode: values[0].productCode,
+                    soh: total,
+                    itemType: LineItemTypeProduct,
+                    lots: lots
+                };
+                result.push(productItem);
+            }
+            return result;
+        }
+
+        function groupByExpiredProductLot(expiredLots, enableLocation) {
+            var result = [];
+            if (enableLocation) {
+                var lotsMap = expiredLots.reduce(function(acc, expiredLot) {
+                    if (!acc[expiredLot.lotId]) {
+                        acc[expiredLot.lotId] = [];
+                    }
+                    acc[expiredLot.lotId].push(expiredLot);
+                    return acc;
+                }, {});
+                for (var key in lotsMap) {
+                    var values = lotsMap[key];
+                    var total = values.reduce(function(acc, value) {
+                        return acc + value.soh;
+                    }, 0);
+                    var lotItem = {
+                        programId: values[0].programId,
+                        programName: values[0].programName,
+                        programCode: values[0].programCode,
+                        productName: values[0].productName,
+                        productCode: values[0].productCode,
+                        orderableId: values[0].orderableId,
+                        lotId: key,
+                        lotCode: values[0].lotCode,
+                        expirationDate: values[0].expirationDate,
+                        stockCardId: values[0].stockCardId,
+                        soh: total,
+                        skipped: false,
+                        itemType: LineItemTypeLot,
+                        locations: values
+                    };
+                    result.push(lotItem);
+                }
+            } else {
+                expiredLots.map(function(expiredLot) {
+                    expiredLot.itemType = LineItemTypeLot;
+                    expiredLot.skipped = false;
+                    result.push(expiredLot);
+                });
+            }
+            return result;
         }
 
         function removeExpiredProducts(facilityId, lots) {
@@ -94,7 +174,6 @@
                     });
                     return isMatched ? lineItem : null;
                 });
-
             }
             return _.filter(result, function(item) {
                 return !_.isEmpty(item);

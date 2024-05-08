@@ -93,12 +93,30 @@
 
         vm.viewDetail = function(lineItem) {
             if (vm.enableLocation) {
-                $state.go('openlmis.locationManagement.stockOnHand.locationDetail', {
-                    stockCardId: lineItem.stockCardId,
-                    locationCode: lineItem.locationCode,
-                    program: lineItem.programId,
-                    facility: vm.facility.id
-                });
+                switch (lineItem.itemType) {
+                case 'Product':
+                    $state.go('openlmis.locationManagement.stockOnHand.productDetail', {
+                        orderable: lineItem.orderableId,
+                        program: lineItem.programId,
+                        facilityId: vm.facility.id
+                    });
+                    break;
+                case 'Lot':
+                    $state.go('openlmis.locationManagement.stockOnHand.lotDetail', {
+                        stockCardId: lineItem.stockCardId,
+                        program: lineItem.programId,
+                        facility: vm.facility.id
+                    });
+                    break;
+                case 'Location':
+                    $state.go('openlmis.locationManagement.stockOnHand.locationDetail', {
+                        stockCardId: lineItem.stockCardId,
+                        locationCode: lineItem.locationCode,
+                        program: lineItem.programId,
+                        facility: vm.facility.id
+                    });
+                    break;
+                }
             } else {
                 $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
                     stockCardId: lineItem.stockCardId,

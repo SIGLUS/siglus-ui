@@ -38,7 +38,8 @@
                     return facilityFactory.getUserHomeFacility();
                 },
                 displayItems: function(expiredProductsViewService, facility) {
-                    return expiredProductsViewService.getExpiredProducts(facility.id);
+                    return expiredProductsViewService.getExpiredProducts(facility.id,
+                        facility.enableLocationManagement);
                 }
             }
         });

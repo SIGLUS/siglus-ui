@@ -29,15 +29,32 @@
             </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="lineItem in vm.displayItems">
-                    <td>{{lineItem.productCode}}</td>
-                    <td class="white-space-pre">{{lineItem.productName}}</td>
-                    <td>{{lineItem.lotCode}}</td>
-                    <td>{{lineItem.expirationDate}}</td>
-                    <td ng-if="vm.enableLocation">{{lineItem.locationCode}}</td>
-                    <td class="text-align-right">{{lineItem.soh}}</td>
+                <tr ng-repeat-start="product in vm.displayItems" class="is-secondary">
+                    <td>{{product.productCode}}</td>
+                    <td class="white-space-pre">{{product.productName}}</td>
+                    <td>{{product.lotCode}}</td>
+                    <td>{{product.expirationDate}}</td>
+                    <td ng-if="vm.enableLocation">{{product.locationCode}}</td>
+                    <td class="text-align-right">{{product.soh}}</td>
                 </tr>
-                </tbody>
+                <tr ng-repeat-start="lot in product.lots">
+                    <td>{{lot.productCode}}</td>
+                    <td class="white-space-pre">{{lot.productName}}</td>
+                    <td>{{lot.lotCode}}</td>
+                    <td>{{lot.expirationDate}}</td>
+                    <td ng-if="vm.enableLocation">{{lot.locationCode}}</td>
+                    <td class="text-align-right">{{lot.soh}}</td>
+                </tr>
+                <tr ng-repeat-end ng-repeat="location in lot.locations">
+                    <td>{{location.productCode}}</td>
+                    <td class="white-space-pre">{{location.productName}}</td>
+                    <td>{{location.lotCode}}</td>
+                    <td>{{location.expirationDate}}</td>
+                    <td ng-if="vm.enableLocation">{{location.locationCode}}</td>
+                    <td class="text-align-right">{{location.soh}}</td>
+                </tr>
+                <tr ng-repeat-end ng-if="false"></tr>
+            </tbody>
         </table>
     </section>
 </div>

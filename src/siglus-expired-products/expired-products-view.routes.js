@@ -38,7 +38,7 @@
                 },
                 params: {
                     pageNumber: '0',
-                    pageSize: '20',
+                    pageSize: '10',
                     keyword: undefined
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
@@ -53,7 +53,8 @@
                         if ($stateParams.expiredProducts) {
                             return $stateParams.expiredProducts;
                         }
-                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id);
+                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id,
+                            facility.enableLocationManagement);
                         return $stateParams.expiredProducts;
                     },
                     displayItems: function(expiredProducts, $stateParams, paginationService,
@@ -100,7 +101,8 @@
                         if ($stateParams.expiredProducts) {
                             return $stateParams.expiredProducts;
                         }
-                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id);
+                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id,
+                            facility.enableLocationManagement);
                         return $stateParams.expiredProducts;
                     },
                     displayItems: function(expiredProducts, $stateParams, paginationService,

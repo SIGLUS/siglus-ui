@@ -30,24 +30,51 @@
         </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="lineItem in vm.pagedLineItems">
+            <tr ng-repeat-start="product in vm.pagedLineItems" class="is-secondary">
+                <td></td>
+                <td>{{product.productCode}}</td>
+                <td class="white-space-pre">{{product.productName}}</td>
+                <td>{{product.lotCode}}</td>
+                <td>{{product.expirationDate}}</td>
+                <td ng-if="vm.enableLocation">{{product.locationCode}}</td>
+                <td class="text-align-right">{{product.soh}}</td>
                 <td>
-                    <input type="checkbox" ng-model="lineItem.skipped">
-                </td>
-                <td>{{lineItem.productCode}}</td>
-                <td class="white-space-pre">{{lineItem.productName}}</td>
-                <td>{{lineItem.lotCode}}</td>
-                <td>{{lineItem.expirationDate}}</td>
-                <td ng-if="vm.enableLocation">{{lineItem.locationCode}}</td>
-                <td class="text-align-right">{{lineItem.soh}}</td>
-                <td>
-                    <button type="button"
-                            ng-click="vm.viewDetail(lineItem)"
-                            class="primary">
+                    <button type="button" ng-click="vm.viewDetail(product)" class="primary">
                         {{'stockCardSummaryList.view'| message}}
                     </button>
                 </td>
             </tr>
+            <tr ng-repeat-start="lot in product.lots">
+                <td>
+                    <input type="checkbox" ng-model="lot.skipped">
+                </td>
+                <td>{{lot.productCode}}</td>
+                <td class="white-space-pre">{{lot.productName}}</td>
+                <td>{{lot.lotCode}}</td>
+                <td>{{lot.expirationDate}}</td>
+                <td ng-if="vm.enableLocation">{{lot.locationCode}}</td>
+                <td class="text-align-right">{{lot.soh}}</td>
+                <td>
+                    <button type="button" ng-click="vm.viewDetail(lot)" class="primary">
+                        {{'stockCardSummaryList.view'| message}}
+                    </button>
+                </td>
+            </tr>
+            <tr ng-repeat-end ng-repeat="location in lot.locations">
+                <td></td>
+                <td>{{location.productCode}}</td>
+                <td class="white-space-pre">{{location.productName}}</td>
+                <td>{{location.lotCode}}</td>
+                <td>{{location.expirationDate}}</td>
+                <td ng-if="vm.enableLocation">{{location.locationCode}}</td>
+                <td class="text-align-right">{{location.soh}}</td>
+                <td>
+                    <button type="button" ng-click="vm.viewDetail(location)" class="primary">
+                        {{'stockCardSummaryList.view'| message}}
+                    </button>
+                </td>
+            </tr>
+            <tr ng-repeat-end ng-if="false"></tr>
         </tbody>
     </table>
     <openlmis-pagination list="vm.displayItems" paged-list="vm.pagedLineItems">
