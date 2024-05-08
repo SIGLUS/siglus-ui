@@ -31,6 +31,8 @@
         var vm = this;
 
         vm.historyData = historyData;
+        vm.inventoryByProduct = vm.historyData.withLocation && vm.historyData.isByProduct;
+        vm.inventoryByLocation = vm.historyData.withLocation && !vm.historyData.isByProduct;
         vm.service = SiglusPhysicalInventoryHistoryDetailService;
         vm.creationDate = buildDetailDate();
 

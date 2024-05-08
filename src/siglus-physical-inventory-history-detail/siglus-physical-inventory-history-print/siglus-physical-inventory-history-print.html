@@ -55,26 +55,18 @@
 
 	<table id="lineItem-section" class="border-all-bold head-section">
 
-		<thead id="lineItem-header" ng-if="!vm.historyData.withLocation || vm.historyData.isByProduct">
+		<thead id="lineItem-header">
 			<tr class="text-bold">
+				<th class="text-center grey" ng-if="vm.inventoryByLocation">
+					{{'stockPhysicalInventoryHistory.location' | message}}
+				</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</th>
 				<th class="text-center grey" ng-style="{'width' : '25%'}">{{'stockPhysicalInventoryHistory.product' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </th>
-				<th class="text-center grey" ng-if="vm.historyData.withLocation">{{'stockPhysicalInventoryHistory.location' | message}} </th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
-				<th class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.reasons' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.comments' | message}}</th>
-			</tr>
-		</thead>
-		<thead id="lineItem-header" ng-if="vm.historyData.withLocation && !vm.historyData.isByProduct">
-			<tr class="text-bold">
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.location' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</th>
-				<th class="text-center grey" ng-style="{'width' : '25%'}">{{'stockPhysicalInventoryHistory.product' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </th>
+				<th class="text-center grey" ng-if="vm.inventoryByProduct">
+					{{'stockPhysicalInventoryHistory.location' | message}}
+				</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
 				<th class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.reasons' | message}}</th>
@@ -82,13 +74,14 @@
 			</tr>
 		</thead>
 
-		<tbody ng-if="!vm.historyData.withLocation || vm.historyData.isByProduct">
+		<tbody>
 			<tr id="calcTr" ng-repeat="item in vm.historyData.lineItemsData">
+				<td class="normal-td green-dark" ng-if="vm.inventoryByLocation">{{item.location}}</td>
 				<td class="normal-td green-dark">{{item.productCode}}</td>
 				<td class="normal-td green-dark" style="width: 25%">{{item.productName}}</td>
 				<td class="normal-td">{{item.lotCode}}</td>
 				<td class="normal-td">{{item.expirationDate}}</td>
-				<td class="normal-td" ng-if="vm.historyData.withLocation">{{item.location}}</td>
+				<td class="normal-td" ng-if="vm.inventoryByProduct">{{item.location}}</td>
 				<td class="normal-td">{{item.stockOnHand}}</td>
 				<td class="normal-td">{{item.currentStock}}</td>
 				<td class="normal-td" colspan="4">
@@ -98,22 +91,7 @@
 				<td class="normal-td">{{item.comments}}</td>
 			</tr>
 		</tbody>
-		<tbody ng-if="vm.historyData.withLocation && !vm.historyData.isByProduct">
-			<tr id="calcTr" ng-repeat="item in vm.historyData.lineItemsData">
-				<td class="normal-td green-dark">{{item.location}}</td>
-				<td class="normal-td green-dark">{{item.productCode}}</td>
-				<td class="normal-td green-dark" style="width: 25%">{{item.productName}}</td>
-				<td class="normal-td">{{item.lotCode}}</td>
-				<td class="normal-td">{{item.expirationDate}}</td>
-				<td class="normal-td">{{item.stockOnHand}}</td>
-				<td class="normal-td">{{item.currentStock}}</td>
-				<td class="normal-td" colspan="4">
-					<p>{{ item.reasons ? item.reasons.reason : '' }}</p>
-					<p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
-				</td>
-				<td class="normal-td">{{item.comments}}</td>
-			</tr>
-		</tbody>
+
 		<tbody id="footer">
 		<tr>
 			<td style="height: 48px; vertical-align: top;" colspan="2">

@@ -7,26 +7,30 @@
 <div class="view-tab">
     <div class="openlmis-table-container">
         <table>
-            <thead ng-if="!vm.historyData.withLocation || vm.historyData.isByProduct">
+
+            <thead>
                 <tr>
+                    <th ng-if="vm.inventoryByLocation">{{ 'stockPhysicalInventoryHistory.location' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.productCode' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.product' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.lotCode' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.expiryDate' | message }}</th>
-                    <th ng-if="vm.historyData.withLocation">{{ 'stockPhysicalInventoryHistory.location' | message }}</th>
+                    <th ng-if="vm.inventoryByProduct">{{ 'stockPhysicalInventoryHistory.location' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.stockOnHand' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.currentStock' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.reasons' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.comments' | message }}</th>
                 </tr>
             </thead>
-            <tbody ng-if="!vm.historyData.withLocation || vm.historyData.isByProduct">
+
+            <tbody>
                 <tr ng-repeat="item in vm.historyData.lineItemsData">
+                    <td ng-if="vm.inventoryByLocation">{{ item.location }}</td>
                     <td>{{ item.productCode }}</td>
                     <td>{{ item.productName }}</td>
                     <td>{{ item.lotCode }}</td>
                     <td>{{ vm.formatDate(item.expirationDate) }}</td>
-                    <td ng-if="vm.historyData.withLocation">{{ item.location }}</td>
+                    <td ng-if="vm.inventoryByProduct">{{ item.location }}</td>
                     <td>{{ item.stockOnHand }}</td>
                     <td>{{ item.currentStock }}</td>
                     <td class="reasons-cell">
@@ -37,35 +41,6 @@
                 </tr>
             </tbody>
 
-            <thead ng-if="vm.historyData.withLocation && !vm.historyData.isByProduct">
-                <tr>
-                    <th>{{ 'stockPhysicalInventoryHistory.location' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.productCode' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.product' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.lotCode' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.expiryDate' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.stockOnHand' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.currentStock' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.reasons' | message }}</th>
-                    <th>{{ 'stockPhysicalInventoryHistory.comments' | message }}</th>
-                </tr>
-            </thead>
-            <tbody  ng-if="vm.historyData.withLocation &&  !vm.historyData.isByProduct">
-                <tr ng-repeat="item in vm.historyData.lineItemsData">
-                    <td>{{ item.location }}</td>
-                    <td>{{ item.productCode }}</td>
-                    <td>{{ item.productName }}</td>
-                    <td>{{ item.lotCode }}</td>
-                    <td>{{ vm.formatDate(item.expirationDate) }}</td>
-                    <td>{{ item.stockOnHand }}</td>
-                    <td>{{ item.currentStock }}</td>
-                    <td class="reasons-cell">
-                        <p>{{ item.reasons ? item.reasons.reason : '' }}</p>
-                        <p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
-                    </td>
-                    <td>{{ item.comments }}</td>
-                </tr>
-            </tbody>
         </table>
 
     </div>

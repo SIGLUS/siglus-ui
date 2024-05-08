@@ -34,6 +34,8 @@
         vm.facility = facility;
         vm.program = program;
         vm.historyData = historyData;
+        vm.inventoryByProduct = vm.historyData.withLocation && vm.historyData.isByProduct;
+        vm.inventoryByLocation = vm.historyData.withLocation && !vm.historyData.isByProduct;
         vm.service = SiglusPhysicalInventoryHistoryDetailService;
 
         vm.print = print;
