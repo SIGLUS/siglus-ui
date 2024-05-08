@@ -7,7 +7,7 @@
 <div class="view-tab">
     <div class="openlmis-table-container">
         <table>
-            <thead>
+            <thead ng-if="!vm.historyData.withLocation || vm.historyData.isByProduct">
                 <tr>
                     <th>{{ 'stockPhysicalInventoryHistory.productCode' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.product' | message }}</th>
@@ -20,7 +20,7 @@
                     <th>{{ 'stockPhysicalInventoryHistory.comments' | message }}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody ng-if="!vm.historyData.withLocation || vm.historyData.isByProduct">
                 <tr ng-repeat="item in vm.historyData.lineItemsData">
                     <td>{{ item.productCode }}</td>
                     <td>{{ item.productName }}</td>
@@ -36,7 +36,38 @@
                     <td>{{ item.comments }}</td>
                 </tr>
             </tbody>
+
+            <thead  ng-if="vm.historyData.withLocation && !vm.historyData.isByProduct">
+                <tr>
+                    <th>{{ 'stockPhysicalInventoryHistory.location' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.productCode' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.product' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.lotCode' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.expiryDate' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.stockOnHand' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.currentStock' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.reasons' | message }}</th>
+                    <th>{{ 'stockPhysicalInventoryHistory.comments' | message }}</th>
+                </tr>
+            </thead>
+            <tbody  ng-if="vm.historyData.withLocation &&  !vm.historyData.isByProduct">
+                <tr ng-repeat="item in vm.historyData.lineItemsData">
+                    <td>{{ item.location }}</td>
+                    <td>{{ item.productCode }}</td>
+                    <td>{{ item.productName }}</td>
+                    <td>{{ item.lotCode }}</td>
+                    <td>{{ vm.formatDate(item.expirationDate) }}</td>
+                    <td>{{ item.stockOnHand }}</td>
+                    <td>{{ item.currentStock }}</td>
+                    <td class="reasons-cell">
+                        <p>{{ item.reasons ? item.reasons.reason : '' }}</p>
+                        <p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
+                    </td>
+                    <td>{{ item.comments }}</td>
+                </tr>
+            </tbody>
         </table>
+
     </div>
 </div>
 <div class="openlmis-toolbar button-group">

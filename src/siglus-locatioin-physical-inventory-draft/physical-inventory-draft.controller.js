@@ -1370,9 +1370,11 @@
         // SIGLUS-REFACTOR: ends here
 
         function buildHistoryData(resolvedData) {
+            var isByProduct = $stateParams.locationManagementOption === 'product';
             return {
-                // TODO: by product / location?
                 withLocation: true,
+                locationManagementOption: $stateParams.locationManagementOption,
+                isByProduct: isByProduct,
                 program: vm.program.name,
                 province: vm.facility.geographicZone.parent.name,
                 district: vm.facility.geographicZone.name,
@@ -1380,15 +1382,16 @@
                 submittedBy: resolvedData.signature,
                 signature: resolvedData.signature,
                 creationDate: resolvedData.occurredDate,
-                lineItemsData: buildLineItemsData()
+                lineItemsData: buildLineItemsData(isByProduct)
             };
         }
 
-        function buildLineItemsData() {
+        function buildLineItemsData(isByProduct) {
             var lineItemsData = [];
 
             vm.displayLineItemsGroup.forEach(function(displayLineItems) {
                 var currentProduct = displayLineItems[0].orderable;
+                var currentLocation = displayLineItems[0].locationCode;
 
                 if (displayLineItems.length > 1) {
                     var stockOnHandSum = 0;
@@ -1399,33 +1402,36 @@
                     });
 
                     lineItemsData.push({
-                        productCode: currentProduct.productCode,
-                        productName: currentProduct.fullProductName,
+                        productCode: isByProduct ? currentProduct.productCode : null,
+                        productName: isByProduct ? currentProduct.fullProductName : null,
+                        location: isByProduct ? null : currentLocation,
                         lotCode: null,
                         expirationDate: null,
                         stockOnHand: stockOnHandSum,
                         currentStock: currentStockSum,
                         reasons: null,
-                        comments: null,
-                        location: null
+                        comments: null
                     });
-                    lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems));
+                    lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems, isByProduct));
                 } else {
-                    var lineItem = buildLotItemListData(displayLineItems)[0];
-                    lineItemsData.push(_.assign(lineItem, {
+                    var lineItem = buildLotItemListData(displayLineItems, isByProduct)[0];
+                    var assignData = isByProduct ? {
                         productCode: currentProduct.productCode,
                         productName: currentProduct.fullProductName
-                    }));
+                    } : {
+                        location: currentLocation
+                    };
+                    lineItemsData.push(_.assign(lineItem, assignData));
                 }
             });
             return lineItemsData;
         }
 
-        function buildLotItemListData(lineItems) {
+        function buildLotItemListData(lineItems, isByProduct) {
             return lineItems.map(function(lineItem) {
                 return {
-                    productCode: null,
-                    productName: null,
+                    productCode: isByProduct ? null : lineItem.orderable.productCode,
+                    productName: isByProduct ? null : lineItem.orderable.fullProductName,
                     lotCode: lineItem.lot.lotCode,
                     expirationDate: lineItem.lot.expirationDate,
                     stockOnHand: lineItem.stockOnHand,
@@ -1435,7 +1441,7 @@
                         message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
                     },
                     comments: lineItem.reasonFreeText,
-                    location: lineItem.area + ' - ' + lineItem.locationCode
+                    location: isByProduct ? lineItem.area + ' - ' + lineItem.locationCode : null
                 };
             });
         }
