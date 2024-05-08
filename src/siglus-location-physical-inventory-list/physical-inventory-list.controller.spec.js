@@ -15,18 +15,15 @@
 
 describe('LocationPhysicalInventoryListController', function() {
 
-    var $controller, $q, $rootScope, $state, programs, facility, deferred, vm, drafts;
+    var $controller, $state, programs, facility, vm, drafts;
     function prepareInjector() {
         inject(function($injector) {
             $controller = $injector.get('$controller');
-            $q = $injector.get('$q');
-            $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
         });
     }
 
     function prepareSpies() {
-        deferred = $q.defer();
         spyOn($state, 'go');
     }
 
