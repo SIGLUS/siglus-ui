@@ -118,11 +118,22 @@
                     break;
                 }
             } else {
-                $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
-                    stockCardId: lineItem.stockCardId,
-                    program: lineItem.programId,
-                    facility: vm.facility.id
-                });
+                switch (lineItem.itemType) {
+                case 'Product':
+                    $state.go('openlmis.stockmanagement.stockCardSummaries.productCard', {
+                        orderable: lineItem.orderableId,
+                        program: lineItem.programId,
+                        facility: vm.facility.id
+                    });
+                    break;
+                case 'Lot':
+                    $state.go('openlmis.stockmanagement.stockCardSummaries.singleCard', {
+                        stockCardId: lineItem.stockCardId,
+                        program: lineItem.programId,
+                        facility: vm.facility.id
+                    });
+                    break;
+                }
             }
         };
 
