@@ -52,7 +52,8 @@
             return {
                 year: creationDate.year(),
                 monthFullName: creationDate.format('MMMM'),
-                dateInShort: creationDate.format('DD MMM YYYY')
+                dateInShort: creationDate.format('DD MMM YYYY'),
+                yearMonthDay: creationDate.format('YYMMDD')
             };
         }
 
@@ -63,8 +64,16 @@
             var footerNode = document.getElementById('footer');
             var outerNode = document.getElementById('outer');
 
+            var fileName = [
+                'Inventário',
+                vm.historyData.program.replace(/\s/g, ''),
+                vm.historyData.facilityCode,
+                vm.creationDate.yearMonthDay,
+                'pdf'
+            ].join('.');
+
             DownloadPdfService.downloadPdf(
-                headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode, 'hello.pdf'
+                headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode, fileName
             );
         }
     }

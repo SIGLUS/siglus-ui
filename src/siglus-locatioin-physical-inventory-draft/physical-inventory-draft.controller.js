@@ -1378,6 +1378,7 @@
                 program: vm.program.name,
                 province: vm.facility.geographicZone.parent.name,
                 district: vm.facility.geographicZone.name,
+                facilityCode: vm.facility.code,
                 healthFacility: vm.facility.name,
                 submittedBy: resolvedData.signature,
                 signature: resolvedData.signature,
