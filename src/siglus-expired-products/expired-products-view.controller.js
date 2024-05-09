@@ -44,14 +44,17 @@
         vm.expiredProducts = [];
         vm.displayItems = [];
         vm.enableLocation = false;
+        vm.orderablesPrice = undefined;
         vm.$onInit = onInit;
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
+        var deferred = $q.defer();
 
         function onInit() {
             vm.keyword = $stateParams.keyword;
             vm.facility = facility;
             vm.expiredProducts = expiredProducts;
+            vm.orderablesPrice = orderablesPrice;
             vm.displayItems = displayItems;
             vm.enableLocation = angular.copy(
                 facility.enableLocationManagement
@@ -84,14 +87,18 @@
         };
 
         function skipAllLineItems() {
-            vm.displayItems.forEach(function(tableLineItem) {
-                tableLineItem.skipped = true;
+            vm.displayItems.forEach(function(product) {
+                product.lots.forEach(function(lot) {
+                    lot.skipped = true;
+                });
             });
         }
 
         function unskipAllLineItems() {
-            vm.displayItems.forEach(function(tableLineItem) {
-                tableLineItem.skipped = false;
+            vm.displayItems.forEach(function(product) {
+                product.lots.forEach(function(lot) {
+                    lot.skipped = false;
+                });
             });
         }
 
@@ -166,19 +173,21 @@
         vm.confirmRemove = function() {
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                 .then(function(data) {
+                    var now = new Date();
                     vm.type = 'issue';
                     vm.supplier = vm.facility.name;
                     vm.client = undefined;
                     vm.initialDraftInfo = {
-                        documentNumber: vm.facility.code + '_todo_timestamp'
+                        documentNumber: vm.facility.code + '_'
+                            + openlmisDateFilter(now, 'ddMMyyyyHHmmss') + now.getMilliseconds().toString()
                     };
                     vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
-                    vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                    vm.nowTime = openlmisDateFilter(now, 'd MMM y h:mm:ss a');
                     vm.signature = data.signature;
-                    var removeDatas = selectedLots();
-                    vm.addedLineItems = removeDatas.map(function(item) {
+                    var removeLots = selectedLots();
+                    vm.addedLineItems = removeLots.map(function(item) {
                         item.quantity = item.soh;
-                        item.price = orderablesPrice.data[item.orderableId];
+                        item.price = vm.orderablesPrice.data[item.orderableId];
                         return item;
                     });
                     vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
@@ -188,14 +197,16 @@
                         }
                         return r;
                     }, 0);
-                    var deferred = $q.defer();
-                    stockIssueCreationService.downloadPdf(vm.supplier);
+                    stockIssueCreationService.downloadPdf(vm.supplier, deferred);
                     deferred.promise.then(function() {
-                        // loadingModalService.open();
-                        // expiredProductsViewService.removeSelectedLots(vm.facility.id, removeDatas)
-                        //     .finally(function() {
-                        //         loadingModalService.close();
-                        //     });
+                        loadingModalService.open();
+                        expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
+                            vm.signature, vm.initialDraftInfo.documentNumber)
+                            .finally(function() {
+                                loadingModalService.close();
+                                $stateParams.expiredProducts = null;
+                                reloadPage();
+                            });
                     });
                 });
         };

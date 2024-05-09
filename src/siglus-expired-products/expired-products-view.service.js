@@ -140,17 +140,27 @@
             return result;
         }
 
-        function removeExpiredProducts(facilityId, lots) {
+        function removeExpiredProducts(facilityId, lots, signature, documentNumber) {
             return resource.remove({
                 id: facilityId
             }, {
                 lotType: 'expired',
-                lots: lots
+                lots: lots,
+                signature: signature,
+                documentNumber: documentNumber
             });
         }
 
-        function removeSelectedLots(facilityId, lineItems) {
-            var lots = lineItems.map(function(lineItem) {
+        function removeSelectedLots(facilityId, lots, signature, documentNumber) {
+            var removeDatas = [];
+            lots.forEach(function(lot) {
+                if (lot.locations) {
+                    removeDatas.concat(lot.locations);
+                } else {
+                    removeDatas.push(lot);
+                }
+            });
+            var removeLots = removeDatas.map(function(lineItem) {
                 return {
                     stockCardId: lineItem.stockCardId,
                     quantity: lineItem.soh,
@@ -158,7 +168,7 @@
                     area: lineItem.area
                 };
             });
-            return removeExpiredProducts(facilityId, lots);
+            return removeExpiredProducts(facilityId, removeLots, signature, documentNumber);
         }
 
         this.filterList = function(keyword, lineItems) {
