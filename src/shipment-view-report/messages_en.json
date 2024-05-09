@@ -9,6 +9,8 @@
     "shipmentViewReport.partialFulfilled": "Partial Fulfilled",
     "shipmentViewReport.fillQuantity": "Fill Quantity(in Packs)",
     "shipmentViewReport.availableSOH": "Available SOH",
+    "shipmentViewReport.reservedSOH": "Reserved SOH",
+    "shipmentViewReport.totalSOH": "Total SOH",
     "shipmentViewReport.remainingSOH": "Remaining SOH",
     "shipmentViewReport.bottomLeftTips": "Only products that have positive fill quantity entered are displayed.",
     "shipmentViewReport.tbTitle": "Pick Pack List",

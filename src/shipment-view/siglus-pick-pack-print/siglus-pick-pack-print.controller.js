@@ -45,8 +45,21 @@
         }
 
         function getRemainingSoh(tableLineItem) {
-            var quantity = vm.getAvailableSoh(tableLineItem) - vm.getFillQuantity(tableLineItem);
+            var quantity = vm.getAvailableSoh(tableLineItem) - vm.getReservedSoh(tableLineItem);
             return quantity < 0 ? 0 : quantity;
+        }
+
+        function getReservedSoh(tableLineItem) {
+            if (tableLineItem.isMainGroup) {
+                var lotLineItems = tableLineItems.filter(function(lineItem) {
+                    return !lineItem.isMainGroup &&
+                        tableLineItem.id === _.get(lineItem, ['shipmentLineItem', 'orderable', 'id']) ;
+                });
+                return _.isEmpty(lotLineItems) ? 0 : _.reduce(lotLineItems, function(reservedSohSum, lineItem) {
+                    return reservedSohSum + vm.getReservedSoh(lineItem);
+                }, 0);
+            }
+            return _.get(tableLineItem, ['reservedStock'], 0) + vm.getFillQuantity(tableLineItem);
         }
 
         function onInit() {
@@ -54,6 +67,7 @@
             vm.getFillQuantity = getFillQuantity;
             vm.getAvailableSoh = getAvailableSoh;
             vm.getRemainingSoh = getRemainingSoh;
+            vm.getReservedSoh = getReservedSoh;
             vm.tableLineItems = tableLineItems;
             document.getElementsByClassName('header')[0].style.display = 'none';
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';

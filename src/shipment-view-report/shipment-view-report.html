@@ -28,7 +28,8 @@
                 <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.orderQuantity' | message}}</th>
                 <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.partialFulfilled' | message}}</th>
                 <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.fillQuantity' | message}}</th>
-                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.availableSOH' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.reservedSOH' | message}}</th>
+                <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.totalSOH' | message}}</th>
                 <th style="width: 50px;" class="col-sticky sticky-right">{{'shipmentViewReport.remainingSOH' | message}}</th>
                 <!-- SIGLUS-REFACTOR: ends here -->
             </tr>
@@ -44,6 +45,7 @@
                     <td>{{ lineItem.isMainGroup ? lineItem.orderedQuantity : '' }}</td>
                     <td>{{lineItem.partialFulfilledQuantity}}</td>
                     <td>{{vm.getFillQuantity(lineItems, index)}}</td>
+                    <td>{{vm.getReservedSoh(lineItems, index)}}</td>
                     <td>{{vm.getAvailableSoh(lineItems, index)}}</td>
                     <td>{{vm.getRemainingSoh(lineItems, index)}}</td>
                 </tr>

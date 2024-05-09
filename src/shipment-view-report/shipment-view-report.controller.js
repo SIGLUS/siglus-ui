@@ -68,7 +68,6 @@
                 }, 0);
             }
             return _.get(lineItems[index], 'quantityShipped', 0);
-
         };
 
         function recalculateQuantity(quantity, lineItem) {
@@ -104,12 +103,20 @@
                 }, 0);
             }
             return getSohByOrderableAndLocation(lineItems[index]);
-
         };
 
         vm.getRemainingSoh = function(lineItems, index) {
-            var quantity = vm.getAvailableSoh(lineItems, index) - vm.getFillQuantity(lineItems, index);
+            var quantity = vm.getAvailableSoh(lineItems, index) - vm.getReservedSoh(lineItems, index);
             return quantity < 0 ? 0 : quantity;
+        };
+
+        vm.getReservedSoh = function(lineItems, index) {
+            if (index === 0) {
+                return _.reduce(lineItems, function(reservedSohSum, item) {
+                    return reservedSohSum + _.get(item, 'reservedStock', 0) + _.get(item, 'quantityShipped', 0);
+                }, 0);
+            }
+            return _.get(lineItems[index], 'reservedStock', 0) + _.get(lineItems[index], 'quantityShipped', 0);
         };
 
         $scope.$on('$destroy', function() {
