@@ -97,6 +97,9 @@
                     facility: function(facilityFactory) {
                         return facilityFactory.getUserHomeFacility();
                     },
+                    orderablesPrice: function(siglusOrderableLotService) {
+                        return siglusOrderableLotService.getOrderablesPrice();
+                    },
                     expiredProducts: function(facility, $stateParams, expiredProductsViewService) {
                         if ($stateParams.expiredProducts) {
                             return $stateParams.expiredProducts;

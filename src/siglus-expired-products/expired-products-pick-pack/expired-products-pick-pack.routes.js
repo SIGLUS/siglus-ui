@@ -38,7 +38,34 @@
                     return expiredProductsViewService.getPickPackFacility();
                 },
                 displayItems: function(expiredProductsViewService) {
-                    return expiredProductsViewService.getPickPackDatas();
+                    var lots = expiredProductsViewService.getPickPackDatas();
+                    var productsMap = lots.reduce(function(acc, lot) {
+                        if (!acc[lot.orderableId]) {
+                            acc[lot.orderableId] = [];
+                        }
+                        acc[lot.orderableId].push(lot);
+                        return acc;
+                    }, {});
+                    var result = [];
+                    for (var key in productsMap) {
+                        var values = productsMap[key];
+                        var total = values.reduce(function(acc, value) {
+                            return acc + value.soh;
+                        }, 0);
+                        var productItem = {
+                            programId: values[0].programId,
+                            programName: values[0].programName,
+                            programCode: values[0].programCode,
+                            productName: values[0].productName,
+                            orderableId: values[0].orderableId,
+                            productCode: values[0].productCode,
+                            soh: total,
+                            itemType: 'Product',
+                            lots: values
+                        };
+                        result.push(productItem);
+                    }
+                    return result;
                 }
             }
         });

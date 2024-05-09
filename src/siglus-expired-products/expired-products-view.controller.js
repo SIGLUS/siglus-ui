@@ -28,11 +28,15 @@
         .module('siglus-expired-products')
         .controller('ExpiredProductsViewController', controller);
 
-    controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'expiredProducts', 'displayItems',
-        'siglusSignatureWithDateModalService', 'expiredProductsViewService', 'loadingModalService'];
+    controller.$inject = ['$state', '$stateParams', '$window', '$q', 'facility', 'orderablesPrice',
+        'expiredProducts', 'displayItems',
+        'siglusSignatureWithDateModalService', 'expiredProductsViewService', 'loadingModalService',
+        'stockIssueCreationService', 'openlmisDateFilter'];
 
-    function controller($state, $stateParams, $window, facility, expiredProducts, displayItems,
-                        siglusSignatureWithDateModalService, expiredProductsViewService, loadingModalService) {
+    function controller($state, $stateParams, $window, $q, facility, orderablesPrice,
+                        expiredProducts, displayItems,
+                        siglusSignatureWithDateModalService, expiredProductsViewService, loadingModalService,
+                        stockIssueCreationService, openlmisDateFilter) {
         var vm = this;
 
         vm.keyword = '';
@@ -137,14 +141,22 @@
             }
         };
 
-        function selectedLineItems() {
-            return vm.displayItems.filter(function(item) {
-                return !item.skipped;
+        function selectedLots() {
+            var selectedLots = [];
+            vm.displayItems.forEach(function(product) {
+                if (product.lots) {
+                    product.lots.forEach(function(lot) {
+                        if (!lot.skipped) {
+                            selectedLots.push(lot);
+                        }
+                    });
+                }
             });
+            return selectedLots;
         }
 
         vm.generatePickPackList = function() {
-            expiredProductsViewService.savePickPackDatas(vm.facility, selectedLineItems());
+            expiredProductsViewService.savePickPackDatas(vm.facility, selectedLots());
             var PRINT_URL = $window.location.href.split('!/')[0]
                 + '!/'
                 + 'stockmanagement/expiredProductsPickPack';
@@ -153,16 +165,38 @@
 
         vm.confirmRemove = function() {
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
-                .then(function(resolvedData) {
-                    loadingModalService.open();
-                    expiredProductsViewService.removeSelectedLots(vm.facility.id, selectedLineItems())
-                        .then(function() {
-                            console.log(resolvedData);
-                            // TODO generate pdf
-                        })
-                        .finally(function() {
-                            loadingModalService.close();
-                        });
+                .then(function(data) {
+                    vm.type = 'issue';
+                    vm.supplier = vm.facility.name;
+                    vm.client = undefined;
+                    vm.initialDraftInfo = {
+                        documentNumber: vm.facility.code + '_todo_timestamp'
+                    };
+                    vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                    vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                    vm.signature = data.signature;
+                    var removeDatas = selectedLots();
+                    vm.addedLineItems = removeDatas.map(function(item) {
+                        item.quantity = item.soh;
+                        item.price = orderablesPrice.data[item.orderableId];
+                        return item;
+                    });
+                    vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                        if (c.price) {
+                            var price = c.price * 100;
+                            r = r + c.quantity * price;
+                        }
+                        return r;
+                    }, 0);
+                    var deferred = $q.defer();
+                    stockIssueCreationService.downloadPdf(vm.supplier);
+                    deferred.promise.then(function() {
+                        // loadingModalService.open();
+                        // expiredProductsViewService.removeSelectedLots(vm.facility.id, removeDatas)
+                        //     .finally(function() {
+                        //         loadingModalService.close();
+                        //     });
+                    });
                 });
         };
     }
