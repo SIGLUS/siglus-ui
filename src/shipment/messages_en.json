@@ -1,0 +1,4 @@
+{
+  "shipment.fillQuantityCannotExceedStockOnHand": "Can't exceed total stock on hand",
+  "shipment.required": "This field is required"
+}
