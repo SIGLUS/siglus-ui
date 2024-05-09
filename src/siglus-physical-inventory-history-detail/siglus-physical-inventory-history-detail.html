@@ -1,5 +1,5 @@
 <header>
-    <h2>{{'stockPhysicalInventoryHistory.title' | message: {'programName': vm.historyData.program, 'facilityName': vm.historyData.healthFacility} }}</h2>
+    <h2>{{ 'stockPhysicalInventoryHistory.title' | message: {'programName': vm.historyData.program} }} ({{ vm.historyData.healthFacility }})</h2>
     <button ng-disabled="vm.isOffline()" ng-click="vm.print()" class="primary">{{'requisitionView.print' | message}}</button>
 </header>
 <ng-include src="'siglus-physical-inventory-history-detail/header.html'"></ng-include>

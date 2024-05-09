@@ -1,6 +1,6 @@
 {
   "stockPhysicalInventoryHistory.viewPhysicalInventory": "view Physical Inventory",
-  "stockPhysicalInventoryHistory.title": "Physical Inventory for ${programName} (${facilityName})",
+  "stockPhysicalInventoryHistory.title": "Physical Inventory for ${programName}",
   "stockPhysicalInventoryHistory.dateCompleted": "Date completed",
   "stockPhysicalInventoryHistory.submittedBy": "Submitted by",
   "stockPhysicalInventoryHistory.signature": "Signature",

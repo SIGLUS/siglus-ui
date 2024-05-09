@@ -34,12 +34,12 @@
         var SHRINK_RATIO = REAL_CONTENT_WIDTH / CONTENT_WIDTH_PIX;
         // leave space for bottom text
         var CONTENT_HEIGHT_PIX = REAL_A4_HEIGHT / SHRINK_RATIO - 50;
-        var PDF, pageNumber, usedHeight;
+        var PDF, pageNumber, usedHeight, currentTime;
 
         this.downloadPdf = downloadPdf;
 
         function downloadPdf(
-            headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode
+            headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode, fileName
         ) {
             siglusDownloadLoadingModalService.open();
             initPDF();
@@ -89,10 +89,9 @@
                             addPageBottomText(
                                 pageNumber.toString() + '-END',
                                 messageService.get('mmia.print_on_computer'),
-                                buildCurrentDateTime()
+                                currentTime
                             );
-
-                            PDF.save('hello.pdf');
+                            PDF.save(fileName);
                         })
                         .catch(function(error) {
                             throw new Error(error);
@@ -114,6 +113,7 @@
             PDF = new jsPDF('', 'pt', 'a4');
             pageNumber = 1;
             usedHeight = MARGIN_HEIGHT;
+            currentTime = moment().format('d MMM y h:mm:ss a');
         }
 
         function getElementToImagePromise(element, width, height) {
@@ -159,7 +159,7 @@
             addPageBottomText(
                 pageNumber.toString(),
                 messageService.get('mmia.print_on_computer'),
-                buildCurrentDateTime()
+                currentTime
             );
             pageNumber = pageNumber + 1;
             PDF.addPage();
@@ -172,10 +172,6 @@
                 REAL_CONTENT_WIDTH, imageNodeResult.nodeHeight * SHRINK_RATIO
             );
             usedHeight = usedHeight + imageNodeResult.nodeHeight;
-        }
-
-        function buildCurrentDateTime() {
-            return moment().format('d MMM y h:mm:ss a');
         }
     }
 })();

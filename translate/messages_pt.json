@@ -2764,7 +2764,7 @@
   "localmachine.failed": "falhou",
 
   "stockPhysicalInventoryHistory.viewPhysicalInventory": "view Inventário físico",
-  "stockPhysicalInventoryHistory.title": "Inventário físico para ${programName} (${facilityName})",
+  "stockPhysicalInventoryHistory.title": "Inventário físico para ${programName}",
   "stockPhysicalInventoryHistory.dateCompleted": "Data de Conclusão",
   "stockPhysicalInventoryHistory.submittedBy": "Submetido por",
   "stockPhysicalInventoryHistory.signature": "Assinatura",

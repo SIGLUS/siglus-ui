@@ -64,7 +64,7 @@
             var outerNode = document.getElementById('outer');
 
             DownloadPdfService.downloadPdf(
-                headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode
+                headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode, 'hello.pdf'
             );
         }
     }
