@@ -47,6 +47,7 @@
             USER_REPORT: 'user_report',
             USER_ACCESS_REPORT: 'user_access_report',
             EXPIRED_REMOVED_PRODUCTS_REPORT: 'expired_removed_products_report',
+            FEFO_REPORT: 'fefo_report',
             RECORD_REPORT_NAME: recordReportName()
         };
     }
@@ -70,7 +71,8 @@
             SYSTEM_UPDATE: 'SYSTEM_UPDATE',
             USER: 'USER',
             USER_ACCESS: 'USER_ACCESS',
-            EXPIRED_REMOVED_PRODUCTS: 'EXPIRED_REMOVED_PRODUCTS'
+            EXPIRED_REMOVED_PRODUCTS: 'EXPIRED_REMOVED_PRODUCTS',
+            FEFO: 'FEFO'
         };
     }
 

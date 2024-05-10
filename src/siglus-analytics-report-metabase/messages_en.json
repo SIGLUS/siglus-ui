@@ -17,5 +17,6 @@
   "analyticsReportMetabase.tracerDrug.title":"Tracer Drug Report",
   "analyticsReportMetabase.user.title":"User Report",
   "analyticsReportMetabase.userAccess.title":"User Access Report",
-  "analyticsReportMetabase.expiredRemovedProducts.title":"Expired & Removed Products Report"
+  "analyticsReportMetabase.expiredRemovedProducts.title":"Expired & Removed Products Report",
+  "analyticsReportMetabase.fefo.title":"FEFO Report"
 }

@@ -2325,6 +2325,7 @@
   "analyticsReportMetabase.user.title":"Relatório do Utilizador",
   "analyticsReportMetabase.userAccess.title":"Relatório de Acesso do Usuário",
   "analyticsReportMetabase.expiredRemovedProducts.title":"Relatório de Produtos Expirados e Removidos",
+  "analyticsReportMetabase.fefo.title":"Relatório de FEFO",
   "stockRemainingProductsModal.productCode": "Código de produto",
   "stockRemainingProductsModal.product": "Produto",
   "stockRemainingProductsModal.currentStock": "Stock actual",

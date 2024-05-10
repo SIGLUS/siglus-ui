@@ -160,6 +160,14 @@
                 dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.EXPIRED_REMOVED_PRODUCTS_REPORT,
                 recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.EXPIRED_REMOVED_PRODUCTS,
                 priority: 48
+            },
+            {
+                name: 'openlmis.analyticsReport.fefo',
+                label: 'analyticsReportMetabase.fefo.title',
+                url: '/fefo',
+                dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.FEFO_REPORT,
+                recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.FEFO,
+                priority: 45
             }
         ];
 
