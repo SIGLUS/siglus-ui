@@ -170,6 +170,19 @@
         };
 
         vm.confirmRemove = function() {
+            var removeLots = selectedLots();
+            vm.addedLineItems = removeLots.map(function(item) {
+                item.quantity = item.soh;
+                item.price = vm.orderablesPrice.data[item.orderableId];
+                return item;
+            });
+            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
+                if (c.price) {
+                    var price = c.price * 100;
+                    r = r + c.quantity * price;
+                }
+                return r;
+            }, 0);
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                 .then(function(data) {
                     var now = new Date();
@@ -177,25 +190,11 @@
                     vm.supplier = vm.facility.name;
                     vm.client = undefined;
                     vm.initialDraftInfo = {
-                        documentNumber: vm.facility.code + '_'
-                            + openlmisDateFilter(now, 'ddMMyyyyHHmmss') + now.getMilliseconds().toString()
+                        documentNumber: vm.facility.code + '_' + openlmisDateFilter(now, 'ddMMyyyyHHmmss')
                     };
                     vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                     vm.nowTime = openlmisDateFilter(now, 'd MMM y h:mm:ss a');
                     vm.signature = data.signature;
-                    var removeLots = selectedLots();
-                    vm.addedLineItems = removeLots.map(function(item) {
-                        item.quantity = item.soh;
-                        item.price = vm.orderablesPrice.data[item.orderableId];
-                        return item;
-                    });
-                    vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                        if (c.price) {
-                            var price = c.price * 100;
-                            r = r + c.quantity * price;
-                        }
-                        return r;
-                    }, 0);
                     stockIssueCreationService.downloadPdf(vm.supplier, function() {
                         loadingModalService.open();
                         expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
