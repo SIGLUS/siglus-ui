@@ -155,7 +155,7 @@
             var removeDatas = [];
             lots.forEach(function(lot) {
                 if (lot.locations) {
-                    removeDatas.concat(lot.locations);
+                    removeDatas = removeDatas.concat(lot.locations);
                 } else {
                     removeDatas.push(lot);
                 }
