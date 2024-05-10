@@ -36,7 +36,7 @@
         'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
         'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
-        'siglusStockUtilsService', 'localStorageFactory', '$q', 'siglusDownloadLoadingModalService',
+        'siglusStockUtilsService', 'localStorageFactory', 'siglusDownloadLoadingModalService',
         'orderablesPrice', 'moment', 'stockIssueCreationService'
     ];
 
@@ -47,13 +47,12 @@
                         dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
                         stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
                         siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
-                        localStorageFactory, $q, siglusDownloadLoadingModalService, orderablesPrice, moment,
+                        localStorageFactory, siglusDownloadLoadingModalService, orderablesPrice, moment,
                         stockIssueCreationService) {
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
         vm.initialDraftInfo = initialDraftInfo;
-        var deferred = $q.defer();
         vm.destinationName = '';
         vm.type = 'issue';
         vm.isMerge = isMerge;
@@ -431,8 +430,7 @@
                             vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            stockIssueCreationService.downloadPdf(vm.destinationName, deferred);
-                            deferred.promise.then(function() {
+                            stockIssueCreationService.downloadPdf(vm.destinationName, function() {
                                 loadingModalService.open();
                                 confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
                             });

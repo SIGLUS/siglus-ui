@@ -28,12 +28,12 @@
         .module('siglus-expired-products')
         .controller('ExpiredProductsViewController', controller);
 
-    controller.$inject = ['$state', '$stateParams', '$window', '$q', 'facility', 'orderablesPrice',
+    controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'orderablesPrice',
         'expiredProducts', 'displayItems',
         'siglusSignatureWithDateModalService', 'expiredProductsViewService', 'loadingModalService',
         'stockIssueCreationService', 'openlmisDateFilter'];
 
-    function controller($state, $stateParams, $window, $q, facility, orderablesPrice,
+    function controller($state, $stateParams, $window, facility, orderablesPrice,
                         expiredProducts, displayItems,
                         siglusSignatureWithDateModalService, expiredProductsViewService, loadingModalService,
                         stockIssueCreationService, openlmisDateFilter) {
@@ -48,7 +48,6 @@
         vm.$onInit = onInit;
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
-        var deferred = $q.defer();
 
         function onInit() {
             vm.keyword = $stateParams.keyword;
@@ -197,8 +196,7 @@
                         }
                         return r;
                     }, 0);
-                    stockIssueCreationService.downloadPdf(vm.supplier, deferred);
-                    deferred.promise.then(function() {
+                    stockIssueCreationService.downloadPdf(vm.supplier, function() {
                         loadingModalService.open();
                         expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
                             vm.signature, vm.initialDraftInfo.documentNumber)

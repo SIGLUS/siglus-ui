@@ -34,6 +34,7 @@
     function StockIssueCreationService(openlmisDateFilter, $q, siglusDownloadLoadingModalService) {
 
         this.downloadPdf = downloadPdf;
+        var deferred = $q.defer();
 
         /**
          * @ngdoc method
@@ -63,7 +64,7 @@
             return result;
         }
 
-        function downloadPdf(destinationName, deferred) {
+        function downloadPdf(destinationName, callback) {
             siglusDownloadLoadingModalService.open();
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
@@ -298,7 +299,10 @@
                     );
                     siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
-                });
+                })
+                    .then(function() {
+                        callback();
+                    });
             });
         }
     }

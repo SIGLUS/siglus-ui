@@ -148,7 +148,7 @@
                 lots: lots,
                 signature: signature,
                 documentNumber: documentNumber
-            });
+            }).$promise;
         }
 
         function removeSelectedLots(facilityId, lots, signature, documentNumber) {
