@@ -17,7 +17,7 @@
             <thead>
             <tr>
                 <th class="text__left" style="width: 150px;">{{'stockCardSummaryList.productCode' | message}}</th>
-                <th class="text__left" style="width: 350px;">{{'stockCardSummaryList.product' | message}}</th>
+                <th class="text__left" style="width: 350px;">{{'shipmentViewReport.productName' | message}}</th>
                 <th class="text__left" style="width: 200px;">{{'stockCardSummaryList.lotCode' | message}}</th>
                 <th class="text__left" style="width: 150px;">{{'stockCardSummaryList.expiryDate' | message}}</th>
                 <th class="text__left" style="width: 150px;" ng-if="vm.enableLocation">{{'stockPhysicalInventoryDraft.location' | message}}</th>
@@ -26,12 +26,12 @@
             </thead>
             <tbody>
                 <tr ng-repeat-start="product in vm.displayItems" class="is-secondary">
-                    <td>{{product.productCode}}</td>
-                    <td class="white-space-pre">{{product.productName}}</td>
-                    <td>{{product.lotCode}}</td>
-                    <td>{{product.expirationDate}}</td>
-                    <td ng-if="vm.enableLocation">{{product.locationCode}}</td>
-                    <td class="text-align-right">{{product.soh}}</td>
+                    <td class="is-secondary">{{product.productCode}}</td>
+                    <td class="is-secondary" class="white-space-pre">{{product.productName}}</td>
+                    <td class="is-secondary">{{product.lotCode}}</td>
+                    <td class="is-secondary">{{product.expirationDate}}</td>
+                    <td class="is-secondary" ng-if="vm.enableLocation">{{product.locationCode}}</td>
+                    <td class="is-secondary" class="text-align-right">{{product.soh}}</td>
                 </tr>
                 <tr ng-repeat-start="lot in product.lots">
                     <td>{{lot.productCode}}</td>

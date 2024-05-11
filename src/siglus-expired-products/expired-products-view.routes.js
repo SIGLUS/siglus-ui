@@ -39,7 +39,9 @@
                 params: {
                     pageNumber: '0',
                     pageSize: '10',
-                    keyword: undefined
+                    keyword: undefined,
+                    orderablesPrice: undefined,
+                    expiredProducts: undefined
                 },
                 accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],
                 resolve: {
@@ -49,19 +51,23 @@
                     facility: function(facilityFactory) {
                         return facilityFactory.getUserHomeFacility();
                     },
-                    orderablesPrice: function(siglusOrderableLotService) {
+                    orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                        if ($stateParams.orderablesPrice) {
+                            return $stateParams.orderablesPrice;
+                        }
                         return siglusOrderableLotService.getOrderablesPrice();
                     },
                     expiredProducts: function(facility, $stateParams, expiredProductsViewService) {
                         if ($stateParams.expiredProducts) {
                             return $stateParams.expiredProducts;
                         }
-                        $stateParams.expiredProducts = expiredProductsViewService.getExpiredProducts(facility.id,
+                        return expiredProductsViewService.getExpiredProducts(facility.id,
                             facility.enableLocationManagement);
-                        return $stateParams.expiredProducts;
                     },
-                    displayItems: function(expiredProducts, $stateParams, paginationService,
+                    displayItems: function(expiredProducts, orderablesPrice, $stateParams, paginationService,
                         expiredProductsViewService) {
+                        $stateParams.orderablesPrice = orderablesPrice;
+                        $stateParams.expiredProducts = expiredProducts;
                         var paginationParams = {
                             pageNumber: $stateParams.pageNumber,
                             pageSize: $stateParams.pageSize

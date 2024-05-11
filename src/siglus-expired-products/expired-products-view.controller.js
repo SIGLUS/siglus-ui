@@ -86,7 +86,7 @@
         };
 
         function skipAllLineItems() {
-            vm.displayItems.forEach(function(product) {
+            vm.expiredProducts.forEach(function(product) {
                 product.lots.forEach(function(lot) {
                     lot.skipped = true;
                 });
@@ -94,7 +94,7 @@
         }
 
         function unskipAllLineItems() {
-            vm.displayItems.forEach(function(product) {
+            vm.expiredProducts.forEach(function(product) {
                 product.lots.forEach(function(lot) {
                     lot.skipped = false;
                 });
