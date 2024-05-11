@@ -122,7 +122,7 @@
                             facility.enableLocationManagement);
                     },
                     displayItems: function(expiredProducts, orderablesPrice, $stateParams, paginationService,
-                                           expiredProductsViewService) {
+                        expiredProductsViewService) {
                         $stateParams.orderablesPrice = orderablesPrice;
                         $stateParams.expiredProducts = expiredProducts;
                         var paginationParams = {
