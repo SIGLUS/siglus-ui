@@ -85,7 +85,7 @@
          * @return {Promise} the promise resolved when save is successful, rejected otherwise
          */
         function save() {
-            if (!this.isEditable()) {
+            if (this.isInvalid() || !this.isEditable()) {
                 return $q.reject();
             }
             return this.repository.updateDraft(this);

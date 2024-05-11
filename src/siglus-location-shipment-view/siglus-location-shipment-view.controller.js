@@ -859,6 +859,10 @@
         };
 
         vm.save = function(shouldPrintShipment) {
+            if (!isTableFormValid()) {
+                alertService.error(messageService.get('openlmisForm.formInvalid'));
+                return;
+            }
             loadingModalService.open();
             SiglusLocationViewService.saveDraft(buildSaveParams())
                 .then(function() {
