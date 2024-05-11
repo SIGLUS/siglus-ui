@@ -190,7 +190,7 @@
                     vm.supplier = vm.facility.name;
                     vm.client = undefined;
                     vm.initialDraftInfo = {
-                        documentNumber: vm.facility.code + '_' + openlmisDateFilter(now, 'ddMMyyyyHHmmss')
+                        documentNumber: vm.facility.code + '_' + openlmisDateFilter(now, 'ddMMyyyy')
                     };
                     vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                     vm.nowTime = openlmisDateFilter(now, 'd MMM y h:mm:ss a');
