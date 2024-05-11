@@ -120,7 +120,9 @@
                 controller: 'LocationPhysicalInventoryHistoryController',
                 controllerAs: 'vm',
                 params: {
-                    programId: undefined
+                    programId: undefined,
+                    page: 0,
+                    size: 10
                 },
                 resolve: {
                     program: function(programs, $stateParams) {
@@ -128,10 +130,15 @@
                             return program.id === $stateParams.programId;
                         }, undefined);
                     },
-                    filteredHistoryList: function(SiglusPhysicalInventoryHistoryService, program, historyList) {
-                        return program ? SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(
+                    filteredHistoryList: function(
+                        SiglusPhysicalInventoryHistoryService, program, historyList, paginationService, $stateParams
+                    ) {
+                        var list = program ? SiglusPhysicalInventoryHistoryService.filterHistoryByProgram(
                             program.name, historyList
                         ) : [];
+                        return paginationService.registerList(null, $stateParams, function() {
+                            return list;
+                        });
                     }
                 }
             });

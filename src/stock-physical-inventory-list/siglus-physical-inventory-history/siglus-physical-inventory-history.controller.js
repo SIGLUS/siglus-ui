@@ -29,7 +29,7 @@
     ) {
         var vm = this;
 
-        vm.historyList = filteredHistoryList;
+        vm.filteredHistoryList = filteredHistoryList;
         vm.program = program;
 
         vm.viewHistoryDetail = viewHistoryDetail;

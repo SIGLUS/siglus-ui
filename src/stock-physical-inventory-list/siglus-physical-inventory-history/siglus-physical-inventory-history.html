@@ -3,7 +3,7 @@
 		<caption ng-if="!vm.program">
 			{{'stockPhysicalInventory.selectFirst' | message}}
 		</caption>
-		<caption ng-if="vm.program && vm.historyList.length === 0">
+		<caption ng-if="vm.program && vm.filteredHistoryList.length === 0">
 			{{'stockPhysicalInventory.noHistory' | message}}
 		</caption>
 		<thead>
@@ -14,7 +14,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="historyItem in vm.historyList">
+			<tr ng-repeat="historyItem in vm.pagedHistoryList">
 				<td>{{historyItem.programName}}</td>
 				<td>{{historyItem.completedDate}}</td>
 				<td>
@@ -26,3 +26,5 @@
 		</tbody>
 	</table>
 </section>
+<openlmis-pagination list="vm.filteredHistoryList" paged-list="vm.pagedHistoryList"></openlmis-pagination>
+

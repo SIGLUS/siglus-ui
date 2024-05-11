@@ -25,11 +25,11 @@
 
   <div class="physical-inventory-table-tab">
     <nav>
-      <ul>
-        <li ng-class="{'active': vm.isInventory()}" ng-click="vm.goToInventory()">
+      <ul class="tab-ul">
+        <li ng-class="{'active': vm.isInventory()}" class="tab-li" ng-click="vm.goToInventory()">
           {{'stockPhysicalInventory.physicalInventory' | message}}
         </li>
-        <li ng-class="{'active': vm.isHistory()}" ng-click="vm.goToHistory()">
+        <li ng-class="{'active': vm.isHistory()}" class="tab-li" ng-click="vm.goToHistory()">
           {{'stockPhysicalInventory.history' | message}}
         </li>
       </ul>
