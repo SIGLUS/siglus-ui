@@ -38,6 +38,14 @@
 
         this.downloadPdf = downloadPdf;
 
+        function initPDF() {
+            // eslint-disable-next-line no-undef
+            PDF = new jsPDF('', 'pt', 'a4');
+            pageNumber = 1;
+            usedHeight = MARGIN_HEIGHT;
+            currentTime = moment().format('D MMM YYYY h:mm:ss a');
+        }
+
         function downloadPdf(
             headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode, fileName
         ) {
@@ -106,14 +114,6 @@
                 .finally(function() {
                     siglusDownloadLoadingModalService.close();
                 });
-        }
-
-        function initPDF() {
-            // eslint-disable-next-line no-undef
-            PDF = new jsPDF('', 'pt', 'a4');
-            pageNumber = 1;
-            usedHeight = MARGIN_HEIGHT;
-            currentTime = moment().format('d MMM y h:mm:ss a');
         }
 
         function getElementToImagePromise(element, width, height) {

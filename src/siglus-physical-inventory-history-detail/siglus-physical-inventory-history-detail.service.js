@@ -27,7 +27,7 @@
         this.buildDiffReasonMessage = buildDiffReasonMessage;
 
         function buildDiffReasonMessage(lineItem) {
-            var diff = lineItem.currentStock - lineItem.stockOnHand;
+            var diff = lineItem.currentStock - (lineItem.stockOnHand || 0);
             if (!lineItem.reasons || diff === 0) {
                 return '';
             }

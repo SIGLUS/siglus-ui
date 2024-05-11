@@ -3,9 +3,7 @@
 	<table id="header-section" class="border-all-bold head-section">
 		<tbody id="header">
 		<tr>
-			<td rowspan="4" class="background-black left-header">
-				<div class="text-nowrap">CMAM</div>
-			</td>
+			<td rowspan="4" class="background-black left-header"></td>
 			<td class="col-1">
 				<span class="view-table-logo"></span>
 			</td>
@@ -110,7 +108,7 @@
 	<div id="outer">
 		<div class="outer-section">
 			<div>
-				Mapa Mensal de Prenchimento Obrigatorio
+				{{ 'stockPhysicalInventoryHistory.title' | message: {'programName': vm.historyData.program} }}
 			</div>
 			<div>
 				Versão 001 Setembro 2022
