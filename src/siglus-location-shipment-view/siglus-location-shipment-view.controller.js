@@ -169,20 +169,20 @@
                 item.$error.lotCodeError = '';
                 item.$hint.lotCodeHint = '';
             });
-            lotOrLocationChangeEmitValidation(lineItem);
+            lotOrLocationChangeEmitValidation(lineItem, lineItems, index);
         }
 
         vm.changeLot = function(lineItem, lineItems, index) {
             validateLot(lineItem, lineItems, index);
         };
 
-        function lotOrLocationChangeEmitValidation(lineItem) {
+        function lotOrLocationChangeEmitValidation(lineItem, lineItems, index) {
             var hasKitLocation = lineItem.isKit && !_.isEmpty(lineItem.location);
             var hasBothLocationAndLot = !lineItem.isKit && !_.isEmpty(lineItem.location)
               && !_.isEmpty(lineItem.lot);
             var hasQuantityShippedFilled = !_.isNull(_.get(lineItem, 'quantityShipped'));
             if ((hasKitLocation || hasBothLocationAndLot) && hasQuantityShippedFilled) {
-                validateFillQuantity(lineItem);
+                validateFillQuantity(lineItems, index);
             }
         }
 
@@ -239,18 +239,18 @@
                     }
                 });
             }
-            validateFillQuantity(lineItem);
+            validateFillQuantity(lineItems, index);
         };
 
-        function validateFillQuantity(currentItem) {
+        function validateFillQuantity(lineItems, index) {
+            var currentItem = lineItems[index];
             currentItem.$error.quantityShippedError = '';
-            var quantityShipped = currentItem.quantityShipped;
             if (!_.isNumber(currentItem.quantityShipped)) {
                 currentItem.$error.quantityShippedError = 'locationShipmentView.inputPositiveNumber';
                 return;
             }
 
-            if (quantityShipped + currentItem.reservedStock > getSohByOrderableLocation(currentItem)) {
+            if (vm.getReservedSoh(lineItems, index) > getSohByOrderableLocation(currentItem)) {
                 currentItem.$error.quantityShippedError = 'shipment.fillQuantityCannotExceedStockOnHand';
             }
         }
@@ -365,15 +365,25 @@
         };
 
         vm.getReservedSoh = function(lineItems, index) {
+            var currentLineItem = lineItems[index];
+            if (!currentLineItem.lot || !_.get(currentLineItem, ['location', 'locationCode'])) {
+                return 0;
+            }
+            var currentOrderableId = currentLineItem.orderableId;
+            var currentLotId = currentLineItem.lot.id;
+            var currentLocationCode = currentLineItem.location.locationCode;
+
             // for main group with multiple lineItems
             if (index === 0 && lineItems.length > 1) {
-                var itemReservedStockSum = _.reduce(lineItems, function(reservedStock, lineItem) {
-                    return reservedStock + lineItem.reservedStock;
+                return _.reduce(lineItems.slice(1), function(reservedStockSum, _, index) {
+                    return reservedStockSum + vm.getReservedSoh(lineItems, index) ;
                 }, 0);
-                return itemReservedStockSum + vm.getFillQuantity(lineItems, index);
             }
 
-            return lineItems[index].reservedStock + vm.getFillQuantity(lineItems, index);
+            return vm.getFillQuantity(lineItems, index) +
+                getReservedSohFromSummaries(
+                    $stateParams.stockCardSummaries, currentOrderableId, currentLotId, currentLocationCode
+                );
         };
 
         function showInDoses() {
@@ -623,7 +633,7 @@
                         } else {
                             validateDuplicated(lineItems, lineItem);
                         }
-                        validateFillQuantity(lineItem);
+                        validateFillQuantity(lineItems, index);
                     }
                 });
             });
@@ -915,6 +925,7 @@
         }
 
         function updateLineItemsReservedAndTotalStock(summaries) {
+            $stateParams.stockCardSummaries = summaries;
             vm.displayTableLineItems.forEach(function(lineItemGroup) {
                 var currentGroupOrderableId = lineItemGroup[0].orderableId;
                 var summary = summaries.find(function(summary) {
@@ -943,9 +954,30 @@
                     );
 
                     lineItem.lot.stockOnHand = _.get(targetLotDetailWithLocation, ['stockOnHand']);
-                    lineItem.reservedStock = _.get(targetLotDetailWithLocation, ['reservedStock']);
+                    // lineItem.reservedStock = _.get(targetLotDetailWithLocation, ['reservedStock']);
                 });
             });
+        }
+
+        function getReservedSohFromSummaries(summaries, orderableId, lotId, locationCode) {
+            var summary = summaries.find(function(summary) {
+                return summary.orderable.id === orderableId;
+            });
+            if (!summary) {
+                return 0;
+            }
+
+            var stockCardDetail = summary.stockCardDetails.find(function(stockCardDetail) {
+                return stockCardDetail.lot.id === lotId;
+            });
+            if (!stockCardDetail) {
+                return 0;
+            }
+
+            var lotItemWithLocationInfo = stockCardDetail.lotLocationSohDtoList.find(function(lotItemWithLocationInfo) {
+                return lotItemWithLocationInfo.locationCode === locationCode;
+            });
+            return lotItemWithLocationInfo ? lotItemWithLocationInfo.reservedStock : 0;
         }
 
         vm.search = function() {

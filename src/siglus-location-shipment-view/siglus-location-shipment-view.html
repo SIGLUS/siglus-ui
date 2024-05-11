@@ -131,7 +131,7 @@
                 <td ng-if="vm.showEditableBlocks(lineItem, lineItems)">
                     <input positive-integer ng-model="lineItem.quantityShipped"
                         openlmis-invalid="{{lineItem.$error.quantityShippedError || '' | message}}"
-                        ng-change="vm.changeFillQuantity(lineItem)" ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)" />
+                        ng-change="vm.changeFillQuantity(lineItems, index)" ng-disabled="lineItem.skipped || vm.isEmptyRow(lineItem, lineItems, index)" />
                 </td>
                 <td>{{vm.getReservedSoh(lineItems, index)}}</td>
                 <td>{{vm.getAvailableSoh(lineItems, index)}}</td>
