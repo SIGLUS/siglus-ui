@@ -468,11 +468,12 @@ describe('SiglusLocationShipmentViewController', function() {
                 locationCode: 'AA28B'
             };
             lineItem.quantityShipped = 334;
-            lineItem.reservedStock = 0;
             var lineItems = [
                 lineItem,
                 _.clone(lineItem)
             ];
+
+            spyOn(vm, 'getReservedSoh').andReturn(99999);
 
             vm.changeLocation(lineItem, lineItems, 0);
 
@@ -493,6 +494,7 @@ describe('SiglusLocationShipmentViewController', function() {
                 lineItem,
                 _.clone(lineItem)
             ];
+            spyOn(vm, 'getReservedSoh').andReturn(0);
 
             spyOn(SiglusLocationCommonUtilsService, 'getOrderableLocationLotsMap').andReturn({
                 '384b6095-c3ba-4e32-a3bf-2de7ffe23d7a': {
@@ -777,8 +779,6 @@ describe('SiglusLocationShipmentViewController', function() {
     });
 
     describe('getRemainingSoh method', function() {
-        // TODO: add ut to test with reservedStock
-
         it('should return sum remaining soh when current index is 0 and result is less than 0', function() {
             var lineItems = [
                 {
@@ -822,12 +822,10 @@ describe('SiglusLocationShipmentViewController', function() {
         it('should return sum remaining soh when current index is 0 and result is more than 0 ', function() {
             var lineItems = [
                 {
-
                     quantityShipped: 0,
                     location: null,
                     lot: null,
-                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                    reservedStock: 0
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
                     quantityShipped: 800,
@@ -839,8 +837,7 @@ describe('SiglusLocationShipmentViewController', function() {
                         lotCode: 'SEM-LOTE-07A03-2508022-1',
                         expirationDate: '2022-08-25'
                     },
-                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                    reservedStock: 0
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 },
                 {
                     quantityShipped: 1000,
@@ -852,8 +849,7 @@ describe('SiglusLocationShipmentViewController', function() {
                         lotCode: 'SEM-LOTE-07A03-09082022-2',
                         expirationDate: '2022-08-09'
                     },
-                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa',
-                    reservedStock: 0
+                    orderableId: 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa'
                 }
             ];
 
@@ -867,6 +863,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     ]
                 }
             });
+            spyOn(vm, 'getReservedSoh').andReturn(1800);
 
             expect(vm.getRemainingSoh(lineItems, 0)).toEqual(200);
         });
@@ -918,6 +915,7 @@ describe('SiglusLocationShipmentViewController', function() {
                     ]
                 }
             });
+            spyOn(vm, 'getReservedSoh').andReturn(900);
 
             expect(vm.getRemainingSoh(lineItems, 1)).toEqual(100);
         });
