@@ -16,13 +16,15 @@
 describe('siglusAnalyticsReportTracerDrugController', function() {
 
     var  $controller, AnalyticsReportMetabaseDataBuilder, analyticsReportMetabase,
-        vm, loadingModalService, $scope, $rootScope, filterInfo;
+        vm, loadingModalService, $scope, $rootScope, filterInfo, geographicList;
 
     beforeEach(function() {
         module('siglus-analytics-report');
         module('siglus-analytics-report-metabase');
         module('stockmanagement');
         module('siglus-analytics-report-tracer-drug');
+        module('referencedata-user');
+        module('admin-user-roles');
 
         inject(function($injector) {
 
@@ -34,10 +36,12 @@ describe('siglusAnalyticsReportTracerDrugController', function() {
         $scope = $rootScope.$new();
         analyticsReportMetabase = new AnalyticsReportMetabaseDataBuilder().build();
         filterInfo = prepareFilterInfo();
+        geographicList = prepareGeographicList();
         vm = $controller('siglusAnalyticsReportTracerDrugController', {
             analyticsReportMetabase: analyticsReportMetabase,
             $scope: $scope,
-            filterInfo: filterInfo
+            filterInfo: filterInfo,
+            geographicList: geographicList
         });
         spyOn($scope, '$watch').andCallThrough();
         vm.$onInit();
@@ -107,4 +111,14 @@ describe('siglusAnalyticsReportTracerDrugController', function() {
         };
     }
 
+    function prepareGeographicList() {
+        return [
+            {
+                provinceId: '123',
+                provinceName: 'NIASSA',
+                districtId: '456',
+                districtName: 'CIDADE DE LICHINGAA'
+            }
+        ];
+    }
 });
