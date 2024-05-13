@@ -45,6 +45,7 @@
             name: 'ALL',
             code: ALL_CODE
         };
+        var REPORT_VIEW_ALL_CODE = '00000000-0000-0000-0000-000000000000';
 
         vm.$onInit = onInit;
         $scope.iframeLoadedCallBack = iframeLoadedCallBack;
@@ -79,20 +80,28 @@
 
             var provinceList = [], districtList = [];
             angular.forEach(geographicNameList.provinceNameList, function(provinceName) {
-                var zoneItem = availableProvinceList.find(function(zoneItem) {
-                    return zoneItem.name === provinceName;
-                });
-                if (zoneItem) {
-                    provinceList.push(zoneItem);
+                if (provinceName === ALL.name) {
+                    provinceList = provinceList.concat(availableProvinceList);
+                } else {
+                    var zoneItem = availableProvinceList.find(function(zoneItem) {
+                        return zoneItem.name === provinceName;
+                    });
+                    if (zoneItem) {
+                        provinceList.push(zoneItem);
+                    }
                 }
             });
 
             angular.forEach(geographicNameList.districtNameList, function(districtName) {
-                var zoneItem = availableDistrictList.find(function(zoneItem) {
-                    return zoneItem.name === districtName;
-                });
-                if (zoneItem) {
-                    districtList.push(zoneItem);
+                if (districtName === ALL.name) {
+                    districtList = districtList.concat(availableDistrictList);
+                } else {
+                    var zoneItem = availableDistrictList.find(function(zoneItem) {
+                        return zoneItem.name === districtName;
+                    });
+                    if (zoneItem) {
+                        districtList.push(zoneItem);
+                    }
                 }
             });
 
@@ -207,8 +216,12 @@
         function buildProvinceAndDistrictNameList(geographicList) {
             var provinceNameList = [], districtNameList = [];
             geographicList.forEach(function(geographicItem) {
-                provinceNameList.push(geographicItem.provinceName);
-                districtNameList.push(geographicItem.districtName);
+                provinceNameList.push(
+                    geographicItem.provinceId === REPORT_VIEW_ALL_CODE ? ALL.name : geographicItem.provinceName
+                );
+                districtNameList.push(
+                    geographicItem.districtId === REPORT_VIEW_ALL_CODE ? ALL.name : geographicItem.districtName
+                );
             });
             return {
                 provinceNameList: _.uniq(provinceNameList),
