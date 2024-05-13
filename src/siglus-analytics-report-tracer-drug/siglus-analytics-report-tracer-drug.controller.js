@@ -79,31 +79,40 @@
             });
 
             var provinceList = [], districtList = [];
-            angular.forEach(geographicNameList.provinceNameList, function(provinceName) {
-                if (provinceName === ALL.name) {
-                    provinceList = provinceList.concat(availableProvinceList);
-                } else {
+
+            if (geographicNameList.provinceNameList.some(function(provinceName) {
+                return provinceName === ALL.name;
+            })) {
+                provinceList = availableProvinceList;
+            } else {
+                angular.forEach(geographicNameList.provinceNameList, function(provinceName) {
                     var zoneItem = availableProvinceList.find(function(zoneItem) {
                         return zoneItem.name === provinceName;
                     });
                     if (zoneItem) {
                         provinceList.push(zoneItem);
                     }
-                }
-            });
+                });
+            }
 
-            angular.forEach(geographicNameList.districtNameList, function(districtName) {
-                if (districtName === ALL.name) {
-                    districtList = districtList.concat(availableDistrictList);
-                } else {
-                    var zoneItem = availableDistrictList.find(function(zoneItem) {
-                        return zoneItem.name === districtName;
-                    });
-                    if (zoneItem) {
-                        districtList.push(zoneItem);
+            if (geographicNameList.districtNameList.some(function(districtName) {
+                return districtName === ALL.name;
+            })) {
+                provinceList = availableProvinceList;
+            } else {
+                angular.forEach(geographicNameList.districtNameList, function(districtName) {
+                    if (districtName === ALL.name) {
+                        districtList = districtList.concat(availableDistrictList);
+                    } else {
+                        var zoneItem = availableDistrictList.find(function(zoneItem) {
+                            return zoneItem.name === districtName;
+                        });
+                        if (zoneItem) {
+                            districtList.push(zoneItem);
+                        }
                     }
-                }
-            });
+                });
+            }
 
             if (_.size(provinceList) > 1) {
                 provinceList.push(ALL);
