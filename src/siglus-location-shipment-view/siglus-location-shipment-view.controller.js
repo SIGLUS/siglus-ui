@@ -376,7 +376,10 @@
             // for main group with multiple lineItems
             if (index === 0 && lineItems.length > 1) {
                 return _.reduce(lineItems.slice(1), function(reservedStockSum, _, index) {
-                    return reservedStockSum + vm.getReservedSoh(lineItems, index) ;
+                    return reservedStockSum + vm.getFillQuantity(lineItems, index) +
+                        getReservedSohFromSummaries(
+                            $stateParams.stockCardSummaries, currentOrderableId, currentLotId, currentLocationCode
+                        );
                 }, 0);
             }
 
