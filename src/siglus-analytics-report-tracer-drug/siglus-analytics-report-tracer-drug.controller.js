@@ -28,15 +28,24 @@
         .module('siglus-analytics-report-tracer-drug')
         .controller('siglusAnalyticsReportTracerDrugController', controller);
 
-    controller.$inject = ['$scope', 'analyticsReportMetabase', 'loadingModalService', 'SIGLUS_TIME',
-        'moment', 'analyticsReportMetabaseService', 'filterInfo', 'analyticsReportUrlFactory'];
+    controller.$inject = [
+        '$scope', 'analyticsReportMetabase', 'loadingModalService', 'SIGLUS_TIME',
+        'moment', 'analyticsReportMetabaseService', 'filterInfo', 'geographicList'
+    ];
 
-    function controller($scope, analyticsReportMetabase, loadingModalService,
-                        SIGLUS_TIME, moment, analyticsReportMetabaseService, filterInfo) {
+    function controller(
+        $scope, analyticsReportMetabase, loadingModalService, SIGLUS_TIME,
+        moment, analyticsReportMetabaseService, filterInfo, geographicList
+    ) {
 
         var vm = this;
         var DATE_FORMAT = 'YYYY-MM-DD';
         var ALL_CODE = '0000-0000';
+        var ALL = {
+            name: 'ALL',
+            code: ALL_CODE
+        };
+
         vm.$onInit = onInit;
         $scope.iframeLoadedCallBack = iframeLoadedCallBack;
         vm.analyticsReportMetabase = {};
@@ -55,31 +64,44 @@
         vm.endMaxDate = moment().format(DATE_FORMAT);
 
         function onInit() {
-
             vm.analyticsReportMetabase = analyticsReportMetabase;
+            vm.geographicList = geographicList;
             loadingModalService.open();
 
-            var all = {
-                name: 'ALL',
-                code: ALL_CODE
-            };
-
+            var geographicNameList = buildProvinceAndDistrictNameList(geographicList);
             var geographicZones = angular.copy(_.get(filterInfo, 'geographicZones', []));
+            var availableProvinceList = geographicZones.filter(function(zoneItem) {
+                return zoneItem.levelCode === 2;
+            });
+            var availableDistrictList = geographicZones.filter(function(zoneItem) {
+                return zoneItem.levelCode === 3;
+            });
+
             var provinceList = [], districtList = [];
-            angular.forEach(geographicZones, function(item) {
-                if (item.level === 'Province') {
-                    provinceList.push(item);
-                }
-                if (item.level === 'District') {
-                    districtList.push(item);
+            angular.forEach(geographicNameList.provinceNameList, function(provinceName) {
+                var zoneItem = availableProvinceList.find(function(zoneItem) {
+                    return zoneItem.name === provinceName;
+                });
+                if (zoneItem) {
+                    provinceList.push(zoneItem);
                 }
             });
+
+            angular.forEach(geographicNameList.districtNameList, function(districtName) {
+                var zoneItem = availableDistrictList.find(function(zoneItem) {
+                    return zoneItem.name === districtName;
+                });
+                if (zoneItem) {
+                    districtList.push(zoneItem);
+                }
+            });
+
             if (_.size(provinceList) > 1) {
-                provinceList.push(all);
+                provinceList.push(ALL);
             }
 
             if (_.size(districtList) > 1) {
-                districtList.push(all);
+                districtList.push(ALL);
             }
 
             vm.provinceList = provinceList;
@@ -163,17 +185,35 @@
         });
 
         function exportData() {
-            analyticsReportMetabaseService.exportTracerDrugReport(vm.drugCode,
-                vm.provinceCode,
-                vm.districtCode,
+            analyticsReportMetabaseService.exportTracerDrugReport(
+                vm.drugCode,
+                vm.provinceCode === ALL_CODE ? vm.provinceList.map(function(provinceItem) {
+                    return provinceItem.code;
+                }) : [vm.provinceCode],
+                vm.districtCode === ALL_CODE ? vm.districtList.map(function(districtItem) {
+                    return districtItem.code;
+                }) : [vm.districtCode],
                 vm.startDate,
-                vm.endDate);
+                vm.endDate
+            );
         }
 
         function iframeLoadedCallBack() {
             // eslint-disable-next-line no-undef
             iFrameResize({}, '#metabase-iframe');
             loadingModalService.close();
+        }
+
+        function buildProvinceAndDistrictNameList(geographicList) {
+            var provinceNameList = [], districtNameList = [];
+            geographicList.forEach(function(geographicItem) {
+                provinceNameList.push(geographicItem.provinceName);
+                districtNameList.push(geographicItem.districtName);
+            });
+            return {
+                provinceNameList: _.uniq(provinceNameList),
+                districtNameList: _.uniq(districtNameList)
+            };
         }
     }
 })();

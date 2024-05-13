@@ -28,7 +28,9 @@
         'openlmis-i18n',
         'openlmis-date',
         'siglus-analytics-report',
-        'openlmis-rights'
+        'openlmis-rights',
+        'referencedata-user',
+        'admin-user-roles'
     ]);
 
 })();

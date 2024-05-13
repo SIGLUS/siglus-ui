@@ -204,7 +204,6 @@
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportTracerDrugController',
                     controllerAs: 'vm',
-                    // eslint-disable-next-line max-len
                     templateUrl: 'siglus-analytics-report-tracer-drug/siglus-analytics-report-tracer-drug.html'
                 }
             },
@@ -218,11 +217,19 @@
                             return data;
                         });
                 },
+                user: function(currentUserService) {
+                    return currentUserService.getUserInfo();
+                },
                 filterInfo: function(analyticsReportMetabaseService) {
                     return analyticsReportMetabaseService
                         .getTracerDrugFilterInfo().then(function(data) {
                             return data;
                         });
+                },
+                geographicList: function(user, UserRolesReportService) {
+                    return UserRolesReportService.getUserGeographicList(user.id).then(function(geographicList) {
+                        return geographicList;
+                    });
                 }
             }
         });
