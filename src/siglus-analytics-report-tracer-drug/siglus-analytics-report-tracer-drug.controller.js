@@ -59,6 +59,7 @@
         vm.districtCode = undefined;
         vm.startDate = undefined;
         vm.endDate = undefined;
+        vm.allProvinceDistrictList = [];
 
         vm.startMaxDate = moment().format(DATE_FORMAT);
 
@@ -98,21 +99,18 @@
             if (geographicNameList.districtNameList.some(function(districtName) {
                 return districtName === ALL.name;
             })) {
-                provinceList = availableProvinceList;
+                districtList = availableDistrictList;
             } else {
                 angular.forEach(geographicNameList.districtNameList, function(districtName) {
-                    if (districtName === ALL.name) {
-                        districtList = districtList.concat(availableDistrictList);
-                    } else {
-                        var zoneItem = availableDistrictList.find(function(zoneItem) {
-                            return zoneItem.name === districtName;
-                        });
-                        if (zoneItem) {
-                            districtList.push(zoneItem);
-                        }
+                    var zoneItem = availableDistrictList.find(function(zoneItem) {
+                        return zoneItem.name === districtName;
+                    });
+                    if (zoneItem) {
+                        districtList.push(zoneItem);
                     }
                 });
             }
+            vm.allProvinceDistrictList = districtList;
 
             if (_.size(provinceList) > 1) {
                 provinceList.push(ALL);
@@ -205,15 +203,28 @@
         function exportData() {
             analyticsReportMetabaseService.exportTracerDrugReport(
                 vm.drugCode,
-                vm.provinceCode === ALL_CODE ? vm.provinceList.map(function(provinceItem) {
-                    return provinceItem.code;
-                }) : [vm.provinceCode],
-                vm.districtCode === ALL_CODE ? vm.districtList.map(function(districtItem) {
-                    return districtItem.code;
-                }) : [vm.districtCode],
+                buildRequestDistrictNameList(),
                 vm.startDate,
                 vm.endDate
             );
+        }
+
+        function buildRequestDistrictNameList() {
+            if (vm.districtCode !== ALL_CODE) {
+                return [vm.districtCode];
+            } else if (vm.provinceCode === ALL_CODE) {
+                // districtCode === ALL_CODE, provinceCode === ALL_CODE
+                return vm.allProvinceDistrictList.map(function(districtItem) {
+                    return districtItem.code;
+                });
+            }
+            // provinceCode !== ALL_CODE, districtCode === ALL_CODE
+            return vm.districtList.filter(function(districtItem) {
+                return districtItem.parentCode === vm.provinceCode;
+            }).map(function(districtItem) {
+                return districtItem.code;
+            });
+
         }
 
         function iframeLoadedCallBack() {

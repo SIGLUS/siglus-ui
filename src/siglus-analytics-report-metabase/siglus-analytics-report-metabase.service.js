@@ -43,7 +43,7 @@
                     transformResponse: transformResponse
                 },
                 exportTracerDrugReport: {
-                    method: 'GET',
+                    method: 'POST',
                     url: analyticsReportUrlFactory('/api/siglusapi/report/tracerDrug/excel'),
                     responseType: 'blob',
                     transformResponse: transExcelformResponse
@@ -78,12 +78,11 @@
         }
 
         function exportTracerDrugReport(
-            productCode, provinceCode, districtCode, startDate, endDate
+            productCode, districtList, startDate, endDate
         ) {
             return resource.exportTracerDrugReport({
                 productCode: productCode,
-                provinceCode: provinceCode,
-                districtCode: districtCode,
+                districtList: districtList,
                 startDate: startDate,
                 endDate: endDate
             });
