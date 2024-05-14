@@ -28,13 +28,19 @@
         .module('select-users-modal')
         .controller('SelectUsersModalController', SelectUsersModalController);
 
-    SelectUsersModalController.$inject = ['users', 'userUpdated', '$state', '$stateParams',
+    SelectUsersModalController.$inject = [
+        'users', 'userUpdated', '$state', '$stateParams',
         'userRoleAssignmentFactory', '$q', 'notificationService', 'rolesUpdated',
-        'programsUpdated', 'supervisoryNodesUpdated', 'warehousesUpdated', 'loadingModalService'];
+        'programsUpdated', 'supervisoryNodesUpdated', 'warehousesUpdated', 'loadingModalService',
+        'UserRolesReportService'
+    ];
 
-    function SelectUsersModalController(users, userUpdated, $state, $stateParams, userRoleAssignmentFactory,
-                                        $q, notificationService, rolesUpdated, programsUpdated,
-                                        supervisoryNodesUpdated, warehousesUpdated, loadingModalService) {
+    function SelectUsersModalController(
+        users, userUpdated, $state, $stateParams, userRoleAssignmentFactory,
+        $q, notificationService, rolesUpdated, programsUpdated,
+        supervisoryNodesUpdated, warehousesUpdated, loadingModalService,
+        UserRolesReportService
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -70,15 +76,26 @@
             return userRoleAssignmentFactory.getUser(vm.selectedUserId, rolesUpdated, programsUpdated,
                 supervisoryNodesUpdated, warehousesUpdated)
                 .then(function(rolesToImport) {
-                    try {
-                        userUpdated.addRoleAssignments(userUpdated.roleAssignments, rolesToImport.roleAssignments);
-                        reloadState();
-                        return $q.resolve();
-                    } catch (error) {
-                        loadingModalService.close();
-                        notificationService.error(error.message);
-                        return $q.reject();
-                    }
+                    return UserRolesReportService.getUserGeographicList(vm.selectedUserId)
+                        .then(function(geographicList) {
+                            try {
+                                userUpdated.addRoleAssignments(
+                                    userUpdated.roleAssignments, rolesToImport.roleAssignments, geographicList
+                                );
+                                reloadState();
+                                return $q.resolve();
+                            } catch (error) {
+                                loadingModalService.close();
+                                notificationService.error(error.message);
+                                return $q.reject();
+                            }
+                        })
+                        .catch(function(err) {
+                            throw new Error(err);
+                        });
+                })
+                .catch(function(err) {
+                    throw new Error(err);
                 });
         }
 
@@ -92,7 +109,7 @@
          * without reloading parent state.
          */
         function search() {
-            $state.go('.', _.extend({}, $stateParams, {
+            $state.go('.', _.assign({}, $stateParams, {
                 rolesUsername: vm.searchText
             }));
         }

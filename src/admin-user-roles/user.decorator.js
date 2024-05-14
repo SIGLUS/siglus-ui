@@ -74,7 +74,7 @@
         ) {
             validateRoleAssignment(
                 this, roleId, roleName, roleType, programId, programName,
-                supervisoryNodeId, supervisoryNodeName, warehouseId, reportViewGeographicList
+                supervisoryNodeId, supervisoryNodeName, warehouseId
             );
             this.roleAssignments.push(new RoleAssignment(this,
                 roleId,
@@ -99,13 +99,33 @@
          *
          * @param {Array} originalUserRoleAssignments  the current User's Role AssignmentsF
          * @param {Array} roleAssignments              the Role Assignments which are to be imported
+         * @param {Array} geographicList               the geographic list of report view which are to be imported
          */
-        function addRoleAssignments(originalUserRoleAssignments, roleAssignments) {
+        function addRoleAssignments(originalUserRoleAssignments, roleAssignments, geographicList) {
             roleAssignments.forEach(function(roleAssignment) {
-                if (!isRoleAlreadyAssigned(originalUserRoleAssignments, roleAssignment.roleId,
+                if (isRoleAlreadyAssigned(originalUserRoleAssignments, roleAssignment.roleId,
                     roleAssignment.programId, roleAssignment.supervisoryNodeId, roleAssignment.warehouseId)) {
-                    originalUserRoleAssignments.push(roleAssignment);
+
+                    if (roleAssignment.type === ROLE_TYPES.REPORTS) {
+                        var originalReportViewRoleAssignment =
+                            originalUserRoleAssignments.find(function(roleAssignment) {
+                                return roleAssignment.type === ROLE_TYPES.REPORTS;
+                            });
+
+                        originalReportViewRoleAssignment.reportViewGeographicList =
+                            _.uniq(
+                                originalReportViewRoleAssignment.reportViewGeographicList.concat(geographicList),
+                                'districtId'
+                            );
+                    }
+                    return;
                 }
+
+                if (roleAssignment.type === ROLE_TYPES.REPORTS) {
+                    roleAssignment.reportViewGeographicList = geographicList;
+                }
+
+                originalUserRoleAssignments.push(roleAssignment);
             });
         }
 

@@ -32,6 +32,7 @@ describe('SelectUsersModalController', function() {
             this.userRoleAssignmentFactory = $injector.get('userRoleAssignmentFactory');
             this.loadingModalService = $injector.get('loadingModalService');
             this.$state = $injector.get('$state');
+            this.UserRolesReportService = $injector.get('UserRolesReportService');
         });
 
         this.rolesUpdated = [
@@ -216,6 +217,7 @@ describe('SelectUsersModalController', function() {
 
         it('should import roles successfully', function() {
             spyOn(this.userRoleAssignmentFactory, 'getUser').andReturn(this.$q.resolve(this.selectedUser));
+            spyOn(this.UserRolesReportService, 'getUserGeographicList').andReturn(this.$q.resolve([]));
             this.vm.selectUser();
 
             expect(this.userUpdated.roleAssignments[0]).toEqual(undefined);
