@@ -64,14 +64,6 @@
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
         vm.minDate = undefined;
-        vm.getReason = function(reasonId) {
-            // return 
-            var reasonMap = _.reduce(reasons, function(r, c) {
-                r[c.id] = c.name;
-                return r;
-            }, {});
-            return reasonMap[reasonId];
-        };
 
         /**
      * @ngdoc property
@@ -151,7 +143,6 @@
 
             vm.order = order;
             // SIGLUS-REFACTOR: starts here
-            // vm.reasons = reasons;
             vm.reasons = _.filter(reasons, function(reason) {
                 return _.contains(reason.tags, 'rejection');
             });

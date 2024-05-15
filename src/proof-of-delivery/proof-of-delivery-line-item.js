@@ -62,17 +62,17 @@
         function updateQuantityRejected() {
             if (!this.quantityAccepted && this.quantityAccepted !== 0) {
                 this.quantityRejected = 0;
-            } else {
-                var quantityRejected = this.quantityShipped - this.quantityAccepted;
-
-                if (quantityRejected < 0) {
-                    this.quantityRejected = 0;
-                } else if (quantityRejected > this.quantityShipped) {
-                    this.quantityRejected = this.quantityShipped;
-                } else {
-                    this.quantityRejected = quantityRejected;
-                }
+                return;
             }
+
+            if (this.quantityShipped < this.quantityAccepted) {
+                this.quantityRejected = 0;
+            } else if (this.quantityAccepted < 0) {
+                this.quantityRejected = this.quantityShipped;
+            } else {
+                this.quantityRejected = this.quantityShipped - this.quantityAccepted;
+            }
+
         }
 
         /**

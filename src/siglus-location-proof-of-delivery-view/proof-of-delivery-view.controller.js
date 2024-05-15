@@ -80,14 +80,6 @@
         vm.maxDate = undefined;
         vm.minDate = undefined;
         vm.fileName = undefined;
-        vm.getReason = function(reasonId) {
-            // return
-            var reasonMap = _.reduce(reasons, function(r, c) {
-                r[c.id] = c.name;
-                return r;
-            }, {});
-            return reasonMap[reasonId];
-        };
 
         /**
          * @ngdoc property

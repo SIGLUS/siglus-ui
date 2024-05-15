@@ -153,12 +153,12 @@
                         .filter(function(reasonAssignment) {
                             return !reasonAssignment.hidden;
                         })
-                        .reduce(function(result, reasonAssignemnt) {
-                            if (result.indexOf(reasonAssignemnt.reason) < 0) {
+                        .reduce(function(result, reasonAssignment) {
+                            if (result.indexOf(reasonAssignment.reason) < 0) {
                                 // SIGLUS-REFACTOR: filter reason by program
-                                reasonAssignemnt.reason.programId = reasonAssignemnt.program.id;
+                                reasonAssignment.reason.programId = reasonAssignment.program.id;
                                 // SIGLUS-REFACTOR: ends here
-                                result.push(reasonAssignemnt.reason);
+                                result.push(reasonAssignment.reason);
                             }
                             return result;
                         }, []);

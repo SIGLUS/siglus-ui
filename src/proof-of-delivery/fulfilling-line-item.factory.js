@@ -117,7 +117,6 @@
                 });
             }
             // SIGLUS-REFACTOR: end here
-            console.log('orderLineItems', orderLineItems);
             return new OrderableFulfillsResource().query({
                 id: orderableIds
             })
