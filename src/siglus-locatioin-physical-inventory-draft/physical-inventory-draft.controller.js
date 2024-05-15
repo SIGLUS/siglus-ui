@@ -1433,8 +1433,8 @@
                 return {
                     productCode: isByProduct ? null : lineItem.orderable.productCode,
                     productName: isByProduct ? null : lineItem.orderable.fullProductName,
-                    lotCode: lineItem.lot.lotCode,
-                    expirationDate: lineItem.lot.expirationDate,
+                    lotCode: lineItem.lot ? lineItem.lot.lotCode : null,
+                    expirationDate: lineItem.lot ? lineItem.lot.expirationDate : null,
                     stockOnHand: lineItem.stockOnHand,
                     currentStock: lineItem.quantity,
                     reasons: {
