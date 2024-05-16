@@ -17,6 +17,7 @@
   "proofOfDeliveryView.quantityShipped": "Supplied Quantity",
   "proofOfDeliveryView.quantityAccepted": "Accepted Quantity",
   "proofOfDeliveryView.quantityReturned": "Returned Quantity",
+  "proofOfDeliveryView.reasonForAdjustment": "Reason for Adjustment",
   "proofOfDeliveryView.location": "Location",
   "proofOfDeliveryView.Actions": "Actions",
 

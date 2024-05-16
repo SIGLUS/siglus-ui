@@ -28,27 +28,29 @@
         .module('proof-of-delivery-view')
         .controller('ProofOfDeliveryViewController', ProofOfDeliveryViewController);
 
-    ProofOfDeliveryViewController.$inject = ['$scope',
-        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
-        'orderLineItems', 'canEdit',
-        'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
+    ProofOfDeliveryViewController.$inject = [
+        '$scope', 'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
+        'orderLineItems', 'canEdit', 'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
         'proofOfDeliveryService', 'notificationService',
         '$stateParams', 'alertConfirmModalService', '$state',
         'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService',
         'openlmisDateFilter', 'fulfillingLineItemFactory',
         'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment',
-        'alertService', 'siglusSignatureWithLimitDateModalService', 'facility'];
+        'alertService', 'siglusSignatureWithLimitDateModalService', 'facility'
+    ];
 
-    function ProofOfDeliveryViewController($scope
-        , proofOfDelivery, order, reasons, messageService
-        , VVM_STATUS, orderLineItems, canEdit, ProofOfDeliveryPrinter
-        , $q, loadingModalService, proofOfDeliveryService, notificationService
-        , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
-        , confirmService, confirmDiscardService, proofOfDeliveryManageService
-        , openlmisDateFilter, fulfillingLineItemFactory
-        , facilityFactory, siglusDownloadLoadingModalService, user, moment,
-                                           alertService, siglusSignatureWithLimitDateModalService, facility) {
+    function ProofOfDeliveryViewController(
+        $scope, proofOfDelivery, order, reasons, messageService, VVM_STATUS,
+        orderLineItems, canEdit, ProofOfDeliveryPrinter, $q, loadingModalService,
+        proofOfDeliveryService, notificationService,
+        $stateParams, alertConfirmModalService, $state,
+        PROOF_OF_DELIVERY_STATUS, confirmService,
+        confirmDiscardService, proofOfDeliveryManageService,
+        openlmisDateFilter, fulfillingLineItemFactory,
+        facilityFactory, siglusDownloadLoadingModalService, user, moment,
+        alertService, siglusSignatureWithLimitDateModalService, facility
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -59,6 +61,9 @@
         vm.submit = submit;
         vm.deleteDraft = deleteDraft;
         vm.returnBack = returnBack;
+        vm.disableReasonSelect = disableReasonSelect;
+        vm.onAcceptedQuantityChanged = onAcceptedQuantityChanged;
+        vm.getLineItemReasonOptions = getLineItemReasonOptions;
         vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
@@ -131,6 +136,9 @@
      */
         vm.reasons = undefined;
 
+        vm.rejectionReasons = undefined;
+        vm.excessReasons = undefined;
+
         /**
      * @ngdoc method
      * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
@@ -145,6 +153,12 @@
             // SIGLUS-REFACTOR: starts here
             vm.reasons = _.filter(reasons, function(reason) {
                 return _.contains(reason.tags, 'rejection');
+            });
+            vm.rejectionReasons = _.filter(vm.reasons, function(reason) {
+                return reason.reasonType === 'DEBIT';
+            });
+            vm.excessReasons = _.filter(vm.reasons, function(reason) {
+                return reason.reasonType === 'CREDIT';
             });
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
@@ -381,5 +395,23 @@
             }
         }
 
+        function disableReasonSelect(lineItem) {
+            return lineItem.isQuantityAcceptedEmpty() || lineItem.quantityAccepted === lineItem.quantityShipped;
+        }
+
+        function onAcceptedQuantityChanged(lineItem) {
+            lineItem.updateQuantityRejected();
+            if (disableReasonSelect(lineItem)) {
+                lineItem.rejectionReasonId = undefined;
+            }
+        }
+
+        function getLineItemReasonOptions(lineItem) {
+            if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted > lineItem.quantityShipped) {
+                return vm.excessReasons;
+            } else if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted < lineItem.quantityShipped) {
+                return vm.rejectionReasons;
+            }
+        }
     }
 }());

@@ -62,7 +62,7 @@
           <th>{{'proofOfDeliveryView.quantityAccepted' | message}}</th>
           <th ng-if="vm.showVvmColumn">{{'proofOfDeliveryView.vvmStatus' | message}}</th>
           <th>{{'proofOfDeliveryView.quantityReturned' | message}}</th>
-          <th>{{'proofOfDeliveryView.rejectionReason' | message}}</th>
+          <th>{{'proofOfDeliveryView.reasonForAdjustment' | message}}</th>
           <th>{{'proofOfDeliveryView.price' | message}}</th>
           <th>{{'proofOfDeliveryView.value' | message}}</th>
           <th>{{'proofOfDeliveryView.notes' | message}}</th>
@@ -120,7 +120,7 @@
           <td ng-if="vm.canEdit">
             <input positive-integer
                    ng-model="fulfillingLineItem.quantityAccepted"
-                   ng-change="fulfillingLineItem.updateQuantityRejected()"
+                   ng-change="vm.onAcceptedQuantityChanged(fulfillingLineItem)"
                    openlmis-invalid="{{fulfillingLineItem.validate().quantityAccepted | message}}"/>
           </td>
           <td ng-if="!vm.canEdit">
@@ -142,14 +142,14 @@
           <td>{{fulfillingLineItem.quantityRejected}}</td>
           <td ng-if="vm.canEdit">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
-                    ng-options="reason.id as reason.name for reason in vm.reasons"
-                    openlmis-invalid="{{fulfillingLineItem.validate().rejectionReasonId | message}}">
+                    ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem)"
+                    openlmis-invalid="{{fulfillingLineItem.validate().rejectionReasonId | message}}"
+                    ng-disabled="vm.disableReasonSelect(fulfillingLineItem)">
             </select>
           </td>
           <td ng-if="!vm.canEdit">
             {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
           </td>
-          <!-- TODO -->
           <td style="white-space: nowrap">{{ fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}</td>
           <td style="white-space: nowrap">
             {{

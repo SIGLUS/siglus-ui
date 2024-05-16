@@ -32,6 +32,7 @@
 
         ProofOfDeliveryLineItem.prototype.validate = validate;
         ProofOfDeliveryLineItem.prototype.updateQuantityRejected = updateQuantityRejected;
+        ProofOfDeliveryLineItem.prototype.isQuantityAcceptedEmpty = isQuantityAcceptedEmpty;
 
         return ProofOfDeliveryLineItem;
 
@@ -60,19 +61,13 @@
          * Updates the quantity returned based on the set quantity received.
          */
         function updateQuantityRejected() {
-            if (!this.quantityAccepted && this.quantityAccepted !== 0) {
-                this.quantityRejected = 0;
-                return;
-            }
-
-            if (this.quantityShipped < this.quantityAccepted) {
+            if (isEmpty(this.quantityAccepted) || this.quantityShipped < this.quantityAccepted) {
                 this.quantityRejected = 0;
             } else if (this.quantityAccepted < 0) {
                 this.quantityRejected = this.quantityShipped;
             } else {
                 this.quantityRejected = this.quantityShipped - this.quantityAccepted;
             }
-
         }
 
         /**
@@ -96,27 +91,22 @@
         }
 
         function validateQuantityAccepted(lineItem, errors) {
-            if (lineItem.quantityAccepted === undefined || lineItem.quantityAccepted === null) {
+            if (isEmpty(lineItem.quantityAccepted)) {
                 errors.quantityAccepted = 'proofOfDelivery.required';
             }
 
             if (lineItem.quantityAccepted < 0) {
                 errors.quantityAccepted = 'proofOfDelivery.positive';
             }
-
-            if (lineItem.quantityShipped < lineItem.quantityAccepted) {
-                errors.quantityAccepted = 'proofOfDelivery.canNotAcceptMoreThanShipped';
-            }
         }
 
         function validateRejectionReasonId(lineItem, errors) {
-            if (lineItem.quantityRejected && !lineItem.rejectionReasonId) {
+            if (
+                !isEmpty(lineItem.quantityAccepted) &&
+                lineItem.quantityAccepted !== lineItem.quantityShipped &&
+                !lineItem.rejectionReasonId
+            ) {
                 errors.rejectionReasonId = 'proofOfDelivery.required';
-            }
-
-            if (!lineItem.quantityRejected && lineItem.rejectionReasonId) {
-                errors.rejectionReasonId =
-                    'proofOfDelivery.canNotSpecifyReasonForRejectionIfNotRejectingAnything';
             }
         }
 
@@ -129,6 +119,14 @@
                 errors.vvmStatus = 'proofOfDelivery.cannotSelectVvmStatusWhenNothingAccepted';
             }
         }
-    }
 
+        function isEmpty(data) {
+            return data === undefined || data === null;
+        }
+
+        function isQuantityAcceptedEmpty() {
+            return isEmpty(this.quantityAccepted);
+        }
+
+    }
 })();

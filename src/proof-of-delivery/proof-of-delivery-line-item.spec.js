@@ -146,9 +146,9 @@ describe('ProofOfDeliveryLineItem', function() {
         it('should return error if quantityAccepted is empty', function() {
             proofOfDeliveryLineItem.quantityAccepted = undefined;
 
-            expect(proofOfDeliveryLineItem.validate()).toEqual({
+            expect(proofOfDeliveryLineItem.validate()).toEqual(jasmine.objectContaining({
                 quantityAccepted: 'proofOfDelivery.required'
-            });
+            }));
         });
 
         it('should return error if quantityAccepted is negative', function() {
@@ -156,15 +156,6 @@ describe('ProofOfDeliveryLineItem', function() {
 
             expect(proofOfDeliveryLineItem.validate()).toEqual({
                 quantityAccepted: 'proofOfDelivery.positive'
-            });
-        });
-
-        it('should return if trying to accept more than was shipped', function() {
-            proofOfDeliveryLineItem.quantityAccepted = 100;
-            proofOfDeliveryLineItem.quantityShipped = 90;
-
-            expect(proofOfDeliveryLineItem.validate()).toEqual({
-                quantityAccepted: 'proofOfDelivery.canNotAcceptMoreThanShipped'
             });
         });
 
@@ -178,19 +169,10 @@ describe('ProofOfDeliveryLineItem', function() {
         });
 
         it('should not return error if not rejecting and not specifying a reason', function() {
-            proofOfDeliveryLineItem.quantityRejected = 0;
+            proofOfDeliveryLineItem.quantityAccepted = proofOfDeliveryLineItem.quantityShipped;
             proofOfDeliveryLineItem.rejectionReasonId = undefined;
 
             expect(proofOfDeliveryLineItem.validate()).toBeUndefined();
-        });
-
-        it('should require rejection reason to be undefined if not rejecting anything', function() {
-            proofOfDeliveryLineItem.quantityRejected = 0;
-            proofOfDeliveryLineItem.rejectionReasonId = 'rejection-reason-id';
-
-            expect(proofOfDeliveryLineItem.validate()).toEqual({
-                rejectionReasonId: 'proofOfDelivery.canNotSpecifyReasonForRejectionIfNotRejectingAnything'
-            });
         });
 
         it('should require vvm status when use vvm is true and quantity accepted', function() {
