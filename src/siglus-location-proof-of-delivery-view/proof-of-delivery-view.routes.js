@@ -63,8 +63,7 @@
                             return proofOfDelivery.shipment.order;
                         },
                         reasons: function(stockReasonsFactory, order) {
-                            return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id,
-                                'DEBIT');
+                            return stockReasonsFactory.getReasons(order.program.id, order.facility.type.id);
                         },
                         orderablesPrice: function(siglusOrderableLotService) {
                             return siglusOrderableLotService.getOrderablesPrice();

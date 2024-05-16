@@ -29,32 +29,28 @@
         .controller('ProofOfDeliveryViewControllerWithLocation',
             ProofOfDeliveryViewControllerWithLocation);
 
-    ProofOfDeliveryViewControllerWithLocation.$inject = ['$scope',
-        'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
-        'orderLineItems', 'canEdit',
-        'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
-        'proofOfDeliveryService', 'notificationService',
-        '$stateParams', 'alertConfirmModalService', '$state',
-        'PROOF_OF_DELIVERY_STATUS', 'confirmService',
-        'confirmDiscardService', 'proofOfDeliveryManageService',
-        'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment',
-        'orderablesPrice', 'facility',
-        'locations', 'areaLocationInfo', 'addAndRemoveLineItemService',
-        'SiglusLocationCommonUtilsService',
-        'alertService', 'printInfo', 'siglusSignatureWithLimitDateModalService'];
+    ProofOfDeliveryViewControllerWithLocation.$inject = [
+        '$scope', 'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
+        'orderLineItems', 'canEdit', 'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
+        'proofOfDeliveryService', 'notificationService', '$stateParams',
+        'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
+        'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter',
+        'fulfillingLineItemFactory', 'facilityFactory', 'siglusDownloadLoadingModalService',
+        'user', 'moment', 'orderablesPrice', 'facility', 'locations', 'areaLocationInfo',
+        'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService', 'alertService',
+        'printInfo', 'siglusSignatureWithLimitDateModalService'
+    ];
 
     function ProofOfDeliveryViewControllerWithLocation(
-        $scope, proofOfDelivery, order, reasons, messageService
-        , VVM_STATUS, orderLineItems, canEdit, ProofOfDeliveryPrinter
-        , $q, loadingModalService, proofOfDeliveryService, notificationService
-        , $stateParams, alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS
-        , confirmService, confirmDiscardService, proofOfDeliveryManageService
-        , openlmisDateFilter, fulfillingLineItemFactory
-        , facilityFactory, siglusDownloadLoadingModalService, user, moment
-        , orderablesPrice, facility, locations, areaLocationInfo
-        , addAndRemoveLineItemService, SiglusLocationCommonUtilsService, alertService, printInfo
-        , siglusSignatureWithLimitDateModalService
+        $scope, proofOfDelivery, order, reasons, messageService, VVM_STATUS,
+        orderLineItems, canEdit, ProofOfDeliveryPrinter, $q, loadingModalService,
+        proofOfDeliveryService, notificationService, $stateParams,
+        alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS, confirmService,
+        confirmDiscardService, proofOfDeliveryManageService, openlmisDateFilter,
+        fulfillingLineItemFactory, facilityFactory, siglusDownloadLoadingModalService,
+        user, moment, orderablesPrice, facility, locations, areaLocationInfo,
+        addAndRemoveLineItemService, SiglusLocationCommonUtilsService, alertService,
+        printInfo, siglusSignatureWithLimitDateModalService
     ) {
 
         if (canEdit) {
@@ -80,6 +76,8 @@
         vm.maxDate = undefined;
         vm.minDate = undefined;
         vm.fileName = undefined;
+        vm.disableReasonSelect = disableReasonSelect;
+        vm.getLineItemReasonOptions = getLineItemReasonOptions;
 
         /**
          * @ngdoc property
@@ -147,6 +145,9 @@
          */
         vm.reasons = undefined;
 
+        vm.rejectionReasons = undefined;
+        vm.excessReasons = undefined;
+
         /**
          * @ngdoc method
          * @methodOf proof-of-delivery-view.controller:ProofOfDeliveryViewController
@@ -159,9 +160,14 @@
 
             vm.order = order;
             // SIGLUS-REFACTOR: starts here
-            // vm.reasons = reasons;
             vm.reasons = _.filter(reasons, function(reason) {
                 return _.contains(reason.tags, 'rejection');
+            });
+            vm.rejectionReasons = _.filter(vm.reasons, function(reason) {
+                return reason.reasonType === 'DEBIT';
+            });
+            vm.excessReasons = _.filter(vm.reasons, function(reason) {
+                return reason.reasonType === 'CREDIT';
             });
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
@@ -285,7 +291,7 @@
             })[0].name;
         }
 
-        vm.getSumOfLot = function(lineItem, groupedLineItems) {
+        function getSumOfLot(lineItem, groupedLineItems) {
             return groupedLineItems.filter(function(lineItem) {
                 return !lineItem.isMainGroup;
             }).filter(function(line) {
@@ -298,7 +304,7 @@
                 .reduce(function(accumulator, a) {
                     return accumulator + a;
                 }, 0);
-        };
+        }
 
         vm.getSumOfOrderableAcceptedQuantity = function(groupedLineItems) {
             return groupedLineItems.filter(function(lineItem) {
@@ -328,10 +334,6 @@
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
             });
-            console.log(groupedLineItems);
-            // $state.go($state.current.name, $stateParams, {
-            //     reload: true
-            // });
         };
 
         vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
@@ -346,7 +348,7 @@
                 .getDesLocationList(lineItem, areaLocationInfo);
             // still need to verify all lines
             groupedLineItems.forEach(function(line) {
-                vm.validateLocations(line, groupedLineItems);
+                validateLocations(line, groupedLineItems);
             });
         };
         vm.changeMoveToLocation = function(lineItem, groupedLineItems) {
@@ -356,7 +358,7 @@
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
             // still need to verify all lines
             groupedLineItems.forEach(function(line) {
-                vm.validateLocations(line, groupedLineItems);
+                validateLocations(line, groupedLineItems);
             });
         };
         $scope.$on('locationCodeChange', function(event, data) {
@@ -375,13 +377,12 @@
         vm.changeAcceptQuantity = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
             if (lineItem.isMainGroup || lineItem.isFirst) {
-                lineItem.quantityRejected = vm.getRejectedQuantity(lineItem,
-                    groupedLineItems);
+                lineItem.quantityRejected = vm.getRejectedQuantity(lineItem, groupedLineItems);
             }
-            vm.validateAcceptQuantity(lineItem, groupedLineItems);
+            validateAcceptQuantity(lineItem, groupedLineItems);
         };
 
-        vm.validateLocations = function(lineItem, groupedLineItems) {
+        function validateLocations(lineItem, groupedLineItems) {
             var relatedLineItems = groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['orderable', 'id'], '') === _.get(line, ['orderable', 'id'], '') &&
                     _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
@@ -417,7 +418,7 @@
                     }
                 });
             }
-        };
+        }
 
         function resetError(lineItem) {
             if (_.get(lineItem, 'rejectionReasonId')
@@ -435,65 +436,62 @@
             }
             lineItem.$error.quantityAcceptedError = '';
         }
-        vm.validateAcceptQuantity = function(lineItem, groupedLineItems) {
-            resetError(lineItem);
 
-            var sumOfLot = vm.getSumOfLot(lineItem, groupedLineItems);
-            var relatedLines = groupedLineItems.filter(function(line) {
+        function getRelatedLines(lineItem, groupedLineItems) {
+            return groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
             });
-            var mainLine;
-            if (relatedLines.length > 1) {
-                mainLine = relatedLines.find(function(line) {
-                    return line.isMainGroup;
-                });
-            } else {
-                mainLine = lineItem;
+        }
+
+        function getFirstEmptyAcceptedLine(relatedLines) {
+            return _.find(relatedLines, function(line) {
+                return line.quantityAccepted === null || line.quantityAccepted === undefined;
+            });
+        }
+
+        function getMainLine(lineItem, relatedLines) {
+            return relatedLines.length > 1 ? relatedLines.find(function(line) {
+                return line.isMainGroup;
+            }) : lineItem;
+        }
+
+        function validateAcceptQuantity(lineItem, groupedLineItems) {
+            resetError(lineItem);
+
+            var relatedLines = getRelatedLines(lineItem, groupedLineItems);
+            var emptyAcceptedLine = getFirstEmptyAcceptedLine(relatedLines);
+            var mainLine = getMainLine(lineItem, relatedLines);
+
+            if (emptyAcceptedLine) {
+                emptyAcceptedLine.$error.quantityAcceptedError = 'openlmisForm.required';
+                setReasonSelectDisabled(mainLine);
+                return;
             }
 
-            var quantityShipped = mainLine.quantityShipped;
-            if (sumOfLot > quantityShipped) {
-                relatedLines.forEach(function(line) {
-                    if (_.isNumber(_.get(line, 'quantityAccepted'))) {
-                        line.$error.quantityAcceptedError = 'proofOfDeliveryView.gtQuantityShipped';
-                    }
-                });
-                mainLine.$error.rejectionReasonIdError = '';
-            } else {
-                relatedLines.forEach(function(line) {
-                    if (line.$error.quantityAcceptedError === 'proofOfDeliveryView.gtQuantityShipped') {
-                        line.$error.quantityAcceptedError = '';
-                    }
-                });
-                if (sumOfLot === quantityShipped) {
-                    if (mainLine.rejectionReasonId) {
-                        mainLine.rejectionReasonId = undefined;
-                    }
-                    relatedLines.forEach(function(line) {
-                        line.$error.rejectionReasonIdError = '';
-                    });
-                } else if (sumOfLot < quantityShipped) {
-                    if (mainLine.rejectionReasonId) {
-                        relatedLines.forEach(function(line) {
-                            line.$error.rejectionReasonIdError = '';
-                        });
-                    } else {
-                        mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
-                    }
-                }
+            if (!mainLine.rejectionReasonId) {
+                mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
             }
-        };
+            if (disableReasonSelect(lineItem, groupedLineItems)) {
+                setReasonSelectDisabled(mainLine);
+            }
+        }
+
+        function setReasonSelectDisabled(mainLine) {
+            mainLine.rejectionReasonId = undefined;
+            mainLine.$error.rejectionReasonIdError = '';
+        }
 
         vm.getRejectedQuantity = function(fulfillingLineItem, groupedLineItems) {
-            var quantityAccepted = vm.getSumOfLot(fulfillingLineItem, groupedLineItems);
-            return fulfillingLineItem.quantityShipped - quantityAccepted;
+            var quantityAccepted = getSumOfLot(fulfillingLineItem, groupedLineItems);
+            var diff = fulfillingLineItem.quantityShipped - quantityAccepted;
+            return diff < 0 ? 0 : diff;
         };
 
         function getPodLineItemsToSend() {
             return _.flatten(vm.orderLineItems.map(function(orderLineItem) {
                 return orderLineItem.groupedLineItems.filter(function(fulfillingLineItem) {
                     if (fulfillingLineItem.isMainGroup) {
-                        fulfillingLineItem.quantityAccepted = vm.getSumOfLot(fulfillingLineItem,
+                        fulfillingLineItem.quantityAccepted = getSumOfLot(fulfillingLineItem,
                             orderLineItem.groupedLineItems);
                     }
                     if (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst) {
@@ -546,7 +544,7 @@
                 .finally(loadingModalService.close);
         }
 
-        vm.validateRequiredFields = function(lineItem) {
+        function validateRequiredFields(lineItem) {
             if (!lineItem.isMainGroup) {
                 if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
                     lineItem.$error.moveToLocationError = 'openlmisForm.required';
@@ -560,14 +558,14 @@
                     lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
                 }
             }
-        };
+        }
 
         function validateForm() {
             _.forEach(vm.orderLineItems, function(orderLineItem) {
                 orderLineItem.groupedLineItems.forEach(function(lineItem) {
-                    vm.validateRequiredFields(lineItem);
-                    vm.validateAcceptQuantity(lineItem, orderLineItem.groupedLineItems);
-                    vm.validateLocations(lineItem, orderLineItem.groupedLineItems);
+                    validateRequiredFields(lineItem);
+                    validateAcceptQuantity(lineItem, orderLineItem.groupedLineItems);
+                    validateLocations(lineItem, orderLineItem.groupedLineItems);
                 });
             });
             return _.every(vm.orderLineItems, function(orderLineItem) {
@@ -813,6 +811,27 @@
                         + ' '
                         + $stateParams.draftNum;
             }
+        }
+
+        function disableReasonSelect(lineItem, groupedLineItems) {
+            var relatedLines = getRelatedLines(lineItem, groupedLineItems);
+            var emptyAcceptedLine = getFirstEmptyAcceptedLine(relatedLines);
+            return emptyAcceptedLine !== undefined ||
+                getSumOfLot(lineItem, groupedLineItems) === lineItem.quantityShipped;
+        }
+
+        function getLineItemReasonOptions(lineItem, groupedLineItems) {
+            var sumOfLot = getSumOfLot(lineItem, groupedLineItems);
+            var relatedLines = getRelatedLines(lineItem, groupedLineItems);
+            var mainLine = getMainLine(lineItem, relatedLines);
+            var quantityShipped = mainLine.quantityShipped;
+
+            if (sumOfLot > quantityShipped) {
+                return vm.excessReasons;
+            } else if (sumOfLot < quantityShipped) {
+                return vm.rejectionReasons;
+            }
+            return [];
         }
 
     }
