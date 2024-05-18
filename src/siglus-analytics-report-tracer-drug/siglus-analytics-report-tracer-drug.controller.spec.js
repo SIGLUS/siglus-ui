@@ -25,6 +25,7 @@ describe('siglusAnalyticsReportTracerDrugController', function() {
         module('siglus-analytics-report-tracer-drug');
         module('referencedata-user');
         module('admin-user-roles');
+        module('openlmis-permissions');
 
         inject(function($injector) {
 
@@ -41,7 +42,8 @@ describe('siglusAnalyticsReportTracerDrugController', function() {
             analyticsReportMetabase: analyticsReportMetabase,
             $scope: $scope,
             filterInfo: filterInfo,
-            geographicList: geographicList
+            geographicList: geographicList,
+            isSystemAdmin: false
         });
         spyOn($scope, '$watch').andCallThrough();
         vm.$onInit();
@@ -52,18 +54,6 @@ describe('siglusAnalyticsReportTracerDrugController', function() {
 
         beforeEach(function() {
             spyOn(loadingModalService, 'open');
-        });
-
-        it('should watch province', function() {
-            vm.districtCode = filterInfo.geographicZones[1].code;
-
-            expect($scope.$watch).toHaveBeenCalled();
-        });
-
-        it('should watch district', function() {
-            vm.districtCode = filterInfo.geographicZones[0].code;
-
-            expect($scope.$watch).toHaveBeenCalled();
         });
 
         it('should expose analyticsReportMetabase', function() {

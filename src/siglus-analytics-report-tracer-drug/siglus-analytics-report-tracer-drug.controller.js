@@ -30,12 +30,14 @@
 
     controller.$inject = [
         '$scope', 'analyticsReportMetabase', 'loadingModalService', 'SIGLUS_TIME',
-        'moment', 'analyticsReportMetabaseService', 'filterInfo', 'geographicList'
+        'moment', 'analyticsReportMetabaseService', 'filterInfo', 'geographicList',
+        'isSystemAdmin'
     ];
 
     function controller(
         $scope, analyticsReportMetabase, loadingModalService, SIGLUS_TIME,
-        moment, analyticsReportMetabaseService, filterInfo, geographicList
+        moment, analyticsReportMetabaseService, filterInfo, geographicList,
+        isSystemAdmin
     ) {
 
         var vm = this;
@@ -59,146 +61,95 @@
         vm.districtCode = undefined;
         vm.startDate = undefined;
         vm.endDate = undefined;
-        vm.allProvinceDistrictList = [];
+        vm.allProvinceList = [];
+        vm.allDistrictList = [];
+        vm.availableDistrictList = [];
+        vm.provinceCodeToDistrictSelectionListMap = undefined;
 
         vm.startMaxDate = moment().format(DATE_FORMAT);
-
         vm.endMaxDate = moment().format(DATE_FORMAT);
 
-        function onInit() {
-            vm.analyticsReportMetabase = analyticsReportMetabase;
-            vm.geographicList = geographicList;
-            loadingModalService.open();
-
-            var geographicNameList = buildProvinceAndDistrictNameList(geographicList);
-            var geographicZones = angular.copy(_.get(filterInfo, 'geographicZones', []));
-            var availableProvinceList = geographicZones.filter(function(zoneItem) {
-                return zoneItem.levelCode === 2;
-            });
-            var availableDistrictList = geographicZones.filter(function(zoneItem) {
-                return zoneItem.levelCode === 3;
-            });
-
-            var provinceList = [], districtList = [];
-
-            if (geographicNameList.provinceNameList.some(function(provinceName) {
-                return provinceName === ALL.name;
-            })) {
-                provinceList = availableProvinceList;
-            } else {
-                angular.forEach(geographicNameList.provinceNameList, function(provinceName) {
-                    var zoneItem = availableProvinceList.find(function(zoneItem) {
-                        return zoneItem.name === provinceName;
-                    });
-                    if (zoneItem) {
-                        provinceList.push(zoneItem);
-                    }
-                });
-            }
-
-            if (geographicNameList.districtNameList.some(function(districtName) {
-                return districtName === ALL.name;
-            })) {
-                districtList = availableDistrictList;
-            } else {
-                angular.forEach(geographicNameList.districtNameList, function(districtName) {
-                    var zoneItem = availableDistrictList.find(function(zoneItem) {
-                        return zoneItem.name === districtName;
-                    });
-                    if (zoneItem) {
-                        districtList.push(zoneItem);
-                    }
-                });
-            }
-            vm.allProvinceDistrictList = districtList;
-
-            if (_.size(provinceList) > 1) {
-                provinceList.push(ALL);
-            }
-
-            if (_.size(districtList) > 1) {
-                districtList.push(ALL);
-            }
-
-            vm.provinceList = provinceList;
-            vm.districtList = districtList;
-            vm.drugList = angular.copy(filterInfo.tracerDrugs);
-
-            $scope.$watch(function() {
-                return vm.provinceCode;
-            }, function(newValue, oldValue) {
-                var district = _.find(vm.districtList, function(item) {
-                    return item.code === vm.districtCode;
-                });
-                if (newValue !== oldValue
-                    && vm.districtCode !== ALL_CODE
-                    && _.get(district, 'parentCode', '') !== newValue) {
-                    vm.districtCode = undefined;
-                }
-                if (newValue === ALL_CODE) {
-                    vm.districtList = _.filter(districtList, function(item) {
-                        return item.code === ALL_CODE;
-                    });
-                    vm.districtCode = ALL_CODE;
-                } else if (_.isEmpty(newValue)) {
-                    vm.districtList = districtList;
-                } else {
-                    vm.districtList = _.filter(districtList, function(item) {
-                        return item.parentCode === newValue || item.code === ALL_CODE;
-                    });
-                }
-            }, true);
-
-            $scope.$watch(function() {
-                return vm.districtCode;
-            }, function(newValue) {
-                if (newValue !== ALL_CODE && !_.isEmpty(newValue)) {
-                    var districtItem =  _.find(districtList, function(item) {
-                        return item.code === newValue;
-                    });
-                    vm.provinceCode = districtItem.parentCode;
-                }
-            }, true);
-
-            $scope.$watch(function() {
-                return vm.startDate;
-            }, function(newValue) {
-                if (_.isEmpty(newValue)) {
-                    vm.startMaxDate =  moment()
-                        .format(DATE_FORMAT);
-                    vm.endMaxDate =  moment().
-                        format(DATE_FORMAT);
-                    vm.endMinDate =  undefined;
-                } else {
-                    vm.endMinDate = newValue;
-                    if (moment() > moment(newValue).add(1, 'year')) {
-                        vm.endMaxDate =  moment(newValue).add(1, 'year')
-                            .format(DATE_FORMAT);
-                    } else {
-                        vm.endMaxDate =  moment().format(DATE_FORMAT);
-                    }
-                }
-
-            }, true);
-
-            $scope.$watch(function() {
-                return vm.endDate;
-            }, function(newValue) {
-                if (_.isEmpty(newValue)) {
-                    vm.startMaxDate = moment().format(DATE_FORMAT);
-                    vm.startMinDate = undefined;
-                } else {
-                    vm.startMaxDate = newValue;
-                    vm.startMinDate =  moment(newValue).subtract(1, 'year')
-                        .format(DATE_FORMAT);
-
-                }
-            }, true);
-        }
-
+        vm.onProvinceSelectChange = onProvinceSelectChange;
+        vm.onDistrictSelectChange = onDistrictSelectChange;
+        vm.onStartDateChange = onStartDateChange;
+        vm.onEndDateChange = onEndDateChange;
         vm.exportData = _.throttle(exportData, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
+
+        function onInit() {
+            vm.analyticsReportMetabase = analyticsReportMetabase;
+            loadingModalService.open();
+
+            vm.drugList = angular.copy(filterInfo.tracerDrugs);
+
+            var geographicZones = angular.copy(_.get(filterInfo, 'geographicZones', []));
+            vm.allProvinceList = geographicZones.filter(function(zoneItem) {
+                return zoneItem.levelCode === 2;
+            });
+            vm.allDistrictList = geographicZones.filter(function(zoneItem) {
+                return zoneItem.levelCode === 3;
+            });
+            vm.provinceList = buildProvinceSelectList(geographicList);
+            vm.availableDistrictList = filterDistrictListFromAllByReportView();
+            vm.districtList = getDistrictSelectionList();
+            vm.provinceCodeToDistrictSelectionListMap = _.groupBy(vm.availableDistrictList, 'parentCode');
+        }
+
+        function onProvinceSelectChange() {
+            vm.districtList = getDistrictSelectionList();
+
+            if (vm.provinceCode === ALL_CODE) {
+                vm.districtCode = ALL_CODE;
+                return;
+            }
+
+            if (isEmpty(vm.districtCode)) {
+                return;
+            }
+
+            var district = _.find(vm.districtList, function(item) {
+                return item.code === vm.districtCode;
+            });
+
+            if (_.get(district, 'parentCode') !== vm.provinceCode) {
+                vm.districtCode = undefined;
+            }
+        }
+
+        function onDistrictSelectChange() {
+            if (!isEmpty(vm.districtCode) && vm.districtCode !== ALL_CODE) {
+                var districtItem = _.find(vm.districtList, function(districtItem) {
+                    return districtItem.code === vm.districtCode;
+                });
+                vm.provinceCode = _.get(districtItem, 'parentCode');
+            }
+        }
+
+        function onStartDateChange() {
+            if (isEmpty(vm.startDate)) {
+                vm.startMaxDate = moment().format(DATE_FORMAT);
+                vm.endMaxDate =  moment().format(DATE_FORMAT);
+                vm.endMinDate =  undefined;
+            } else {
+                vm.endMinDate = vm.startDate;
+                var oneYearLaterFromStartDate = moment(vm.startDate).add(1, 'year');
+                var now = moment();
+                vm.endMaxDate = oneYearLaterFromStartDate < now ?
+                    oneYearLaterFromStartDate.format(DATE_FORMAT) : now.format(DATE_FORMAT);
+            }
+        }
+
+        function onEndDateChange() {
+            if (isEmpty(vm.endDate)) {
+                vm.startMinDate = undefined;
+                vm.startMaxDate = moment().format(DATE_FORMAT);
+            } else {
+                vm.startMinDate = moment(vm.endDate).subtract(1, 'year')
+                    .format(DATE_FORMAT);
+                vm.startMaxDate = vm.endDate;
+            }
+        }
 
         function exportData() {
             analyticsReportMetabaseService.exportTracerDrugReport(
@@ -214,7 +165,7 @@
                 return [vm.districtCode];
             } else if (vm.provinceCode === ALL_CODE) {
                 // districtCode === ALL_CODE, provinceCode === ALL_CODE
-                return vm.allProvinceDistrictList.map(function(districtItem) {
+                return vm.availableDistrictList.map(function(districtItem) {
                     return districtItem.code;
                 });
             }
@@ -224,7 +175,6 @@
             }).map(function(districtItem) {
                 return districtItem.code;
             });
-
         }
 
         function iframeLoadedCallBack() {
@@ -233,20 +183,71 @@
             loadingModalService.close();
         }
 
-        function buildProvinceAndDistrictNameList(geographicList) {
-            var provinceNameList = [], districtNameList = [];
-            geographicList.forEach(function(geographicItem) {
-                provinceNameList.push(
-                    geographicItem.provinceId === REPORT_VIEW_ALL_CODE ? ALL.name : geographicItem.provinceName
-                );
-                districtNameList.push(
-                    geographicItem.districtId === REPORT_VIEW_ALL_CODE ? ALL.name : geographicItem.districtName
-                );
-            });
-            return {
-                provinceNameList: _.uniq(provinceNameList),
-                districtNameList: _.uniq(districtNameList)
-            };
+        function buildProvinceSelectList(geographicList) {
+            var provinceSelectList = [];
+
+            if (geographicList.some(function(geographicItem) {
+                return geographicItem.provinceId === REPORT_VIEW_ALL_CODE;
+            }) || isSystemAdmin) {
+                provinceSelectList = vm.allProvinceList;
+            } else {
+                geographicList.forEach(function(geographicItem) {
+                    var provinceItem = vm.allProvinceList.find(function(availableProvinceItem) {
+                        return availableProvinceItem.name === geographicItem.provinceName;
+                    });
+                    if (provinceItem) {
+                        provinceSelectList.push(provinceItem);
+                    }
+                });
+            }
+            if (provinceSelectList.length > 1) {
+                provinceSelectList.push(ALL);
+            }
+
+            return _.uniq(provinceSelectList, 'code');
         }
+
+        function getDistrictSelectionList() {
+            var districtSelectionList = [];
+            if (isEmpty(vm.provinceCode)) {
+                districtSelectionList = vm.availableDistrictList;
+            } else if (vm.provinceCode === ALL_CODE) {
+                districtSelectionList = [ALL];
+            } else {
+                districtSelectionList = vm.provinceCodeToDistrictSelectionListMap[vm.provinceCode];
+            }
+
+            var finalDistrictList = angular.copy(districtSelectionList);
+            if (finalDistrictList.length > 1) {
+                finalDistrictList.push(ALL);
+            }
+            return _.uniq(finalDistrictList, 'code');
+        }
+
+        function filterDistrictListFromAllByReportView() {
+            var shouldUseAllDistrict = isSystemAdmin ||
+                geographicList.some(function(reportViewGeographicItem) {
+                    return reportViewGeographicItem.provinceId === REPORT_VIEW_ALL_CODE;
+                });
+            return vm.allDistrictList.filter(function(districtItem) {
+                return geographicList.some(function(reportViewGeographicItem) {
+                    return shouldUseAllDistrict || reportViewGeographicItem.districtName === districtItem.name ||
+                        (reportViewGeographicItem.districtId === REPORT_VIEW_ALL_CODE &&
+                            reportViewGeographicItem.provinceName === getProvinceNameByCode(districtItem.parentCode));
+                });
+            });
+        }
+
+        function getProvinceNameByCode(code) {
+            var provinceItem = vm.allProvinceList.find(function(provinceItem) {
+                return provinceItem.code === code;
+            });
+            return provinceItem ? provinceItem.name : '';
+        }
+
+        function isEmpty(params) {
+            return params === undefined || params === null;
+        }
+
     }
 })();

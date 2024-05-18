@@ -30,7 +30,8 @@
         'siglus-analytics-report',
         'openlmis-rights',
         'referencedata-user',
-        'admin-user-roles'
+        'admin-user-roles',
+        'openlmis-permissions'
     ]);
 
 })();

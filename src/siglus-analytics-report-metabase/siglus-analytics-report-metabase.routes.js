@@ -220,6 +220,13 @@
                 user: function(currentUserService) {
                     return currentUserService.getUserInfo();
                 },
+                isSystemAdmin: function(currentUserRolesService) {
+                    return currentUserRolesService.getUserRoles().then(function(roles) {
+                        return roles.some(function(role) {
+                            return role.name === 'System Administrator';
+                        });
+                    });
+                },
                 filterInfo: function(analyticsReportMetabaseService) {
                     return analyticsReportMetabaseService
                         .getTracerDrugFilterInfo().then(function(data) {
