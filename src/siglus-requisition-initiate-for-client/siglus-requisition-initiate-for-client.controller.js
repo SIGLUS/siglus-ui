@@ -27,12 +27,14 @@
         .controller('SiglusRequisitionInitiateForClientController', controller);
 
     controller.$inject = [
-        '$stateParams', '$state', 'REQUISITION_STATUS', 'supplyingFacilities',
-        'SiglusRequisitionInitiateForClientService', 'loadingModalService'
+        '$stateParams', '$state', 'REQUISITION_STATUS', 'supplyingFacilities', 'dataHolder',
+        'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService',
+        'requisitionService', 'UuidGenerator'
     ];
 
-    function controller($stateParams, $state, REQUISITION_STATUS, supplyingFacilities,
-                        SiglusRequisitionInitiateForClientService, loadingModalService) {
+    function controller($stateParams, $state, REQUISITION_STATUS, supplyingFacilities, dataHolder,
+                        SiglusRequisitionInitiateForClientService, loadingModalService, notificationService,
+                        requisitionService, UuidGenerator) {
         var vm = this;
 
         vm.periods = undefined;
@@ -40,17 +42,18 @@
         vm.supplyingFacility = undefined;
 
         vm.$onInit = onInit;
+        vm.selectedClientChanged = selectedClientChanged;
         vm.periodHasRequisition = periodHasRequisition;
         vm.checkProceedButton = checkProceedButton;
         vm.loadPeriods = loadPeriods;
+        vm.initRnr = initRnr;
 
         function onInit() {
             vm.supplyingFacilities = supplyingFacilities;
-            vm.supplyingFacility = $stateParams.supplyingFacility;
+            vm.supplyingFacility = dataHolder.supplyingFacility;
         }
 
         function loadPeriods() {
-            $stateParams.supplyingFacility = vm.supplyingFacility;
             if (vm.supplyingFacility && $stateParams.program && $stateParams.emergency) {
                 loadingModalService.open();
                 SiglusRequisitionInitiateForClientService.getPeriods(vm.supplyingFacility.id,
@@ -77,6 +80,34 @@
                 }
             }
             return true;
+        }
+
+        function selectedClientChanged() {
+            dataHolder.supplyingFacility = vm.supplyingFacility;
+        }
+
+        function initRnr(selectedPeriod) {
+            loadingModalService.open();
+            var uuidGenerator = new UuidGenerator();
+            requisitionService.initiate($stateParams.facility,
+                $stateParams.program,
+                selectedPeriod.id, vm.emergency, uuidGenerator.generate(), null)
+                .then(function(requisition) {
+                    goToInitiatedRequisition(requisition);
+                })
+                .catch(function() {
+                    notificationService.error(
+                        'requisitionInitiate.couldNotInitiateRequisition'
+                    );
+                    loadingModalService.close();
+                });
+        }
+
+        function goToInitiatedRequisition(requisition) {
+            $state.go('openlmis.requisitions.requisition.fullSupply', {
+                rnr: requisition.id,
+                requisition: requisition
+            });
         }
     }
 })();

@@ -48,6 +48,9 @@
                 },
                 supplyingFacilities: function(requestingFacilityFactory, facility) {
                     return requestingFacilityFactory.loadRequestingFacilities(facility.id);
+                },
+                dataHolder: function() {
+                    return {};
                 }
             }
         });

@@ -2,7 +2,7 @@
     <div class="form-container">
         <div class="form-container-select">
             <select id="supplyingFacility"
-                    ng-model="vm.supplyingFacility"
+                    ng-model="vm.supplyingFacility" ng-change="vm.selectedClientChanged()"
                     ng-options="facility.name for facility in vm.supplyingFacilities"
                     required></select>
         </div>
