@@ -1557,6 +1557,7 @@
   "requisitionInitiate.facility": "Unidades Sanitária",
   "requisitionInitiate.facilityType": "Tipo de Unidade Sanitária",
   "requisitionInitiate.history": "Histórico",
+  "requisitionInitiate.createForClient": "Criar para o Cliente",
   "requisitionInitiate.initiateReportAndRequisition": "Criar / autorizar Requisições e Relatórios",
   "requisitionInitiate.myFacility": "A minha Unidade Sanitária",
   "requisitionInitiate.noFacilitiesForProgram": "Não existem Unidades Sanitárias para o programa. Contacte o administrador.",

@@ -30,27 +30,14 @@
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
     RequisitionInitiateController.$inject = [
-        'requisitionService', '$state', '$scope', 'PROGRAM_TYPE'
-        // SIGLUS-REFACTOR: starts here
-        // 'loadingModalService', 'notificationService', 'REQUISITION_RIGHTS',
-        // 'permissionService', 'authorizationService', '$stateParams', 'periods', 'canInitiateRnr', 'UuidGenerator'
-        // SIGLUS-REFACTOR: ends here
+        'requisitionService', '$state', '$scope', 'PROGRAM_TYPE', 'supplyingFacilities'
     ];
 
-    function RequisitionInitiateController(requisitionService, $state, $scope, PROGRAM_TYPE) {
+    function RequisitionInitiateController(requisitionService, $state, $scope, PROGRAM_TYPE, supplyingFacilities) {
         var vm = this;
-        // SIGLUS-REFACTOR: starts here
-        // uuidGenerator = new UuidGenerator(),
-        // key = uuidGenerator.generate();
-        // SIGLUS-REFACTOR: ends here
 
         vm.$onInit = onInit;
         vm.loadPeriods = loadPeriods;
-        // SIGLUS-REFACTOR: starts here
-        // vm.initRnr = initRnr;
-        // vm.periodHasRequisition = periodHasRequisition;
-        // vm.goToRequisition = goToRequisition;
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc property
@@ -65,29 +52,8 @@
 
         vm.programs = undefined;
 
-        // SIGLUS-REFACTOR: starts here
-        // /**
-        //  * @ngdoc property
-        //  * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-        //  * @name periods
-        //  * @type {List}
-        //  *
-        //  * @description
-        //  * The list of all periods displayed in the table.
-        //  */
-        // vm.periods = undefined;
-        //
-        // /**
-        //  * @ngdoc property
-        //  * @propertyOf requisition-initiate.controller:RequisitionInitiateController
-        //  * @name canInitiateRnr
-        //  * @type {boolean}
-        //  *
-        //  * @description
-        //  * True if user has permission to initiate requisition.
-        //  */
-        // vm.canInitiateRnr = undefined;
-        // SIGLUS-REFACTOR: ends here
+        vm.supplyingFacilities = undefined;
+        vm.createForClient = false;
 
         /**
          * @ngdoc method
@@ -100,6 +66,8 @@
         // SIGLUS-REFACTOR: starts here
         function onInit() {
             vm.emergency = $state.params.emergency === 'true';
+            vm.supplyingFacilities = supplyingFacilities;
+            vm.createForClient = supplyingFacilities.length !== 0;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -156,6 +124,14 @@
 
         vm.isRequisition = function() {
             return $state.current.name === 'openlmis.requisitions.initRnr.requisition';
+        };
+
+        vm.goToCreateForClient = function() {
+            $state.go('openlmis.requisitions.initRnr.forClient', vm.getMLProgramParam($state.params));
+        };
+
+        vm.isCreateForClient = function() {
+            return $state.current.name === 'openlmis.requisitions.initRnr.forClient';
         };
 
         vm.getMLProgramParam = function(stateParams) {

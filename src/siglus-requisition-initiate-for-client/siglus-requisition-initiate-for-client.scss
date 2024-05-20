@@ -1,0 +1,17 @@
+.form-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 14px;
+
+  .form-container-select {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+  }
+
+  .form-container-input {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 50px;
+  }
+}

@@ -26,12 +26,18 @@
 <!-- SIGLUS-REFACTOR: starts here -->
     <div class="requisition-table-tab">
         <nav>
-            <ul>
-                <li ng-class="{'active': vm.isRequisition()}" ng-click="vm.goToRequisition()">
+            <ul class="table-tab-ul">
+                <li class="table-tab-li"
+                    ng-class="{'active': vm.isRequisition()}" ng-click="vm.goToRequisition()">
                     {{'requisitionInitiate.requisition' | message}}
                 </li>
-                <li ng-class="{'active': vm.isHistory()}" ng-click="vm.goToHistory()">
+                <li class="table-tab-li"
+                    ng-class="{'active': vm.isHistory()}" ng-click="vm.goToHistory()">
                     {{'requisitionInitiate.history' | message}}
+                </li>
+                <li class="table-tab-li"
+                    ng-if="vm.createForClient" ng-class="{'active': vm.isCreateForClient()}" ng-click="vm.goToCreateForClient()">
+                    {{'requisitionInitiate.createForClient' | message}}
                 </li>
             </ul>
         </nav>

@@ -1,0 +1,50 @@
+<div>
+    <div class="form-container">
+        <div class="form-container-select">
+            <select id="supplyingFacility"
+                    ng-model="vm.supplyingFacility"
+                    ng-options="facility.name for facility in vm.supplyingFacilities"
+                    required></select>
+        </div>
+
+        <input class="form-container-input" value="{{'requisitionInitiate.search'|message}}"
+               type="submit" ng-click="vm.loadPeriods()"/>
+    </div>
+    <section class="openlmis-table-container">
+        <table>
+            <caption ng-if="!vm.periods.length">
+                {{'requisitionInitiate.selectRequiredFields' | message}}
+            </caption>
+            <thead>
+            <tr>
+                <th>{{'requisitionInitiate.periods' | message}}</th>
+                <th>{{'requisitionApproval.periodDuration' | message}}</th>
+                <th>{{'requisitionApproval.actualPeriod' | message}}</th>
+                <th>{{'requisitionInitiate.submitDuration' | message}}</th>
+                <th>{{'requisitionInitiate.status' | message}}</th>
+                <th class="col-sticky sticky-right">{{'requisitionInitiate.actions' | message}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(idx, period) in vm.periods">
+                <td>{{period.name}}</td>
+
+                <td>{{period.startDate | openlmisDate}} - {{period.endDate | openlmisDate}}</td>
+                <td>{{
+                    period.requisitionExtraData.actualStartDate
+                    ? ((period.requisitionExtraData.actualStartDate | openlmisDate) + ' - ' + (period.requisitionExtraData.actualEndDate | openlmisDate))
+                    : 'N/A'
+                    }}
+                </td>
+                <td>{{period.submitStartDate | openlmisDate}} - {{period.submitEndDate | openlmisDate}}</td>
+                <td>{{period.rnrStatus | requisitionStatus}}</td>
+                <td ng-if="vm.checkProceedButton(period, idx)">
+                    <input id="proceedButton" type="button" ng-click="vm.initRnr(period)"
+                           value="{{'requisitionInitiate.proceed'| message}}" class="primary"/>
+                </td>
+                <td ng-if="!vm.checkProceedButton(period, idx)"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>

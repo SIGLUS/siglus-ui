@@ -2,6 +2,7 @@
   "requisitionInitiate.view": "View",
   "requisitionInitiate.requisition": "Requisitions/Reports",
   "requisitionInitiate.history": "History",
+  "requisitionInitiate.createForClient": "Create for Client",
   "requisitionInitiate.create": "Create",
   "requisitionInitiate.authorize": "Authorize",
   "requisitionInitiate.endDate": "End Date",
