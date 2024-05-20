@@ -53,7 +53,7 @@
         vm.programs = undefined;
 
         vm.supplyingFacilities = undefined;
-        vm.createForClient = false;
+        vm.showCreateForClient = false;
 
         /**
          * @ngdoc method
@@ -67,12 +67,13 @@
         function onInit() {
             vm.emergency = $state.params.emergency === 'true';
             vm.supplyingFacilities = supplyingFacilities;
-            vm.createForClient = supplyingFacilities.length !== 0;
+            vm.goToRequisition();
         }
         // SIGLUS-REFACTOR: ends here
 
         $scope.$on('$programListChange', function(event, programs) {
             vm.programs = programs;
+            vm.showCreateForClient = canShowCreateForClientTab();
         });
 
         /**
@@ -88,19 +89,22 @@
          * status.
          */
         function loadPeriods() {
-            // SIGLUS-REFACTOR: starts here
-            $state.go($state.current.name, vm.getMLProgramParam({
-            // SIGLUS-REFACTOR: ends here
+            var showCreateForClient = canShowCreateForClientTab();
+            var reloadState = $state.current.name;
+            if (vm.isCreateForClient() && !showCreateForClient) {
+                vm.goToRequisition();
+                reloadState = 'openlmis.requisitions.initRnr.requisition';
+            }
+            $state.go(reloadState, vm.getMLProgramParam({
                 supervised: vm.isSupervised,
                 program: vm.program.id,
                 facility: vm.facility.id,
                 emergency: vm.emergency
 
             }), {
-                // SIGLUS-REFACTOR: starts here
-                reload: $state.current.name
-                // SIGLUS-REFACTOR: ends here
+                reload: reloadState
             });
+            vm.showCreateForClient = showCreateForClient;
         }
 
         vm.getErrorMsg = function() {
@@ -144,5 +148,26 @@
             };
             return Object.assign({}, stateParams, params);
         };
+
+        function canShowCreateForClientTab() {
+            if (!vm.programs) {
+                return false;
+            }
+            var programCode;
+            if (vm.program) {
+                programCode = _.get(vm.program, 'code');
+            } else {
+                var selectedProgram = vm.programs.find(function(program) {
+                    return program.id === $state.params.program;
+                });
+                if (selectedProgram) {
+                    programCode = selectedProgram.code;
+                }
+            }
+            var supportedPrograms = ['VC', 'T', 'TB', 'TR'];
+            return supplyingFacilities.length !== 0
+                && !vm.emergency
+                && supportedPrograms.includes(programCode);
+        }
     }
 })();

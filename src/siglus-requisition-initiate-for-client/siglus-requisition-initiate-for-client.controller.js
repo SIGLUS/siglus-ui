@@ -51,6 +51,7 @@
         function onInit() {
             vm.supplyingFacilities = supplyingFacilities;
             vm.supplyingFacility = dataHolder.supplyingFacility;
+            loadPeriods();
         }
 
         function loadPeriods() {
@@ -59,6 +60,11 @@
                 SiglusRequisitionInitiateForClientService.getPeriods(vm.supplyingFacility.id,
                     $stateParams.program, $stateParams.emergency)
                     .then(function(periods) {
+                        periods.forEach(function(period) {
+                            period.facility = angular.copy(vm.supplyingFacility.id);
+                            period.program = angular.copy($stateParams.program);
+                            period.emergency = angular.copy($stateParams.emergency);
+                        });
                         vm.periods = periods;
                     })
                     .catch(function() {
@@ -84,14 +90,14 @@
 
         function selectedClientChanged() {
             dataHolder.supplyingFacility = vm.supplyingFacility;
+            loadPeriods();
         }
 
         function initRnr(selectedPeriod) {
             loadingModalService.open();
             var uuidGenerator = new UuidGenerator();
-            requisitionService.initiate($stateParams.facility,
-                $stateParams.program,
-                selectedPeriod.id, vm.emergency, uuidGenerator.generate(), null)
+            requisitionService.initiate(selectedPeriod.facility, selectedPeriod.program,
+                selectedPeriod.id, selectedPeriod.emergency, uuidGenerator.generate(), null)
                 .then(function(requisition) {
                     goToInitiatedRequisition(requisition);
                 })

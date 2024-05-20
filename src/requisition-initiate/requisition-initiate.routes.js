@@ -43,11 +43,8 @@
                 REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
             ],
             resolve: {
-                facility: function($stateParams, facilityFactory) {
-                    return facilityFactory.getUserHomeFacility();
-                },
-                supplyingFacilities: function(requestingFacilityFactory, facility) {
-                    return requestingFacilityFactory.loadRequestingFacilities(facility.id);
+                supplyingFacilities: function(requisitionSearchService) {
+                    return requisitionSearchService.getFacilities();
                 },
                 dataHolder: function() {
                     return {};
