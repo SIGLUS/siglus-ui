@@ -93,7 +93,8 @@ describe('SiglusRequisitionInitiateRequisitionController', function() {
                     hasAuthorizeRight: false,
                     inventoryDates: [],
                     program: [],
-                    facility: []
+                    facility: [],
+                    supplyingFacilities: []
                 }
             );
 

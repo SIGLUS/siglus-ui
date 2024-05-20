@@ -89,8 +89,9 @@ describe('RequisitionInitiateController', function() {
                 $scope: this.$scope,
                 canInitiateRnr: this.canInitiateRnr,
                 // SIGLUS-REFACTOR: starts here
-                inventoryDates: []
+                inventoryDates: [],
                 // SIGLUS-REFACTOR: ends here
+                supplyingFacilities: []
             });
 
             spyOn(this.$scope, '$on');
