@@ -36,6 +36,8 @@
 
         var vm = this;
 
+        var REPORT_VIEW_ROLE_ID = 'a598b9b4-1dd8-11ed-84e1-acde48001122';
+
         vm.$onInit = onInit;
         vm.goToUserList = goToUserList;
         vm.saveUserRoles = saveUserRoles;
@@ -87,6 +89,13 @@
          * Updates user roles.
          */
         function saveUserRoles() {
+            if (vm.user.homeFacilityId && vm.user.roleAssignments.some(function(role) {
+                return role.roleId === REPORT_VIEW_ROLE_ID;
+            })) {
+                notificationService.error('adminUserRoles.roleReportViewerInvalid');
+                return;
+            }
+
             var loadingPromise = loadingModalService.open(true);
             return vm.user.save()
                 .then(function() {
