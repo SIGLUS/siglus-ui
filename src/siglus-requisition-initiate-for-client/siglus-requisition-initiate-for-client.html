@@ -1,10 +1,13 @@
 <div>
     <div class="form-container">
         <div class="form-container-select">
+            <label>{{'shipmentView.facility' | message}}</label>
             <select id="supplyingFacility"
+                    placeholder="{{'requisitionForClient.selectClientFacility' | message}}"
                     ng-model="vm.supplyingFacility" ng-change="vm.selectedClientChanged()"
                     ng-options="facility.name for facility in vm.supplyingFacilities"
-                    required></select>
+                    required>
+            </select>
         </div>
 
         <input class="form-container-input" value="{{'requisitionInitiate.search'|message}}"

@@ -1738,6 +1738,7 @@
   "requisitionViewTab.selectTooMany": "Não pode adicionar mais de 10 produtos na requisição de emergência",
   "requisitionViewTab.skip": "Ignorar",
   "requisitionViewTab.totalLossesAndAdjustment.disabled": "Transferência",
+  "requisitionForClient.selectClientFacility": "Selecionar a instalação do cliente",
   "selectAdditionalProductModal.add": "Adicionar",
   "selectAdditionalProductModal.addAdditionalProduct": "Adicionar Produtos",
   "selectAdditionalProductModal.addProducts.emptyList": "Você não selecionou nenhum produto",
