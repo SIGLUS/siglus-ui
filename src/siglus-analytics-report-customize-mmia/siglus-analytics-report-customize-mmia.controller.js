@@ -266,10 +266,10 @@
                 });
                 if (temp) {
                     c.columns = _.chain(c.columns)
-                        .filter(function (item) {
+                        .filter(function(item) {
                             return item.isDisplayed;
                         })
-                        .sortBy(function (item) {
+                        .sortBy(function(item) {
                             return item.displayOrder;
                         })
                         .value();
