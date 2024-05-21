@@ -2768,7 +2768,7 @@
   "openlmisDate.Dec":"Dez",
   "localmachine.failed": "falhou",
 
-  "stockPhysicalInventoryHistory.viewPhysicalInventory": "view Inventário físico",
+  "stockPhysicalInventoryHistory.viewPhysicalInventory": "ver Inventário físico",
   "stockPhysicalInventoryHistory.title": "Inventário físico para ${programName}",
   "stockPhysicalInventoryHistory.dateCompleted": "Data de Conclusão",
   "stockPhysicalInventoryHistory.submittedBy": "Submetido por",
