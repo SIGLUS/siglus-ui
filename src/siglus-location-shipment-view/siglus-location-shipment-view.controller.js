@@ -384,7 +384,7 @@
                         );
                 }, 0);
             }
-
+            // for one location-lot lineItem
             return vm.getFillQuantity(lineItems, index) +
                 getReservedSohFromSummaries(
                     vm.summaries, currentOrderableId, currentLotId, currentLocationCode
@@ -885,12 +885,6 @@
                     if (shouldPrintShipment) {
                         printShipment();
                     }
-                    $stateParams.shipment = null;
-                    $stateParams.order = null;
-                    $stateParams.locations = null;
-                    $stateParams.displayTableLineItems = null;
-                    $stateParams.stockCardSummaries = null;
-                    reloadParams();
                 })
                 .catch(function(error) {
                     if (_.get(error, ['data', 'messageKey']) ===
@@ -918,7 +912,7 @@
                         .then(function(summaries) {
                             vm.summaries = summaries;
                             $stateParams.stockCardSummaries = summaries;
-                            updateLineItemsReservedAndTotalStock(summaries);
+                            updateLineItemsSoh(summaries);
                             vm.cancelFilter();
                         })
                         .catch(function(error) {
@@ -931,7 +925,7 @@
                 });
         }
 
-        function updateLineItemsReservedAndTotalStock(summaries) {
+        function updateLineItemsSoh(summaries) {
             vm.displayTableLineItems.forEach(function(lineItemGroup) {
                 var currentGroupOrderableId = lineItemGroup[0].orderableId;
                 var summary = summaries.find(function(summary) {
@@ -960,7 +954,6 @@
                     );
 
                     lineItem.lot.stockOnHand = _.get(targetLotDetailWithLocation, ['stockOnHand']);
-                    // lineItem.reservedStock = _.get(targetLotDetailWithLocation, ['reservedStock']);
                 });
             });
         }

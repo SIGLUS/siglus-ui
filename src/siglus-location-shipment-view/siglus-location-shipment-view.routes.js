@@ -75,14 +75,14 @@
                         };
                     },
                     stockCardSummaries: function($stateParams, StockCardSummaryRepositoryImpl, summaryRequestBody) {
-                        if ($stateParams.stockCardSummaries) {
-                            return $stateParams.stockCardSummaries;
+                        if ($stateParams.stockCardSummaries === undefined || $stateParams.stockCardSummaries === null) {
+                            return new StockCardSummaryRepositoryImpl()
+                                .queryWithStockCardsForLocation(summaryRequestBody)
+                                .then(function(page) {
+                                    return page;
+                                });
                         }
-                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation(summaryRequestBody)
-                            .then(function(page) {
-                                return page;
-                            });
-
+                        return $stateParams.stockCardSummaries;
                     },
                     locations: function(siglusLocationCommonApiService, order, $stateParams) {
                         if ($stateParams.locations) {
