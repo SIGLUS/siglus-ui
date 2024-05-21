@@ -24,6 +24,40 @@
 
     function routes($stateProvider) {
         $stateProvider
+            .state('openlmis.stockmanagement.history', {
+                url: '/physicalInventory/history/detail?historyId',
+                label: 'stockPhysicalInventoryHistory.viewPhysicalInventory',
+                views: {
+                    '@openlmis': {
+                        templateUrl: 'siglus-physical-inventory-history-detail/' +
+                            'siglus-physical-inventory-history-detail.html',
+                        controller: 'PhysicalInventoryHistoryDetailController',
+                        controllerAs: 'vm'
+                    }
+                },
+                params: {
+                    facility: undefined,
+                    program: undefined,
+                    historyId: undefined
+                },
+                resolve: {
+                    facility: function($stateParams) {
+                        return $stateParams.facility;
+                    },
+                    program: function($stateParams) {
+                        return $stateParams.program;
+                    },
+                    historyId: function($stateParams) {
+                        return $stateParams.historyId;
+                    },
+                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService) {
+                        return SiglusPhysicalInventoryHistoryService.getHistoryDetail(historyId)
+                            .then(function(detail) {
+                                return detail;
+                            });
+                    }
+                }
+            })
             .state('openlmis.locationManagement.history', {
                 url: '/physicalInventory/history/detail?historyId',
                 label: 'stockPhysicalInventoryHistory.viewPhysicalInventory',
