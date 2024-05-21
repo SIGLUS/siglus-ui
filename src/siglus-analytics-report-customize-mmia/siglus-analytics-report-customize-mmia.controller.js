@@ -264,7 +264,7 @@
                 var temp = _.find(vm.requisition.patientLineItems, function(item) {
                     return item.name === c.name;
                 });
-                if (temp == null) {
+                if (temp) {
                     c.columns = _.chain(c.columns)
                         .filter(function (item) {
                             return item.isDisplayed;
