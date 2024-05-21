@@ -264,19 +264,21 @@
                 var temp = _.find(vm.requisition.patientLineItems, function(item) {
                     return item.name === c.name;
                 });
-                c.columns = _.chain(c.columns)
-                    .filter(function(item) {
-                        return item.isDisplayed;
-                    })
-                    .sortBy(function(item) {
-                        return item.displayOrder;
-                    })
-                    .value();
-                temp.column = c;
-                if (_.contains(jugeArray, c.name)) {
-                    r.mergedPatientMap[c.name] = temp;
-                } else {
-                    r.normalPatientList.push(temp);
+                if (temp == null) {
+                    c.columns = _.chain(c.columns)
+                        .filter(function (item) {
+                            return item.isDisplayed;
+                        })
+                        .sortBy(function (item) {
+                            return item.displayOrder;
+                        })
+                        .value();
+                    temp.column = c;
+                    if (_.contains(jugeArray, c.name)) {
+                        r.mergedPatientMap[c.name] = temp;
+                    } else {
+                        r.normalPatientList.push(temp);
+                    }
                 }
                 return r;
             }, {
