@@ -29,12 +29,12 @@
     controller.$inject = [
         '$stateParams', '$state', 'REQUISITION_STATUS', 'supplyingFacilities', 'dataHolder',
         'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService',
-        'requisitionService', 'UuidGenerator'
+        'requisitionService', 'UuidGenerator', 'moment'
     ];
 
     function controller($stateParams, $state, REQUISITION_STATUS, supplyingFacilities, dataHolder,
                         SiglusRequisitionInitiateForClientService, loadingModalService, notificationService,
-                        requisitionService, UuidGenerator) {
+                        requisitionService, UuidGenerator, moment) {
         var vm = this;
 
         vm.periods = undefined;
@@ -49,7 +49,9 @@
         vm.initRnr = initRnr;
 
         function onInit() {
-            vm.supplyingFacilities = supplyingFacilities;
+            vm.supplyingFacilities = supplyingFacilities.filter(function(facility) {
+                return facility.id !== $stateParams.facility;
+            });
             vm.supplyingFacility = dataHolder.supplyingFacility;
             loadPeriods();
         }
@@ -79,14 +81,13 @@
         }
 
         function checkProceedButton(period, idx) {
-            if ($stateParams.program && $stateParams.facility && period.activeForRnr) {
-                if (idx > 0 || Date.now() < period.startDate.getTime()
-                    || vm.periodHasRequisition(period)) {
-                    return false;
-                }
-            }
-            return true;
+            return idx === 0 && !vm.periodHasRequisition(period) && vm.isAfterSubmitStartDate(period);
         }
+
+        vm.isAfterSubmitStartDate = function(period) {
+            var today = moment();
+            return today.isSameOrAfter(period.submitStartDate, 'day');
+        };
 
         function selectedClientChanged() {
             dataHolder.supplyingFacility = vm.supplyingFacility;

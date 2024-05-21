@@ -164,8 +164,15 @@
                     programCode = selectedProgram.code;
                 }
             }
+            var homeFacilityId = $state.params.facility;
+            if (vm.facility) {
+                homeFacilityId = vm.facility.id;
+            }
+            var clients = supplyingFacilities.filter(function(facility) {
+                return facility.id !== homeFacilityId;
+            });
             var supportedPrograms = ['VC', 'T', 'TB', 'TR'];
-            return supplyingFacilities.length !== 0
+            return clients.length !== 0
                 && !vm.emergency
                 && supportedPrograms.includes(programCode);
         }
