@@ -24,7 +24,7 @@
 
     function routes($stateProvider) {
         $stateProvider
-            .state('openlmis.stockmanagement.history', {
+            .state('openlmis.locationManagement.history', {
                 url: '/physicalInventory/history/detail?historyId',
                 label: 'stockPhysicalInventoryHistory.viewPhysicalInventory',
                 views: {

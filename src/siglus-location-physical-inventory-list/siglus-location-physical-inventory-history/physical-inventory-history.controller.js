@@ -34,7 +34,7 @@
         vm.viewHistoryDetail = viewHistoryDetail;
 
         function viewHistoryDetail(historyItem) {
-            $state.go('openlmis.stockmanagement.history', {
+            $state.go('openlmis.locationManagement.history', {
                 program: vm.program,
                 facility: facility,
                 historyId: historyItem.id
