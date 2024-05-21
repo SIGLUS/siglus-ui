@@ -60,7 +60,8 @@
 
         function filterHistoryByProgram(programName, historyList) {
             return historyList.filter(function(history) {
-                return history.programName === programName;
+                return history.programName === programName ||
+                    (history.programName === 'ALL' && programName === 'Todos os produtos');
             });
         }
     }
