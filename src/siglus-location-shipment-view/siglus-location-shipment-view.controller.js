@@ -41,7 +41,7 @@
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
         'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME',
-        'alertConfirmModalService', 'StockCardSummaryRepositoryImpl'
+        'alertConfirmModalService', 'StockCardSummaryRepositoryImpl', 'summaryRequestBody'
     ];
 
     function SiglusLocationShipmentViewController(
@@ -61,7 +61,7 @@
         localStorageService, $window, facility,
         siglusPrintPalletLabelComfirmModalService,
         suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME,
-        alertConfirmModalService, StockCardSummaryRepositoryImpl
+        alertConfirmModalService, StockCardSummaryRepositoryImpl, summaryRequestBody
     ) {
         var vm = this;
 
@@ -76,6 +76,7 @@
         vm.saveAndPrintShipment = saveAndPrintShipment;
         vm.order = undefined;
         vm.facility = undefined;
+        vm.summaries = undefined;
 
         vm.shipment = undefined;
         vm.quantityUnit = undefined;
@@ -104,6 +105,7 @@
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
             vm.keyword = $stateParams.keyword;
+            vm.summaries = stockCardSummaries;
             $stateParams.order = order;
             $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
@@ -378,14 +380,14 @@
                 return _.reduce(lineItems.slice(1), function(reservedStockSum, _, index) {
                     return reservedStockSum + vm.getFillQuantity(lineItems, index) +
                         getReservedSohFromSummaries(
-                            $stateParams.stockCardSummaries, currentOrderableId, currentLotId, currentLocationCode
+                            vm.summaries, currentOrderableId, currentLotId, currentLocationCode
                         );
                 }, 0);
             }
 
             return vm.getFillQuantity(lineItems, index) +
                 getReservedSohFromSummaries(
-                    $stateParams.stockCardSummaries, currentOrderableId, currentLotId, currentLocationCode
+                    vm.summaries, currentOrderableId, currentLotId, currentLocationCode
                 );
         };
 
@@ -912,8 +914,10 @@
                 .then(function() {
                     loadingModalService.open();
                     new StockCardSummaryRepositoryImpl()
-                        .queryWithStockCardsForLocation($stateParams.summaryRequestBody)
+                        .queryWithStockCardsForLocation(summaryRequestBody)
                         .then(function(summaries) {
+                            vm.summaries = summaries;
+                            $stateParams.stockCardSummaries = summaries;
                             updateLineItemsReservedAndTotalStock(summaries);
                             vm.cancelFilter();
                         })
@@ -928,7 +932,6 @@
         }
 
         function updateLineItemsReservedAndTotalStock(summaries) {
-            $stateParams.stockCardSummaries = summaries;
             vm.displayTableLineItems.forEach(function(lineItemGroup) {
                 var currentGroupOrderableId = lineItemGroup[0].orderableId;
                 var summary = summaries.find(function(summary) {

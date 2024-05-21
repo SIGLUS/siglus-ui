@@ -93,6 +93,7 @@ describe('SiglusLocationShipmentViewController', function() {
             filterDisplayTableLineItems: [],
             order: order,
             locations: [],
+            summaryRequestBody: {},
             orderableLotsLocationMap: {
                 'e5fd8d7d-c27a-4984-bbac-a63919a5d1fa': {
                     '83e4bbcf-4d7f-4ca2-a25a-9ab3d7062e5a': [

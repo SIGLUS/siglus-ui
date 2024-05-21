@@ -63,23 +63,22 @@
                         }
                         return $stateParams.order;
                     },
-                    stockCardSummaries: function($stateParams, StockCardSummaryRepositoryImpl, order) {
-                        if ($stateParams.stockCardSummaries) {
-                            return $stateParams.stockCardSummaries;
-                        }
+                    summaryRequestBody: function(order) {
                         var orderableIds = order.availableProducts.map(function(orderable) {
                             return orderable.id;
                         });
-
-                        var requestBody = {
+                        return {
                             programId: order.program.id,
                             facilityId: order.supplyingFacility.id,
                             orderableId: orderableIds,
                             orderId: order.id
                         };
-                        $stateParams.summaryRequestBody = requestBody;
-
-                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation(requestBody)
+                    },
+                    stockCardSummaries: function($stateParams, StockCardSummaryRepositoryImpl, summaryRequestBody) {
+                        if ($stateParams.stockCardSummaries) {
+                            return $stateParams.stockCardSummaries;
+                        }
+                        return new StockCardSummaryRepositoryImpl().queryWithStockCardsForLocation(summaryRequestBody)
                             .then(function(page) {
                                 return page;
                             });

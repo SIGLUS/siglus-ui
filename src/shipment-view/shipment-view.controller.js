@@ -58,6 +58,7 @@
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
         vm.getVvmStatusLabel = VVM_STATUS.$getDisplayName;
         vm.save = save;
+        vm.confirm = confirm;
         vm.printShipment = printShipment;
         vm.saveAndPrintShipment = saveAndPrintShipment;
         // #264: warehouse clerk can add product to orders
@@ -169,12 +170,12 @@
         }
 
         function setSuggestedQuantity(items) {
-            var suggestedQuatityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
+            var suggestedQuantityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
             _.forEach(items, function(item) {
                 item.suggestedQuantity =
-                    _.includes([null, undefined], suggestedQuatityMap[item.id]) ?
+                    _.includes([null, undefined], suggestedQuantityMap[item.id]) ?
                         '' :
-                        suggestedQuatityMap[item.id];
+                        suggestedQuantityMap[item.id];
             });
             return items;
         }
@@ -254,14 +255,26 @@
             $window.open(PRINT_URL, '_blank');
         }
 
+        function save() {
+            if (isFormInvalid()) {
+                alertService.error('shipmentView.invalidForm');
+                return $q.reject();
+            }
+            return vm.shipment.save();
+        }
+
         function saveAndPrintShipment() {
             save().then(function() {
                 printShipment();
             });
         }
 
-        function save() {
-            return vm.shipment.save();
+        function confirm() {
+            if (isFormInvalid()) {
+                alertService.error('shipmentView.failedToSaveDraft');
+                return;
+            }
+            return vm.shipment.confirm();
         }
 
         vm.getErrorMsg = function() {
@@ -448,5 +461,14 @@
             vm.keyword = null;
             vm.displayTableLineItems = searchTable();
         };
+
+        function isFormInvalid() {
+            return vm.tableLineItems.some(function(lineItem) {
+                if (lineItem instanceof ShipmentViewLineItemGroup) {
+                    return false;
+                }
+                return lineItem.isInvalid() !== undefined;
+            });
+        }
     }
 })();
