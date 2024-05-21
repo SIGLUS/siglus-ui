@@ -115,7 +115,9 @@
                         originalReportViewRoleAssignment.reportViewGeographicList =
                             _.uniq(
                                 originalReportViewRoleAssignment.reportViewGeographicList.concat(geographicList),
-                                'districtId'
+                                function(geographicItem) {
+                                    return geographicItem.provinceId + geographicItem.districtId;
+                                }
                             );
                     }
                     return;
