@@ -1,5 +1,5 @@
 {
-  "stockPhysicalInventoryHistory.viewPhysicalInventory": "view Physical Inventory",
+  "stockPhysicalInventoryHistory.viewPhysicalInventory": "View Physical Inventory",
   "stockPhysicalInventoryHistory.title": "Physical Inventory for ${programName}",
   "stockPhysicalInventoryHistory.dateCompleted": "Date completed",
   "stockPhysicalInventoryHistory.submittedBy": "Submitted by",

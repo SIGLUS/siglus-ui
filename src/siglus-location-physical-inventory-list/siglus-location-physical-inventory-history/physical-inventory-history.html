@@ -15,7 +15,7 @@
 		</thead>
 		<tbody>
 		<tr ng-repeat="historyItem in vm.pagedHistoryList">
-			<td>{{historyItem.programName}}</td>
+			<td>{{vm.getProgramName(historyItem)}}</td>
 			<td>{{historyItem.completedDate}}</td>
 			<td>
 				<input id="proceedButton" type="button" ng-click="vm.viewHistoryDetail(historyItem)"

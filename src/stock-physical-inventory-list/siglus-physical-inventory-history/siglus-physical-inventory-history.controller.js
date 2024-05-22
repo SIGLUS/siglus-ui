@@ -29,10 +29,14 @@
     ) {
         var vm = this;
 
+        var ALL_PROGRAM_NAME = 'ALL';
+        var DISPLAY_ALL_PROGRAM_NAME = 'Todos os produtos';
+
         vm.filteredHistoryList = filteredHistoryList;
         vm.program = program;
 
         vm.viewHistoryDetail = viewHistoryDetail;
+        vm.getProgramName = getProgramName;
 
         function viewHistoryDetail(historyItem) {
             $state.go('openlmis.stockmanagement.history', {
@@ -40,6 +44,10 @@
                 facility: facility,
                 historyId: historyItem.id
             });
+        }
+
+        function getProgramName(historyItem) {
+            return historyItem.programName === ALL_PROGRAM_NAME ? DISPLAY_ALL_PROGRAM_NAME : historyItem.programName;
         }
     }
 })();
