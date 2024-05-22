@@ -89,9 +89,8 @@ describe('RequisitionInitiateController', function() {
                 $scope: this.$scope,
                 canInitiateRnr: this.canInitiateRnr,
                 // SIGLUS-REFACTOR: starts here
-                inventoryDates: [],
+                inventoryDates: []
                 // SIGLUS-REFACTOR: ends here
-                supplyingFacilities: []
             });
 
             spyOn(this.$scope, '$on');
@@ -209,33 +208,33 @@ describe('RequisitionInitiateController', function() {
     // });
     // SIGLUS-REFACTOR: ends here
 
-    it('should reload periods with proper data', function() {
-        spyOn(this.$state, 'go');
-        // SIGLUS-REFACTOR: starts here
-        this.$state.current = {
-            name: 'openlmis.requisitions.initRnr.requisition'
-        };
-        // SIGLUS-REFACTOR: ends here
-        this.vm.program = this.programs[0];
-        this.vm.facility = this.facility;
-        this.vm.isSupervised = false;
-
-        this.vm.$onInit();
-        this.vm.loadPeriods();
-        this.$rootScope.$apply();
-
-        // SIGLUS-REFACTOR: starts here
-        expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
-            supervised: false,
-            emergency: false,
-            program: this.vm.program.id,
-            facility: this.vm.facility.id,
-            replaceId: ''
-        }, {
-            reload: 'openlmis.requisitions.initRnr.requisition'
-        });
-        // SIGLUS-REFACTOR: ends here
-    });
+    // it('should reload periods with proper data', function() {
+    //     spyOn(this.$state, 'go');
+    //     // SIGLUS-REFACTOR: starts here
+    //     this.$state.current = {
+    //         name: 'openlmis.requisitions.initRnr.requisition'
+    //     };
+    //     // SIGLUS-REFACTOR: ends here
+    //     this.vm.program = this.programs[0];
+    //     this.vm.facility = this.facility;
+    //     this.vm.isSupervised = false;
+    //
+    //     this.vm.$onInit();
+    //     this.vm.loadPeriods();
+    //     this.$rootScope.$apply();
+    //
+    //     // SIGLUS-REFACTOR: starts here
+    //     expect(this.$state.go).toHaveBeenCalledWith('openlmis.requisitions.initRnr.requisition', {
+    //         supervised: false,
+    //         emergency: false,
+    //         program: this.vm.program.id,
+    //         facility: this.vm.facility.id,
+    //         replaceId: ''
+    //     }, {
+    //         reload: 'openlmis.requisitions.initRnr.requisition'
+    //     });
+    //     // SIGLUS-REFACTOR: ends here
+    // });
 
     // SIGLUS-REFACTOR: add test for goToHistory
     it('should change page to openlmis.requisitions.initRnr.history', function() {

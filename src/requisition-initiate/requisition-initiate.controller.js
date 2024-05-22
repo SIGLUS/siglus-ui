@@ -67,7 +67,6 @@
         // SIGLUS-REFACTOR: starts here
         function onInit() {
             vm.emergency = $state.params.emergency === 'true';
-            vm.goToRequisition();
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -122,7 +121,6 @@
             vm.showCreateForClient = canShowCreateForClientTab(hasCreatePermission, programCode);
             var reloadState = $state.current.name;
             if (vm.isCreateForClient() && !vm.showCreateForClient) {
-                vm.goToRequisition();
                 reloadState = 'openlmis.requisitions.initRnr.requisition';
             }
             $state.go(reloadState, vm.getMLProgramParam({
@@ -130,7 +128,6 @@
                 program: vm.program.id,
                 facility: vm.facility.id,
                 emergency: vm.emergency
-
             }), {
                 reload: reloadState
             });
