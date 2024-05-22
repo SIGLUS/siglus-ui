@@ -43,9 +43,6 @@
                 REQUISITION_RIGHTS.REQUISITION_AUTHORIZE
             ],
             resolve: {
-                supplyingFacilities: function(requisitionSearchService) {
-                    return requisitionSearchService.getFacilities();
-                },
                 dataHolder: function() {
                     return {};
                 }

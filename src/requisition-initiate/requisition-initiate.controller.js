@@ -30,14 +30,16 @@
         .controller('RequisitionInitiateController', RequisitionInitiateController);
 
     RequisitionInitiateController.$inject = [
-        'requisitionService', '$state', '$scope', 'PROGRAM_TYPE', 'supplyingFacilities'
+        'requisitionService', '$state', '$scope', 'PROGRAM_TYPE',
+        'requisitionInitiateFactory'
     ];
 
-    function RequisitionInitiateController(requisitionService, $state, $scope, PROGRAM_TYPE, supplyingFacilities) {
+    function RequisitionInitiateController(requisitionService, $state, $scope, PROGRAM_TYPE,
+                                           requisitionInitiateFactory) {
         var vm = this;
 
         vm.$onInit = onInit;
-        vm.loadPeriods = loadPeriods;
+        vm.loadPeriods = onSearch;
 
         /**
          * @ngdoc property
@@ -52,7 +54,6 @@
 
         vm.programs = undefined;
 
-        vm.supplyingFacilities = undefined;
         vm.showCreateForClient = false;
 
         /**
@@ -66,15 +67,44 @@
         // SIGLUS-REFACTOR: starts here
         function onInit() {
             vm.emergency = $state.params.emergency === 'true';
-            vm.supplyingFacilities = supplyingFacilities;
             vm.goToRequisition();
         }
         // SIGLUS-REFACTOR: ends here
 
         $scope.$on('$programListChange', function(event, programs) {
             vm.programs = programs;
-            vm.showCreateForClient = canShowCreateForClientTab();
+            onSearch();
         });
+
+        function onSearch() {
+            if (!vm.programs) {
+                return;
+            }
+            var programId;
+            var programCode;
+            if (vm.program) {
+                programCode = _.get(vm.program, 'code');
+                programId = _.get(vm.program, 'id');
+            } else {
+                var selectedProgram = vm.programs.find(function(program) {
+                    return program.id === $state.params.program;
+                });
+                if (selectedProgram) {
+                    programCode = selectedProgram.code;
+                    programId = selectedProgram.id;
+                }
+            }
+            var homeFacilityId = $state.params.facility;
+            if (vm.facility) {
+                homeFacilityId = vm.facility.id;
+            }
+            if (programId && homeFacilityId) {
+                requisitionInitiateFactory.canInitiate(programId, homeFacilityId)
+                    .then(function(canInitiate) {
+                        loadPeriods(canInitiate, programCode);
+                    });
+            }
+        }
 
         /**
          * @ngdoc method
@@ -88,10 +118,10 @@
          * already exists a requisition with an AUTHORIZED, APPROVED, IN_APPROVAL or RELEASED
          * status.
          */
-        function loadPeriods() {
-            var showCreateForClient = canShowCreateForClientTab();
+        function loadPeriods(hasCreatePermission, programCode) {
+            vm.showCreateForClient = canShowCreateForClientTab(hasCreatePermission, programCode);
             var reloadState = $state.current.name;
-            if (vm.isCreateForClient() && !showCreateForClient) {
+            if (vm.isCreateForClient() && !vm.showCreateForClient) {
                 vm.goToRequisition();
                 reloadState = 'openlmis.requisitions.initRnr.requisition';
             }
@@ -104,7 +134,6 @@
             }), {
                 reload: reloadState
             });
-            vm.showCreateForClient = showCreateForClient;
         }
 
         vm.getErrorMsg = function() {
@@ -149,32 +178,15 @@
             return Object.assign({}, stateParams, params);
         };
 
-        function canShowCreateForClientTab() {
-            if (!vm.programs) {
+        function canShowCreateForClientTab(hasCreatePermission, programCode) {
+            if (!hasCreatePermission) {
                 return false;
             }
-            var programCode;
-            if (vm.program) {
-                programCode = _.get(vm.program, 'code');
-            } else {
-                var selectedProgram = vm.programs.find(function(program) {
-                    return program.id === $state.params.program;
-                });
-                if (selectedProgram) {
-                    programCode = selectedProgram.code;
-                }
-            }
-            var homeFacilityId = $state.params.facility;
-            if (vm.facility) {
-                homeFacilityId = vm.facility.id;
-            }
-            var clients = supplyingFacilities.filter(function(facility) {
-                return facility.id !== homeFacilityId;
-            });
             var supportedPrograms = ['VC', 'T', 'TB', 'TR'];
-            return clients.length !== 0
-                && !vm.emergency
-                && supportedPrograms.includes(programCode);
+            if (!supportedPrograms.includes(programCode)) {
+                return false;
+            }
+            return !vm.emergency;
         }
     }
 })();
