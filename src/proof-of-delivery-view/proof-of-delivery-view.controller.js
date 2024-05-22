@@ -64,6 +64,7 @@
         vm.disableReasonSelect = disableReasonSelect;
         vm.onAcceptedQuantityChanged = onAcceptedQuantityChanged;
         vm.getLineItemReasonOptions = getLineItemReasonOptions;
+        vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
         vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
@@ -397,6 +398,11 @@
 
         function disableReasonSelect(lineItem) {
             return lineItem.isQuantityAcceptedEmpty() || lineItem.quantityAccepted === lineItem.quantityShipped;
+        }
+
+        function calculateValueByShippedQuantityAndPrice(lineItem) {
+            return _.get(lineItem, ['price']) ?
+                (lineItem.quantityShipped * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
 
         function onAcceptedQuantityChanged(lineItem) {

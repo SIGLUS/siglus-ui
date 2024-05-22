@@ -105,18 +105,40 @@
           <td></td>
           <td></td>
         </tr>
-        <tr ng-repeat-end ng-repeat="fulfillingLineItem in groupOfFulfillingLineItems">
+        <tr ng-repeat-end ng-repeat="(index, fulfillingLineItem) in groupOfFulfillingLineItems">
+          <!-- cell for fnm / product code -->
           <td></td>
+          <!-- cell for fnm / product code end -->
+
+          <!-- cell for product name -->
           <td></td>
+          <!-- cell for product name end -->
+
+          <!-- cell for lot code -->
           <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot | lotCode}}</td>
           <td ng-if="fulfillingLineItem.orderable.isKit"></td>
+          <!-- cell for lot code end -->
+
+          <!-- cell for expirationDate -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
           <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot.expirationDate}}</td>
           <td ng-if="fulfillingLineItem.orderable.isKit"></td>
           <!-- #400: ends here -->
+          <!-- cell for expirationDate end -->
+
+          <!-- cell for orderedQuantity -->
           <td></td>
+          <!-- cell for orderedQuantity end -->
+
+          <!-- cell for Partial Fulfilled -->
           <td></td>
+          <!-- cell for Partial Fulfilled  end -->
+
+          <!-- cell for supplied quantity -->
           <td>{{fulfillingLineItem.quantityShipped}}</td>
+          <!-- cell for supplied quantity end -->
+
+          <!-- cell for accepted quantity -->
           <td ng-if="vm.canEdit">
             <input positive-integer
                    ng-model="fulfillingLineItem.quantityAccepted"
@@ -126,6 +148,9 @@
           <td ng-if="!vm.canEdit">
             {{fulfillingLineItem.quantityAccepted}}
           </td>
+          <!-- cell for accepted quantity end -->
+
+          <!-- cell for vvm -->
           <td ng-if="vm.showVvmColumn">
             <div ng-if="fulfillingLineItem.useVvm && vm.canEdit">
               <select
@@ -139,7 +164,13 @@
               {{fulfillingLineItem.vvmStatus}}
             </div>
           </td>
+          <!-- cell for vvm end -->
+
+          <!-- cell for returned quantity -->
           <td>{{fulfillingLineItem.quantityRejected}}</td>
+          <!-- cell for returned quantity end -->
+
+          <!-- cell for adjustment reason -->
           <td ng-if="vm.canEdit">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
                     ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem)"
@@ -150,15 +181,19 @@
           <td ng-if="!vm.canEdit">
             {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
           </td>
+          <!-- cell for adjustment reason end -->
+
+          <!-- cell for price -->
           <td style="white-space: nowrap">{{ fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}</td>
+          <!-- cell for price end -->
+
+          <!-- cell for value -->
           <td style="white-space: nowrap">
-            {{
-            fulfillingLineItem.price ?
-                (fulfillingLineItem.quantityShipped * (fulfillingLineItem.price * 100).toFixed(2))
-                / 100 + ' MZM' :
-                ''
-            }}
+            {{ vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
           </td>
+          <!-- cell for value end -->
+
+          <!-- cell for notes -->
           <td ng-if="vm.canEdit">
             <input type="text" ng-model="fulfillingLineItem.notes"/>
           </td>
@@ -239,17 +274,3 @@
     <siglus-go-back/>
   </div>
 </div>
-<!-- SIGLUS-REFACTOR: ends here -->
-
-<!-- <div class="openlmis-toolbar button-group" ng-show="vm.canEdit">
-    #462: add back to previous button
-    <siglus-go-back />
-    #462: ends here
-    <button ng-click="vm.proofOfDelivery.save()">{{'proofOfDeliveryView.save' | message}}</button>
-    <button type="submit" class="primary" form="proof-of-delivery-form">{{'proofOfDeliveryView.confirm.label' | message}}</button>
-</div> -->
-<!-- #462: add back to previous button
-<div class="openlmis-toolbar button-group" ng-if="!vm.canEdit">
-    <siglus-go-back />
-</div>
- #462: ends here -->
