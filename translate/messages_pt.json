@@ -2039,6 +2039,7 @@
   "stockPhysicalInventory.title": "Inventário físico de ${facility} - ${program}",
   "stockPhysicalInventory.selectProgram": "Selecionar o programa",
   "stockPhysicalInventory.search": "Pesquisar",
+  "stockPhysicalInventory.view": "Ver",
   "stockPhysicalInventoryDraft.actions": "Acções",
   "stockPhysicalInventoryDraft.print": "Imprimir",
   "stockPhysicalInventoryDraft.addLot": "Adicionar lote",
