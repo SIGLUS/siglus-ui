@@ -112,6 +112,10 @@
             closeRequisitionsForApproval: {
                 url: requisitionUrlFactory('/api/siglusapi/requisitions/closeRequisitionsForApproval'),
                 method: 'POST'
+            },
+            buildDraft: {
+                method: 'GET',
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/draft')
             }
             // SIGLUS-REFACTOR: ends here
         });
@@ -131,7 +135,8 @@
             getWithoutStatusMessages: getWithoutStatusMessages,
             setOrderableUnitForRequisition: setOrderableUnitForRequisition,
             batchClose: batchClose,
-            closeRequisitionsForApproval: closeRequisitionsForApproval
+            closeRequisitionsForApproval: closeRequisitionsForApproval,
+            buildDraftWithoutSaving: buildDraftWithoutSaving
             // SIGLUS-REFACTOR: ends here
         };
 
@@ -253,6 +258,14 @@
 
                     return prepareRequisition(requisition);
                 });
+        }
+
+        function buildDraftWithoutSaving(facilityId, periodId, programId) {
+            return resource.buildDraft({
+                facility: facilityId,
+                period: periodId,
+                program: programId
+            }).$promise;
         }
 
         /**

@@ -100,25 +100,11 @@
         }
 
         function initRnr(selectedPeriod) {
-            loadingModalService.open();
-            SiglusRequisitionInitiateForClientService.getRequisitionDraft(selectedPeriod.facility,
-                selectedPeriod.id, selectedPeriod.program)
-                .$promise
-                .then(function(requisition) {
-                    goToInitiatedRequisition(requisition);
-                })
-                .catch(function() {
-                    notificationService.error(
-                        'requisitionInitiate.couldNotInitiateRequisition'
-                    );
-                    loadingModalService.close();
-                });
-        }
-
-        function goToInitiatedRequisition(requisition) {
             $state.go('openlmis.requisitions.requisition.fullSupply', {
-                rnr: requisition.id,
-                requisition: requisition
+                facility: selectedPeriod.facility,
+                period: selectedPeriod.id,
+                program: selectedPeriod.program,
+                emergency: false
             });
         }
     }

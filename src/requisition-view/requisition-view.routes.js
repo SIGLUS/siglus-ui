@@ -27,7 +27,7 @@
 
         $stateProvider.state('openlmis.requisitions.requisition', {
             label: 'requisitionView.viewRequisition',
-            url: '^/requisition/:rnr',
+            url: '^/requisition/:rnr?facility&period&program&emergency',
             controller: 'RequisitionViewController',
             controllerAs: 'vm',
             templateUrl: 'requisition-view/requisition-view.html',
@@ -44,7 +44,13 @@
                     return currentUserService.getUserInfo();
                 },
                 requisition: function($stateParams, requisitionService) {
-                    return requisitionService.get($stateParams.rnr).then(function(requisition) {
+                    if ($stateParams.rnr) {
+                        return requisitionService.get($stateParams.rnr).then(function(requisition) {
+                            return requisitionService.setOrderableUnitForRequisition(requisition);
+                        });
+                    }
+                    return requisitionService.buildDraftWithoutSaving($stateParams.facility,
+                        $stateParams.period, $stateParams.program).then(function(requisition) {
                         return requisitionService.setOrderableUnitForRequisition(requisition);
                     });
                 },
