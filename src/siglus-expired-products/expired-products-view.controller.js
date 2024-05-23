@@ -149,7 +149,7 @@
 
         function selectedLots() {
             var selectedLots = [];
-            vm.displayItems.forEach(function(product) {
+            vm.expiredProducts.forEach(function(product) {
                 if (product.lots) {
                     product.lots.forEach(function(lot) {
                         if (!lot.skipped) {

@@ -95,7 +95,7 @@
                 },
                 params: {
                     pageNumber: '0',
-                    pageSize: '20',
+                    pageSize: '10',
                     keyword: undefined,
                     orderablesPrice: undefined,
                     expiredProducts: undefined

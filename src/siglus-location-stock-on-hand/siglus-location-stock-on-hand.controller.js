@@ -96,7 +96,7 @@
         }
 
         function removeExpiredProducts() {
-            $state.go('openlmis.stockmanagement.expiredProducts');
+            $state.go('openlmis.locationManagement.expiredProducts');
         }
 
         function updateStateParams() {
