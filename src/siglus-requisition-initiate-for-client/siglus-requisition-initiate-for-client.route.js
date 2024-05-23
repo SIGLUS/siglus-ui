@@ -33,12 +33,7 @@
             templateUrl: 'siglus-requisition-initiate-for-client/siglus-requisition-initiate-for-client.html',
             canAccess: [
                 REQUISITION_RIGHTS.REQUISITION_CREATE
-            ],
-            resolve: {
-                supplyingFacilities: function(requisitionSearchService) {
-                    return requisitionSearchService.getFacilities();
-                }
-            }
+            ]
         });
     }
 })();

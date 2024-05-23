@@ -27,12 +27,12 @@
         .controller('SiglusRequisitionInitiateForClientController', controller);
 
     controller.$inject = [
-        '$stateParams', '$state', 'REQUISITION_STATUS', 'supplyingFacilities', 'dataHolder',
+        '$stateParams', '$state', 'REQUISITION_STATUS', 'dataHolder',
         'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService',
         'requisitionService', 'UuidGenerator', 'moment'
     ];
 
-    function controller($stateParams, $state, REQUISITION_STATUS, supplyingFacilities, dataHolder,
+    function controller($stateParams, $state, REQUISITION_STATUS, dataHolder,
                         SiglusRequisitionInitiateForClientService, loadingModalService, notificationService,
                         requisitionService, UuidGenerator, moment) {
         var vm = this;
@@ -49,11 +49,18 @@
         vm.initRnr = initRnr;
 
         function onInit() {
-            vm.supplyingFacilities = supplyingFacilities.filter(function(facility) {
-                return facility.id !== $stateParams.facility;
-            });
-            vm.supplyingFacility = dataHolder.supplyingFacility;
-            loadPeriods();
+            if ($stateParams.facility && $stateParams.program) {
+                SiglusRequisitionInitiateForClientService.getClients($stateParams.facility, $stateParams.program)
+                    .$promise.then(function(clients) {
+                        vm.supplyingFacilities = clients;
+                        if (dataHolder.supplyingFacility) {
+                            vm.supplyingFacility = clients.find(function(facility) {
+                                return facility.id === dataHolder.supplyingFacility.id;
+                            });
+                        }
+                        loadPeriods();
+                    });
+            }
         }
 
         function loadPeriods() {

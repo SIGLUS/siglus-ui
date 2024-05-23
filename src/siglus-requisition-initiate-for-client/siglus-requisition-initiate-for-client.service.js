@@ -26,13 +26,29 @@
         .module('siglus-requisition-initiate-for-client')
         .service('SiglusRequisitionInitiateForClientService', service);
 
-    service.$inject = ['periodFactory'];
+    service.$inject = ['$resource', 'stockmanagementUrlFactory', 'periodFactory'];
 
-    function service(periodFactory) {
+    function service($resource, stockmanagementUrlFactory, periodFactory) {
+        var resource = $resource(stockmanagementUrlFactory(), {}, {
+            get: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/facility/:id/clients'),
+                isArray: true
+            }
+        });
+
         this.getPeriods = getPeriods;
+        this.getClients = getClients;
 
         function getPeriods(facilityId, programId, emergency) {
             return periodFactory.get(programId, facilityId, emergency);
+        }
+
+        function getClients(facilityId, programId) {
+            return resource.get({
+                id: facilityId,
+                programId: programId
+            });
         }
     }
 })();
