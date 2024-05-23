@@ -28,13 +28,11 @@
 
     controller.$inject = [
         '$stateParams', '$state', 'REQUISITION_STATUS', 'dataHolder',
-        'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService',
-        'requisitionService', 'UuidGenerator', 'moment'
+        'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService', 'moment'
     ];
 
     function controller($stateParams, $state, REQUISITION_STATUS, dataHolder,
-                        SiglusRequisitionInitiateForClientService, loadingModalService, notificationService,
-                        requisitionService, UuidGenerator, moment) {
+                        SiglusRequisitionInitiateForClientService, loadingModalService, notificationService, moment) {
         var vm = this;
 
         vm.periods = undefined;
@@ -103,9 +101,9 @@
 
         function initRnr(selectedPeriod) {
             loadingModalService.open();
-            var uuidGenerator = new UuidGenerator();
-            requisitionService.initiate(selectedPeriod.facility, selectedPeriod.program,
-                selectedPeriod.id, selectedPeriod.emergency, uuidGenerator.generate(), null)
+            SiglusRequisitionInitiateForClientService.getRequisitionDraft(selectedPeriod.facility,
+                selectedPeriod.id, selectedPeriod.program)
+                .$promise
                 .then(function(requisition) {
                     goToInitiatedRequisition(requisition);
                 })

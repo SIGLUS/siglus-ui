@@ -34,11 +34,16 @@
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/facility/:id/clients'),
                 isArray: true
+            },
+            buildDraft: {
+                method: 'GET',
+                url: stockmanagementUrlFactory('/api/siglusapi/requisitions/draft')
             }
         });
 
         this.getPeriods = getPeriods;
         this.getClients = getClients;
+        this.getRequisitionDraft = getRequisitionDraft;
 
         function getPeriods(facilityId, programId, emergency) {
             return periodFactory.get(programId, facilityId, emergency);
@@ -48,6 +53,14 @@
             return resource.get({
                 id: facilityId,
                 programId: programId
+            });
+        }
+
+        function getRequisitionDraft(facilityId, periodId, programId) {
+            return resource.buildDraft({
+                facility: facilityId,
+                period: periodId,
+                program: programId
             });
         }
     }
