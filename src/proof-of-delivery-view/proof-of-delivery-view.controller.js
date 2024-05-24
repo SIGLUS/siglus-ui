@@ -53,6 +53,8 @@
     ) {
         var vm = this;
 
+        var NEWLY_ADDED_LOT_REASON_NAME = 'Lote não especificado na Guia de Remessa';
+
         vm.$onInit = onInit;
         vm.getStatusDisplayName = getStatusDisplayName;
         vm.getReasonName = getReasonName;
@@ -65,11 +67,15 @@
         vm.onAcceptedQuantityChanged = onAcceptedQuantityChanged;
         vm.getLineItemReasonOptions = getLineItemReasonOptions;
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
+        vm.addItem = addItem;
+        vm.removeItem = removeItem;
         vm.facilityId = facility.id;
         vm.isMerge = undefined;
+        vm.isView = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
         vm.minDate = undefined;
+        vm.newlyAddedLotReasonOptions = undefined;
 
         /**
      * @ngdoc property
@@ -161,6 +167,9 @@
             vm.excessReasons = _.filter(vm.reasons, function(reason) {
                 return reason.reasonType === 'CREDIT';
             });
+            vm.newlyAddedLotReasonOptions = _.filter(vm.excessReasons, function(reason) {
+                return reason.name === NEWLY_ADDED_LOT_REASON_NAME;
+            });
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
             vm.orderLineItems = orderLineItems;
@@ -182,8 +191,8 @@
                 }
             );
 
-            vm.isMerge = $stateParams.actionType === 'MERGE'
-          || $stateParams.actionType === 'VIEW';
+            vm.isMerge = $stateParams.actionType === 'MERGE' || $stateParams.actionType === 'VIEW';
+            vm.isView = $stateParams.actionType === 'VIEW';
 
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 save(true);
@@ -259,7 +268,6 @@
                             location: 'replace'
                         });
                     }
-
                 }
             )
                 .catch(function() {
@@ -397,7 +405,8 @@
         }
 
         function disableReasonSelect(lineItem) {
-            return lineItem.isQuantityAcceptedEmpty() || lineItem.quantityAccepted === lineItem.quantityShipped;
+            return lineItem.isQuantityAcceptedEmpty() || lineItem.quantityAccepted === lineItem.quantityShipped ||
+                lineItem.isNewlyAdded;
         }
 
         function calculateValueByShippedQuantityAndPrice(lineItem) {
@@ -407,7 +416,7 @@
 
         function onAcceptedQuantityChanged(lineItem) {
             lineItem.updateQuantityRejected();
-            if (disableReasonSelect(lineItem)) {
+            if (disableReasonSelect(lineItem) && !lineItem.isNewlyAdded) {
                 lineItem.rejectionReasonId = undefined;
             }
         }
@@ -419,5 +428,66 @@
                 return vm.rejectionReasons;
             }
         }
+
+        function addItem(groupLineItems) {
+            var lineItemTemplate = angular.copy(groupLineItems[0]);
+            var lineItemLotTemplate = angular.copy(lineItemTemplate.lot);
+            var newlyAddedLot = _.assign(lineItemLotTemplate, {
+                lotCode: null,
+                expirationDate: null,
+                manufactureDate: undefined
+            });
+            groupLineItems.push(_.assign(lineItemTemplate, {
+                $errors: {},
+                id: undefined,
+                quantityShipped: 0,
+                quantityAccepted: 0,
+                quantityRejected: 0,
+                isNewlyAdded: true,
+                rejectionReasonId: vm.newlyAddedLotReasonOptions[0].id,
+                lot: newlyAddedLot
+            }));
+        }
+
+        function removeItem(groupLineItems, indexToRemove) {
+            groupLineItems.splice(indexToRemove, 1);
+        }
+
+        function validateLotCode(currentLineItem, lineItems) {
+            if (!currentLineItem.isNewlyAdded) {
+                return;
+            }
+
+            currentLineItem.$errors.lotCodeInvalid = undefined;
+            if (isEmpty(_.get(currentLineItem, ['lot', 'lotCode']))) {
+                currentLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
+            } else {
+                validateDuplicateLotCode(currentLineItem, lineItems);
+            }
+        }
+
+        function validateDuplicateLotCode(currentLineItem, lineItems) {
+            var currentLotCode = _.get(currentLineItem, ['lot', 'lotCode']);
+            var duplicateLineItems = lineItems.filter(function(lineItem) {
+                return _.get(lineItem, ['lot', 'lotCode']) === currentLotCode;
+            });
+            if (duplicateLineItems.length > 1) {
+                duplicateLineItems.forEach(function(lineItem) {
+                    lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
+                });
+            }
+        }
+
+        function isEmpty(data) {
+            return data === undefined || data === null || data === '';
+        }
+
+        $scope.$on('lotCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            var lineItems = data.lineItems;
+            console.log('lot code change');
+            validateLotCode(lineItem, lineItems);
+        });
+
     }
 }());

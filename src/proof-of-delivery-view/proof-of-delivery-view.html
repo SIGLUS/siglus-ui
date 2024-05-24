@@ -53,7 +53,7 @@
           <th>{{'proofOfDeliveryView.fnm' | message}}</th>
           <th>{{'proofOfDeliveryView.productName' | message}}</th>
           <th>{{'proofOfDeliveryView.lotCode' | message}}</th>
-          <th>{{'proofOfDeliveryView.expiringDate' | message}}</th>
+          <th style="min-width: 120px">{{'proofOfDeliveryView.expiringDate' | message}}</th>
           <th>{{'proofOfDeliveryView.quantityOrdered' | message}}</th>
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
           <th>{{'proofOfDeliveryView.partialFulfilledQuantity' | message}}</th>
@@ -66,6 +66,7 @@
           <th>{{'proofOfDeliveryView.price' | message}}</th>
           <th>{{'proofOfDeliveryView.value' | message}}</th>
           <th>{{'proofOfDeliveryView.notes' | message}}</th>
+          <th ng-if="!vm.isView">{{'proofOfDeliveryView.actions' | message}}</th>
         </tr>
       </thead>
       <tbody ng-repeat="orderLineItem in vm.orderLineItems | orderBy : 'orderable.fullProductName'">
@@ -86,6 +87,7 @@
           <td></td>
           <td></td>
           <td></td>
+          <td ng-if="!vm.isView"></td>
         </tr>
         <tr ng-repeat-start="groupOfFulfillingLineItems in orderLineItem.groupedLineItems | orderBy: '[0].orderable.fullProductName'">
           <td>{{groupOfFulfillingLineItems[0].orderable.productCode}}</td>
@@ -104,6 +106,11 @@
           <td></td>
           <td></td>
           <td></td>
+          <td ng-if="!vm.isView">
+            <button type="button" class="stock-actions add" ng-click="vm.addItem(groupOfFulfillingLineItems)">
+              {{'stockPhysicalInventoryDraft.addItem' | message}}
+            </button>
+          </td>
         </tr>
         <tr ng-repeat-end ng-repeat="(index, fulfillingLineItem) in groupOfFulfillingLineItems">
           <!-- cell for fnm / product code -->
@@ -115,13 +122,27 @@
           <!-- cell for product name end -->
 
           <!-- cell for lot code -->
-          <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot | lotCode}}</td>
+          <td ng-if="!fulfillingLineItem.orderable.isKit && !fulfillingLineItem.isNewlyAdded">{{fulfillingLineItem.lot | lotCode}}</td>
+          <td ng-if="!fulfillingLineItem.orderable.isKit && fulfillingLineItem.isNewlyAdded">
+            <siglus-stock-input-select
+                    line-item="fulfillingLineItem"
+                    line-items="groupOfFulfillingLineItems"
+                    index="index"
+                    enable-input="true">
+            </siglus-stock-input-select>
+          </td>
           <td ng-if="fulfillingLineItem.orderable.isKit"></td>
           <!-- cell for lot code end -->
 
           <!-- cell for expirationDate -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
-          <td ng-if="!fulfillingLineItem.orderable.isKit">{{fulfillingLineItem.lot.expirationDate}}</td>
+          <td ng-if="!fulfillingLineItem.orderable.isKit && !fulfillingLineItem.isNewlyAdded">{{fulfillingLineItem.lot.expirationDate}}</td>
+          <td ng-if="!fulfillingLineItem.orderable.isKit && fulfillingLineItem.isNewlyAdded">
+            <input type="date"
+                   ng-model="fulfillingLineItem.lot.expirationDate"
+                   ng-required="true"
+            />
+          </td>
           <td ng-if="fulfillingLineItem.orderable.isKit"></td>
           <!-- #400: ends here -->
           <!-- cell for expirationDate end -->
@@ -173,7 +194,8 @@
           <!-- cell for adjustment reason -->
           <td ng-if="vm.canEdit">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
-                    ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem)"
+                    ng-options="reason.id as reason.name for reason in
+                      (fulfillingLineItem.isNewlyAdded ? vm.newlyAddedLotReasonOptions : vm.getLineItemReasonOptions(fulfillingLineItem))"
                     openlmis-invalid="{{fulfillingLineItem.validate().rejectionReasonId | message}}"
                     ng-disabled="vm.disableReasonSelect(fulfillingLineItem)">
             </select>
@@ -184,12 +206,14 @@
           <!-- cell for adjustment reason end -->
 
           <!-- cell for price -->
-          <td style="white-space: nowrap">{{ fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}</td>
+          <td style="white-space: nowrap">
+            {{ !fulfillingLineItem.isNewlyAdded && fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}
+          </td>
           <!-- cell for price end -->
 
           <!-- cell for value -->
           <td style="white-space: nowrap">
-            {{ vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
+            {{ fulfillingLineItem.isNewlyAdded ? '' : vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
           </td>
           <!-- cell for value end -->
 
@@ -200,6 +224,19 @@
           <td ng-if="!vm.canEdit">
             {{fulfillingLineItem.notes}}
           </td>
+          <!-- cell for notes end -->
+
+          <!-- cell for action button -->
+          <td ng-if="!vm.isView">
+            <button type="button" class="danger stock-actions"
+                    ng-if="fulfillingLineItem.isNewlyAdded"
+                    ng-click="vm.removeItem(groupOfFulfillingLineItems, index)"
+            >
+              {{'stockPhysicalInventoryDraft.remove' | message}}
+            </button>
+          </td>
+          <!-- cell for action button end -->
+
         </tr>
       </tbody>
     </table>
@@ -260,8 +297,8 @@
     </button>
   </div>
   <div class="button-group primary">
-    <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">{{'stockPhysicalInventoryDraft.save'
-    | message}}
+    <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">
+      {{'stockPhysicalInventoryDraft.save' | message}}
     </button>
     <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" form="proof-of-delivery-form">
       {{(vm.isMerge ? 'stockPhysicalInventoryDraft.mergeApprove' : 'stockPhysicalInventoryDraft.submit') | message}}

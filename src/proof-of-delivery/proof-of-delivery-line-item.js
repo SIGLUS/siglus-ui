@@ -86,6 +86,7 @@
             validateQuantityAccepted(this, errors);
             validateRejectionReasonId(this, errors);
             validateVvmStatus(this, errors);
+            validateLotCodeAndExpirationDate(this, errors);
 
             return angular.equals(errors, {}) ? undefined : errors;
         }
@@ -120,8 +121,19 @@
             }
         }
 
+        function validateLotCodeAndExpirationDate(lineItem, errors) {
+
+            if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
+                errors.lotCode = 'proofOfDeliveryView.lotCodeRequired';
+            }
+
+            if (isEmpty(_.get(lineItem, ['lot', 'expirationDate']))) {
+                errors.expirationDate = 'proofOfDeliveryView.expirationDateRequired';
+            }
+        }
+
         function isEmpty(data) {
-            return data === undefined || data === null;
+            return data === undefined || data === null || data === '';
         }
 
         function isQuantityAcceptedEmpty() {

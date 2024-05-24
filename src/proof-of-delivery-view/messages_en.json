@@ -19,7 +19,12 @@
   "proofOfDeliveryView.quantityReturned": "Returned Quantity",
   "proofOfDeliveryView.reasonForAdjustment": "Reason for Adjustment",
   "proofOfDeliveryView.location": "Location",
-  "proofOfDeliveryView.Actions": "Actions",
+  "proofOfDeliveryView.actions": "Actions",
+  "proofOfDeliveryView.addItem": "Add Item",
+  "proofOfDeliveryView.remove": "Remove",
+  "proofOfDeliveryView.lotCodeRequired": "Lot Code is required",
+  "proofOfDeliveryView.expirationDateRequired": "Expiration Date is required",
+  "proofOfDeliveryView.lotCodeDuplicate": "The lot code has been used, please enter a new lot",
 
   "proofOfDeliveryView.gtQuantityShipped": "You can't accept more stock than was supplied.",
   "proofOfDeliveryView.notAllowedRejectReasonId": "The rejection reason is not allowed to be selected.",
