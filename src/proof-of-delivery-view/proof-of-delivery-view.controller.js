@@ -253,8 +253,9 @@
         function save(notReload) {
             $scope.needToConfirm = false;
             loadingModalService.open();
+            var proofOfDeliveryCopy = getPODCopyWithNewlyAddedLineItems();
             proofOfDeliveryService.updateSubDraft($stateParams.podId,
-                $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE').then(
+                $stateParams.subDraftId, proofOfDeliveryCopy, 'SAVE').then(
                 function() {
                     if (!notReload) {
                         notificationService.success(
@@ -296,8 +297,9 @@
         // submit subDraft
         function submitSubDraft() {
             loadingModalService.open();
+            var proofOfDelivery = getPODCopyWithNewlyAddedLineItems();
             proofOfDeliveryService.updateSubDraft($stateParams.podId,
-                $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT').then(
+                $stateParams.subDraftId, proofOfDelivery, 'SUBMIT').then(
                 function() {
                     notificationService.success(
                         'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
@@ -323,25 +325,26 @@
             )
                 .then(function() {
                     loadingModalService.open();
-                    var copy = angular.copy(vm.proofOfDelivery);
+                    var proofOfDeliveryCopy = getPODCopyWithNewlyAddedLineItems();
+                    var copy = angular.copy(proofOfDeliveryCopy);
                     copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
                     var pod = {
                         podDto: copy,
                         conferredBy: copy.conferredBy,
                         preparedBy: copy.preparedBy
                     };
-                    proofOfDeliveryService.submitDraft($stateParams.podId,
-                        pod).then(function() {
-                        notificationService.success(
-                            'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
-                        );
-                        $state.go('openlmis.orders.podManage', {
-                            requestingFacilityId: $stateParams.requestingFacilityId,
-                            programId: $stateParams.programId
-                        }, {
-                            reload: true
-                        });
-                    })
+                    proofOfDeliveryService.submitDraft($stateParams.podId, pod)
+                        .then(function() {
+                            notificationService.success(
+                                'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
+                            );
+                            $state.go('openlmis.orders.podManage', {
+                                requestingFacilityId: $stateParams.requestingFacilityId,
+                                programId: $stateParams.programId
+                            }, {
+                                reload: true
+                            });
+                        })
                         .catch(function(error) {
                             if (
                                 // eslint-disable-next-line max-len
@@ -491,6 +494,19 @@
             var lineItems = data.lineItems;
             validateLotCode(lineItem, lineItems);
         });
+
+        function getPODCopyWithNewlyAddedLineItems() {
+            var proofOfDeliveryCopy = angular.copy(vm.proofOfDelivery);
+            vm.orderLineItems.forEach(function(lineItemGroup) {
+                var groupedLineItems = lineItemGroup.groupedLineItems[0];
+                groupedLineItems.forEach(function(lineItem) {
+                    if (lineItem.isNewlyAdded) {
+                        proofOfDeliveryCopy.lineItems.push(lineItem);
+                    }
+                });
+            });
+            return proofOfDeliveryCopy;
+        }
 
     }
 }());
