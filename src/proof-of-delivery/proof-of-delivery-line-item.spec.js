@@ -137,6 +137,10 @@ describe('ProofOfDeliveryLineItem', function() {
 
         beforeEach(function() {
             proofOfDeliveryLineItem = new ProofOfDeliveryLineItemDataBuilder().build();
+            proofOfDeliveryLineItem.lot = {
+                lotCode: 'lot-1',
+                expirationDate: '2027-03-24'
+            };
         });
 
         it('should return undefined if line items is valid', function() {
@@ -213,6 +217,22 @@ describe('ProofOfDeliveryLineItem', function() {
             proofOfDeliveryLineItem.vvmStatus = '';
 
             expect(proofOfDeliveryLineItem.validate()).toBeUndefined();
+        });
+
+        it('should return error if lot code is undefined', function() {
+            proofOfDeliveryLineItem.lot.lotCode = undefined;
+
+            expect(proofOfDeliveryLineItem.validate()).toEqual({
+                lotCode: 'proofOfDeliveryView.lotCodeRequired'
+            });
+        });
+
+        it('should return error if expiration date is undefined', function() {
+            proofOfDeliveryLineItem.lot.expirationDate = undefined;
+
+            expect(proofOfDeliveryLineItem.validate()).toEqual({
+                expirationDate: 'proofOfDeliveryView.expirationDateRequired'
+            });
         });
     });
 });
