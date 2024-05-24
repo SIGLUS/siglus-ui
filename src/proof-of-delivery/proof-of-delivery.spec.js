@@ -32,6 +32,10 @@ describe('ProofOfDelivery', function() {
         });
 
         json = new ProofOfDeliveryDataBuilder().buildJson();
+        json.lineItems.forEach((function(lineItem) {
+            lineItem.lot.lotCode = 'lot-1';
+            lineItem.lot.expirationDate = '2027-03-24';
+        }));
     });
 
     describe('constructor', function() {
