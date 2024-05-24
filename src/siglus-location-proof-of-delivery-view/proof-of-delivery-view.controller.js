@@ -444,7 +444,11 @@
         }
 
         function getFirstEmptyAcceptedLine(relatedLines) {
-            return _.find(relatedLines, function(line) {
+            var linesToCheck = relatedLines.length === 1 ? relatedLines :
+                _.filter(relatedLines, function(line) {
+                    return !line.isMainGroup;
+                });
+            return _.find(linesToCheck, function(line) {
                 return line.quantityAccepted === null || line.quantityAccepted === undefined;
             });
         }
@@ -536,7 +540,6 @@
                         location: 'replace'
                     });
                 }
-
             })
                 .catch(function() {
                     notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');

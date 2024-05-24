@@ -67,7 +67,7 @@
           <th>{{'proofOfDeliveryView.price' | message}}</th>
           <th>{{'proofOfDeliveryView.value' | message}}</th>
           <th>{{'proofOfDeliveryView.notes' | message}}</th>
-          <th ng-if="vm.canEdit">{{'proofOfDeliveryView.Actions' | message}}</th>
+          <th ng-if="vm.canEdit">{{'proofOfDeliveryView.actions' | message}}</th>
         </tr>
       </thead>
 
@@ -95,26 +95,46 @@
         </tr>
 
         <tr ng-repeat="(index, fulfillingLineItem) in orderLineItem.groupedLineItems" ng-repeat-end>
+          <!-- FNM / product code -->
           <td></td>
+          <!-- FNM / product code end -->
+
+          <!-- product name -->
           <td></td>
+          <!-- product name end -->
+
+          <!-- lot code -->
           <td ng-if="!fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{fulfillingLineItem.lot | lotCode}}
           </td>
           <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
+          <!-- lot code end -->
+
+          <!-- expiration date -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
           <td ng-if="!fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{fulfillingLineItem.lot.expirationDate}}
           </td>
           <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
           <!-- #400: ends here -->
-          <td></td>
-          <td></td>
+          <!-- expiration date end -->
 
+          <!-- ordered quantity -->
+          <td></td>
+          <!-- ordered quantity end -->
+
+          <!-- partial fulfilled -->
+          <td></td>
+          <!-- partial fulfilled end -->
+
+          <!-- shipped quantity -->
           <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">
             {{fulfillingLineItem.quantityShipped}}
           </td>
           <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+          <!-- shipped quantity end -->
 
+          <!-- location -->
           <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup && fulfillingLineItem.moveTo.locationCode">
             {{fulfillingLineItem.moveTo.area}}-{{fulfillingLineItem.moveTo.locationCode}}
           </td>
@@ -141,7 +161,9 @@
                                       area-location-info="vm.areaLocationInfo"></siglus-location-select>
             </div>
           </td>
+          <!-- location end -->
 
+          <!-- accepted quantity -->
           <td ng-if="vm.canEdit && (!fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             <input positive-integer
                    ng-model="fulfillingLineItem.quantityAccepted"
@@ -158,7 +180,9 @@
           <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup">
             {{fulfillingLineItem.quantityAccepted}}
           </td>
+          <!-- accepted quantity end -->
 
+          <!-- vvm -->
           <td ng-if="vm.showVvmColumn">
             <div ng-if="fulfillingLineItem.useVvm && vm.canEdit">
               <select
@@ -172,12 +196,16 @@
               {{fulfillingLineItem.vvmStatus}}
             </div>
           </td>
+          <!-- vvm end -->
 
+          <!-- rejected quantity -->
           <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">
             {{vm.getRejectedQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)}}
           </td>
           <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
+          <!-- rejected quantity end -->
 
+          <!-- reason -->
           <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
                     ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem, orderLineItem.groupedLineItems)"
@@ -193,11 +221,16 @@
           </td>
           <td ng-if="!vm.canEdit && !(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
           </td>
+          <!-- reason end -->
 
+          <!-- price -->
           <td ng-if="(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{ fulfillingLineItem.price }}
           </td>
           <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+          <!-- price end -->
+
+          <!-- value -->
           <td ng-if="(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{
             fulfillingLineItem.price ?
@@ -207,7 +240,9 @@
             }}
           </td>
           <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+          <!-- value end -->
 
+          <!-- notes -->
           <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             <input type="text" ng-model="fulfillingLineItem.notes"/>
           </td>
@@ -215,7 +250,9 @@
             {{fulfillingLineItem.notes}}
           </td>
           <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
+          <!-- notes end -->
 
+          <!-- action button -->
           <td ng-if="vm.canEdit">
             <button style="padding: 8px;"
                     ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst"
@@ -230,6 +267,7 @@
                    ng-click="vm.removeItemForPod(fulfillingLineItem, index, orderLineItem.groupedLineItems)">
 
           </td>
+          <!-- action button end -->
         </tr>
       </tbody>
     </table>
