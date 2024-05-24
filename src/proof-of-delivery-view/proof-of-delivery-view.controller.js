@@ -433,6 +433,8 @@
             var lineItemTemplate = angular.copy(groupLineItems[0]);
             var lineItemLotTemplate = angular.copy(lineItemTemplate.lot);
             var newlyAddedLot = _.assign(lineItemLotTemplate, {
+                id: undefined,
+                active: undefined,
                 lotCode: null,
                 expirationDate: null,
                 manufactureDate: undefined
@@ -473,7 +475,9 @@
             });
             if (duplicateLineItems.length > 1) {
                 duplicateLineItems.forEach(function(lineItem) {
-                    lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
+                    if (lineItem.isNewlyAdded) {
+                        lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
+                    }
                 });
             }
         }
@@ -485,7 +489,6 @@
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             var lineItems = data.lineItems;
-            console.log('lot code change');
             validateLotCode(lineItem, lineItems);
         });
 
