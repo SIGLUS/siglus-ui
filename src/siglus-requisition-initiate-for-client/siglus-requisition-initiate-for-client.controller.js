@@ -27,13 +27,14 @@
         .controller('SiglusRequisitionInitiateForClientController', controller);
 
     controller.$inject = [
-        '$stateParams', '$state', 'REQUISITION_STATUS', 'dataHolder',
+        '$stateParams', '$state', 'REQUISITION_STATUS', 'localStorageService',
         'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService', 'moment'
     ];
 
-    function controller($stateParams, $state, REQUISITION_STATUS, dataHolder,
+    function controller($stateParams, $state, REQUISITION_STATUS, localStorageService,
                         SiglusRequisitionInitiateForClientService, loadingModalService, notificationService, moment) {
         var vm = this;
+        var CREATE_FOR_CLIENT_ID = 'create_for_client_facility_id';
 
         vm.periods = undefined;
         vm.supplyingFacilities = undefined;
@@ -51,9 +52,10 @@
                 SiglusRequisitionInitiateForClientService.getClients($stateParams.facility, $stateParams.program)
                     .$promise.then(function(clients) {
                         vm.supplyingFacilities = clients;
-                        if (dataHolder.supplyingFacility) {
+                        var clientId = localStorageService.get(CREATE_FOR_CLIENT_ID);
+                        if (clientId) {
                             vm.supplyingFacility = clients.find(function(facility) {
-                                return facility.id === dataHolder.supplyingFacility.id;
+                                return facility.id === clientId;
                             });
                         }
                         loadPeriods();
@@ -95,7 +97,9 @@
         };
 
         function selectedClientChanged() {
-            dataHolder.supplyingFacility = vm.supplyingFacility;
+            if (vm.supplyingFacility) {
+                localStorageService.add(CREATE_FOR_CLIENT_ID, vm.supplyingFacility.id);
+            }
             loadPeriods();
         }
 

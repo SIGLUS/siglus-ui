@@ -114,8 +114,8 @@
                 method: 'POST'
             },
             buildDraft: {
-                method: 'GET',
-                url: requisitionUrlFactory('/api/siglusapi/requisitions/draft')
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/draft'),
+                method: 'POST'
             }
             // SIGLUS-REFACTOR: ends here
         });
@@ -262,10 +262,16 @@
 
         function buildDraftWithoutSaving(facilityId, periodId, programId) {
             return resource.buildDraft({
-                facility: facilityId,
-                period: periodId,
-                program: programId
-            }).$promise;
+                facilityId: facilityId,
+                periodId: periodId,
+                programId: programId
+            }).$promise.then(function(requisition) {
+                requisition.$modified = false;
+                requisition.$availableOffline = true;
+                requisition.extraData.isSaved = true;
+                requisitionCacheService.cacheRequisition(requisition);
+                return prepareRequisition(requisition);
+            });
         }
 
         /**
@@ -567,7 +573,7 @@
         function prepareRequisition(requisitionFromServer) {
             var offlineRequisition = getOfflineRequisition(requisitionFromServer.id);
             var requisition;
-            if (offlineRequisition) {
+            if (requisitionFromServer.id && offlineRequisition) {
                 requisition = angular.copy(offlineRequisition);
                 // template, age group should from server
                 requisition.template = requisitionFromServer.template;
