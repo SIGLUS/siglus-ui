@@ -32,6 +32,19 @@
 
     function addAndRemoveLineItemService($filter, SiglusLocationCommonUtilsService) {
 
+        this.addLineItem = addLineItem;
+        this.addLineItemForVirtual = addLineItemForVirtual;
+        this.removeItem = removeItem;
+        this.getMainGroupRow = getMainGroupRow;
+        this.getMainGroupRowForPod = getMainGroupRowForPod;
+        this.getAddProductRow = getAddProductRow;
+        this.prepareAddedLineItems = prepareAddedLineItems;
+        this.prepareAddedLineItemsForVirtual = prepareAddedLineItemsForVirtual;
+        this.fillMovementOptions = fillMovementOptions;
+        this.prepareLineItemsForPod = prepareLineItemsForPod;
+        this.addItemForPod = addItemForPod;
+        this.removeItemForPod = removeItemForPod;
+
         function getRowTemplateData(lineItem) {
             return  {
                 $error: _.clone(lineItem.$error),
@@ -101,15 +114,15 @@
             lineItem.isFirst = false;
         }
 
-        this.addLineItem = function(lineItem, lineItems) {
+        function addLineItem(lineItem, lineItems) {
             if (lineItems.length === 1) {
                 addRow(lineItem, lineItems);
                 resetFirstRow(lineItem);
             }
             addRow(lineItem, lineItems);
-        };
+        }
 
-        this.addLineItemForVirtual = function(lineItem, lineItems, index) {
+        function addLineItemForVirtual(lineItem, lineItems, index) {
             var copied = angular.copy(lineItem);
             if (lineItems.length === 1) {
                 addRow(copied, lineItems);
@@ -117,9 +130,9 @@
                 resetFirstRow(lineItem);
             }
             lineItems.splice(index === 0 ?  2 : ++index, 0, getRowTemplateDataForVirtualMovement(copied));
-        };
+        }
 
-        this.removeItem = function(lineItems, index) {
+        function removeItem(lineItems, index) {
             if (lineItems.length === 1) {
                 lineItems.splice(0, 1);
             } else if (lineItems.length === 3) {
@@ -132,9 +145,9 @@
             } else if (lineItems.length > 3) {
                 lineItems.splice(index, 1);
             }
-        };
+        }
 
-        this.getMainGroupRow = function(lineItem) {
+        function getMainGroupRow(lineItem) {
             return {
                 $error: {},
                 orderableId: lineItem.orderableId,
@@ -148,9 +161,9 @@
                 moveTo: null,
                 quantity: 0
             };
-        };
+        }
 
-        this.getMainGroupRowForPod = function(lineItem) {
+        function getMainGroupRowForPod(lineItem) {
             return {
                 $error: {},
                 id: lineItem.id,
@@ -169,9 +182,9 @@
                 useVvm: lineItem.useVvm,
                 vvmStatus: lineItem.vvmStatus
             };
-        };
+        }
 
-        this.getAddProductRow = function(product) {
+        function getAddProductRow(product) {
             return {
                 $error: {},
                 orderableId: product.orderableId,
@@ -186,7 +199,7 @@
                 moveTo: null,
                 quantity: 0
             };
-        };
+        }
 
         function updateStockOnHand(locations, lineItem) {
             var stockOnHand = 0;
@@ -245,7 +258,7 @@
             });
         }
 
-        this.prepareAddedLineItems = function(draftInfo, locations,  productList) {
+        function prepareAddedLineItems(draftInfo, locations,  productList) {
             var $this = this;
             return _.chain(_.get(draftInfo, 'lineItems', []))
                 .groupBy('orderableId')
@@ -263,9 +276,9 @@
 
                 })
                 .value();
-        };
+        }
 
-        this.prepareAddedLineItemsForVirtual = function(draftInfo, locations,  productList) {
+        function prepareAddedLineItemsForVirtual(draftInfo, locations,  productList) {
             var $this = this;
             var sortedByProductCode = _.chain(_.get(draftInfo, 'lineItems', [])).sort(function(i1, i2) {
                 return _.get(i1, 'productCode', '').localeCompare(_.get(i2, 'productCode', ''));
@@ -300,9 +313,9 @@
 
                 })
                 .value();
-        };
+        }
 
-        this.fillMovementOptions = function(lineItem, locations, areaLocationInfo) {
+        function fillMovementOptions(lineItem, locations, areaLocationInfo) {
             if (!lineItem.lotCodeOptions) {
                 lineItem.lotCodeOptions = SiglusLocationCommonUtilsService.getLotList(
                     lineItem,
@@ -323,9 +336,9 @@
                 lineItem.destAreaOptions = SiglusLocationCommonUtilsService
                     .getDesAreaList(lineItem, areaLocationInfo);
             }
-        };
+        }
 
-        this.prepareLineItemsForPod = function(orderLineItems) {
+        function prepareLineItemsForPod(orderLineItems) {
             var that = this;
             return orderLineItems.map(function(orderLineItem) {
                 var allLineItems = _.flatten(_.get(orderLineItem, 'groupedLineItems', []));
@@ -349,9 +362,9 @@
 
                 return orderLineItem;
             });
-        };
+        }
 
-        this.addItemForPod = function(lineItem, index, groupedLineItems) {
+        function addItemForPod(lineItem, index, groupedLineItems) {
             var copy = angular.copy(lineItem);
             if (lineItem.isFirst) {
                 var mainGroupRow = getRowTemplateDataForPod(copy);
@@ -360,12 +373,10 @@
                 lineItem.isFirst = false;
                 lineItem.quantityRejected = undefined;
             }
-            var count = groupedLineItems.filter(function(line) {
-                return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
-            }).length;
-            groupedLineItems.splice(index + count, 0, getRowTemplateDataForPod(copy));
-        };
-        this.removeItemForPod = function(lineItem, index, groupedLineItems) {
+            groupedLineItems.push(getRowTemplateDataForPod(copy));
+        }
+
+        function removeItemForPod(lineItem, index, groupedLineItems) {
             var count = groupedLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
             }).length;
@@ -377,7 +388,7 @@
                 groupedLineItems[mainGroupIndex + 1].isFirst = true;
                 groupedLineItems.splice(mainGroupIndex, 1);
             }
-        };
+        }
     }
 
 })();

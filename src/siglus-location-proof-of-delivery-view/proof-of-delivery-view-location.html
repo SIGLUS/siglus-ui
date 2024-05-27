@@ -257,14 +257,14 @@
             <button style="padding: 8px;"
                     ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst"
                     class="stock-actions add add-item"
-                    ng-click="vm.addItemForPod(fulfillingLineItem, index, orderLineItem.groupedLineItems)">
+                    ng-click="vm.addLocationItem(index, orderLineItem.groupedLineItems)">
               {{'locationMovement.addLocation' | message}}
             </button>
             <input type="button"
                    value="{{'stockPhysicalInventoryDraft.remove' | message}}"
                    ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"
                    class="danger stock-actions"
-                   ng-click="vm.removeItemForPod(fulfillingLineItem, index, orderLineItem.groupedLineItems)">
+                   ng-click="vm.removeLocationItem(index, orderLineItem.groupedLineItems)">
 
           </td>
           <!-- action button end -->
@@ -344,19 +344,6 @@
   </div>
 </div>
 <!-- SIGLUS-REFACTOR: ends here -->
-
-<!-- <div class="openlmis-toolbar button-group" ng-show="vm.canEdit">
-    #462: add back to previous button
-    <siglus-go-back />
-    #462: ends here
-    <button ng-click="vm.proofOfDelivery.save()">{{'proofOfDeliveryView.save' | message}}</button>
-    <button type="submit" class="primary" form="proof-of-delivery-form">{{'proofOfDeliveryView.confirm.label' | message}}</button>
-</div> -->
-<!-- #462: add back to previous button
-<div class="openlmis-toolbar button-group" ng-if="!vm.canEdit">
-    <siglus-go-back />
-</div>
- #462: ends here -->
 
 <siglus-print-pallet-label line-items="vm.printLineItems" print-type="'pod'"
                            pod-file-name="vm.fileName" facility-name="vm.order.facility.name">

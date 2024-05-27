@@ -78,6 +78,8 @@
         vm.fileName = undefined;
         vm.disableReasonSelect = disableReasonSelect;
         vm.getLineItemReasonOptions = getLineItemReasonOptions;
+        vm.addLocationItem = addLocationItem;
+        vm.removeLocationItem = removeLocationItem;
 
         /**
          * @ngdoc property
@@ -328,18 +330,11 @@
                 }, 0);
         };
 
-        vm.addItemForPod = function(lineItem, index, groupedLineItems) {
-            $scope.needToConfirm = true;
-            addAndRemoveLineItemService.addItemForPod(lineItem, index, groupedLineItems);
-            groupedLineItems.forEach(function(line) {
-                addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
-            });
-        };
-
-        vm.removeItemForPod = function(lineItem, index, groupedLineItems) {
+        function removeLocationItem(index, groupedLineItems) {
+            var lineItem = groupedLineItems[index];
             $scope.needToConfirm = true;
             addAndRemoveLineItemService.removeItemForPod(lineItem, index, groupedLineItems);
-        };
+        }
 
         vm.changeArea = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
@@ -835,6 +830,14 @@
                 return vm.rejectionReasons;
             }
             return [];
+        }
+
+        function addLocationItem(index, groupedLineItems) {
+            $scope.needToConfirm = true;
+            addAndRemoveLineItemService.addItemForPod(groupedLineItems[index], index, groupedLineItems);
+            groupedLineItems.forEach(function(line) {
+                addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
+            });
         }
 
     }
