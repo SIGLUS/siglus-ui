@@ -194,8 +194,7 @@
           <!-- cell for adjustment reason -->
           <td ng-if="vm.canEdit">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
-                    ng-options="reason.id as reason.name for reason in
-                      (fulfillingLineItem.isNewlyAdded ? vm.newlyAddedLotReasonOptions : vm.getLineItemReasonOptions(fulfillingLineItem))"
+                    ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem)"
                     openlmis-invalid="{{fulfillingLineItem.validate().rejectionReasonId | message}}"
                     ng-disabled="vm.disableReasonSelect(fulfillingLineItem)">
             </select>

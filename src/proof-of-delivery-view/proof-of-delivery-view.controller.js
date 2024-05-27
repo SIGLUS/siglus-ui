@@ -75,7 +75,7 @@
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
         vm.minDate = undefined;
-        vm.newlyAddedLotReasonOptions = undefined;
+        vm.newlyAddedLotReason = undefined;
 
         /**
      * @ngdoc property
@@ -167,9 +167,9 @@
             vm.excessReasons = _.filter(vm.reasons, function(reason) {
                 return reason.reasonType === 'CREDIT';
             });
-            vm.newlyAddedLotReasonOptions = _.filter(vm.excessReasons, function(reason) {
+            vm.newlyAddedLotReason = vm.excessReasons.find(function(reason) {
                 return reason.name === NEWLY_ADDED_LOT_REASON_NAME;
-            });
+            }, {});
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
             vm.orderLineItems = orderLineItems;
@@ -425,6 +425,9 @@
         }
 
         function getLineItemReasonOptions(lineItem) {
+            if (lineItem.isNewlyAdded) {
+                return [vm.newlyAddedLotReason];
+            }
             if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted > lineItem.quantityShipped) {
                 return vm.excessReasons;
             } else if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted < lineItem.quantityShipped) {
@@ -449,7 +452,7 @@
                 quantityAccepted: 0,
                 quantityRejected: 0,
                 isNewlyAdded: true,
-                rejectionReasonId: vm.newlyAddedLotReasonOptions[0].id,
+                rejectionReasonId: vm.newlyAddedLotReason.id,
                 lot: newlyAddedLot
             }));
         }
