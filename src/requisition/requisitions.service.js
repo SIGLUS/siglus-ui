@@ -213,6 +213,9 @@
          * @return {Promise}    requisition promise
          */
         function getWithoutStatusMessages(id) {
+            if (id === '00000000-0000-0000-0000-000000000000') {
+                return getOfflineRequisition(id);
+            }
             return getRequisition(id).then(function(requisition) {
                 filterRequisitionStockAdjustmentReasons(requisition);
                 return extendLineItemsWithOrderablesAndFtaps(requisition);
@@ -571,8 +574,7 @@
             }
         }
 
-        function
-        prepareRequisition(requisitionFromServer) {
+        function prepareRequisition(requisitionFromServer) {
             var offlineRequisition = getOfflineRequisition(requisitionFromServer.id);
             var requisition;
             if (requisitionFromServer.id && offlineRequisition) {

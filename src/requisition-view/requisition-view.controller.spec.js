@@ -109,6 +109,7 @@ describe('RequisitionViewController', function() {
         this.canDelete = true;
         this.canSkip = true;
         this.canSync = true;
+        this.isCreateForClient = false;
 
         spyOn(this.stateTrackerService, 'goToPreviousState');
         spyOn(this.notificationService, 'success');
@@ -838,7 +839,8 @@ describe('RequisitionViewController', function() {
             canApproveAndReject: this.canApproveAndReject,
             canDelete: this.canDelete,
             canSkip: this.canSkip,
-            canSync: this.canSync
+            canSync: this.canSync,
+            isCreateForClient: this.isCreateForClient
         });
         this.vm.$onInit();
     }

@@ -35,7 +35,8 @@
         'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize',
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
-        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient'
+        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient',
+        'requisitionCacheService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +47,7 @@
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       siglusSignatureModalService, isCreateForClient) {
+                                       siglusSignatureModalService, isCreateForClient, requisitionCacheService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -352,7 +353,10 @@
          * indicates a version conflict.
          */
         function syncRnrAndPrint() {
-            var status = vm.requisition.status;
+            if (vm.isCreateForClient) {
+                requisitionCacheService.cacheRequisition(vm.requisition);
+            }
+            var status = vm.isCreateForClient ? 'APPROVED' : vm.requisition.status;
             if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
                 || status === 'RELEASED_WITHOUT_ORDER') {
                 var programCodeToReportNameMap = {

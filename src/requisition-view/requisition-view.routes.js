@@ -55,8 +55,8 @@
                         return requisitionService.setOrderableUnitForRequisition(requisition);
                     });
                 },
-                isCreateForClient: function(requisition) {
-                    return !requisition.id;
+                isCreateForClient: function($stateParams, requisition) {
+                    return requisition.id !== $stateParams.rnr;
                 },
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);

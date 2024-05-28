@@ -133,6 +133,7 @@ describe('ViewTabController', function() {
         this.hasAuthorizeRight = false;
         // SIGLUS-REFACTOR: ends here
         this.canApproveAndReject = true;
+        this.isCreateForClient = false;
 
         spyOn(this.alertService, 'error');
         spyOn(this.selectProductsModalService, 'show');
@@ -1091,7 +1092,8 @@ describe('ViewTabController', function() {
             // #375: create requisition with test consumption section
             $scope: this.$scope,
             program: this.program,
-            canSync: this.canSync
+            canSync: this.canSync,
+            isCreateForClient: this.isCreateForClient
             // #375: ends here
         });
         this.vm.$onInit();
