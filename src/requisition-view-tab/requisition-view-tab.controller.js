@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
         'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync',
-        '$state'
+        '$state', 'isCreateForClient'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -45,7 +45,8 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
-                               program, $scope, notificationService, offlineService, canSync, $state) {
+                               program, $scope, notificationService, offlineService, canSync, $state,
+                               isCreateForClient) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -159,6 +160,10 @@
         vm.keyword = $stateParams.keyword;
         vm.search = function() {
             $stateParams.keyword = vm.keyword;
+            if (isCreateForClient) {
+                refreshLineItems();
+                return;
+            }
             $state.go($state.current.name, $stateParams, {
                 reload: true
             });
@@ -174,8 +179,20 @@
             vm.lineItems = lineItems;
             vm.items = items;
             vm.requisition = requisition;
-            vm.columns = columns;
-            vm.userCanEdit = canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
+            vm.columns = angular.copy(columns);
+            if (isCreateForClient) {
+                vm.columns = vm.columns.filter(function(column) {
+                    return column.name !== 'expirationDate';
+                });
+                vm.columns.forEach(function(column) {
+                    if (column.source === 'STOCK_CARDS') {
+                        column.source = 'USER_INPUT';
+                    }
+                });
+            }
+            vm.userCanEdit = isCreateForClient ||
+                canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
+            vm.showAddProducts = isCreateForClient || canSync;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
             vm.showAddNonFullSupplyProductsButton = showAddNonFullSupplyProductsButton();
             vm.showUnskipFullSupplyProductsButton = showUnskipFullSupplyProductsButton();
@@ -241,6 +258,9 @@
          * @return {Boolean} true if the delete column should be displayed, false otherwise
          */
         function showDeleteColumn() {
+            if (isCreateForClient) {
+                return true;
+            }
             return !fullSupply &&
                 vm.userCanEdit &&
                 hasDeletableLineItems();
@@ -387,6 +407,16 @@
 
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(selectedProducts) {
+            if (isCreateForClient) {
+                selectedProducts.forEach(function(product) {
+                    var orderable = {
+                        orderable: product
+                    };
+                    var lineItem = vm.requisition.addProductLineItem(orderable);
+                    lineItem.$program.fullSupply = false;
+                });
+                return;
+            }
             var ids = selectedProducts.map(function(product) {
                 return product.id;
             });
@@ -441,6 +471,10 @@
         }
 
         function refreshLineItems() {
+            if (isCreateForClient) {
+                vm.lineItems = filterAddedProducts();
+                return;
+            }
             var filterObject = (fullSupply &&
                 vm.requisition.template.hasSkipColumn() &&
                 vm.requisition.template.hideSkippedLineItems()) ?
@@ -540,6 +574,17 @@
             return fullSupply ?
                 'requisitionViewTab.noFullSupplyProducts' :
                 'requisitionViewTab.noNonFullSupplyProducts';
+        }
+
+        function filterAddedProducts() {
+            if (vm.keyword) {
+                var searchText = vm.keyword.toLowerCase();
+                return vm.requisition.requisitionLineItems.filter(function(product) {
+                    return String(product.orderable.productCode.toLowerCase()).includes(searchText)
+                        || String(product.orderable.fullProductName.toLowerCase()).includes(searchText);
+                });
+            }
+            return vm.requisition.requisitionLineItems;
         }
     }
 

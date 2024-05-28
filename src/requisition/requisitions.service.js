@@ -267,6 +267,7 @@
                 programId: programId
             }).$promise.then(function(requisition) {
                 requisition.$modified = false;
+                requisition.$isEditable = true;
                 requisition.$availableOffline = true;
                 requisition.extraData.isSaved = true;
                 requisitionCacheService.cacheRequisition(requisition);
@@ -570,7 +571,8 @@
             }
         }
 
-        function prepareRequisition(requisitionFromServer) {
+        function
+        prepareRequisition(requisitionFromServer) {
             var offlineRequisition = getOfflineRequisition(requisitionFromServer.id);
             var requisition;
             if (requisitionFromServer.id && offlineRequisition) {

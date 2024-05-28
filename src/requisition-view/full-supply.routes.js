@@ -72,9 +72,14 @@
                         ]);
                     },
                     items: function(paginationService, lineItems, $stateParams, requisitionValidator,
-                        paginationFactory) {
+                        paginationFactory, isCreateForClient) {
+                        var paginationParams = {
+                            fullSupplyListPage: $stateParams.fullSupplyListPage,
+                            fullSupplyListSize: isCreateForClient
+                                ? Number.MAX_SAFE_INTEGER : $stateParams.fullSupplyListSize
+                        };
                         return paginationService.registerList(
-                            requisitionValidator.isLineItemValid, $stateParams, function(params) {
+                            requisitionValidator.isLineItemValid, paginationParams, function(params) {
                                 return paginationFactory.getPage(lineItems, parseInt(params.page),
                                     parseInt(params.size));
                             }, {

@@ -51,8 +51,12 @@
                     }
                     return requisitionService.buildDraftWithoutSaving($stateParams.facility,
                         $stateParams.period, $stateParams.program).then(function(requisition) {
+                        requisition.$isEditable = true;
                         return requisitionService.setOrderableUnitForRequisition(requisition);
                     });
+                },
+                isCreateForClient: function(requisition) {
+                    return !requisition.id;
                 },
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);
@@ -63,8 +67,8 @@
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
                 },
-                canSubmit: function(requisitionViewFactory, user, requisition) {
-                    return requisitionViewFactory.canSubmit(user.id, requisition);
+                canSubmit: function(requisitionViewFactory, user, requisition, isCreateForClient) {
+                    return isCreateForClient || requisitionViewFactory.canSubmit(user.id, requisition);
                 },
                 // SIGLUS-REFACTOR: starts here
                 canSubmitAndAuthorize: function(requisitionViewFactory, user, requisition) {
@@ -91,7 +95,10 @@
                 canSkip: function(requisitionViewFactory, user, requisition, program) {
                     return requisitionViewFactory.canSkip(user.id, requisition, program);
                 },
-                canSync: function(canSubmit, canAuthorize, canApproveAndReject) {
+                canSync: function(canSubmit, canAuthorize, canApproveAndReject, isCreateForClient) {
+                    if (isCreateForClient) {
+                        return false;
+                    }
                     return canSubmit || canAuthorize || canApproveAndReject;
                 }
             }

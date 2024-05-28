@@ -35,7 +35,7 @@
         'RequisitionStockCountDateModal', 'localStorageFactory', 'canSubmit', 'canAuthorize',
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
-        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService'
+        'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       siglusSignatureModalService) {
+                                       siglusSignatureModalService, isCreateForClient) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -217,6 +217,7 @@
          * Flag defining whether current user should see the sync to server button.
          */
         vm.displaySyncButton = undefined;
+        vm.isCreateForClient = undefined;
 
         // Functions
         vm.$onInit = onInit;
@@ -268,6 +269,11 @@
                 watcher.disableWatcher();
             }
             // SIGLUS-REFACTOR: ends here
+            vm.isCreateForClient = isCreateForClient;
+            if (isCreateForClient) {
+                vm.commentsRequired = false;
+                vm.forceOpen = false;
+            }
         }
 
         function setTypeAndClass() {
