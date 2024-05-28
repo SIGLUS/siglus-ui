@@ -1395,6 +1395,7 @@
   "proofOfDeliveryView.Actions": "Acções",
   "proofOfDeliveryView.addItem": "Adicionar Item",
   "proofOfDeliveryView.remove": "Eliminar",
+  "proofOfDeliveryView.removeLot": "Eliminar Lote",
   "proofOfDeliveryView.lotCodeRequired": "Código do lote é obrigatório",
   "proofOfDeliveryView.expirationDateRequired": "Prazo de validade é obrigatório",
   "proofOfDeliveryView.lotCodeDuplicate": "O lote já foi usado, por favor de introduzir um novo lote",

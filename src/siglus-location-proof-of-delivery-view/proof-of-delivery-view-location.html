@@ -71,7 +71,7 @@
         </tr>
       </thead>
 
-      <tbody ng-repeat="orderLineItem in vm.orderLineItems">
+      <tbody ng-repeat="orderLineItem in vm.displayOrderLineItems">
         <tr class="is-secondary">
           <td>{{orderLineItem.orderable.productCode}}</td>
           <td class="white-space-pre">{{orderLineItem.orderable.fullProductName}}</td>
@@ -91,10 +91,16 @@
           <td></td>
           <td></td>
           <td></td>
-          <td ng-if="vm.canEdit"></td>
+          <td ng-if="vm.canEdit">
+            <button type="button" class="stock-actions add" ng-click="vm.addLotGroup(orderLineItem.groupedLineItems)">
+              {{'proofOfDeliveryView.addItem' | message}}
+            </button>
+          </td>
         </tr>
 
-        <tr ng-repeat="(index, fulfillingLineItem) in orderLineItem.groupedLineItems" ng-repeat-end>
+        <tr ng-repeat-start="(lotGroupIndex, locationGroupLineItems) in orderLineItem.groupedLineItems"></tr>
+
+        <tr ng-repeat="(index, fulfillingLineItem) in locationGroupLineItems" ng-repeat-end>
           <!-- FNM / product code -->
           <td></td>
           <!-- FNM / product code end -->
@@ -104,18 +110,33 @@
           <!-- product name end -->
 
           <!-- lot code -->
-          <td ng-if="!fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="!fulfillingLineItem.isNewlyAddedLot && !fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{fulfillingLineItem.lot | lotCode}}
           </td>
           <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
+          <td ng-if="fulfillingLineItem.isNewlyAddedLot && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+            <siglus-stock-input-select
+                    line-item="fulfillingLineItem"
+                    line-items="orderLineItem.groupedLineItems"
+                    index="lotGroupIndex"
+                    enable-input="true">
+            </siglus-stock-input-select>
+          </td>
           <!-- lot code end -->
 
           <!-- expiration date -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
-          <td ng-if="!fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="!fulfillingLineItem.isNewlyAddedLot && !fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{fulfillingLineItem.lot.expirationDate}}
           </td>
           <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
+          <td ng-if="fulfillingLineItem.isNewlyAddedLot && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+              style="min-width: 120px;">
+            <input type="date"
+                   ng-model="fulfillingLineItem.lot.expirationDate"
+                   ng-required="true"
+            />
+          </td>
           <!-- #400: ends here -->
           <!-- expiration date end -->
 
@@ -154,10 +175,10 @@
                   ng-model="fulfillingLineItem.moveTo.area"
                   openlmis-invalid="{{fulfillingLineItem.$error.areaError | message}}"
                   ng-options="area for area in fulfillingLineItem.destAreaOptions track by area"
-                  ng-change="vm.changeArea(fulfillingLineItem, orderLineItem.groupedLineItems)">
+                  ng-change="vm.changeArea(fulfillingLineItem, locationGroupLineItems)">
               </select>
               <siglus-location-select line-item="fulfillingLineItem"
-                                      line-items="orderLineItem.groupedLineItems"
+                                      line-items="locationGroupLineItems"
                                       area-location-info="vm.areaLocationInfo"></siglus-location-select>
             </div>
           </td>
@@ -167,15 +188,15 @@
           <td ng-if="vm.canEdit && (!fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             <input positive-integer
                    ng-model="fulfillingLineItem.quantityAccepted"
-                   ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)"
+                   ng-change="vm.changeAcceptQuantity(fulfillingLineItem, locationGroupLineItems)"
                    openlmis-invalid="{{fulfillingLineItem.$error.quantityAcceptedError | message}}"
             />
           </td>
           <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)">
-            {{vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems)}}
+            {{vm.getSumOfLot(fulfillingLineItem, locationGroupLineItems)}}
           </td>
           <td ng-if="!vm.canEdit && fulfillingLineItem.isMainGroup">
-            {{vm.getSumOfLot(fulfillingLineItem, orderLineItem.groupedLineItems)}}
+            {{vm.getSumOfLot(fulfillingLineItem, locationGroupLineItems)}}
           </td>
           <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup">
             {{fulfillingLineItem.quantityAccepted}}
@@ -200,7 +221,7 @@
 
           <!-- rejected quantity -->
           <td ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst">
-            {{vm.getRejectedQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)}}
+            {{vm.getRejectedQuantity(fulfillingLineItem, locationGroupLineItems)}}
           </td>
           <td ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"></td>
           <!-- rejected quantity end -->
@@ -208,10 +229,10 @@
           <!-- reason -->
           <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
-                    ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem, orderLineItem.groupedLineItems)"
+                    ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem, locationGroupLineItems)"
                     openlmis-invalid="{{fulfillingLineItem.$error.rejectionReasonIdError | message}}"
-                    ng-disabled="vm.disableReasonSelect(fulfillingLineItem, orderLineItem.groupedLineItems)"
-                    ng-change="vm.changeAcceptQuantity(fulfillingLineItem, orderLineItem.groupedLineItems)">
+                    ng-disabled="vm.disableReasonSelect(fulfillingLineItem, locationGroupLineItems)"
+                    ng-change="vm.changeAcceptQuantity(fulfillingLineItem, locationGroupLineItems)">
             </select>
           </td>
           <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst">
@@ -224,22 +245,17 @@
           <!-- reason end -->
 
           <!-- price -->
-          <td ng-if="(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="!fulfillingLineItem.isNewlyAddedLot && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{ fulfillingLineItem.price }}
           </td>
-          <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+          <td ng-if="fulfillingLineItem.isNewlyAddedLot || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
           <!-- price end -->
 
           <!-- value -->
-          <td ng-if="(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
-            {{
-            fulfillingLineItem.price ?
-                (fulfillingLineItem.quantityShipped * (fulfillingLineItem.price * 100).toFixed(2))
-                / 100 :
-                ''
-            }}
+          <td ng-if="!fulfillingLineItem.isNewlyAddedLot && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+            {{ vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
           </td>
-          <td ng-if="!(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"></td>
+          <td ng-if="fulfillingLineItem.isNewlyAddedLot || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
           <!-- value end -->
 
           <!-- notes -->
@@ -254,18 +270,21 @@
 
           <!-- action button -->
           <td ng-if="vm.canEdit">
-            <button style="padding: 8px;"
+            <button style="padding: 8px;"  class="stock-actions add add-item"
                     ng-if="fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst"
-                    class="stock-actions add add-item"
-                    ng-click="vm.addLocationItem(index, orderLineItem.groupedLineItems)">
+                    ng-click="vm.addLocationItem(index, locationGroupLineItems)">
               {{'locationMovement.addLocation' | message}}
             </button>
             <input type="button"
                    value="{{'stockPhysicalInventoryDraft.remove' | message}}"
                    ng-if="!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst"
                    class="danger stock-actions"
-                   ng-click="vm.removeLocationItem(index, orderLineItem.groupedLineItems)">
-
+                   ng-click="vm.removeLocationItem(index, locationGroupLineItems)">
+            <button type="button" class="danger stock-actions"
+                    ng-if="fulfillingLineItem.isNewlyAddedLot && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+                    ng-click="vm.removeLotGroup(lotGroupIndex, orderLineItem.groupedLineItems)">
+              {{'proofOfDeliveryView.removeLot' | message}}
+            </button>
           </td>
           <!-- action button end -->
         </tr>

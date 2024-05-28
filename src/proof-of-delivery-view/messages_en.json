@@ -22,6 +22,7 @@
   "proofOfDeliveryView.actions": "Actions",
   "proofOfDeliveryView.addItem": "Add Item",
   "proofOfDeliveryView.remove": "Remove",
+  "proofOfDeliveryView.removeLot": "Remove Lot",
   "proofOfDeliveryView.lotCodeRequired": "Lot Code is required",
   "proofOfDeliveryView.expirationDateRequired": "Expiration Date is required",
   "proofOfDeliveryView.lotCodeDuplicate": "The lot code has been used, please enter a new lot",

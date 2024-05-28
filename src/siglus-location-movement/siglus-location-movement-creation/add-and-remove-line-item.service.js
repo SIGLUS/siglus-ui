@@ -44,6 +44,7 @@
         this.prepareLineItemsForPod = prepareLineItemsForPod;
         this.addItemForPod = addItemForPod;
         this.removeItemForPod = removeItemForPod;
+        this.getFirstLineItemForPodLocationGroup = getFirstLineItemForPodLocationGroup;
 
         function getRowTemplateData(lineItem) {
             return  {
@@ -78,24 +79,44 @@
             };
         }
 
-        // TODO
         function getRowTemplateDataForPod(lineItem) {
-            return  {
+            return _.assign({}, lineItem, {
                 $error: {},
-                id: lineItem.id,
                 orderable: _.clone(lineItem.orderable),
                 lot: _.clone(lineItem.lot),
-                isKit: lineItem.isKit,
                 isMainGroup: false,
-                stockOnHand: lineItem.stockOnHand,
+                quantityAccepted: 0,
+                isFirst: false,
+                moveTo: {}
+            });
+        }
+
+        function getFirstLineItemForPodLocationGroup(lineItemTemplate, reasonId) {
+            var lotTemplate = angular.copy(lineItemTemplate.lot);
+            var lotForFirstLineItem = _.assign({}, lotTemplate, {
+                id: undefined,
+                lotCode: null,
+                expirationDate: null,
+                manufactureDate: undefined
+            });
+            return _.assign({}, lineItemTemplate, {
+                $error: {},
+                // for siglus-stock-input-select component
+                $errors: {},
+                id: undefined,
+                orderable: _.clone(lineItemTemplate.orderable),
+                lot: lotForFirstLineItem,
+                isMainGroup: false,
+                isFirst: true,
+                isNewlyAddedLot: true,
                 moveTo: {},
-                quantity: lineItem.quantity,
-                notes: lineItem.notes,
-                quantityShipped: lineItem.quantityShipped,
-                useVvm: lineItem.useVvm,
-                vvmStatus: lineItem.vvmStatus,
-                price: lineItem.price
-            };
+                notes: null,
+                quantity: lineItemTemplate.quantity,
+                quantityShipped: 0,
+                quantityAccepted: 0,
+                quantityRejected: 0,
+                rejectionReasonId: reasonId
+            });
         }
 
         function addRow(tableLineItem, lineItems) {
@@ -365,15 +386,16 @@
         }
 
         function addItemForPod(lineItem, index, groupedLineItems) {
-            var copy = angular.copy(lineItem);
+            var lineItemTemplate = getRowTemplateDataForPod(angular.copy(lineItem));
             if (lineItem.isFirst) {
-                var mainGroupRow = getRowTemplateDataForPod(copy);
-                mainGroupRow.isMainGroup = true;
+                var mainGroupRow = _.assign({}, lineItemTemplate, {
+                    isMainGroup: true
+                });
                 groupedLineItems.splice(index, 0, mainGroupRow);
                 lineItem.isFirst = false;
                 lineItem.quantityRejected = undefined;
             }
-            groupedLineItems.push(getRowTemplateDataForPod(copy));
+            groupedLineItems.push(lineItemTemplate);
         }
 
         function removeItemForPod(lineItem, index, groupedLineItems) {

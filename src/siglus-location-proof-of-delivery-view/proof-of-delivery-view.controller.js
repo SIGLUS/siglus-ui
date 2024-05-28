@@ -63,6 +63,8 @@
         }
         var vm = this;
 
+        var NEWLY_ADDED_LOT_REASON_NAME = 'Lote não especificado na Guia de Remessa';
+
         vm.$onInit = onInit;
         vm.getStatusDisplayName = getStatusDisplayName;
         vm.getReasonName = getReasonName;
@@ -70,16 +72,21 @@
         vm.submit = submit;
         vm.deleteDraft = deleteDraft;
         vm.returnBack = returnBack;
+        vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
         vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
         vm.minDate = undefined;
         vm.fileName = undefined;
+        vm.newlyAddedLotReason = undefined;
         vm.disableReasonSelect = disableReasonSelect;
         vm.getLineItemReasonOptions = getLineItemReasonOptions;
         vm.addLocationItem = addLocationItem;
         vm.removeLocationItem = removeLocationItem;
+        vm.addLotGroup = addLotGroup;
+        vm.removeLotGroup = removeLotGroup;
+        vm.displayOrderLineItems = undefined;
 
         /**
          * @ngdoc property
@@ -171,6 +178,9 @@
             vm.excessReasons = _.filter(vm.reasons, function(reason) {
                 return reason.reasonType === 'CREDIT';
             });
+            vm.newlyAddedLotReason = vm.excessReasons.find(function(reason) {
+                return reason.name === NEWLY_ADDED_LOT_REASON_NAME;
+            }, {});
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
 
@@ -212,6 +222,7 @@
             });
 
             vm.orderLineItems = orderLineItems;
+            vm.displayOrderLineItems = buildDisplayOrderLineItems();
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;
@@ -309,7 +320,7 @@
         }
 
         vm.getSumOfOrderableAcceptedQuantity = function(groupedLineItems) {
-            return groupedLineItems.filter(function(lineItem) {
+            return groupedLineItems[0].filter(function(lineItem) {
                 return !lineItem.isMainGroup;
             })
                 .map(function(line) {
@@ -320,7 +331,7 @@
                 }, 0);
         };
         vm.getSumOfQuantityShipped = function(groupedLineItems) {
-            return groupedLineItems.filter(function(lineItem) {
+            return groupedLineItems[0].filter(function(lineItem) {
                 return lineItem.isMainGroup || lineItem.isFirst;
             }).map(function(line) {
                 return _.get(line, 'quantityShipped', 0);
@@ -459,7 +470,7 @@
 
             var relatedLines = getRelatedLines(lineItem, groupedLineItems);
             var emptyAcceptedLine = getFirstEmptyAcceptedLine(relatedLines);
-            var mainLine = getMainLine(lineItem, relatedLines);
+            var mainLine = lineItem.isFirst ? lineItem : getMainLine(lineItem, relatedLines);
 
             if (emptyAcceptedLine) {
                 emptyAcceptedLine.$error.quantityAcceptedError = 'openlmisForm.required';
@@ -476,7 +487,8 @@
         }
 
         function setReasonSelectDisabled(mainLine) {
-            mainLine.rejectionReasonId = undefined;
+
+            mainLine.rejectionReasonId = mainLine.isNewlyAddedLot ? vm.newlyAddedLotReason.id : undefined;
             mainLine.$error.rejectionReasonIdError = '';
         }
 
@@ -811,18 +823,27 @@
             }
         }
 
+        function calculateValueByShippedQuantityAndPrice(lineItem) {
+            return _.get(lineItem, ['price']) ?
+                (lineItem.quantityShipped * (lineItem.price * 100).toFixed(2)) / 100 : '';
+        }
+
         function disableReasonSelect(lineItem, groupedLineItems) {
             var relatedLines = getRelatedLines(lineItem, groupedLineItems);
             var emptyAcceptedLine = getFirstEmptyAcceptedLine(relatedLines);
             return emptyAcceptedLine !== undefined ||
-                getSumOfLot(lineItem, groupedLineItems) === lineItem.quantityShipped;
+                getSumOfLot(lineItem, groupedLineItems) === lineItem.quantityShipped || lineItem.isNewlyAddedLot;
         }
 
         function getLineItemReasonOptions(lineItem, groupedLineItems) {
+            if (lineItem.isNewlyAddedLot) {
+                return [vm.newlyAddedLotReason];
+            }
+
             var sumOfLot = getSumOfLot(lineItem, groupedLineItems);
             var relatedLines = getRelatedLines(lineItem, groupedLineItems);
             var mainLine = getMainLine(lineItem, relatedLines);
-            var quantityShipped = mainLine.quantityShipped;
+            var quantityShipped = _.get(mainLine, ['quantityShipped'], 0);
 
             if (sumOfLot > quantityShipped) {
                 return vm.excessReasons;
@@ -838,6 +859,67 @@
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
             });
+        }
+
+        function addLotGroup(lotGroupLineItems) {
+            $scope.needToConfirm = true;
+            var lineItemTemplate = angular.copy(lotGroupLineItems[0][0]);
+            var lineItemToAdd = addAndRemoveLineItemService.getFirstLineItemForPodLocationGroup(
+                lineItemTemplate, vm.newlyAddedLotReason.id
+            );
+            lotGroupLineItems.push([lineItemToAdd]);
+        }
+
+        function removeLotGroup(lotIndex, lotGroup) {
+            lotGroup.splice(lotIndex, 1);
+        }
+
+        function buildDisplayOrderLineItems() {
+            var orderLineItemsCopy = angular.copy(vm.orderLineItems);
+            orderLineItemsCopy.forEach(function(orderLineItem) {
+                var locationLineItems = angular.copy(orderLineItem.groupedLineItems);
+                orderLineItem.groupedLineItems = [locationLineItems];
+            });
+            return orderLineItemsCopy;
+        }
+
+        $scope.$on('lotCodeChange', function(event, data) {
+            var lineItem = data.lineItem;
+            var lotGroup = data.lineItems;
+            validateLotCode(lineItem, lotGroup);
+        });
+
+        function validateLotCode(lineItem, lotGroup) {
+            if (!lineItem.isNewlyAddedLot || (!lineItem.isMainGroup && !lineItem.isFirst)) {
+                return;
+            }
+
+            lineItem.$errors.lotCodeInvalid = undefined;
+            if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
+                lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
+            } else {
+                validateDuplicateLotCode(lineItem, lotGroup);
+            }
+        }
+
+        function validateDuplicateLotCode(lineItem, lotGroup) {
+            var currentLotCode = _.get(lineItem, ['lot', 'lotCode']);
+            var duplicateLotGroup = lotGroup.filter(function(locationGroup) {
+                var firstLineItem = locationGroup[0];
+                return _.get(firstLineItem, ['lot', 'lotCode']) === currentLotCode;
+            });
+            if (duplicateLotGroup.length > 1) {
+                duplicateLotGroup.forEach(function(locationGroup) {
+                    var firstLineItem = locationGroup[0];
+                    if (firstLineItem.isNewlyAddedLot) {
+                        firstLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
+                    }
+                });
+            }
+        }
+
+        function isEmpty(data) {
+            return data === undefined || data === null || data === '';
         }
 
     }
