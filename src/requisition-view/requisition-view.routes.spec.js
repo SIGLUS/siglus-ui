@@ -152,8 +152,6 @@ describe('openlmis.requisitions.requisition state', function() {
 
     describe('canSync', function() {
 
-
-
         it('should resolve to false if user can not submit, authorize,reject and approve requisitions', function() {
             this.requisitionViewFactory.canSubmit.andReturn(this.$q.resolve(false));
             this.requisitionViewFactory.canAuthorize.andReturn(this.$q.resolve(false));
