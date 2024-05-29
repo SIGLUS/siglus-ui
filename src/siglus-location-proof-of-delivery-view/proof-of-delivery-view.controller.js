@@ -320,16 +320,13 @@
                 }, 0);
         }
 
-        vm.getSumOfOrderableAcceptedQuantity = function(groupedLineItems) {
-            return groupedLineItems[0].filter(function(lineItem) {
+        vm.getSumOfOrderableAcceptedQuantity = function(locationGroup) {
+            var lineItemsToSum = _.flatten(locationGroup).filter(function(lineItem) {
                 return !lineItem.isMainGroup;
-            })
-                .map(function(line) {
-                    return _.get(line, 'quantityAccepted', 0);
-                })
-                .reduce(function(accumulator, a) {
-                    return accumulator + a;
-                }, 0);
+            });
+            return lineItemsToSum.reduce(function(acc, lineItem) {
+                return acc + _.get(lineItem, 'quantityAccepted', 0);
+            }, 0);
         };
         vm.getSumOfQuantityShipped = function(groupedLineItems) {
             return groupedLineItems[0].filter(function(lineItem) {
@@ -417,9 +414,12 @@
         }
 
         function validateLocationsEmptyAndDuplicated(lineItem, allLineItems) {
-            // validate location empty
             lineItem.$error.moveToLocationError = undefined;
             lineItem.$error.areaError = undefined;
+            if (!lineItem.isNewlyAddedLot || (!lineItem.isMainGroup && !lineItem.isFirst)) {
+                return;
+            }
+            // validate location empty
             if  (isEmpty(_.get(lineItem, ['moveTo', 'locationCode']))) {
                 lineItem.$error.moveToLocationError = 'openlmisForm.required';
                 return;
@@ -428,7 +428,6 @@
                 lineItem.$error.areaError = 'openlmisForm.required';
                 return;
             }
-
             // validate location duplicate
             var sameLotLineItems = allLineItems.filter(function(line) {
                 return !line.isMainGroup &&
@@ -581,9 +580,6 @@
             });
 
             return _.every(allLineItems, function(lineItem) {
-                if (lineItem.isMainGroup) {
-                    return true;
-                }
                 var lineItemError = _.assign({}, lineItem.$error, lineItem.$errors);
                 var errorKeys = Object.keys(lineItemError);
                 if  (errorKeys.length === 0) {
@@ -897,6 +893,7 @@
             if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
                 lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
+                // TDOO; same lot
                 var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
                 validateDuplicateLotCode(lineItem, lotGroup);
             }
