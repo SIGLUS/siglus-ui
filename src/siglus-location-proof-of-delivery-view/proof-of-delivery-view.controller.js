@@ -73,6 +73,7 @@
         vm.deleteDraft = deleteDraft;
         vm.returnBack = returnBack;
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
+        vm.changeAcceptQuantity = changeAcceptQuantity;
         vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
@@ -354,7 +355,7 @@
                 .getDesLocationList(lineItem, areaLocationInfo);
             // still need to verify all lines
             groupedLineItems.forEach(function(line) {
-                validateLocations(line, groupedLineItems);
+                validateLocationsEmptyAndDuplicated(line, groupedLineItems);
             });
         };
         vm.changeMoveToLocation = function(lineItem, groupedLineItems) {
@@ -364,7 +365,7 @@
             lineItem.destAreaOptions = SiglusLocationCommonUtilsService.getDesAreaList(lineItem, areaLocationInfo);
             // still need to verify all lines
             groupedLineItems.forEach(function(line) {
-                validateLocations(line, groupedLineItems);
+                validateLocationsEmptyAndDuplicated(line, groupedLineItems);
             });
         };
         $scope.$on('locationCodeChange', function(event, data) {
@@ -380,30 +381,68 @@
             vm.changeMoveToLocation(lineItem, lineItems);
         });
 
-        vm.changeAcceptQuantity = function(lineItem, groupedLineItems) {
+        function changeAcceptQuantity(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
+            lineItem.$error.rejectionReasonIdError = undefined;
+            validateAcceptedQuantityEmpty(lineItem);
+            // update rejected quantity
             if (lineItem.isMainGroup || lineItem.isFirst) {
                 lineItem.quantityRejected = vm.getRejectedQuantity(lineItem, groupedLineItems);
             }
-            validateAcceptQuantity(lineItem, groupedLineItems);
-        };
+            // update reason id
+            updateReasonIdForLocationGroup(lineItem, groupedLineItems);
+        }
 
-        function validateLocations(lineItem, groupedLineItems) {
-            var relatedLineItems = groupedLineItems.filter(function(line) {
-                return _.get(lineItem, ['orderable', 'id'], '') === _.get(line, ['orderable', 'id'], '') &&
+        function validateAcceptedQuantityEmpty(lineItem) {
+            lineItem.$error.quantityAcceptedError = undefined;
+            if (lineItem.isMainGroup) {
+                return;
+            }
+            if (isEmpty(lineItem.quantityAccepted)) {
+                lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
+            }
+        }
+
+        function validateReasonIdEmpty(lineItem, allLineItems) {
+            lineItem.$error.rejectionReasonIdError = undefined;
+            if (lineItem.isMainGroup || lineItem.isFirst) {
+                var locationGroup = getLineItemsWithSameLot(lineItem, allLineItems);
+                if (disableReasonSelect(lineItem, locationGroup)) {
+                    return;
+                }
+                if (isEmpty(lineItem.rejectionReasonId)) {
+                    lineItem.$error.rejectionReasonIdError = 'openlmisForm.required';
+                }
+            }
+        }
+
+        function validateLocationsEmptyAndDuplicated(lineItem, allLineItems) {
+            // validate location empty
+            lineItem.$error.moveToLocationError = undefined;
+            lineItem.$error.areaError = undefined;
+            if  (isEmpty(_.get(lineItem, ['moveTo', 'locationCode']))) {
+                lineItem.$error.moveToLocationError = 'openlmisForm.required';
+                return;
+            }
+            if  (isEmpty(_.get(lineItem, ['moveTo', 'area']))) {
+                lineItem.$error.areaError = 'openlmisForm.required';
+                return;
+            }
+
+            // validate location duplicate
+            var sameLotLineItems = allLineItems.filter(function(line) {
+                return !line.isMainGroup &&
+                    _.get(lineItem, ['orderable', 'id'], '') === _.get(line, ['orderable', 'id'], '') &&
                     _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
-            }).filter(function(line) {
-                return !line.isMainGroup;
             });
-            var filterLineItems = relatedLineItems.filter(function(line) {
-                return (_.get(line.moveTo, 'locationCode')
-                    && _.get(lineItem, ['moveTo', 'locationCode']) === _.get(line.moveTo, 'locationCode'))
-                && (_.get(line.moveTo, 'area')
-                    && _.get(lineItem, ['moveTo', 'area']) === _.get(line.moveTo, 'area'));
+            var sameLocationLineItems = sameLotLineItems.filter(function(line) {
+                return _.get(line, ['moveTo', 'locationCode']) && _.get(line, ['moveTo', 'area']) &&
+                    _.get(lineItem, ['moveTo', 'locationCode']) === _.get(line, ['moveTo', 'locationCode']) &&
+                    _.get(lineItem, ['moveTo', 'area']) === _.get(line, ['moveTo', 'area']);
             });
-
-            if (filterLineItems.length > 1) {
-                filterLineItems.forEach(function(lineItem) {
+            // expected to have only 1 item as lineItem itself, otherwise means the location duplicated
+            if (sameLocationLineItems.length > 1) {
+                sameLocationLineItems.forEach(function(lineItem) {
                     if (lineItem.lot) {
                         lineItem.$error.moveToLocationError = 'proofOfDeliveryView.duplicateLocation';
                         lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocation';
@@ -412,39 +451,16 @@
                         lineItem.$error.areaError = 'proofOfDeliveryView.duplicateLocationForKit';
                     }
                 });
-            } else {
-                filterLineItems.forEach(function(lineItem) {
-                    if (lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocation'
-                        || lineItem.$error.moveToLocationError === 'proofOfDeliveryView.duplicateLocationForKit') {
-                        lineItem.$error.moveToLocationError = '';
-                    }
-                    if (lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocation'
-                        || lineItem.$error.areaError === 'proofOfDeliveryView.duplicateLocationForKit') {
-                        lineItem.$error.areaError = '';
-                    }
-                });
             }
         }
 
         function resetError(lineItem) {
-            if (_.get(lineItem, 'rejectionReasonId')
-                && lineItem.$error.rejectionReasonIdError === 'openlmisForm.required') {
-                lineItem.$error.rejectionReasonIdError = '';
-            }
-            if (!_.get(lineItem, 'rejectionReasonId')
-                && lineItem.$error.rejectionReasonIdError === 'proofOfDeliveryView.notAllowedRejectReasonId') {
-                lineItem.$error.rejectionReasonIdError = '';
-            }
-
-            if (!_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
-                lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
-                return;
-            }
-            lineItem.$error.quantityAcceptedError = '';
+            lineItem.$error = {};
+            lineItem.$errors = {};
         }
 
-        function getRelatedLines(lineItem, groupedLineItems) {
-            return groupedLineItems.filter(function(line) {
+        function getLineItemsWithSameLot(lineItem, allLineItems) {
+            return allLineItems.filter(function(line) {
                 return _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
             });
         }
@@ -465,29 +481,25 @@
             }) : lineItem;
         }
 
-        function validateAcceptQuantity(lineItem, groupedLineItems) {
-            resetError(lineItem);
-
-            var relatedLines = getRelatedLines(lineItem, groupedLineItems);
-            var emptyAcceptedLine = getFirstEmptyAcceptedLine(relatedLines);
-            var mainLine = lineItem.isFirst ? lineItem : getMainLine(lineItem, relatedLines);
+        function updateReasonIdForLocationGroup(lineItem, locationGroup) {
+            var emptyAcceptedLine = getFirstEmptyAcceptedLine(locationGroup);
+            var mainLine = lineItem.isFirst ? lineItem : getMainLine(lineItem, locationGroup);
 
             if (emptyAcceptedLine) {
                 emptyAcceptedLine.$error.quantityAcceptedError = 'openlmisForm.required';
-                setReasonSelectDisabled(mainLine);
+                setDisabledReasonId(mainLine);
                 return;
             }
 
             if (!mainLine.rejectionReasonId) {
                 mainLine.$error.rejectionReasonIdError = 'openlmisForm.required';
             }
-            if (disableReasonSelect(lineItem, groupedLineItems)) {
-                setReasonSelectDisabled(mainLine);
+            if (disableReasonSelect(lineItem, locationGroup)) {
+                setDisabledReasonId(mainLine);
             }
         }
 
-        function setReasonSelectDisabled(mainLine) {
-
+        function setDisabledReasonId(mainLine) {
             mainLine.rejectionReasonId = mainLine.isNewlyAddedLot ? vm.newlyAddedLotReason.id : undefined;
             mainLine.$error.rejectionReasonIdError = '';
         }
@@ -554,41 +566,31 @@
                 .finally(loadingModalService.close);
         }
 
-        function validateRequiredFields(lineItem) {
-            if (!lineItem.isMainGroup) {
-                if (_.isEmpty(_.get(lineItem.moveTo, 'locationCode'))) {
-                    lineItem.$error.moveToLocationError = 'openlmisForm.required';
-                }
-
-                if (_.isEmpty(_.get(lineItem.moveTo, 'area'))) {
-                    lineItem.$error.areaError = 'openlmisForm.required';
-                }
-
-                if (!_.isNumber(_.get(lineItem, 'quantityAccepted'))) {
-                    lineItem.$error.quantityAcceptedError = 'openlmisForm.required';
-                }
-            }
-        }
-
         function validateForm() {
-            _.forEach(vm.orderLineItems, function(orderLineItem) {
-                orderLineItem.groupedLineItems.forEach(function(lineItem) {
-                    validateRequiredFields(lineItem);
-                    validateAcceptQuantity(lineItem, orderLineItem.groupedLineItems);
-                    validateLocations(lineItem, orderLineItem.groupedLineItems);
-                });
+            var allLineItems = _.flatten(vm.displayOrderLineItems.map(function(productGroup) {
+                return productGroup.groupedLineItems;
+            }));
+
+            _.forEach(allLineItems, function(lineItem) {
+                resetError(lineItem);
+                validateAcceptedQuantityEmpty(lineItem);
+                validateReasonIdEmpty(lineItem, allLineItems);
+                validateLocationsEmptyAndDuplicated(lineItem, allLineItems);
+                validateLotCodeEmptyAndDuplicate(lineItem, allLineItems);
+                validateExpirationDateEmpty(lineItem);
             });
-            return _.every(vm.orderLineItems, function(orderLineItem) {
-                return _.every(orderLineItem.groupedLineItems, function(lineItem) {
-                    if (lineItem.isMainGroup) {
-                        return true;
-                    }
-                    return _.chain(lineItem.$error)
-                        .keys()
-                        .all(function(key) {
-                            return _.isEmpty(lineItem.$error[key]);
-                        })
-                        .value();
+
+            return _.every(allLineItems, function(lineItem) {
+                if (lineItem.isMainGroup) {
+                    return true;
+                }
+                var lineItemError = _.assign({}, lineItem.$error, lineItem.$errors);
+                var errorKeys = Object.keys(lineItemError);
+                if  (errorKeys.length === 0) {
+                    return true;
+                }
+                return _.every(errorKeys, function(key) {
+                    return isEmpty(lineItemError[key]);
                 });
             });
         }
@@ -749,7 +751,7 @@
             var printLineItems = angular.copy(vm.proofOfDelivery);
             printLineItems.lineItems = getPodLineItemsToSend();
             var podLineItemLocation = getPodLineItemLocationToSend();
-            var newPrintLineItems = _.chain(podLineItemLocation)
+            vm.printLineItems = _.chain(podLineItemLocation)
                 .map(function(item) {
                     var shipmentItem = _.find(printLineItems.lineItems, function(lineItem) {
                         return lineItem.id === item.podLineItemId;
@@ -773,14 +775,13 @@
                         });
                         item.stockOnHand = _.get(locationLot, 'stockOnHand', 0);
                     }
-                    item.pallet =  Number(item.quantityAccepted) + Number(item.stockOnHand);
+                    item.pallet = Number(item.quantityAccepted) + Number(item.stockOnHand);
                     return item;
                 })
                 .filter(function(item) {
                     return item.pallet > 0 && item.pallet !== item.stockOnHand;
                 })
                 .value();
-            vm.printLineItems = newPrintLineItems;
         }
 
         function deleteDraft() {
@@ -828,21 +829,19 @@
                 (lineItem.quantityShipped * (lineItem.price * 100).toFixed(2)) / 100 : '';
         }
 
-        function disableReasonSelect(lineItem, groupedLineItems) {
-            var relatedLines = getRelatedLines(lineItem, groupedLineItems);
-            var emptyAcceptedLine = getFirstEmptyAcceptedLine(relatedLines);
+        function disableReasonSelect(lineItem, locationGroup) {
+            var emptyAcceptedLine = getFirstEmptyAcceptedLine(locationGroup);
             return emptyAcceptedLine !== undefined ||
-                getSumOfLot(lineItem, groupedLineItems) === lineItem.quantityShipped || lineItem.isNewlyAddedLot;
+                getSumOfLot(lineItem, locationGroup) === lineItem.quantityShipped || lineItem.isNewlyAddedLot;
         }
 
-        function getLineItemReasonOptions(lineItem, groupedLineItems) {
+        function getLineItemReasonOptions(lineItem, locationGroup) {
             if (lineItem.isNewlyAddedLot) {
                 return [vm.newlyAddedLotReason];
             }
 
-            var sumOfLot = getSumOfLot(lineItem, groupedLineItems);
-            var relatedLines = getRelatedLines(lineItem, groupedLineItems);
-            var mainLine = getMainLine(lineItem, relatedLines);
+            var sumOfLot = getSumOfLot(lineItem, locationGroup);
+            var mainLine = getMainLine(lineItem, locationGroup);
             var quantityShipped = _.get(mainLine, ['quantityShipped'], 0);
 
             if (sumOfLot > quantityShipped) {
@@ -886,18 +885,19 @@
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
             var lotGroup = data.lineItems;
-            validateLotCode(lineItem, lotGroup);
+            validateLotCodeEmptyAndDuplicate(lineItem, lotGroup);
         });
 
-        function validateLotCode(lineItem, lotGroup) {
+        function validateLotCodeEmptyAndDuplicate(lineItem, allLineItems) {
+            lineItem.$errors.lotCodeInvalid = undefined;
             if (!lineItem.isNewlyAddedLot || (!lineItem.isMainGroup && !lineItem.isFirst)) {
                 return;
             }
 
-            lineItem.$errors.lotCodeInvalid = undefined;
             if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
                 lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
+                var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
                 validateDuplicateLotCode(lineItem, lotGroup);
             }
         }
@@ -915,6 +915,15 @@
                         firstLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
                     }
                 });
+            }
+        }
+
+        function validateExpirationDateEmpty(lineItem) {
+            lineItem.$error.expirationDateEmpty = undefined;
+            if (lineItem.isNewlyAddedLot && (lineItem.isFirst || lineItem.isMainGroup)) {
+                if (isEmpty(_.get(lineItem, ['lot', 'expirationDate']))) {
+                    lineItem.$error.expirationDateEmpty = 'openlmisForm.required';
+                }
             }
         }
 

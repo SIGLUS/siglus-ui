@@ -177,9 +177,11 @@
                   ng-options="area for area in fulfillingLineItem.destAreaOptions track by area"
                   ng-change="vm.changeArea(fulfillingLineItem, locationGroupLineItems)">
               </select>
-              <siglus-location-select line-item="fulfillingLineItem"
-                                      line-items="locationGroupLineItems"
-                                      area-location-info="vm.areaLocationInfo"></siglus-location-select>
+              <siglus-location-select
+                      line-item="fulfillingLineItem"
+                      line-items="locationGroupLineItems"
+                      area-location-info="vm.areaLocationInfo">
+              </siglus-location-select>
             </div>
           </td>
           <!-- location end -->
@@ -348,11 +350,9 @@
     </button>
   </div>
   <div class="button-group primary">
-    <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">{{'stockPhysicalInventoryDraft.save'
-    | message}}
+    <button ng-if="!vm.isMerge  && vm.actionType !== 'SUBMITTED'" ng-click="vm.save()">{{'stockPhysicalInventoryDraft.save' | message}}
     </button>
-    <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" ng-click="vm.submit()">{{'stockPhysicalInventoryDraft.submit'
-    | message}}
+    <button ng-if="vm.actionType !== 'SUBMITTED'" class="primary" ng-click="vm.submit()">{{'stockPhysicalInventoryDraft.submit' | message}}
     </button>
   </div>
 </div>
