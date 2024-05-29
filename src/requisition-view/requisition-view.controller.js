@@ -36,7 +36,7 @@
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
         'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient',
-        'requisitionCacheService'
+        'localStorageService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -47,7 +47,7 @@
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       siglusSignatureModalService, isCreateForClient, requisitionCacheService) {
+                                       siglusSignatureModalService, isCreateForClient, localStorageService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -354,7 +354,9 @@
          */
         function syncRnrAndPrint() {
             if (vm.isCreateForClient) {
-                requisitionCacheService.cacheRequisition(vm.requisition);
+                var storageKey = vm.requisition.facility.id + vm.requisition.program.id;
+                localStorageService.add(storageKey, angular.toJson(vm.requisition));
+                vm.requisition.id = storageKey;
             }
             var status = vm.isCreateForClient ? 'APPROVED' : vm.requisition.status;
             if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
@@ -373,6 +375,9 @@
                     + vm.requisition.id
                     + '?'
                     + 'showBreadCrumb=false';
+                if (vm.isCreateForClient) {
+                    printUrl = printUrl + '&forClient=' + vm.isCreateForClient;
+                }
                 $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
             } else if (vm.displaySyncButton) {
                 var popup = $window.open('', '_blank');

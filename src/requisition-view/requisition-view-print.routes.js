@@ -52,12 +52,13 @@
         });
 
         $stateProvider.state('openlmis.requisitions.mmia', {
-            url: '/MMIA/:rnr?showBreadCrumb',
+            url: '/MMIA/:rnr?showBreadCrumb&forClient',
             showInNavigation: false,
             label: 'mmia.title',
             priority: 9,
             params: {
-                showBreadCrumb: undefined
+                showBreadCrumb: undefined,
+                forClient: false
             },
             views: {
                 '@openlmis': {
@@ -68,7 +69,10 @@
                 }
             },
             resolve: {
-                requisition: function($stateParams, requisitionService) {
+                requisition: function($stateParams, requisitionService, localStorageService) {
+                    if ($stateParams.forClient) {
+                        return angular.fromJson(localStorageService.get($stateParams.rnr));
+                    }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
                 facility: function(facilityService, requisition) {
@@ -78,12 +82,13 @@
         });
 
         $stateProvider.state('openlmis.requisitions.rapid', {
-            url: '/MMIT/:rnr?showBreadCrumb',
+            url: '/MMIT/:rnr?showBreadCrumb&forClient',
             showInNavigation: false,
             label: 'rapid.title',
             priority: 9,
             params: {
-                showBreadCrumb: undefined
+                showBreadCrumb: undefined,
+                forClient: false
             },
             views: {
                 '@openlmis': {
@@ -94,7 +99,10 @@
                 }
             },
             resolve: {
-                requisition: function($stateParams, requisitionService) {
+                requisition: function($stateParams, requisitionService, localStorageService) {
+                    if ($stateParams.forClient) {
+                        return angular.fromJson(localStorageService.get($stateParams.rnr));
+                    }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
                 facility: function(facilityService, requisition) {
@@ -104,12 +112,13 @@
         });
 
         $stateProvider.state('openlmis.requisitions.tb', {
-            url: '/MMTB/:rnr?showBreadCrumb',
+            url: '/MMTB/:rnr?showBreadCrumb&forClient',
             showInNavigation: false,
             label: 'tb.title',
             priority: 9,
             params: {
-                showBreadCrumb: undefined
+                showBreadCrumb: undefined,
+                forClient: false
             },
             views: {
                 '@openlmis': {
@@ -120,7 +129,10 @@
                 }
             },
             resolve: {
-                requisition: function($stateParams, requisitionService) {
+                requisition: function($stateParams, requisitionService, localStorageService) {
+                    if ($stateParams.forClient) {
+                        return angular.fromJson(localStorageService.get($stateParams.rnr));
+                    }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
                 facility: function(facilityService, requisition) {
@@ -130,12 +142,13 @@
         });
 
         $stateProvider.state('openlmis.requisitions.ViaClassica', {
-            url: '/Balance Requisition/:rnr?showBreadCrumb',
+            url: '/Balance Requisition/:rnr?showBreadCrumb&forClient',
             showInNavigation: false,
             label: 'via.title',
             priority: 9,
             params: {
-                showBreadCrumb: undefined
+                showBreadCrumb: undefined,
+                forClient: false
             },
             views: {
                 '@openlmis': {
@@ -146,7 +159,10 @@
                 }
             },
             resolve: {
-                requisition: function($stateParams, requisitionService) {
+                requisition: function($stateParams, requisitionService, localStorageService) {
+                    if ($stateParams.forClient) {
+                        return angular.fromJson(localStorageService.get($stateParams.rnr));
+                    }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
                 facility: function(facilityService, requisition) {
