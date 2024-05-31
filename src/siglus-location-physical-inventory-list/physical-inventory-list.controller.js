@@ -28,9 +28,9 @@
         .module('siglus-location-physical-inventory-list')
         .controller('LocationPhysicalInventoryListController', controller);
 
-    controller.$inject = ['facility', 'programs', 'programId', 'program', '$state', 'drafts'];
+    controller.$inject = ['$scope', 'facility', 'programs', 'programId', 'program', '$state', 'drafts'];
 
-    function controller(facility, programs, programId, program, $state, drafts) {
+    function controller($scope, facility, programs, programId, program, $state, drafts) {
         var vm = this;
 
         /**
@@ -70,6 +70,16 @@
          *
          */
         function onInit() {
+            navigateToChildState();
+
+            $scope.$on('$stateChangeSuccess', function(event, toState) {
+                if (toState.name === 'openlmis.locationManagement.physicalInventory') {
+                    navigateToChildState();
+                }
+            });
+        }
+
+        function navigateToChildState() {
             if (vm.isHistory()) {
                 vm.goToHistory();
             } else {

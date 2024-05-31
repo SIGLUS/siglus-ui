@@ -22,10 +22,10 @@
         .controller('PhysicalInventoryListController', controller);
 
     controller.$inject = [
-        '$state', '$rootScope', 'programs', 'facility', 'program', 'programId'
+        '$state', '$scope', 'programs', 'facility', 'program', 'programId'
     ];
 
-    function controller($state, $rootScope, programs, facility, program) {
+    function controller($state, $scope, programs, facility, program) {
         var vm = this;
 
         vm.facility = facility;
@@ -36,6 +36,16 @@
         vm.searchProgram = searchProgram;
 
         function onInit() {
+            navigateToChildState();
+
+            $scope.$on('$stateChangeSuccess', function(event, toState) {
+                if (toState.name === 'openlmis.locationManagement.physicalInventory') {
+                    navigateToChildState();
+                }
+            });
+        }
+
+        function navigateToChildState() {
             if (vm.isHistory()) {
                 vm.goToHistory();
             } else {
