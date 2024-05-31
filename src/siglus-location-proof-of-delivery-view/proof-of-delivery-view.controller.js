@@ -509,56 +509,49 @@
             return diff < 0 ? 0 : diff;
         };
 
-        function getPodLineItemsToSend() {
-            return _.flatten(vm.orderLineItems.map(function(orderLineItem) {
-                return orderLineItem.groupedLineItems.filter(function(fulfillingLineItem) {
-                    if (fulfillingLineItem.isMainGroup) {
-                        fulfillingLineItem.quantityAccepted = getSumOfLot(fulfillingLineItem,
-                            orderLineItem.groupedLineItems);
-                    }
-                    if (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst) {
-                        fulfillingLineItem.quantityRejected = vm.getRejectedQuantity(fulfillingLineItem,
-                            orderLineItem.groupedLineItems);
-                    }
-                    return fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst;
-                });
-            }));
+        function getPodMainOrFirstLineItems() {
+            var allLineItems = getAllLineItems();
+            return allLineItems.filter(function(lineItem) {
+                return lineItem.isMainGroup || lineItem.isFirst;
+            });
         }
-        function getPodLineItemLocationToSend() {
-            return _.flatten(vm.orderLineItems.map(function(orderLineItem) {
-                return orderLineItem.groupedLineItems.filter(function(fulfillingLineItem) {
-                    return !fulfillingLineItem.isMainGroup;
-                }).map(function(fulfillingLineItem) {
-                    return {
-                        podLineItemId: fulfillingLineItem.id,
-                        locationCode: _.get(fulfillingLineItem, ['moveTo', 'locationCode'], undefined),
-                        area: _.get(fulfillingLineItem, ['moveTo', 'area'], undefined),
-                        quantityAccepted: fulfillingLineItem.quantityAccepted
-                    };
-                });
-            }));
+
+        function getPodLocationLineItems() {
+            var allLineItems = getAllLineItems();
+            var lineItemsWithLocation = allLineItems.filter(function(lineItem) {
+                return !lineItem.isMainGroup;
+            });
+            return lineItemsWithLocation.map(function(lineItem) {
+                return {
+                    podLineItemId: lineItem.id,
+                    locationCode: _.get(lineItem, ['moveTo', 'locationCode']),
+                    area: _.get(lineItem, ['moveTo', 'area']),
+                    quantityAccepted: lineItem.quantityAccepted
+                };
+            });
         }
 
         function save(notReload) {
             loadingModalService.open();
-            // TODO lineitem here should be first & main
-            vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
-            // TODO only pick no first, no main
-            var podLineItemLocation = getPodLineItemLocationToSend();
-            proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
-                $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE', podLineItemLocation).then(function() {
-                $scope.needToConfirm = false;
-                if (!notReload) {
-                    notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
-                }
-                if (notReload) {
-                    var stateParams = angular.copy($stateParams);
-                    stateParams.actionType = 'DRAFT';
-                    $state.go($state.current.name, stateParams, {
-                        location: 'replace'
-                    });
-                }
-            })
+            // only pick main group or isFirst lineItem
+            vm.proofOfDelivery.lineItems = getPodMainOrFirstLineItems();
+            // only pick lineItems with location
+            var podLocationLineItem = getPodLocationLineItems();
+            proofOfDeliveryService.updateSubDraftWithLocation(
+                $stateParams.podId, $stateParams.subDraftId, vm.proofOfDelivery, 'SAVE', podLocationLineItem
+            )
+                .then(function() {
+                    $scope.needToConfirm = false;
+                    if (notReload) {
+                        var stateParams = angular.copy($stateParams);
+                        stateParams.actionType = 'DRAFT';
+                        $state.go($state.current.name, stateParams, {
+                            location: 'replace'
+                        });
+                    } else {
+                        notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSaved');
+                    }
+                })
                 .catch(function() {
                     notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
                 })
@@ -566,9 +559,7 @@
         }
 
         function validateForm() {
-            var allLineItems = _.flatten(vm.displayOrderLineItems.map(function(productGroup) {
-                return productGroup.groupedLineItems;
-            }));
+            var allLineItems = getAllLineItems();
 
             _.forEach(allLineItems, function(lineItem) {
                 resetError(lineItem);
@@ -591,27 +582,21 @@
             });
         }
 
-        vm.validateMerge = function() {
-            if (vm.proofOfDelivery.receivedBy) {
-                vm.proofOfDelivery.receivedByError = '';
-            } else {
-                vm.proofOfDelivery.receivedByError = 'openlmisForm.required';
-            }
+        function validateReceivedByAndDateEmpty() {
+            vm.proofOfDelivery.receivedByError =
+                isEmpty(_.get(vm.proofOfDelivery, 'receivedBy')) ? 'openlmisForm.required' : '';
+            vm.proofOfDelivery.receivedDateError =
+                isEmpty(_.get(vm.proofOfDelivery, 'receivedDate')) ? 'openlmisForm.required' : '';
 
-            if (vm.proofOfDelivery.receivedDate) {
-                vm.proofOfDelivery.receivedDateError = '';
-            } else {
-                vm.proofOfDelivery.receivedDateError = 'openlmisForm.required';
-            }
-
-            return Boolean(!vm.proofOfDelivery.receivedByError && !vm.proofOfDelivery.receivedDateError);
-        };
+            return isEmpty(_.get(vm.proofOfDelivery, 'receivedByError')) &&
+                isEmpty(_.get(vm.proofOfDelivery, 'receivedDateError'));
+        }
 
         function submit() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateForm()) {
                 if (vm.isMerge) {
-                    if (vm.validateMerge()) {
+                    if (validateReceivedByAndDateEmpty()) {
                         submitDraft();
                     } else {
                         alertService.error(messageService.get('openlmisForm.formInvalid'));
@@ -627,79 +612,26 @@
         // submit subDraft
         function submitSubDraft() {
             loadingModalService.open();
-            vm.proofOfDelivery.lineItems = getPodLineItemsToSend();
-            // TODO only pick no first, no main
-            var podLineItemLocation = getPodLineItemLocationToSend();
-            proofOfDeliveryService.updateSubDraftWithLocation($stateParams.podId,
-                $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT', podLineItemLocation).then(function() {
-                $scope.needToConfirm = false;
-                notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted');
-                $state.go('^', $stateParams, {
-                    reload: true
-                });
-            })
+            vm.proofOfDelivery.lineItems = getPodMainOrFirstLineItems();
+            var podLineItemLocation = getPodLocationLineItems();
+            proofOfDeliveryService.updateSubDraftWithLocation(
+                $stateParams.podId, $stateParams.subDraftId, vm.proofOfDelivery, 'SUBMIT', podLineItemLocation
+            )
+                .then(function() {
+                    $scope.needToConfirm = false;
+                    notificationService.success('proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted');
+                    $state.go('^', $stateParams, {
+                        reload: true
+                    });
+                })
                 .catch(function() {
                     notificationService.error('proofOfDeliveryView.failedToSaveProofOfDelivery');
                 })
                 .finally(loadingModalService.close);
         }
 
-        function getSumQuantityAccepted(items) {
-            var total = 0;
-            _.each(items, function(item) {
-                total = total + item.quantityAccepted;
-            });
-            return total;
-        }
-        function getDownloadLineItems() {
-            var downloadLineItems = [];
-            _.each(vm.orderLineItems, function(orderLineItem) {
-                var validItems = orderLineItem.groupedLineItems.filter(function(item) {
-                    return !item.isMainGroup;
-                });
-                var groupByLot = _.chain(validItems)
-                    .groupBy(function(item) {
-                        return _.get(item, ['lot', 'lotCode'], '');
-                    })
-                    .values()
-                    .value();
-                _.each(groupByLot, function(lotItems) {
-                    var downloadLineItem = angular.copy(lotItems[0]);
-
-                    var relatedMainLine = orderLineItem.groupedLineItems.filter(function(line) {
-                        return _.get(downloadLineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
-                    }).find(function(line) {
-                        return line.isMainGroup || line.isFirst;
-                    });
-                    downloadLineItem.rejectionReasonId = relatedMainLine.rejectionReasonId;
-                    downloadLineItem.price = relatedMainLine.price;
-                    downloadLineItem.notes = relatedMainLine.notes;
-                    downloadLineItem.productCode = _.get(downloadLineItem, ['orderable', 'productCode'], '');
-                    downloadLineItem.productName = _.get(downloadLineItem, ['orderable', 'fullProductName'], '');
-                    downloadLineItem.lotCode = _.get(downloadLineItem, ['lot', 'lotCode'], '');
-                    downloadLineItem.expirationDate = _.get(downloadLineItem, ['lot', 'expirationDate'], '');
-                    downloadLineItem.orderedQuantity = orderLineItem.orderedQuantity;
-                    downloadLineItem.partialFulfilledQuantity = orderLineItem.partialFulfilledQuantity;
-                    downloadLineItem.quantityAccepted = getSumQuantityAccepted(lotItems);
-                    downloadLineItems.push(downloadLineItem);
-                });
-            });
-            return downloadLineItems;
-        }
-
         // final merge and submit
         function submitDraft() {
-            vm.downloadLineItems = getDownloadLineItems();
-            vm.incosistencies = _.filter(vm.downloadLineItems, function(item) {
-                return item.rejectionReasonId;
-            });
-
-            vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
-                var price = c.price ? c.price : 0;
-                r = r + c.quantityShipped * price;
-                return r;
-            }, 0);
-            vm.isLocation = true;
             vm.receivedBy = vm.proofOfDelivery.receivedBy;
             vm.receivedDate = vm.proofOfDelivery.receivedDate;
             downloadPrint();
@@ -710,8 +642,8 @@
                 .then(function() {
                     loadingModalService.open();
                     var copy = angular.copy(vm.proofOfDelivery);
-                    copy.lineItems = getPodLineItemsToSend();
-                    var podLineItemLocation = getPodLineItemLocationToSend();
+                    copy.lineItems = getPodMainOrFirstLineItems();
+                    var podLineItemLocation = getPodLocationLineItems();
                     copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
                     proofOfDeliveryService.submitDraftWithLocation($stateParams.podId,
                         copy, podLineItemLocation).then(function() {
@@ -744,40 +676,48 @@
         }
 
         function downloadPrint() {
-            var printLineItems = angular.copy(vm.proofOfDelivery);
-            printLineItems.lineItems = getPodLineItemsToSend();
-            var podLineItemLocation = getPodLineItemLocationToSend();
-            vm.printLineItems = _.chain(podLineItemLocation)
-                .map(function(item) {
-                    var shipmentItem = _.find(printLineItems.lineItems, function(lineItem) {
-                        return lineItem.id === item.podLineItemId;
+            var mainGroupItems = getPodMainOrFirstLineItems();
+            var locationItems = getPodLocationLineItems();
+            // change vm.printLineItems would trigger $scope.$watch in siglus-print-pallet-label.controller to print
+            vm.printLineItems = _.chain(locationItems)
+                .map(function(locationItem) {
+                    var mainGroupItem = _.find(mainGroupItems, function(mainGroupItem) {
+                        return mainGroupItem.id === locationItem.podLineItemId;
                     });
-                    item.productName = _.get(shipmentItem, ['orderable', 'fullProductName']);
-                    item.productCode = _.get(shipmentItem, ['orderable', 'productCode']);
-                    item.location = _.get(item, ['locationCode']);
-                    item.lotCode = _.get(shipmentItem, ['lot', 'lotCode'], null);
-                    item.expirationDate = _.get(shipmentItem, ['lot', 'expirationDate'], null);
-                    item.pack = null;
 
-                    if (shipmentItem.isKit) {
-                        var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
-                        item.stockOnHand = _.get(mapKit[shipmentItem.orderable.id],
-                            [item.locationCode, 0, 'stockOnHand'], 0);
-                    } else {
-                        var map = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
-                        var locationLotList = _.get(map[shipmentItem.orderable.id], [item.locationCode]);
-                        var locationLot = _.find(locationLotList, function(l) {
-                            return l.id === _.get(shipmentItem, ['lot', 'id']);
-                        });
-                        item.stockOnHand = _.get(locationLot, 'stockOnHand', 0);
-                    }
-                    item.pallet = Number(item.quantityAccepted) + Number(item.stockOnHand);
-                    return item;
+                    // TODO: what if newly added lot is already in the inventory?
+                    var stockOnHand = getStockOnHandFromOrderableLocationLotsMap(
+                        mainGroupItem, locationItem.locationCode
+                    );
+                    return _.assign({}, locationItem, {
+                        productName: _.get(mainGroupItem, ['orderable', 'fullProductName']),
+                        productCode: _.get(mainGroupItem, ['orderable', 'productCode']),
+                        lotCode: _.get(mainGroupItem, ['lot', 'lotCode'], null),
+                        expirationDate: _.get(mainGroupItem, ['lot', 'expirationDate'], null),
+                        location: locationItem.locationCode,
+                        pack: null,
+                        stockOnHand: stockOnHand,
+                        pallet: Number(locationItem.quantityAccepted) + Number(stockOnHand)
+                    });
                 })
-                .filter(function(item) {
-                    return item.pallet > 0 && item.pallet !== item.stockOnHand;
+                .filter(function(locationItemAssigned) {
+                    return locationItemAssigned.pallet > 0 &&
+                        locationItemAssigned.pallet !== locationItemAssigned.stockOnHand;
                 })
                 .value();
+        }
+
+        function getStockOnHandFromOrderableLocationLotsMap(mainGroupItem, locationCode) {
+            var orderableLocationLotsMap = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
+            var orderableId = _.get(mainGroupItem, ['orderable', 'id']);
+            if  (mainGroupItem.isKit) {
+                return _.get(orderableLocationLotsMap[orderableId], [locationCode, 0, 'stockOnHand'], 0);
+            }
+            var locationLotList = _.get(orderableLocationLotsMap[orderableId], [locationCode]);
+            var locationLot = _.find(locationLotList, function(locationLot) {
+                return locationLot.id === _.get(mainGroupItem, ['lot', 'id']);
+            });
+            return _.get(locationLot, 'stockOnHand', 0);
         }
 
         function deleteDraft() {
@@ -922,6 +862,12 @@
                     lineItem.$error.expirationDateEmpty = 'openlmisForm.required';
                 }
             }
+        }
+
+        function getAllLineItems() {
+            return _.flatten(vm.displayOrderLineItems.map(function(productGroup) {
+                return productGroup.groupedLineItems;
+            }));
         }
 
         function isEmpty(data) {
