@@ -227,7 +227,6 @@
             var isValid = true;
             lineItems.forEach(function(lineItem) {
                 _.values(lineItem.columns).forEach(function(column) {
-                    console.log('column', column);
                     isValid = validateSiglusLineItemField(column) && isValid;
                 });
             });

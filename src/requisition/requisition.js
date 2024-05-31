@@ -110,7 +110,8 @@
                     // SIGLUS-REFACTOR: starts here
                     url: requisitionUrlFactory('/api/siglusapi/requisitions/clients/:id'),
                     // SIGLUS-REFACTOR: ends here
-                    method: 'POST'
+                    method: 'POST',
+                    transformRequest: transformRequisition
                 }
             });
 
@@ -396,20 +397,11 @@
         }
 
         function createForClient() {
-            var availableOffline = this.$availableOffline,
-                id = this.id;
             this.id = null;
             return handlePromise(resource.createForClient({
                 id: this.facility.id,
                 idempotencyKey: this.idempotencyKey
-            }, this).$promise, function(saved) {
-                saveToStorage(saved, availableOffline);
-            }, function(saved) {
-                if (saved.status === 409 || saved.status === 403) {
-                    // in case of conflict or unauthorized, remove requisition from storage
-                    offlineRequisitions.removeBy('id', id);
-                }
-            });
+            }, this).$promise);
         }
 
         /**

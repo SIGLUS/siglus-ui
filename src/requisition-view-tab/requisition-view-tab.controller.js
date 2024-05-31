@@ -405,6 +405,7 @@
                     var approvedProduct = approvedProducts.find(function(item) {
                         return item.orderable.id === product.id;
                     });
+                    product.versionNumber = _.get(product, ['meta', 'versionNumber']);
                     var addedProduct = {
                         orderable: product,
                         approvedProduct: approvedProduct

@@ -305,11 +305,11 @@
                         reback[3].nodeHeight * rate
                     );
 
-                    var reportName = 'RNO';
-                    if (vm.requisition.emergency) {
-                        reportName = 'REM';
-                    }
-                    console.log(reportName);
+                    // var reportName = 'RNO';
+                    // if (vm.requisition.emergency) {
+                    //     reportName = 'REM';
+                    // }
+                    // console.log(reportName);
                     PDF.save(vm.requisition.requisitionNumber + '.pdf');
                     siglusDownloadLoadingModalService.close();
                 });
