@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
         'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync',
-        '$state', 'isCreateForClient'
+        '$state', 'isCreateForClient', 'approvedProducts'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
                                program, $scope, notificationService, offlineService, canSync, $state,
-                               isCreateForClient) {
+                               isCreateForClient, approvedProducts) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -179,17 +179,7 @@
             vm.lineItems = lineItems;
             vm.items = items;
             vm.requisition = requisition;
-            vm.columns = angular.copy(columns);
-            if (isCreateForClient) {
-                vm.columns = vm.columns.filter(function(column) {
-                    return column.name !== 'expirationDate';
-                });
-                vm.columns.forEach(function(column) {
-                    if (column.source === 'STOCK_CARDS') {
-                        column.source = 'USER_INPUT';
-                    }
-                });
-            }
+            vm.columns = columns;
             vm.userCanEdit = isCreateForClient ||
                 canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
             vm.showAddProducts = isCreateForClient || canSync;
@@ -408,12 +398,22 @@
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(selectedProducts) {
             if (isCreateForClient) {
+                var columns = vm.columns.filter(function(column) {
+                    return !column.name.includes('orderable');
+                });
                 selectedProducts.forEach(function(product) {
-                    var orderable = {
-                        orderable: product
+                    var approvedProduct = approvedProducts.find(function(item) {
+                        return item.orderable.id === product.id;
+                    });
+                    var addedProduct = {
+                        orderable: product,
+                        approvedProduct: approvedProduct
                     };
-                    var lineItem = vm.requisition.addProductLineItem(orderable);
+                    var lineItem = vm.requisition.addProductLineItem(addedProduct);
                     lineItem.$program.fullSupply = false;
+                    columns.forEach(function(column) {
+                        lineItem[column.name] = undefined;
+                    });
                 });
                 return;
             }

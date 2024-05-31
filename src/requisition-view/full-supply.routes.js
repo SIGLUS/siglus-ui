@@ -87,10 +87,8 @@
                             }
                         );
                     },
-                    columns: function(requisition) {
-                        // SIGLUS-REFACTOR: starts here
-                        return requisition.template.getColumns();
-                        // SIGLUS-REFACTOR: ends here
+                    columns: function(requisition, isCreateForClient) {
+                        return requisition.getColumns(isCreateForClient);
                     },
                     fullSupply: function() {
                         return true;

@@ -66,22 +66,30 @@
                 fullSupplyColumns = requisition.template.getColumns(),
                 nonFullSupplyColumns = requisition.template.getColumns(true);
 
-            angular.forEach($filter('filter')(requisition.requisitionLineItems, {
-                $program: {
-                    fullSupply: true
-                }
-            }), function(lineItem) {
-                valid = validator.validateLineItem(lineItem, fullSupplyColumns, requisition) && valid;
-            });
+            if (requisition.isCreateForClient) {
+                var checkColumns = fullSupplyColumns.filter(function(column) {
+                    return column.name !== 'expirationDate';
+                });
+                angular.forEach(requisition.requisitionLineItems, function(lineItem) {
+                    valid = validator.validateLineItem(lineItem, checkColumns, requisition) && valid;
+                });
+            } else {
+                angular.forEach($filter('filter')(requisition.requisitionLineItems, {
+                    $program: {
+                        fullSupply: true
+                    }
+                }), function(lineItem) {
+                    valid = validator.validateLineItem(lineItem, fullSupplyColumns, requisition) && valid;
+                });
 
-            angular.forEach($filter('filter')(requisition.requisitionLineItems, {
-                $program: {
-                    fullSupply: false
-                }
-            }), function(lineItem) {
-                valid = validator.validateLineItem(lineItem, nonFullSupplyColumns, requisition) && valid;
-            });
-
+                angular.forEach($filter('filter')(requisition.requisitionLineItems, {
+                    $program: {
+                        fullSupply: false
+                    }
+                }), function(lineItem) {
+                    valid = validator.validateLineItem(lineItem, nonFullSupplyColumns, requisition) && valid;
+                });
+            }
             return valid;
         }
 

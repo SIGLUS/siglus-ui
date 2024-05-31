@@ -52,6 +52,7 @@
                     return requisitionService.buildDraftWithoutSaving($stateParams.facility,
                         $stateParams.period, $stateParams.program).then(function(requisition) {
                         requisition.$isEditable = true;
+                        requisition.isCreateForClient = true;
                         return requisitionService.setOrderableUnitForRequisition(requisition);
                     });
                 },
@@ -66,6 +67,12 @@
                 },
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
+                },
+                approvedProducts: function(requisitionService, requisition, isCreateForClient) {
+                    if (isCreateForClient) {
+                        return requisitionService.getApprovedProducts(requisition.facility.id, requisition.program.id);
+                    }
+                    return [];
                 },
                 canSubmit: function(requisitionViewFactory, user, requisition, isCreateForClient) {
                     return isCreateForClient || requisitionViewFactory.canSubmit(user.id, requisition);

@@ -116,6 +116,11 @@
             buildDraft: {
                 url: requisitionUrlFactory('/api/siglusapi/requisitions/draft'),
                 method: 'POST'
+            },
+            getApprovedProducts: {
+                url: requisitionUrlFactory('/api/siglusapi/approvedProducts'),
+                method: 'GET',
+                isArray: true
             }
             // SIGLUS-REFACTOR: ends here
         });
@@ -136,7 +141,8 @@
             setOrderableUnitForRequisition: setOrderableUnitForRequisition,
             batchClose: batchClose,
             closeRequisitionsForApproval: closeRequisitionsForApproval,
-            buildDraftWithoutSaving: buildDraftWithoutSaving
+            buildDraftWithoutSaving: buildDraftWithoutSaving,
+            getApprovedProducts: getApprovedProducts
             // SIGLUS-REFACTOR: ends here
         };
 
@@ -732,6 +738,13 @@
                 }
             });
             return match;
+        }
+
+        function getApprovedProducts(facilityId, programId) {
+            return resource.getApprovedProducts({
+                facilityId: facilityId,
+                programId: programId
+            }).$promise;
         }
 
     }

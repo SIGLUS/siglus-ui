@@ -432,7 +432,9 @@
                             vm.requisition.extraData.signaure = {};
                         }
                         vm.requisition.extraData.signaure.submit = signature;
-                        if (vm.program.enableDatePhysicalStockCountCompleted) {
+                        if (isCreateForClient) {
+                            submitForClient();
+                        } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                             var modal = new RequisitionStockCountDateModal(vm.requisition);
                             modal.then(saveThenSubmit);
                         } else {
@@ -458,6 +460,17 @@
                 }, function(response) {
                     handleSaveError(response.status);
                 });
+            }
+
+            function submitForClient() {
+                var loadingPromise = loadingModalService.open();
+                vm.requisition.$createForClient().then(function() {
+                    watcher.disableWatcher();
+                    loadingPromise.then(function() {
+                        notificationService.success('requisitionView.submit.success');
+                    });
+                    stateTrackerService.goToPreviousState('openlmis.requisitions.initRnr');
+                }, loadingModalService.close);
             }
         }
 

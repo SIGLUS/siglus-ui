@@ -107,13 +107,13 @@ describe('openlmis.requisitions.requisition.nonFullSupply state', function() {
     });
 
     it('should prepare non full supply line items', function() {
-        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
+        this.goToUrl('/requisition/requisition-id-1/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('lineItems')).toEqual(this.lineItems);
     });
 
     it('should prepare page items', function() {
-        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=1&nonFullSupplyListSize=2');
+        this.goToUrl('/requisition/requisition-id-1/nonFullSupply?nonFullSupplyListPage=1&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('items')).toEqual([
             this.lineItems[2],
@@ -122,14 +122,14 @@ describe('openlmis.requisitions.requisition.nonFullSupply state', function() {
     });
 
     it('should prepare columns', function() {
-        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
+        this.goToUrl('/requisition/requisition-id-1/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('columns')).toEqual(this.columns);
         expect(this.requisition.template.getColumns).toHaveBeenCalledWith(true);
     });
 
     it('should set full supply flag to false', function() {
-        this.goToUrl('/requisition/requisition-id/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
+        this.goToUrl('/requisition/requisition-id-1/nonFullSupply?nonFullSupplyListPage=0&nonFullSupplyListSize=2');
 
         expect(this.getResolvedValue('fullSupply')).toEqual(false);
     });

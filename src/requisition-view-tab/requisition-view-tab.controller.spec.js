@@ -134,6 +134,7 @@ describe('ViewTabController', function() {
         // SIGLUS-REFACTOR: ends here
         this.canApproveAndReject = true;
         this.isCreateForClient = false;
+        this.approvedProducts = [];
 
         spyOn(this.alertService, 'error');
         spyOn(this.selectProductsModalService, 'show');
@@ -1093,7 +1094,8 @@ describe('ViewTabController', function() {
             $scope: this.$scope,
             program: this.program,
             canSync: this.canSync,
-            isCreateForClient: this.isCreateForClient
+            isCreateForClient: this.isCreateForClient,
+            approvedProducts: []
             // #375: ends here
         });
         this.vm.$onInit();

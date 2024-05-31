@@ -91,61 +91,61 @@ describe('openlmis.requisitions.requisition state', function() {
     });
 
     it('should fetch user', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('user')).toEqual(this.user);
     });
 
     it('should fetch requisition', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('requisition')).toEqual(this.requisition);
     });
 
     it('should fetch facility', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('facility')).toEqual(this.facility);
     });
 
     it('should fetch program', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('program')).toEqual(this.program);
     });
 
     it('should fetch period', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('processingPeriod')).toEqual(this.period);
     });
 
     it('should resolve if user has right to submit', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('canSubmit')).toEqual(true);
     });
 
     it('should resolve if user has right to authorize', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('canAuthorize')).toEqual(true);
     });
 
     it('should resolve if user has right to approve or reject', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('canApproveAndReject')).toEqual(true);
     });
 
     it('should resolve if user has right to delete', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('canDelete')).toEqual(true);
     });
 
     it('should resolve if user has right to skip', function() {
-        this.goToUrl('/requisition/requisition-id');
+        this.goToUrl('/requisition/requisition-id-1');
 
         expect(this.getResolvedValue('canSkip')).toEqual(true);
     });
