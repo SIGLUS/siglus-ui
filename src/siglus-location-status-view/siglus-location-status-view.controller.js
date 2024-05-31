@@ -64,7 +64,7 @@
             return status;
         };
 
-        vm.itemLocationStatus = function(item) {
+        vm.itemLocationOccupied = function(item) {
             var status = _.get(item, ['locationStatus']);
             return status === 'Occupied';
         };

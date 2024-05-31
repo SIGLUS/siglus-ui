@@ -26,10 +26,11 @@
             </thead>
             <tbody>
                 <tr ng-repeat="lineItem in vm.displayItems">
-                    <td>{{lineItem.locationCode}}</td>
-                    <td>{{lineItem.locationStatus}}</td>
+                    <td ng-class="{'is-secondary': vm.itemLocationOccupied(lineItem)}">{{lineItem.locationCode}}</td>
+                    <td ng-if="vm.itemLocationOccupied(lineItem)" class="is-secondary">{{'locationStatus.status.occupied' | message}}</td>
+                    <td ng-if="!vm.itemLocationOccupied(lineItem)">{{'locationStatus.status.empty' | message}}</td>
                 </tr>
-                </tbody>
+            </tbody>
         </table>
     </section>
 </div>

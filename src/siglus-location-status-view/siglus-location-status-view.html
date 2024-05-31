@@ -26,10 +26,10 @@
             </tr>
         </thead>
         <tbody >
-        <tr ng-repeat="item in vm.pagedLineItems">
+        <tr ng-repeat="item in vm.pagedLineItems" ng-class="{'is-secondary': vm.itemLocationOccupied(item)}">
             <td>{{item.locationCode}}</td>
-            <td ng-if="vm.itemLocationStatus(item)">{{'locationStatus.status.occupied' | message}}</td>
-            <td ng-if="!vm.itemLocationStatus(item)">{{'locationStatus.status.empty' | message}}</td>
+            <td ng-if="vm.itemLocationOccupied(item)">{{'locationStatus.status.occupied' | message}}</td>
+            <td ng-if="!vm.itemLocationOccupied(item)">{{'locationStatus.status.empty' | message}}</td>
         </tr>
         </tbody>
         <openlmis-pagination list="vm.displayLocationStatus" paged-list="vm.pagedLineItems">

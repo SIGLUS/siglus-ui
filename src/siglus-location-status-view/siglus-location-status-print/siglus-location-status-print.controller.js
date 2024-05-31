@@ -67,5 +67,10 @@
                 document.getElementsByClassName('page')[0].childNodes[1].style.display = 'block';
             }
         });
+
+        vm.itemLocationOccupied = function(item) {
+            var status = _.get(item, ['locationStatus']);
+            return status === 'Occupied';
+        };
     }
 })();
