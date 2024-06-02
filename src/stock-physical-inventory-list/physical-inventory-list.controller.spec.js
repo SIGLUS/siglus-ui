@@ -62,7 +62,8 @@ describe('PhysicalInventoryListController', function() {
             programs: programs,
             program: programs[0],
             programId: programId,
-            messageService: messageService
+            messageService: messageService,
+            $scope: $scope
         });
     }
 

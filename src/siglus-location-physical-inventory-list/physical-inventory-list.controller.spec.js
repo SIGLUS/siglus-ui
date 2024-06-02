@@ -53,7 +53,8 @@ describe('LocationPhysicalInventoryListController', function() {
             programs: programs,
             program: programs[0],
             programId: programs[0].id,
-            drafts: drafts
+            drafts: drafts,
+            $scope: $scope
         });
     }
 
