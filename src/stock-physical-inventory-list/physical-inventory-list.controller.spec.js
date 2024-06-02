@@ -17,7 +17,7 @@ describe('PhysicalInventoryListController', function() {
 
     var $controller, $q, $state, physicalInventoryService,
         messageService, programs, facility, deferred,
-        vm, programId, SiglusPhysicalInventoryCreationService, alertService;
+        vm, programId, SiglusPhysicalInventoryCreationService, alertService, $scope, $rootScope;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -25,6 +25,8 @@ describe('PhysicalInventoryListController', function() {
             $q = $injector.get('$q');
             // $rootScope = $injector.get('$rootScope');
             $state = $injector.get('$state');
+            $rootScope = $injector.get('$rootScope');
+            $scope = $rootScope.$new();
             physicalInventoryService = $injector.get('physicalInventoryService');
             alertService = $injector.get('alertService');
             SiglusPhysicalInventoryCreationService = $injector.get('SiglusPhysicalInventoryCreationService');
