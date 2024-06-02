@@ -58,7 +58,7 @@
             priority: 9,
             params: {
                 showBreadCrumb: undefined,
-                forClient: false
+                forClient: 'false'
             },
             views: {
                 '@openlmis': {
@@ -70,7 +70,7 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService, localStorageService) {
-                    if ($stateParams.forClient) {
+                    if ($stateParams.forClient === 'true') {
                         return angular.fromJson(localStorageService.get($stateParams.rnr));
                     }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
@@ -88,7 +88,7 @@
             priority: 9,
             params: {
                 showBreadCrumb: undefined,
-                forClient: false
+                forClient: 'false'
             },
             views: {
                 '@openlmis': {
@@ -100,7 +100,7 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService, localStorageService) {
-                    if ($stateParams.forClient) {
+                    if ($stateParams.forClient === 'true') {
                         return angular.fromJson(localStorageService.get($stateParams.rnr));
                     }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
@@ -118,7 +118,7 @@
             priority: 9,
             params: {
                 showBreadCrumb: undefined,
-                forClient: false
+                forClient: 'false'
             },
             views: {
                 '@openlmis': {
@@ -130,7 +130,7 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService, localStorageService) {
-                    if ($stateParams.forClient) {
+                    if ($stateParams.forClient === 'true') {
                         return angular.fromJson(localStorageService.get($stateParams.rnr));
                     }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
@@ -148,7 +148,7 @@
             priority: 9,
             params: {
                 showBreadCrumb: undefined,
-                forClient: false
+                forClient: 'false'
             },
             views: {
                 '@openlmis': {
@@ -160,7 +160,7 @@
             },
             resolve: {
                 requisition: function($stateParams, requisitionService, localStorageService) {
-                    if ($stateParams.forClient) {
+                    if ($stateParams.forClient === 'true') {
                         return angular.fromJson(localStorageService.get($stateParams.rnr));
                     }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);

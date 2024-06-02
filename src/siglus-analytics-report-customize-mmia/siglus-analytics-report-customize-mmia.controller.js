@@ -122,18 +122,28 @@
         }
 
         function calculatePatientValues() {
+            var dbThisMonth = getValueByKey('newSection9', 1);
+            if ('' === dbThisMonth) {
+                dbThisMonth = 0;
+            }
             vm.totalWithInThisMonth = getValueByKey('newSection2', 5) +
                 getValueByKey('newSection3', 2) +
+                dbThisMonth +
                 getValueByKey('newSection4', 0);
+            var dbTotal = getValueByKey('newSection9', 2);
+            if ('' === dbTotal) {
+                dbTotal = 0;
+            }
             vm.totalWithTreatment = getValueByKey('newSection2', 6) +
                 getValueByKey('newSection3', 3) +
+                dbTotal +
                 getValueByKey('newSection4', 1);
             vm.adjustmentValue = (vm.totalWithTreatment / vm.totalWithInThisMonth).toFixed(2);
         }
         function setBarCodeDom() {
             $timeout(function() {
                 angular.forEach(vm.productLineItems, function(item) {
-                    if (item.id) {
+                    if (item.showBarCode) {
                         // eslint-disable-next-line no-undef
                         JsBarcode('#barcode_' + item.orderable.productCode, item.orderable.productCode, {
                             height: 24,
@@ -179,6 +189,7 @@
         function getProductLineItems(requisitionLineItems) {
             var productLineItems = _.map(requisitionLineItems, function(item) {
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
+                item.showBarCode = true;
                 return item;
             });
             var lineItemsGroupByCategory = _.reduce(productLineItems, function(r, c) {
@@ -238,6 +249,7 @@
             //  *
             //  * newSection2 : Tipo de dispensa - Dispensa para 6 Meses (DS)
             //  * newSection3 : Tipo de dispensa - Dispensa para 3 Meses (DT)
+            //  * newSection9 : Tipo de Dispensa - Dispensa Bi-Mestral (DB)
             //  * newSection4 : Tipo de dispensa - Dispensa Mensal(DM)
             //  * newSection7:Tipo de Dispensa - Ajuste
             //  * 'Tipo de Dispensa - Mês Corrente',
@@ -253,6 +265,8 @@
                 'newSection4',
                 // Tipo de dispensa - Dispensa para 6 Meses (DS)
                 'newSection2',
+                // Tipo de Dispensa - Dispensa Bi-Mestral (DB)
+                'newSection9',
                 //Tipo de dispensa - Dispensa para 3 Meses (DT)
                 'newSection3',
                 // Tipo de Dispensa - Ajuste
