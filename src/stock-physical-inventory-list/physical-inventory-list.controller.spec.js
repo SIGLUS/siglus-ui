@@ -41,6 +41,7 @@ describe('PhysicalInventoryListController', function() {
         spyOn(SiglusPhysicalInventoryCreationService, 'show').andReturn(deferred.promise);
         spyOn(physicalInventoryService, 'validateConflictProgram').andReturn(deferred.promise);
         spyOn(alertService, 'error');
+        spyOn($scope, '$on');
     }
 
     function prepareData() {

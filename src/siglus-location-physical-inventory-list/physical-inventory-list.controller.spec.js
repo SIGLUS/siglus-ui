@@ -27,6 +27,7 @@ describe('LocationPhysicalInventoryListController', function() {
 
     function prepareSpies() {
         spyOn($state, 'go');
+        spyOn($scope, '$on');
     }
 
     function prepareData() {
