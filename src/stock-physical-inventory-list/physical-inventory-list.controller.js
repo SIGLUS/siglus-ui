@@ -39,7 +39,7 @@
             navigateToChildState();
 
             $scope.$on('$stateChangeSuccess', function(event, toState) {
-                if (toState.name === 'openlmis.locationManagement.physicalInventory') {
+                if (toState.name === 'openlmis.stockmanagement.physicalInventory') {
                     navigateToChildState();
                 }
             });
