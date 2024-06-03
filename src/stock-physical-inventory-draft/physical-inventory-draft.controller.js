@@ -979,37 +979,41 @@
 
         function buildLineItemsData() {
             var lineItemsData = [];
+            try {
+                vm.displayLineItemsGroup.forEach(function(displayLineItems) {
+                    var currentProduct = displayLineItems[0].orderable;
 
-            vm.displayLineItemsGroup.forEach(function(displayLineItems) {
-                var currentProduct = displayLineItems[0].orderable;
+                    if (displayLineItems.length > 1) {
+                        var stockOnHandSum = 0;
+                        var currentStockSum = 0;
+                        displayLineItems.forEach(function(lineItem) {
+                            stockOnHandSum = stockOnHandSum + lineItem.stockOnHand;
+                            currentStockSum = currentStockSum + lineItem.quantity;
+                        });
 
-                if (displayLineItems.length > 1) {
-                    var stockOnHandSum = 0;
-                    var currentStockSum = 0;
-                    displayLineItems.forEach(function(lineItem) {
-                        stockOnHandSum = stockOnHandSum + lineItem.stockOnHand;
-                        currentStockSum = currentStockSum + lineItem.quantity;
-                    });
+                        lineItemsData.push({
+                            productCode: currentProduct.productCode,
+                            productName: currentProduct.fullProductName,
+                            lotCode: null,
+                            expirationDate: null,
+                            stockOnHand: stockOnHandSum,
+                            currentStock: currentStockSum,
+                            reasons: null,
+                            comments: null
+                        });
+                        lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems));
+                    } else {
+                        var lineItem = buildLotItemListData(displayLineItems)[0];
+                        lineItemsData.push(_.assign(lineItem, {
+                            productCode: currentProduct.productCode,
+                            productName: currentProduct.fullProductName
+                        }));
+                    }
+                });
+            } catch (err) {
+                alertService.error('stockPhysicalInventoryDraft.submitInvalid', err);
+            }
 
-                    lineItemsData.push({
-                        productCode: currentProduct.productCode,
-                        productName: currentProduct.fullProductName,
-                        lotCode: null,
-                        expirationDate: null,
-                        stockOnHand: stockOnHandSum,
-                        currentStock: currentStockSum,
-                        reasons: null,
-                        comments: null
-                    });
-                    lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems));
-                } else {
-                    var lineItem = buildLotItemListData(displayLineItems)[0];
-                    lineItemsData.push(_.assign(lineItem, {
-                        productCode: currentProduct.productCode,
-                        productName: currentProduct.fullProductName
-                    }));
-                }
-            });
             return lineItemsData;
         }
 
@@ -1018,13 +1022,13 @@
                 return {
                     productCode: null,
                     productName: null,
-                    lotCode: lineItem.lot.lotCode,
-                    expirationDate: lineItem.lot.expirationDate,
+                    lotCode: _.get(lineItem, ['lot', 'lotCode']),
+                    expirationDate: _.get(lineItem, ['lot', 'expirationDate']),
                     stockOnHand: lineItem.stockOnHand,
                     currentStock: lineItem.quantity,
                     reasons: {
-                        reason: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].reason.name : null,
-                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
+                        reason: lineItem.stockAdjustments.length > 0 ? lineItem.stockAdjustments[0].reason.name : null,
+                        message: _.get(lineItem, ['$diffMessage', 'movementPopoverMessage'], null)
                     },
                     comments: lineItem.reasonFreeText
                 };
