@@ -58,15 +58,15 @@
 				<th class="text-center grey" ng-if="vm.inventoryByLocation">
 					{{'stockPhysicalInventoryHistory.location' | message}}
 				</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.productCode' | message}}</th>
-				<th class="text-center grey" ng-style="{'width' : '25%'}">{{'stockPhysicalInventoryHistory.product' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.lotCode' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </th>
-				<th class="text-center grey" ng-if="vm.inventoryByProduct">
+				<th class="text-center grey" style="min-width: 90px;">{{'stockPhysicalInventoryHistory.productCode' | message}}</th>
+				<th class="text-center grey">{{'stockPhysicalInventoryHistory.product' | message}}</th>
+				<th class="text-center grey" style="width: 120px;">{{'stockPhysicalInventoryHistory.lotCode' | message}}</th>
+				<th class="text-center grey" style="min-width: 110px;">{{'stockPhysicalInventoryHistory.expiryDate' | message}} </th>
+				<th class="text-center grey" ng-if="vm.inventoryByProduct" style="min-width: 160px;">
 					{{'stockPhysicalInventoryHistory.location' | message}}
 				</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</th>
-				<th class="text-center grey">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
+				<th class="text-center grey" style="width: 90px;">{{'stockPhysicalInventoryHistory.stockOnHand' | message}}</th>
+				<th class="text-center grey" style="width: 90px;">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
 				<th class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.reasons' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.comments' | message}}</th>
 			</tr>
