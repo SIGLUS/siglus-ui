@@ -67,16 +67,6 @@
          */
         vm.vvmStatuses = VVM_STATUS;
 
-        // SIGLUS-REFACTOR: starts here
-        // /**
-        //  * @ngdoc property
-        //  * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-        //  * @name showReasonDropdown
-        //  * @type {boolean}
-        //  */
-        // vm.showReasonDropdown = true;
-        // SIGLUS-REFACTOR: ends here
-
         /**
          * @ngdoc property
          * @propertyOf stock-adjustment-creation.controller:StockAdjustmentCreationController
@@ -116,48 +106,17 @@
         };
         // SIGLUS-REFACTOR: ends here
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-adjustment-creation.controller:StockAdjustmentCreationController
-         * @name addProduct
-         *
-         * @description
-         * Add a product for stock adjustment.
-         */
-        // SIGLUS-REFACTOR: starts here
-        // Comments for SOUP-10, use vm.addProductWithoutLot instead
-        // vm.addProduct = function() {
-        //     var selectedItem = orderableGroupService
-        //         .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
-        //
-        //     vm.addedLineItems.unshift(_.extend({
-        //         $errors: {},
-        //         $previewSOH: selectedItem.stockOnHand
-        //     },
-        //     selectedItem, copyDefaultValue()));
-        //
-        //     previousAdded = vm.addedLineItems[0];
-        //
-        //     vm.search();
-        // };
-
         vm.addProductWithoutLot = function() {
             loadingModalService.open();
             var selectedItem = orderableGroupService
                 .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
 
-            // var lotOptions = angular.copy(vm.lots);
-
-            var item = _.extend(
-                {
-                    $errors: {},
-                    $previewSOH: null,
-                    // lotOptions: angular.copy(lotOptions),
-                    orderableId: vm.selectedOrderableGroup[0].orderable.id,
-                    showSelect: false
-                },
-                selectedItem, copyDefaultValue()
-            );
+            var item = _.assign({
+                $errors: {},
+                $previewSOH: null,
+                orderableId: vm.selectedOrderableGroup[0].orderable.id,
+                showSelect: false
+            }, selectedItem, copyDefaultValue());
 
             item.isKit = !!(item.orderable && item.orderable.isKit)
                 || _.contains(['26A02', '26B02'], item.orderable.productCode);
@@ -448,12 +407,6 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
             if (validateAllAddedItems()) {
-                // SIGLUS-REFACTOR: starts here
-                // var confirmMessage = messageService.get(vm.key('confirmInfo'), {
-                //     username: user.username,
-                //     number: vm.addedLineItems.length
-                // });
-                // confirmService.confirm(confirmMessage, vm.key('confirm')).then(confirmSubmit);
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                     .then(function(signatureInfo) {
                         loadingModalService.open();
@@ -461,9 +414,6 @@
                     });
             } else {
                 cancelFilter();
-                // vm.keyword = null;
-                // reorderItems();
-                // SIGLUS-REFACTOR: ends here
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };

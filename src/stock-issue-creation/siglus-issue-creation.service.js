@@ -33,270 +33,129 @@
 
     function StockIssueCreationService(openlmisDateFilter, $q, siglusDownloadLoadingModalService) {
 
-        this.downloadPdf = downloadPdf;
         var deferred = $q.defer();
+        var PDF, pageNumber;
+        var IMAGE_WIDTH_PX = 1250;
+        var PDF_IMAGE_WIDTH = 585;
+        // 定义常量
+        var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
+        // 计算px to a4实际单位换算比例
+        var RATE = A4_WIDTH / CONTAINER_WIDTH;
+        // a4实际高度换算px
+        var a4Height2px = A4_HEIGHT / RATE;
+        var CONTENT_MARGIN_LEFT_PX = 4;
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-issue-creation.controller:SiglusStockIssueCreationController
-         * @name submit
-         *
-         * @description
-         * Submit all added items.
-         */
-        function getPdfName(facilityName, nowTime) {
-            var result = (
-                'Saída_'
-                + facilityName
-                + '_'
-                + nowTime
-                + '.pdf'
-            );
-            if (facilityName.indexOf('Outros') > -1) {
-                result = (
-                    'Saída_'
-                    + facilityName.split(':')[1]
-                    + '_'
-                    + nowTime
-                    + '.pdf'
-                );
-            }
-            return result;
+        this.downloadPdf = downloadPdf;
+
+        function init() {
+            // eslint-disable-next-line no-undef
+            PDF = new jsPDF('', 'pt', 'a4');
+            pageNumber = 1;
         }
 
         function downloadPdf(destinationName, callback) {
             siglusDownloadLoadingModalService.open();
+            init();
+
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
             var sectionSecond = document.getElementById('sectionSecond');
             var sectionThird = document.getElementById('sectionThird');
             var sectionFouth = document.getElementById('sectionFouth');
             var subInformation = document.getElementById('subInformation');
-            // 定义常量
-            var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
-            // 计算px to a4实际单位换算比例
-            var rate = A4_WIDTH / CONTAINER_WIDTH;
-            // a4实际高度换算px
-            var a4Height2px = A4_HEIGHT / rate;
             // 计算固定部分的高度总和
             var fixedHeight = sectionFirst.offsetHeight
                 + sectionSecond.offsetHeight
                 + sectionThird.offsetHeight
                 + sectionFouth.offsetHeight
                 + subInformation.offsetHeight
-                + PAGE_NUM_HEIGHT / rate;
+                + PAGE_NUM_HEIGHT / RATE;
             // 分页部分的高度计算
             var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            // 定义固定部分的promiseList
+            var fixedPromiseList = [
+                getElementToImagePromise(sectionFirst, IMAGE_WIDTH_PX),
+                getElementToImagePromise(sectionSecond, IMAGE_WIDTH_PX),
+                getElementToImagePromise(sectionThird, IMAGE_WIDTH_PX),
+                getElementToImagePromise(sectionFouth, IMAGE_WIDTH_PX),
+                getElementToImagePromise(subInformation, IMAGE_WIDTH_PX)
+            ];
+
             // 获取分页部分每行节点
             var needCalcTrNodes = document.querySelectorAll('#calcTr');
             // NodeList -> 数组
             var needCalcTrNodesArray = Array.from(needCalcTrNodes);
-            // 定义固定部分的promiseList
-            var fixedPromiseList = [
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionFirst, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionFirst.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionFirst.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionSecond, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionSecond.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionSecond.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionThird, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionThird.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionThird.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionFouth, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionFouth.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionFouth.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(subInformation, {
-                    scale: 1,
-                    width: 1250,
-                    height: subInformation.offsetHeight + 30
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: subInformation.offsetHeight + 30
-                    };
-                })
-            ];
             // 定义分页部分的promiseList
-            var promiseList = [];
-            // eslint-disable-next-line no-undef
-            var PDF = new jsPDF('', 'pt', 'a4');
-            _.forEach(needCalcTrNodesArray, function(item) {
-                // eslint-disable-next-line no-undef
-                promiseList.push(domtoimage.toPng(item, {
-                    scale: 1,
-                    width: 1250,
-                    height: item.offsetHeight + 1
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: item.offsetHeight + 1
-                    };
-                }));
+            var lineItemsPromiseList = _.map(needCalcTrNodesArray, function(element) {
+                return getElementToImagePromise(element, IMAGE_WIDTH_PX, element.offsetHeight + 1);
             });
+
             // 固定部分的图片转换完成后再去做分页部分的图片转换
-            $q.all(fixedPromiseList).then(function(reback) {
-                // 偏移量
-                var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
+            $q.all(fixedPromiseList).then(function(fixedPromiseResult) {
+                var sectionFirstResult = fixedPromiseResult[0];
+                var sectionSecondResult = fixedPromiseResult[1];
+                var sectionThirdResult = fixedPromiseResult[2];
+                var sectionFouthResult = fixedPromiseResult[3];
+                var subInformationResult = fixedPromiseResult[4];
+                // sectionFirst && sectionSecond are needed in every page top
+                var topComponents = [sectionFirstResult, sectionSecondResult];
+                // sectionFouthResult && subInformationResult are needed in every page bottom
+                var bottomComponents = [sectionFouthResult, subInformationResult];
+                // 起始偏移量
+                var offsetHeight = topComponents.reduce(function(acc, componentResult) {
+                    return acc + componentResult.nodeHeight;
+                });
                 // 当前分页部分tr的累积高度
                 var realHeight = 0;
-                // 页码
-                var pageNumber = 1;
-                var promiseListLen = promiseList.length;
-                $q.all(promiseList).then(function(result) {
+
+                $q.all(lineItemsPromiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
-                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
-                    PDF.addImage(
-                        reback[1].data,
-                        'JPEG',
-                        4,
-                        reback[0].nodeHeight * rate,
-                        585,
-                        reback[1].nodeHeight * rate
-                    );
-                    _.forEach(result, function(res, index) {
+                    addPageTopComponents(topComponents);
+
+                    _.forEach(result, function(lineItemPromiseResult, index) {
                         // 计算分页部分实际高度
-                        realHeight = realHeight + result[index].nodeHeight;
+                        realHeight = realHeight + lineItemPromiseResult.nodeHeight;
+                        // need new page
                         if (realHeight > canUseHeight) {
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
-                            // 遍历跟随分页部分重复的部分
-                            PDF.addImage(
-                                reback[3].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                    + reback[2].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[3].nodeHeight * rate
-                            );
-                            PDF.addImage(
-                                reback[4].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                    + reback[2].nodeHeight
-                                    + reback[3].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[4].nodeHeight * rate
-                            );
-                            // 新开分页
-                            PDF.addPage();
-                            pageNumber = pageNumber + 1;
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
-                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
-                            PDF.addImage(
-                                reback[1].data,
-                                'JPEG',
-                                4,
-                                reback[0].nodeHeight * rate, 585,
-                                reback[1].nodeHeight * rate
-                            );
+                            addPageNumberAtFooter(false);
+                            // add page bottom components
+                            addPageBottomComponents(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
+                            // new page
+                            addNewPage();
+                            addPageNumberAtFooter(false);
+
                             offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                             realHeight = 0;
                         }
+
                         // 添加当前遍历元素的图片到PDF
                         PDF.addImage(
-                            res.data,
-                            'JPEG',
-                            4,
-                            offsetHeight * rate,
-                            res.nodeWidth * rate,
-                            res.nodeHeight * rate
+                            lineItemPromiseResult.data, 'JPEG',
+                            CONTENT_MARGIN_LEFT_PX, offsetHeight * RATE,
+                            lineItemPromiseResult.nodeWidth * RATE, lineItemPromiseResult.nodeHeight * RATE
                         );
-                        if (promiseListLen - 1 === index) {
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString() + '-END',
-                                585 / 2,
-                                A4_HEIGHT
-                            );
+
+                        var isLastLineItem = index === lineItemsPromiseList.length - 1;
+                        if (isLastLineItem) {
+                            addPageNumberAtFooter(true);
+                            // TODO: what if sectionThirdResult need new page?
                             PDF.addImage(
-                                reback[2].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight + result[index].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[2].nodeHeight * rate
+                                sectionThirdResult.data, 'JPEG',
+                                CONTENT_MARGIN_LEFT_PX, (offsetHeight + lineItemPromiseResult.nodeHeight) * RATE,
+                                PDF_IMAGE_WIDTH, sectionThirdResult.nodeHeight * RATE
                             );
                         }
-                        offsetHeight = offsetHeight + result[index].nodeHeight;
+                        offsetHeight = offsetHeight + lineItemPromiseResult.nodeHeight;
                     });
-                    PDF.addImage(
-                        reback[3].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight + reback[2].nodeHeight) * rate,
-                        585,
-                        reback[3].nodeHeight * rate
+
+                    // add page bottom components
+                    addPageBottomComponents(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
+
+                    var fileName = getPdfName(
+                        destinationName,
+                        openlmisDateFilter(new Date(), 'yyyy-MM-dd')
                     );
-                    PDF.addImage(
-                        reback[4].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
-                        585,
-                        reback[4].nodeHeight * rate
-                    );
-                    PDF.save(
-                        getPdfName(
-                            destinationName,
-                            openlmisDateFilter(new Date(), 'yyyy-MM-dd')
-                        )
-                    );
+                    PDF.save(fileName);
                     siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
                 })
@@ -305,5 +164,65 @@
                     });
             });
         }
+
+        function getElementToImagePromise(element, width, height) {
+            var imageHeight = height ? height : element.offsetHeight;
+            // eslint-disable-next-line no-undef
+            return domtoimage.toPng(element, {
+                scale: 1,
+                width: width,
+                height: imageHeight
+            })
+                .then(function(data) {
+                    return {
+                        data: data,
+                        nodeWidth: width,
+                        nodeHeight: imageHeight
+                    };
+                });
+        }
+
+        function addPageTopComponents(componentResultList) {
+            var startYOffset = 0;
+            componentResultList.forEach(function(componentResult) {
+                PDF.addImage(
+                    componentResult.data, 'JPEG',
+                    CONTENT_MARGIN_LEFT_PX, startYOffset  * RATE,
+                    PDF_IMAGE_WIDTH, componentResult.nodeHeight * RATE
+                );
+                startYOffset = startYOffset + componentResult.nodeHeight;
+            });
+        }
+
+        function addPageBottomComponents(componentResultList, offsetY) {
+            var startYOffset = offsetY;
+            componentResultList.forEach(function(componentResult) {
+                PDF.addImage(
+                    componentResult.data, 'JPEG',
+                    CONTENT_MARGIN_LEFT_PX, startYOffset * RATE,
+                    PDF_IMAGE_WIDTH, componentResult.nodeHeight * RATE
+                );
+                startYOffset = startYOffset + componentResult.nodeHeight;
+            });
+        }
+
+        function addPageNumberAtFooter(isLastPage) {
+            var numberText = isLastPage ? pageNumber.toString() + '-END' : pageNumber.toString();
+            PDF.setFontSize(10);
+            PDF.text(numberText, PDF_IMAGE_WIDTH / 2, A4_HEIGHT);
+        }
+
+        function addNewPage() {
+            PDF.addPage();
+            pageNumber = pageNumber + 1;
+            addPageNumberAtFooter(false);
+        }
+
+        function getPdfName(facilityName, nowTime) {
+            var facility = facilityName.indexOf('Outros') > -1 ?
+                facilityName.split(':')[1] : facilityName;
+            return ('Saída_' + facility + '_' + nowTime + '.pdf');
+        }
+
     }
 })();
