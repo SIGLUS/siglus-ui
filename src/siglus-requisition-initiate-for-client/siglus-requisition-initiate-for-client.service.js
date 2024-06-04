@@ -41,7 +41,7 @@
         this.getClients = getClients;
 
         function getPeriods(facilityId, programId, emergency) {
-            return periodFactory.get(programId, facilityId, emergency);
+            return periodFactory.get(programId, facilityId, emergency === 'true');
         }
 
         function getClients(facilityId, programId) {
