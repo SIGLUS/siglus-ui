@@ -27,7 +27,7 @@
 
         $stateProvider.state('openlmis.requisitions.requisition', {
             label: 'requisitionView.viewRequisition',
-            url: '^/requisition/:rnr?facility&period&program&emergency',
+            url: '^/requisition/:rnr?facility&period&program&emergency&forClient',
             controller: 'RequisitionViewController',
             controllerAs: 'vm',
             templateUrl: 'requisition-view/requisition-view.html',
@@ -44,20 +44,22 @@
                     return currentUserService.getUserInfo();
                 },
                 requisition: function($stateParams, requisitionService) {
-                    if ($stateParams.rnr) {
-                        return requisitionService.get($stateParams.rnr).then(function(requisition) {
+                    if ($stateParams.forClient === 'true') {
+                        var promise = $stateParams.rnr ? requisitionService.get($stateParams.rnr)
+                            : requisitionService.buildDraftWithoutSaving($stateParams.facility,
+                                $stateParams.period, $stateParams.program);
+                        return promise.then(function(requisition) {
+                            requisition.$isEditable = true;
+                            requisition.isCreateForClient = true;
                             return requisitionService.setOrderableUnitForRequisition(requisition);
                         });
                     }
-                    return requisitionService.buildDraftWithoutSaving($stateParams.facility,
-                        $stateParams.period, $stateParams.program).then(function(requisition) {
-                        requisition.$isEditable = true;
-                        requisition.isCreateForClient = true;
+                    return requisitionService.get($stateParams.rnr).then(function(requisition) {
                         return requisitionService.setOrderableUnitForRequisition(requisition);
                     });
                 },
-                isCreateForClient: function($stateParams, requisition) {
-                    return requisition.id !== $stateParams.rnr;
+                isCreateForClient: function(requisition) {
+                    return !!requisition.isCreateForClient;
                 },
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);
