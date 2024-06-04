@@ -49,8 +49,7 @@
             pageNumber = 1;
         }
 
-        // pass PDF obj from controller
-        function downloadPdf(destinationName, callback) {
+        function downloadPdf(destinationName, callback, isReceive) {
             siglusDownloadLoadingModalService.open();
             init();
 
@@ -147,7 +146,7 @@
                     // add page bottom components
                     addComponentsImage(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
 
-                    var fileName = getPdfName(destinationName);
+                    var fileName = getPdfName(destinationName, isReceive);
                     PDF.save(fileName);
                     siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
@@ -199,11 +198,13 @@
             addPageNumberAtFooter(false);
         }
 
-        function getPdfName(facilityName) {
-            var facility = facilityName.indexOf('Outros') > -1 ?
+        // is Issue by default, unless isReceive = true
+        function getPdfName(facilityName, isReceive) {
+            var prefix = isReceive ? 'Entrada_' : 'Saída_';
+            var facility = !isReceive && facilityName.indexOf('Outros') > -1 ?
                 facilityName.split(':')[1] : facilityName;
             var nowTime = moment().format('YYYY-MM-DD');
-            return ('Saída_' + facility + '_' + nowTime + '.pdf');
+            return (prefix + facility + '_' + nowTime + '.pdf');
         }
 
     }

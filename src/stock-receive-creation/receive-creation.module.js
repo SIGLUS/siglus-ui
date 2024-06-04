@@ -18,6 +18,7 @@
 
     angular.module('stock-receive-creation', [
         'stock-adjustment-creation',
-        'stock-orderable-group'
+        'stock-orderable-group',
+        'siglus-issue-or-receive-report'
     ]);
 })();
