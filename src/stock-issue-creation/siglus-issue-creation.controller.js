@@ -30,25 +30,25 @@
 
     controller.$inject = [
         '$scope', 'draft', 'mergedItems', 'initialDraftInfo', '$state', '$stateParams', '$filter',
-        'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'confirmService',
-        'messageService', 'isMerge',
-        'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE',
-        'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
-        'siglusSignatureWithDateModalService', 'stockAdjustmentService', 'openlmisDateFilter',
+        'confirmDiscardService', 'program', 'facility', 'orderableGroups', 'reasons', 'messageService',
+        'isMerge', 'stockAdjustmentCreationService', 'notificationService', 'orderableGroupService',
+        'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService', 'dateUtils',
+        'displayItems', 'siglusSignatureWithDateModalService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
-        'siglusStockUtilsService', 'localStorageFactory', 'siglusDownloadLoadingModalService',
-        'orderablesPrice', 'moment', 'stockIssueCreationService'
+        'siglusStockUtilsService', 'localStorageFactory', 'orderablesPrice', 'moment',
+        'SiglusIssueOrReceiveReportService'
     ];
 
-    function controller($scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
-                        confirmDiscardService, program, facility, orderableGroups, reasons, confirmService,
-                        messageService, isMerge, stockAdjustmentCreationService, notificationService,
-                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService,
-                        dateUtils, displayItems, ADJUSTMENT_TYPE, siglusSignatureWithDateModalService,
-                        stockAdjustmentService, openlmisDateFilter, siglusRemainingProductsModalService,
-                        siglusStockIssueService, alertConfirmModalService, siglusStockUtilsService,
-                        localStorageFactory, siglusDownloadLoadingModalService, orderablesPrice, moment,
-                        stockIssueCreationService) {
+    function controller(
+        $scope, draft, mergedItems, initialDraftInfo, $state, $stateParams, $filter,
+        confirmDiscardService, program, facility, orderableGroups, reasons, messageService,
+        isMerge, stockAdjustmentCreationService, notificationService, orderableGroupService,
+        MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService, alertService, dateUtils,
+        displayItems, siglusSignatureWithDateModalService, openlmisDateFilter,
+        siglusRemainingProductsModalService, siglusStockIssueService, alertConfirmModalService,
+        siglusStockUtilsService, localStorageFactory, orderablesPrice, moment,
+        SiglusIssueOrReceiveReportService
+    ) {
         var vm = this,
             previousAdded = {};
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
@@ -430,7 +430,7 @@
                             vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
                             vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
                             vm.signature = data.signature;
-                            stockIssueCreationService.downloadPdf(vm.destinationName, function() {
+                            new SiglusIssueOrReceiveReportService().downloadPdf(vm.destinationName, function() {
                                 loadingModalService.open();
                                 confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
                             });

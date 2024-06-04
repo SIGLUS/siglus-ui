@@ -21,6 +21,7 @@
         'ui.router',
         'openlmis-table',
         'expired-products-print',
-        'expired-products-pick-pack'
+        'expired-products-pick-pack',
+        'siglus-issue-or-receive-report'
     ]);
 })();

@@ -28,15 +28,17 @@
         .module('siglus-expired-products')
         .controller('ExpiredProductsViewController', controller);
 
-    controller.$inject = ['$state', '$stateParams', '$window', 'facility', 'orderablesPrice',
-        'expiredProducts', 'displayItems',
-        'siglusSignatureWithDateModalService', 'expiredProductsViewService', 'loadingModalService',
-        'stockIssueCreationService', 'openlmisDateFilter'];
+    controller.$inject = [
+        '$state', '$stateParams', '$window', 'facility', 'orderablesPrice', 'expiredProducts',
+        'displayItems', 'siglusSignatureWithDateModalService', 'expiredProductsViewService',
+        'loadingModalService', 'openlmisDateFilter', 'SiglusIssueOrReceiveReportService'
+    ];
 
-    function controller($state, $stateParams, $window, facility, orderablesPrice,
-                        expiredProducts, displayItems,
-                        siglusSignatureWithDateModalService, expiredProductsViewService, loadingModalService,
-                        stockIssueCreationService, openlmisDateFilter) {
+    function controller(
+        $state, $stateParams, $window, facility, orderablesPrice, expiredProducts,
+        displayItems, siglusSignatureWithDateModalService, expiredProductsViewService,
+        loadingModalService, openlmisDateFilter, SiglusIssueOrReceiveReportService
+    ) {
         var vm = this;
 
         vm.keyword = '';
@@ -193,9 +195,8 @@
                         documentNumber: vm.facility.code + '_' + openlmisDateFilter(now, 'ddMMyyyy')
                     };
                     vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
-                    vm.nowTime = openlmisDateFilter(now, 'd MMM y h:mm:ss a');
                     vm.signature = data.signature;
-                    stockIssueCreationService.downloadPdf(vm.supplier, function() {
+                    new SiglusIssueOrReceiveReportService().downloadPdf(vm.supplier, function() {
                         loadingModalService.open();
                         expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
                             vm.signature, vm.initialDraftInfo.documentNumber)

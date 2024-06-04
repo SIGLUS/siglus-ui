@@ -19,7 +19,7 @@
 
     /**
    * @ngdoc controller
-   * @name stock-issue-creation.controller:SiglusStockIssueCreationController
+   * @name stock-issue-creation.controller:SiglusStockIssueViewController
    *
    * @description
    * Controller for managing stock issue creation.

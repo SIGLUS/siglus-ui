@@ -83,7 +83,7 @@
                         ? $stateParams.initialDraftId[0] : $stateParams.initialDraftId;
                     return siglusStockIssueService.getMergedDraft(initialDraftId).catch(
                         function(error) {
-                            if (error.data.businessErrorExtraData === 'subDrafts not all submitted') {
+                            if (_.get(error, ['data', 'businessErrorExtraData']) === 'subDrafts not all submitted') {
                                 alertService.error('PhysicalInventoryDraftList.mergeError');
                                 throw 'subDrafts not all submitted';
                             }

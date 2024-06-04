@@ -16,25 +16,19 @@
 (function() {
     'use strict';
 
-    /**
-   * @ngdoc controller
-   * @name stock-issue-creation.service:StockIssueCreationService
-   *
-   * @description
-   * Service for managing stock issue creation.
-   */
     angular
-        .module('stock-issue-creation')
-        .service('stockIssueCreationService', StockIssueCreationService);
+        .module('siglus-issue-or-receive-report')
+        .factory('SiglusIssueOrReceiveReportService', SiglusIssueOrReceiveReportService);
 
-    StockIssueCreationService.$inject = [
-        'openlmisDateFilter', '$q', 'siglusDownloadLoadingModalService'
+    SiglusIssueOrReceiveReportService.$inject = [
+        'moment', '$q', 'siglusDownloadLoadingModalService'
     ];
 
-    function StockIssueCreationService(openlmisDateFilter, $q, siglusDownloadLoadingModalService) {
-
-        var deferred = $q.defer();
+    function SiglusIssueOrReceiveReportService(
+        moment, $q, siglusDownloadLoadingModalService
+    ) {
         var PDF, pageNumber;
+        var deferred = $q.defer();
         var IMAGE_WIDTH_PX = 1250;
         var PDF_IMAGE_WIDTH = 585;
         // 定义常量
@@ -45,7 +39,9 @@
         var a4Height2px = A4_HEIGHT / RATE;
         var CONTENT_MARGIN_LEFT_PX = 4;
 
-        this.downloadPdf = downloadPdf;
+        SiglusIssueOrReceiveReportService.prototype.downloadPdf = downloadPdf;
+        function SiglusIssueOrReceiveReportService() {}
+        return SiglusIssueOrReceiveReportService;
 
         function init() {
             // eslint-disable-next-line no-undef
@@ -53,6 +49,7 @@
             pageNumber = 1;
         }
 
+        // pass PDF obj from controller
         function downloadPdf(destinationName, callback) {
             siglusDownloadLoadingModalService.open();
             init();
@@ -78,7 +75,7 @@
                 getElementToImagePromise(sectionSecond, IMAGE_WIDTH_PX),
                 getElementToImagePromise(sectionThird, IMAGE_WIDTH_PX),
                 getElementToImagePromise(sectionFouth, IMAGE_WIDTH_PX),
-                getElementToImagePromise(subInformation, IMAGE_WIDTH_PX)
+                getElementToImagePromise(subInformation, IMAGE_WIDTH_PX, subInformation.offsetHeight + 30)
             ];
 
             // 获取分页部分每行节点
@@ -100,17 +97,17 @@
                 // sectionFirst && sectionSecond are needed in every page top
                 var topComponents = [sectionFirstResult, sectionSecondResult];
                 // sectionFouthResult && subInformationResult are needed in every page bottom
-                var bottomComponents = [sectionFouthResult, subInformationResult];
+                var  bottomComponents = [sectionFouthResult, subInformationResult];
                 // 起始偏移量
                 var offsetHeight = topComponents.reduce(function(acc, componentResult) {
                     return acc + componentResult.nodeHeight;
-                });
+                }, 0);
                 // 当前分页部分tr的累积高度
                 var realHeight = 0;
 
                 $q.all(lineItemsPromiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
-                    addPageTopComponents(topComponents);
+                    addComponentsImage(topComponents);
 
                     _.forEach(result, function(lineItemPromiseResult, index) {
                         // 计算分页部分实际高度
@@ -119,10 +116,9 @@
                         if (realHeight > canUseHeight) {
                             addPageNumberAtFooter(false);
                             // add page bottom components
-                            addPageBottomComponents(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
+                            addComponentsImage(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
                             // new page
                             addNewPage();
-                            addPageNumberAtFooter(false);
 
                             offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                             realHeight = 0;
@@ -147,14 +143,11 @@
                         }
                         offsetHeight = offsetHeight + lineItemPromiseResult.nodeHeight;
                     });
-
+                    // TODO: need new page?
                     // add page bottom components
-                    addPageBottomComponents(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
+                    addComponentsImage(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
 
-                    var fileName = getPdfName(
-                        destinationName,
-                        openlmisDateFilter(new Date(), 'yyyy-MM-dd')
-                    );
+                    var fileName = getPdfName(destinationName);
                     PDF.save(fileName);
                     siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
@@ -182,20 +175,8 @@
                 });
         }
 
-        function addPageTopComponents(componentResultList) {
-            var startYOffset = 0;
-            componentResultList.forEach(function(componentResult) {
-                PDF.addImage(
-                    componentResult.data, 'JPEG',
-                    CONTENT_MARGIN_LEFT_PX, startYOffset  * RATE,
-                    PDF_IMAGE_WIDTH, componentResult.nodeHeight * RATE
-                );
-                startYOffset = startYOffset + componentResult.nodeHeight;
-            });
-        }
-
-        function addPageBottomComponents(componentResultList, offsetY) {
-            var startYOffset = offsetY;
+        function addComponentsImage(componentResultList, offsetY) {
+            var startYOffset = offsetY ? offsetY : 0;
             componentResultList.forEach(function(componentResult) {
                 PDF.addImage(
                     componentResult.data, 'JPEG',
@@ -218,9 +199,10 @@
             addPageNumberAtFooter(false);
         }
 
-        function getPdfName(facilityName, nowTime) {
+        function getPdfName(facilityName) {
             var facility = facilityName.indexOf('Outros') > -1 ?
                 facilityName.split(':')[1] : facilityName;
+            var nowTime = moment().format('YYYY-MM-DD');
             return ('Saída_' + facility + '_' + nowTime + '.pdf');
         }
 
