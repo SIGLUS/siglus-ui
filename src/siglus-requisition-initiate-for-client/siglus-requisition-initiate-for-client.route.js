@@ -31,7 +31,7 @@
             controller: 'SiglusRequisitionInitiateForClientController',
             controllerAs: 'vm',
             templateUrl: 'siglus-requisition-initiate-for-client/siglus-requisition-initiate-for-client.html',
-            canAccess: [
+            accessRights: [
                 REQUISITION_RIGHTS.REQUISITION_CREATE
             ]
         });
