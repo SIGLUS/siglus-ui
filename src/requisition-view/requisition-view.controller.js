@@ -275,6 +275,11 @@
             if (isCreateForClient) {
                 vm.commentsRequired = false;
                 vm.forceOpen = false;
+                // if the requisition is created-for-client, using Delete instead of Reject
+                if (vm.displayRejectButton) {
+                    vm.displayRejectButton = false;
+                    vm.displayDeleteButton = true;
+                }
             }
         }
 
@@ -358,6 +363,7 @@
                 var storageKey = vm.requisition.facility.id + vm.requisition.program.id;
                 vm.requisition.requisitionLineItems.forEach(function(lineItem) {
                     lineItem[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY] = lineItem.requestedQuantity;
+                    lineItem[TEMPLATE_COLUMNS.APPROVED_QUANTITY] = lineItem.requestedQuantity;
                 });
                 localStorageService.add(storageKey, angular.toJson(vm.requisition));
                 vm.requisition.id = storageKey;
