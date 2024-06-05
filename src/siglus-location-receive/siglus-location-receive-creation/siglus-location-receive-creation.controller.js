@@ -22,33 +22,31 @@
         .controller('siglusLocationReceiveCreationController', siglusLocationReceiveCreationController);
 
     siglusLocationReceiveCreationController.$inject = [
-        '$stateParams', '$q', '$scope', '$state', 'DRAFT_TYPE',
-        'draftInfo', 'facility', 'reasons',
-        'initialDraftInfo', 'locations', 'addedLineItems', 'productList', 'siglusStockUtilsService', 'displayItems',
+        '$stateParams', '$scope', '$state', 'DRAFT_TYPE', 'draftInfo', 'facility', 'reasons',
+        'initialDraftInfo', 'locations', 'addedLineItems', 'productList', 'displayItems',
         'siglusLocationCommonApiService', 'SiglusLocationCommonUtilsService',
-        'siglusStockDispatchService', 'addAndRemoveReceiveLineItemIssueService', 'alertConfirmModalService',
-        'loadingModalService', 'notificationService', 'paginationService', 'messageService', 'isMerge', 'moment',
-        'siglusStockIssueLocationService', 'siglusRemainingProductsModalService', 'alertService',
-        'siglusSignatureWithDateModalService', 'program', 'confirmDiscardService', 'siglusDownloadLoadingModalService',
-        'openlmisDateFilter', 'areaLocationInfo', 'siglusPrintPalletLabelComfirmModalService', 'orderablesPrice'
+        'siglusStockDispatchService', 'addAndRemoveReceiveLineItemIssueService',
+        'alertConfirmModalService', 'loadingModalService', 'notificationService',
+        'paginationService', 'messageService', 'isMerge', 'moment',
+        'siglusStockIssueLocationService', 'siglusRemainingProductsModalService',
+        'alertService', 'siglusSignatureWithDateModalService', 'program',
+        'confirmDiscardService', 'openlmisDateFilter', 'areaLocationInfo',
+        'siglusPrintPalletLabelComfirmModalService', 'orderablesPrice',
+        'SiglusIssueOrReceiveReportService'
     ];
 
     function siglusLocationReceiveCreationController(
-        $stateParams, $q, $scope, $state, DRAFT_TYPE, draftInfo, facility,
-        reasons, initialDraftInfo, locations, addedLineItems, productList,
-        siglusStockUtilsService, displayItems,
+        $stateParams, $scope, $state, DRAFT_TYPE, draftInfo, facility, reasons,
+        initialDraftInfo, locations, addedLineItems, productList, displayItems,
         siglusLocationCommonApiService, SiglusLocationCommonUtilsService,
-        siglusStockDispatchService,
-        addAndRemoveReceiveLineItemIssueService, alertConfirmModalService,
-        loadingModalService, notificationService, paginationService,
-        messageService, isMerge,
-        moment, siglusStockIssueLocationService,
-        siglusRemainingProductsModalService, alertService,
-        siglusSignatureWithDateModalService, program,
-        confirmDiscardService,
-        siglusDownloadLoadingModalService, openlmisDateFilter,
-        areaLocationInfo, siglusPrintPalletLabelComfirmModalService,
-        orderablesPrice
+        siglusStockDispatchService, addAndRemoveReceiveLineItemIssueService,
+        alertConfirmModalService, loadingModalService, notificationService,
+        paginationService, messageService, isMerge, moment,
+        siglusStockIssueLocationService, siglusRemainingProductsModalService,
+        alertService, siglusSignatureWithDateModalService, program,
+        confirmDiscardService, openlmisDateFilter, areaLocationInfo,
+        siglusPrintPalletLabelComfirmModalService, orderablesPrice,
+        SiglusIssueOrReceiveReportService
     ) {
         var orderablesPriceMap = orderablesPrice.data;
         addedLineItems.forEach(function(lineItem) {
@@ -77,15 +75,12 @@
 
         vm.isMerge = isMerge;
 
-        var deferred = $q.defer();
-
         vm.$onInit = function() {
             $state.current.label = isMerge
                 ? messageService.get('stockIssueCreation.mergedDraft')
                 : messageService.get('stockIssue.draft') + ' ' + draftInfo.draftNumber;
             vm.addedLineItems = addedLineItems || [];
-            vm.sourceName = siglusStockUtilsService
-                .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
+            vm.sourceName = '';
             filterProductList();
 
             var validator = function(lineItems) {
@@ -258,7 +253,7 @@
             currentItem.$errors.quantityError = '';
             if (!_.isNumber(currentItem.quantity) || currentItem.quantity === 0) {
                 currentItem.$errors.quantityError = 'issueLocationCreation.inputPositiveNumber';
-                return;
+
             }
         }
 
@@ -489,7 +484,6 @@
         }
 
         vm.save = function() {
-
             loadingModalService.open();
             siglusStockDispatchService.saveDraft($stateParams.initialDraftId,
                 $stateParams.draftId, getLineItems(),
@@ -607,253 +601,6 @@
             $state.go('^', $stateParams);
         };
 
-        function getPdfName(facilityName, nowTime) {
-            return (
-                'Entrada_'
-              + facilityName
-              + '_'
-              + nowTime
-              + '.pdf'
-            );
-        }
-        function downloadPdf() {
-            siglusDownloadLoadingModalService.open();
-            // 获取固定高度的dom节点
-            var sectionFirst = document.getElementById('sectionFirst');
-            var sectionSecond = document.getElementById('sectionSecond');
-            var sectionThird = document.getElementById('sectionThird');
-            var sectionFouth = document.getElementById('sectionFouth');
-            var subInformation = document.getElementById('subInformation');
-            // 定义常量
-            var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
-            // 计算px to a4实际单位换算比例
-            var rate = A4_WIDTH / CONTAINER_WIDTH;
-            // a4实际高度换算px
-            var a4Height2px = A4_HEIGHT / rate;
-            // 计算固定部分的高度总和
-            var fixedHeight = sectionFirst.offsetHeight
-              + sectionSecond.offsetHeight
-              + sectionThird.offsetHeight
-              + sectionFouth.offsetHeight
-              + subInformation.offsetHeight
-              + PAGE_NUM_HEIGHT / rate;
-            // 分页部分的高度计算
-            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
-            // 获取分页部分每行节点
-            var needCalcTrNodes = document.querySelectorAll('#calcTr');
-            // NodeList -> 数组
-            var needCalcTrNodesArray = Array.from(needCalcTrNodes);
-            // 定义固定部分的promiseList
-            var fixedPromiseList = [
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionFirst, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionFirst.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionFirst.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionSecond, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionSecond.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionSecond.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionThird, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionThird.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionThird.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionFouth, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionFouth.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionFouth.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(subInformation, {
-                    scale: 1,
-                    width: 1250,
-                    height: subInformation.offsetHeight + 30
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: subInformation.offsetHeight + 30
-                    };
-                })
-            ];
-            // 定义分页部分的promiseList
-            var promiseList = [];
-            // eslint-disable-next-line no-undef
-            var PDF = new jsPDF('', 'pt', 'a4');
-            _.forEach(needCalcTrNodesArray, function(item) {
-                // eslint-disable-next-line no-undef
-                promiseList.push(domtoimage.toPng(item, {
-                    scale: 1,
-                    width: 1250,
-                    height: item.offsetHeight + 1
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: item.offsetHeight + 1
-                    };
-                }));
-            });
-            // 固定部分的图片转换完成后再去做分页部分的图片转换
-            $q.all(fixedPromiseList).then(function(reback) {
-                // 偏移量
-                var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
-                // 当前分页部分tr的累积高度
-                var realHeight = 0;
-                // 页码
-                var pageNumber = 1;
-                var promiseListLen = promiseList.length;
-                $q.all(promiseList).then(function(result) {
-                    // 添加分页部分上方的固定部分图片到PDF中
-                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
-                    PDF.addImage(
-                        reback[1].data,
-                        'JPEG',
-                        4,
-                        reback[0].nodeHeight * rate,
-                        585,
-                        reback[1].nodeHeight * rate
-                    );
-                    _.forEach(result, function(res, index) {
-                        // 计算分页部分实际高度
-                        realHeight = realHeight + result[index].nodeHeight;
-                        if (realHeight > canUseHeight) {
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
-                            PDF.addImage(
-                                reback[3].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                + reback[2].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[3].nodeHeight * rate
-                            );
-                            PDF.addImage(
-                                reback[4].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                + reback[2].nodeHeight
-                                + reback[3].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[4].nodeHeight * rate
-                            );
-                            // 新开分页
-                            PDF.addPage();
-                            pageNumber = pageNumber + 1;
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
-                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
-                            PDF.addImage(
-                                reback[1].data,
-                                'JPEG',
-                                4,
-                                reback[0].nodeHeight * rate, 585,
-                                reback[1].nodeHeight * rate
-                            );
-                            offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
-                            realHeight = 0;
-                        }
-                        // 添加当前遍历元素的图片到PDF
-                        PDF.addImage(
-                            res.data,
-                            'JPEG',
-                            4,
-                            offsetHeight * rate,
-                            res.nodeWidth * rate,
-                            res.nodeHeight * rate
-                        );
-                        if (promiseListLen - 1 === index) {
-                            PDF.addImage(
-                                reback[2].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight + result[index].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[2].nodeHeight * rate
-                            );
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString() + '-END',
-                                585 / 2,
-                                A4_HEIGHT
-                            );
-                        }
-                        offsetHeight = offsetHeight + result[index].nodeHeight;
-                    });
-                    PDF.addImage(
-                        reback[3].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight + reback[2].nodeHeight) * rate,
-                        585,
-                        reback[3].nodeHeight * rate
-                    );
-                    PDF.addImage(
-                        reback[4].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
-                        585,
-                        reback[4].nodeHeight * rate
-                    );
-                    PDF.save(
-                        getPdfName(
-                            vm.sourceName,
-                            openlmisDateFilter(new Date(), 'yyyy-MM-dd')
-                        )
-                    );
-                    siglusDownloadLoadingModalService.close();
-                    deferred.resolve('success');
-                });
-            });
-        }
-
         function getSumQuantity(items) {
             var total = 0;
             _.each(items, function(item) {
@@ -892,91 +639,95 @@
         }
 
         vm.submit = function() {
-            if (isTableFormValid()) {
-                if (isMerge) {
-                    siglusPrintPalletLabelComfirmModalService.show()
-                        .then(function(result) {
-                            if (result) {
-                                vm.downloadPrint();
-                            }
-
-                            vm.type = 'receive';
-                            vm.downloadLineItems = getDownloadLineItems();
-                            vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
-                                var price = c.price * 100;
-                                r = r + c.quantity * price;
-                                return r;
-                            }, 0);
-                            vm.totalPriceValue = _.isNaN(vm.totalPriceValue) ? 0 : vm.totalPriceValue;
-                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
-                            vm.client = vm.facility.name;
-                            vm.supplier = vm.initialDraftInfo.sourceName === 'Outros'
-                                ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
-
-                            siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
-                                .then(function(data) {
-                                    loadingModalService.open();
-                                    var signature = data.signature;
-                                    var occurredDate = data.occurredDate;
-                                    var subDrafts = _.uniq(_.map(draftInfo.lineItems, function(item) {
-                                        return item.subDraftId;
-                                    }));
-
-                                    vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
-                                    vm.signature = data.signature;
-                                    setTimeout(function() {
-                                        downloadPdf();
-                                    }, 200);
-
-                                    deferred.promise.then(function() {
-                                        siglusStockIssueLocationService
-                                            .mergeSubmitDraft($stateParams.programId, getLineItems(),
-                                                signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
-                                            .then(function() {
-                                                $scope.needToConfirm = false;
-                                                $state.go('openlmis.locationManagement.stockOnHand', {
-                                                    facility: facility.id,
-                                                    program: program
-                                                });
-                                            })
-                                            .catch(function(error) {
-                                                loadingModalService.close();
-                                                if (error.data &&
-                                        error.data.businessErrorExtraData === 'subDrafts quantity not match') {
-                                                    alertService.error('stockIssueCreation.draftHasBeenUpdated');
-                                                } else if (
-                                                    // eslint-disable-next-line max-len
-                                                    _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
-                                                ) {
-                                                    alertService.error('openlmisModal.dateConflict');
-                                                }
-                                            });
-                                    });
-
-                                });
-                        });
-
-                } else {
-                    loadingModalService.open();
-                    siglusStockIssueLocationService.submitDraft($stateParams.initialDraftId, $stateParams.draftId,
-                        getLineItems(), DRAFT_TYPE[$stateParams.moduleType][$stateParams.draftType])
-                        .then(function() {
-
-                            loadingModalService.close();
-                            notificationService.success('issueLocationCreation.submitSuccessfully');
-                            $scope.needToConfirm = false;
-                            $state.go('^', $stateParams);
-                        })
-                        .catch(function(error) {
-                            loadingModalService.close();
-                            productDuplicatedHandler(error);
-                        });
-                }
-
-            } else {
+            if (!isTableFormValid()) {
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
+                return;
             }
+
+            if (isMerge) {
+                siglusPrintPalletLabelComfirmModalService.show()
+                    .then(function(result) {
+                        if (result) {
+                            vm.downloadPrint();
+                        }
+                        // following data is used in siglus-issue-or-receive-report.html
+                        vm.type = 'receive';
+                        vm.downloadLineItems = getDownloadLineItems();
+                        vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
+                            var price = c.price * 100;
+                            r = r + c.quantity * price;
+                            return r;
+                        }, 0);
+                        vm.totalPriceValue = _.isNaN(vm.totalPriceValue) ? 0 : vm.totalPriceValue;
+                        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                        vm.client = vm.facility.name;
+                        vm.supplier = vm.initialDraftInfo.sourceName === 'Outros'
+                            ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
+
+                        siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
+                            .then(function(data) {
+                                loadingModalService.open();
+                                var subDrafts = _.uniq(_.map(draftInfo.lineItems, function(item) {
+                                    return item.subDraftId;
+                                }));
+
+                                vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                                vm.signature = data.signature;
+
+                                new SiglusIssueOrReceiveReportService().downloadPdf(
+                                    vm.sourceName,
+                                    function() {
+                                        submitMergedDraft(subDrafts, data.occurredDate);
+                                    },
+                                    true
+                                );
+
+                            });
+                    });
+            } else {
+                // isMerge === false
+                loadingModalService.open();
+                siglusStockIssueLocationService.submitDraft(
+                    $stateParams.initialDraftId, $stateParams.draftId,
+                    getLineItems(), DRAFT_TYPE[$stateParams.moduleType][$stateParams.draftType]
+                )
+                    .then(function() {
+                        loadingModalService.close();
+                        notificationService.success('issueLocationCreation.submitSuccessfully');
+                        $scope.needToConfirm = false;
+                        $state.go('^', $stateParams);
+                    })
+                    .catch(function(error) {
+                        loadingModalService.close();
+                        productDuplicatedHandler(error);
+                    });
+            }
+
         };
+
+        function submitMergedDraft(subDrafts, occurredDate) {
+            siglusStockIssueLocationService.mergeSubmitDraft(
+                $stateParams.programId, getLineItems(), vm.signature,
+                vm.initialDraftInfo, facility.id, subDrafts, occurredDate
+            )
+                .then(function() {
+                    $scope.needToConfirm = false;
+                    $state.go('openlmis.locationManagement.stockOnHand', {
+                        facility: facility.id,
+                        program: program
+                    });
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    var QUANTITY_NOT_MATCH_DATA = 'subDrafts quantity not match';
+                    var DATE_INVALID_MESSAGE_KEY = 'siglusapi.error.stockManagement.movement.date.invalid';
+                    if (_.get(error, ['data', 'businessErrorExtraData']) === QUANTITY_NOT_MATCH_DATA) {
+                        alertService.error('stockIssueCreation.draftHasBeenUpdated');
+                    } else if (_.get(error, ['data', 'messageKey']) === DATE_INVALID_MESSAGE_KEY) {
+                        alertService.error('openlmisModal.dateConflict');
+                    }
+                });
+        }
 
         vm.downloadPrint = function() {
             var printLineItems = getLineItems();

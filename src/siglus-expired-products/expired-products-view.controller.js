@@ -188,6 +188,7 @@
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                 .then(function(data) {
                     var now = new Date();
+                    // following data is used in siglus-issue-or-receive-report.html
                     vm.type = 'issue';
                     vm.supplier = vm.facility.name;
                     vm.client = undefined;
@@ -195,6 +196,7 @@
                         documentNumber: vm.facility.code + '_' + openlmisDateFilter(now, 'ddMMyyyy')
                     };
                     vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                    vm.nowTime = openlmisDateFilter(now, 'd MMM y h:mm:ss a');
                     vm.signature = data.signature;
                     new SiglusIssueOrReceiveReportService().downloadPdf(vm.supplier, function() {
                         loadingModalService.open();

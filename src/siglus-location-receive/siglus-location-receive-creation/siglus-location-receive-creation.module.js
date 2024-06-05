@@ -23,7 +23,9 @@
    * @description
    * Provides stock issue state and controller.
    */
-    angular.module('siglus-location-receive-creation', []);
+    angular.module('siglus-location-receive-creation', [
+        'siglus-issue-or-receive-report'
+    ]);
 
 })();
 
