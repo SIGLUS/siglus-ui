@@ -57,7 +57,15 @@
                     });
                 },
                 isCreateForClient: function(requisition) {
-                    return !!requisition.isCreateForClient;
+                    var forClient = !!requisition.isCreateForClient;
+                    if (forClient) {
+                        requisition.requisitionLineItems.forEach(function(item) {
+                            if (!item.approvedQuantity) {
+                                item.approvedQuantity = item.authorizedQuantity;
+                            }
+                        });
+                    }
+                    return forClient;
                 },
                 program: function(programService, requisition) {
                     return programService.get(requisition.program.id);
