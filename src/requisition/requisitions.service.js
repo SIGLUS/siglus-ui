@@ -142,7 +142,8 @@
             batchClose: batchClose,
             closeRequisitionsForApproval: closeRequisitionsForApproval,
             buildDraftWithoutSaving: buildDraftWithoutSaving,
-            getApprovedProducts: getApprovedProducts
+            getApprovedProducts: getApprovedProducts,
+            extendLineItemsWithOrderablesAndFtaps: extendLineItemsWithOrderablesAndFtaps
             // SIGLUS-REFACTOR: ends here
         };
 

@@ -398,6 +398,9 @@
 
         function createForClient() {
             this.id = null;
+            this.requisitionLineItems.forEach(function(lineItem) {
+                lineItem[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY] = lineItem.requestedQuantity;
+            });
             return handlePromise(resource.createForClient({
                 id: this.facility.id,
                 idempotencyKey: this.idempotencyKey
@@ -980,6 +983,9 @@
         // #517: admin can set details of suggested quantity
         function transformLineItem(lineItem, columns) {
             angular.forEach(columns, function(column) {
+                if (TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY === column.name) {
+                    return;
+                }
                 if (!column.$display || (column.source === COLUMN_SOURCES.CALCULATED
                     && column.name !== TEMPLATE_COLUMNS.SUGGESTED_QUANTITY
                     && column.name !== TEMPLATE_COLUMNS.EXPIRATION_DATE)) {

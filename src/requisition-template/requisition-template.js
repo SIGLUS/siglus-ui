@@ -35,6 +35,7 @@
         RequisitionTemplate.prototype.getColumn = getColumn;
         RequisitionTemplate.prototype.hasSkipColumn = hasSkipColumn;
         RequisitionTemplate.prototype.hideSkippedLineItems = hideSkippedLineItems;
+        RequisitionTemplate.prototype.getColumnsByNames = getColumnsByNames;
 
         return RequisitionTemplate;
 
@@ -95,6 +96,18 @@
                         columnsMap[columnName].$display) {
                         columns.push(columnsMap[columnName]);
                     }
+                }
+            }
+            return columns;
+        }
+
+        function getColumnsByNames(names) {
+            var columns = [],
+                columnsMap = this.columnsMap;
+            var columnName;
+            for (columnName in columnsMap) {
+                if (columnsMap.hasOwnProperty(columnName) && _.include(names, columnName)) {
+                    columns.push(columnsMap[columnName]);
                 }
             }
             return columns;

@@ -36,7 +36,7 @@
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
         'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient',
-        'localStorageService'
+        'localStorageService', 'TEMPLATE_COLUMNS'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -47,7 +47,8 @@
                                        RequisitionStockCountDateModal, localStorageFactory, canSubmit,
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
-                                       siglusSignatureModalService, isCreateForClient, localStorageService) {
+                                       siglusSignatureModalService, isCreateForClient, localStorageService,
+                                       TEMPLATE_COLUMNS) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -355,6 +356,9 @@
         function syncRnrAndPrint() {
             if (vm.isCreateForClient) {
                 var storageKey = vm.requisition.facility.id + vm.requisition.program.id;
+                vm.requisition.requisitionLineItems.forEach(function(lineItem) {
+                    lineItem[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY] = lineItem.requestedQuantity;
+                });
                 localStorageService.add(storageKey, angular.toJson(vm.requisition));
                 vm.requisition.id = storageKey;
             }

@@ -108,7 +108,8 @@
                 facility: selectedPeriod.facility,
                 period: selectedPeriod.id,
                 program: selectedPeriod.program,
-                emergency: false
+                emergency: false,
+                forClient: true
             });
         }
     }

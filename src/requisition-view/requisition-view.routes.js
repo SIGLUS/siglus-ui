@@ -45,10 +45,8 @@
                 },
                 requisition: function($stateParams, requisitionService) {
                     if ($stateParams.forClient === 'true') {
-                        var promise = $stateParams.rnr ? requisitionService.get($stateParams.rnr)
-                            : requisitionService.buildDraftWithoutSaving($stateParams.facility,
-                                $stateParams.period, $stateParams.program);
-                        return promise.then(function(requisition) {
+                        return requisitionService.buildDraftWithoutSaving($stateParams.facility,
+                            $stateParams.period, $stateParams.program).then(function(requisition) {
                             requisition.$isEditable = true;
                             requisition.isCreateForClient = true;
                             return requisitionService.setOrderableUnitForRequisition(requisition);

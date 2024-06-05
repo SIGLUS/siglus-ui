@@ -161,7 +161,8 @@
             resolve: {
                 requisition: function($stateParams, requisitionService, localStorageService) {
                     if ($stateParams.forClient === 'true') {
-                        return angular.fromJson(localStorageService.get($stateParams.rnr));
+                        var localRequisition = angular.fromJson(localStorageService.get($stateParams.rnr));
+                        return requisitionService.extendLineItemsWithOrderablesAndFtaps(localRequisition);
                     }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
                 },
@@ -172,17 +173,20 @@
                     return periodService.get(requisition.processingPeriod.id);
                 },
                 lineItemsList: function($filter, requisition) {
-                    var filterObject = requisition.template.hideSkippedLineItems() ?
-                        {
-                            skipped: '!true',
-                            $program: {
-                                fullSupply: true
-                            }
-                        } : {
-                            $program: {
-                                fullSupply: true
-                            }
-                        };
+                    var filterObject = {};
+                    if (!requisition.isCreateForClient) {
+                        filterObject = requisition.template.hideSkippedLineItems() ?
+                            {
+                                skipped: '!true',
+                                $program: {
+                                    fullSupply: true
+                                }
+                            } : {
+                                $program: {
+                                    fullSupply: true
+                                }
+                            };
+                    }
                     var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
                     return $filter('orderBy')(fullSupplyLineItems, [
                         '$program.orderableCategoryDisplayOrder',
@@ -196,9 +200,7 @@
                         'beginningBalance', 'totalReceivedQuantity', 'totalConsumedQuantity',
                         'theoreticalStockAtEndofPeriod', 'stockOnHand', 'difference',
                         'theoreticalQuantityToRequest', 'requestedQuantity', 'authorizedQuantity'];
-                    return  _.sortBy(_.filter(requisition.template.getColumns(), function(item) {
-                        return _.include(columnsList, item.name);
-                    }), 'displayOrder');
+                    return  _.sortBy(requisition.template.getColumnsByNames(columnsList), 'displayOrder');
                 }
             }
         });
