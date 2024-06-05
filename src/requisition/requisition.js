@@ -1007,9 +1007,9 @@
             requisition.idempotencyKey = newId;
         }
 
-        function getColumns(isCreateForClient) {
+        function getColumns(isInitForClient) {
             var columns = this.template.getColumns();
-            if (isCreateForClient) {
+            if (isInitForClient) {
                 columns = columns.filter(function(column) {
                     return column.name !== 'expirationDate';
                 });

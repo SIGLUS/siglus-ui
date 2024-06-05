@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
         'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync',
-        '$state', 'isCreateForClient', 'approvedProducts'
+        '$state', 'approvedProducts'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -46,7 +46,7 @@
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
                                program, $scope, notificationService, offlineService, canSync, $state,
-                               isCreateForClient, approvedProducts) {
+                               approvedProducts) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -160,7 +160,7 @@
         vm.keyword = $stateParams.keyword;
         vm.search = function() {
             $stateParams.keyword = vm.keyword;
-            if (isCreateForClient) {
+            if (vm.requisition.isInitForClient) {
                 refreshLineItems();
                 return;
             }
@@ -180,9 +180,9 @@
             vm.items = items;
             vm.requisition = requisition;
             vm.columns = columns;
-            vm.userCanEdit = isCreateForClient ||
+            vm.userCanEdit = vm.requisition.isInitForClient ||
                 canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
-            vm.showAddProducts = isCreateForClient || canSync;
+            vm.showAddProducts = vm.requisition.isInitForClient || canSync;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
             vm.showAddNonFullSupplyProductsButton = showAddNonFullSupplyProductsButton();
             vm.showUnskipFullSupplyProductsButton = showUnskipFullSupplyProductsButton();
@@ -248,7 +248,7 @@
          * @return {Boolean} true if the delete column should be displayed, false otherwise
          */
         function showDeleteColumn() {
-            if (isCreateForClient) {
+            if (vm.requisition.isInitForClient) {
                 return true;
             }
             return !fullSupply &&
@@ -397,7 +397,7 @@
 
         // SIGLUS-REFACTOR: starts here
         function prepareLineItems(selectedProducts) {
-            if (isCreateForClient) {
+            if (vm.requisition.isInitForClient) {
                 var columns = vm.columns.filter(function(column) {
                     return !column.name.includes('orderable');
                 });
@@ -472,7 +472,7 @@
         }
 
         function refreshLineItems() {
-            if (isCreateForClient) {
+            if (vm.requisition.isInitForClient) {
                 vm.lineItems = filterAddedProducts();
                 return;
             }

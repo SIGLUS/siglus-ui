@@ -48,12 +48,14 @@
                         return requisitionService.buildDraftWithoutSaving($stateParams.facility,
                             $stateParams.period, $stateParams.program).then(function(requisition) {
                             requisition.$isEditable = true;
-                            requisition.isCreateForClient = true;
+                            requisition.isInitForClient = true;
                             return requisitionService.setOrderableUnitForRequisition(requisition);
                         });
                     }
                     return requisitionService.get($stateParams.rnr).then(function(requisition) {
-                        return requisitionService.setOrderableUnitForRequisition(requisition);
+                        var result = requisitionService.setOrderableUnitForRequisition(requisition);
+                        requisition.isInitForClient = false;
+                        return result;
                     });
                 },
                 isCreateForClient: function(requisition) {
@@ -76,14 +78,14 @@
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
                 },
-                approvedProducts: function(requisitionService, requisition, isCreateForClient) {
-                    if (isCreateForClient) {
+                approvedProducts: function(requisitionService, requisition) {
+                    if (requisition.isInitForClient) {
                         return requisitionService.getApprovedProducts(requisition.facility.id, requisition.program.id);
                     }
                     return [];
                 },
-                canSubmit: function(requisitionViewFactory, user, requisition, isCreateForClient) {
-                    return isCreateForClient || requisitionViewFactory.canSubmit(user.id, requisition);
+                canSubmit: function(requisitionViewFactory, user, requisition) {
+                    return requisition.isInitForClient || requisitionViewFactory.canSubmit(user.id, requisition);
                 },
                 // SIGLUS-REFACTOR: starts here
                 canSubmitAndAuthorize: function(requisitionViewFactory, user, requisition) {
@@ -110,8 +112,8 @@
                 canSkip: function(requisitionViewFactory, user, requisition, program) {
                     return requisitionViewFactory.canSkip(user.id, requisition, program);
                 },
-                canSync: function(canSubmit, canAuthorize, canApproveAndReject, isCreateForClient) {
-                    if (isCreateForClient) {
+                canSync: function(canSubmit, canAuthorize, canApproveAndReject, requisition, isCreateForClient) {
+                    if (requisition.isInitForClient || isCreateForClient) {
                         return false;
                     }
                     return canSubmit || canAuthorize || canApproveAndReject;

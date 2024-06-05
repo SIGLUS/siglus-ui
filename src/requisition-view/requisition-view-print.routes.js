@@ -159,9 +159,14 @@
                 }
             },
             resolve: {
-                requisition: function($stateParams, requisitionService, localStorageService) {
+                localRequisition: function($stateParams, localStorageService) {
                     if ($stateParams.forClient === 'true') {
-                        var localRequisition = angular.fromJson(localStorageService.get($stateParams.rnr));
+                        return angular.fromJson(localStorageService.get($stateParams.rnr));
+                    }
+                    return null;
+                },
+                requisition: function($stateParams, requisitionService, localRequisition) {
+                    if ($stateParams.forClient === 'true') {
                         return requisitionService.extendLineItemsWithOrderablesAndFtaps(localRequisition);
                     }
                     return requisitionService.getWithoutStatusMessages($stateParams.rnr);
@@ -174,7 +179,7 @@
                 },
                 lineItemsList: function($filter, requisition) {
                     var filterObject = {};
-                    if (!requisition.isCreateForClient) {
+                    if (!requisition.isCreateForClient || !requisition.isInitForClient) {
                         filterObject = requisition.template.hideSkippedLineItems() ?
                             {
                                 skipped: '!true',

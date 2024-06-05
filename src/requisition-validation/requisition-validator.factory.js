@@ -66,7 +66,7 @@
                 fullSupplyColumns = requisition.template.getColumns(),
                 nonFullSupplyColumns = requisition.template.getColumns(true);
 
-            if (requisition.isCreateForClient) {
+            if (requisition.isInitForClient) {
                 var checkColumns = fullSupplyColumns.filter(function(column) {
                     return column.name !== 'expirationDate';
                 });

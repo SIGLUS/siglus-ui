@@ -219,7 +219,6 @@
          * Flag defining whether current user should see the sync to server button.
          */
         vm.displaySyncButton = undefined;
-        vm.isCreateForClient = undefined;
 
         // Functions
         vm.$onInit = onInit;
@@ -271,15 +270,15 @@
                 watcher.disableWatcher();
             }
             // SIGLUS-REFACTOR: ends here
-            vm.isCreateForClient = isCreateForClient;
-            if (isCreateForClient) {
+            if (vm.requisition.isInitForClient) {
                 vm.commentsRequired = false;
                 vm.forceOpen = false;
-                // if the requisition is created-for-client, using Delete instead of Reject
-                if (vm.displayRejectButton) {
-                    vm.displayRejectButton = false;
-                    vm.displayDeleteButton = true;
-                }
+                vm.displaySubmitButton = true;
+            }
+            if (isCreateForClient) {
+                vm.displayRejectButton = false;
+                vm.displayDeleteButton = true;
+                vm.displaySubmitButton = false;
             }
         }
 
@@ -359,16 +358,20 @@
          * indicates a version conflict.
          */
         function syncRnrAndPrint() {
-            if (vm.isCreateForClient) {
+            if (vm.requisition.isInitForClient) {
                 var storageKey = vm.requisition.facility.id + vm.requisition.program.id;
                 vm.requisition.requisitionLineItems.forEach(function(lineItem) {
                     lineItem[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY] = lineItem.requestedQuantity;
                     lineItem[TEMPLATE_COLUMNS.APPROVED_QUANTITY] = lineItem.requestedQuantity;
                 });
+                vm.requisition.availableFullSupplyProducts = [];
+                vm.requisition.availableProducts.forEach(function(product) {
+                    product.href = null;
+                });
                 localStorageService.add(storageKey, angular.toJson(vm.requisition));
                 vm.requisition.id = storageKey;
             }
-            var status = vm.isCreateForClient ? 'APPROVED' : vm.requisition.status;
+            var status = vm.requisition.isInitForClient ? 'APPROVED' : vm.requisition.status;
             if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
                 || status === 'RELEASED_WITHOUT_ORDER') {
                 var programCodeToReportNameMap = {
@@ -385,8 +388,8 @@
                     + vm.requisition.id
                     + '?'
                     + 'showBreadCrumb=false';
-                if (vm.isCreateForClient) {
-                    printUrl = printUrl + '&forClient=' + vm.isCreateForClient;
+                if (vm.requisition.isInitForClient) {
+                    printUrl = printUrl + '&forClient=' + vm.requisition.isInitForClient;
                 }
                 $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
             } else if (vm.displaySyncButton) {
@@ -442,7 +445,7 @@
                             vm.requisition.extraData.signaure = {};
                         }
                         vm.requisition.extraData.signaure.submit = signature;
-                        if (isCreateForClient) {
+                        if (vm.requisition.isInitForClient) {
                             submitForClient();
                         } else if (vm.program.enableDatePhysicalStockCountCompleted) {
                             var modal = new RequisitionStockCountDateModal(vm.requisition);
