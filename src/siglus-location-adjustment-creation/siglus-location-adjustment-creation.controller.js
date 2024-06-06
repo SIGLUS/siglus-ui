@@ -35,7 +35,7 @@
         'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
         'siglusSignatureWithDateModalService', 'draftInfo',
         'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService',
-        'siglusOrderableLotService', 'addedLineItems', 'paginationService',
+        'siglusOrderableLotService', 'allLineItemsAdded', 'paginationService',
         'SiglusLocationCommonUtilsService', 'siglusLocationAdjustmentModifyLineItemService',
         'siglusLocationCommonApiService', 'areaLocationInfo', 'siglusLocationAdjustmentService',
         'alertConfirmModalService', 'locations', 'program',
@@ -50,7 +50,7 @@
         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
         siglusSignatureWithDateModalService, draftInfo,
         siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService,
-        siglusOrderableLotService, addedLineItems, paginationService,
+        siglusOrderableLotService, allLineItemsAdded, paginationService,
         SiglusLocationCommonUtilsService, siglusLocationAdjustmentModifyLineItemService,
         siglusLocationCommonApiService, areaLocationInfo, siglusLocationAdjustmentService,
         alertConfirmModalService, locations, program,
@@ -72,7 +72,7 @@
 
             vm.selectedProduct = null;
 
-            vm.addedLineItems = [];
+            vm.allLineItemsAdded = [];
 
             vm.facility = facility;
 
@@ -100,7 +100,7 @@
                 'Stock Inicial Insuficiente',
                 'Devolução para o DDM'
             ];
-            vm.addedLineItems = addedLineItems;
+            vm.allLineItemsAdded = allLineItemsAdded;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
             filterProductList();
@@ -108,7 +108,7 @@
             validateForm(true);
 
             $scope.$watch(function() {
-                return vm.addedLineItems;
+                return vm.allLineItemsAdded;
             }, function(newValue, oldValue) {
                 $scope.needToConfirm = !angular.equals(newValue, oldValue);
             }, true);
@@ -126,7 +126,7 @@
             };
             loadingModalService.close();
             return paginationService.registerList(validator, angular.copy($stateParams), function() {
-                return vm.addedLineItems;
+                return vm.allLineItemsAdded;
             });
         };
 
@@ -135,7 +135,7 @@
         };
 
         function filterProductList() {
-            var addedOrderableIds = _.map(vm.addedLineItems, function(group) {
+            var addedOrderableIds = _.map(vm.allLineItemsAdded, function(group) {
                 return _.first(group).orderableId;
             });
             vm.productList = _.filter(productList, function(product) {
@@ -164,7 +164,7 @@
                     firstRow.lotOptionsClone = _.clone(firstRow.lotOptions);
                     firstRow.locationOptionsClone = _.clone(areaLocationInfo);
                     firstRow.locationsInfo = locationsInfo;
-                    vm.addedLineItems.unshift([firstRow]);
+                    vm.allLineItemsAdded.unshift([firstRow]);
                     searchList();
                 });
         };
@@ -173,7 +173,7 @@
             $stateParams.locations = locations;
             $stateParams.keyword = vm.keyword;
             $stateParams.areaLocationInfo = areaLocationInfo;
-            $stateParams.addedLineItems = vm.addedLineItems;
+            $stateParams.allLineItemsAdded = vm.allLineItemsAdded;
             $stateParams.productList = productList;
             $stateParams.draftInfo = draftInfo;
             $stateParams.reasons = reasons;
@@ -418,7 +418,7 @@
         vm.removeItem = function(lineItems, index) {
             siglusLocationAdjustmentModifyLineItemService.removeItem(lineItems, index);
             if (lineItems.length === 0) {
-                vm.addedLineItems = _.filter(vm.addedLineItems, function(item) {
+                vm.allLineItemsAdded = _.filter(vm.allLineItemsAdded, function(item) {
                     return !_.isEmpty(item);
                 });
                 filterProductList();
@@ -477,7 +477,7 @@
         }
 
         function validateForm(skipRequired) {
-            _.forEach(vm.addedLineItems, function(lineItems) {
+            _.forEach(vm.allLineItemsAdded, function(lineItems) {
                 _.forEach(lineItems, function(lineItem, index) {
                     lineItem.$errors = {};
                     if (lineItems.length > 1 && index === 0) {
@@ -493,7 +493,7 @@
         }
 
         function isValid() {
-            return _.every(vm.addedLineItems, function(lineItems) {
+            return _.every(vm.allLineItemsAdded, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
                     return _.chain(lineItem.$errors)
                         .keys()
@@ -506,7 +506,7 @@
         }
 
         function getLineItems() {
-            return _.chain(vm.addedLineItems)
+            return _.chain(vm.allLineItemsAdded)
                 .map(function(group) {
                     if (group.length === 1) {
                         return group;

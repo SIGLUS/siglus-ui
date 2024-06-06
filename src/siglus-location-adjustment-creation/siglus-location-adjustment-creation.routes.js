@@ -36,7 +36,7 @@
             params: {
                 orderableGroups: undefined,
                 draftInfo: undefined,
-                addedLineItems: undefined,
+                allLineItemsAdded: undefined,
                 areaLocationInfo: undefined,
                 locations: undefined,
                 user: undefined,
@@ -49,52 +49,38 @@
             },
             resolve: {
                 facility: function(facilityFactory, $stateParams) {
-                    if ($stateParams.facility) {
-                        return $stateParams.facility;
-                    }
-                    return facilityFactory.getUserHomeFacility();
+                    return $stateParams.facility ? $stateParams.facility : facilityFactory.getUserHomeFacility();
                 },
                 user: function(authorizationService, $stateParams) {
-                    if ($stateParams.user) {
-                        $stateParams.user;
-                    }
-                    return authorizationService.getUser();
+                    return $stateParams.user ? $stateParams.user : authorizationService.getUser();
                 },
                 program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                    return $stateParams.program ? $stateParams.program : programService.get($stateParams.programId);
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ADJUSTMENT;
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
-                    if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
+                    return $stateParams.reasons ? $stateParams.reasons :
+                        stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
                 },
                 draftInfo: function(siglusLocationAdjustmentService, $stateParams, facility, user, adjustmentType) {
-                    if ($stateParams.draftInfo) {
-                        return $stateParams.draftInfo;
-                    }
-                    return siglusLocationAdjustmentService
-                        .getDraft($stateParams.programId, adjustmentType.state, facility.id, user.user_id);
+                    return $stateParams.draftInfo ? $stateParams.draftInfo :
+                        siglusLocationAdjustmentService.getDraft(
+                            $stateParams.programId, adjustmentType.state, facility.id, user.user_id
+                        );
                 },
                 productList: function(siglusLocationCommonApiService, $stateParams) {
-                    if ($stateParams.productList) {
-                        return $stateParams.productList;
-                    }
-                    return siglusLocationCommonApiService.getAllProductList();
+                    return $stateParams.productList ? $stateParams.productList :
+                        siglusLocationCommonApiService.getAllProductList();
                 },
                 areaLocationInfo: function($stateParams, siglusLocationCommonApiService) {
-                    if ($stateParams.areaLocationInfo) {
-                        return $stateParams.areaLocationInfo;
-                    }
-                    return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                        extraData: false
-                    });
+                    return $stateParams.areaLocationInfo ? $stateParams.areaLocationInfo :
+                        siglusLocationCommonApiService.getOrderableLocationLotsInfo(
+                            {
+                                extraData: false
+                            }
+                        );
                 },
                 locations: function(draftInfo, siglusLocationCommonApiService, $stateParams) {
                     if ($stateParams.locations) {
@@ -113,20 +99,20 @@
                         returnNoMovementLots: true
                     }, orderableIds);
                 },
-                addedLineItems: function(
+                allLineItemsAdded: function(
                     draftInfo, $stateParams,
                     locations, siglusLocationAdjustmentModifyLineItemService,
                     productList, reasons, areaLocationInfo
                 ) {
-                    if ($stateParams.addedLineItems) {
-                        return $stateParams.addedLineItems;
+                    if ($stateParams.allLineItemsAdded) {
+                        return $stateParams.allLineItemsAdded;
                     }
                     return siglusLocationAdjustmentModifyLineItemService
                         .prepareAddedLineItems(draftInfo[0], locations, productList, reasons, areaLocationInfo);
                 },
-                displayItems: function($stateParams, siglusLocationDisplayItemFilterService, addedLineItems) {
+                displayItems: function($stateParams, siglusLocationDisplayItemFilterService, allLineItemsAdded) {
                     return siglusLocationDisplayItemFilterService
-                        .filterList($stateParams.keyword || '', addedLineItems);
+                        .filterList($stateParams.keyword || '', allLineItemsAdded);
                 }
             }
         });
