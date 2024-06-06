@@ -500,14 +500,24 @@
                         var lineItemsWithReceiveReasons = getLineItemsByCertainReasons(RECEIVE_PDF_REASON_NAME_LIST);
                         var lineItemsWithIssueReasons = getLineItemsByCertainReasons(ISSUE_PDF_REASON_NAME_LIST);
 
+                        // set common data for Issue and Receive PDF
+                        vm.signature = signatureInfo.signature;
+                        var momentNow = moment();
+                        var documentNumberAndFileName = 'IV_' + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+                        vm.initialDraftInfo = {
+                            documentNumber: documentNumberAndFileName
+                        };
+                        vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
+                        vm.issueVoucherDate = moment(signatureInfo.occurredDate).format('YYYY-MM-DD');
+
                         if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
                             // download both Receive and Issue PFD
                             buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
                             waitForAddedLineItemsRender().then(function() {
-                                downloadReceivePdf(signatureInfo, function() {
+                                downloadReceivePdf(documentNumberAndFileName, function() {
                                     buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
                                     waitForAddedLineItemsRender().then(function() {
-                                        downloadIssuePdf(signatureInfo, function() {
+                                        downloadIssuePdf(documentNumberAndFileName, function() {
                                             confirmSubmit(signatureInfo);
                                         });
                                     });
@@ -518,7 +528,7 @@
                             // only download Receive PFD
                             buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
                             waitForAddedLineItemsRender().then(function() {
-                                downloadReceivePdf(signatureInfo, function() {
+                                downloadReceivePdf(documentNumberAndFileName, function() {
                                     confirmSubmit(signatureInfo);
                                 });
                             });
@@ -526,7 +536,7 @@
                             // only download Issue PFD
                             buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
                             waitForAddedLineItemsRender().then(function() {
-                                downloadIssuePdf(signatureInfo, function() {
+                                downloadIssuePdf(documentNumberAndFileName, function() {
                                     confirmSubmit(signatureInfo);
                                 });
                             });
@@ -566,54 +576,33 @@
             });
         }
 
-        function restoreAddedLineItems() {
-            // vm.addedLineItems = vm.addedLineItemsBackup;
-        }
-
-        function downloadReceivePdf(signatureInfo, callbackAfterDownload) {
+        function downloadReceivePdf(documentNumberAndFileName, callbackAfterDownload) {
             vm.type = ReportService.REPORT_TYPE.RECEIVE;
             vm.supplier = '';
             vm.client = vm.facility.name;
-            vm.signature = signatureInfo.signature;
-            var momentNow = moment();
-            var documentNumberOrName = 'IV_' + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
-            vm.initialDraftInfo = {
-                documentNumber: documentNumberOrName
-            };
-            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-            vm.issueVoucherDate = moment(signatureInfo).format('YYYY-MM-DD');
 
             ReportService.downloadPdf(
-                documentNumberOrName,
+                documentNumberAndFileName,
                 function() {
-                    restoreAddedLineItems();
                     callbackAfterDownload();
                 },
                 true
             );
         }
 
-        function downloadIssuePdf(signatureInfo, callbackAfterDownload) {
+        function downloadIssuePdf(documentNumberAndFileName, callbackAfterDownload) {
             vm.type = ReportService.REPORT_TYPE.ISSUE;
             vm.supplier = vm.facility.name;
             vm.client = '';
-            vm.signature = signatureInfo.signature;
-            var momentNow = moment();
-            var documentNumberOrName = 'IV_' + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
-            vm.initialDraftInfo = {
-                documentNumber: documentNumberOrName
-            };
-            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-            vm.issueVoucherDate = moment(signatureInfo).format('YYYY-MM-DD');
-            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(acc, lineItem) {
+            var totalPrice = _.reduce(vm.addedLineItems, function(acc, lineItem) {
                 var price = lineItem.price * 100;
-                return acc = acc + lineItem.quantity * price;
+                return acc + lineItem.quantity * price;
             }, 0);
+            vm.totalPriceValue = _.isNaN(totalPrice) ? 0 : totalPrice;
 
             ReportService.downloadPdf(
-                documentNumberOrName,
+                documentNumberAndFileName,
                 function() {
-                    restoreAddedLineItems();
                     callbackAfterDownload();
                 },
                 false

@@ -31,15 +31,16 @@
     controller.$inject = [
         '$state', '$stateParams', '$window', 'facility', 'orderablesPrice', 'expiredProducts',
         'displayItems', 'siglusSignatureWithDateModalService', 'expiredProductsViewService',
-        'loadingModalService', 'openlmisDateFilter', 'SiglusIssueOrReceiveReportService'
+        'loadingModalService', 'SiglusIssueOrReceiveReportService', 'moment'
     ];
 
     function controller(
         $state, $stateParams, $window, facility, orderablesPrice, expiredProducts,
         displayItems, siglusSignatureWithDateModalService, expiredProductsViewService,
-        loadingModalService, openlmisDateFilter, SiglusIssueOrReceiveReportService
+        loadingModalService, SiglusIssueOrReceiveReportService, moment
     ) {
         var vm = this;
+        var ReportService = new SiglusIssueOrReceiveReportService();
 
         vm.keyword = '';
         vm.facility = undefined;
@@ -187,18 +188,20 @@
             }, 0);
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                 .then(function(data) {
-                    var now = new Date();
+                    var momentNow = moment();
                     // following data is used in siglus-issue-or-receive-report.html
-                    vm.type = 'issue';
+                    vm.type = ReportService.REPORT_TYPE.ISSUE;
                     vm.supplier = vm.facility.name;
                     vm.client = undefined;
                     vm.initialDraftInfo = {
-                        documentNumber: vm.facility.code + '_' + openlmisDateFilter(now, 'ddMMyyyy')
+                        documentNumber: vm.facility.code + '_' + momentNow.format('DDMMYYYY')
                     };
-                    vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
-                    vm.nowTime = openlmisDateFilter(now, 'd MMM y h:mm:ss a');
+                    vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
+                    vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
                     vm.signature = data.signature;
-                    new SiglusIssueOrReceiveReportService().downloadPdf(vm.supplier, function() {
+                    var nowDate = momentNow.format('YYYY-MM-DD');
+                    var fileName = 'Saída_' + vm.supplier + '_' + nowDate;
+                    ReportService.downloadPdf(fileName, function() {
                         loadingModalService.open();
                         expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
                             vm.signature, vm.initialDraftInfo.documentNumber)

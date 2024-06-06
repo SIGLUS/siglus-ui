@@ -30,7 +30,7 @@
         'paginationService', 'messageService', 'isMerge', 'moment',
         'siglusStockIssueLocationService', 'siglusRemainingProductsModalService',
         'alertService', 'siglusSignatureWithDateModalService', 'program',
-        'confirmDiscardService', 'openlmisDateFilter', 'areaLocationInfo',
+        'confirmDiscardService', 'areaLocationInfo',
         'siglusPrintPalletLabelComfirmModalService', 'orderablesPrice',
         'SiglusIssueOrReceiveReportService'
     ];
@@ -44,7 +44,7 @@
         paginationService, messageService, isMerge, moment,
         siglusStockIssueLocationService, siglusRemainingProductsModalService,
         alertService, siglusSignatureWithDateModalService, program,
-        confirmDiscardService, openlmisDateFilter, areaLocationInfo,
+        confirmDiscardService, areaLocationInfo,
         siglusPrintPalletLabelComfirmModalService, orderablesPrice,
         SiglusIssueOrReceiveReportService
     ) {
@@ -54,6 +54,7 @@
             lineItem.price = orderablesPriceMap[orderableId];
         });
         var vm = this;
+        var ReportService = new SiglusIssueOrReceiveReportService();
 
         vm.areaLocationInfo = areaLocationInfo;
 
@@ -651,7 +652,7 @@
                             vm.downloadPrint();
                         }
                         // following data is used in siglus-issue-or-receive-report.html
-                        vm.type = 'receive';
+                        vm.type = ReportService.REPORT_TYPE.RECEIVE;
                         vm.downloadLineItems = getDownloadLineItems();
                         vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
                             var price = c.price * 100;
@@ -659,7 +660,9 @@
                             return r;
                         }, 0);
                         vm.totalPriceValue = _.isNaN(vm.totalPriceValue) ? 0 : vm.totalPriceValue;
-                        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+
+                        var momentNow = moment();
+                        vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
                         vm.client = vm.facility.name;
                         vm.supplier = vm.initialDraftInfo.sourceName === 'Outros'
                             ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
@@ -671,15 +674,15 @@
                                     return item.subDraftId;
                                 }));
 
-                                vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                                vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
                                 vm.signature = data.signature;
-
-                                new SiglusIssueOrReceiveReportService().downloadPdf(
-                                    vm.sourceName,
+                                var nowDate = momentNow.format('YYYY-MM-DD');
+                                var fileName = 'Entrada_' + vm.sourceName + '_' + nowDate;
+                                ReportService.downloadPdf(
+                                    fileName,
                                     function() {
                                         submitMergedDraft(subDrafts, data.occurredDate);
-                                    },
-                                    true
+                                    }
                                 );
 
                             });

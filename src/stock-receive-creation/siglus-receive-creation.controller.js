@@ -30,7 +30,7 @@
 
     controller.$inject = [
         '$scope', 'initialDraftInfo', 'mergedItems', 'isMerge', '$state', '$stateParams', '$filter',
-        'confirmDiscardService', 'openlmisDateFilter', 'localStorageFactory', 'programId', 'facility',
+        'confirmDiscardService', 'localStorageFactory', 'programId', 'facility',
         'orderableGroups', 'reasons', 'messageService', 'adjustmentType', 'stockAdjustmentCreationService',
         'notificationService', 'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS',
         'loadingModalService', 'alertService', 'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE',
@@ -42,7 +42,7 @@
 
     function controller(
         $scope, initialDraftInfo, mergedItems, isMerge, $state, $stateParams, $filter,
-        confirmDiscardService, openlmisDateFilter, localStorageFactory, programId, facility,
+        confirmDiscardService, localStorageFactory, programId, facility,
         orderableGroups, reasons, messageService, adjustmentType, stockAdjustmentCreationService,
         notificationService, orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS,
         loadingModalService, alertService, dateUtils, displayItems, ADJUSTMENT_TYPE,
@@ -54,6 +54,8 @@
         var vm = this,
             previousAdded = {},
             currentUser = localStorageFactory('currentUser');
+        var ReportService = new SiglusIssueOrReceiveReportService();
+
         vm.receivedBy = currentUser.getAll('username').username;
         vm.initialDraftInfo = initialDraftInfo;
         vm.initialDraftName = '';
@@ -63,7 +65,7 @@
 
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
-        vm.type = 'receive';
+        vm.type = ReportService.REPORT_TYPE.RECEIVE;
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
@@ -96,7 +98,7 @@
             var selectedItem = orderableGroupService
                 .findOneInOrderableGroupWithoutLot(vm.selectedOrderableGroup);
 
-            var item = _.extend(
+            var item = _.assign(
                 {
                     $errors: {},
                     $previewSOH: null,
@@ -390,13 +392,16 @@
                 if (vm.isMerge) {
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
                         then(function(data) {
-                            vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
-                            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+                            var momentNow = moment();
+                            vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
+                            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
                             vm.signature = data.signature;
-                            new SiglusIssueOrReceiveReportService().downloadPdf('', function() {
+                            var nowDate = momentNow.format('YYYY-MM-DD');
+                            var fileName = 'Entrada_' + '' + '_' + nowDate;
+                            ReportService.downloadPdf(fileName, function() {
                                 loadingModalService.open();
                                 confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
-                            }, true);
+                            });
                         });
                 } else {
                     loadingModalService.open();

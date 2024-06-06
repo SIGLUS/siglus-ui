@@ -45,6 +45,7 @@
 
         SiglusIssueOrReceiveReportService.prototype.downloadPdf = downloadPdf;
         SiglusIssueOrReceiveReportService.prototype.REPORT_TYPE = REPORT_TYPE;
+
         function SiglusIssueOrReceiveReportService() {}
         return SiglusIssueOrReceiveReportService;
 
@@ -54,7 +55,7 @@
             pageNumber = 1;
         }
 
-        function downloadPdf(destinationName, callback, isReceive) {
+        function downloadPdf(fileName, callback) {
             siglusDownloadLoadingModalService.open();
             init();
 
@@ -151,8 +152,7 @@
                     // add page bottom components
                     addComponentsImage(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
 
-                    var fileName = getPdfName(destinationName, isReceive);
-                    PDF.save(fileName);
+                    PDF.save(fileName + '.pdf');
                     siglusDownloadLoadingModalService.close();
                     deferred.resolve('success');
                 })
@@ -201,15 +201,6 @@
             PDF.addPage();
             pageNumber = pageNumber + 1;
             addPageNumberAtFooter(false);
-        }
-
-        // is Issue by default, unless isReceive = true
-        function getPdfName(facilityName, isReceive) {
-            var prefix = isReceive ? 'Entrada_' : 'Saída_';
-            var facility = !isReceive && facilityName.indexOf('Outros') > -1 ?
-                facilityName.split(':')[1] : facilityName;
-            var nowTime = moment().format('YYYY-MM-DD');
-            return (prefix + facility + '_' + nowTime + '.pdf');
         }
 
     }

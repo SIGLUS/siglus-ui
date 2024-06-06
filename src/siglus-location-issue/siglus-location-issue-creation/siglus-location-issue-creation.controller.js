@@ -50,6 +50,7 @@
             lineItem.price = orderablesPriceMap[orderableId];
         });
         var vm = this;
+        var ReportService = new SiglusIssueOrReceiveReportService();
 
         vm.keyword = $stateParams.keyword;
 
@@ -589,7 +590,10 @@
                             vm.downloadPrint();
                         }
                         // following data is used in siglus-issue-or-receive-report.html
-                        vm.type = 'issue';
+                        vm.type = ReportService.REPORT_TYPE.ISSUE;
+                        vm.supplier = vm.facility.name;
+                        vm.client = _.indexOf(vm.destinationName, 'Outros') === 1
+                            ? vm.destinationName.split(':')[1] : vm.destinationName;
                         vm.downloadLineItems = getDownloadLineItems();
                         vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
                             var price = c.price * 100;
@@ -597,10 +601,8 @@
                             return r;
                         }, 0);
                         vm.totalPriceValue = _.isNaN(vm.totalPriceValue) ? 0 : vm.totalPriceValue;
-                        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
-                        vm.supplier = vm.facility.name;
-                        vm.client = _.indexOf(vm.destinationName, 'Outros') === 1
-                            ? vm.destinationName.split(':')[1] : vm.destinationName;
+                        var momentNow = moment();
+                        vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
 
                         siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                             .then(function(data) {
@@ -608,16 +610,16 @@
                                 var subDrafts = _.uniq(_.map(draftInfo.lineItems, function(item) {
                                     return item.subDraftId;
                                 }));
-
-                                vm.issueVoucherDate = openlmisDateFilter(data.occurredDate, 'yyyy-MM-dd');
+                                vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
                                 vm.signature = data.signature;
+                                var nowDate = momentNow.format('YYYY-MM-DD');
+                                var fileName = 'Saída_' + vm.destinationName + '_' + nowDate;
 
-                                new SiglusIssueOrReceiveReportService.downloadPrint(
-                                    vm.destinationName,
+                                ReportService.downloadPrint(
+                                    fileName,
                                     function() {
                                         submitMergedDraft(subDrafts, data.occurredDate);
-                                    },
-                                    false
+                                    }
                                 );
                             });
                     });
