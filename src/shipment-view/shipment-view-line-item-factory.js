@@ -231,7 +231,7 @@
         function flatten(shipmentViewLineItems) {
             return shipmentViewLineItems.reduce(function(shipmentViewLineItems, lineItem) {
                 shipmentViewLineItems.push(lineItem);
-                if (lineItem.lineItems && !lineItem.noStockAvailable) {
+                if (lineItem.lineItems) {
                     lineItem.lineItems.forEach(function(lineItem) {
                         shipmentViewLineItems.push(lineItem);
                         if (lineItem.lineItems) {
