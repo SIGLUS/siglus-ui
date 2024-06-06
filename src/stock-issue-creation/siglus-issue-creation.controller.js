@@ -156,7 +156,7 @@
             var selectedItem = orderableGroupService
                 .findByLotInOrderableGroup(vm.selectedOrderableGroup, vm.selectedLot);
 
-            var item = _.extend(
+            var item = _.assign(
                 {
                     $errors: {},
                     $previewSOH: selectedItem.stockOnHand

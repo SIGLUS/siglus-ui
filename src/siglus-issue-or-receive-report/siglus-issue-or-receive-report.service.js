@@ -38,8 +38,13 @@
         // a4实际高度换算px
         var a4Height2px = A4_HEIGHT / RATE;
         var CONTENT_MARGIN_LEFT_PX = 4;
+        var REPORT_TYPE = {
+            ISSUE: 'issue',
+            RECEIVE: 'receive'
+        };
 
         SiglusIssueOrReceiveReportService.prototype.downloadPdf = downloadPdf;
+        SiglusIssueOrReceiveReportService.prototype.REPORT_TYPE = REPORT_TYPE;
         function SiglusIssueOrReceiveReportService() {}
         return SiglusIssueOrReceiveReportService;
 

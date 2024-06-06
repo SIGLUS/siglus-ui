@@ -159,7 +159,7 @@
           </tr>
         </table>
       </section>
-    
+
       <section class="section-second">
         <table cellpadding="0" cellspacing="0">
           <thead id="sectionSecond">
@@ -232,11 +232,11 @@
               <td></td>
               <td>{{ vm.type === 'issue' ? item.quantity : '' }}</td>
               <!-- price -->
-              <td>{{ item.price ? item.price : '' }}</td>
+              <td>{{ vm.type === 'issue' && item.price ? item.price : '' }}</td>
               <!-- value -->
               <td style="width: 30px;">{{ item.price && vm.type ===  'issue' ? ((item.price * 100).toFixed(2) * item.quantity) / 100 : '' }}</td>
               <td style="border: none; border-left: 1px solid #000;"></td>
-              <td>{{ vm.type === 'issue' ? '' : item.quantity }}</td>
+              <td>{{ vm.type === 'receive' ? item.quantity : '' }}</td>
               <td style="border-right: 1px solid #000;"></td>
             </tr>
           </tbody>

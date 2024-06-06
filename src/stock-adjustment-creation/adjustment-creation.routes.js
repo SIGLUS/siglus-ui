@@ -41,7 +41,7 @@
                 stockCardSummaries: undefined,
                 reasons: undefined,
                 displayItems: undefined,
-                addedLineItems: undefined,
+                allLineItemsAdded: undefined,
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
@@ -52,25 +52,17 @@
             },
             resolve: {
                 program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId);
-                    }
-                    return $stateParams.program;
+                    return $stateParams.program ? $stateParams.program : programService.get($stateParams.programId);
                 },
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
-                        return facilityFactory.getUserHomeFacility();
-                    }
-                    return $stateParams.facility;
+                    return $stateParams.facility ? $stateParams.facility : facilityFactory.getUserHomeFacility();
                 },
                 user: function(authorizationService) {
                     return authorizationService.getUser();
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
-                    if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
-                    }
-                    return $stateParams.reasons;
+                    return $stateParams.reasons ? $stateParams.reasons :
+                        stockReasonsFactory.getAdjustmentReasons($stateParams.programId, facility.type.id);
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.ADJUSTMENT;
@@ -80,39 +72,43 @@
                 },
                 // SIGLUS-REFACTOR: starts here
                 draft: function($stateParams, stockAdjustmentFactory, user, program, facility, adjustmentType) {
-                    if (_.isUndefined($stateParams.draft)) {
-                        return stockAdjustmentFactory.getDraftById(user.user_id, program.id, facility.id,
-                            adjustmentType.state, $stateParams.draftId);
-                    }
-                    return $stateParams.draft;
+                    return $stateParams.draft ? $stateParams.draft :
+                        stockAdjustmentFactory.getDraftById(
+                            user.user_id, program.id, facility.id, adjustmentType.state, $stateParams.draftId
+                        );
+                },
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    return $stateParams.orderablesPrice ? $stateParams.orderablesPrice :
+                        siglusOrderableLotService.getOrderablesPrice();
                 },
                 orderableGroups: function($stateParams, program, facility, draft, orderableGroupService) {
-                    if (!$stateParams.hasLoadOrderableGroups) {
-                        var allLineOrderableIds = _.map(draft.lineItems, function(line) {
-                            return line.orderableId;
-                        });
-                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, null,
-                            allLineOrderableIds
-                        );
+                    if ($stateParams.hasLoadOrderableGroups) {
+                        return $stateParams.orderableGroups;
                     }
-                    return $stateParams.orderableGroups;
+                    var allLineOrderableIds = _.map(draft.lineItems, function(line) {
+                        return line.orderableId;
+                    });
+                    return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                        program.id, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, null,
+                        allLineOrderableIds
+                    );
                 },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
+                allLineItemsAdded: function($stateParams, orderableGroups, stockAdjustmentFactory, srcDstAssignments,
                     reasons, draft) {
-                    if (_.isUndefined($stateParams.addedLineItems)) {
-                        if (draft.lineItems && draft.lineItems.length > 0) {
-                            return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
-                                srcDstAssignments, reasons);
-                        }
-                        return [];
+                    if ($stateParams.allLineItemsAdded) {
+                        return $stateParams.allLineItemsAdded;
                     }
-                    return $stateParams.addedLineItems;
+
+                    if (draft.lineItems && draft.lineItems.length > 0) {
+                        return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
+                            srcDstAssignments, reasons);
+                    }
+                    return [];
                 },
-                displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
-                    if (_.isUndefined($stateParams.displayItems) && addedLineItems.length > 0) {
-                        $stateParams.addedLineItems = addedLineItems;
-                        $stateParams.displayItems = addedLineItems;
+                displayItems: function($stateParams, registerDisplayItemsService, allLineItemsAdded) {
+                    if (_.isUndefined($stateParams.displayItems) && allLineItemsAdded.length > 0) {
+                        $stateParams.allLineItemsAdded = allLineItemsAdded;
+                        $stateParams.displayItems = allLineItemsAdded;
                     }
                     return registerDisplayItemsService($stateParams);
                 }

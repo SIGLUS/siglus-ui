@@ -33,23 +33,46 @@
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
-        // SIGLUS-REFACTOR: starts here
-        // 'UNPACK_REASONS',
         'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
-        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService', 'siglusOrderableLotService'
-        // SIGLUS-REFACTOR: ends here
+        'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService',
+        'siglusOrderableLotService', 'SiglusIssueOrReceiveReportService', 'moment', 'orderablesPrice',
+        '$q', '$timeout'
     ];
 
-    function controller($scope, $state, $stateParams, $filter, confirmDiscardService, program,
-                        facility, orderableGroups, reasons, confirmService, messageService, user,
-                        adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
-                        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
-                        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
-                        siglusSignatureWithDateModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
-                        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService,
-                        siglusOrderableLotService) {
+    function controller(
+        $scope, $state, $stateParams, $filter, confirmDiscardService, program,
+        facility, orderableGroups, reasons, confirmService, messageService, user,
+        adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
+        orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
+        alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
+        siglusSignatureWithDateModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
+        siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService,
+        siglusOrderableLotService, SiglusIssueOrReceiveReportService, moment, orderablesPrice,
+        $q, $timeout
+    ) {
         var vm = this,
             previousAdded = {};
+        var ReportService = new SiglusIssueOrReceiveReportService();
+        var RECEIVE_PDF_REASON_NAME_LIST = [
+            '[Ajustes Positivos] Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)',
+            '[Ajustes Positivos] Devolução de expirados (US e Depósitos Beneficiários)',
+            '[Ajustes Positivos] Empréstimos (de todos os níveis) que dão entrada no depósito',
+            '[Ajustes Positivos] Doações ao Depósito'
+        ];
+        var ISSUE_PDF_REASON_NAME_LIST = [
+            '[Ajustes Negativos] Devolução de expirados para Depósito fornecedor',
+            '[Ajustes Negativos] Danificado no depósito',
+            '[Ajustes Negativos] Empréstimos (para todos níveis) que dão saída do Depósito',
+            '[Ajustes Negativos] Devolução Dentro do prazo de validade ao Depósito fornecedor'
+        ];
+
+        var IGNORE_REASONS = [
+            'Consumido',
+            'Recebido',
+            'Stock Inicial Excessivo',
+            'Stock Inicial Insuficiente',
+            'Devolução para o DDM'
+        ];
 
         // SIGLUS-REFACTOR: starts here
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
@@ -93,9 +116,9 @@
          */
         // SIGLUS-REFACTOR: add parameter
         vm.search = function(reload) {
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
+            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.allLineItemsAdded, vm.hasLot);
 
-            $stateParams.addedLineItems = vm.addedLineItems;
+            $stateParams.allLineItemsAdded = vm.allLineItemsAdded;
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
@@ -133,8 +156,8 @@
             item.reason = null;
 
             siglusOrderableLotService.fillLotsToAddedItems([item]).then(function() {
-                vm.addedLineItems.unshift(item);
-                previousAdded = vm.addedLineItems[0];
+                vm.allLineItemsAdded.unshift(item);
+                previousAdded = vm.allLineItemsAdded[0];
                 $stateParams.isAddProduct = true;
                 vm.search($state.current.name);
                 // #105: activate archived product
@@ -154,6 +177,68 @@
             vm.validateLotDate(lineItem);
         });
 
+        function onInit() {
+            $state.current.label = messageService.get(vm.key('title'), {
+                facilityCode: facility.code,
+                facilityName: facility.name,
+                program: program.name
+            });
+
+            initStateParams();
+            initViewModel();
+
+            $scope.$watch(function() {
+                return vm.allLineItemsAdded;
+            }, function(newValue, oldValue) {
+                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, oldValue));
+            }, true);
+
+            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
+
+            $scope.$on('$stateChangeStart', function() {
+                angular.element('.popover').popover('destroy');
+            });
+        }
+
+        function initViewModel() {
+            //Set the max-date of date picker to the end of the current day.
+            vm.maxDate = new Date();
+            vm.maxDate.setHours(23, 59, 59, 999);
+
+            vm.program = program;
+            vm.facility = facility;
+            vm.reasons = filterReasons(reasons);
+            // SIGLUS-REFACTOR: starts here
+            // vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
+            // SIGLUS-REFACTOR: ends here
+            vm.srcDstAssignments = srcDstAssignments;
+            vm.allLineItemsAdded = $stateParams.allLineItemsAdded || [];
+            // vm.addedLineItemsBackup = vm.addedLineItems;
+            vm.displayItems = $stateParams.displayItems || [];
+            vm.keyword = $stateParams.keyword;
+
+            vm.orderableGroups = orderableGroups;
+            vm.hasLot = _.some(vm.orderableGroups, function(group) {
+                return orderableGroupService.lotsOf(group).length > 0;
+            });
+            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
+
+            $stateParams.page = getPageNumber();
+        }
+
+        function initStateParams() {
+            $stateParams.program = program;
+            $stateParams.facility = facility;
+            $stateParams.reasons = filterReasons(reasons);
+            $stateParams.srcDstAssignments = srcDstAssignments;
+            // SIGLUS-REFACTOR: starts here
+            // $stateParams.orderableGroups = orderableGroups;
+            $stateParams.hasLoadOrderableGroups = true;
+            // SIGLUS-REFACTOR: ends here
+            $stateParams.displayItems = displayItems;
+            $stateParams.orderablesPrice = orderablesPrice;
+        }
+
         function hasInvalidLotCode(lineItem) {
             var allLots = getAllLotsSelectedProduct(lineItem.orderableId);
             var duplicatedLots = hasLot(lineItem) ? _.filter(allLots, function(lot) {
@@ -168,7 +253,7 @@
 
         function getAllLotsSelectedProduct(orderableId) {
             var lots = [];
-            _.each(vm.addedLineItems, function(item) {
+            _.each(vm.allLineItemsAdded, function(item) {
                 if (item.orderableId === orderableId && item.lot && item.lot.lotCode && !item.lot.id) {
                     lots.push(item.lot);
                 }
@@ -218,8 +303,8 @@
          * @param {Object} lineItem line item to be removed.
          */
         vm.remove = function(lineItem) {
-            var index = vm.addedLineItems.indexOf(lineItem);
-            vm.addedLineItems.splice(index, 1);
+            var index = vm.allLineItemsAdded.indexOf(lineItem);
+            vm.allLineItemsAdded.splice(index, 1);
             $stateParams.isAddProduct = true;
             vm.search($state.current.name);
         };
@@ -406,17 +491,134 @@
          */
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
+
             if (validateAllAddedItems()) {
                 siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                     .then(function(signatureInfo) {
                         loadingModalService.open();
-                        confirmSubmit(signatureInfo);
+
+                        var lineItemsWithReceiveReasons = getLineItemsByCertainReasons(RECEIVE_PDF_REASON_NAME_LIST);
+                        var lineItemsWithIssueReasons = getLineItemsByCertainReasons(ISSUE_PDF_REASON_NAME_LIST);
+
+                        if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
+                            // download both Receive and Issue PFD
+                            buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
+                            waitForAddedLineItemsRender().then(function() {
+                                downloadReceivePdf(signatureInfo, function() {
+                                    buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
+                                    waitForAddedLineItemsRender().then(function() {
+                                        downloadIssuePdf(signatureInfo, function() {
+                                            confirmSubmit(signatureInfo);
+                                        });
+                                    });
+
+                                });
+                            });
+                        } else if (lineItemsWithReceiveReasons.length > 0) {
+                            // only download Receive PFD
+                            buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
+                            waitForAddedLineItemsRender().then(function() {
+                                downloadReceivePdf(signatureInfo, function() {
+                                    confirmSubmit(signatureInfo);
+                                });
+                            });
+                        } else if (lineItemsWithIssueReasons.length > 0) {
+                            // only download Issue PFD
+                            buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
+                            waitForAddedLineItemsRender().then(function() {
+                                downloadIssuePdf(signatureInfo, function() {
+                                    confirmSubmit(signatureInfo);
+                                });
+                            });
+                        } else {
+                            confirmSubmit(signatureInfo);
+                        }
                     });
             } else {
                 cancelFilter();
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
+
+        function getLineItemsByCertainReasons(reasonNameList) {
+            return vm.allLineItemsAdded.filter(function(lineItem) {
+                return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
+            });
+        }
+
+        function waitForAddedLineItemsRender() {
+            var TIME_WAITING_FOR_REPORT_RENDER = 500;
+            var deferred = $q.defer();
+            $timeout(deferred.resolve, TIME_WAITING_FOR_REPORT_RENDER);
+            return deferred.promise;
+        }
+
+        function buildAddedLineItemsForDownloadReport(lineItemsWithSpecialReasons) {
+            vm.addedLineItems = lineItemsWithSpecialReasons.map(function(item) {
+                return {
+                    productCode: _.get(item, ['orderable', 'productCode']),
+                    productName: _.get(item, ['orderable', 'fullProductName']),
+                    lotCode: item.lotCode,
+                    expirationDate: item.expirationDate,
+                    quantity: item.quantity,
+                    price: orderablesPrice.data[_.get(item, ['orderable', 'id'])] || null
+                };
+            });
+        }
+
+        function restoreAddedLineItems() {
+            // vm.addedLineItems = vm.addedLineItemsBackup;
+        }
+
+        function downloadReceivePdf(signatureInfo, callbackAfterDownload) {
+            vm.type = ReportService.REPORT_TYPE.RECEIVE;
+            vm.supplier = '';
+            vm.client = vm.facility.name;
+            vm.signature = signatureInfo.signature;
+            var momentNow = moment();
+            var documentNumberOrName = 'IV_' + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+            vm.initialDraftInfo = {
+                documentNumber: documentNumberOrName
+            };
+            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
+            vm.issueVoucherDate = moment(signatureInfo).format('YYYY-MM-DD');
+
+            ReportService.downloadPdf(
+                documentNumberOrName,
+                function() {
+                    restoreAddedLineItems();
+                    callbackAfterDownload();
+                },
+                true
+            );
+        }
+
+        function downloadIssuePdf(signatureInfo, callbackAfterDownload) {
+            vm.type = ReportService.REPORT_TYPE.ISSUE;
+            vm.supplier = vm.facility.name;
+            vm.client = '';
+            vm.signature = signatureInfo.signature;
+            var momentNow = moment();
+            var documentNumberOrName = 'IV_' + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+            vm.initialDraftInfo = {
+                documentNumber: documentNumberOrName
+            };
+            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
+            vm.issueVoucherDate = moment(signatureInfo).format('YYYY-MM-DD');
+            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(acc, lineItem) {
+                var price = lineItem.price * 100;
+                return acc = acc + lineItem.quantity * price;
+            }, 0);
+
+            ReportService.downloadPdf(
+                documentNumberOrName,
+                function() {
+                    restoreAddedLineItems();
+                    callbackAfterDownload();
+                },
+                false
+            );
+        }
 
         /**
          * @ngdoc method
@@ -459,14 +661,14 @@
 
         // SIGLUS-REFACTOR: starts here
         vm.save = function() {
-            var addedLineItems = angular.copy(vm.addedLineItems);
+            var allLineItemsAdded = angular.copy(vm.allLineItemsAdded);
 
             if ($stateParams.keyword) {
                 cancelFilter();
             }
 
             stockAdjustmentService
-                .saveDraft(vm.draft, addedLineItems, adjustmentType)
+                .saveDraft(vm.draft, allLineItemsAdded, adjustmentType)
                 .then(function() {
                     notificationService.success(vm.key('saved'));
                     $scope.needToConfirm = false;
@@ -496,7 +698,7 @@
         }
 
         function validateAllAddedItems() {
-            _.each(vm.addedLineItems, function(item) {
+            _.each(vm.allLineItemsAdded, function(item) {
                 vm.validateAssignment(item);
                 vm.validateReason(item);
                 vm.validateLot(item);
@@ -504,7 +706,7 @@
                 vm.validateQuantity(item);
                 // SIGLUS-REFACTOR: ends here
             });
-            return _.chain(vm.addedLineItems)
+            return _.chain(vm.allLineItemsAdded)
                 .groupBy(function(item) {
                     return item.lot ? item.lot.id : item.orderable.id;
                 })
@@ -523,7 +725,7 @@
         }
 
         function reorderItems() {
-            var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+            var sorted = $filter('orderBy')(vm.allLineItemsAdded, ['orderable.productCode', '-occurredDate']);
 
             vm.displayItems = _.chain(sorted).groupBy(function(item) {
                 return item.lot ? item.lot.id : item.orderable.id;
@@ -541,15 +743,14 @@
         function confirmSubmit(signatureInfo) {
             loadingModalService.open();
 
-            var addedLineItems = angular.copy(vm.addedLineItems);
+            var allLineItemsAdded = angular.copy(vm.allLineItemsAdded);
 
-            addedLineItems.forEach(function(lineItem) {
+            allLineItemsAdded.forEach(function(lineItem) {
                 lineItem.programId = _.first(lineItem.orderable.programs).programId;
             });
 
-            // generateKitConstituentLineItem(addedLineItems);
             stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                addedLineItems, adjustmentType, signatureInfo.signature, signatureInfo.occurredDate)
+                allLineItemsAdded, adjustmentType, signatureInfo.signature, signatureInfo.occurredDate)
             // SIGLUS-REFACTOR: ends here
                 .then(function() {
                     notificationService.success(vm.key('submitted'));
@@ -562,85 +763,6 @@
                     loadingModalService.close();
                     alertService.error(errorResponse.data.message);
                 });
-        }
-
-        function onInit() {
-            $state.current.label = messageService.get(vm.key('title'), {
-                facilityCode: facility.code,
-                facilityName: facility.name,
-                program: program.name
-            });
-
-            // SIGLUS-REFACTOR: starts here
-            vm.mandatoryReasons = [
-                'Empréstimos (para todos níveis) que dão saída do depósito',
-                'Devolução dos clientes (US e Depósitos Beneficiários)',
-                'Doações ao Depósito',
-                'Empréstimos (de todos os níveis) que dão entrada no depósito',
-                //eslint-disable-next-line
-                'Correcção de inventário, no caso do stock em excesso (stock é superior ao existente na ficha de stock)',
-                //eslint-disable-next-line
-                'Correcção de inventário, no caso do stock em falta (stock é inferior ao existente na ficha de stock)'
-            ];
-            vm.ignoreReasons = [
-                'Consumido',
-                'Recebido',
-                'Stock Inicial Excessivo',
-                'Stock Inicial Insuficiente',
-                'Devolução para o DDM'
-            ];
-            // SIGLUS-REFACTOR: ends here
-
-            initViewModel();
-            initStateParams();
-
-            $scope.$watch(function() {
-                return vm.addedLineItems;
-            }, function(newValue, oldValue) {
-                $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, oldValue));
-            }, true);
-            confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
-
-            $scope.$on('$stateChangeStart', function() {
-                angular.element('.popover').popover('destroy');
-            });
-        }
-
-        function initViewModel() {
-            //Set the max-date of date picker to the end of the current day.
-            vm.maxDate = new Date();
-            vm.maxDate.setHours(23, 59, 59, 999);
-
-            vm.program = program;
-            vm.facility = facility;
-            vm.reasons = filterReasons(reasons);
-            // SIGLUS-REFACTOR: starts here
-            // vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
-            // SIGLUS-REFACTOR: ends here
-            vm.srcDstAssignments = srcDstAssignments;
-            vm.addedLineItems = $stateParams.addedLineItems || [];
-            $stateParams.displayItems = displayItems;
-            vm.displayItems = $stateParams.displayItems || [];
-            vm.keyword = $stateParams.keyword;
-
-            vm.orderableGroups = orderableGroups;
-            vm.hasLot = false;
-            vm.orderableGroups.forEach(function(group) {
-                vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
-            });
-            vm.showVVMStatusColumn = orderableGroupService.areOrderablesUseVvm(vm.orderableGroups);
-        }
-
-        function initStateParams() {
-            $stateParams.page = getPageNumber();
-            $stateParams.program = program;
-            $stateParams.facility = facility;
-            $stateParams.reasons = filterReasons(reasons);
-            $stateParams.srcDstAssignments = srcDstAssignments;
-            // SIGLUS-REFACTOR: starts here
-            // $stateParams.orderableGroups = orderableGroups;
-            $stateParams.hasLoadOrderableGroups = true;
-            // SIGLUS-REFACTOR: ends here
         }
 
         function getPageNumber() {
@@ -671,7 +793,7 @@
         function filterReasons(items) {
             return _.chain(items)
                 .filter(function(reason) {
-                    return !_.contains(vm.ignoreReasons, reason.name);
+                    return !_.contains(IGNORE_REASONS, reason.name);
                 })
                 .map(function(reason) {
                     return stockCardDataService.addPrefixForAdjustmentReason(reason);

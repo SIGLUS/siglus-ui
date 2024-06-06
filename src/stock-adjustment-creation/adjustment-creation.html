@@ -26,12 +26,6 @@
                             required>
                     </select>
                 </div>
-<!--                <div ng-if="vm.selectedOrderableHasLots">-->
-<!--                    <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>-->
-<!--                    <select id="lotSelect" ng-model="vm.selectedLot"-->
-<!--                            ng-options="lot.lotCode for lot in vm.lots" required>-->
-<!--                    </select>-->
-<!--                </div>-->
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
         </section>
@@ -104,4 +98,5 @@
     </section>
 </div>
 
+<ng-include src="'siglus-issue-or-receive-report/siglus-issue-or-receive-report.html'"></ng-include>
 <ng-include src="'stock-adjustment-creation/adjustment-creation-toolbar.html'"></ng-include>

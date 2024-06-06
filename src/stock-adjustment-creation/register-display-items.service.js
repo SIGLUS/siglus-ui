@@ -40,7 +40,9 @@
                     .value();
             };
             // #284: lost data when changing page
-            var searchResult = stockAdjustmentCreationService.search(stateParams.keyword, stateParams.addedLineItems);
+            var searchResult = stockAdjustmentCreationService.search(
+                stateParams.keyword, stateParams.allLineItemsAdded
+            );
             return paginationService.registerList(validator, stateParams, function() {
                 return searchResult || [];
             });
