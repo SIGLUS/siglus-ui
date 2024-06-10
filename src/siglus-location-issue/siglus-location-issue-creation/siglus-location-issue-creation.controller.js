@@ -615,7 +615,7 @@
                                 var nowDate = momentNow.format('YYYY-MM-DD');
                                 var fileName = 'Saída_' + vm.destinationName + '_' + nowDate;
 
-                                ReportService.downloadPrint(
+                                ReportService.downloadPdf(
                                     fileName,
                                     function() {
                                         submitMergedDraft(subDrafts, data.occurredDate);

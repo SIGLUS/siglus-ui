@@ -21,11 +21,11 @@
         .factory('SiglusIssueOrReceiveReportService', SiglusIssueOrReceiveReportService);
 
     SiglusIssueOrReceiveReportService.$inject = [
-        'moment', '$q', 'siglusDownloadLoadingModalService'
+        'moment', '$q', 'siglusDownloadLoadingModalService', '$timeout'
     ];
 
     function SiglusIssueOrReceiveReportService(
-        moment, $q, siglusDownloadLoadingModalService
+        moment, $q, siglusDownloadLoadingModalService, $timeout
     ) {
         var PDF, pageNumber;
         var deferred = $q.defer();
@@ -42,9 +42,24 @@
             ISSUE: 'issue',
             RECEIVE: 'receive'
         };
+        var RECEIVE_PDF_REASON_NAME_LIST = [
+            '[Ajustes Positivos] Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)',
+            '[Ajustes Positivos] Devolução de expirados (US e Depósitos Beneficiários)',
+            '[Ajustes Positivos] Empréstimos (de todos os níveis) que dão entrada no depósito',
+            '[Ajustes Positivos] Doações ao Depósito'
+        ];
+        var ISSUE_PDF_REASON_NAME_LIST = [
+            '[Ajustes Negativos] Devolução de expirados para Depósito fornecedor',
+            '[Ajustes Negativos] Danificado no depósito',
+            '[Ajustes Negativos] Empréstimos (para todos níveis) que dão saída do Depósito',
+            '[Ajustes Negativos] Devolução Dentro do prazo de validade ao Depósito fornecedor'
+        ];
 
         SiglusIssueOrReceiveReportService.prototype.downloadPdf = downloadPdf;
         SiglusIssueOrReceiveReportService.prototype.REPORT_TYPE = REPORT_TYPE;
+        SiglusIssueOrReceiveReportService.prototype.RECEIVE_PDF_REASON_NAME_LIST = RECEIVE_PDF_REASON_NAME_LIST;
+        SiglusIssueOrReceiveReportService.prototype.ISSUE_PDF_REASON_NAME_LIST = ISSUE_PDF_REASON_NAME_LIST;
+        SiglusIssueOrReceiveReportService.prototype.waitForAddedLineItemsRender = waitForAddedLineItemsRender;
 
         function SiglusIssueOrReceiveReportService() {}
         return SiglusIssueOrReceiveReportService;
@@ -201,6 +216,13 @@
             PDF.addPage();
             pageNumber = pageNumber + 1;
             addPageNumberAtFooter(false);
+        }
+
+        function waitForAddedLineItemsRender() {
+            var TIME_WAITING_FOR_REPORT_RENDER = 500;
+            var deferred = $q.defer();
+            $timeout(deferred.resolve, TIME_WAITING_FOR_REPORT_RENDER);
+            return deferred.promise;
         }
 
     }

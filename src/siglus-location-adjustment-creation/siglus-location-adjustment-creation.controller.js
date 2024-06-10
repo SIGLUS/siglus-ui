@@ -39,7 +39,8 @@
         'SiglusLocationCommonUtilsService', 'siglusLocationAdjustmentModifyLineItemService',
         'siglusLocationCommonApiService', 'areaLocationInfo', 'siglusLocationAdjustmentService',
         'alertConfirmModalService', 'locations', 'program',
-        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'productList'
+        'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME', 'productList',
+        'SiglusIssueOrReceiveReportService', 'moment', 'orderablesPrice'
     ];
 
     function controller(
@@ -54,9 +55,19 @@
         SiglusLocationCommonUtilsService, siglusLocationAdjustmentModifyLineItemService,
         siglusLocationCommonApiService, areaLocationInfo, siglusLocationAdjustmentService,
         alertConfirmModalService, locations, program,
-        siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME, productList
+        siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME, productList,
+        SiglusIssueOrReceiveReportService, moment, orderablesPrice
     ) {
         var vm = this;
+        var ReportService = new SiglusIssueOrReceiveReportService();
+
+        var IGNORE_REASONS = [
+            'Consumido',
+            'Recebido',
+            'Stock Inicial Excessivo',
+            'Stock Inicial Insuficiente',
+            'Devolução para o DDM'
+        ];
 
         vm.$onInit = function() {
 
@@ -82,24 +93,6 @@
 
             vm.reasons = filterReasons(reasons);
 
-            vm.mandatoryReasons = [
-                'Empréstimos (para todos níveis) que dão saída do depósito',
-                'Devolução dos clientes (US e Depósitos Beneficiários)',
-                'Doações ao Depósito',
-                'Empréstimos (de todos os níveis) que dão entrada no depósito',
-                //eslint-disable-next-line
-                'Correcção de inventário, no caso do stock em excesso (stock é superior ao existente na ficha de stock)',
-                //eslint-disable-next-line
-                'Correcção de inventário, no caso do stock em falta (stock é inferior ao existente na ficha de stock)'
-            ];
-
-            vm.ignoreReasons = [
-                'Consumido',
-                'Recebido',
-                'Stock Inicial Excessivo',
-                'Stock Inicial Insuficiente',
-                'Devolução para o DDM'
-            ];
             vm.allLineItemsAdded = allLineItemsAdded;
             vm.displayItems = displayItems;
             vm.keyword = $stateParams.keyword;
@@ -534,7 +527,7 @@
         function filterReasons(items) {
             return _.chain(items)
                 .filter(function(reason) {
-                    return !_.contains(vm.ignoreReasons, reason.name);
+                    return !_.contains(IGNORE_REASONS, reason.name);
                 })
                 .map(function(reason) {
                     return stockCardDataService.addPrefixForAdjustmentReason(reason);
@@ -594,41 +587,171 @@
         });
         function submit() {
             validateForm();
-            if (isValid()) {
-                siglusPrintPalletLabelComfirmModalService.show()
-                    .then(function(result) {
-                        if (result) {
-                            downloadPrint();
-                        }
-                        siglusSignatureWithDateModalService
-                            .confirm('stockUnpackKitCreation.signature', null, null, true)
-                            .then(function(data) {
-                                var baseInfo = _.extend(getBaseInfo(), {
-                                    occurredDate: data.occurredDate,
-                                    signature: data.signature
-                                });
-                                loadingModalService.open();
-                                siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
-                                    .then(function() {
-                                        notificationService.success(vm.key('submitted'));
-                                        $scope.needToConfirm = false;
-                                        $state.go('openlmis.locationManagement.stockOnHand', {
-                                            program: program.id
-                                        },
-                                        {
-                                            location: 'replace'
-                                        });
-                                    })
-                                    .catch(function() {
-                                        loadingModalService.close();
-                                    });
-                            });
-
-                    });
-
-            } else {
+            if (!isValid()) {
                 alertService.error('stockAdjustmentCreation.submitInvalid');
+                return;
             }
+
+            siglusPrintPalletLabelComfirmModalService.show()
+                .then(function(result) {
+                    if (result) {
+                        downloadPrint();
+                    }
+                    siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
+                        .then(function(signatureInfo) {
+                            var lineItemsWithReceiveReasons =
+                                getLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
+                            var lineItemsWithIssueReasons =
+                                getLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+
+                            // set common data for Issue and Receive PDF
+                            vm.signature = signatureInfo.signature;
+                            var momentNow = moment();
+                            var documentNumberAndFileNameWithoutPrefix =
+                                vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+                            vm.initialDraftInfo = {
+                                documentNumber: documentNumberAndFileNameWithoutPrefix
+                            };
+                            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
+                            vm.issueVoucherDate = moment(signatureInfo.occurredDate).format('YYYY-MM-DD');
+
+                            if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
+                                buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
+                                ReportService.waitForAddedLineItemsRender().then(function() {
+                                    downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                        buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
+                                        ReportService.waitForAddedLineItemsRender().then(function() {
+                                            downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                                confirmSubmit(signatureInfo);
+                                            });
+                                        });
+
+                                    });
+                                });
+                            } else if (lineItemsWithReceiveReasons.length > 0) {
+                                // only download Receive PFD
+                                buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
+                                ReportService.waitForAddedLineItemsRender().then(function() {
+                                    downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                        confirmSubmit(signatureInfo);
+                                    });
+                                });
+                            } else if (lineItemsWithIssueReasons.length > 0) {
+                                // only download Issue PFD
+                                buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
+                                ReportService.waitForAddedLineItemsRender().then(function() {
+                                    downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                        confirmSubmit(signatureInfo);
+                                    });
+                                });
+                            } else {
+                                confirmSubmit(signatureInfo);
+                            }
+                        });
+
+                });
+        }
+
+        function confirmSubmit(signatureInfo) {
+            var baseInfo = _.assign(getBaseInfo(), {
+                occurredDate: signatureInfo.occurredDate,
+                signature: signatureInfo.signature
+            });
+            loadingModalService.open();
+            siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
+                .then(function() {
+                    notificationService.success(vm.key('submitted'));
+                    $scope.needToConfirm = false;
+                    $state.go('openlmis.locationManagement.stockOnHand', {
+                        program: program.id
+                    },
+                    {
+                        location: 'replace'
+                    });
+                })
+                .catch(function() {
+                    loadingModalService.close();
+                });
+        }
+
+        function buildAddedLineItemsForDownloadReport(lineItemsWithSpecialReasons) {
+            vm.addedLineItems = lineItemsWithSpecialReasons.map(function(item) {
+                return {
+                    productCode: _.get(item, ['orderable', 'productCode']),
+                    productName: _.get(item, ['orderable', 'fullProductName']),
+                    lotCode: _.get(item, ['lot', 'lotCode']),
+                    expirationDate: _.get(item, ['lot', 'expirationDate']),
+                    quantity: item.quantity,
+                    price: orderablesPrice.data[_.get(item, ['orderable', 'orderableId'])] || null
+                };
+            });
+        }
+
+        function getLineItemsByCertainReasons(reasonNameList) {
+            return getFlattenedAllLineItemsWithUniqueLotCode().filter(function(lineItem) {
+                return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
+            });
+        }
+
+        function getFlattenedAllLineItemsWithUniqueLotCode() {
+            var allLineItemsAddedCopy = angular.copy(vm.allLineItemsAdded);
+            var allLineItemsAddedWithUniqueLotCode = allLineItemsAddedCopy.map(function(productGroup) {
+                return getProductGroupWithUniqueLotCode(productGroup);
+            });
+            return _.flatten(allLineItemsAddedWithUniqueLotCode);
+
+        }
+
+        function getProductGroupWithUniqueLotCode(productGroup) {
+            var itemsGroupByLotCode = _.groupBy(productGroup, function(item) {
+                return _.get(item, ['lot', 'lotCode']);
+            });
+
+            return Object.keys(itemsGroupByLotCode).map(function(lotCode) {
+                var itemsWithCurrentLotCode = itemsGroupByLotCode[lotCode];
+                if (itemsWithCurrentLotCode.length === 1) {
+                    return itemsWithCurrentLotCode[0];
+                }
+                var totalQuantity = itemsWithCurrentLotCode.reduce(function(acc, item) {
+                    return acc + _.get(item, 'quantity', 0);
+                }, 0);
+                return _.assign({}, itemsWithCurrentLotCode[0], {
+                    quantity: totalQuantity
+                });
+            });
+        }
+
+        function downloadReceivePdf(documentNumberAndFileName, callbackAfterDownload) {
+            vm.type = ReportService.REPORT_TYPE.RECEIVE;
+            vm.supplier = '';
+            vm.client = vm.facility.name;
+
+            ReportService.downloadPdf(
+                'RR_' + documentNumberAndFileName,
+                function() {
+                    callbackAfterDownload();
+                },
+                true
+            );
+        }
+
+        function downloadIssuePdf(documentNumberAndFileName, callbackAfterDownload) {
+            vm.type = ReportService.REPORT_TYPE.ISSUE;
+            vm.supplier = vm.facility.name;
+            vm.client = '';
+            var totalPrice = _.reduce(vm.addedLineItems, function(acc, lineItem) {
+                var price = lineItem.price * 100;
+                return acc + lineItem.quantity * price;
+            }, 0);
+            vm.totalPriceValue = _.isNaN(totalPrice) ? 0 : totalPrice;
+
+            ReportService.downloadPdf(
+                'IV_' + documentNumberAndFileName,
+                function() {
+                    callbackAfterDownload();
+                },
+                false
+            );
         }
 
         function downloadPrint() {

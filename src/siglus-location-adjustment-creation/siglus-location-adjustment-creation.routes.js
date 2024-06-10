@@ -99,6 +99,10 @@
                         returnNoMovementLots: true
                     }, orderableIds);
                 },
+                orderablesPrice: function($stateParams, siglusOrderableLotService) {
+                    return $stateParams.orderablesPrice ? $stateParams.orderablesPrice :
+                        siglusOrderableLotService.getOrderablesPrice();
+                },
                 allLineItemsAdded: function(
                     draftInfo, $stateParams,
                     locations, siglusLocationAdjustmentModifyLineItemService,

@@ -35,8 +35,7 @@
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
         'siglusSignatureWithDateModalService', 'siglusOrderableLotMapping', 'stockAdjustmentService', 'draft',
         'siglusArchivedProductService', 'SIGLUS_MAX_STRING_VALUE', 'stockCardDataService',
-        'siglusOrderableLotService', 'SiglusIssueOrReceiveReportService', 'moment', 'orderablesPrice',
-        '$q', '$timeout'
+        'siglusOrderableLotService', 'SiglusIssueOrReceiveReportService', 'moment', 'orderablesPrice'
     ];
 
     function controller(
@@ -47,24 +46,11 @@
         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
         siglusSignatureWithDateModalService, siglusOrderableLotMapping, stockAdjustmentService, draft,
         siglusArchivedProductService, SIGLUS_MAX_STRING_VALUE, stockCardDataService,
-        siglusOrderableLotService, SiglusIssueOrReceiveReportService, moment, orderablesPrice,
-        $q, $timeout
+        siglusOrderableLotService, SiglusIssueOrReceiveReportService, moment, orderablesPrice
     ) {
         var vm = this,
             previousAdded = {};
         var ReportService = new SiglusIssueOrReceiveReportService();
-        var RECEIVE_PDF_REASON_NAME_LIST = [
-            '[Ajustes Positivos] Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)',
-            '[Ajustes Positivos] Devolução de expirados (US e Depósitos Beneficiários)',
-            '[Ajustes Positivos] Empréstimos (de todos os níveis) que dão entrada no depósito',
-            '[Ajustes Positivos] Doações ao Depósito'
-        ];
-        var ISSUE_PDF_REASON_NAME_LIST = [
-            '[Ajustes Negativos] Devolução de expirados para Depósito fornecedor',
-            '[Ajustes Negativos] Danificado no depósito',
-            '[Ajustes Negativos] Empréstimos (para todos níveis) que dão saída do Depósito',
-            '[Ajustes Negativos] Devolução Dentro do prazo de validade ao Depósito fornecedor'
-        ];
 
         var IGNORE_REASONS = [
             'Consumido',
@@ -208,12 +194,8 @@
             vm.program = program;
             vm.facility = facility;
             vm.reasons = filterReasons(reasons);
-            // SIGLUS-REFACTOR: starts here
-            // vm.showReasonDropdown = (adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state);
-            // SIGLUS-REFACTOR: ends here
             vm.srcDstAssignments = srcDstAssignments;
             vm.allLineItemsAdded = $stateParams.allLineItemsAdded || [];
-            // vm.addedLineItemsBackup = vm.addedLineItems;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
 
@@ -497,15 +479,18 @@
                     .then(function(signatureInfo) {
                         loadingModalService.open();
 
-                        var lineItemsWithReceiveReasons = getLineItemsByCertainReasons(RECEIVE_PDF_REASON_NAME_LIST);
-                        var lineItemsWithIssueReasons = getLineItemsByCertainReasons(ISSUE_PDF_REASON_NAME_LIST);
+                        var lineItemsWithReceiveReasons =
+                            getLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
+                        var lineItemsWithIssueReasons =
+                            getLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
 
                         // set common data for Issue and Receive PDF
                         vm.signature = signatureInfo.signature;
                         var momentNow = moment();
-                        var documentNumberAndFileName = 'IV_' + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+                        var documentNumberAndFileNameWithoutPrefix =
+                            vm.facility.code + '_' + momentNow.format('DDMMYYYY');
                         vm.initialDraftInfo = {
-                            documentNumber: documentNumberAndFileName
+                            documentNumber: documentNumberAndFileNameWithoutPrefix
                         };
                         vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
                         vm.issueVoucherDate = moment(signatureInfo.occurredDate).format('YYYY-MM-DD');
@@ -513,11 +498,11 @@
                         if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
                             // download both Receive and Issue PFD
                             buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
-                            waitForAddedLineItemsRender().then(function() {
-                                downloadReceivePdf(documentNumberAndFileName, function() {
+                            ReportService.waitForAddedLineItemsRender().then(function() {
+                                downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
                                     buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
-                                    waitForAddedLineItemsRender().then(function() {
-                                        downloadIssuePdf(documentNumberAndFileName, function() {
+                                    ReportService.waitForAddedLineItemsRender().then(function() {
+                                        downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
                                             confirmSubmit(signatureInfo);
                                         });
                                     });
@@ -527,16 +512,16 @@
                         } else if (lineItemsWithReceiveReasons.length > 0) {
                             // only download Receive PFD
                             buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
-                            waitForAddedLineItemsRender().then(function() {
-                                downloadReceivePdf(documentNumberAndFileName, function() {
+                            ReportService.waitForAddedLineItemsRender().then(function() {
+                                downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
                                     confirmSubmit(signatureInfo);
                                 });
                             });
                         } else if (lineItemsWithIssueReasons.length > 0) {
                             // only download Issue PFD
                             buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
-                            waitForAddedLineItemsRender().then(function() {
-                                downloadIssuePdf(documentNumberAndFileName, function() {
+                            ReportService.waitForAddedLineItemsRender().then(function() {
+                                downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
                                     confirmSubmit(signatureInfo);
                                 });
                             });
@@ -554,13 +539,6 @@
             return vm.allLineItemsAdded.filter(function(lineItem) {
                 return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
             });
-        }
-
-        function waitForAddedLineItemsRender() {
-            var TIME_WAITING_FOR_REPORT_RENDER = 500;
-            var deferred = $q.defer();
-            $timeout(deferred.resolve, TIME_WAITING_FOR_REPORT_RENDER);
-            return deferred.promise;
         }
 
         function buildAddedLineItemsForDownloadReport(lineItemsWithSpecialReasons) {
@@ -582,7 +560,7 @@
             vm.client = vm.facility.name;
 
             ReportService.downloadPdf(
-                documentNumberAndFileName,
+                'RR_' + documentNumberAndFileName,
                 function() {
                     callbackAfterDownload();
                 },
@@ -601,7 +579,7 @@
             vm.totalPriceValue = _.isNaN(totalPrice) ? 0 : totalPrice;
 
             ReportService.downloadPdf(
-                documentNumberAndFileName,
+                'IV_' + documentNumberAndFileName,
                 function() {
                     callbackAfterDownload();
                 },
@@ -731,9 +709,7 @@
         // SIGLUS-REFACTOR: starts here
         function confirmSubmit(signatureInfo) {
             loadingModalService.open();
-
             var allLineItemsAdded = angular.copy(vm.allLineItemsAdded);
-
             allLineItemsAdded.forEach(function(lineItem) {
                 lineItem.programId = _.first(lineItem.orderable.programs).programId;
             });

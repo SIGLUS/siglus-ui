@@ -30,6 +30,7 @@
         'referencedata-lot',
         'siglus-stock-input-select',
         'stock-event',
-        'siglus-stock-archived-product'
+        'siglus-stock-archived-product',
+        'siglus-issue-or-receive-report'
     ]);
 })();
