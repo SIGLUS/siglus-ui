@@ -51,7 +51,7 @@
         var ISSUE_PDF_REASON_NAME_LIST = [
             '[Ajustes Negativos] Devolução de expirados para Depósito fornecedor',
             '[Ajustes Negativos] Danificado no depósito',
-            '[Ajustes Negativos] Empréstimos (para todos níveis) que dão saída do Depósito',
+            '[Ajustes Negativos] Empréstimos (para todos níveis) que dão saída do depósito',
             '[Ajustes Negativos] Devolução Dentro do prazo de validade ao Depósito fornecedor'
         ];
 
