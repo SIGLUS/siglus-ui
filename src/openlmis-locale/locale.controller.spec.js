@@ -18,8 +18,10 @@ describe('LocaleController', function() {
     beforeEach(function() {
         module('openlmis-config', function($provide) {
             $provide.constant('OPENLMIS_LANGUAGES', {
-                test: 'Test Language',
-                en: 'English'
+                pt: 'Português',
+                en: 'English',
+                es: 'Español',
+                fr: 'Français'
             });
         });
         module('openlmis-locale');
@@ -56,7 +58,7 @@ describe('LocaleController', function() {
             this.vm.$onInit();
         });
 
-        it('in a sorted order', function() {
+        it('should sort and only keeps en and pt', function() {
             expect(this.vm.locales.length).toBe(2);
             expect(this.vm.locales[0]).toBe('en');
         });
