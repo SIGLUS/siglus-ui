@@ -195,7 +195,7 @@
             return $http({
                 method: 'POST',
                 url: authUrl('/api/users/auth/logout'),
-                ignoreAuthModule: true
+                ignoreAlert: true
             })
                 .then(function() {
                     return $q.resolve();
