@@ -474,65 +474,66 @@
         vm.submit = function() {
             $scope.$broadcast('openlmis-form-submit');
 
-            if (validateAllAddedItems()) {
-                siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
-                    .then(function(signatureInfo) {
-                        loadingModalService.open();
-
-                        var lineItemsWithReceiveReasons =
-                            getLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
-                        var lineItemsWithIssueReasons =
-                            getLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
-
-                        // set common data for Issue and Receive PDF
-                        vm.signature = signatureInfo.signature;
-                        var momentNow = moment();
-                        var documentNumberAndFileNameWithoutPrefix =
-                            vm.facility.code + '_' + momentNow.format('DDMMYYYY');
-                        vm.initialDraftInfo = {
-                            documentNumber: documentNumberAndFileNameWithoutPrefix
-                        };
-                        vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-                        vm.issueVoucherDate = moment(signatureInfo.occurredDate).format('YYYY-MM-DD');
-
-                        if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
-                            // download both Receive and Issue PFD
-                            buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
-                            ReportService.waitForAddedLineItemsRender().then(function() {
-                                downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
-                                    buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
-                                    ReportService.waitForAddedLineItemsRender().then(function() {
-                                        downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
-                                            confirmSubmit(signatureInfo);
-                                        });
-                                    });
-
-                                });
-                            });
-                        } else if (lineItemsWithReceiveReasons.length > 0) {
-                            // only download Receive PFD
-                            buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
-                            ReportService.waitForAddedLineItemsRender().then(function() {
-                                downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
-                                    confirmSubmit(signatureInfo);
-                                });
-                            });
-                        } else if (lineItemsWithIssueReasons.length > 0) {
-                            // only download Issue PFD
-                            buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
-                            ReportService.waitForAddedLineItemsRender().then(function() {
-                                downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
-                                    confirmSubmit(signatureInfo);
-                                });
-                            });
-                        } else {
-                            confirmSubmit(signatureInfo);
-                        }
-                    });
-            } else {
+            if (!validateAllAddedItems()) {
                 cancelFilter();
                 alertService.error('stockAdjustmentCreation.submitInvalid');
+                return;
             }
+
+            siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
+                .then(function(signatureInfo) {
+                    loadingModalService.open();
+
+                    var lineItemsWithReceiveReasons =
+                            getLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
+                    var lineItemsWithIssueReasons =
+                            getLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+
+                    // set common data for Issue and Receive PDF
+                    vm.signature = signatureInfo.signature;
+                    var momentNow = moment();
+                    var documentNumberAndFileNameWithoutPrefix =
+                            vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+                    vm.initialDraftInfo = {
+                        documentNumber: documentNumberAndFileNameWithoutPrefix
+                    };
+                    vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
+                    vm.issueVoucherDate = moment(signatureInfo.occurredDate).format('YYYY-MM-DD');
+
+                    if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
+                        // download both Receive and Issue PFD
+                        buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
+                        ReportService.waitForAddedLineItemsRender().then(function() {
+                            downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
+                                ReportService.waitForAddedLineItemsRender().then(function() {
+                                    downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                        confirmSubmit(signatureInfo);
+                                    });
+                                });
+
+                            });
+                        });
+                    } else if (lineItemsWithReceiveReasons.length > 0) {
+                        // only download Receive PFD
+                        buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
+                        ReportService.waitForAddedLineItemsRender().then(function() {
+                            downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                confirmSubmit(signatureInfo);
+                            });
+                        });
+                    } else if (lineItemsWithIssueReasons.length > 0) {
+                        // only download Issue PFD
+                        buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
+                        ReportService.waitForAddedLineItemsRender().then(function() {
+                            downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                                confirmSubmit(signatureInfo);
+                            });
+                        });
+                    } else {
+                        confirmSubmit(signatureInfo);
+                    }
+                });
         };
 
         function getLineItemsByCertainReasons(reasonNameList) {

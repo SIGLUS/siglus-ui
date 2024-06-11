@@ -19,13 +19,14 @@ describe('StockAdjustmentCreationController', function() {
     var vm, q, rootScope, state, stateParams, facility, program, confirmService, VVM_STATUS, messageService, scope,
         stockAdjustmentCreationService, reasons, $controller, ADJUSTMENT_TYPE, ProgramDataBuilder, FacilityDataBuilder,
         ReasonDataBuilder, OrderableGroupDataBuilder, OrderableDataBuilder, alertService, notificationService,
-        orderableGroups, LotDataBuilder, siglusSignatureWithDateModalService, stockCardDataService;
+        orderableGroups, LotDataBuilder, siglusSignatureWithDateModalService, stockCardDataService, orderablesPrice;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
 
         module('referencedata-lot');
         module('stock-adjustment-creation');
+        module('siglus-issue-or-receive-report');
 
         inject(function($q, $rootScope, $injector) {
             q = $injector.get('$q');
@@ -45,9 +46,6 @@ describe('StockAdjustmentCreationController', function() {
             alertService = $injector.get('alertService');
             notificationService = $injector.get('notificationService');
             LotDataBuilder = $injector.get('LotDataBuilder');
-            // SIGLUS-REFACTOR: starts here
-            // UNPACK_REASONS = $injector.get('UNPACK_REASONS');
-            // SIGLUS-REFACTOR: ends here
             this.OrderableDataBuilder = $injector.get('OrderableDataBuilder');
             this.OrderableChildrenDataBuilder = $injector.get('OrderableChildrenDataBuilder');
 
@@ -80,6 +78,10 @@ describe('StockAdjustmentCreationController', function() {
                 new OrderableGroupDataBuilder().build()
             ];
             reasons = [new ReasonDataBuilder().build()];
+
+            orderablesPrice = {
+                data: []
+            };
 
             this.kitConstituents = [
                 new this.OrderableChildrenDataBuilder().withId('child_product_1_id')
@@ -242,7 +244,7 @@ describe('StockAdjustmentCreationController', function() {
             }
         };
 
-        vm.addedLineItems = [lineItem1, lineItem2, lineItem3, lineItem4];
+        vm.allLineItemsAdded = [lineItem1, lineItem2, lineItem3, lineItem4];
 
         vm.submit();
 
@@ -260,7 +262,7 @@ describe('StockAdjustmentCreationController', function() {
             id: '2',
             quantity: 1
         };
-        vm.addedLineItems = [lineItem1, lineItem2];
+        vm.allLineItemsAdded = [lineItem1, lineItem2];
         vm.displayItems = [lineItem1];
         spyOn(confirmService, 'confirmDestroy');
         var deferred = q.defer();
@@ -270,12 +272,8 @@ describe('StockAdjustmentCreationController', function() {
         vm.removeDisplayItems();
         rootScope.$apply();
 
-        // SIGLUS-REFACTOR: starts here
         expect(confirmService.confirmDestroy).toHaveBeenCalledWith('stockAdjustmentCreation.deleteDraft',
             'stockAdjustmentCreation.delete');
-        // expect(vm.addedLineItems).toEqual([lineItem2]);
-        // expect(vm.displayItems).toEqual([]);
-        // SIGLUS-REFACTOR: ends here
     });
 
     it('should remove one line item from added line items', function() {
@@ -287,81 +285,13 @@ describe('StockAdjustmentCreationController', function() {
             id: '2',
             quantity: 1
         };
-        vm.addedLineItems = [lineItem1, lineItem2];
+        vm.allLineItemsAdded = [lineItem1, lineItem2];
 
         vm.remove(lineItem1);
 
-        expect(vm.addedLineItems).toEqual([lineItem2]);
+        expect(vm.allLineItemsAdded).toEqual([lineItem2]);
     });
 
-    // SIGLUS-REFACTOR: addProduct function has been removed from StockAdjustmentCreationController
-    // describe('addProduct', function() {
-    //
-    //     beforeEach(function() {
-    //         vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
-    //             .withOrderable(new OrderableDataBuilder().withFullProductName('Implanon')
-    //                 .build())
-    //             .withStockOnHand(2)
-    //             .build();
-    //         vm.addProduct();
-    //     });
-    //
-    //     it('should add one line item to addedLineItem array', function() {
-    //         var addedLineItem = vm.addedLineItems[0];
-    //
-    //         expect(addedLineItem.stockOnHand).toEqual(2);
-    //         expect(addedLineItem.orderable.fullProductName).toEqual('Implanon');
-    //         expect(typeof(addedLineItem.occurredDate)).toBe('string');
-    //     });
-    //
-    //     it('should properly add another line item to addedLineItem array', function() {
-    //         vm.selectedOrderableGroup = new OrderableGroupDataBuilder()
-    //             .withOrderable(new OrderableDataBuilder().withFullProductName('Adsorbentia')
-    //                 .build())
-    //             .withStockOnHand(10)
-    //             .build();
-    //         vm.addProduct();
-    //
-    //         var addedLineItem = vm.addedLineItems[0];
-    //
-    //         expect(addedLineItem.stockOnHand).toEqual(10);
-    //         expect(addedLineItem.orderable.fullProductName).toEqual('Adsorbentia');
-    //         expect(addedLineItem.occurredDate).toEqual(vm.addedLineItems[1].occurredDate);
-    //     });
-    // });
-
-    // it('should search from added line items', function() {
-    //     var lineItem1 = {
-    //         id: '1',
-    //         quantity: 0
-    //     };
-    //     var lineItem2 = {
-    //         id: '2',
-    //         quantity: 1
-    //     };
-    //     vm.addedLineItems = [lineItem1, lineItem2];
-    //
-    //     spyOn(stockAdjustmentCreationService, 'search');
-    //     stockAdjustmentCreationService.search.andReturn([lineItem1]);
-    //     var params = {
-    //         page: 0,
-    //         program: program,
-    //         facility: facility,
-    //         reasons: reasons,
-    //         orderableGroups: orderableGroups,
-    //         addedLineItems: [lineItem1, lineItem2],
-    //         displayItems: [lineItem1],
-    //         keyword: undefined
-    //     };
-    //
-    //     vm.search();
-    //
-    //     expect(vm.displayItems).toEqual([lineItem1]);
-    //     expect(state.go).toHaveBeenCalledWith('/a/b', params, {
-    //         reload: true,
-    //         notify: false
-    //     });
-    // });
     it('should get no error when the lot code is valid', function() {
         var lineItem = {
             lot: new LotDataBuilder().build(),
@@ -417,7 +347,7 @@ describe('StockAdjustmentCreationController', function() {
             isKit: false,
             $errors: {}
         };
-        vm.addedLineItems = [lineItem1, lineItem2];
+        vm.allLineItemsAdded = [lineItem1, lineItem2];
         vm.validateLot(lineItem1);
 
         expect(lineItem1.$errors.lotCodeInvalid)
@@ -446,7 +376,7 @@ describe('StockAdjustmentCreationController', function() {
             confirmService.confirm.andReturn(q.resolve());
         });
 
-        it('should rediect with proper state params after success', function() {
+        it('should redirect with proper state params after success', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
 
@@ -465,7 +395,7 @@ describe('StockAdjustmentCreationController', function() {
             expect(alertService.error).not.toHaveBeenCalled();
         });
 
-        it('should not rediect after error', function() {
+        it('should not redirect after error', function() {
             spyOn(stockAdjustmentCreationService, 'submitAdjustments');
             stockAdjustmentCreationService.submitAdjustments
                 .andReturn(q.reject({
@@ -485,38 +415,6 @@ describe('StockAdjustmentCreationController', function() {
             expect(notificationService.success).not.toHaveBeenCalled();
         });
 
-        // SIGLUS-REFACTOR: unit tests for unpacking
-        // it('should generate kit constituent if the state is unpacking', function() {
-        //     spyOn(stockAdjustmentCreationService, 'submitAdjustments');
-        //     stockAdjustmentCreationService.submitAdjustments.andReturn(q.resolve());
-        //
-        //     vm = initController([this.orderableGroup], ADJUSTMENT_TYPE.KIT_UNPACK);
-        //
-        //     vm.addedLineItems = [{
-        //         reason: {
-        //             id: '123',
-        //             reasonType: 'DEBIT'
-        //         },
-        //         orderable: this.kitOrderable,
-        //         occurredDate: new Date(),
-        //         quantity: 2,
-        //         $errors: {}
-        //     }];
-        //
-        //     vm.submit();
-        //
-        //     rootScope.$apply();
-        //
-        //     // var unpackingLineItem = stockAdjustmentCreationService.submitAdjustments
-        //     //     .mostRecentCall.args[2];
-        //     //
-        //     // expect(unpackingLineItem.length).toEqual(2);
-        //     // expect(unpackingLineItem[1].reason.reasonType).toEqual('CREDIT');
-        //     // expect(unpackingLineItem[0].reason.reasonType).toEqual('DEBIT');
-        //     // expect(unpackingLineItem[1].quantity).toEqual(60);
-        //     // expect(unpackingLineItem[0].quantity).toEqual(2);
-        // });
-        // SIGLUS-REFACTOR: ends here
     });
 
     describe('orderableSelectionChanged', function() {
@@ -556,8 +454,9 @@ describe('StockAdjustmentCreationController', function() {
             displayItems: [],
             siglusSignatureWithDateModalService: siglusSignatureWithDateModalService,
             draft: {},
-            stockCardDataService: stockCardDataService
+            stockCardDataService: stockCardDataService,
             // SIGLUS-REFACTOR: ends here
+            orderablesPrice: orderablesPrice
         });
     }
 
