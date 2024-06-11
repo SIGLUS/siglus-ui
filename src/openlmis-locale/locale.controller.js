@@ -38,7 +38,12 @@
         locale.getLocaleName = getLocaleName;
 
         function onInit() {
+            // same with the key in OPENLMIS_LANGUAGES (openlmis-config/messages.js)
+            var NEEDED_LANGUAGE_KEYS = ['en', 'pt'];
             locale.locales = Object.keys(OPENLMIS_LANGUAGES)
+                .filter(function(languageKey) {
+                    return NEEDED_LANGUAGE_KEYS.includes(languageKey);
+                })
                 .sort();
 
             locale.selectedLocale = messageService.getCurrentLocale();
