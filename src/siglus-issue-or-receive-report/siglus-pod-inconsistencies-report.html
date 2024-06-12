@@ -1,0 +1,90 @@
+<div class="wait-for-download" id="inconsistency">
+  <section class="inconsistency-header">
+    <table cellpadding="0" cellspacing="0">
+      <thead id="inconsistencyHeader">
+        <tr class="hide-tr">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td style="width: 80px; height: 90px;" class="logo--center "><span class="view-table-logo"></span></td>
+          <td colspan="6" class="text__left">
+            <h6 class="report--main-font" openlmis-message="view.rnr.republic.of.mozambique">
+              {{ 'siglusIssueOrReceiveReport.republic_of_mozambique' | message }}
+            </h6>
+            <h6 class="report--main-font" openlmis-message="view.rnr.ministry.of.health">
+              {{ 'siglusIssueOrReceiveReport.ministry_of_health' | message }}
+            </h6>
+            <h6 class="report--main-font" openlmis-message="view.rnr.central.medicines.and.medical.arricles">
+              {{ 'siglusIssueOrReceiveReport.central_medicines_and_medical_articles' | message }}
+            </h6>
+          </td>
+          <td colspan="8" style="border-right: 1px solid #000;" class="report--title">
+            <span class="report--title-font">
+              <!-- Issue Voucher Nº -->
+             {{'siglusIssueOrReceiveReport.inconsistencies' | message }}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style="height: 60px; width: 420px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.facility.geographicZone.parent.name }}</td>
+          <td style="height: 60px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.district' | message }}: {{ vm.facility.geographicZone.name }}</td>
+          <td style="height: 60px; width: 420px; border-right: 1px solid #000;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.health_facility' | message }}: {{ vm.client }}</td>
+        </tr>
+        <tr>
+          <td
+            style="
+              height: 30px;
+              border: none;
+            "
+            colspan="9"
+          ></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="inconsistencyTh">
+          <td style="height: 60px;" class="report--main-font text__left">{{ 'siglusIssueOrReceiveReport.fnm' | message }}</td>
+          <td class="report--main-font text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.product' | message }}</td>
+          <td style="width: 125px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.suppliedQuantity' | message }}</td>
+          <td style="width: 125px;" class="report--main-font">{{ 'siglusIssueOrReceiveReport.receivedQuantity' | message }}</td>
+          <td class="report--main-font text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.reason_for_adjustment' | message }}</td>
+          <td class="report--main-font text__left" style="border-right: 1px solid #000;" colspan="2">{{ 'siglusIssueOrReceiveReport.notes' | message }}</td>
+        </tr>
+        <tr id="inconsistencyCalcTr" ng-repeat="item in vm.incosistencies">
+          <td class="text__left" style="height: 30px;">{{ item.productCode }}</td>
+          <td class="text__left" colspan="5">{{ item.productName }}</td>
+          <td>{{ item.quantityShipped }}</td>
+          <td>{{ item.quantityAccepted }}</td>
+          <td class="text__left" colspan="5">{{ vm.getReason(item.rejectionReasonId) }}</td>
+          <td class="text__left" style="border-right: 1px solid #000;" colspan="2">{{ item.notes }}</td>
+        </tr>
+      </tbody>
+      <tfoot id="inconsistencyFooter">
+        <tr>
+          <td style="height: 30px; border: none;" colspan="15"></td>
+        </tr>
+        <tr>
+          <td style="height: 30px; font-weight: 700; font-size: 18px;" class="text__left" colspan="8">{{ 'siglusIssueOrReceiveReport.create_by' | message }}: {{ vm.deliveredBy }}</td>
+          <td style="border-left: none; border-right: 1px solid #000; height: 30px; font-weight: 700; font-size: 18px; text-align: right;" colspan="7">{{ 'siglusIssueOrReceiveReport.date' | message }}: {{ vm.receivedDate }}</td>
+        </tr>
+        <tr>
+          <td colspan="8" class="text__left" style="padding: 0; height: 40px; border: none; font-weight: 700 !important; font-size: 18px;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</td>
+          <td colspan="7" class="text__right" style="padding: 0; border: none; font-weight: 700 !important; font-size: 18px;">{{ vm.nowTime }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </section>
+</div>

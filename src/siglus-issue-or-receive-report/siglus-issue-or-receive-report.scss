@@ -1,4 +1,4 @@
-.wait-for-download1 {
+.wait-for-download {
     width: 1250px;
     padding: 0 2px;
     display: block;
@@ -19,6 +19,7 @@
       min-height: 50px;
       background: #FFFFFF;
       border: 1px solid #000000;
+      font-size: 14px;
     }
     .section-first .section-second {
       width: 1246px;
@@ -160,6 +161,7 @@
     .report--title-font {
       font-weight: bold;
       font-size: 24px;
+      text-align: center;
     }
 
     .hide-tr {
