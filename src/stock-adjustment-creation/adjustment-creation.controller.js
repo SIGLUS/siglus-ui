@@ -547,8 +547,8 @@
                 return {
                     productCode: _.get(item, ['orderable', 'productCode']),
                     productName: _.get(item, ['orderable', 'fullProductName']),
-                    lotCode: item.lotCode,
-                    expirationDate: item.expirationDate,
+                    lotCode: _.get(item, ['lot', 'lotCode']),
+                    expirationDate: _.get(item, ['lot', 'expirationDate']),
                     quantity: item.quantity,
                     price: orderablesPrice.data[_.get(item, ['orderable', 'id'])] || null
                 };
