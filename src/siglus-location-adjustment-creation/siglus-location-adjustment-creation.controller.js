@@ -703,12 +703,12 @@
         }
 
         function getProductGroupWithUniqueLotCode(productGroup) {
-            var itemsGroupByLotCode = _.groupBy(productGroup, function(item) {
+            var itemsMapGroupByLotCode = _.groupBy(productGroup, function(item) {
                 return _.get(item, ['lot', 'lotCode']);
             });
 
-            return Object.keys(itemsGroupByLotCode).map(function(lotCode) {
-                var itemsWithCurrentLotCode = itemsGroupByLotCode[lotCode];
+            return Object.keys(itemsMapGroupByLotCode).map(function(lotCode) {
+                var itemsWithCurrentLotCode = itemsMapGroupByLotCode[lotCode];
                 if (itemsWithCurrentLotCode.length === 1) {
                     return itemsWithCurrentLotCode[0];
                 }

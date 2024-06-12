@@ -537,8 +537,28 @@
         };
 
         function getLineItemsByCertainReasons(reasonNameList) {
-            return vm.allLineItemsAdded.filter(function(lineItem) {
+            return getAllLineItemsWithUniqueLotCode().filter(function(lineItem) {
                 return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
+            });
+        }
+
+        function getAllLineItemsWithUniqueLotCode() {
+            var itemsMapGroupByLotCode = _.groupBy(vm.allLineItemsAdded, function(lineItem) {
+                return _.get(lineItem, ['lot', 'lotCode']);
+            });
+
+            return Object.keys(itemsMapGroupByLotCode).map(function(lotCode) {
+                var itemsWithCurrentLotCode = itemsMapGroupByLotCode[lotCode];
+
+                if (itemsWithCurrentLotCode.length === 1) {
+                    return itemsWithCurrentLotCode[0];
+                }
+                var totalQuantity = itemsWithCurrentLotCode.reduce(function(acc, item) {
+                    return acc + _.get(item, 'quantity', 0);
+                }, 0);
+                return _.assign({}, itemsWithCurrentLotCode[0], {
+                    quantity: totalQuantity
+                });
             });
         }
 
