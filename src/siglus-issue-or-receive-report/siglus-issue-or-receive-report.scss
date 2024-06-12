@@ -4,10 +4,6 @@
     display: block;
     overflow: hidden;
     height: 0;
-    // .rapid-test-pdf-container {
-    //   // padding: 60px 90px 0 90px;
-      
-    // }
     .label-checkbox {
       width: 100%;
       label {
@@ -24,11 +20,7 @@
       background: #FFFFFF;
       border: 1px solid #000000;
     }
-    .section-first {
-      width: 1246px;
-      display: flex;
-    }
-    .section-second {
+    .section-first .section-second {
       width: 1246px;
       display: flex;
     }
@@ -77,13 +69,11 @@
       width: 20px;
       max-width: 20px;
     }
-  
+
     table {
       width: 100%;
       border-collapse: collapse;
       box-sizing: border-box;
-      // background: #FFFFFF;
-      // border: 2px solid #000;
       tr {
         text-align: center;
       }
@@ -91,7 +81,7 @@
         border-top: 1px solid #000;
         border-left: 1px solid #000;
         border-bottom: 1px solid #000;
-        border-right: 0px solid #000;
+        border-right: 0 solid #000;
         word-wrap: break-word;
         padding: 0 4px;
       }
@@ -99,19 +89,19 @@
       .width-700 {
         width: 700px !important;
       }
-  
+
       .height-50 {
         height: 50px !important;
       }
-  
+
       .height-30 {
         height: 30px !important;
       }
-  
+
       .height-20 {
         height: 20px !important;
       }
-  
+
       .black-tr {
         height: 10px;
       }
@@ -129,56 +119,56 @@
         text-align: right !important;
         padding: 0 6px;
       }
-  
+
       .font-bold {
         font-weight: bold;
       }
-  
+
       .table--title {
         height: 40px;
         font-weight: bold;
         text-align: center;
         background-color: #AFAFAF;
       }
-  
+
       .table--subtitle-light-gray {
         font-weight: bold;
         height: 35px;
         background-color: #E2E2E2;
       }
-  
+
       .table--subtitle-middle-gray {
         font-weight: bold;
         height: 35px;
         background-color: #AFAFAF;
       }
-  
+
       .table--subtitle-dark-gray {
         font-weight: bold;
         height: 35px;
         background-color: #858585;
       }
-  
+
       margin-bottom: 10px;
     }
-  
+
     .report--title {
       text-align: center;
       line-height: 1.2;
     }
-  
+
     .report--title-font {
       font-weight: bold;
       font-size: 24px;
     }
 
     .hide-tr {
-      height: 0px !important;
+      height: 0 !important;
       td {
         border: none !important;
       }
     }
-  
+
     .report--subtitle {
         font-weight: 700;
         font-size: 18px;
@@ -188,7 +178,7 @@
         font-weight: 700;
         font-size: 14px;
     }
-  
+
     .inconsistency {
       width: 1246px;
     }
