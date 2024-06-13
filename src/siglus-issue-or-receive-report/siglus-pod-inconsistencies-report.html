@@ -40,9 +40,15 @@
           </td>
         </tr>
         <tr>
-          <td style="height: 60px; width: 420px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.facility.geographicZone.parent.name }}</td>
-          <td style="height: 60px;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.district' | message }}: {{ vm.facility.geographicZone.name }}</td>
-          <td style="height: 60px; width: 420px; border-right: 1px solid #000;" class="text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.health_facility' | message }}: {{ vm.client }}</td>
+          <td style="height: 60px; width: 420px;" class="text__left" colspan="5">
+            {{ 'siglusIssueOrReceiveReport.province' | message }}: {{ vm.podInconsistencyInfo.province }}
+          </td>
+          <td style="height: 60px;" class="text__left" colspan="5">
+            {{ 'siglusIssueOrReceiveReport.district' | message }}: {{ vm.podInconsistencyInfo.district }}
+          </td>
+          <td style="height: 60px; width: 420px; border-right: 1px solid #000;" class="text__left" colspan="5">
+            {{ 'siglusIssueOrReceiveReport.health_facility' | message }}: {{ vm.podInconsistencyInfo.client }}
+          </td>
         </tr>
         <tr>
           <td
@@ -63,7 +69,7 @@
           <td class="report--main-font text__left" colspan="5">{{ 'siglusIssueOrReceiveReport.reason_for_adjustment' | message }}</td>
           <td class="report--main-font text__left" style="border-right: 1px solid #000;" colspan="2">{{ 'siglusIssueOrReceiveReport.notes' | message }}</td>
         </tr>
-        <tr id="inconsistencyCalcTr" ng-repeat="item in vm.incosistencies">
+        <tr id="inconsistencyCalcTr" ng-repeat="item in vm.podInconsistencyInfo.inconsistentItems">
           <td class="text__left" style="height: 30px;">{{ item.productCode }}</td>
           <td class="text__left" colspan="5">{{ item.productName }}</td>
           <td>{{ item.quantityShipped }}</td>
@@ -77,12 +83,16 @@
           <td style="height: 30px; border: none;" colspan="15"></td>
         </tr>
         <tr>
-          <td style="height: 30px; font-weight: 700; font-size: 18px;" class="text__left" colspan="8">{{ 'siglusIssueOrReceiveReport.create_by' | message }}: {{ vm.deliveredBy }}</td>
-          <td style="border-left: none; border-right: 1px solid #000; height: 30px; font-weight: 700; font-size: 18px; text-align: right;" colspan="7">{{ 'siglusIssueOrReceiveReport.date' | message }}: {{ vm.receivedDate }}</td>
+          <td style="height: 30px; font-weight: 700; font-size: 18px;" class="text__left" colspan="8">
+            {{ 'siglusIssueOrReceiveReport.create_by' | message }}: {{ vm.podInconsistencyInfo.deliveredBy }}
+          </td>
+          <td style="border-left: none; border-right: 1px solid #000; height: 30px; font-weight: 700; font-size: 18px; text-align: right;" colspan="7">
+            {{ 'siglusIssueOrReceiveReport.date' | message }}: {{ vm.podInconsistencyInfo.receivedDate }}
+          </td>
         </tr>
         <tr>
           <td colspan="8" class="text__left" style="padding: 0; height: 40px; border: none; font-weight: 700 !important; font-size: 18px;">{{ 'siglusIssueOrReceiveReport.printOnTheComputer' | message }}</td>
-          <td colspan="7" class="text__right" style="padding: 0; border: none; font-weight: 700 !important; font-size: 18px;">{{ vm.nowTime }}</td>
+          <td colspan="7" class="text__right" style="padding: 0; border: none; font-weight: 700 !important; font-size: 18px;">{{ vm.podInconsistencyInfo.nowTime }}</td>
         </tr>
       </tfoot>
     </table>

@@ -40,7 +40,8 @@
         'siglus-proof-of-delivery-initial-modal',
         'referencedata-facility',
         'siglus-download-loading-modal',
-        'stock-orderable-group'
+        'stock-orderable-group',
         // SIGLUS-REFACTOR: starts here
+        'siglus-issue-or-receive-report'
     ]);
 })();

@@ -40,7 +40,8 @@
         var CONTENT_MARGIN_LEFT_PX = 4;
         var REPORT_TYPE = {
             ISSUE: 'issue',
-            RECEIVE: 'receive'
+            RECEIVE: 'receive',
+            POD: 'pod'
         };
         var RECEIVE_PDF_REASON_NAME_LIST = [
             '[Ajustes Positivos] Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)',
@@ -69,15 +70,16 @@
             pageNumber = 1;
         }
 
-        function downloadPdf(fileName, callback) {
+        function downloadPdf(fileName, callback, needPodInconsistentPdf) {
             waitForAddedLineItemsRender().then(function() {
-                downloadReceiveOrIssuePdf(fileName, callback);
+                downloadReceiveOrIssuePdf(fileName, callback, needPodInconsistentPdf);
             });
         }
 
-        function downloadReceiveOrIssuePdf(fileName, callback) {
+        function downloadReceiveOrIssuePdf(fileName, callback, needPodInconsistentPdf) {
             siglusDownloadLoadingModalService.open();
             init();
+            var pdfFileName = fileName + '.pdf';
 
             // 获取固定高度的dom节点
             var sectionFirst = document.getElementById('sectionFirst');
@@ -130,6 +132,7 @@
                 // 当前分页部分tr的累积高度
                 var realHeight = 0;
 
+                // add line items
                 $q.all(lineItemsPromiseList).then(function(result) {
                     // 添加分页部分上方的固定部分图片到PDF中
                     addComponentsImage(topComponents);
@@ -168,18 +171,114 @@
                         }
                         offsetHeight = offsetHeight + lineItemPromiseResult.nodeHeight;
                     });
+                    // add line items end
+
                     // TODO: need new page?
                     // add page bottom components
                     addComponentsImage(bottomComponents, (offsetHeight + sectionThirdResult.nodeHeight));
 
-                    PDF.save(fileName + '.pdf');
-                    siglusDownloadLoadingModalService.close();
+                    if (needPodInconsistentPdf) {
+                        downloadPodInconsistencyPdf(pdfFileName);
+                    } else {
+                        PDF.save(pdfFileName);
+                        siglusDownloadLoadingModalService.close();
+                    }
                     deferred.resolve('success');
                 })
                     .then(function() {
-                        callback();
+                        if (callback) {
+                            callback();
+                        }
                     });
             });
+        }
+
+        function downloadPodInconsistencyPdf(fileName) {
+            var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
+            if (needCalcTrNodesArray.length === 0) {
+                PDF.save(fileName);
+                return;
+            }
+            // download Inconsistent pod in new page
+            PDF.addPage();
+            pageNumber = pageNumber + 1;
+
+            var inconsistencyHeaderNode = document.getElementById('inconsistencyHeader');
+            var inconsistencyFooterNode = document.getElementById('inconsistencyFooter');
+            var inconsistencyTh = document.getElementById('inconsistencyTh');
+            var fixedHeight = inconsistencyHeaderNode.offsetHeight
+                + inconsistencyFooterNode.offsetHeight
+                + inconsistencyTh.offsetHeight
+                + PAGE_NUM_HEIGHT / RATE;
+            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT;
+            var fixedPromiseList = [
+                getElementToImagePromise(inconsistencyHeaderNode, IMAGE_WIDTH_PX),
+                getElementToImagePromise(inconsistencyTh, IMAGE_WIDTH_PX),
+                getElementToImagePromise(inconsistencyFooterNode, IMAGE_WIDTH_PX)
+            ];
+            var lineItemsPromiseList = _.map(needCalcTrNodesArray, function(lineItemElement) {
+                return getElementToImagePromise(lineItemElement, IMAGE_WIDTH_PX, lineItemElement.offsetHeight + 1);
+            });
+
+            // add line items
+            $q.all(fixedPromiseList).then(function(fixedPromiseResult) {
+                var headerNodeResult = fixedPromiseResult[0];
+                var thNodeResult = fixedPromiseResult[1];
+                var footerNodeResult = fixedPromiseResult[2];
+
+                var topComponents = [headerNodeResult, thNodeResult];
+                var bottomComponents = [footerNodeResult];
+
+                var offsetHeight = topComponents.reduce(function(acc, componentResult) {
+                    return acc + componentResult.nodeHeight;
+                }, 0);
+                var realHeight = 0;
+
+                $q.all(lineItemsPromiseList).then(function(itemsPromiseResult) {
+                    addComponentsImage(topComponents);
+                    // add lineItems
+                    _.forEach(itemsPromiseResult, function(itemResult, index) {
+                        realHeight = realHeight + itemResult.nodeHeight;
+                        // need to add new page
+                        if (realHeight > canUseHeight) {
+                            // add footer
+                            addPageNumberAtFooter(false);
+                            // add bottom components
+                            addComponentsImage(bottomComponents, offsetHeight);
+                            // add new page
+                            addNewPage();
+                            // add top components
+                            addComponentsImage(topComponents);
+                            // reset offset
+                            offsetHeight = topComponents.reduce(function(acc, componentResult) {
+                                return acc + componentResult.nodeHeight;
+                            }, 0);
+                            realHeight = 0;
+                        }
+
+                        // add line item
+                        PDF.addImage(
+                            itemResult.data, 'JPEG',
+                            CONTENT_MARGIN_LEFT_PX, offsetHeight * RATE,
+                            itemResult.nodeWidth * RATE, itemResult.nodeHeight * RATE
+                        );
+                        offsetHeight = offsetHeight + itemResult.nodeHeight;
+
+                        var isLastLineItem = index === lineItemsPromiseList.length - 1;
+                        if (isLastLineItem) {
+                            addPageNumberAtFooter(true);
+                        }
+                    });
+                    // add line items end
+
+                    // add bottom components
+                    addComponentsImage(bottomComponents, offsetHeight);
+                    PDF.save(fileName);
+                    siglusDownloadLoadingModalService.close();
+                });
+
+            });
+
         }
 
         function getElementToImagePromise(element, width, height) {

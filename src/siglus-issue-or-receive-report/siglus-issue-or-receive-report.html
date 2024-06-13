@@ -31,10 +31,14 @@
             </h6>
           </td>
           <td colspan="3" style="border-right: 1px solid #000;" class="report--title">
-              <span class="report--title-font">
-                <!-- Issue Voucher Nº -->
-                {{vm.reportPDFInfo.documentNumber}}
-              </span>
+            <span class="report--title-font">
+              <!-- Issue Voucher Nº -->
+              {{vm.reportPDFInfo.documentNumber}}
+            </span>
+            <div class="report--title-font">
+              <!-- Issue Voucher Nº -->
+              {{vm.reportPDFInfo.issueVoucherNumber}}
+            </div>
           </td>
         </tr>
         <tr>
@@ -237,18 +241,25 @@
           <td>{{ item.productName }}</td>
           <td>{{ item.lotCode }}</td>
           <td>{{ item.expirationDate }}</td>
-          <td></td>
-          <td></td>
-          <td>{{ vm.reportPDFInfo.type === 'issue' ? item.quantity : '' }}</td>
+          <td>{{ vm.reportPDFInfo.type === 'pod' ? item.orderedQuantity : '' }}</td>
+          <td>{{ vm.reportPDFInfo.type === 'pod' ? item.partialFulfilledQuantity : '' }}</td>
+          <td>
+            {{ vm.reportPDFInfo.type === 'issue' ? item.quantity : '' }}
+            {{ vm.reportPDFInfo.type === 'pod' ? item.quantityShipped : '' }}
+          </td>
           <!-- price -->
-          <td>{{ vm.reportPDFInfo.type === 'issue' && item.price ? item.price : '' }}</td>
+          <td>{{ item.price && (vm.reportPDFInfo.type === 'issue' || vm.reportPDFInfo.type === 'pod') ? item.price : '' }}</td>
           <!-- value -->
           <td style="width: 30px;">
               {{ item.price && vm.reportPDFInfo.type === 'issue' ? ((item.price * 100).toFixed(2) * item.quantity) / 100 : '' }}
+              {{ vm.reportPDFInfo.type === 'pod' ? ((item.price * 100).toFixed(2) * item.quantityShipped) / 100 : '' }}
           </td>
           <td style="border: none; border-left: 1px solid #000;"></td>
-          <td>{{ vm.reportPDFInfo.type === 'receive' ? item.quantity : '' }}</td>
-          <td style="border-right: 1px solid #000;"></td>
+          <td>
+            {{ vm.reportPDFInfo.type === 'receive' ? item.quantity : '' }}
+            {{ vm.reportPDFInfo.type === 'pod' ? item.quantityAccepted : '' }}
+          </td>
+          <td style="border-right: 1px solid #000;">{{ item.quantityAccepted ? item.quantityAccepted - item.quantityShipped : '' }}</td>
         </tr>
         </tbody>
       </table>
@@ -256,18 +267,18 @@
     <section id="sectionThird" class="section-third">
       <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
       <div class="issue-voucher" style="text-align: center;">
-        {{ vm.reportPDFInfo.type ===  'issue' ? (vm.reportPDFInfo.totalPriceValue / 100).toFixed(2) : '' }}
+        {{ vm.reportPDFInfo.type === 'issue' || vm.reportPDFInfo.type === 'pod' ? (vm.reportPDFInfo.totalPriceValue / 100).toFixed(2) : '' }}
       </div>
     </section>
     <section id="sectionFouth" class="section-fouth">
       <div class="fouth-prepare">
-        {{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.reportPDFInfo.type === 'issue' ? vm.reportPDFInfo.preparedBy : '' }}
+        {{ 'siglusIssueOrReceiveReport.preparedBy' | message }}: {{ vm.reportPDFInfo.type === 'issue' || vm.reportPDFInfo.type === 'pod' ? vm.reportPDFInfo.preparedBy : '' }}
       </div>
       <div class="fouth-conferred">
         {{ 'siglusIssueOrReceiveReport.conferredBy' | message }}: {{ vm.reportPDFInfo.conferredBy }}
       </div>
       <div class="fouth-received">
-        {{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.reportPDFInfo.type === 'receive' ? vm.reportPDFInfo.receivedBy : '' }}
+        {{ 'siglusIssueOrReceiveReport.receivedBy' | message }}: {{ vm.reportPDFInfo.type === 'receive' || vm.reportPDFInfo.type === 'pod' ? vm.reportPDFInfo.receivedBy : '' }}
       </div>
       <!-- keep empty -->
       <div class="fouth-prepare">{{ 'stock.movement.signature' | message }}:</div>

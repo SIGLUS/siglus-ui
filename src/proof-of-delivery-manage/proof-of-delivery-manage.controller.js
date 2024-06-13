@@ -34,7 +34,7 @@
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
         'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
         'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility',
-        'orderablesPrice'
+        'orderablesPrice', 'moment', 'SiglusIssueOrReceiveReportService'
     ];
 
     function controller(
@@ -59,10 +59,13 @@
         SIGLUS_TIME,
         siglusDownloadLoadingModalService,
         facility,
-        orderablesPrice
+        orderablesPrice,
+        moment,
+        SiglusIssueOrReceiveReportService
     ) {
 
         var vm = this;
+        var ReportService = new SiglusIssueOrReceiveReportService();
         vm.$onInit = onInit;
         vm.openPod = openPod;
         vm.loadOrders = loadOrders;
@@ -170,32 +173,6 @@
          * The name of the program for which the Proofs of Delivery are shown.
          */
         vm.programName = undefined;
-        vm.incosistencies = [
-            {
-                productCode: 'aaaa',
-                productName: 'bbbb',
-                quantityShipped: 99,
-                quantityAccepted: 50,
-                rejectionReasonId: 'abcdefg',
-                notes: 'hello'
-            },
-            {
-                productCode: 'aaaa',
-                productName: 'bbbb',
-                quantityShipped: 99,
-                quantityAccepted: 50,
-                rejectionReasonId: 'abcdefg',
-                notes: 'hello'
-            },
-            {
-                productCode: 'aaaa',
-                productName: 'bbbb',
-                quantityShipped: 99,
-                quantityAccepted: 50,
-                rejectionReasonId: 'abcdefg',
-                notes: 'hello'
-            }
-        ];
         /**
          * @ngdoc method
          * @methodOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
@@ -274,447 +251,6 @@
             return 'proofOfDeliveryManage.invalidForm';
         };
 
-        // function getPdfName(facilityName, nowTime) {
-        //     return (
-        //         'Issue_'
-        //         + facilityName
-        //         + '_'
-        //         + nowTime
-        //         + '.pdf'
-        //     );
-        // }
-        function downloadPdf() {
-            // 获取固定高度的dom节点
-            var sectionFirst = document.getElementById('sectionFirst');
-            var sectionSecond = document.getElementById('sectionSecond');
-            var sectionThird = document.getElementById('sectionThird');
-            var sectionFouth = document.getElementById('sectionFouth');
-            var subInformation = document.getElementById('subInformation');
-            // 定义常量
-            var A4_WIDTH = 585, A4_HEIGHT = 781.89, CONTAINER_WIDTH = 1250, PAGE_NUM_HEIGHT = 10;
-            // 计算px to a4实际单位换算比例
-            var rate = A4_WIDTH / CONTAINER_WIDTH;
-            // a4实际高度换算px
-            var a4Height2px = A4_HEIGHT / rate;
-            // 计算固定部分的高度总和
-            var fixedHeight = sectionFirst.offsetHeight
-                    + sectionSecond.offsetHeight
-                    + sectionThird.offsetHeight
-                    + sectionFouth.offsetHeight
-                    + subInformation.offsetHeight
-                    + PAGE_NUM_HEIGHT / rate;
-            // 分页部分的高度计算
-            var canUseHeight = a4Height2px - fixedHeight - PAGE_NUM_HEIGHT - 50;
-            // 获取分页部分每行节点
-            var needCalcTrNodes = document.querySelectorAll('#calcTr');
-            // NodeList -> 数组
-            var needCalcTrNodesArray = Array.from(needCalcTrNodes);
-            // 定义固定部分的promiseList
-            var fixedPromiseList = [
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionFirst, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionFirst.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionFirst.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionSecond, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionSecond.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionSecond.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionThird, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionThird.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionThird.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(sectionFouth, {
-                    scale: 1,
-                    width: 1250,
-                    height: sectionFouth.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: sectionFouth.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(subInformation, {
-                    scale: 1,
-                    width: 1250,
-                    height: subInformation.offsetHeight + 30
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: subInformation.offsetHeight + 30
-                    };
-                })
-            ];
-            // 定义分页部分的promiseList
-            var promiseList = [];
-            // eslint-disable-next-line no-undef
-            var PDF = new jsPDF('', 'pt', 'a4');
-            _.forEach(needCalcTrNodesArray, function(item) {
-                // eslint-disable-next-line no-undef
-                promiseList.push(domtoimage.toPng(item, {
-                    scale: 1,
-                    width: 1250,
-                    height: item.offsetHeight + 1
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: item.offsetHeight + 1
-                    };
-                }));
-            });
-            // 固定部分的图片转换完成后再去做分页部分的图片转换
-            $q.all(fixedPromiseList).then(function(reback) {
-                // 偏移量
-                var offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
-                // 当前分页部分tr的累积高度
-                var realHeight = 0;
-                // 页码
-                var pageNumber = 1;
-                PDF.setFontSize(10);
-                PDF.text(
-                    pageNumber.toString(),
-                    585 / 2,
-                    A4_HEIGHT
-                );
-                var promiseListLen = promiseList.length;
-                $q.all(promiseList).then(function(result) {
-                    // 添加分页部分上方的固定部分图片到PDF中
-                    PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
-                    PDF.addImage(
-                        reback[1].data,
-                        'JPEG',
-                        4,
-                        reback[0].nodeHeight * rate,
-                        585,
-                        reback[1].nodeHeight * rate
-                    );
-                    _.forEach(result, function(res, index) {
-                        // 计算分页部分实际高度
-                        realHeight = realHeight + result[index].nodeHeight;
-                        if (realHeight > canUseHeight) {
-                            // 遍历跟随分页部分重复的部分
-                            // PDF.addImage(
-                            //     '',
-                            //     'JPEG',
-                            //     4,
-                            //     (
-                            //         offsetHeight
-                            //     ) * rate,
-                            //     585,
-                            //     reback[2].nodeHeight * rate
-                            // );
-                            PDF.addImage(
-                                reback[3].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                    + reback[2].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[3].nodeHeight * rate
-                            );
-                            PDF.addImage(
-                                reback[4].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                    + reback[2].nodeHeight
-                                    + reback[3].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[4].nodeHeight * rate
-                            );
-                            // 新开分页
-                            PDF.addPage();
-                            pageNumber = pageNumber + 1;
-                            PDF.setFontSize(10);
-                            PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                A4_HEIGHT
-                            );
-                            PDF.addImage(reback[0].data, 'JPEG', 4, 0, 585, reback[0].nodeHeight * rate);
-                            PDF.addImage(
-                                reback[1].data,
-                                'JPEG',
-                                4,
-                                reback[0].nodeHeight * rate, 585,
-                                reback[1].nodeHeight * rate
-                            );
-                            offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
-                            realHeight = 0;
-                        }
-                        // 添加当前遍历元素的图片到PDF
-                        PDF.addImage(
-                            res.data,
-                            'JPEG',
-                            4,
-                            offsetHeight * rate,
-                            res.nodeWidth * rate,
-                            res.nodeHeight * rate
-                        );
-                        if (promiseListLen - 1 === index) {
-                            PDF.addImage(
-                                reback[2].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight + result[index].nodeHeight
-                                ) * rate,
-                                585,
-                                reback[2].nodeHeight * rate
-                            );
-                            if (vm.incosistencies.length === 0) {
-                                PDF.text(
-                                    pageNumber.toString() + '-END',
-                                    585 / 2,
-                                    A4_HEIGHT
-                                );
-                            }
-                        }
-                        offsetHeight = offsetHeight + result[index].nodeHeight;
-                    });
-                    // 添加分页部分下方的固定部分图片到PDF中
-                    // PDF.addImage(
-                    //     '',
-                    //     'JPEG',
-                    //     4,
-                    //     (offsetHeight) * rate,
-                    //     585,
-                    //     reback[2].nodeHeight * rate
-                    // );
-                    PDF.addImage(
-                        reback[3].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight + reback[2].nodeHeight) * rate,
-                        585,
-                        reback[3].nodeHeight * rate
-                    );
-                    PDF.addImage(
-                        reback[4].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight + reback[2].nodeHeight + reback[3].nodeHeight) * rate,
-                        585,
-                        reback[4].nodeHeight * rate
-                    );
-                    // inconsistency report 开始生成，并且下PDF
-                    var opt = {
-                        rate: rate,
-                        PAGE_NUM_HEIGHT: PAGE_NUM_HEIGHT,
-                        a4Height2px: a4Height2px,
-                        pageNumber: pageNumber,
-                        PDF: PDF,
-                        A4_HEIGHT: A4_HEIGHT
-                    };
-                    downloadIncosostenciesPdf(opt);
-                });
-            });
-        }
-
-        function downloadIncosostenciesPdf(opt) {
-            var needCalcTrNodesArray = Array.from(document.querySelectorAll('#inconsistencyCalcTr'));
-            if (needCalcTrNodesArray.length === 0) {
-                opt.PDF.save(
-                    // getPdfName(
-                    //     vm.facility.name,
-                    //     vm.issueVoucherDate
-                    // )
-                    vm.fileName + '.pdf'
-                );
-                siglusDownloadLoadingModalService.close();
-                return;
-            }
-            opt.PDF.addPage();
-            var pageNumber = opt.pageNumber + 1;
-            // opt.PDF.setFontSize(10);
-            // opt.PDF.text(
-            //     pageNumber.toString(),
-            //     585 / 2,
-            //     opt.A4_HEIGHT
-            // );
-            var incosostencyHeaderNode = document.getElementById('inconsistencyHeader'),
-                incosostencyFooterNode = document.getElementById('inconsistencyFooter'),
-                inconsistencyTh = document.getElementById('inconsistencyTh');
-            var fixedHeight = incosostencyHeaderNode.offsetHeight
-                    + incosostencyFooterNode.offsetHeight
-                    + inconsistencyTh.offsetHeight
-                    + opt.PAGE_NUM_HEIGHT / opt.rate;
-            var canUseHeight = opt.a4Height2px - fixedHeight - opt.PAGE_NUM_HEIGHT;
-
-            var fixedPromiseListIn = [
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(incosostencyHeaderNode, {
-                    scale: 1,
-                    width: 1250,
-                    height: incosostencyHeaderNode.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: incosostencyHeaderNode.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(inconsistencyTh, {
-                    scale: 1,
-                    width: 1250,
-                    height: inconsistencyTh.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: inconsistencyTh.offsetHeight
-                    };
-                }),
-                // eslint-disable-next-line no-undef
-                domtoimage.toPng(incosostencyFooterNode, {
-                    scale: 1,
-                    width: 1250,
-                    height: incosostencyFooterNode.offsetHeight
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: incosostencyFooterNode.offsetHeight
-                    };
-                })
-            ];
-            var promiseListIn = [];
-            _.forEach(needCalcTrNodesArray, function(item) {
-                // eslint-disable-next-line no-undef
-                promiseListIn.push(domtoimage.toPng(item, {
-                    scale: 1,
-                    width: 1250,
-                    height: item.offsetHeight + 1
-                }).then(function(data) {
-                    return {
-                        data: data,
-                        nodeWidth: 1250,
-                        nodeHeight: item.offsetHeight + 1
-                    };
-                }));
-            });
-            var promiseListInLen = promiseListIn.length;
-            $q.all(fixedPromiseListIn).then(function(_reback) {
-                // 偏移量
-                var offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
-                // 当前分页部分tr的累积高度
-                var realHeight = 0;
-                // 页码
-                $q.all(promiseListIn).then(function(_result) {
-                    // 添加分页部分上方的固定部分图片到PDF中
-                    opt.PDF.addImage(_reback[0].data, 'JPEG', 4, 0, 585, _reback[0].nodeHeight * opt.rate);
-                    opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
-                        incosostencyHeaderNode.offsetHeight * opt.rate,
-                        585, _reback[1].nodeHeight * opt.rate);
-                    _.forEach(_result, function(res, _index) {
-                        // 计算分页部分实际高度
-                        realHeight = realHeight + _result[_index].nodeHeight;
-                        if (realHeight > canUseHeight) {
-                            opt.PDF.setFontSize(10);
-                            opt.PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                opt.A4_HEIGHT
-                            );
-                            // 遍历跟随分页部分重复的部分
-                            opt.PDF.addImage(
-                                _reback[2].data,
-                                'JPEG',
-                                4,
-                                (
-                                    offsetHeight
-                                ) * opt.rate,
-                                585,
-                                _reback[2].nodeHeight * opt.rate + 2
-                            );
-                            // 新开分页
-                            opt.PDF.addPage();
-                            pageNumber = pageNumber + 1;
-                            opt.PDF.setFontSize(10);
-                            opt.PDF.text(
-                                pageNumber.toString(),
-                                585 / 2,
-                                opt.A4_HEIGHT
-                            );
-                            opt.PDF.addImage(_reback[0].data, 'JPEG', 4, 0, 585, _reback[0].nodeHeight * opt.rate);
-                            opt.PDF.addImage(_reback[1].data, 'JPEG', 4,
-                                incosostencyHeaderNode.offsetHeight * opt.rate, 585, _reback[1].nodeHeight * opt.rate);
-                            offsetHeight = incosostencyHeaderNode.offsetHeight + inconsistencyTh.offsetHeight;
-                            realHeight = 0;
-                        }
-                        // 添加当前遍历元素的图片到PDF
-                        opt.PDF.addImage(
-                            res.data,
-                            'JPEG',
-                            4,
-                            offsetHeight * opt.rate,
-                            res.nodeWidth * opt.rate,
-                            res.nodeHeight * opt.rate
-                        );
-                        if (promiseListInLen - 1 === _index) {
-                            opt.PDF.text(
-                                pageNumber.toString() + '-END',
-                                585 / 2,
-                                opt.A4_HEIGHT
-                            );
-                        }
-                        offsetHeight = offsetHeight + _result[_index].nodeHeight;
-                    });
-                    // 添加分页部分下方的固定部分图片到PDF中
-                    opt.PDF.addImage(
-                        _reback[2].data,
-                        'JPEG',
-                        4,
-                        (offsetHeight) * opt.rate,
-                        585,
-                        _reback[2].nodeHeight * opt.rate + 2
-                    );
-                    // 生成PDF文件，并且命名
-                    opt.PDF.save(
-                        // getPdfName(
-                        //     vm.facility.name,
-                        //     vm.issueVoucherDate
-                        // )
-                        vm.fileName + '.pdf'
-                    );
-                    siglusDownloadLoadingModalService.close();
-                });
-            });
-        }
-
         vm.getReason = function(reasonId) {
             var reasonMap = _.reduce(vm.reasons, function(r, c) {
                 r[c.id] = c.name;
@@ -784,7 +320,7 @@
          * @description
          * Prints the given proof of delivery.
          *
-         * @param  {Object} orderId the UUID of order to find it's POD
+         * @param  {Object} order the UUID of order to find it's POD
          * @return {String}         the prepared URL
          */
         function printProofOfDelivery(order) {
@@ -796,106 +332,135 @@
                     vm.reasons = reasons;
                     proofOfDeliveryManageService.getByOrderId(orderId)
                         .then(function(pod) {
-                            proofOfDeliveryManageService.getPodInfo(pod.id, orderId).then(function(res) {
-                                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
-                                vm.supplier = res.supplier;
-                                vm.preparedBy = res.preparedBy;
-                                vm.conferredBy = res.conferredBy;
-                                vm.client = res.client;
-                                vm.supplierDistrict = res.supplierDistrict;
-                                vm.supplierProvince = res.supplierProvince;
-                                vm.requisitionDate = openlmisDateFilter(res.requisitionDate, 'yyyy-MM-dd');
-                                vm.issueVoucherDate = openlmisDateFilter(order.createdDate, 'yyyy-MM-dd');
-                                vm.deliveredBy = res.deliveredBy;
-                                vm.receivedBy = res.receivedBy;
-                                vm.receivedDate = res.receivedDate;
-                                vm.podNum = '';
-                                if (order.orderCode.indexOf('ORDEM') > -1) {
-                                    if (order.status === 'SHIPPED') {
-                                        vm.fileName = res.fileName.replace(/^OF/, 'GR');
-                                        vm.requisitionNo = order.orderCode;
-                                    }
+                            proofOfDeliveryManageService.getPodInfo(pod.id, orderId).then(function(podInfo) {
+                                proofOfDeliveryService.get(pod.id).then(function(result) {
+                                    fulfillingLineItemFactory.groupByOrderableForPod(
+                                        result.lineItems, result.shipment.order.orderLineItems
+                                    )
+                                        .then(function(orderLineItems) {
+                                            var momentNow = moment();
+                                            var numberAndFileName = generateNumberAndFileName(order, podInfo);
+                                            var lineItemsInPDF = buildLineItemsForPDF(orderLineItems);
 
-                                    if (order.status === 'RECEIVED') {
-                                        vm.fileName = res.fileName.replace(/^OF/, 'RR');
-                                        vm.requisitionNo = order.orderCode;
-                                        vm.podNum = order.orderCode;
-                                    }
-                                } else {
-                                    if (order.status === 'SHIPPED') {
-                                        vm.fileName =  order.orderCode.replace(/^OF/, 'GR').replaceAll('/', '_');
-                                        vm.requisitionNo = order.orderCode.replace(/^OF/, 'GR');
-                                    }
+                                            setPDFInfo(
+                                                numberAndFileName,
+                                                lineItemsInPDF,
+                                                podInfo,
+                                                order,
+                                                momentNow
+                                            );
 
-                                    if (order.status === 'RECEIVED') {
-                                        vm.fileName =  order.orderCode.replace(/^OF/, 'RR').replaceAll('/', '_');
-                                        vm.requisitionNo = order.orderCode.replace(/^OF/, 'GR');
-                                        vm.podNum = order.orderCode.replace(/^OF/, 'RR');
-                                    }
-                                }
-
-                                if (order.issueVoucherNumber) {
-                                    vm.issueVoucherNumber = order.issueVoucherNumber;
-                                }
-
-                                vm.requisitionNum = res.requisitionNum;
-
-                                vm.requisitionId = res.requisitionId;
-
-                            });
-                            proofOfDeliveryService.get(pod.id).then(function(result) {
-                                fulfillingLineItemFactory
-                                    // eslint-disable-next-line max-len
-                                    .groupByOrderableForPod(result.lineItems, result.shipment.order.orderLineItems).then(function(
-                                        orderLineItems
-                                    ) {
-                                        var addedLineItems = [];
-                                        _.each(orderLineItems, function(orderLineItem) {
-                                            _.each(orderLineItem.groupedLineItems, function(groupedLineItem) {
-                                                _.each(groupedLineItem, function(fulfillingLineItem) {
-                                                    addedLineItems.push(angular.merge({
-                                                        orderedQuantity: orderLineItem.orderedQuantity,
-                                                        partialFulfilledQuantity: orderLineItem.partialFulfilledQuantity
-                                                    }, fulfillingLineItem));
-                                                });
-                                            });
+                                            ReportService.downloadPdf(numberAndFileName.fileName, undefined, true);
+                                            siglusDownloadLoadingModalService.open();
                                         });
-                                        vm.addedLineItems = _.reduce(addedLineItems, function(r, c) {
-                                            r.push(angular.merge({
-                                                productCode: c.orderable.productCode,
-                                                productName: c.orderable.fullProductName,
-                                                price: orderablesPrice.data[c.orderable.id] * 100 || '',
-                                                lotCode:
-                                                    c.lot
-                                                        ? c.lot.lotCode
-                                                        : '',
-                                                expirationDate:
-                                                    c.lot
-                                                        ? c.lot.expirationDate
-                                                        : ''
-                                            }, c));
-                                            return r;
-                                        }, []);
-                                        vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                                            var price = c.price ? c.price : 0;
-                                            r = r + c.quantityShipped * price;
-                                            return r;
-                                        }, 0);
-                                        vm.incosistencies = _.filter(vm.addedLineItems, function(item) {
-                                            return item.rejectionReasonId;
-                                        });
-                                        setTimeout(function() {
-                                            downloadPdf();
-                                        }, 500);
-
-                                    });
+                                });
                             });
                         })
                         .catch(function() {
-                            // printer.closeTab();
                             notificationService.error('proofOfDeliveryManage.noOrderFound');
+                            siglusDownloadLoadingModalService.open();
                         });
                 });
+        }
+
+        function setPDFInfo(numberAndFileName, lineItemsInPDF, podInfo, order, momentNow) {
+            // for receive PDF
+            vm.reportPDFInfo = {
+                type: ReportService.REPORT_TYPE.POD,
+                addedLineItems: lineItemsInPDF,
+                documentNumber: numberAndFileName.documentNumber,
+                issueVoucherNumber: numberAndFileName.issueVoucherNumber,
+                supplier: podInfo.supplier,
+                supplierDistrict: podInfo.supplierDistrict,
+                supplierProvince: podInfo.supplierProvince,
+                client: podInfo.client,
+                requisitionNumber: podInfo.requisitionNum,
+                requisitionDate: moment(podInfo.requisitionDate, 'YYYY-MM-dd'),
+                issueVoucherDate: moment(order.occurredDate).format('YYYY-MM-DD'),
+                numberN: numberAndFileName.podNumber,
+                receptionDate: podInfo.receivedDate,
+                totalPriceValue: _.reduce(lineItemsInPDF, function(acc, lineItem) {
+                    var price = lineItem.price ? lineItem.price : 0;
+                    return acc + lineItem.quantityShipped * price;
+                }, 0),
+                preparedBy: podInfo.preparedBy,
+                conferredBy: podInfo.conferredBy,
+                receivedBy: podInfo.receivedBy,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
+
+            // for pod Inconsistency PDF
+            vm.podInconsistencyInfo = {
+                province: vm.facility.geographicZone.parent.name,
+                district: vm.facility.geographicZone.name,
+                client: podInfo.client,
+                inconsistentItems: _.filter(lineItemsInPDF, function(item) {
+                    return item.rejectionReasonId;
+                }),
+                deliveredBy: podInfo.deliveredBy,
+                receivedDate: podInfo.receivedDate,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
+        }
+
+        function buildLineItemsForPDF(orderLineItems) {
+            var addedLineItems = [];
+            _.each(orderLineItems, function(orderLineItem) {
+                _.each(orderLineItem.groupedLineItems, function(groupedLineItem) {
+                    _.each(groupedLineItem, function(fulfillingLineItem) {
+                        addedLineItems.push(angular.merge({
+                            orderedQuantity: orderLineItem.orderedQuantity,
+                            partialFulfilledQuantity: orderLineItem.partialFulfilledQuantity
+                        }, fulfillingLineItem));
+                    });
+                });
+            });
+            return _.reduce(addedLineItems, function(finalLineItemList, lineItem) {
+                finalLineItemList.push(
+                    _.assign({}, lineItem, {
+                        productCode: lineItem.orderable.productCode,
+                        productName: lineItem.orderable.fullProductName,
+                        price: orderablesPrice.data[lineItem.orderable.id] || '',
+                        lotCode: lineItem.lot ? lineItem.lot.lotCode : '',
+                        expirationDate: lineItem.lot ? lineItem.lot.expirationDate : ''
+                    })
+                );
+                return finalLineItemList;
+            }, []);
+        }
+
+        function generateNumberAndFileName(order, podInfo) {
+            var fileName = '';
+            var documentNumber = '';
+            var podNumber = '';
+
+            if (order.orderCode.indexOf('ORDEM') > -1) {
+                if (order.status === 'SHIPPED') {
+                    fileName = podInfo.fileName.replace(/^OF/, 'GR');
+                    documentNumber = order.orderCode;
+                } else if (order.status === 'RECEIVED') {
+                    fileName = podInfo.fileName.replace(/^OF/, 'RR');
+                    documentNumber = order.orderCode;
+                    podNumber = order.orderCode;
+                }
+            } else {
+                if (order.status === 'SHIPPED') {
+                    fileName =  order.orderCode.replace(/^OF/, 'GR').replaceAll('/', '_');
+                    documentNumber = order.orderCode.replace(/^OF/, 'GR');
+                }
+
+                if (order.status === 'RECEIVED') {
+                    fileName =  order.orderCode.replace(/^OF/, 'RR').replaceAll('/', '_');
+                    documentNumber = order.orderCode.replace(/^OF/, 'GR');
+                    podNumber = order.orderCode.replace(/^OF/, 'RR');
+                }
+            }
+            return {
+                fileName: fileName,
+                documentNumber: documentNumber,
+                podNumber: podNumber,
+                issueVoucherNumber: order.issueVoucherNumber ? order.issueVoucherNumber : undefined
+            };
         }
 
         function getStatusText(order) {
