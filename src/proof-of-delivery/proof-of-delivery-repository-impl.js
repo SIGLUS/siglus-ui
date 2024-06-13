@@ -619,10 +619,14 @@
         }
 
         function getQuantityShipped(lineItem, shipmentLineItems) {
-            return shipmentLineItems.filter(function(shipmentLineItem) {
+            var shipmentDatas = shipmentLineItems.filter(function(shipmentLineItem) {
                 return shipmentLineItem.orderable.id === lineItem.orderable.id &&
                     areLotsEqual(shipmentLineItem.lot, lineItem.lot);
-            })[0].quantityShipped;
+            });
+            if (shipmentDatas[0]) {
+                return shipmentDatas[0].quantityShipped;
+            }
+            return 0;
         }
 
         function areLotsEqual(left, right) {
