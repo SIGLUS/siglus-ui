@@ -327,7 +327,7 @@
             var orderId = order.id;
             vm.orderCode = order.orderCode;
             siglusDownloadLoadingModalService.open();
-            stockReasonsFactory.getReasons(order.program.id, order.facility.type.id, 'DEBIT')
+            stockReasonsFactory.getReasons(order.program.id, order.facility.type.id)
                 .then(function(reasons) {
                     vm.reasons = reasons;
                     proofOfDeliveryManageService.getByOrderId(orderId)
