@@ -661,15 +661,12 @@
                                 setReceivePDFInfo(signatureInfo, momentNow);
                                 var fileName = 'Entrada_' + vm.sourceName + '_' + momentNow.format('YYYY-MM-DD');
 
-                                ReportService.waitForAddedLineItemsRender().then(function() {
-                                    ReportService.downloadPdf(
-                                        fileName,
-                                        function() {
-                                            submitMergedDraft(subDrafts, signatureInfo.occurredDate);
-                                        }
-                                    );
-                                });
-
+                                ReportService.downloadPdf(
+                                    fileName,
+                                    function() {
+                                        submitMergedDraft(subDrafts, signatureInfo.occurredDate);
+                                    }
+                                );
                             });
                     });
             } else {

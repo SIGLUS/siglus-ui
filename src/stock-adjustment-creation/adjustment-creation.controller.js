@@ -584,12 +584,10 @@
             var documentNumberAndFileName = prefix + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
 
             setPrintPDFInfo(type, lineItems, signatureInfo, momentNow, documentNumberAndFileName);
-            ReportService.waitForAddedLineItemsRender().then(function() {
-                ReportService.downloadPdf(
-                    documentNumberAndFileName,
-                    callbackAfterDownload
-                );
-            });
+            ReportService.downloadPdf(
+                documentNumberAndFileName,
+                callbackAfterDownload
+            );
         }
 
         function setPrintPDFInfo(type, lineItems, signatureInfo, momentNow, documentNumber) {

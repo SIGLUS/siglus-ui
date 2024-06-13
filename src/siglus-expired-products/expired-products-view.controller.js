@@ -186,19 +186,16 @@
                     setIssuePDFInfo(documentNumber, signatureInfo, momentNow);
                     var fileName = 'Saída_' + vm.facility.name + '_' + momentNow.format('YYYY-MM-DD');
 
-                    ReportService.waitForAddedLineItemsRender().then(function() {
-                        ReportService.downloadPdf(fileName, function() {
-                            loadingModalService.open();
-                            expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
-                                vm.signature, documentNumber)
-                                .finally(function() {
-                                    loadingModalService.close();
-                                    $stateParams.expiredProducts = null;
-                                    reloadPage();
-                                });
-                        });
+                    ReportService.downloadPdf(fileName, function() {
+                        loadingModalService.open();
+                        expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
+                            vm.signature, documentNumber)
+                            .finally(function() {
+                                loadingModalService.close();
+                                $stateParams.expiredProducts = null;
+                                reloadPage();
+                            });
                     });
-
                 });
         };
 

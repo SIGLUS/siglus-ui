@@ -600,14 +600,12 @@
                                 var fileName = 'Saída_' + vm.destinationName + '_' + momentNow.format('YYYY-MM-DD');
                                 setIssuePDFInfo(signatureInfo, momentNow);
 
-                                ReportService.waitForAddedLineItemsRender().then(function() {
-                                    ReportService.downloadPdf(
-                                        fileName,
-                                        function() {
-                                            submitMergedDraft(subDrafts, signatureInfo.occurredDate);
-                                        }
-                                    );
-                                });
+                                ReportService.downloadPdf(
+                                    fileName,
+                                    function() {
+                                        submitMergedDraft(subDrafts, signatureInfo.occurredDate);
+                                    }
+                                );
                             });
                     });
             } else {

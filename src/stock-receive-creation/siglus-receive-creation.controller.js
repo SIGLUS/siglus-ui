@@ -397,11 +397,9 @@
                             var momentNow = moment();
                             setReceivePDFInfo(signatureInfo, momentNow);
                             var fileName = 'Entrada_' + '' + '_' + momentNow.format('YYYY-MM-DD');
-                            ReportService.waitForAddedLineItemsRender().then(function() {
-                                ReportService.downloadPdf(fileName, function() {
-                                    loadingModalService.open();
-                                    confirmMergeSubmit(signatureInfo, addedLineItems);
-                                });
+                            ReportService.downloadPdf(fileName, function() {
+                                loadingModalService.open();
+                                confirmMergeSubmit(signatureInfo, addedLineItems);
                             });
 
                         });

@@ -59,7 +59,6 @@
         SiglusIssueOrReceiveReportService.prototype.REPORT_TYPE = REPORT_TYPE;
         SiglusIssueOrReceiveReportService.prototype.RECEIVE_PDF_REASON_NAME_LIST = RECEIVE_PDF_REASON_NAME_LIST;
         SiglusIssueOrReceiveReportService.prototype.ISSUE_PDF_REASON_NAME_LIST = ISSUE_PDF_REASON_NAME_LIST;
-        SiglusIssueOrReceiveReportService.prototype.waitForAddedLineItemsRender = waitForAddedLineItemsRender;
 
         function SiglusIssueOrReceiveReportService() {}
         return SiglusIssueOrReceiveReportService;
@@ -71,6 +70,12 @@
         }
 
         function downloadPdf(fileName, callback) {
+            waitForAddedLineItemsRender().then(function() {
+                downloadReceiveOrIssuePdf(fileName, callback);
+            });
+        }
+
+        function downloadReceiveOrIssuePdf(fileName, callback) {
             siglusDownloadLoadingModalService.open();
             init();
 

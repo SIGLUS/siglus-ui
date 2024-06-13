@@ -432,13 +432,10 @@
                             var momentNow = moment();
                             setIssuePDFInfo(signatureInfo, momentNow);
                             var fileName = 'Saída_' + vm.client + '_' + momentNow.format('YYYY-MM-DD');
-                            ReportService.waitForAddedLineItemsRender().then(function() {
-                                ReportService.downloadPdf(fileName, function() {
-                                    loadingModalService.open();
-                                    confirmMergeSubmit(signatureInfo, addedLineItems);
-                                });
+                            ReportService.downloadPdf(fileName, function() {
+                                loadingModalService.open();
+                                confirmMergeSubmit(signatureInfo, addedLineItems);
                             });
-
                         });
                 } else {
                     loadingModalService.open();
