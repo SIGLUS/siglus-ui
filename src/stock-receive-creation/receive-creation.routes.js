@@ -44,7 +44,7 @@
                 reasons: undefined,
                 displayItems: undefined,
                 orderablesPrice: undefined,
-                addedLineItems: undefined,
+                allLineItemsAdded: undefined,
                 // SIGLUS-REFACTOR: starts here
                 draft: undefined,
                 orderableGroups: undefined,
@@ -112,21 +112,21 @@
                     }
                     return $stateParams.orderableGroups;
                 },
-                addedLineItems: function($stateParams, orderableGroups, stockAdjustmentFactory,
+                allLineItemsAdded: function($stateParams, orderableGroups, stockAdjustmentFactory,
                     reasons, draft) {
-                    if (_.isUndefined($stateParams.addedLineItems)) {
+                    if (_.isUndefined($stateParams.allLineItemsAdded)) {
                         if (draft.lineItems && draft.lineItems.length > 0) {
                             return stockAdjustmentFactory.prepareLineItems(draft, orderableGroups,
                                 undefined, reasons);
                         }
                         return [];
                     }
-                    return $stateParams.addedLineItems;
+                    return $stateParams.allLineItemsAdded;
                 },
-                displayItems: function($stateParams, registerDisplayItemsService, addedLineItems) {
-                    if (_.isUndefined($stateParams.displayItems) && addedLineItems.length > 0) {
-                        $stateParams.addedLineItems = addedLineItems;
-                        $stateParams.displayItems = addedLineItems;
+                displayItems: function($stateParams, registerDisplayItemsService, allLineItemsAdded) {
+                    if (_.isUndefined($stateParams.displayItems) && allLineItemsAdded.length > 0) {
+                        $stateParams.allLineItemsAdded = allLineItemsAdded;
+                        $stateParams.displayItems = allLineItemsAdded;
                     }
                     return registerDisplayItemsService($stateParams);
                 }

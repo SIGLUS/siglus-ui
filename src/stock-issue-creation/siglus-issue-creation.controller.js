@@ -55,7 +55,6 @@
         vm.preparedBy = localStorageFactory('currentUser').getAll('username').username;
         vm.initialDraftInfo = initialDraftInfo;
         vm.destinationName = '';
-        vm.type = ReportService.REPORT_TYPE.ISSUE;
         vm.isMerge = isMerge;
 
         vm.lotNotFirstExpireHint = '';
@@ -72,9 +71,9 @@
      * items will be shown.
      */
         vm.search = function(reload) {
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
+            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.allLineItemsAdded, vm.hasLot);
 
-            $stateParams.addedLineItems = vm.addedLineItems;
+            $stateParams.allLineItemsAdded = vm.allLineItemsAdded;
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
@@ -107,13 +106,13 @@
         }
 
         vm.setProductGroups = function() {
-            var addedLotIds = _.chain(vm.addedLineItems)
+            var addedLotIds = _.chain(vm.allLineItemsAdded)
                 .map(function(item) {
                     return _.get(item, ['lot', 'id']);
                 })
                 .compact()
                 .value();
-            var existingKitProductId = _.chain(vm.addedLineItems)
+            var existingKitProductId = _.chain(vm.allLineItemsAdded)
                 .filter(function(item) {
                     return item.orderable.isKit || isEmpty(item.lot);
                 })
@@ -169,7 +168,7 @@
             item.lotCode = item.lot && item.lot.lotCode;
             item.expirationDate = item.lot && openlmisDateFilter(item.lot.expirationDate, 'yyyy-MM-dd');
             item.price = orderablesPrice.data[item.orderable.id] || '';
-            vm.addedLineItems.unshift(item);
+            vm.allLineItemsAdded.unshift(item);
 
             if (_.get(vm.selectedLot, 'id')) {
                 vm.setProductGroups();
@@ -184,7 +183,7 @@
                 vm.selectedOrderableGroup = [];
             }
 
-            previousAdded = vm.addedLineItems[0];
+            previousAdded = vm.allLineItemsAdded[0];
             validateLotNotFirstExpire();
 
             $stateParams.isAddProduct = true;
@@ -245,7 +244,7 @@
         };
 
         vm.setLots = function() {
-            var addedLotIds = _.chain(vm.addedLineItems).map(function(item) {
+            var addedLotIds = _.chain(vm.allLineItemsAdded).map(function(item) {
                 return _.get(item.lot, 'id');
             })
                 .compact()
@@ -266,8 +265,8 @@
      * @param {Object} lineItem line item to be removed.
      */
         vm.remove = function(lineItem) {
-            var index = _.indexOf(vm.addedLineItems, lineItem);
-            vm.addedLineItems.splice(index, 1);
+            var index = _.indexOf(vm.allLineItemsAdded, lineItem);
+            vm.allLineItemsAdded.splice(index, 1);
             vm.setProductGroups();
             var productId = _.get(vm, ['selectedOrderableGroup', 0, 'orderable', 'id']);
             var isRemoveItemInCurrentProduct = lineItem.orderable.id === productId;
@@ -371,12 +370,14 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
+        function confirmMergeSubmit(signatureInfo, allLineItemsAdded) {
+            var signature = signatureInfo.signature;
+            var occurredDate = signatureInfo.occurredDate;
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
             }));
 
-            siglusStockIssueService.mergeSubmitDraft($stateParams.programId, addedLineItems,
+            siglusStockIssueService.mergeSubmitDraft($stateParams.programId, allLineItemsAdded,
                 signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -397,9 +398,9 @@
                 });
         }
 
-        function confirmSubmit(signature, addedLineItems) {
+        function confirmSubmit(signature, allLineItemsAdded) {
             siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                addedLineItems, $stateParams.draftType)
+                allLineItemsAdded, $stateParams.draftType)
                 .then(function() {
                     loadingModalService.close();
                     notificationService.success(vm.key('submitted'));
@@ -417,7 +418,7 @@
             function capitalize(str) {
                 return str.charAt(0).toUpperCase() + str.slice(1);
             }
-            var addedLineItems = angular.copy(vm.addedLineItems);
+            var addedLineItems = angular.copy(vm.allLineItemsAdded);
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = _.first(lineItem.orderable.programs).programId;
                 lineItem.reason = _.find(reasons, {
@@ -427,17 +428,17 @@
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
-                        .then(function(data) {
+                        .then(function(signatureInfo) {
                             var momentNow = moment();
-                            vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
-                            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-                            vm.signature = data.signature;
-                            var nowDate = momentNow.format('YYYY-MM-DD');
-                            var fileName = 'Saída_' + vm.client + '_' + nowDate;
-                            ReportService.downloadPdf(fileName, function() {
-                                loadingModalService.open();
-                                confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            setIssuePDFInfo(signatureInfo, momentNow);
+                            var fileName = 'Saída_' + vm.client + '_' + momentNow.format('YYYY-MM-DD');
+                            ReportService.waitForAddedLineItemsRender().then(function() {
+                                ReportService.downloadPdf(fileName, function() {
+                                    loadingModalService.open();
+                                    confirmMergeSubmit(signatureInfo, addedLineItems);
+                                });
                             });
+
                         });
                 } else {
                     loadingModalService.open();
@@ -451,6 +452,32 @@
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
+
+        function setIssuePDFInfo(signatureInfo, momentNow) {
+            vm.reportPDFInfo = {
+                type: ReportService.REPORT_TYPE.ISSUE,
+                addedLineItems: vm.allLineItemsAdded,
+                documentNumber: vm.initialDraftInfo.documentNumber,
+                numberN: vm.initialDraftInfo.documentNumber,
+                supplier: vm.facility.name,
+                supplierDistrict: vm.facility.geographicZone.name,
+                supplierProvince: vm.facility.geographicZone.parent.name,
+                client: _.indexOf(vm.destinationName, 'Outros') === 1 ?
+                    vm.destinationName.split(':')[1] : vm.destinationName,
+                requisitionNumber: null,
+                requisitionDate: null,
+                issueVoucherDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                receptionDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                totalPriceValue: _.reduce(vm.allLineItemsAdded, function(acc, lineItem) {
+                    var price = lineItem.price ? lineItem.price * 100 : 0;
+                    return acc + lineItem.quantity * price;
+                }, 0),
+                preparedBy: signatureInfo.signature,
+                conferredBy: null,
+                receivedBy: signatureInfo.signature,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
+        }
 
         // SIGLUS-REFACTOR: starts here
         vm.doCancelFilter = function() {
@@ -520,7 +547,7 @@
                     return item;
                 });
                 siglusRemainingProductsModalService.show(data).then(function() {
-                    var lineItems = _.clone(vm.addedLineItems);
+                    var lineItems = _.clone(vm.allLineItemsAdded);
                     _.forEach(lineItems, function(lineItem) {
                         var hasDuplicated = _.some(data, function(item) {
                             return item.orderableId === lineItem.orderable.id;
@@ -534,7 +561,7 @@
         }
 
         vm.save = function() {
-            var addedLineItems = angular.copy(vm.addedLineItems);
+            var addedLineItems = angular.copy(vm.allLineItemsAdded);
 
             if ($stateParams.keyword) {
                 cancelFilter();
@@ -584,11 +611,11 @@
         }
 
         function validateAllAddedItems() {
-            _.each(vm.addedLineItems, function(item) {
+            _.each(vm.allLineItemsAdded, function(item) {
                 vm.validateQuantity(item);
                 vm.validateReason(item);
             });
-            return _.chain(vm.addedLineItems)
+            return _.chain(vm.allLineItemsAdded)
                 .groupBy(function(item) {
                     return item.lot ? item.lot.id : item.orderable.id;
                 })
@@ -607,7 +634,7 @@
         }
 
         function reorderItems() {
-            var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+            var sorted = $filter('orderBy')(vm.allLineItemsAdded, ['orderable.productCode', '-occurredDate']);
 
             vm.displayItems = _.chain(sorted).groupBy(function(item) {
                 return item.lot ? item.lot.id : item.orderable.id;
@@ -631,15 +658,9 @@
             initStateParams();
 
             $scope.$watch(function() {
-                return vm.addedLineItems;
+                return vm.allLineItemsAdded;
             }, function(newValue, oldValue) {
                 $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, oldValue));
-                // calc total value
-                vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                    var price = c.price * 100;
-                    r = r + c.quantity * price;
-                    return r;
-                }, 0);
             }, true);
             confirmDiscardService.register($scope, 'openlmis.stockmanagement.stockCardSummaries');
 
@@ -657,16 +678,10 @@
                 .getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             vm.facility = facility;
             vm.reasons = reasons;
-            vm.addedLineItems = $stateParams.addedLineItems || [];
-            _.forEach(vm.addedLineItems, function(item) {
+            vm.allLineItemsAdded = $stateParams.allLineItemsAdded || [];
+            _.forEach(vm.allLineItemsAdded, function(item) {
                 item.price = orderablesPrice.data[item.orderable.id] || '';
             });
-            // calc total value
-            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                var price = c.price ? c.price * 100 : 0;
-                r = r + c.quantity * price;
-                return r;
-            }, 0);
             $stateParams.displayItems = displayItems;
             $stateParams.orderablesPrice = orderablesPrice;
             vm.displayItems = $stateParams.displayItems || [];
@@ -677,9 +692,6 @@
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.supplier = vm.facility.name;
-            vm.client =
-                _.indexOf(vm.destinationName, 'Outros') === 1 ? vm.destinationName.split(':')[1] : vm.destinationName;
         }
 
         function initStateParams() {

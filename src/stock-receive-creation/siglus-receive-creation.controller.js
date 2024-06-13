@@ -65,10 +65,10 @@
 
         siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
-        vm.type = ReportService.REPORT_TYPE.RECEIVE;
         vm.key = function(secondaryKey) {
             return adjustmentType.prefix + 'Creation.' + secondaryKey;
         };
+        vm.$onInit = onInit;
 
         /**
          * @ngdoc method
@@ -80,9 +80,9 @@
          * items will be shown.
          */
         vm.search = function(reload) {
-            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.addedLineItems, vm.hasLot);
+            vm.displayItems = stockAdjustmentCreationService.search(vm.keyword, vm.allLineItemsAdded, vm.hasLot);
 
-            $stateParams.addedLineItems = vm.addedLineItems;
+            $stateParams.allLineItemsAdded = vm.allLineItemsAdded;
             $stateParams.displayItems = vm.displayItems;
             $stateParams.keyword = vm.keyword;
             $stateParams.page = getPageNumber();
@@ -126,9 +126,9 @@
                 item.lotCode = item.lot && item.lot.lotCode;
                 item.expirationDate = item.lot && item.lot.expirationDate;
                 item.price = orderablesPrice.data[item.orderable.id] || '';
-                vm.addedLineItems.unshift(item);
+                vm.allLineItemsAdded.unshift(item);
 
-                previousAdded = vm.addedLineItems[0];
+                previousAdded = vm.allLineItemsAdded[0];
 
                 $stateParams.isAddProduct = true;
                 vm.search($state.current.name);
@@ -192,8 +192,8 @@
          * d.
          */
         vm.remove = function(lineItem) {
-            var index = vm.addedLineItems.indexOf(lineItem);
-            vm.addedLineItems.splice(index, 1);
+            var index = vm.allLineItemsAdded.indexOf(lineItem);
+            vm.allLineItemsAdded.splice(index, 1);
             vm.validateLotCodeDuplicated();
 
             $stateParams.isAddProduct = true;
@@ -268,8 +268,8 @@
         };
 
         vm.validateLotCodeDuplicated = function() {
-            var groupItems = _.groupBy(vm.addedLineItems, 'orderableId');
-            _.forEach(vm.addedLineItems, function(item) {
+            var groupItems = _.groupBy(vm.allLineItemsAdded, 'orderableId');
+            _.forEach(vm.allLineItemsAdded, function(item) {
                 if (item.$errors.lotCodeInvalid ===  messageService.get('stockReceiveCreation.itemDuplicated')) {
                     item.$errors.lotCodeInvalid = false;
                 }
@@ -332,13 +332,15 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signature, addedLineItems, occurredDate) {
-            generateKitConstituentLineItem(addedLineItems);
+        function confirmMergeSubmit(signatureInfo, allLineItemsAdded) {
+            var signature = signatureInfo.signature;
+            var occurredDate = signatureInfo.occurredDate;
+            generateKitConstituentLineItem(allLineItemsAdded);
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
                 return item.subDraftId;
             }));
 
-            siglusStockIssueService.mergeSubmitDraft(programId, addedLineItems,
+            siglusStockIssueService.mergeSubmitDraft(programId, allLineItemsAdded,
                 signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
                     $state.go('openlmis.stockmanagement.stockCardSummaries', {
@@ -359,10 +361,10 @@
                 });
         }
 
-        function confirmSubmit(signature, addedLineItems) {
-            generateKitConstituentLineItem(addedLineItems);
+        function confirmSubmit(signature, allLineItemsAdded) {
+            generateKitConstituentLineItem(allLineItemsAdded);
             siglusStockIssueService.submitDraft($stateParams.initialDraftId, $stateParams.draftId, signature,
-                addedLineItems, $stateParams.draftType)
+                allLineItemsAdded, $stateParams.draftType)
                 .then(function() {
                     loadingModalService.close();
                     notificationService.success(vm.key('submitted'));
@@ -381,7 +383,7 @@
             function capitalize(str) {
                 return str.charAt(0).toUpperCase() + str.slice(1);
             }
-            var addedLineItems = angular.copy(vm.addedLineItems);
+            var addedLineItems = angular.copy(vm.allLineItemsAdded);
             addedLineItems.forEach(function(lineItem) {
                 lineItem.programId = _.first(lineItem.orderable.programs).programId;
                 lineItem.reason = _.find(reasons, {
@@ -391,17 +393,17 @@
             if (validateAllAddedItems()) {
                 if (vm.isMerge) {
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature').
-                        then(function(data) {
+                        then(function(signatureInfo) {
                             var momentNow = moment();
-                            vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
-                            vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-                            vm.signature = data.signature;
-                            var nowDate = momentNow.format('YYYY-MM-DD');
-                            var fileName = 'Entrada_' + '' + '_' + nowDate;
-                            ReportService.downloadPdf(fileName, function() {
-                                loadingModalService.open();
-                                confirmMergeSubmit(data.signature, addedLineItems, data.occurredDate);
+                            setReceivePDFInfo(signatureInfo, momentNow);
+                            var fileName = 'Entrada_' + '' + '_' + momentNow.format('YYYY-MM-DD');
+                            ReportService.waitForAddedLineItemsRender().then(function() {
+                                ReportService.downloadPdf(fileName, function() {
+                                    loadingModalService.open();
+                                    confirmMergeSubmit(signatureInfo, addedLineItems);
+                                });
                             });
+
                         });
                 } else {
                     loadingModalService.open();
@@ -415,6 +417,32 @@
                 alertService.error('stockAdjustmentCreation.submitInvalid');
             }
         };
+
+        function setReceivePDFInfo(signatureInfo, momentNow) {
+            vm.reportPDFInfo = {
+                type: ReportService.REPORT_TYPE.RECEIVE,
+                addedLineItems: vm.allLineItemsAdded,
+                documentNumber: vm.initialDraftInfo.documentNumber,
+                numberN: vm.initialDraftInfo.documentNumber,
+                supplier: vm.initialDraftInfo.sourceName === 'Outros' ?
+                    vm.initialDraftInfo.locationFreeText : vm.sourceName,
+                supplierProvince: vm.facility.geographicZone.parent.name,
+                supplierDistrict: vm.facility.geographicZone.name,
+                client: vm.facility.name,
+                requisitionNumber: null,
+                requisitionDate: null,
+                issueVoucherDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                receptionDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                totalPriceValue: _.reduce(vm.allLineItemsAdded, function(acc, lineItem) {
+                    var price = lineItem.price ? lineItem.price * 100 : 0;
+                    return acc + lineItem.quantity * price;
+                }, 0),
+                preparedBy: signatureInfo.signature,
+                conferredBy: null,
+                receivedBy: signatureInfo.signature,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
+        }
 
         vm.returnBack = function() {
             $state.go('^', $stateParams);
@@ -465,7 +493,7 @@
                     return item;
                 });
                 siglusRemainingProductsModalService.show(data).then(function() {
-                    var lineItems = _.clone(vm.addedLineItems);
+                    var lineItems = _.clone(vm.allLineItemsAdded);
                     _.forEach(lineItems, function(lineItem) {
                         var hasDuplicated = _.some(data, function(item) {
                             return item.orderableId === lineItem.orderable.id;
@@ -479,7 +507,7 @@
         }
 
         vm.save = function() {
-            var addedLineItems = angular.copy(vm.addedLineItems);
+            var addedLineItems = angular.copy(vm.allLineItemsAdded);
 
             if ($stateParams.keyword) {
                 cancelFilter();
@@ -524,13 +552,13 @@
         }
 
         function validateAllAddedItems() {
-            _.each(vm.addedLineItems, function(item) {
+            _.each(vm.allLineItemsAdded, function(item) {
                 vm.validateQuantity(item);
                 vm.validateLot(item);
                 vm.validateLotDate(item);
             });
 
-            return _.chain(vm.addedLineItems)
+            return _.chain(vm.allLineItemsAdded)
                 .groupBy(function(item) {
                     return item.lot ? item.lot.id : item.orderable.id;
                 })
@@ -549,7 +577,7 @@
         }
 
         function reorderItems() {
-            var sorted = $filter('orderBy')(vm.addedLineItems, ['orderable.productCode', '-occurredDate']);
+            var sorted = $filter('orderBy')(vm.allLineItemsAdded, ['orderable.productCode', '-occurredDate']);
 
             vm.displayItems = _.chain(sorted).groupBy(function(item) {
                 return item.lot ? item.lot.id : item.orderable.id;
@@ -598,7 +626,7 @@
             initStateParams();
 
             $scope.$watch(function() {
-                return vm.addedLineItems;
+                return vm.allLineItemsAdded;
             }, function(newValue, oldValue) {
                 $scope.needToConfirm = ($stateParams.isAddProduct || !angular.equals(newValue, oldValue));
             }, true);
@@ -619,28 +647,19 @@
             vm.programId = programId;
             vm.facility = facility;
             vm.reasons = reasons;
-            vm.addedLineItems = $stateParams.addedLineItems || [];
+            vm.allLineItemsAdded = $stateParams.allLineItemsAdded || [];
             $stateParams.displayItems = displayItems;
             $stateParams.orderablesPrice = orderablesPrice;
             vm.displayItems = $stateParams.displayItems || [];
             vm.keyword = $stateParams.keyword;
-            _.forEach(vm.addedLineItems, function(item) {
+            _.forEach(vm.allLineItemsAdded, function(item) {
                 item.price = orderablesPrice.data[item.orderable.id] || '';
             });
-            // calc total value
-            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                var price = c.price ? c.price * 100 : 0;
-                r = r + c.quantity * price;
-                return r;
-            }, 0);
             vm.orderableGroups = orderableGroups;
             vm.hasLot = false;
             vm.orderableGroups.forEach(function(group) {
                 vm.hasLot = vm.hasLot || orderableGroupService.lotsOf(group).length > 0;
             });
-            vm.client = vm.facility.name;
-            vm.supplier =
-                    vm.initialDraftInfo.sourceName === 'Outros' ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
         }
 
         function initStateParams() {
@@ -678,9 +697,6 @@
                 notify: false
             });
         }
-
-        onInit();
-
     }
 
 })();

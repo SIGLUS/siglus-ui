@@ -647,66 +647,80 @@
 
             if (isMerge) {
                 siglusPrintPalletLabelComfirmModalService.show()
-                    .then(function(result) {
-                        if (result) {
+                    .then(function(shouldDownloadPallet) {
+                        if (shouldDownloadPallet) {
                             vm.downloadPrint();
                         }
-                        // following data is used in siglus-issue-or-receive-report.html
-                        vm.type = ReportService.REPORT_TYPE.RECEIVE;
-                        vm.downloadLineItems = getDownloadLineItems();
-                        vm.totalPriceValue = _.reduce(vm.downloadLineItems, function(r, c) {
-                            var price = c.price * 100;
-                            r = r + c.quantity * price;
-                            return r;
-                        }, 0);
-                        vm.totalPriceValue = _.isNaN(vm.totalPriceValue) ? 0 : vm.totalPriceValue;
-
-                        var momentNow = moment();
-                        vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-                        vm.client = vm.facility.name;
-                        vm.supplier = vm.initialDraftInfo.sourceName === 'Outros'
-                            ? vm.initialDraftInfo.locationFreeText : vm.sourceName;
-
                         siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
-                            .then(function(data) {
+                            .then(function(signatureInfo) {
                                 loadingModalService.open();
                                 var subDrafts = _.uniq(_.map(draftInfo.lineItems, function(item) {
                                     return item.subDraftId;
                                 }));
+                                var momentNow = moment();
+                                setReceivePDFInfo(signatureInfo, momentNow);
+                                var fileName = 'Entrada_' + vm.sourceName + '_' + momentNow.format('YYYY-MM-DD');
 
-                                vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
-                                vm.signature = data.signature;
-                                var nowDate = momentNow.format('YYYY-MM-DD');
-                                var fileName = 'Entrada_' + vm.sourceName + '_' + nowDate;
-                                ReportService.downloadPdf(
-                                    fileName,
-                                    function() {
-                                        submitMergedDraft(subDrafts, data.occurredDate);
-                                    }
-                                );
+                                ReportService.waitForAddedLineItemsRender().then(function() {
+                                    ReportService.downloadPdf(
+                                        fileName,
+                                        function() {
+                                            submitMergedDraft(subDrafts, signatureInfo.occurredDate);
+                                        }
+                                    );
+                                });
 
                             });
                     });
             } else {
                 // isMerge === false
                 loadingModalService.open();
-                siglusStockIssueLocationService.submitDraft(
-                    $stateParams.initialDraftId, $stateParams.draftId,
-                    getLineItems(), DRAFT_TYPE[$stateParams.moduleType][$stateParams.draftType]
-                )
-                    .then(function() {
-                        loadingModalService.close();
-                        notificationService.success('issueLocationCreation.submitSuccessfully');
-                        $scope.needToConfirm = false;
-                        $state.go('^', $stateParams);
-                    })
-                    .catch(function(error) {
-                        loadingModalService.close();
-                        productDuplicatedHandler(error);
-                    });
+                submitSubDraftAndBackToList();
             }
-
         };
+
+        function submitSubDraftAndBackToList() {
+            siglusStockIssueLocationService.submitDraft(
+                $stateParams.initialDraftId, $stateParams.draftId,
+                getLineItems(), DRAFT_TYPE[$stateParams.moduleType][$stateParams.draftType]
+            )
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success('issueLocationCreation.submitSuccessfully');
+                    $scope.needToConfirm = false;
+                    $state.go('^', $stateParams);
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    productDuplicatedHandler(error);
+                });
+        }
+
+        function setReceivePDFInfo(signatureInfo, momentNow) {
+            vm.reportPDFInfo = {
+                type: ReportService.REPORT_TYPE.RECEIVE,
+                addedLineItems: vm.addedLineItems,
+                documentNumber: vm.initialDraftInfo.documentNumber,
+                numberN: vm.initialDraftInfo.documentNumber,
+                supplier: vm.initialDraftInfo.sourceName === 'Outros'
+                    ? vm.initialDraftInfo.locationFreeText : vm.sourceName,
+                supplierProvince: vm.facility.geographicZone.parent.name,
+                supplierDistrict: vm.facility.geographicZone.name,
+                client: vm.facility.name,
+                requisitionNumber: null,
+                requisitionDate: null,
+                issueVoucherDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                receptionDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                totalPriceValue: _.reduce(getDownloadLineItems(), function(acc, lineItem) {
+                    var price = lineItem.price ? lineItem.price * 100 : 0;
+                    return acc + lineItem.quantity * price;
+                }, 0),
+                preparedBy: signatureInfo.signature,
+                conferredBy: null,
+                receivedBy: signatureInfo.signature,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
+        }
 
         function submitMergedDraft(subDrafts, occurredDate) {
             siglusStockIssueLocationService.mergeSubmitDraft(

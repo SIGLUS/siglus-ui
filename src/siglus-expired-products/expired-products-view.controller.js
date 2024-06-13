@@ -179,39 +179,52 @@
                 item.price = vm.orderablesPrice.data[item.orderableId];
                 return item;
             });
-            vm.totalPriceValue = _.reduce(vm.addedLineItems, function(r, c) {
-                if (c.price) {
-                    var price = c.price * 100;
-                    r = r + c.quantity * price;
-                }
-                return r;
-            }, 0);
             siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
-                .then(function(data) {
+                .then(function(signatureInfo) {
                     var momentNow = moment();
-                    // following data is used in siglus-issue-or-receive-report.html
-                    vm.type = ReportService.REPORT_TYPE.ISSUE;
-                    vm.supplier = vm.facility.name;
-                    vm.client = undefined;
-                    vm.initialDraftInfo = {
-                        documentNumber: vm.facility.code + '_' + momentNow.format('DDMMYYYY')
-                    };
-                    vm.issueVoucherDate = moment(data.occurredDate).format('YYYY-MM-DD');
-                    vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-                    vm.signature = data.signature;
-                    var nowDate = momentNow.format('YYYY-MM-DD');
-                    var fileName = 'Saída_' + vm.supplier + '_' + nowDate;
-                    ReportService.downloadPdf(fileName, function() {
-                        loadingModalService.open();
-                        expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
-                            vm.signature, vm.initialDraftInfo.documentNumber)
-                            .finally(function() {
-                                loadingModalService.close();
-                                $stateParams.expiredProducts = null;
-                                reloadPage();
-                            });
+                    var documentNumber = vm.facility.code + '_' + momentNow.format('DDMMYYYY');
+                    setIssuePDFInfo(documentNumber, signatureInfo, momentNow);
+                    var fileName = 'Saída_' + vm.facility.name + '_' + momentNow.format('YYYY-MM-DD');
+
+                    ReportService.waitForAddedLineItemsRender().then(function() {
+                        ReportService.downloadPdf(fileName, function() {
+                            loadingModalService.open();
+                            expiredProductsViewService.removeSelectedLots(vm.facility.id, removeLots,
+                                vm.signature, documentNumber)
+                                .finally(function() {
+                                    loadingModalService.close();
+                                    $stateParams.expiredProducts = null;
+                                    reloadPage();
+                                });
+                        });
                     });
+
                 });
         };
+
+        function setIssuePDFInfo(documentNumber, signatureInfo, momentNow) {
+            vm.reportPDFInfo = {
+                type: ReportService.REPORT_TYPE.ISSUE,
+                addedLineItems: vm.addedLineItems,
+                documentNumber: documentNumber,
+                numberN: documentNumber,
+                supplier: vm.facility.name,
+                supplierDistrict: vm.facility.geographicZone.name,
+                supplierProvince: vm.facility.geographicZone.parent.name,
+                client: null,
+                requisitionNumber: null,
+                requisitionDate: null,
+                issueVoucherDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                receptionDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
+                totalPriceValue: _.reduce(vm.addedLineItems, function(acc, lineItem) {
+                    var price = lineItem.price ? lineItem.price * 100 : 0;
+                    return acc + lineItem.quantity * price;
+                }, 0),
+                preparedBy: signatureInfo.signature,
+                conferredBy: null,
+                receivedBy: signatureInfo.signature,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
+        }
     }
 })();

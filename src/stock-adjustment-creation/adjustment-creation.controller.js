@@ -29,7 +29,7 @@
         .controller('StockAdjustmentCreationController', controller);
     controller.$inject = [
         '$scope', '$state', '$stateParams', '$filter', 'confirmDiscardService', 'program', 'facility',
-        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'user', 'adjustmentType',
+        'orderableGroups', 'reasons', 'confirmService', 'messageService', 'adjustmentType',
         'srcDstAssignments', 'stockAdjustmentCreationService', 'notificationService',
         'orderableGroupService', 'MAX_INTEGER_VALUE', 'VVM_STATUS', 'loadingModalService', 'alertService',
         'dateUtils', 'displayItems', 'ADJUSTMENT_TYPE', 'REASON_TYPES',
@@ -40,7 +40,7 @@
 
     function controller(
         $scope, $state, $stateParams, $filter, confirmDiscardService, program,
-        facility, orderableGroups, reasons, confirmService, messageService, user,
+        facility, orderableGroups, reasons, confirmService, messageService,
         adjustmentType, srcDstAssignments, stockAdjustmentCreationService, notificationService,
         orderableGroupService, MAX_INTEGER_VALUE, VVM_STATUS, loadingModalService,
         alertService, dateUtils, displayItems, ADJUSTMENT_TYPE, REASON_TYPES,
@@ -485,58 +485,62 @@
                     loadingModalService.open();
 
                     var lineItemsWithReceiveReasons =
-                            getLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
+                            filterLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
                     var lineItemsWithIssueReasons =
-                            getLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+                            filterLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+                    var receiveLineItemsToPrint = getParamsOnlyNeededToPrint(lineItemsWithReceiveReasons);
+                    var issueLineItemsToPrint = getParamsOnlyNeededToPrint(lineItemsWithIssueReasons);
 
-                    // set common data for Issue and Receive PDF
-                    vm.signature = signatureInfo.signature;
                     var momentNow = moment();
-                    var documentNumberAndFileNameWithoutPrefix =
-                            vm.facility.code + '_' + momentNow.format('DDMMYYYY');
-                    vm.initialDraftInfo = {
-                        documentNumber: documentNumberAndFileNameWithoutPrefix
-                    };
-                    vm.nowTime = momentNow.format('D MMM YYYY h:mm:ss A');
-                    vm.issueVoucherDate = moment(signatureInfo.occurredDate).format('YYYY-MM-DD');
 
                     if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
                         // download both Receive and Issue PFD
-                        buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
-                        ReportService.waitForAddedLineItemsRender().then(function() {
-                            downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
-                                buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
-                                ReportService.waitForAddedLineItemsRender().then(function() {
-                                    downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                        downloadReceiveOrIssuePDF(
+                            ReportService.REPORT_TYPE.RECEIVE,
+                            receiveLineItemsToPrint,
+                            signatureInfo,
+                            momentNow,
+                            function() {
+                                downloadReceiveOrIssuePDF(
+                                    ReportService.REPORT_TYPE.ISSUE,
+                                    issueLineItemsToPrint,
+                                    signatureInfo,
+                                    momentNow,
+                                    function() {
                                         confirmSubmit(signatureInfo);
-                                    });
-                                });
-
-                            });
-                        });
+                                    }
+                                );
+                            }
+                        );
                     } else if (lineItemsWithReceiveReasons.length > 0) {
                         // only download Receive PFD
-                        buildAddedLineItemsForDownloadReport(lineItemsWithReceiveReasons);
-                        ReportService.waitForAddedLineItemsRender().then(function() {
-                            downloadReceivePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                        downloadReceiveOrIssuePDF(
+                            ReportService.REPORT_TYPE.RECEIVE,
+                            receiveLineItemsToPrint,
+                            signatureInfo,
+                            momentNow,
+                            function() {
                                 confirmSubmit(signatureInfo);
-                            });
-                        });
+                            }
+                        );
                     } else if (lineItemsWithIssueReasons.length > 0) {
                         // only download Issue PFD
-                        buildAddedLineItemsForDownloadReport(lineItemsWithIssueReasons);
-                        ReportService.waitForAddedLineItemsRender().then(function() {
-                            downloadIssuePdf(documentNumberAndFileNameWithoutPrefix, function() {
+                        downloadReceiveOrIssuePDF(
+                            ReportService.REPORT_TYPE.ISSUE,
+                            issueLineItemsToPrint,
+                            signatureInfo,
+                            momentNow,
+                            function() {
                                 confirmSubmit(signatureInfo);
-                            });
-                        });
+                            }
+                        );
                     } else {
                         confirmSubmit(signatureInfo);
                     }
                 });
         };
 
-        function getLineItemsByCertainReasons(reasonNameList) {
+        function filterLineItemsByCertainReasons(reasonNameList) {
             return getAllLineItemsWithUniqueLotCode().filter(function(lineItem) {
                 return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
             });
@@ -562,8 +566,8 @@
             });
         }
 
-        function buildAddedLineItemsForDownloadReport(lineItemsWithSpecialReasons) {
-            vm.addedLineItems = lineItemsWithSpecialReasons.map(function(item) {
+        function getParamsOnlyNeededToPrint(lineItemsWithSpecialReasons) {
+            return lineItemsWithSpecialReasons.map(function(item) {
                 return {
                     productCode: _.get(item, ['orderable', 'productCode']),
                     productName: _.get(item, ['orderable', 'fullProductName']),
@@ -575,37 +579,40 @@
             });
         }
 
-        function downloadReceivePdf(documentNumberAndFileName, callbackAfterDownload) {
-            vm.type = ReportService.REPORT_TYPE.RECEIVE;
-            vm.supplier = '';
-            vm.client = vm.facility.name;
+        function downloadReceiveOrIssuePDF(type, lineItems, signatureInfo, momentNow, callbackAfterDownload) {
+            var prefix = type === ReportService.REPORT_TYPE.RECEIVE ? 'RR_' : 'IV_';
+            var documentNumberAndFileName = prefix + vm.facility.code + '_' + momentNow.format('DDMMYYYY');
 
-            ReportService.downloadPdf(
-                'RR_' + documentNumberAndFileName,
-                function() {
-                    callbackAfterDownload();
-                },
-                true
-            );
+            setPrintPDFInfo(type, lineItems, signatureInfo, momentNow, documentNumberAndFileName);
+            ReportService.waitForAddedLineItemsRender().then(function() {
+                ReportService.downloadPdf(
+                    documentNumberAndFileName,
+                    callbackAfterDownload
+                );
+            });
         }
 
-        function downloadIssuePdf(documentNumberAndFileName, callbackAfterDownload) {
-            vm.type = ReportService.REPORT_TYPE.ISSUE;
-            vm.supplier = vm.facility.name;
-            vm.client = '';
-            var totalPrice = _.reduce(vm.addedLineItems, function(acc, lineItem) {
-                var price = lineItem.price * 100;
-                return acc + lineItem.quantity * price;
-            }, 0);
-            vm.totalPriceValue = _.isNaN(totalPrice) ? 0 : totalPrice;
-
-            ReportService.downloadPdf(
-                'IV_' + documentNumberAndFileName,
-                function() {
-                    callbackAfterDownload();
-                },
-                false
-            );
+        function setPrintPDFInfo(type, lineItems, signatureInfo, momentNow, documentNumber) {
+            vm.reportPDFInfo = {
+                type: type,
+                addedLineItems: lineItems,
+                documentNumber: documentNumber,
+                numberN: documentNumber,
+                supplier: type === ReportService.REPORT_TYPE.RECEIVE ? null : vm.facility.name,
+                supplierDistrict: vm.facility.geographicZone.name,
+                supplierProvince: vm.facility.geographicZone.parent.name,
+                client: type === ReportService.REPORT_TYPE.RECEIVE ? vm.facility.name : null,
+                requisitionNumber: null,
+                requisitionDate: null,
+                totalPriceValue: _.reduce(lineItems, function(acc, lineItem) {
+                    var price = lineItem.price ? lineItem.price * 100 : 0;
+                    return acc + lineItem.quantity * price;
+                }, 0),
+                preparedBy: signatureInfo.signature,
+                conferredBy: null,
+                receivedBy: signatureInfo.signature,
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+            };
         }
 
         /**
