@@ -31,7 +31,8 @@
         'openlmis-function-decorator',
         // SIGLUS-REFACTOR: starts here
         'siglus-physical-inventory-creation',
-        'siglus-physical-inventory-draft-list'
+        'siglus-physical-inventory-draft-list',
         // SIGLUS-REFACTOR: ends here
+        'openlmis-modal'
     ]);
 })();

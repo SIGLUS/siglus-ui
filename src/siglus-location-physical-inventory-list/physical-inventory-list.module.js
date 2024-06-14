@@ -35,6 +35,7 @@
         'siglus-location-management',
         // SIGLUS-REFACTOR: ends here
         'stock-physical-inventory-list',
-        'siglus-physical-inventory-history-detail'
+        'siglus-physical-inventory-history-detail',
+        'openlmis-modal'
     ]);
 })();

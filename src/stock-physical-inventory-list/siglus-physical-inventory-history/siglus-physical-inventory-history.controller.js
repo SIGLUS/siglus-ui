@@ -21,11 +21,11 @@
         .controller('SiglusPhysicalInventoryHistoryController', SiglusPhysicalInventoryHistoryController);
 
     SiglusPhysicalInventoryHistoryController.$inject = [
-        '$state', '$stateParams', 'filteredHistoryList', 'program', 'facility'
+        '$state', 'filteredHistoryList', 'program', 'facility', 'loadingModalService'
     ];
 
     function SiglusPhysicalInventoryHistoryController(
-        $state, $stateParams, filteredHistoryList, program, facility
+        $state, filteredHistoryList, program, facility, loadingModalService
     ) {
         var vm = this;
 
@@ -39,6 +39,7 @@
         vm.getProgramName = getProgramName;
 
         function viewHistoryDetail(historyItem) {
+            loadingModalService.open();
             $state.go('openlmis.stockmanagement.history', {
                 program: vm.program,
                 facility: facility,

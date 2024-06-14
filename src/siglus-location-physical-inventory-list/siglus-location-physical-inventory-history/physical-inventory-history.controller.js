@@ -21,11 +21,11 @@
         .controller('LocationPhysicalInventoryHistoryController', controller);
 
     controller.$inject = [
-        '$state', '$stateParams', 'program', 'facility', 'filteredHistoryList'
+        '$state', 'program', 'facility', 'filteredHistoryList', 'loadingModalService'
     ];
 
     function controller(
-        $state, $stateParams, program, facility, filteredHistoryList
+        $state, program, facility, filteredHistoryList, loadingModalService
     ) {
         var vm = this;
 
@@ -38,6 +38,7 @@
         vm.getProgramName = getProgramName;
 
         function viewHistoryDetail(historyItem) {
+            loadingModalService.open();
             $state.go('openlmis.locationManagement.history', {
                 program: vm.program,
                 facility: facility,
