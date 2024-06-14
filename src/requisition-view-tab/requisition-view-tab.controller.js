@@ -159,7 +159,7 @@
         vm.keyword = $stateParams.keyword;
         vm.search = function() {
             $stateParams.keyword = vm.keyword;
-            if (vm.requisition.isInitForClient) {
+            if (vm.requisition.isInitForClient || vm.requisition.isCreateForClient) {
                 refreshLineItems();
                 return;
             }
@@ -181,7 +181,7 @@
             vm.columns = columns;
             vm.userCanEdit = vm.requisition.isInitForClient ||
                 canAuthorize || canSubmit || (canApproveAndReject && !requisition.isExternalApproval);
-            vm.showAddProducts = vm.requisition.isInitForClient || canSync;
+            vm.showAddProducts = vm.requisition.isInitForClient || vm.requisition.isCreateForClient || canSync;
             vm.showAddFullSupplyProductsButton = showAddFullSupplyProductsButton();
             vm.showAddNonFullSupplyProductsButton = showAddNonFullSupplyProductsButton();
             vm.showUnskipFullSupplyProductsButton = showUnskipFullSupplyProductsButton();
@@ -471,7 +471,7 @@
         }
 
         function refreshLineItems() {
-            if (vm.requisition.isInitForClient) {
+            if (vm.requisition.isInitForClient || vm.requisition.isCreateForClient) {
                 vm.lineItems = filterAddedProducts();
                 return;
             }

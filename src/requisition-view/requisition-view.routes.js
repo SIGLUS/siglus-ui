@@ -70,16 +70,19 @@
                 facility: function(facilityService, requisition) {
                     return facilityService.get(requisition.facility.id);
                 },
-                isCreateForClient: function(requisition) {
-                    var forClient = !!requisition.isCreateForClient;
-                    if (forClient) {
+                isCreateForClient: function(requisition, program, requisitionService) {
+                    if (requisition.isCreateForClient) {
                         requisition.requisitionLineItems.forEach(function(item) {
                             if (!item.approvedQuantity) {
                                 item.approvedQuantity = item.authorizedQuantity;
                             }
                         });
+                        return requisitionService.setOrderableUnitForRequisitionSupplyProducts(requisition,
+                            program.code).then(function() {
+                            return true;
+                        });
                     }
-                    return forClient;
+                    return false;
                 },
                 canSubmit: function(requisitionViewFactory, user, requisition) {
                     return requisition.isInitForClient || requisitionViewFactory.canSubmit(user.id, requisition);
