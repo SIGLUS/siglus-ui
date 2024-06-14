@@ -161,7 +161,7 @@ describe('SiglusStockReceiveCreationController', function() {
 
     describe('validateLotCodeDuplicated', function() {
         it('should validate duplicated lot code in the same product', function() {
-            vm.addedLineItems = [
+            vm.allLineItemsAdded = [
                 {
                     $errors: {
                         lotCodeInvalid: false,
@@ -214,11 +214,11 @@ describe('SiglusStockReceiveCreationController', function() {
             ];
             vm.validateLotCodeDuplicated();
 
-            expect(vm.addedLineItems[0].$errors.lotCodeInvalid).toEqual(false);
-            expect(vm.addedLineItems[1].$errors.lotCodeInvalid)
+            expect(vm.allLineItemsAdded[0].$errors.lotCodeInvalid).toEqual(false);
+            expect(vm.allLineItemsAdded[1].$errors.lotCodeInvalid)
                 .toEqual(messageService.get('stockReceiveCreation.itemDuplicated'));
 
-            expect(vm.addedLineItems[2].$errors.lotCodeInvalid)
+            expect(vm.allLineItemsAdded[2].$errors.lotCodeInvalid)
                 .toEqual(messageService.get('stockReceiveCreation.itemDuplicated'));
         });
     });
@@ -239,7 +239,7 @@ describe('SiglusStockReceiveCreationController', function() {
                 orderableId: 'ba08a234-4881-472f-af02-fcc0c7ab5d04',
                 stockOnHand: 20
             };
-            vm.addedLineItems = [
+            vm.allLineItemsAdded = [
                 lineItem
             ];
 
@@ -265,7 +265,7 @@ describe('SiglusStockReceiveCreationController', function() {
                 orderableId: 'ba08a234-4881-472f-af02-fcc0c7ab5d04',
                 stockOnHand: 20
             };
-            vm.addedLineItems = [
+            vm.allLineItemsAdded = [
                 lineItem
             ];
 
