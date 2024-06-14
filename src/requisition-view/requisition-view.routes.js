@@ -43,13 +43,16 @@
                 user: function(currentUserService) {
                     return currentUserService.getUserInfo();
                 },
-                requisition: function($stateParams, requisitionService) {
+                requisition: function($stateParams, requisitionService, programService) {
                     if ($stateParams.forClient === 'true') {
                         return requisitionService.buildDraftWithoutSaving($stateParams.facility,
                             $stateParams.period, $stateParams.program).then(function(requisition) {
                             requisition.$isEditable = true;
                             requisition.isInitForClient = true;
-                            return requisitionService.setOrderableUnitForRequisition(requisition);
+                            return programService.get(requisition.program.id).then(function(program) {
+                                return requisitionService.setOrderableUnitForRequisitionSupplyProducts(requisition,
+                                    program.code);
+                            });
                         });
                     }
                     return requisitionService.get($stateParams.rnr).then(function(requisition) {
@@ -57,6 +60,15 @@
                         requisition.isInitForClient = false;
                         return result;
                     });
+                },
+                program: function(programService, requisitionService, requisition) {
+                    return programService.get(requisition.program.id);
+                },
+                processingPeriod: function(periodService, requisition) {
+                    return periodService.get(requisition.processingPeriod.id);
+                },
+                facility: function(facilityService, requisition) {
+                    return facilityService.get(requisition.facility.id);
                 },
                 isCreateForClient: function(requisition) {
                     var forClient = !!requisition.isCreateForClient;
@@ -68,21 +80,6 @@
                         });
                     }
                     return forClient;
-                },
-                program: function(programService, requisition) {
-                    return programService.get(requisition.program.id);
-                },
-                processingPeriod: function(periodService, requisition) {
-                    return periodService.get(requisition.processingPeriod.id);
-                },
-                facility: function(facilityService, requisition) {
-                    return facilityService.get(requisition.facility.id);
-                },
-                approvedProducts: function(requisitionService, requisition) {
-                    if (requisition.isInitForClient) {
-                        return requisitionService.getApprovedProducts(requisition.facility.id, requisition.program.id);
-                    }
-                    return [];
                 },
                 canSubmit: function(requisitionViewFactory, user, requisition) {
                     return requisition.isInitForClient || requisitionViewFactory.canSubmit(user.id, requisition);

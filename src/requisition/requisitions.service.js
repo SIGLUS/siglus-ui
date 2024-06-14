@@ -139,6 +139,7 @@
             getOrderableLineItem: getOrderableLineItem,
             getWithoutStatusMessages: getWithoutStatusMessages,
             setOrderableUnitForRequisition: setOrderableUnitForRequisition,
+            setOrderableUnitForRequisitionSupplyProducts: setOrderableUnitForRequisitionSupplyProducts,
             batchClose: batchClose,
             closeRequisitionsForApproval: closeRequisitionsForApproval,
             buildDraftWithoutSaving: buildDraftWithoutSaving,
@@ -602,6 +603,23 @@
                 .then(function(response) {
                     return response.data;
                 });
+        }
+
+        function setOrderableUnitForRequisitionSupplyProducts(requisition, programCode) {
+            var promises = [getProgramOrderableExtensionByCode(programCode)];
+            return $q.all(promises).then(function(results) {
+                var orderableIdToUnit = {};
+                _.flatten(results).forEach(function(p) {
+                    orderableIdToUnit[p.orderableId] = p.unit;
+                });
+                if (requisition.availableFullSupplyProducts) {
+                    requisition.availableFullSupplyProducts.forEach(function(product) {
+                        product.dispensable.dispensingUnit = orderableIdToUnit[product.id];
+                        product.dispensable.displayUnit = orderableIdToUnit[product.id];
+                    });
+                }
+                return $q.resolve(requisition);
+            });
         }
 
         function setOrderableUnitForRequisition(requisition) {

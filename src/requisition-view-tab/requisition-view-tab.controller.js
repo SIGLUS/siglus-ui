@@ -36,7 +36,7 @@
         // SIGLUS-REFACTOR: starts here
         'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
         'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync',
-        '$state', 'approvedProducts'
+        '$state'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -45,8 +45,7 @@
                                fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
                                paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
                                requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
-                               program, $scope, notificationService, offlineService, canSync, $state,
-                               approvedProducts) {
+                               program, $scope, notificationService, offlineService, canSync, $state) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -402,8 +401,8 @@
                     return !column.name.includes('orderable');
                 });
                 selectedProducts.forEach(function(product) {
-                    var approvedProduct = approvedProducts.find(function(item) {
-                        return item.orderable.id === product.id;
+                    var approvedProduct = requisition.availableFullSupplyProducts.find(function(item) {
+                        return item.id === product.id;
                     });
                     product.versionNumber = _.get(product, ['meta', 'versionNumber']);
                     var addedProduct = {
