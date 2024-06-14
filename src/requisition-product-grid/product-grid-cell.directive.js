@@ -150,6 +150,9 @@
                     return false;
                 }
                 if (canEditColumn(column)) {
+                    if (scope.requisition.isInitForClient) {
+                        return false;
+                    }
                     return isBeginningBalanceColumnAndNotEmpty(column);
                 }
 
