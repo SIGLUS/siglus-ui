@@ -29,32 +29,32 @@
         .controller('LocationPhysicalInventoryDraftController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'addProductsModalService',
-        'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
-        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility',
-        'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
-        'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
-        'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
+        '$scope', '$state', '$stateParams', 'addProductsModalService', 'messageService',
+        'notificationService', 'alertService', 'confirmDiscardService', 'chooseDateModalService',
+        'program', 'facility', 'physicalInventoryService', 'MAX_INTEGER_VALUE', 'VVM_STATUS',
+        'stockReasonsCalculations', 'loadingModalService', '$window', 'accessTokenFactory',
+        'orderableGroupService', '$filter', '$q', 'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE',
+        'currentUserService', 'navigationStateService', 'siglusArchivedProductService',
+        'siglusOrderableLotMapping', 'physicalInventoryDataService', 'SIGLUS_TIME',
+        'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
         'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService',
         'siglusOrderableLotService', 'siglusPrintPalletLabelComfirmModalService',
         'siglusLocationCommonApiService'
     ];
 
-    function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                        physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
-                        chooseDateModalService, program, facility,
-                        confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
-                        stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
-                        REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
-                        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-                        allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
-                        siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService,
-                        siglusLocationCommonApiService) {
+    function controller(
+        $scope, $state, $stateParams, addProductsModalService, messageService,
+        notificationService, alertService, confirmDiscardService, chooseDateModalService,
+        program, facility, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
+        stockReasonsCalculations, loadingModalService, $window, accessTokenFactory,
+        orderableGroupService, $filter,  $q, REASON_TYPES, SIGLUS_MAX_STRING_VALUE,
+        currentUserService, navigationStateService, siglusArchivedProductService,
+        siglusOrderableLotMapping, physicalInventoryDataService, SIGLUS_TIME,
+        siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
+        allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
+        siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService,
+        siglusLocationCommonApiService
+    ) {
         var vm = this;
         vm.$onInit = onInit;
         vm.quantityChanged = quantityChanged;
@@ -68,6 +68,7 @@
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
+        vm.print = print;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         vm.locationManagementOption = $stateParams.locationManagementOption;
@@ -76,35 +77,6 @@
         var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
 
-        /**
-         * @ngdoc property
-         * @propertyOf siglus-locatioin-physical-inventory-draft.controller:LocationPhysicalInventoryDraftController
-         * @name displayLineItemsGroup
-         * @type {Array}
-         *
-         * @description
-         * Holds current display physical inventory draft line items grouped by orderable id.
-         */
-        if (vm.locationManagementOption === 'location') {
-            var displayLineItemsMap = _.reduce(displayLineItemsGroup, function(r, c) {
-                if (r[c[0].locationCode]) {
-                    r[c[0].locationCode].push(c);
-                } else {
-                    r[c[0].locationCode] = [c];
-                }
-                return r;
-            }, {});
-            var itemsKeyAfterSort = _.sortBy(Object.keys(displayLineItemsMap), function(a) {
-                return a;
-            });
-            vm.displayLineItemsGroup = _.reduce(itemsKeyAfterSort, function(r, c) {
-                r.push(displayLineItemsMap[c][0]);
-                return r;
-            }, []);
-        } else {
-            // handle location-by-prodcut
-            vm.displayLineItemsGroup = displayLineItemsGroup;
-        }
         vm.back = function() {
             $state.go('^', {}, {
                 reload: true
@@ -611,7 +583,8 @@
             }
             return lineItem.$errors.quantityInvalid;
         };
-        vm.print = function() {
+
+        function print() {
             var PRINT_URL;
             if (vm.locationManagementOption === 'product') {
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
@@ -631,7 +604,7 @@
                 PRINT_URL,
                 '_blank'
             );
-        };
+        }
 
         // 校验form表单的Lot Code的地方;
         vm.validateLotCode = function(lineItem) {
@@ -734,14 +707,6 @@
             }) : [];
             return duplicatedLineItems.length > 1;
         }
-
-        // function hasDuplicateLotCodeByLocation(lineItem) {
-        //     var allLots = getAllLotCode(lineItem.orderable.id, lineItem.area, lineItem.locationCode);
-        //     var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function(lot) {
-        //         return lot === lineItem.lot.lotCode.toUpperCase();
-        //     }) : [];
-        //     return duplicatedLineItems.length > 1;
-        // }
 
         function validate() {
             var anyError = false;
@@ -858,6 +823,28 @@
                 saveDraft(true);
             }
             vm.allLocationAreaMap = allLocationAreaMap;
+
+            // set vm.displayLineItemsGroup
+            if (vm.locationManagementOption === 'location') {
+                var displayLineItemsMap = _.reduce(displayLineItemsGroup, function(r, c) {
+                    if (r[c[0].locationCode]) {
+                        r[c[0].locationCode].push(c);
+                    } else {
+                        r[c[0].locationCode] = [c];
+                    }
+                    return r;
+                }, {});
+                var itemsKeyAfterSort = _.sortBy(Object.keys(displayLineItemsMap), function(a) {
+                    return a;
+                });
+                vm.displayLineItemsGroup = _.reduce(itemsKeyAfterSort, function(r, c) {
+                    r.push(displayLineItemsMap[c][0]);
+                    return r;
+                }, []);
+            } else {
+                vm.displayLineItemsGroup = displayLineItemsGroup;
+            }
+
             $scope.$watchCollection(function() {
                 return vm.pagedLineItems;
             }, function(newList) {
