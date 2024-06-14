@@ -360,15 +360,16 @@
         function syncRnrAndPrint() {
             if (vm.requisition.isInitForClient) {
                 var storageKey = vm.requisition.facility.id + vm.requisition.program.id;
-                vm.requisition.requisitionLineItems.forEach(function(lineItem) {
+                var copyRequisition = angular.copy(vm.requisition);
+                copyRequisition.requisitionLineItems.forEach(function(lineItem) {
                     lineItem[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY] = lineItem.requestedQuantity;
                     lineItem[TEMPLATE_COLUMNS.APPROVED_QUANTITY] = lineItem.requestedQuantity;
                 });
-                vm.requisition.availableFullSupplyProducts = [];
-                vm.requisition.availableProducts.forEach(function(product) {
+                copyRequisition.availableFullSupplyProducts = [];
+                copyRequisition.availableProducts.forEach(function(product) {
                     product.href = null;
                 });
-                localStorageService.add(storageKey, angular.toJson(vm.requisition));
+                localStorageService.add(storageKey, angular.toJson(copyRequisition));
                 vm.requisition.id = storageKey;
             }
             var status = vm.requisition.isInitForClient ? 'APPROVED' : vm.requisition.status;
