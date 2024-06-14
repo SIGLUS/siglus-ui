@@ -59,7 +59,7 @@
          * @return {Array}                  array with lots
          */
         function lotsOf(orderableGroup) {
-            var lots = _.chain(orderableGroup).pluck('lot')
+            var lots = _.chain(orderableGroup).map('lot')
                 .compact()
                 .value();
 

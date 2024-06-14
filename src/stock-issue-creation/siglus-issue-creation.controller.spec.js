@@ -163,7 +163,7 @@ describe('SiglusStockIssueCreationController', function() {
         it('should call remove draft api when click confirm delete button', function() {
             // vm.remove();
             vm.destinationName = 'test';
-            vm.addedLineItems = [
+            vm.allLineItemsAdded = [
                 {
                     lot: null,
                     orderable: {
@@ -353,7 +353,7 @@ describe('SiglusStockIssueCreationController', function() {
         it('should set correct lots when input key is kit ' +
           'and id is 4efcc305-fbda-401c-bc67-750a8717c3da ', function() {
             vm.destinationName = 'test';
-            vm.addedLineItems = [
+            vm.allLineItemsAdded = [
                 {
                     lot: {
                         id: '4efcc305-fbda-401c-bc67-750a8717c3da',
@@ -410,7 +410,7 @@ describe('SiglusStockIssueCreationController', function() {
 
         it('should set correct orderableGroup when initial table has added line items', function() {
             vm.destinationName = 'test';
-            vm.addedLineItems = [
+            vm.allLineItemsAdded = [
                 {
                     lot: null,
                     orderable: {
