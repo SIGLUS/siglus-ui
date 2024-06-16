@@ -587,19 +587,16 @@
         function print() {
             var PRINT_URL;
             if (vm.locationManagementOption === 'product') {
-                localStorageService.add('physicalInventoryCategories', JSON.stringify(displayLineItemsGroup));
-                PRINT_URL = '#!/locationManagement/physicalInventory'
-                    + '/printByProduct'
-                    + '?'
-                    + $window.location.href.split('/?')[1];
+                localStorageService.add('physicalInventoryCategories', JSON.stringify(vm.displayLineItemsGroup));
+                PRINT_URL = '#!/locationManagement/physicalInventory/printByProduct?';
             } else {
-                localStorageService.add('locationPhysicalInventory', JSON.stringify(displayLineItemsGroup));
-                PRINT_URL = '#!/locationManagement/physicalInventory'
-                    + '/printByLocation'
-                    + '?'
-                    + $window.location.href.split('/?')[1]
+                localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.displayLineItemsGroup));
+                PRINT_URL = '#!/locationManagement/physicalInventory/printByLocation?'
                     + '&isInitialInventory=' + vm.isInitialInventory;
             }
+            PRINT_URL = PRINT_URL +
+                '&isMerged=' + $stateParams.isMerged +
+                '&programId=' + $stateParams.programId;
             $window.open(
                 PRINT_URL,
                 '_blank'

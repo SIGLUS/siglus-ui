@@ -44,7 +44,7 @@
         function onInit() {
             hideLayoutAndBreadcrumb();
             vm.categories = JSON.parse(draft);
-            vm.draft = vm.getTbDataSource(JSON.parse(draft));
+            vm.draft = getTbDataSource(JSON.parse(draft));
             vm.facility = facility;
             vm.program = program;
             vm.isMerged = $stateParams.isMerged === 'true';
@@ -77,7 +77,7 @@
                 .value();
         };
 
-        vm.getTbDataSource = function(data) {
+        function getTbDataSource(data) {
             return _.reduce(data, function(r, c) {
                 if (c.length > 1) {
                     var temp = _.map(c, function(item, i) {
@@ -102,7 +102,7 @@
                 }
                 return r;
             }, []);
-        };
+        }
 
         $scope.$on('$destroy', function() {
             $window.onunload = null;
