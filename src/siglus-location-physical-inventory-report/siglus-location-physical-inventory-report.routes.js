@@ -48,7 +48,7 @@
                     });
                 },
                 draft: function(localStorageService) {
-                    return localStorageService.get('physicalInventoryCategories');
+                    return JSON.parse(localStorageService.get('physicalInventoryCategories')) ;
                 }
             }
         });

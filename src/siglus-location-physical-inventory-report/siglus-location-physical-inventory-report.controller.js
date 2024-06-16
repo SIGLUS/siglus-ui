@@ -43,17 +43,17 @@
 
         function onInit() {
             hideLayoutAndBreadcrumb();
-            vm.categories = JSON.parse(draft);
-            vm.draft = getTbDataSource(JSON.parse(draft));
+            vm.categories = draft;
+            vm.draft = getTbDataSource(draft);
             vm.facility = facility;
             vm.program = program;
             vm.isMerged = $stateParams.isMerged === 'true';
         }
 
-        var hideLayoutAndBreadcrumb = function() {
-            document.getElementsByClassName('header')[0].style.display = 'none';
-            document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
-        };
+        function hideLayoutAndBreadcrumb() {
+            document.querySelector('openlmis-breadcrumbs').style.display = 'none';
+            document.querySelector('header').style.display = 'none';
+        }
 
         function isEmpty(value) {
             return value === '' || value === undefined || value === null;
