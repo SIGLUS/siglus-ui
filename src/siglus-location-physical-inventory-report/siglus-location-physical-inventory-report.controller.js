@@ -51,8 +51,15 @@
         }
 
         function hideLayoutAndBreadcrumb() {
-            document.querySelector('openlmis-breadcrumbs').style.display = 'none';
-            document.querySelector('header').style.display = 'none';
+            var breadcrumbComponent =  document.querySelector('openlmis-breadcrumbs');
+            if (breadcrumbComponent) {
+                breadcrumbComponent.style.display = 'none';
+            }
+
+            var headerComponent = document.querySelector('header');
+            if (headerComponent) {
+                headerComponent.style.display = 'none';
+            }
         }
 
         function isEmpty(value) {
