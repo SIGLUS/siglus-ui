@@ -85,29 +85,29 @@
         };
 
         function getTbDataSource(data) {
-            return _.reduce(data, function(r, c) {
-                if (c.length > 1) {
-                    var temp = _.map(c, function(item, i) {
+            return _.reduce(data, function(flattenedLineItemList, lineItemsGroup) {
+                if (lineItemsGroup.length > 1) {
+                    var temp = _.map(lineItemsGroup, function(item, i) {
                         var result = {
                             productCode: '',
                             product: ''
                         };
                         if (i === 0) {
                             result = {
-                                productCode: c[0].orderable.productCode,
-                                product: c[0].orderable.fullProductName
+                                productCode: lineItemsGroup[0].orderable.productCode,
+                                product: lineItemsGroup[0].orderable.fullProductName
                             };
                         }
                         return result;
                     });
-                    r = r.concat(temp);
+                    flattenedLineItemList = flattenedLineItemList.concat(temp);
                 } else {
-                    r.push({
-                        productCode: c[0].orderable.productCode,
-                        product: c[0].orderable.fullProductName
+                    flattenedLineItemList.push({
+                        productCode: lineItemsGroup[0].orderable.productCode,
+                        product: lineItemsGroup[0].orderable.fullProductName
                     });
                 }
-                return r;
+                return flattenedLineItemList;
             }, []);
         }
 

@@ -586,21 +586,53 @@
 
         function print() {
             var PRINT_URL;
+            var lineItemsGroupToPrint = minifyDisplayLineItemsForPrint();
+            var localStorageSaveSuccess = false;
             if (vm.locationManagementOption === 'product') {
-                localStorageService.add('physicalInventoryCategories', JSON.stringify(vm.displayLineItemsGroup));
+                localStorageSaveSuccess = localStorageService.add(
+                    'physicalInventoryCategories', JSON.stringify(lineItemsGroupToPrint)
+                );
                 PRINT_URL = '#!/locationManagement/physicalInventory/printByProduct?';
             } else {
-                localStorageService.add('locationPhysicalInventory', JSON.stringify(vm.displayLineItemsGroup));
+                localStorageSaveSuccess = localStorageService.add(
+                    'locationPhysicalInventory', JSON.stringify(lineItemsGroupToPrint)
+                );
                 PRINT_URL = '#!/locationManagement/physicalInventory/printByLocation?'
                     + '&isInitialInventory=' + vm.isInitialInventory;
             }
             PRINT_URL = PRINT_URL +
                 '&isMerged=' + $stateParams.isMerged +
-                '&programId=' + $stateParams.programId;
-            $window.open(
-                PRINT_URL,
-                '_blank'
-            );
+                '&programId=' + $stateParams.programId +
+                '&draftNum=' + $stateParams.draftNum;
+
+            if (localStorageSaveSuccess) {
+                $window.open(PRINT_URL, '_blank');
+            } else {
+                alertService.error('localStorage save data failed');
+            }
+        }
+
+        function minifyDisplayLineItemsForPrint() {
+            return vm.displayLineItemsGroup.map(function(lineItemsGroup) {
+                return lineItemsGroup.map(function(lineItem) {
+                    return {
+                        area: lineItem.area,
+                        locationCode: lineItem.locationCode,
+                        stockOnHand: lineItem.stockOnHand,
+                        quantity: lineItem.quantity,
+                        reasonFreeText: lineItem.reasonFreeText,
+                        orderable: {
+                            productCode: _.get(lineItem, ['orderable', 'productCode']),
+                            fullProductName: _.get(lineItem, ['orderable', 'fullProductName'])
+                        },
+                        lot: {
+                            lotCode: _.get(lineItem, ['lot', 'lotCode']),
+                            expirationDate: _.get(lineItem, ['lot', 'expirationDate'])
+                        }
+
+                    };
+                });
+            });
         }
 
         // 校验form表单的Lot Code的地方;

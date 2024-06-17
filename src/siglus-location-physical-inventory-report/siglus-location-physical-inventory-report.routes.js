@@ -35,11 +35,11 @@
                 }
             },
             params: {
-                isMerged: false,
+                isMerged: undefined,
                 programId: undefined
             },
             resolve: {
-                facility: function($stateParams, facilityFactory) {
+                facility: function(facilityFactory) {
                     return facilityFactory.getUserHomeFacility();
                 },
                 program: function($stateParams, programService) {
