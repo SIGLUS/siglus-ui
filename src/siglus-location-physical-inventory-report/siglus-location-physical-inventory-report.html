@@ -24,10 +24,9 @@
             </tr>
             </thead>
             <tbody ng-if="!vm.isMerged">
-                <tr ng-repeat="item in vm.draft">
+                <tr ng-repeat="item in vm.notMergedLineItems">
                     <td>{{ item.productCode }}</td>
                     <td>{{ item.product }}</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -36,7 +35,7 @@
                 </tr>
             </tbody>
 
-            <tbody ng-if="vm.isMerged" ng-repeat="groups in vm.categories">
+            <tbody ng-if="vm.isMerged" ng-repeat="groups in vm.lineItemsGroup">
                 <!-- The product only has one line item -->
                 <tr ng-if="groups.length === 1">
                     <td>{{ groups[0].orderable.productCode }}</td>

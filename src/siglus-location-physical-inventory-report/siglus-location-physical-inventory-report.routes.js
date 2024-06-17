@@ -47,7 +47,10 @@
                         return programs;
                     });
                 },
-                draft: function(localStorageService) {
+                isMerged: function($stateParams) {
+                    return  $stateParams.isMerged === 'true';
+                },
+                lineItemsGroup: function(localStorageService) {
                     return JSON.parse(localStorageService.get('physicalInventoryCategories')) ;
                 }
             }

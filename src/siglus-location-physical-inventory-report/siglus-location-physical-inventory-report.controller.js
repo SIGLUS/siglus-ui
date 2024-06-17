@@ -24,30 +24,30 @@
     controller.$inject = [
         '$scope',
         '$window',
-        'draft',
+        'lineItemsGroup',
         'facility',
         'program',
-        '$stateParams'
+        'isMerged'
     ];
 
     function controller(
         $scope,
         $window,
-        draft,
+        lineItemsGroup,
         facility,
         program,
-        $stateParams
+        isMerged
     ) {
         var vm = this;
         vm.$onInit = onInit;
 
         function onInit() {
             hideLayoutAndBreadcrumb();
-            vm.categories = draft;
-            vm.draft = getTbDataSource(draft);
+            vm.lineItemsGroup = lineItemsGroup;
+            vm.notMergedLineItems = buildDataForNotMergedLineItems(lineItemsGroup);
             vm.facility = facility;
             vm.program = program;
-            vm.isMerged = $stateParams.isMerged === 'true';
+            vm.isMerged = isMerged;
         }
 
         function hideLayoutAndBreadcrumb() {
@@ -84,30 +84,25 @@
                 .value();
         };
 
-        function getTbDataSource(data) {
-            return _.reduce(data, function(flattenedLineItemList, lineItemsGroup) {
-                if (lineItemsGroup.length > 1) {
-                    var temp = _.map(lineItemsGroup, function(item, i) {
-                        var result = {
+        function buildDataForNotMergedLineItems(lineItemsGroup) {
+            return _.reduce(lineItemsGroup, function(flattenedLineItems, lineItems) {
+                var lineItemInfoToDisplay = {
+                    productCode: _.get(lineItems[0], ['orderable', 'productCode']),
+                    product: _.get(lineItems[0], ['orderable', 'fullProductName'])
+                };
+                flattenedLineItems.push(lineItemInfoToDisplay);
+
+                if (lineItems.length > 1) {
+                    var lotList = lineItems.map(function() {
+                        return {
                             productCode: '',
                             product: ''
                         };
-                        if (i === 0) {
-                            result = {
-                                productCode: lineItemsGroup[0].orderable.productCode,
-                                product: lineItemsGroup[0].orderable.fullProductName
-                            };
-                        }
-                        return result;
                     });
-                    flattenedLineItemList = flattenedLineItemList.concat(temp);
-                } else {
-                    flattenedLineItemList.push({
-                        productCode: lineItemsGroup[0].orderable.productCode,
-                        product: lineItemsGroup[0].orderable.fullProductName
-                    });
+                    flattenedLineItems = flattenedLineItems.concat(lotList);
                 }
-                return flattenedLineItemList;
+
+                return flattenedLineItems;
             }, []);
         }
 
