@@ -42,8 +42,8 @@
 
         var POSITIVE_HIV_NAME = 'positive_hiv';
         var POSITIVE_HIV_LABEL = 'Positivo HIV';
-        var POSITIVE_SIFILIS_NAME = 'positive_sifilis';
-        var POSITIVE_SIFILIS_LABEL = 'Positivo Sifilis';
+        var POSITIVE_SYPHILIS_NAME = 'positive_syphilis';
+        var POSITIVE_SYPHILIS_LABEL = 'Positivo Sifilis';
 
         function onInit() {
             vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.PROJECT);
@@ -63,9 +63,9 @@
                     var positiveHivColumn = createOutComeColumn(positiveColumn,
                         POSITIVE_HIV_NAME, POSITIVE_HIV_LABEL, 1);
                     outcomeColumns.push(positiveHivColumn);
-                    var positiveSifilisColumn = createOutComeColumn(positiveColumn,
-                        POSITIVE_SIFILIS_NAME, POSITIVE_SIFILIS_LABEL, 2);
-                    outcomeColumns.push(positiveSifilisColumn);
+                    var positiveSyphilisColumn = createOutComeColumn(positiveColumn,
+                        POSITIVE_SYPHILIS_NAME, POSITIVE_SYPHILIS_LABEL, 2);
+                    outcomeColumns.push(positiveSyphilisColumn);
                     var unjustifiedColumn = createOutComeColumn(vm.testOutcome.columns[2], null, null, 3);
                     outcomeColumns.push(unjustifiedColumn);
                     project['outcomeColumns'] = outcomeColumns;
@@ -124,7 +124,7 @@
             outcomeColumns.push(createOutComeColumn(vm.testOutcome.columns[1],
                 POSITIVE_HIV_NAME, POSITIVE_HIV_LABEL, 2));
             outcomeColumns.push(createOutComeColumn(vm.testOutcome.columns[1],
-                POSITIVE_SIFILIS_NAME, POSITIVE_SIFILIS_LABEL, 3));
+                POSITIVE_SYPHILIS_NAME, POSITIVE_SYPHILIS_LABEL, 3));
             outcomeColumns.push(createOutComeColumn(vm.testOutcome.columns[2], null, null, 4));
             return _.reduce(outcomeColumns, function(columnMap, column) {
                 columnMap[column.name] = column;
