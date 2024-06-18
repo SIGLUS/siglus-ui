@@ -73,7 +73,7 @@
                 isCreateForClient: function(requisition, program, requisitionService) {
                     if (requisition.isCreateForClient) {
                         requisition.requisitionLineItems.forEach(function(item) {
-                            if (!item.approvedQuantity) {
+                            if (item.approvedQuantity === null || item.approvedQuantity === undefined) {
                                 item.approvedQuantity = item.authorizedQuantity;
                             }
                         });
