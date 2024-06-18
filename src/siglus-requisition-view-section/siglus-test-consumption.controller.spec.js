@@ -239,6 +239,7 @@ describe('SiglusTestConsumptionController', function() {
             'and the unjustified value of anotherLineItem is 1', function() {
             var project = lineItems[0].projects['hivDetermine'];
             var outcome = lineItems[0].projects['hivDetermine'].outcomes['unjustified'];
+            outcome['name'] = 'unjustified';
 
             vm.getTotal(project, outcome);
 

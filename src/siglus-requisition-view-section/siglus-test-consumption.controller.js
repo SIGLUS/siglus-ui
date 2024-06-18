@@ -40,6 +40,11 @@
         vm.testProjectColspan = getTestProjectColspan;
         vm.programColspan = undefined;
 
+        var POSITIVE_HIV_NAME = 'positive_hiv';
+        var POSITIVE_HIV_LABEL = 'Positivo HIV';
+        var POSITIVE_SIFILIS_NAME = 'positive_sifilis';
+        var POSITIVE_SIFILIS_LABEL = 'Positivo Sifilis';
+
         function onInit() {
             vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.PROJECT);
             vm.testOutcome = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.OUTCOME);
@@ -56,10 +61,10 @@
                     outcomeColumns.push(vm.testOutcome.columns[0]);
                     var positiveColumn = vm.testOutcome.columns[1];
                     var positiveHivColumn = createOutComeColumn(positiveColumn,
-                        'positive_hiv', 'Positivo HIV', 1);
+                        POSITIVE_HIV_NAME, POSITIVE_HIV_LABEL, 1);
                     outcomeColumns.push(positiveHivColumn);
                     var positiveSifilisColumn = createOutComeColumn(positiveColumn,
-                        'positive_sifilis', 'Positivo Sifilis', 2);
+                        POSITIVE_SIFILIS_NAME, POSITIVE_SIFILIS_LABEL, 2);
                     outcomeColumns.push(positiveSifilisColumn);
                     var unjustifiedColumn = createOutComeColumn(vm.testOutcome.columns[2], null, null, 3);
                     outcomeColumns.push(unjustifiedColumn);
@@ -97,7 +102,7 @@
         function extendLineItems() {
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.service);
             var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
-            var testOutcomeColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testOutcome);
+            var testOutcomeColumnsMap = buildOutcomeColumnsMap();
             angular.forEach(vm.lineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
                 angular.forEach(Object.keys(lineItem.projects), function(project) {
@@ -110,6 +115,21 @@
                     });
                 });
             });
+        }
+
+        function buildOutcomeColumnsMap() {
+            var outcomeColumns = [];
+            outcomeColumns.push(vm.testOutcome.columns[0]);
+            outcomeColumns.push(vm.testOutcome.columns[1]);
+            outcomeColumns.push(createOutComeColumn(vm.testOutcome.columns[1],
+                POSITIVE_HIV_NAME, POSITIVE_HIV_LABEL, 2));
+            outcomeColumns.push(createOutComeColumn(vm.testOutcome.columns[1],
+                POSITIVE_SIFILIS_NAME, POSITIVE_SIFILIS_LABEL, 3));
+            outcomeColumns.push(createOutComeColumn(vm.testOutcome.columns[2], null, null, 4));
+            return _.reduce(outcomeColumns, function(columnMap, column) {
+                columnMap[column.name] = column;
+                return columnMap;
+            }, {});
         }
 
         function createOutComeColumn(originOutCome, name, label, displayOrder) {
