@@ -36,7 +36,7 @@
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
         'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient',
-        'localStorageService', 'TEMPLATE_COLUMNS'
+        'localStorageService', 'TEMPLATE_COLUMNS', 'REQUISITION_STATUS'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -48,7 +48,7 @@
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
                                        siglusSignatureModalService, isCreateForClient, localStorageService,
-                                       TEMPLATE_COLUMNS) {
+                                       TEMPLATE_COLUMNS, REQUISITION_STATUS) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -277,7 +277,7 @@
             }
             if (isCreateForClient) {
                 vm.displayRejectButton = false;
-                vm.displayDeleteButton = true;
+                vm.displayDeleteButton = vm.requisition.status === REQUISITION_STATUS.IN_APPROVAL;
                 vm.displaySubmitButton = false;
             }
         }

@@ -13,7 +13,7 @@
                 <td rowspan="2"></td>
                 <td ng-repeat="testProjectColumn in vm.testProject.columns | orderBy : 'displayOrder'"
                     ng-if="testProjectColumn.isDisplayed"
-                    colspan="{{vm.testProjectColspan}}"
+                    colspan="{{vm.testProjectColspan(testProjectColumn.label)}}"
                     class="bold-label"
                     popover="{{testProjectColumn.definition}}"
                     popover-trigger-area="element"
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td ng-repeat-start="testProjectColumn in vm.testProject.columns | filter : {isDisplayed: true} | orderBy : 'displayOrder'" ng-if="false"></td>
-                <td ng-repeat-end ng-repeat="testOutcomeColumn in vm.testOutcome.columns | orderBy : 'displayOrder'"
+                <td ng-repeat-end ng-repeat="testOutcomeColumn in testProjectColumn.outcomeColumns | orderBy : 'displayOrder'"
                     ng-class="{'row-span-border': $first}"
                     ng-if="testOutcomeColumn.isDisplayed"
                     popover="{{testOutcomeColumn.definition}}"

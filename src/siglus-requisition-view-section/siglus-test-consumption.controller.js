@@ -37,16 +37,37 @@
         vm.testProject = undefined;
         vm.testOutcome = undefined;
         vm.service = undefined;
-        vm.testProjectColspan = undefined;
+        vm.testProjectColspan = getTestProjectColspan;
         vm.programColspan = undefined;
 
         function onInit() {
             vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.PROJECT);
             vm.testOutcome = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.OUTCOME);
             vm.service = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.SERVICE);
-            vm.testProjectColspan = getTestProjectColspan();
+            buildTestProject();
             vm.programColspan = getProgramColspan();
             extendLineItems();
+        }
+
+        function buildTestProject() {
+            vm.testProject.columns.forEach(function(project) {
+                if ('newColumn3' === project.name) {
+                    var outcomeColumns = [];
+                    outcomeColumns.push(vm.testOutcome.columns[0]);
+                    var positiveColumn = vm.testOutcome.columns[1];
+                    var positiveHivColumn = createOutComeColumn(positiveColumn,
+                        'positive_hiv', 'Positivo HIV', 1);
+                    outcomeColumns.push(positiveHivColumn);
+                    var positiveSifilisColumn = createOutComeColumn(positiveColumn,
+                        'positive_sifilis', 'Positivo Sifilis', 2);
+                    outcomeColumns.push(positiveSifilisColumn);
+                    var unjustifiedColumn = createOutComeColumn(vm.testOutcome.columns[2], null, null, 3);
+                    outcomeColumns.push(unjustifiedColumn);
+                    project['outcomeColumns'] = outcomeColumns;
+                } else {
+                    project['outcomeColumns'] = vm.testOutcome.columns;
+                }
+            });
         }
 
         function getTotal(project, outcome) {
@@ -91,18 +112,31 @@
             });
         }
 
-        function getTestProjectColspan() {
-            var displayedTestOutcomeColumns = vm.testOutcome.columns.filter(function(column) {
-                return column.isDisplayed;
+        function createOutComeColumn(originOutCome, name, label, displayOrder) {
+            var newOutColumn = angular.copy(originOutCome);
+            if (name) {
+                newOutColumn['name'] = name;
+            }
+            if (label) {
+                newOutColumn['label'] = label;
+            }
+            if (displayOrder) {
+                newOutColumn['displayOrder'] = displayOrder;
+            }
+            return newOutColumn;
+        }
+
+        function getTestProjectColspan(projectLabel) {
+            var project = vm.testProject.columns.find(function(project) {
+                return project.label === projectLabel;
             });
-            return displayedTestOutcomeColumns.length;
+            return project.outcomeColumns.length;
         }
 
         function getProgramColspan() {
-            var displayedTestProjectColumns = vm.testProject.columns.filter(function(column) {
-                return column.isDisplayed;
-            });
-            return displayedTestProjectColumns.length * getTestProjectColspan() + 1;
+            return vm.testProject.columns.reduce(function(sum, project) {
+                return sum + project.outcomeColumns.length;
+            }, 0) + 1;
         }
     }
 })();
