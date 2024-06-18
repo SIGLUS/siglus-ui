@@ -37,29 +37,30 @@
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT],
             params: {
-                facility: undefined,
-                program: undefined,
-                draft: undefined,
+                programId: undefined,
                 isInitialInventory: undefined,
                 isMerged: undefined
             },
             resolve: {
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
-                        return facilityFactory.getUserHomeFacility();
-                    }
-                    return $stateParams.facility;
+                    return facilityFactory.getUserHomeFacility();
                 },
                 program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId).then(function(programs) {
-                            return programs;
-                        });
-                    }
-                    return $stateParams.program;
+                    return programService.get($stateParams.programId).then(function(programs) {
+                        return programs;
+                    });
                 },
                 draft: function(localStorageService) {
                     return angular.fromJson(localStorageService.get('locationPhysicalInventory'));
+                },
+                isMerged: function($stateParams) {
+                    return $stateParams.isMerged === 'true';
+                },
+                isInitialInventory: function($stateParams) {
+                    return $stateParams.isInitialInventory === 'true';
+                },
+                draftNum: function($stateParams) {
+                    return $stateParams.draftNum;
                 }
             }
 

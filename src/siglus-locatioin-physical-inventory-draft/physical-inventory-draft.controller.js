@@ -616,6 +616,7 @@
             return vm.displayLineItemsGroup.map(function(lineItemsGroup) {
                 return lineItemsGroup.map(function(lineItem) {
                     return {
+                        isFromSelect: false,
                         area: lineItem.area,
                         locationCode: lineItem.locationCode,
                         stockOnHand: lineItem.stockOnHand,

@@ -28,12 +28,14 @@
         .module('siglus-location-physical-inventory-print')
         .controller('LocationPhysicalInventoryPrintController', controller);
 
-    controller.$inject = ['draft', '$scope', '$window', '$stateParams',
-        'facility', 'program', '$filter'];
+    controller.$inject = [
+        'draft', '$scope', '$window', 'facility', 'program', '$filter', 'isMerged', 'isInitialInventory',
+        'draftNum'
+    ];
 
     function controller(
-        draft, $scope, $window, $stateParams,
-        facility, program, $filter
+        draft, $scope, $window, facility, program, $filter, isMerged, isInitialInventory,
+        draftNum
     ) {
 
         var vm = this;
@@ -49,8 +51,8 @@
             vm.groupedCategories = $filter('siglusGroupByAllProductProgramProductCategoryByLocation')(draft);
             vm.facility = facility;
             vm.program = program;
-            vm.isMerged = $stateParams.isMerged === 'true';
-            vm.isInitialInventory = $stateParams.isInitialInventory === 'true';
+            vm.isMerged = isMerged;
+            vm.isInitialInventory = isInitialInventory;
             var newLocationList = _.chain(vm.groupedCategories)
                 .keys()
                 .chunk(10)
@@ -65,8 +67,9 @@
                 })
                 .value();
             vm.locationList = newLocationList;
-            vm.draftNumber = $stateParams.draftNum ? $stateParams.draftNum : null;
+            vm.draftNumber = draftNum;
         }
+
         vm.calculate = function(lineItems, field) {
             var allEmpty = _.every(lineItems, function(lineItem) {
                 return isEmpty(lineItem[field]);
