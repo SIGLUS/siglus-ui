@@ -58,6 +58,8 @@
         ProofOfDeliveryRepositoryImpl.prototype.submitDraft = submitDraft;
         ProofOfDeliveryRepositoryImpl.prototype.submitDraftWithLocation = submitDraftWithLocation;
         // SIGLUS-REFACTOR: ends here
+        ProofOfDeliveryRepositoryImpl.prototype.addLineItem = addLineItem;
+
         return ProofOfDeliveryRepositoryImpl;
 
         /**
@@ -137,6 +139,12 @@
                 getPodWithLocation: {
                     url: fulfillmentUrlFactory('/api/siglusapi/proofsOfDeliveryWithLocation/:id'),
                     method: 'GET'
+                },
+                addLineItem: {
+                    url: fulfillmentUrlFactory(
+                        '/api/siglusapi/proofsOfDelivery/:podId/subDrafts/:subDraftId/lineItems'
+                    ),
+                    method: 'POST'
                 }
             });
             // SIGLUS-REFACTOR: ends here
@@ -638,6 +646,14 @@
             return false;
         }
 
-    }
+        function addLineItem(podId, subDraftId, podLineItemId) {
+            return this.resource.addLineItem({
+                podId: podId,
+                subDraftId: subDraftId
+            }, {
+                podLineItemId: podLineItemId
+            }).$promise;
+        }
 
+    }
 })();

@@ -52,6 +52,7 @@
         proofOfDeliveryService.mergeDraftWithLocation = mergeDraftWithLocation;
         proofOfDeliveryService.submitDraft = submitDraft;
         proofOfDeliveryService.submitDraftWithLocation = submitDraftWithLocation;
+        proofOfDeliveryService.addLineItem = addLineItem;
 
         /**
          * @ngdoc method
@@ -189,6 +190,10 @@
                     })
                     .finally(loadingModalService.close);
             };
+        }
+
+        function addLineItem(podId, subDraftId, podLineItemId) {
+            return repository.addLineItem(podId, subDraftId, podLineItemId);
         }
     }
 

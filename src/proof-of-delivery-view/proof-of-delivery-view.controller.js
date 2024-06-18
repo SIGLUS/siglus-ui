@@ -421,26 +421,30 @@
             }
         }
 
-        function addItem(groupLineItems) {
-            var lineItemTemplate = angular.copy(groupLineItems[0]);
-            var lineItemLotTemplate = angular.copy(lineItemTemplate.lot);
-            var newlyAddedLot = _.assign(lineItemLotTemplate, {
-                id: undefined,
-                active: undefined,
-                lotCode: null,
-                expirationDate: null,
-                manufactureDate: undefined
-            });
-            groupLineItems.push(_.assign(lineItemTemplate, {
-                $errors: {},
-                id: undefined,
-                quantityShipped: 0,
-                quantityAccepted: 0,
-                quantityRejected: 0,
-                isNewlyAdded: true,
-                rejectionReasonId: vm.newlyAddedLotReason.id,
-                lot: newlyAddedLot
-            }));
+        function addItem(groupLineItems, podLineItemId) {
+            proofOfDeliveryService.addLineItem($stateParams.podId, $stateParams.subDraftId, podLineItemId)
+                .then(function(data) {
+                    console.log('addItem result:', data);
+                    var lineItemTemplate = angular.copy(groupLineItems[0]);
+                    var lineItemLotTemplate = angular.copy(lineItemTemplate.lot);
+                    var newlyAddedLot = _.assign(lineItemLotTemplate, {
+                        id: undefined,
+                        active: undefined,
+                        lotCode: null,
+                        expirationDate: null,
+                        manufactureDate: undefined
+                    });
+                    groupLineItems.push(_.assign(lineItemTemplate, {
+                        $errors: {},
+                        id: undefined,
+                        quantityShipped: 0,
+                        quantityAccepted: 0,
+                        quantityRejected: 0,
+                        isNewlyAdded: true,
+                        rejectionReasonId: vm.newlyAddedLotReason.id,
+                        lot: newlyAddedLot
+                    }));
+                });
         }
 
         function removeItem(groupLineItems, indexToRemove) {

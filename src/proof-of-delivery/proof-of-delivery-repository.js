@@ -49,6 +49,7 @@
         ProofOfDeliveryRepository.prototype.submitDraft = submitDraft;
         ProofOfDeliveryRepository.prototype.submitDraftWithLocation = submitDraftWithLocation;
         // SIGLUS-REFACTOR: end here
+        ProofOfDeliveryRepository.prototype.addLineItem = addLineItem;
 
         return ProofOfDeliveryRepository;
 
@@ -144,12 +145,17 @@
          * @return  {Promise}                           the promise resolving to the update Proof
          *                                              of Delivery
          */
+        // Deprecated: used in nowhere
         function update(proofOfDelivery) {
             var repository = this;
             return this.impl.update(proofOfDelivery)
                 .then(function(json) {
                     return new ProofOfDelivery(json, repository);
                 });
+        }
+
+        function addLineItem(podId, subDraftId, podLineItemId) {
+            return this.impl.addLineItem(podId, subDraftId, podLineItemId);
         }
     }
 

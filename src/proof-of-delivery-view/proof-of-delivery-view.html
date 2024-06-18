@@ -107,7 +107,7 @@
           <td></td>
           <td></td>
           <td ng-if="!vm.isView">
-            <button type="button" class="stock-actions add" ng-click="vm.addItem(groupOfFulfillingLineItems)">
+            <button type="button" class="stock-actions add" ng-click="vm.addItem(groupOfFulfillingLineItems, orderLineItem.id)">
               {{'proofOfDeliveryView.addItem' | message}}
             </button>
           </td>
