@@ -386,7 +386,8 @@
                 preparedBy: podInfo.preparedBy,
                 conferredBy: podInfo.conferredBy,
                 receivedBy: podInfo.receivedBy,
-                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A'),
+                isSupply: true
             };
 
             // for pod Inconsistency PDF

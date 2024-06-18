@@ -609,7 +609,8 @@
                 preparedBy: signatureInfo.signature,
                 conferredBy: null,
                 receivedBy: signatureInfo.signature,
-                nowTime: momentNow.format('D MMM YYYY h:mm:ss A')
+                nowTime: momentNow.format('D MMM YYYY h:mm:ss A'),
+                isSupply: true
             };
         }
 
