@@ -14,7 +14,7 @@
  */
 
 describe('SiglusLocationPhysicalInventoryReport', function() {
-    var vm, draft, $controller, $rootScope, program, facility, $window;
+    var vm, lineItemsGroup, $controller, $rootScope, program, facility, $window;
 
     function prepareInjector() {
         inject(function($injector) {
@@ -25,7 +25,7 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
     }
 
     function prepareData() {
-        draft = [
+        lineItemsGroup = [
             [
                 {
                     area: null,
@@ -108,9 +108,10 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
         vm = $controller('SiglusLocationPhysicalInventoryReport', {
             $scope: $rootScope,
             $window: $window,
-            draft: draft,
+            lineItemsGroup: lineItemsGroup,
             facility: facility,
-            program: program
+            program: program,
+            isMerged: false
         });
 
         // vm.$onInit();
@@ -145,6 +146,10 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
                     product: ''
                 },
                 {
+                    productCode: '',
+                    product: ''
+                },
+                {
                     productCode: '08D01',
                     product: 'testName'
                 }
@@ -152,7 +157,7 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
 
             vm.$onInit();
 
-            expect(vm.draft).toEqual(result);
+            expect(vm.notMergedLineItems).toEqual(result);
         });
 
     });
