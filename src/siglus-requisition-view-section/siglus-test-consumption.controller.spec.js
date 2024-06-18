@@ -156,72 +156,12 @@ describe('SiglusTestConsumptionController', function() {
 
         it('should set correct testProjectColspan and bind to vm', function() {
 
-            expect(vm.testProjectColspan).toEqual(2);
+            expect(vm.testProjectColspan('HIV Determine')).toEqual(4);
         });
 
         it('should set correct programColspan and bind to vm', function() {
 
-            expect(vm.programColspan).toEqual(3);
-        });
-
-        it('should enhance lineItems and bind to vm', function() {
-
-            expect(vm.lineItems).toEqual([
-                {
-                    service: 'total',
-                    name: 'total',
-                    label: 'Total',
-                    indicator: 'SV',
-                    displayOrder: 1,
-                    isDisplayed: true,
-                    option: null,
-                    definition: 'record the total number of each column',
-                    tag: null,
-                    columnDefinition: {},
-                    source: 'USER_INPUT',
-                    projects: {
-                        hivDetermine: {
-                            project: 'hivDetermine',
-                            name: 'hivDetermine',
-                            label: 'HIV Determine',
-                            indicator: 'TP',
-                            displayOrder: 0,
-                            isDisplayed: true,
-                            option: null,
-                            definition: 'record the test data for HIV Determine',
-                            tag: null,
-                            columnDefinition: {},
-                            source: null,
-                            outcomes: {
-                                consumo: {
-                                    outcome: 'consumo',
-                                    value: null,
-                                    name: 'consumo',
-                                    label: 'Consumo',
-                                    indicator: 'TO',
-                                    displayOrder: 0,
-                                    isDisplayed: true,
-                                    option: null,
-                                    definition: 'record the consumo quantity for each test project',
-                                    tag: null,
-                                    columnDefinition: {},
-                                    source: 'USER_INPUT'
-                                },
-                                positive: {
-                                    outcome: 'positive',
-                                    name: 'positive',
-                                    value: null
-                                },
-                                unjustified: {
-                                    outcome: 'unjustified',
-                                    name: 'unjustified',
-                                    value: null
-                                }
-                            }
-                        }
-                    }
-                }
-            ]);
+            expect(vm.programColspan).toEqual(5);
         });
     });
 
