@@ -76,10 +76,10 @@
                                 order.orderLineItems
                             ).then(function(orderLineItems) {
                                 var orderablesPriceMap = orderablesPrice.data;
-                                _.each(orderLineItems, function(c) {
-                                    _.each(c.groupedLineItems, function(_c) {
-                                        var id = _c[0].orderable && _c[0].orderable.id;
-                                        _c[0].price = orderablesPriceMap[id]
+                                _.each(orderLineItems, function(orderLineItem) {
+                                    _.each(orderLineItem.groupedLineItems, function(lineItemGroup) {
+                                        var id = lineItemGroup[0].orderable && lineItemGroup[0].orderable.id;
+                                        lineItemGroup[0].price = orderablesPriceMap[id]
                                             ? orderablesPriceMap[id]
                                             : '';
                                     });

@@ -59,6 +59,7 @@
         vm.onAcceptedQuantityChanged = onAcceptedQuantityChanged;
         vm.getLineItemReasonOptions = getLineItemReasonOptions;
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
+        vm.isCurrentItemNewlyAdded = isCurrentItemNewlyAdded;
         vm.addItem = addItem;
         vm.removeItem = removeItem;
         vm.isMerge = undefined;
@@ -395,7 +396,7 @@
 
         function disableReasonSelect(lineItem) {
             return lineItem.isQuantityAcceptedEmpty() || lineItem.quantityAccepted === lineItem.quantityShipped ||
-                lineItem.isNewlyAdded;
+                isCurrentItemNewlyAdded(lineItem);
         }
 
         function calculateValueByShippedQuantityAndPrice(lineItem) {
@@ -405,13 +406,13 @@
 
         function onAcceptedQuantityChanged(lineItem) {
             lineItem.updateQuantityRejected();
-            if (disableReasonSelect(lineItem) && !lineItem.isNewlyAdded) {
+            if (disableReasonSelect(lineItem) && !isCurrentItemNewlyAdded(lineItem)) {
                 lineItem.rejectionReasonId = undefined;
             }
         }
 
         function getLineItemReasonOptions(lineItem) {
-            if (lineItem.isNewlyAdded) {
+            if (isCurrentItemNewlyAdded(lineItem)) {
                 return [vm.newlyAddedLotReason];
             }
             if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted > lineItem.quantityShipped) {
@@ -421,10 +422,12 @@
             }
         }
 
-        function addItem(groupLineItems, podLineItemId) {
-            proofOfDeliveryService.addLineItem($stateParams.podId, $stateParams.subDraftId, podLineItemId)
-                .then(function(data) {
-                    console.log('addItem result:', data);
+        function addItem(groupLineItems) {
+            var podId = vm.proofOfDelivery.id;
+            var subDraftId = groupLineItems[0].subDraftId;
+            var podLineItemId = groupLineItems[0].id;
+            proofOfDeliveryService.addLineItem(podId, subDraftId, podLineItemId)
+                .then(function(lineItemData) {
                     var lineItemTemplate = angular.copy(groupLineItems[0]);
                     var lineItemLotTemplate = angular.copy(lineItemTemplate.lot);
                     var newlyAddedLot = _.assign(lineItemLotTemplate, {
@@ -436,7 +439,8 @@
                     });
                     groupLineItems.push(_.assign(lineItemTemplate, {
                         $errors: {},
-                        id: undefined,
+                        id: lineItemData.id,
+                        subDraftId: lineItemData.subDraftId,
                         quantityShipped: 0,
                         quantityAccepted: 0,
                         quantityRejected: 0,
@@ -448,11 +452,18 @@
         }
 
         function removeItem(groupLineItems, indexToRemove) {
-            groupLineItems.splice(indexToRemove, 1);
+            var podId = vm.proofOfDelivery.id;
+            var subDraftId = groupLineItems[indexToRemove].subDraftId;
+            var lineItemId = groupLineItems[indexToRemove].id;
+            proofOfDeliveryService.removeLineItem(podId, subDraftId, lineItemId)
+                .then(function() {
+                    groupLineItems.splice(indexToRemove, 1);
+                });
+
         }
 
         function validateLotCode(currentLineItem, lineItems) {
-            if (!currentLineItem.isNewlyAdded) {
+            if (!isCurrentItemNewlyAdded(currentLineItem)) {
                 return;
             }
 
@@ -471,7 +482,7 @@
             });
             if (duplicateLineItems.length > 1) {
                 duplicateLineItems.forEach(function(lineItem) {
-                    if (lineItem.isNewlyAdded) {
+                    if (isCurrentItemNewlyAdded(lineItem)) {
                         lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
                     }
                 });
@@ -493,12 +504,17 @@
             vm.orderLineItems.forEach(function(lineItemGroup) {
                 var groupedLineItems = lineItemGroup.groupedLineItems[0];
                 groupedLineItems.forEach(function(lineItem) {
-                    if (lineItem.isNewlyAdded) {
+                    if (isCurrentItemNewlyAdded(lineItem)) {
                         proofOfDeliveryCopy.lineItems.push(lineItem);
                     }
                 });
             });
             return proofOfDeliveryCopy;
+        }
+
+        function isCurrentItemNewlyAdded(lineItem) {
+            // frontend use isNewlyAdded to mark newlyAdded lineItem while backend use added
+            return lineItem.isNewlyAdded || lineItem.added;
         }
 
     }

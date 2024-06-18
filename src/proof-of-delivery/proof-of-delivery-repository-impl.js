@@ -59,6 +59,7 @@
         ProofOfDeliveryRepositoryImpl.prototype.submitDraftWithLocation = submitDraftWithLocation;
         // SIGLUS-REFACTOR: ends here
         ProofOfDeliveryRepositoryImpl.prototype.addLineItem = addLineItem;
+        ProofOfDeliveryRepositoryImpl.prototype.removeLineItem = removeLineItem;
 
         return ProofOfDeliveryRepositoryImpl;
 
@@ -145,6 +146,12 @@
                         '/api/siglusapi/proofsOfDelivery/:podId/subDrafts/:subDraftId/lineItems'
                     ),
                     method: 'POST'
+                },
+                removeLineItem: {
+                    url: fulfillmentUrlFactory(
+                        '/api/siglusapi/proofsOfDelivery/:podId/subDrafts/:subDraftId/lineItems/:lineItemId'
+                    ),
+                    method: 'DELETE'
                 }
             });
             // SIGLUS-REFACTOR: ends here
@@ -652,6 +659,14 @@
                 subDraftId: subDraftId
             }, {
                 podLineItemId: podLineItemId
+            }).$promise;
+        }
+
+        function removeLineItem(podId, subDraftId, lineItemId) {
+            return this.resource.removeLineItem({
+                podId: podId,
+                subDraftId: subDraftId,
+                lineItemId: lineItemId
             }).$promise;
         }
 

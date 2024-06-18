@@ -53,6 +53,7 @@
         proofOfDeliveryService.submitDraft = submitDraft;
         proofOfDeliveryService.submitDraftWithLocation = submitDraftWithLocation;
         proofOfDeliveryService.addLineItem = addLineItem;
+        proofOfDeliveryService.removeLineItem = removeLineItem;
 
         /**
          * @ngdoc method
@@ -194,6 +195,10 @@
 
         function addLineItem(podId, subDraftId, podLineItemId) {
             return repository.addLineItem(podId, subDraftId, podLineItemId);
+        }
+
+        function removeLineItem(podId, subDraftId, lineItemId) {
+            return repository.removeLineItem(podId, subDraftId, lineItemId);
         }
     }
 

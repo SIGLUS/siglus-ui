@@ -107,7 +107,8 @@
           <td></td>
           <td></td>
           <td ng-if="!vm.isView">
-            <button type="button" class="stock-actions add" ng-click="vm.addItem(groupOfFulfillingLineItems, orderLineItem.id)">
+            <button type="button" class="stock-actions add"
+                    ng-click="vm.addItem(groupOfFulfillingLineItems)">
               {{'proofOfDeliveryView.addItem' | message}}
             </button>
           </td>
@@ -122,8 +123,8 @@
           <!-- cell for product name end -->
 
           <!-- cell for lot code -->
-          <td ng-if="!fulfillingLineItem.orderable.isKit && !fulfillingLineItem.isNewlyAdded">{{fulfillingLineItem.lot | lotCode}}</td>
-          <td ng-if="!fulfillingLineItem.orderable.isKit && fulfillingLineItem.isNewlyAdded">
+          <td ng-if="!fulfillingLineItem.orderable.isKit && !vm.isCurrentItemNewlyAdded(fulfillingLineItem)">{{fulfillingLineItem.lot | lotCode}}</td>
+          <td ng-if="!fulfillingLineItem.orderable.isKit && vm.isCurrentItemNewlyAdded(fulfillingLineItem)">
             <siglus-stock-input-select
                     line-item="fulfillingLineItem"
                     line-items="groupOfFulfillingLineItems"
@@ -136,8 +137,8 @@
 
           <!-- cell for expirationDate -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
-          <td ng-if="!fulfillingLineItem.orderable.isKit && !fulfillingLineItem.isNewlyAdded">{{fulfillingLineItem.lot.expirationDate}}</td>
-          <td ng-if="!fulfillingLineItem.orderable.isKit && fulfillingLineItem.isNewlyAdded">
+          <td ng-if="!fulfillingLineItem.orderable.isKit && !vm.isCurrentItemNewlyAdded(fulfillingLineItem)">{{fulfillingLineItem.lot.expirationDate}}</td>
+          <td ng-if="!fulfillingLineItem.orderable.isKit && vm.isCurrentItemNewlyAdded(fulfillingLineItem)">
             <input type="date"
                    ng-model="fulfillingLineItem.lot.expirationDate"
                    ng-required="true"
@@ -206,13 +207,13 @@
 
           <!-- cell for price -->
           <td style="white-space: nowrap">
-            {{ !fulfillingLineItem.isNewlyAdded && fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}
+            {{ !vm.isCurrentItemNewlyAdded(fulfillingLineItem) && fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}
           </td>
           <!-- cell for price end -->
 
           <!-- cell for value -->
           <td style="white-space: nowrap">
-            {{ fulfillingLineItem.isNewlyAdded ? '' : vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
+            {{ vm.isCurrentItemNewlyAdded(fulfillingLineItem) ? '' : vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
           </td>
           <!-- cell for value end -->
 
@@ -228,7 +229,7 @@
           <!-- cell for action button -->
           <td ng-if="!vm.isView">
             <button type="button" class="danger stock-actions"
-                    ng-if="fulfillingLineItem.isNewlyAdded"
+                    ng-if="vm.isCurrentItemNewlyAdded(fulfillingLineItem)"
                     ng-click="vm.removeItem(groupOfFulfillingLineItems, index)"
             >
               {{'stockPhysicalInventoryDraft.remove' | message}}
