@@ -31,24 +31,16 @@
     ProofOfDeliveryViewController.$inject = [
         '$scope', 'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
         'orderLineItems', 'canEdit', 'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
-        'proofOfDeliveryService', 'notificationService',
-        '$stateParams', 'alertConfirmModalService', '$state',
-        'PROOF_OF_DELIVERY_STATUS', 'confirmService',
-        'confirmDiscardService', 'proofOfDeliveryManageService',
-        'openlmisDateFilter', 'fulfillingLineItemFactory',
-        'facilityFactory', 'siglusDownloadLoadingModalService', 'user', 'moment',
+        'proofOfDeliveryService', 'notificationService', '$stateParams', 'alertConfirmModalService',
+        '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService', 'confirmDiscardService', 'moment',
         'alertService', 'siglusSignatureWithLimitDateModalService', 'facility'
     ];
 
     function ProofOfDeliveryViewController(
         $scope, proofOfDelivery, order, reasons, messageService, VVM_STATUS,
         orderLineItems, canEdit, ProofOfDeliveryPrinter, $q, loadingModalService,
-        proofOfDeliveryService, notificationService,
-        $stateParams, alertConfirmModalService, $state,
-        PROOF_OF_DELIVERY_STATUS, confirmService,
-        confirmDiscardService, proofOfDeliveryManageService,
-        openlmisDateFilter, fulfillingLineItemFactory,
-        facilityFactory, siglusDownloadLoadingModalService, user, moment,
+        proofOfDeliveryService, notificationService, $stateParams, alertConfirmModalService,
+        $state, PROOF_OF_DELIVERY_STATUS, confirmService, confirmDiscardService, moment,
         alertService, siglusSignatureWithLimitDateModalService, facility
     ) {
         var vm = this;
@@ -69,7 +61,6 @@
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
         vm.addItem = addItem;
         vm.removeItem = removeItem;
-        vm.facilityId = facility.id;
         vm.isMerge = undefined;
         vm.isView = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
@@ -155,7 +146,6 @@
      * Initialization method of the ProofOfDeliveryViewController.
      */
         function onInit() {
-
             vm.order = order;
             // SIGLUS-REFACTOR: starts here
             vm.reasons = _.filter(reasons, function(reason) {
@@ -178,11 +168,7 @@
             vm.canEdit = canEdit;
             vm.orderCode = order.orderCode;
             vm.currentDate = moment().format('YYYY-MM-DD');
-            vm.facilityId = facility.id;
-            facilityFactory.getUserHomeFacility()
-                .then(function(res) {
-                    vm.facility = res;
-                });
+            vm.facility = facility;
             siglusSignatureWithLimitDateModalService.getMovementDate(
                 vm.currentDate, facility.id
             ).then(
