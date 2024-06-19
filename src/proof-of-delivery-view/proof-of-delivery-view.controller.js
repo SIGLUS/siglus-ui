@@ -470,7 +470,6 @@
             if (!isCurrentItemNewlyAdded(currentLineItem)) {
                 return;
             }
-            currentLineItem.$errors.lotCodeInvalid = '';
             if (isEmpty(_.get(currentLineItem, ['lot', 'lotCode']))) {
                 currentLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {

@@ -81,10 +81,10 @@
                             ).then(function(orderLineItems) {
                                 var orderablesPriceMap = orderablesPrice.data;
                                 var result = addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
-                                _.each(result, function(c) {
-                                    _.each(c.groupedLineItems, function(_c) {
-                                        var id = _c.orderable && _c.orderable.id;
-                                        _c.price = orderablesPriceMap[id]
+                                _.each(result, function(orderLineItem) {
+                                    _.each(orderLineItem.groupedLineItems, function(lineItem) {
+                                        var id = lineItem.orderable && lineItem.orderable.id;
+                                        lineItem.price = orderablesPriceMap[id]
                                             ? orderablesPriceMap[id]
                                             : '';
                                     });

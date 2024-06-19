@@ -31,24 +31,22 @@
 
     ProofOfDeliveryViewControllerWithLocation.$inject = [
         '$scope', 'proofOfDelivery', 'order', 'reasons', 'messageService', 'VVM_STATUS',
-        'orderLineItems', 'canEdit', 'ProofOfDeliveryPrinter', '$q', 'loadingModalService',
+        'orderLineItems', 'canEdit', 'ProofOfDeliveryPrinter', 'loadingModalService',
         'proofOfDeliveryService', 'notificationService', '$stateParams',
         'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
         'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter',
-        'fulfillingLineItemFactory', 'facilityFactory', 'siglusDownloadLoadingModalService',
-        'user', 'moment', 'orderablesPrice', 'facility', 'locations', 'areaLocationInfo',
+        'facilityFactory', 'user', 'moment', 'facility', 'locations', 'areaLocationInfo',
         'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService', 'alertService',
         'printInfo', 'siglusSignatureWithLimitDateModalService'
     ];
 
     function ProofOfDeliveryViewControllerWithLocation(
         $scope, proofOfDelivery, order, reasons, messageService, VVM_STATUS,
-        orderLineItems, canEdit, ProofOfDeliveryPrinter, $q, loadingModalService,
+        orderLineItems, canEdit, ProofOfDeliveryPrinter, loadingModalService,
         proofOfDeliveryService, notificationService, $stateParams,
         alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS, confirmService,
         confirmDiscardService, proofOfDeliveryManageService, openlmisDateFilter,
-        fulfillingLineItemFactory, facilityFactory, siglusDownloadLoadingModalService,
-        user, moment, orderablesPrice, facility, locations, areaLocationInfo,
+        facilityFactory, user, moment, facility, locations, areaLocationInfo,
         addAndRemoveLineItemService, SiglusLocationCommonUtilsService, alertService,
         printInfo, siglusSignatureWithLimitDateModalService
     ) {

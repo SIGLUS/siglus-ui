@@ -51,6 +51,12 @@
                             return proofOfDeliveryService.getSubDraft($stateParams.podId, $stateParams.subDraftId);
                             // SIGLUS-REFACTOR: end here
                         },
+                        facility: function(facilityFactory) {
+                            facilityFactory.getUserHomeFacility()
+                                .then(function(res) {
+                                    return res;
+                                });
+                        },
                         // SIGLUS-REFACTOR: starts here : getSubDraftDetail if actionType is not Merge
                         user: function(authorizationService) {
                             return authorizationService.getUser();
