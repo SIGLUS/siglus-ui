@@ -67,11 +67,11 @@
                             return fulfillingLineItemFactory
                                 .groupByOrderableForPod(proofOfDelivery.lineItems, order.orderLineItems)
                                 .then(function(res) {
-                                    _.each(res, function(c) {
-                                        _.each(c.groupedLineItems, function(_c) {
-                                            _.each(_c, function(__c) {
-                                                var id = __c.orderable && __c.orderable.id;
-                                                __c.price = orderablesPriceMap[id]
+                                    _.each(res, function(orderLineItem) {
+                                        _.each(orderLineItem.groupedLineItems, function(lineItemGroup) {
+                                            _.each(lineItemGroup, function(lineItem) {
+                                                var id = lineItem.orderable && lineItem.orderable.id;
+                                                lineItem.price = orderablesPriceMap[id]
                                                     ? orderablesPriceMap[id]
                                                     : '';
                                             });

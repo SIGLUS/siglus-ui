@@ -413,6 +413,7 @@
 
         function getLineItemReasonOptions(lineItem) {
             if (isCurrentItemNewlyAdded(lineItem)) {
+                lineItem.rejectionReasonId = vm.newlyAddedLotReason.id;
                 return [vm.newlyAddedLotReason];
             }
             if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted > lineItem.quantityShipped) {
@@ -463,11 +464,13 @@
         }
 
         function validateLotCode(currentLineItem, lineItems) {
+            currentLineItem.$errors = {
+                lotCodeInvalid: ''
+            };
             if (!isCurrentItemNewlyAdded(currentLineItem)) {
                 return;
             }
-
-            currentLineItem.$errors.lotCodeInvalid = undefined;
+            currentLineItem.$errors.lotCodeInvalid = '';
             if (isEmpty(_.get(currentLineItem, ['lot', 'lotCode']))) {
                 currentLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
