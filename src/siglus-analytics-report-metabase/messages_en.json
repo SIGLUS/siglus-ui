@@ -18,5 +18,6 @@
   "analyticsReportMetabase.user.title":"User Report",
   "analyticsReportMetabase.userAccess.title":"User Access Report",
   "analyticsReportMetabase.expiredRemovedProducts.title":"Expired & Removed Products Report",
-  "analyticsReportMetabase.fefo.title":"FEFO Report"
+  "analyticsReportMetabase.fefo.title":"FEFO Report",
+  "analyticsReportMetabase.noPermission.message":"You do not have the right to view reports, please contact the server administrator."
 }

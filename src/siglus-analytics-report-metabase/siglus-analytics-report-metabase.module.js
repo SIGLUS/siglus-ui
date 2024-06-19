@@ -31,7 +31,8 @@
         'openlmis-rights',
         'referencedata-user',
         'admin-user-roles',
-        'openlmis-permissions'
+        'openlmis-permissions',
+        'openlmis-modal'
     ]);
 
 })();

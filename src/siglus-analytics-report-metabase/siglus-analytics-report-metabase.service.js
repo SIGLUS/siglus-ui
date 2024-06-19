@@ -28,9 +28,9 @@
         .module('siglus-analytics-report-metabase')
         .service('analyticsReportMetabaseService', service);
 
-    service.$inject = ['$resource', 'analyticsReportUrlFactory', 'moment', '$http'];
+    service.$inject = ['$resource', 'analyticsReportUrlFactory', 'moment', '$http', '$q', 'alertService'];
 
-    function service($resource, analyticsReportUrlFactory, moment, $http) {
+    function service($resource, analyticsReportUrlFactory, moment, $http, $q, alertService) {
         var resource = $resource(
             analyticsReportUrlFactory('/api/siglusapi/dashboard'), {}, {
                 get: {
@@ -54,7 +54,6 @@
         this.getMetabaseUrl = getMetabaseUrl;
         this.getTracerDrugFilterInfo = getTracerDrugFilterInfo;
         this.exportTracerDrugReport = exportTracerDrugReport;
-        this.recordUserAccess = recordUserAccess;
 
         /**
          * @ngdoc method
@@ -65,12 +64,24 @@
          * get metabase iframeUrl by report name
          *
          * @param {String} reportName metabase report name.
+         * @param {String} recordAccessName record report access name.
          * @return {Promise} siglus-analytics-report-metabase promise.
          */
-        function getMetabaseUrl(reportName) {
+        function getMetabaseUrl(reportName, recordAccessName) {
             return resource.get({
                 dashboardName: reportName
-            }).$promise;
+            }).$promise
+                .then(function(data) {
+                    recordUserAccess(recordAccessName);
+                    return data;
+                })
+                .catch(function(error) {
+                    var errorData = JSON.parse(error.data);
+                    if (errorData.messageKey === 'siglusapi.error.user.not.report.view.authority') {
+                        alertService.error('analyticsReportMetabase.noPermission.message');
+                    }
+                    return $q.reject();
+                });
         }
 
         function getTracerDrugFilterInfo() {

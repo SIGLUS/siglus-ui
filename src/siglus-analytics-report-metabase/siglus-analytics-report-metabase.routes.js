@@ -42,13 +42,6 @@
                 recordName: SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.SOH_BY_LOT,
                 priority: 96
             },
-            // {
-            //     name: 'openlmis.analyticsReport.stockStatus',
-            //     label: 'analyticsReportMetabase.stockStatus.title',
-            //     url: '/stockStatus',
-            //     dashboardName: SIGLUS_METABASE_DASHBOARD_NAME.STOCK_STATUS_REPORT,
-            //     priority: 93
-            // },
             {
                 name: 'openlmis.analyticsReport.expiringProducts',
                 label: 'analyticsReportMetabase.expiringProducts.title',
@@ -186,10 +179,7 @@
                 },
                 resolve: {
                     analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                        return analyticsReportMetabaseService.getMetabaseUrl(item.dashboardName).then(function(data) {
-                            analyticsReportMetabaseService.recordUserAccess(item.recordName);
-                            return data;
-                        });
+                        return analyticsReportMetabaseService.getMetabaseUrl(item.dashboardName, item.recordName);
                     }
                 }
             });
@@ -209,13 +199,10 @@
             },
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    return analyticsReportMetabaseService
-                        .getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT).then(function(data) {
-                            analyticsReportMetabaseService.recordUserAccess(
-                                SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.TRACER_DRUG
-                            );
-                            return data;
-                        });
+                    return analyticsReportMetabaseService.getMetabaseUrl(
+                        SIGLUS_METABASE_DASHBOARD_NAME.TRACER_DRUG_REPORT,
+                        SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.TRACER_DRUG
+                    );
                 },
                 user: function(currentUserService) {
                     return currentUserService.getUserInfo();
@@ -258,13 +245,10 @@
             },
             resolve: {
                 analyticsReportMetabase: function($stateParams, analyticsReportMetabaseService) {
-                    return analyticsReportMetabaseService.getMetabaseUrl(SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT)
-                        .then(function(data) {
-                            analyticsReportMetabaseService.recordUserAccess(
-                                SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.USER
-                            );
-                            return data;
-                        });
+                    return analyticsReportMetabaseService.getMetabaseUrl(
+                        SIGLUS_METABASE_DASHBOARD_NAME.USER_REPORT,
+                        SIGLUS_METABASE_DASHBOARD_NAME.RECORD_REPORT_NAME.USER
+                    );
                 }
             }
         });
