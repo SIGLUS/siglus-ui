@@ -452,11 +452,12 @@
                 id: podId
             }, {}).$promise
                 .then(function(podWithLocation) {
-
-                    var podExtension = _.get(podWithLocation, ['podExtension']);
-                    var podDto = angular.copy(_.get(podExtension, ['podDto']));
-                    podDto.conferredBy = _.get(podExtension, ['conferredBy']);
-                    podDto.preparedBy = _.get(podExtension, ['preparedBy']);
+                    var podDto = _.assign({}, podWithLocation.podDto, {
+                        conferredBy: podWithLocation.conferredBy,
+                        preparedBy: podWithLocation.preparedBy
+                    });
+                    podDto.conferredBy = _.get(podWithLocation, ['conferredBy']);
+                    podDto.preparedBy = _.get(podWithLocation, ['preparedBy']);
                     var podLineItemLocation = podWithLocation.podLineItemLocation;
 
                     podDto.lineItems = _.flatten(podDto.lineItems.map(function(lineItem) {
