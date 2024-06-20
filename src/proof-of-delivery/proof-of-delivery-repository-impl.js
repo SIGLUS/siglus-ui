@@ -414,9 +414,10 @@
                 expand: 'shipment.order'
             }, {}).$promise
                 .then(function(proofOfDeliveryJson) {
-                    var copyProofOfDeliveryJson = angular.copy(_.get(proofOfDeliveryJson, 'podDto'));
-                    copyProofOfDeliveryJson.conferredBy = _.get(proofOfDeliveryJson, 'conferredBy');
-                    copyProofOfDeliveryJson.preparedBy = _.get(proofOfDeliveryJson, 'preparedBy');
+                    var copyProofOfDeliveryJson = _.assign({}, proofOfDeliveryJson.podDto, {
+                        conferredBy: proofOfDeliveryJson.conferredBy,
+                        preparedBy: proofOfDeliveryJson.preparedBy
+                    });
                     var lotIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'lot'),
                         orderableIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'orderable');
                     var promiseList = lotIds.length ?
@@ -616,12 +617,12 @@
         }
 
         function getIdsFromListByObjectName(list, objectName) {
-            return list.reduce(function(ids, item) {
-                if (item[objectName]) {
+            return _.unique(list.reduce(function(ids, item) {
+                if (_.get(item, [objectName, 'id'])) {
                     ids.push(item[objectName].id);
                 }
                 return ids;
-            }, []);
+            }, []));
         }
 
         function getFirstObjectFromListById(list, object, propertyName) {

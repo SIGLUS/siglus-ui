@@ -63,7 +63,6 @@
         vm.addItem = addItem;
         vm.removeItem = removeItem;
         vm.isMerge = undefined;
-        vm.isView = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
         vm.minDate = undefined;
@@ -177,9 +176,7 @@
                     vm.minDate = result;
                 }
             );
-
             vm.isMerge = $stateParams.actionType === 'MERGE' || $stateParams.actionType === 'VIEW';
-            vm.isView = $stateParams.actionType === 'VIEW';
 
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 save(true);
@@ -338,7 +335,6 @@
                                 _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
                             ) {
                                 alertService.error('openlmisModal.dateConflict');
-
                             } else {
                                 notificationService.error(
                                     'proofOfDeliveryView.failedToConfirmProofOfDelivery'
