@@ -605,6 +605,10 @@
 
         function combineResponses(proofOfDeliveryJson, lotJsons, orderableJsons) {
             proofOfDeliveryJson.lineItems.forEach(function(lineItem) {
+                if (lineItem.added) {
+                    return;
+                }
+
                 lineItem.quantityShipped = getQuantityShipped(
                     lineItem, proofOfDeliveryJson.shipment.lineItems
                 );

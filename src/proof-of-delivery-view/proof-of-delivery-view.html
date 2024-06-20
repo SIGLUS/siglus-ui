@@ -157,7 +157,7 @@
           <!-- cell for Partial Fulfilled  end -->
 
           <!-- cell for supplied quantity -->
-          <td>{{fulfillingLineItem.quantityShipped}}</td>
+          <td>{{ vm.isCurrentItemNewlyAdded(fulfillingLineItem) ? 0 : fulfillingLineItem.quantityShipped }}</td>
           <!-- cell for supplied quantity end -->
 
           <!-- cell for accepted quantity -->
@@ -189,7 +189,7 @@
           <!-- cell for vvm end -->
 
           <!-- cell for returned quantity -->
-          <td>{{fulfillingLineItem.quantityRejected}}</td>
+          <td>{{ vm.isCurrentItemNewlyAdded(fulfillingLineItem) ? 0 : fulfillingLineItem.quantityRejected }}</td>
           <!-- cell for returned quantity end -->
 
           <!-- cell for adjustment reason -->
