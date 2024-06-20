@@ -39,6 +39,7 @@
         vm.service = undefined;
         vm.testProjectColspan = getTestProjectColspan;
         vm.programColspan = undefined;
+        vm.replenishArray = replenishArray;
 
         var POSITIVE_HIV_NAME = 'positive_hiv';
         var POSITIVE_HIV_LABEL = 'Positivo HIV';
@@ -157,6 +158,19 @@
             return vm.testProject.columns.reduce(function(sum, project) {
                 return sum + project.outcomeColumns.length;
             }, 0) + 1;
+        }
+
+        function replenishArray(lineItem) {
+            var count = Object.keys(lineItem.projects).reduce(function(sum, key) {
+                var project = lineItem.projects[key];
+                return sum + getTestProjectColspan(project.label);
+            }, 0);
+            count = getProgramColspan() - count - 1;
+            var result = [];
+            for (var index = 0; index < count; index++) {
+                result.push(index);
+            }
+            return result;
         }
     }
 })();
