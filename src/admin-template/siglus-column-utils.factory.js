@@ -39,6 +39,8 @@
             columnDisplayName: columnDisplayName,
             isAPES: isAPES,
             isPositive: isPositive,
+            isPositiveHiv: isPositiveHiv,
+            isPositiveSyphilis: isPositiveSyphilis,
             isConsumo: isConsumo,
             isCode: isCode
         };
@@ -146,6 +148,14 @@
          */
         function isPositive(column) {
             return column.name === SIGLUS_SERVICE_TYPES.POSITIVE;
+        }
+
+        function isPositiveHiv(column) {
+            return column.name === 'positive_hiv';
+        }
+
+        function isPositiveSyphilis(column) {
+            return column.name === 'positive_syphilis';
         }
 
         /**

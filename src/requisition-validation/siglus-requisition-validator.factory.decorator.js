@@ -234,18 +234,44 @@
         }
 
         function validateTestOutcomeField(testOutcomeFields) {
+            if (testOutcomeFields.length > 3) {
+                console.log(testOutcomeFields);
+            }
             var isValid = true;
             var consumoField = testOutcomeFields.find(siglusColumnUtils.isConsumo);
             var positiveField = testOutcomeFields.find(siglusColumnUtils.isPositive);
-            if (_.isUndefined(positiveField)) {
+            if (!_.isUndefined(positiveField)) {
+                if (isNotEmpty(consumoField.value)
+                    && isNotEmpty(positiveField.value)
+                    && positiveField.value > consumoField.value) {
+                    var error = messageService.get('requisitionValidation.positiveLargerThanConsumo');
+                    consumoField.$error = error;
+                    positiveField.$error = error;
+                    isValid = false;
+                }
+            }
+            if (isValid) {
+                return validateTestOutcomePositiveField(testOutcomeFields);
+            }
+            return isValid;
+        }
+
+        function validateTestOutcomePositiveField(testOutcomeFields) {
+            var isValid = true;
+            var consumoField = testOutcomeFields.find(siglusColumnUtils.isConsumo);
+            var positiveHivField = testOutcomeFields.find(siglusColumnUtils.isPositiveHiv);
+            var positiveSyphilisField = testOutcomeFields.find(siglusColumnUtils.isPositiveSyphilis);
+            if (_.isUndefined(positiveHivField) || _.isUndefined(positiveSyphilisField)) {
                 return isValid;
             }
             if (isNotEmpty(consumoField.value)
-                && isNotEmpty(positiveField.value)
-                && positiveField.value > consumoField.value) {
+                && isNotEmpty(positiveHivField.value)
+                && isNotEmpty(positiveSyphilisField.value)
+                && positiveHivField.value + positiveSyphilisField.value > consumoField.value) {
                 var error = messageService.get('requisitionValidation.positiveLargerThanConsumo');
                 consumoField.$error = error;
-                positiveField.$error = error;
+                positiveHivField.$error = error;
+                positiveSyphilisField.$error = error;
                 isValid = false;
             }
             return isValid;
