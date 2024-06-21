@@ -50,7 +50,7 @@
                     siglus-requisition-grid-cell line-item-field="outcome" on-update="vm.validateOnUpdate"
                     ng-if="vm.canEdit && vm.isUserInput(lineItem)">
                 </td>
-                <td ng-repeat-end ng-repeat="n in vm.replenishArray(lineItem)"></td>
+                <td ng-repeat-end ng-repeat="n in vm.replenishArray(lineItem) track by $index"></td>
             </tr>
         </tbody>
     </table>

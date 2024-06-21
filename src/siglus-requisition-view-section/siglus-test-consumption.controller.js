@@ -166,11 +166,7 @@
                 return sum + getTestProjectColspan(project.label);
             }, 0);
             count = getProgramColspan() - count - 1;
-            var result = [];
-            for (var index = 0; index < count; index++) {
-                result.push(index);
-            }
-            return result;
+            return Array(count).fill(0);
         }
     }
 })();
