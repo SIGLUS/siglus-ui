@@ -340,7 +340,6 @@
             }
             return lineItem;
         };
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -484,70 +483,104 @@
                 .then(function(signatureInfo) {
                     loadingModalService.open();
 
-                    var lineItemsWithReceiveReasons =
-                            filterLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
-                    var lineItemsWithIssueReasons =
-                            filterLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
-                    var receiveLineItemsToPrint = getParamsOnlyNeededToPrint(lineItemsWithReceiveReasons);
-                    var issueLineItemsToPrint = getParamsOnlyNeededToPrint(lineItemsWithIssueReasons);
+                    var allLineItemsAdded = angular.copy(vm.allLineItemsAdded);
+                    allLineItemsAdded.forEach(function(lineItem) {
+                        lineItem.programId = _.first(lineItem.orderable.programs).programId;
+                    });
 
-                    var momentNow = moment();
+                    stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
+                        allLineItemsAdded, adjustmentType, signatureInfo.signature, signatureInfo.occurredDate)
+                        .then(function() {
+                            notificationService.success(vm.key('submitted'));
+                            printPdfForRRIVAndGoStockOnHandPage(signatureInfo);
 
-                    if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
-                        // download both Receive and Issue PFD
-                        downloadReceiveOrIssuePDF(
-                            ReportService.REPORT_TYPE.RECEIVE,
-                            receiveLineItemsToPrint,
-                            signatureInfo,
-                            momentNow,
-                            function() {
-                                downloadReceiveOrIssuePDF(
-                                    ReportService.REPORT_TYPE.ISSUE,
-                                    issueLineItemsToPrint,
-                                    signatureInfo,
-                                    momentNow,
-                                    function() {
-                                        confirmSubmit(signatureInfo);
-                                    }
-                                );
-                            }
-                        );
-                    } else if (lineItemsWithReceiveReasons.length > 0) {
-                        // only download Receive PFD
-                        downloadReceiveOrIssuePDF(
-                            ReportService.REPORT_TYPE.RECEIVE,
-                            receiveLineItemsToPrint,
-                            signatureInfo,
-                            momentNow,
-                            function() {
-                                confirmSubmit(signatureInfo);
-                            }
-                        );
-                    } else if (lineItemsWithIssueReasons.length > 0) {
-                        // only download Issue PFD
+                            // goToStockOnHandPage();
+                        }, function(errorResponse) {
+                            loadingModalService.close();
+                            alertService.error(errorResponse.data.message);
+                        });
+
+                });
+        };
+
+        function goToStockOnHandPage() {
+            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                facility: facility.id,
+                program: program.id
+            });
+        }
+
+        function printPdfForRRIVAndGoStockOnHandPage(signatureInfo) {
+            var receiveLineItemsToPrint = buildItemsToPrintWithUniqueLot(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
+            var issueLineItemsToPrint = buildItemsToPrintWithUniqueLot(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+            var momentNow = moment();
+
+            if (receiveLineItemsToPrint.length > 0 && issueLineItemsToPrint.length > 0) {
+                // download both Receive and Issue PFD
+                downloadReceiveOrIssuePDF(
+                    ReportService.REPORT_TYPE.RECEIVE,
+                    receiveLineItemsToPrint,
+                    signatureInfo,
+                    momentNow,
+                    function() {
                         downloadReceiveOrIssuePDF(
                             ReportService.REPORT_TYPE.ISSUE,
                             issueLineItemsToPrint,
                             signatureInfo,
                             momentNow,
                             function() {
-                                confirmSubmit(signatureInfo);
+                                goToStockOnHandPage();
                             }
                         );
-                    } else {
-                        confirmSubmit(signatureInfo);
                     }
-                });
-        };
+                );
+            } else if (receiveLineItemsToPrint.length > 0) {
+                // only download Receive PFD
+                downloadReceiveOrIssuePDF(
+                    ReportService.REPORT_TYPE.RECEIVE,
+                    receiveLineItemsToPrint,
+                    signatureInfo,
+                    momentNow,
+                    function() {
+                        goToStockOnHandPage();
+                    }
+                );
+            } else if (issueLineItemsToPrint.length > 0) {
+                // only download Issue PFD
+                downloadReceiveOrIssuePDF(
+                    ReportService.REPORT_TYPE.ISSUE,
+                    issueLineItemsToPrint,
+                    signatureInfo,
+                    momentNow,
+                    function() {
+                        goToStockOnHandPage();
+                    }
+                );
+            } else {
+                goToStockOnHandPage();
+            }
+        }
 
-        function filterLineItemsByCertainReasons(reasonNameList) {
-            return getAllLineItemsWithUniqueLotCode().filter(function(lineItem) {
+        function buildItemsToPrintWithUniqueLot(reasonNameList) {
+            var lineItemsToPrint = vm.allLineItemsAdded.filter(function(lineItem) {
                 return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
+            });
+            var lineItemsWithUniqueLot = uniqueLotForLineItems(lineItemsToPrint);
+
+            return lineItemsWithUniqueLot.map(function(item) {
+                return {
+                    productCode: _.get(item, ['orderable', 'productCode']),
+                    productName: _.get(item, ['orderable', 'fullProductName']),
+                    lotCode: _.get(item, ['lot', 'lotCode']),
+                    expirationDate: _.get(item, ['lot', 'expirationDate']),
+                    quantity: item.quantity,
+                    price: orderablesPrice.data[_.get(item, ['orderable', 'id'])] || null
+                };
             });
         }
 
-        function getAllLineItemsWithUniqueLotCode() {
-            var itemsMapGroupByLotCode = _.groupBy(vm.allLineItemsAdded, function(lineItem) {
+        function uniqueLotForLineItems(lineItems) {
+            var itemsMapGroupByLotCode = _.groupBy(lineItems, function(lineItem) {
                 return _.get(lineItem, ['lot', 'lotCode']);
             });
 
@@ -563,19 +596,6 @@
                 return _.assign({}, itemsWithCurrentLotCode[0], {
                     quantity: totalQuantity
                 });
-            });
-        }
-
-        function getParamsOnlyNeededToPrint(lineItemsWithSpecialReasons) {
-            return lineItemsWithSpecialReasons.map(function(item) {
-                return {
-                    productCode: _.get(item, ['orderable', 'productCode']),
-                    productName: _.get(item, ['orderable', 'fullProductName']),
-                    lotCode: _.get(item, ['lot', 'lotCode']),
-                    expirationDate: _.get(item, ['lot', 'expirationDate']),
-                    quantity: item.quantity,
-                    price: orderablesPrice.data[_.get(item, ['orderable', 'id'])] || null
-                };
             });
         }
 
@@ -653,7 +673,6 @@
             return messageService.get(VVM_STATUS.$getDisplayName(status));
         };
 
-        // SIGLUS-REFACTOR: starts here
         vm.save = function() {
             var allLineItemsAdded = angular.copy(vm.allLineItemsAdded);
 
@@ -698,7 +717,6 @@
                 vm.validateLot(item);
                 vm.validateLotDate(item);
                 vm.validateQuantity(item);
-                // SIGLUS-REFACTOR: ends here
             });
             return _.chain(vm.allLineItemsAdded)
                 .groupBy(function(item) {
@@ -731,30 +749,6 @@
                 })
                 .flatten(true)
                 .value();
-        }
-
-        // SIGLUS-REFACTOR: starts here
-        function confirmSubmit(signatureInfo) {
-            loadingModalService.open();
-            var allLineItemsAdded = angular.copy(vm.allLineItemsAdded);
-            allLineItemsAdded.forEach(function(lineItem) {
-                lineItem.programId = _.first(lineItem.orderable.programs).programId;
-            });
-
-            stockAdjustmentCreationService.submitAdjustments(program.id, facility.id,
-                allLineItemsAdded, adjustmentType, signatureInfo.signature, signatureInfo.occurredDate)
-            // SIGLUS-REFACTOR: ends here
-                .then(function() {
-                    notificationService.success(vm.key('submitted'));
-
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program.id
-                    });
-                }, function(errorResponse) {
-                    loadingModalService.close();
-                    alertService.error(errorResponse.data.message);
-                });
         }
 
         function getPageNumber() {

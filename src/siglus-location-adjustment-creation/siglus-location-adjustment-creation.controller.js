@@ -591,87 +591,89 @@
                     }
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                         .then(function(signatureInfo) {
-                            var lineItemsWithReceiveReasons =
-                                filterLineItemsByCertainReasons(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
-                            var lineItemsWithIssueReasons =
-                                filterLineItemsByCertainReasons(ReportService.ISSUE_PDF_REASON_NAME_LIST);
-                            var receiveLineItemsToPrint = getParamsOnlyNeededToPrint(lineItemsWithReceiveReasons);
-                            var issueLineItemsToPrint = getParamsOnlyNeededToPrint(lineItemsWithIssueReasons);
-
-                            var momentNow = moment();
-
-                            if (lineItemsWithReceiveReasons.length > 0 && lineItemsWithIssueReasons.length > 0) {
-                                downloadReceiveOrIssuePDF(
-                                    ReportService.REPORT_TYPE.RECEIVE,
-                                    receiveLineItemsToPrint,
-                                    signatureInfo,
-                                    momentNow,
-                                    function() {
-                                        downloadReceiveOrIssuePDF(
-                                            ReportService.REPORT_TYPE.ISSUE,
-                                            issueLineItemsToPrint,
-                                            signatureInfo,
-                                            momentNow,
-                                            function() {
-                                                confirmSubmit(signatureInfo);
-                                            }
-                                        );
-                                    }
-                                );
-                            } else if (lineItemsWithReceiveReasons.length > 0) {
-                                // only download Receive PFD
-                                downloadReceiveOrIssuePDF(
-                                    ReportService.REPORT_TYPE.RECEIVE,
-                                    receiveLineItemsToPrint,
-                                    signatureInfo,
-                                    momentNow,
-                                    function() {
-                                        confirmSubmit(signatureInfo);
-                                    }
-                                );
-                            } else if (lineItemsWithIssueReasons.length > 0) {
-                                // only download Issue PFD
-                                downloadReceiveOrIssuePDF(
-                                    ReportService.REPORT_TYPE.ISSUE,
-                                    issueLineItemsToPrint,
-                                    signatureInfo,
-                                    momentNow,
-                                    function() {
-                                        confirmSubmit(signatureInfo);
-                                    }
-                                );
-                            } else {
-                                confirmSubmit(signatureInfo);
-                            }
+                            loadingModalService.open();
+                            var baseInfo = _.assign(getBaseInfo(), {
+                                occurredDate: signatureInfo.occurredDate,
+                                signature: signatureInfo.signature
+                            });
+                            siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
+                                .then(function() {
+                                    $scope.needToConfirm = false;
+                                    notificationService.success(vm.key('submitted'));
+                                    printPdfForRRIVAndGoStockOnHandPage(signatureInfo);
+                                })
+                                .catch(function() {
+                                    loadingModalService.close();
+                                });
                         });
-
                 });
         }
 
-        function confirmSubmit(signatureInfo) {
-            var baseInfo = _.assign(getBaseInfo(), {
-                occurredDate: signatureInfo.occurredDate,
-                signature: signatureInfo.signature
+        function printPdfForRRIVAndGoStockOnHandPage(signatureInfo) {
+            var receiveLineItemsToPrint = buildLineItemsToPrintPdf(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
+            var issueLineItemsToPrint = buildLineItemsToPrintPdf(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+            var momentNow = moment();
+
+            if (receiveLineItemsToPrint.length > 0 && issueLineItemsToPrint.length > 0) {
+                downloadReceiveOrIssuePDF(
+                    ReportService.REPORT_TYPE.RECEIVE,
+                    receiveLineItemsToPrint,
+                    signatureInfo,
+                    momentNow,
+                    function() {
+                        downloadReceiveOrIssuePDF(
+                            ReportService.REPORT_TYPE.ISSUE,
+                            issueLineItemsToPrint,
+                            signatureInfo,
+                            momentNow,
+                            function() {
+                                goToStockOnHandPage(signatureInfo);
+                            }
+                        );
+                    }
+                );
+            } else if (receiveLineItemsToPrint.length > 0) {
+                // only download Receive PFD
+                downloadReceiveOrIssuePDF(
+                    ReportService.REPORT_TYPE.RECEIVE,
+                    receiveLineItemsToPrint,
+                    signatureInfo,
+                    momentNow,
+                    function() {
+                        goToStockOnHandPage(signatureInfo);
+                    }
+                );
+            } else if (issueLineItemsToPrint.length > 0) {
+                // only download Issue PFD
+                downloadReceiveOrIssuePDF(
+                    ReportService.REPORT_TYPE.ISSUE,
+                    issueLineItemsToPrint,
+                    signatureInfo,
+                    momentNow,
+                    function() {
+                        goToStockOnHandPage(signatureInfo);
+                    }
+                );
+            } else {
+                goToStockOnHandPage(signatureInfo);
+            }
+        }
+
+        function goToStockOnHandPage() {
+            $state.go('openlmis.locationManagement.stockOnHand', {
+                program: program.id
+            },
+            {
+                location: 'replace'
             });
-            loadingModalService.open();
-            siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
-                .then(function() {
-                    notificationService.success(vm.key('submitted'));
-                    $scope.needToConfirm = false;
-                    $state.go('openlmis.locationManagement.stockOnHand', {
-                        program: program.id
-                    },
-                    {
-                        location: 'replace'
-                    });
-                })
-                .catch(function() {
-                    loadingModalService.close();
-                });
         }
 
-        function getParamsOnlyNeededToPrint(lineItemsWithSpecialReasons) {
-            return lineItemsWithSpecialReasons.map(function(item) {
+        function buildLineItemsToPrintPdf(reasonNameList) {
+            var lineItemsToPrint = _.flatten(vm.allLineItemsAdded).filter(function(lineItem) {
+                return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
+            });
+            var lineItemsWithUniqueLot = uniqueLotForLineItems(lineItemsToPrint);
+            return lineItemsWithUniqueLot.map(function(item) {
                 return {
                     productCode: _.get(item, ['orderable', 'productCode']),
                     productName: _.get(item, ['orderable', 'fullProductName']),
@@ -683,35 +685,22 @@
             });
         }
 
-        function filterLineItemsByCertainReasons(reasonNameList) {
-            return getFlattenedAllLineItemsWithUniqueLotCode().filter(function(lineItem) {
-                return reasonNameList.includes(_.get(lineItem, ['reason', 'name']));
-            });
-        }
-
-        function getFlattenedAllLineItemsWithUniqueLotCode() {
-            var allLineItemsAddedCopy = angular.copy(vm.allLineItemsAdded);
-            var allLineItemsAddedWithUniqueLotCode = allLineItemsAddedCopy.map(function(productGroup) {
-                return getProductGroupWithUniqueLotCode(productGroup);
-            });
-            return _.flatten(allLineItemsAddedWithUniqueLotCode);
-
-        }
-
-        function getProductGroupWithUniqueLotCode(productGroup) {
-            var itemsMapGroupByLotCode = _.groupBy(productGroup, function(item) {
+        function uniqueLotForLineItems(lineItems) {
+            var itemsMapByLotCode = _.groupBy(lineItems, function(item) {
                 return _.get(item, ['lot', 'lotCode']);
             });
 
-            return Object.keys(itemsMapGroupByLotCode).map(function(lotCode) {
-                var itemsWithCurrentLotCode = itemsMapGroupByLotCode[lotCode];
-                if (itemsWithCurrentLotCode.length === 1) {
-                    return itemsWithCurrentLotCode[0];
+            return Object.keys(itemsMapByLotCode).map(function(lotCode) {
+                var itemsWithSameLot = itemsMapByLotCode[lotCode];
+                if (itemsWithSameLot.length === 1) {
+                    return itemsWithSameLot[0];
                 }
-                var totalQuantity = itemsWithCurrentLotCode.reduce(function(acc, item) {
+
+                var totalQuantity = itemsWithSameLot.reduce(function(acc, item) {
                     return acc + _.get(item, 'quantity', 0);
                 }, 0);
-                return _.assign({}, itemsWithCurrentLotCode[0], {
+
+                return _.assign({}, itemsWithSameLot[0], {
                     quantity: totalQuantity
                 });
             });
