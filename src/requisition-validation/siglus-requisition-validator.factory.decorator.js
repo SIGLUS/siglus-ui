@@ -234,9 +234,6 @@
         }
 
         function validateTestOutcomeField(testOutcomeFields) {
-            if (testOutcomeFields.length > 3) {
-                console.log(testOutcomeFields);
-            }
             var isValid = true;
             var consumoField = testOutcomeFields.find(siglusColumnUtils.isConsumo);
             var positiveField = testOutcomeFields.find(siglusColumnUtils.isPositive);
