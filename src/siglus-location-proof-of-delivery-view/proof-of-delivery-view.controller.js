@@ -34,7 +34,7 @@
         'orderLineItems', 'canEdit', 'ProofOfDeliveryPrinter', 'loadingModalService',
         'proofOfDeliveryService', 'notificationService', '$stateParams',
         'alertConfirmModalService', '$state', 'PROOF_OF_DELIVERY_STATUS', 'confirmService',
-        'confirmDiscardService', 'proofOfDeliveryManageService', 'openlmisDateFilter',
+        'confirmDiscardService', 'proofOfDeliveryManageService',
         'facilityFactory', 'user', 'moment', 'facility', 'locations', 'areaLocationInfo',
         'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService', 'alertService',
         'printInfo', 'siglusSignatureWithLimitDateModalService'
@@ -45,7 +45,7 @@
         orderLineItems, canEdit, ProofOfDeliveryPrinter, loadingModalService,
         proofOfDeliveryService, notificationService, $stateParams,
         alertConfirmModalService, $state, PROOF_OF_DELIVERY_STATUS, confirmService,
-        confirmDiscardService, proofOfDeliveryManageService, openlmisDateFilter,
+        confirmDiscardService, proofOfDeliveryManageService,
         facilityFactory, user, moment, facility, locations, areaLocationInfo,
         addAndRemoveLineItemService, SiglusLocationCommonUtilsService, alertService,
         printInfo, siglusSignatureWithLimitDateModalService
@@ -72,7 +72,6 @@
         vm.returnBack = returnBack;
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
         vm.changeAcceptQuantity = changeAcceptQuantity;
-        vm.facilityId = facility.id;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
@@ -182,44 +181,6 @@
             }, {});
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
-
-            proofOfDeliveryManageService.getPodInfo(proofOfDelivery.id, order.id).then(function(res) {
-                vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
-                vm.supplier = res.supplier;
-                vm.preparedBy = res.preparedBy;
-                vm.conferredBy = res.conferredBy;
-                vm.client = res.client;
-                vm.supplierDistrict = res.supplierDistrict;
-                vm.supplierProvince = res.supplierProvince;
-                vm.requisitionDate = openlmisDateFilter(res.requisitionDate, 'yyyy-MM-dd');
-                vm.issueVoucherDate = openlmisDateFilter(res.issueVoucherDate, 'yyyy-MM-dd');
-                vm.deliveredBy = res.deliveredBy;
-                vm.receivedBy = res.receivedBy;
-                vm.receivedDate = res.receivedDate;
-                vm.podNum = '';
-                var flag = order.orderCode.slice(-2) || '';
-                if (flag.startsWith('-')) {
-                    flag = flag.replace('-', '0');
-                }
-                if (flag.endsWith('E') || flag.endsWith('R')) {
-                    flag = '01';
-                }
-                if (order.status === 'SHIPPED') {
-                    vm.fileName = 'GR.' + res.requisitionNum + '_' + flag;
-                    vm.requisitionNo = 'GR.' + res.requisitionNum + '/' + flag;
-                }
-
-                if (order.status === 'RECEIVED') {
-                    vm.fileName = 'RR.' + res.requisitionNum + '_' + flag;
-                    vm.requisitionNo = 'GR.' + res.requisitionNum + '/' + flag;
-                    vm.podNum = 'RR.' + res.requisitionNum + '/' + flag;
-                }
-                vm.requisitionNum = res.requisitionNum;
-
-                vm.requisitionId = res.requisitionId;
-
-            });
-
             vm.orderLineItems = orderLineItems;
             vm.displayOrderLineItems = buildDisplayOrderLineItems();
             vm.vvmStatuses = VVM_STATUS;
@@ -227,30 +188,20 @@
             vm.canEdit = canEdit;
             vm.orderCode = order.orderCode;
             vm.facility = facility;
-            vm.facilityId = facility.id;
             vm.locations = locations;
             vm.areaLocationInfo = areaLocationInfo;
             vm.fileName = printInfo.fileName;
             vm.currentDate = moment().format('YYYY-MM-DD');
-            facilityFactory.getUserHomeFacility()
-                .then(function(res) {
-                    vm.facility = res;
-                });
-            siglusSignatureWithLimitDateModalService.getMovementDate(
-                vm.currentDate, vm.facility.id
-            ).then(
-                function(result) {
+            vm.isMerge = $stateParams.actionType === 'MERGE' || $stateParams.actionType === 'VIEW';
+            siglusSignatureWithLimitDateModalService.getMovementDate(vm.currentDate, vm.facility.id)
+                .then(function(result) {
                     vm.minDate = result;
-                }
-            )
+                })
                 .catch(function(error) {
-                    if (error.data.messageKey
-            === 'siglusapi.error.stockManagement.movement.date.invalid') {
+                    if (error.data.messageKey === 'siglusapi.error.stockManagement.movement.date.invalid') {
                         alertService.error('openlmisModal.dateConflict');
                     }
                 });
-            vm.isMerge = $stateParams.actionType === 'MERGE'
-          || $stateParams.actionType === 'VIEW';
 
             if ($stateParams.actionType === 'NOT_YET_STARTED') {
                 save(true);
@@ -414,7 +365,7 @@
         function validateLocationsEmptyAndDuplicated(lineItem, allLineItems) {
             lineItem.$error.moveToLocationError = undefined;
             lineItem.$error.areaError = undefined;
-            if (!lineItem.isNewlyAddedLot || (!lineItem.isMainGroup && !lineItem.isFirst)) {
+            if (!isCurrentItemNewlyAdded(lineItem) || (!lineItem.isMainGroup && !lineItem.isFirst)) {
                 return;
             }
             // validate location empty
@@ -497,7 +448,7 @@
         }
 
         function setDisabledReasonId(mainLine) {
-            mainLine.rejectionReasonId = mainLine.isNewlyAddedLot ? vm.newlyAddedLotReason.id : undefined;
+            mainLine.rejectionReasonId = isCurrentItemNewlyAdded(mainLine) ? vm.newlyAddedLotReason.id : undefined;
             mainLine.$error.rejectionReasonIdError = '';
         }
 
@@ -766,11 +717,13 @@
         function disableReasonSelect(lineItem, locationGroup) {
             var emptyAcceptedLine = getFirstEmptyAcceptedLine(locationGroup);
             return emptyAcceptedLine !== undefined ||
-                getSumOfLot(lineItem, locationGroup) === lineItem.quantityShipped || lineItem.isNewlyAddedLot;
+                getSumOfLot(lineItem, locationGroup) === lineItem.quantityShipped ||
+                isCurrentItemNewlyAdded(lineItem);
         }
 
         function getLineItemReasonOptions(lineItem, locationGroup) {
-            if (lineItem.isNewlyAddedLot) {
+            if (isCurrentItemNewlyAdded(lineItem)) {
+                lineItem.rejectionReasonId = vm.newlyAddedLotReason.id;
                 return [vm.newlyAddedLotReason];
             }
 
@@ -795,6 +748,7 @@
         }
 
         function addLotGroup(lotGroupLineItems) {
+            // TODO: call api to get id
             $scope.needToConfirm = true;
             var lineItemTemplate = angular.copy(lotGroupLineItems[0][0]);
             var lineItemToAdd = addAndRemoveLineItemService.getFirstLineItemForPodLocationGroup(
@@ -804,6 +758,7 @@
         }
 
         function removeLotGroup(lotIndex, lotGroup) {
+            // TODO: cal api to remove
             lotGroup.splice(lotIndex, 1);
         }
 
@@ -823,15 +778,15 @@
         });
 
         function validateLotCodeEmptyAndDuplicate(lineItem, allLineItems) {
-            lineItem.$errors.lotCodeInvalid = undefined;
-            if (!lineItem.isNewlyAddedLot || (!lineItem.isMainGroup && !lineItem.isFirst)) {
+            lineItem.$errors = {
+                lotCodeInvalid: ''
+            };
+            if (!isCurrentItemNewlyAdded(lineItem) || (!lineItem.isMainGroup && !lineItem.isFirst)) {
                 return;
             }
-
             if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
                 lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
-                // TDOO; same lot
                 var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
                 validateDuplicateLotCode(lineItem, lotGroup);
             }
@@ -846,7 +801,7 @@
             if (duplicateLotGroup.length > 1) {
                 duplicateLotGroup.forEach(function(locationGroup) {
                     var firstLineItem = locationGroup[0];
-                    if (firstLineItem.isNewlyAddedLot) {
+                    if (isCurrentItemNewlyAdded(firstLineItem)) {
                         firstLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
                     }
                 });
@@ -855,7 +810,7 @@
 
         function validateExpirationDateEmpty(lineItem) {
             lineItem.$error.expirationDateEmpty = undefined;
-            if (lineItem.isNewlyAddedLot && (lineItem.isFirst || lineItem.isMainGroup)) {
+            if (isCurrentItemNewlyAdded(lineItem) && (lineItem.isFirst || lineItem.isMainGroup)) {
                 if (isEmpty(_.get(lineItem, ['lot', 'expirationDate']))) {
                     lineItem.$error.expirationDateEmpty = 'openlmisForm.required';
                 }
@@ -870,6 +825,11 @@
 
         function isEmpty(data) {
             return data === undefined || data === null || data === '';
+        }
+
+        function isCurrentItemNewlyAdded(lineItem) {
+            // frontend use isNewlyAddedLot to mark newlyAdded lineItem while backend use added
+            return lineItem.isNewlyAddedLot || lineItem.added;
         }
 
     }
