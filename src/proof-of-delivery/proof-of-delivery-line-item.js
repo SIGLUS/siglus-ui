@@ -32,7 +32,6 @@
 
         ProofOfDeliveryLineItem.prototype.validate = validate;
         ProofOfDeliveryLineItem.prototype.updateQuantityRejected = updateQuantityRejected;
-        ProofOfDeliveryLineItem.prototype.isQuantityAcceptedEmpty = isQuantityAcceptedEmpty;
 
         return ProofOfDeliveryLineItem;
 
@@ -134,10 +133,6 @@
 
         function isEmpty(data) {
             return data === undefined || data === null || data === '';
-        }
-
-        function isQuantityAcceptedEmpty() {
-            return isEmpty(this.quantityAccepted);
         }
 
     }

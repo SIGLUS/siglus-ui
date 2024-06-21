@@ -238,23 +238,25 @@
             $scope.needToConfirm = false;
             loadingModalService.open();
             var proofOfDeliveryCopy = getPODCopyWithNewlyAddedLineItems();
-            proofOfDeliveryService.updateSubDraft($stateParams.podId,
-                $stateParams.subDraftId, proofOfDeliveryCopy, 'SAVE').then(
-                function() {
-                    if (!notReload) {
-                        notificationService.success(
-                            'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
-                        );
-                    }
-                    if (notReload) {
-                        var stateParams = angular.copy($stateParams);
-                        stateParams.actionType = 'DRAFT';
-                        $state.go($state.current.name, stateParams, {
-                            location: 'replace'
-                        });
-                    }
-                }
+            proofOfDeliveryService.updateSubDraft(
+                $stateParams.podId, $stateParams.subDraftId, proofOfDeliveryCopy, 'SAVE'
             )
+                .then(
+                    function() {
+                        if (!notReload) {
+                            notificationService.success(
+                                'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
+                            );
+                        }
+                        if (notReload) {
+                            var stateParams = angular.copy($stateParams);
+                            stateParams.actionType = 'DRAFT';
+                            $state.go($state.current.name, stateParams, {
+                                location: 'replace'
+                            });
+                        }
+                    }
+                )
                 .catch(function() {
                     notificationService.error(
                         'proofOfDeliveryView.failedToSaveProofOfDelivery'
@@ -282,17 +284,19 @@
         function submitSubDraft() {
             loadingModalService.open();
             var proofOfDelivery = getPODCopyWithNewlyAddedLineItems();
-            proofOfDeliveryService.updateSubDraft($stateParams.podId,
-                $stateParams.subDraftId, proofOfDelivery, 'SUBMIT').then(
-                function() {
-                    notificationService.success(
-                        'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
-                    );
-                    $state.go('^', $stateParams, {
-                        reload: true
-                    });
-                }
+            proofOfDeliveryService.updateSubDraft(
+                $stateParams.podId, $stateParams.subDraftId, proofOfDelivery, 'SUBMIT'
             )
+                .then(
+                    function() {
+                        notificationService.success(
+                            'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
+                        );
+                        $state.go('^', $stateParams, {
+                            reload: true
+                        });
+                    }
+                )
                 .catch(function() {
                     notificationService.error(
                         'proofOfDeliveryView.failedToSaveProofOfDelivery'
@@ -391,7 +395,7 @@
         }
 
         function disableReasonSelect(lineItem) {
-            return lineItem.isQuantityAcceptedEmpty() || lineItem.quantityAccepted === lineItem.quantityShipped ||
+            return isEmpty(lineItem.quantityAccepted) || lineItem.quantityAccepted === lineItem.quantityShipped ||
                 isCurrentItemNewlyAdded(lineItem);
         }
 
@@ -401,6 +405,10 @@
         }
 
         function onAcceptedQuantityChanged(lineItem) {
+            if (isCurrentItemNewlyAdded(lineItem)) {
+                lineItem.quantityRejected = 0;
+                return;
+            }
             lineItem.updateQuantityRejected();
             if (disableReasonSelect(lineItem) && !isCurrentItemNewlyAdded(lineItem)) {
                 lineItem.rejectionReasonId = undefined;
@@ -412,20 +420,21 @@
                 lineItem.rejectionReasonId = vm.newlyAddedLotReason.id;
                 return [vm.newlyAddedLotReason];
             }
-            if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted > lineItem.quantityShipped) {
+            if (!isEmpty(lineItem.quantityAccepted) && lineItem.quantityAccepted > lineItem.quantityShipped) {
                 return vm.excessReasons;
-            } else if (!lineItem.isQuantityAcceptedEmpty() && lineItem.quantityAccepted < lineItem.quantityShipped) {
+            } else if (!isEmpty(lineItem.quantityAccepted) && lineItem.quantityAccepted < lineItem.quantityShipped) {
                 return vm.rejectionReasons;
             }
         }
 
         function addItem(groupLineItems) {
+            var originalLineItem = groupLineItems[0];
             var podId = vm.proofOfDelivery.id;
-            var subDraftId = groupLineItems[0].subDraftId;
-            var podLineItemId = groupLineItems[0].id;
+            var subDraftId = originalLineItem.subDraftId;
+            var podLineItemId = originalLineItem.id;
             proofOfDeliveryService.addLineItem(podId, subDraftId, podLineItemId)
                 .then(function(lineItemData) {
-                    var lineItemTemplate = angular.copy(groupLineItems[0]);
+                    var lineItemTemplate = angular.copy(originalLineItem);
                     var lineItemLotTemplate = angular.copy(lineItemTemplate.lot);
                     var newlyAddedLot = _.assign(lineItemLotTemplate, {
                         id: undefined,
@@ -434,7 +443,7 @@
                         expirationDate: null,
                         manufactureDate: undefined
                     });
-                    groupLineItems.push(_.assign(lineItemTemplate, {
+                    groupLineItems.push(_.assign({}, lineItemTemplate, {
                         $errors: {},
                         id: lineItemData.id,
                         subDraftId: lineItemData.subDraftId,
@@ -499,10 +508,13 @@
 
         function getPODCopyWithNewlyAddedLineItems() {
             var proofOfDeliveryCopy = angular.copy(vm.proofOfDelivery);
+            var existedLineItemIdList = proofOfDeliveryCopy.lineItems.map(function(lineItem) {
+                return lineItem.id;
+            });
             vm.orderLineItems.forEach(function(lineItemGroup) {
                 var groupedLineItems = lineItemGroup.groupedLineItems[0];
                 groupedLineItems.forEach(function(lineItem) {
-                    if (isCurrentItemNewlyAdded(lineItem)) {
+                    if (!existedLineItemIdList.includes(lineItem.id)) {
                         proofOfDeliveryCopy.lineItems.push(lineItem);
                     }
                 });
