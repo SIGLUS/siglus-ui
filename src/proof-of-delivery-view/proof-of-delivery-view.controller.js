@@ -428,6 +428,7 @@
         }
 
         function addItem(groupLineItems) {
+            loadingModalService.open();
             var originalLineItem = groupLineItems[0];
             var podId = vm.proofOfDelivery.id;
             var subDraftId = originalLineItem.subDraftId;
@@ -454,16 +455,27 @@
                         rejectionReasonId: vm.newlyAddedLotReason.id,
                         lot: newlyAddedLot
                     }));
+                    loadingModalService.close();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    alertService.error(error.message);
                 });
         }
 
         function removeItem(groupLineItems, indexToRemove) {
+            loadingModalService.open();
             var podId = vm.proofOfDelivery.id;
             var subDraftId = groupLineItems[indexToRemove].subDraftId;
             var lineItemId = groupLineItems[indexToRemove].id;
             proofOfDeliveryService.removeLineItem(podId, subDraftId, lineItemId)
                 .then(function() {
                     groupLineItems.splice(indexToRemove, 1);
+                    loadingModalService.close();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    alertService.error(error.message);
                 });
 
         }

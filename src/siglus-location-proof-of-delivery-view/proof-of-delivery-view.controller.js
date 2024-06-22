@@ -747,17 +747,16 @@
         }
 
         function addLotGroup(lotGroupLineItems) {
+            loadingModalService.open();
             var originalLineItem = lotGroupLineItems[0][0];
             var podId = vm.proofOfDelivery.id;
             var subDraftId = originalLineItem.subDraftId;
             var podLineItemId = originalLineItem.id;
-
             proofOfDeliveryService.addLineItem(podId, subDraftId, podLineItemId, true)
                 .then(function(lineItemData) {
                     $scope.needToConfirm = true;
                     var lineItemTemplate = angular.copy(originalLineItem);
                     var lotTemplate = angular.copy(lineItemTemplate.lot);
-
                     var lotForFirstLineItem = _.assign({}, lotTemplate, {
                         id: undefined,
                         active: undefined,
@@ -765,7 +764,6 @@
                         expirationDate: null,
                         manufactureDate: undefined
                     });
-
                     var lineItemToAdd = _.assign({}, lineItemTemplate, {
                         $error: {},
                         // for siglus-stock-input-select validate
@@ -785,18 +783,29 @@
                         rejectionReasonId: vm.newlyAddedLotReason.id
                     });
                     lotGroupLineItems.push([lineItemToAdd]);
+                    loadingModalService.close();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    alertService.error(error.message);
                 });
         }
 
         function removeLotGroup(lotIndex, lotGroup) {
+            loadingModalService.open();
             var firstLineItemInGroup = lotGroup[lotIndex][0];
             var podId = vm.proofOfDelivery.id;
             var subDraftId = firstLineItemInGroup.subDraftId;
             var lineItemId = firstLineItemInGroup.id;
-
-            proofOfDeliveryService.removeLineItem(podId, subDraftId, lineItemId, true).then(function() {
-                lotGroup.splice(lotIndex, 1);
-            });
+            proofOfDeliveryService.removeLineItem(podId, subDraftId, lineItemId, true)
+                .then(function() {
+                    lotGroup.splice(lotIndex, 1);
+                    loadingModalService.close();
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    alertService.error(error.message);
+                });
         }
 
         function wrapGroupedLineItemsWithArray() {
