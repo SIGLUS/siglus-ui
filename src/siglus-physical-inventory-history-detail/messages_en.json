@@ -17,6 +17,7 @@
   "stockPhysicalInventoryHistory.PositiveAdjustmentMessage": "Positive adjustment of ${diffQuantity} will be made",
   "stockPhysicalInventoryHistory.NegativeAdjustmentMessage": "Negative adjustment of ${diffQuantity} will be made",
   "stockPhysicalInventoryHistory.dateOfCreation": "Date of creation",
+  "stockPhysicalInventoryHistory.inventoryDate": "Inventory Date",
   "stockPhysicalInventoryHistory.downloadPDF": "Download PDF",
   "stockPhysicalInventoryHistory.republicOfMozambique": "REPUBLIC OF MOZAMBIQUE",
   "stockPhysicalInventoryHistory.ministryOfHealth": "MINISTRY OF HEALTH",
