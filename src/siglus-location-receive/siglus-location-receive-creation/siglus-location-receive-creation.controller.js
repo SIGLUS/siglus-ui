@@ -659,7 +659,7 @@
                                 }));
                                 var momentNow = moment();
                                 setReceivePDFInfo(signatureInfo, momentNow);
-                                var fileName = 'Entrada_' + vm.sourceName + '_' + momentNow.format('YYYY-MM-DD');
+                                var fileName = 'Entrada_' + vm.facility.name + '_' + momentNow.format('YYYY-MM-DD');
 
                                 ReportService.downloadPdf(
                                     fileName,

@@ -396,7 +396,7 @@
                         then(function(signatureInfo) {
                             var momentNow = moment();
                             setReceivePDFInfo(signatureInfo, momentNow);
-                            var fileName = 'Entrada_' + '' + '_' + momentNow.format('YYYY-MM-DD');
+                            var fileName = 'Entrada_' + vm.facility.name + '_' + momentNow.format('YYYY-MM-DD');
                             ReportService.downloadPdf(fileName, function() {
                                 loadingModalService.open();
                                 confirmMergeSubmit(signatureInfo, addedLineItems);
@@ -407,7 +407,6 @@
                     loadingModalService.open();
                     confirmSubmit('', addedLineItems);
                 }
-
             } else {
                 if ($stateParams.keyword) {
                     cancelFilter();
