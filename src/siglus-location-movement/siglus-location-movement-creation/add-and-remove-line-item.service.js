@@ -44,7 +44,6 @@
         this.prepareLineItemsForPod = prepareLineItemsForPod;
         this.addItemForPod = addItemForPod;
         this.removeItemForPod = removeItemForPod;
-        this.getFirstLineItemForPodLocationGroup = getFirstLineItemForPodLocationGroup;
 
         function getRowTemplateData(lineItem) {
             return  {
@@ -88,34 +87,6 @@
                 quantityAccepted: 0,
                 isFirst: false,
                 moveTo: {}
-            });
-        }
-
-        function getFirstLineItemForPodLocationGroup(lineItemTemplate, reasonId) {
-            var lotTemplate = angular.copy(lineItemTemplate.lot);
-            var lotForFirstLineItem = _.assign({}, lotTemplate, {
-                id: undefined,
-                lotCode: null,
-                expirationDate: null,
-                manufactureDate: undefined
-            });
-            return _.assign({}, lineItemTemplate, {
-                $error: {},
-                // for siglus-stock-input-select component
-                $errors: {},
-                id: undefined,
-                orderable: _.clone(lineItemTemplate.orderable),
-                lot: lotForFirstLineItem,
-                isMainGroup: false,
-                isFirst: true,
-                isNewlyAddedLot: true,
-                moveTo: {},
-                notes: null,
-                quantity: lineItemTemplate.quantity,
-                quantityShipped: 0,
-                quantityAccepted: 0,
-                quantityRejected: 0,
-                rejectionReasonId: reasonId
             });
         }
 

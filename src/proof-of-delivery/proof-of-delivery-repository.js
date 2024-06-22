@@ -51,6 +51,8 @@
         // SIGLUS-REFACTOR: end here
         ProofOfDeliveryRepository.prototype.addLineItem = addLineItem;
         ProofOfDeliveryRepository.prototype.removeLineItem = removeLineItem;
+        ProofOfDeliveryRepository.prototype.addLineItemWithLocation = addLineItemWithLocation;
+        ProofOfDeliveryRepository.prototype.removeLineItemWithLocation = removeLineItemWithLocation;
 
         return ProofOfDeliveryRepository;
 
@@ -161,6 +163,14 @@
 
         function removeLineItem(podId, subDraftId, lineItemId) {
             return this.impl.removeLineItem(podId, subDraftId, lineItemId);
+        }
+
+        function addLineItemWithLocation(podId, subDraftId, podLineItemId) {
+            return this.impl.addLineItemWithLocation(podId, subDraftId, podLineItemId);
+        }
+
+        function removeLineItemWithLocation(podId, subDraftId, lineItemId) {
+            return this.impl.removeLineItemWithLocation(podId, subDraftId, lineItemId);
         }
     }
 

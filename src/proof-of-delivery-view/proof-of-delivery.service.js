@@ -193,11 +193,17 @@
             };
         }
 
-        function addLineItem(podId, subDraftId, podLineItemId) {
+        function addLineItem(podId, subDraftId, podLineItemId, isWithLocation) {
+            if (isWithLocation) {
+                return repository.addLineItemWithLocation(podId, subDraftId, podLineItemId);
+            }
             return repository.addLineItem(podId, subDraftId, podLineItemId);
         }
 
-        function removeLineItem(podId, subDraftId, lineItemId) {
+        function removeLineItem(podId, subDraftId, lineItemId, isWithLocation) {
+            if (isWithLocation) {
+                return repository.removeLineItemWithLocation(podId, subDraftId, lineItemId);
+            }
             return repository.removeLineItem(podId, subDraftId, lineItemId);
         }
     }

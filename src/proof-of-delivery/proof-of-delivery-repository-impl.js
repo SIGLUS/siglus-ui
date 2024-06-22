@@ -60,6 +60,8 @@
         // SIGLUS-REFACTOR: ends here
         ProofOfDeliveryRepositoryImpl.prototype.addLineItem = addLineItem;
         ProofOfDeliveryRepositoryImpl.prototype.removeLineItem = removeLineItem;
+        ProofOfDeliveryRepositoryImpl.prototype.addLineItemWithLocation = addLineItemWithLocation;
+        ProofOfDeliveryRepositoryImpl.prototype.removeLineItemWithLocation = removeLineItemWithLocation;
 
         return ProofOfDeliveryRepositoryImpl;
 
@@ -150,6 +152,18 @@
                 removeLineItem: {
                     url: fulfillmentUrlFactory(
                         '/api/siglusapi/proofsOfDelivery/:podId/subDrafts/:subDraftId/lineItems/:lineItemId'
+                    ),
+                    method: 'DELETE'
+                },
+                addLineItemWithLocation: {
+                    url: fulfillmentUrlFactory(
+                        '/api/siglusapi/proofsOfDeliveryWithLocation/:podId/subDrafts/:subDraftId/lineItems'
+                    ),
+                    method: 'POST'
+                },
+                removeLineItemWithLocation: {
+                    url: fulfillmentUrlFactory(
+                        '/api/siglusapi/proofsOfDeliveryWithLocation/:podId/subDrafts/:subDraftId/lineItems/:lineItemId'
                     ),
                     method: 'DELETE'
                 }
@@ -670,6 +684,23 @@
 
         function removeLineItem(podId, subDraftId, lineItemId) {
             return this.resource.removeLineItem({
+                podId: podId,
+                subDraftId: subDraftId,
+                lineItemId: lineItemId
+            }).$promise;
+        }
+
+        function addLineItemWithLocation(podId, subDraftId, podLineItemId) {
+            return this.resource.addLineItemWithLocation({
+                podId: podId,
+                subDraftId: subDraftId
+            }, {
+                podLineItemId: podLineItemId
+            }).$promise;
+        }
+
+        function removeLineItemWithLocation(podId, subDraftId, lineItemId) {
+            return this.resource.removeLineItemWithLocation({
                 podId: podId,
                 subDraftId: subDraftId,
                 lineItemId: lineItemId

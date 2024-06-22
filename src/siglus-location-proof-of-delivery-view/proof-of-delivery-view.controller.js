@@ -72,6 +72,7 @@
         vm.returnBack = returnBack;
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
         vm.changeAcceptQuantity = changeAcceptQuantity;
+        vm.isCurrentItemNewlyAdded = isCurrentItemNewlyAdded;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
@@ -182,7 +183,7 @@
             // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
             vm.orderLineItems = orderLineItems;
-            vm.displayOrderLineItems = buildDisplayOrderLineItems();
+            vm.displayOrderLineItems = wrapGroupedLineItemsWithArray();
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;
@@ -594,24 +595,22 @@
                     copy.lineItems = getPodMainOrFirstLineItems();
                     var podLineItemLocation = getPodLocationLineItems();
                     copy.status = PROOF_OF_DELIVERY_STATUS.CONFIRMED;
-                    proofOfDeliveryService.submitDraftWithLocation($stateParams.podId,
-                        copy, podLineItemLocation).then(function() {
-                        $scope.needToConfirm = false;
-                        notificationService.success(
-                            'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
-                        );
-                        $state.go('openlmis.orders.podManage', {
-                            requestingFacilityId: $stateParams.requestingFacilityId,
-                            programId: $stateParams.programId
-                        }, {
-                            reload: true
-                        });
-                    })
+                    proofOfDeliveryService.submitDraftWithLocation($stateParams.podId, copy, podLineItemLocation)
+                        .then(function() {
+                            $scope.needToConfirm = false;
+                            notificationService.success(
+                                'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
+                            );
+                            $state.go('openlmis.orders.podManage', {
+                                requestingFacilityId: $stateParams.requestingFacilityId,
+                                programId: $stateParams.programId
+                            }, {
+                                reload: true
+                            });
+                        })
                         .catch(function(error) {
-                            if (
-                                // eslint-disable-next-line max-len
-                                _.get(error, ['data', 'messageKey']) === 'siglusapi.error.stockManagement.movement.date.invalid'
-                            ) {
+                            if (_.get(error, ['data', 'messageKey']) ===
+                                'siglusapi.error.stockManagement.movement.date.invalid') {
                                 alertService.error('openlmisModal.dateConflict');
                             } else {
                                 notificationService.error(
@@ -748,21 +747,59 @@
         }
 
         function addLotGroup(lotGroupLineItems) {
-            // TODO: call api to get id
-            $scope.needToConfirm = true;
-            var lineItemTemplate = angular.copy(lotGroupLineItems[0][0]);
-            var lineItemToAdd = addAndRemoveLineItemService.getFirstLineItemForPodLocationGroup(
-                lineItemTemplate, vm.newlyAddedLotReason.id
-            );
-            lotGroupLineItems.push([lineItemToAdd]);
+            var originalLineItem = lotGroupLineItems[0][0];
+            var podId = vm.proofOfDelivery.id;
+            var subDraftId = originalLineItem.subDraftId;
+            var podLineItemId = originalLineItem.id;
+
+            proofOfDeliveryService.addLineItem(podId, subDraftId, podLineItemId, true)
+                .then(function(lineItemData) {
+                    $scope.needToConfirm = true;
+                    var lineItemTemplate = angular.copy(originalLineItem);
+                    var lotTemplate = angular.copy(lineItemTemplate.lot);
+
+                    var lotForFirstLineItem = _.assign({}, lotTemplate, {
+                        id: undefined,
+                        active: undefined,
+                        lotCode: null,
+                        expirationDate: null,
+                        manufactureDate: undefined
+                    });
+
+                    var lineItemToAdd = _.assign({}, lineItemTemplate, {
+                        $error: {},
+                        // for siglus-stock-input-select validate
+                        $errors: {},
+                        id: lineItemData.id,
+                        subDraftId: lineItemData.subDraftId,
+                        lot: lotForFirstLineItem,
+                        isMainGroup: false,
+                        isFirst: true,
+                        isNewlyAddedLot: true,
+                        moveTo: {},
+                        notes: null,
+                        quantity: lineItemTemplate.quantity,
+                        quantityShipped: 0,
+                        quantityAccepted: 0,
+                        quantityRejected: 0,
+                        rejectionReasonId: vm.newlyAddedLotReason.id
+                    });
+                    lotGroupLineItems.push([lineItemToAdd]);
+                });
         }
 
         function removeLotGroup(lotIndex, lotGroup) {
-            // TODO: cal api to remove
-            lotGroup.splice(lotIndex, 1);
+            var firstLineItemInGroup = lotGroup[lotIndex][0];
+            var podId = vm.proofOfDelivery.id;
+            var subDraftId = firstLineItemInGroup.subDraftId;
+            var lineItemId = firstLineItemInGroup.id;
+
+            proofOfDeliveryService.removeLineItem(podId, subDraftId, lineItemId, true).then(function() {
+                lotGroup.splice(lotIndex, 1);
+            });
         }
 
-        function buildDisplayOrderLineItems() {
+        function wrapGroupedLineItemsWithArray() {
             var orderLineItemsCopy = angular.copy(vm.orderLineItems);
             orderLineItemsCopy.forEach(function(orderLineItem) {
                 var locationLineItems = angular.copy(orderLineItem.groupedLineItems);

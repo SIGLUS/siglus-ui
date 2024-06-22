@@ -136,7 +136,7 @@
           <!-- cell for lot code end -->
 
           <!-- cell for expirationDate -->
-          <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
+          <!-- #400: Facility user partially fulfill an order and create sub-order for a requisition -->
           <td ng-if="!vm.canEdit || (!fulfillingLineItem.orderable.isKit && !vm.isCurrentItemNewlyAdded(fulfillingLineItem))">{{fulfillingLineItem.lot.expirationDate}}</td>
           <td ng-if="vm.canEdit && !fulfillingLineItem.orderable.isKit && vm.isCurrentItemNewlyAdded(fulfillingLineItem)">
             <input type="date"
