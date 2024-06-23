@@ -153,11 +153,14 @@
 
         function initiate(selectedPeriod, inventoryDate) {
             loadingModalService.open();
-            requisitionService.initiate($stateParams.facility,
-                $stateParams.program,
-                selectedPeriod.id, vm.emergency, key, inventoryDate)
+            requisitionService.initiate(
+                $stateParams.facility, $stateParams.program, selectedPeriod.id, vm.emergency, key, inventoryDate
+            )
                 .then(function(requisition) {
-                    goToInitiatedRequisition(requisition);
+                    $state.go('openlmis.requisitions.requisition.fullSupply', {
+                        rnr: requisition.id,
+                        requisition: requisition
+                    });
                 })
                 .catch(function() {
                     notificationService.error(
@@ -250,13 +253,6 @@
             });
         }
 
-        function goToInitiatedRequisition(requisition) {
-            $state.go('openlmis.requisitions.requisition.fullSupply', {
-                rnr: requisition.id,
-                requisition: requisition
-            });
-        }
-
         function goToPhysicalInventory() {
             $state.go('openlmis.stockmanagement.physicalInventory', {
                 programId: $stateParams.replaceId || vm.program.id
@@ -268,15 +264,14 @@
         }
 
         function checkProceedButton(period, idx) {
-            if ($stateParams.program && $stateParams.facility) {
-                if (idx > 0 || Date.now() < period.startDate.getTime()
-            || !checkRnrStatus(period.rnrStatus)) {
-                    return false;
-                }
-            }
-
             if (vm.emergency) {
                 return period.currentPeriodRegularRequisitionAuthorized;
+            }
+
+            if ($stateParams.program && $stateParams.facility) {
+                if (idx > 0 || Date.now() < period.startDate.getTime() || !checkRnrStatus(period.rnrStatus)) {
+                    return false;
+                }
             }
 
             return true;

@@ -714,7 +714,7 @@
         // SIGLUS-REFACTOR: add new method addProductLineItem
         function addProductLineItem(lineItem) {
             var orderableProgram = _.first(lineItem.orderable.programs);
-            var newLineItem = new LineItem(_.extend(lineItem, {
+            var newLineItem = new LineItem(_.assign(lineItem, {
                 pricePerPack: orderableProgram.pricePerPack,
                 $deletable: true
             }), this);
@@ -832,14 +832,6 @@
                 });
         }
 
-        // #286 high level approver can skip some products in requisition
-        // function getFullSupplyLineItems(lineItems) {
-        //     return lineItems.filter(function(lineItem) {
-        //         return lineItem.$program.fullSupply;
-        //     });
-        // }
-        // #286 ends here
-
         function getOrderableProgramById(programs, programId) {
             return programs.filter(function(program) {
                 return program.programId === programId;
@@ -847,12 +839,11 @@
         }
 
         function filterOutOrderablesWithLineItems(orderables, lineItems) {
+            var alreadyAddedOrderableIdList = lineItems.map(function(lineItem) {
+                return _.get(lineItem, ['orderable', 'id']);
+            });
             return orderables.filter(function(orderable) {
-                var orderableLineItems = lineItems.filter(function(lineItem) {
-                    return lineItem.orderable.id === orderable.id;
-                });
-
-                return orderableLineItems.length === 0;
+                return !alreadyAddedOrderableIdList.includes(orderable.id);
             });
         }
 

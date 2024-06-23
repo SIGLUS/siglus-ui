@@ -58,7 +58,11 @@
             return periodService.getPeriodsForInitiate(programId, facilityId, emergency)
                 .then(function(response) {
                     var periods = getPeriodGridLineItems(response, emergency);
-                    angular.forEach(periods, setStatus(emergency));
+                    periods.forEach(function(period) {
+                        if (isNotStarted(period, emergency)) {
+                            period.rnrStatus = messageService.get('requisitionInitiate.notYetStarted');
+                        }
+                    });
                     return periods;
                 });
         }
@@ -90,14 +94,6 @@
                 id: period.id,
                 requisitionExtraData: period.requisitionExtraData
                 // SIGLUS-REFACTOR: ends here
-            };
-        }
-
-        function setStatus(emergency) {
-            return function(period) {
-                if (isNotStarted(period, emergency)) {
-                    period.rnrStatus = messageService.get('requisitionInitiate.notYetStarted');
-                }
             };
         }
 
