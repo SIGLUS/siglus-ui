@@ -1680,6 +1680,7 @@
   "requisitionView.operatedBy": "Operado por",
   "requisitionView.outdated": "Esta é uma versão offline desactualizada.",
   "requisitionView.print": "Imprimir",
+  "requisitionView.export.xls": "Exportar XLS",
   "requisitionView.province": "Província",
   "requisitionView.region": "Região",
   "requisitionView.regular": "Normal",

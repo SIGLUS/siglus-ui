@@ -36,7 +36,7 @@
         'canApproveAndReject', 'canDelete', 'canSkip', 'canSync', 'program', 'facility', 'processingPeriod',
         // SIGLUS-REFACTOR: starts here
         'hasAuthorizeRight', 'canSubmitAndAuthorize', 'siglusSignatureModalService', 'isCreateForClient',
-        'localStorageService', 'TEMPLATE_COLUMNS', 'REQUISITION_STATUS'
+        'localStorageService', 'TEMPLATE_COLUMNS', 'REQUISITION_STATUS', 'requisitionViewService'
         // SIGLUS-REFACTOR: ends here
     ];
 
@@ -48,7 +48,7 @@
                                        canAuthorize, canApproveAndReject, canDelete, canSkip, canSync, program,
                                        facility, processingPeriod, hasAuthorizeRight, canSubmitAndAuthorize,
                                        siglusSignatureModalService, isCreateForClient, localStorageService,
-                                       TEMPLATE_COLUMNS, REQUISITION_STATUS) {
+                                       TEMPLATE_COLUMNS, REQUISITION_STATUS, requisitionViewService) {
         // SIGLUS-REFACTOR: starts here
         var storage = localStorageFactory('requisitions');
         storage.put(requisition);
@@ -220,6 +220,8 @@
          */
         vm.displaySyncButton = undefined;
 
+        vm.displayExportButton = undefined;
+
         // Functions
         vm.$onInit = onInit;
         vm.updateRequisition = updateRequisition;
@@ -238,6 +240,7 @@
         vm.getPrintUrl = getPrintUrl;
         vm.isFullSupplyTabValid = isFullSupplyTabValid;
         vm.isNonFullSupplyTabValid = isNonFullSupplyTabValid;
+        vm.exportExcel = exportExcel;
 
         /**
          * @ngdoc method
@@ -265,6 +268,9 @@
             // SIGLUS-REFACTOR: ends here
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
+            vm.displayExportButton = vm.requisition.status === REQUISITION_STATUS.APPROVED
+                || vm.requisition.status === REQUISITION_STATUS.RELEASED
+                || vm.requisition.status === REQUISITION_STATUS.RELEASED_WITHOUT_ORDER;
             // SIGLUS-REFACTOR: starts here
             if (!canSync) {
                 watcher.disableWatcher();
@@ -343,6 +349,10 @@
             }, function(response) {
                 handleSaveError(response.status);
             });
+        }
+
+        function exportExcel() {
+            requisitionViewService.exportExcel(vm.requisition.id);
         }
 
         /**

@@ -3,5 +3,6 @@
   "requisitionView.approve.confirmWithSignature": "Enter your initials and then approve the requisition",
   "requisitionView.save.label": "Save",
   "requisitionView.requisitionNumber": "Requisition number",
-  "requisitionView.delete.menu.label": "Delete"
+  "requisitionView.delete.menu.label": "Delete",
+  "requisitionView.export.xls": "Export XLS"
 }

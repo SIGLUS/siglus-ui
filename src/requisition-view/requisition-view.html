@@ -1,5 +1,6 @@
 <header>
     <h2>{{'requisitionView.reportAndRequisitionFor' | message}} {{vm.program.name}} ({{vm.facility.type.name}})</h2>
+    <button ng-if="vm.displayExportButton" ng-click="vm.exportExcel()" class="primary">{{'requisitionView.export.xls' | message}}</button>
     <button ng-disabled="vm.isOffline()" ng-click="vm.syncRnrAndPrint()" class="primary">{{'requisitionView.print' | message}}</button>
 </header>
 <p class="alert is-error" ng-if="vm.requisition.$outdated">
