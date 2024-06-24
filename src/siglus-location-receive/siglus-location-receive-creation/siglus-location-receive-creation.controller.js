@@ -32,7 +32,7 @@
         'alertService', 'siglusSignatureWithDateModalService', 'program',
         'confirmDiscardService', 'areaLocationInfo',
         'siglusPrintPalletLabelComfirmModalService', 'orderablesPrice',
-        'SiglusIssueOrReceiveReportService'
+        'SiglusIssueOrReceiveReportService', 'siglusStockUtilsService'
     ];
 
     function siglusLocationReceiveCreationController(
@@ -46,14 +46,10 @@
         alertService, siglusSignatureWithDateModalService, program,
         confirmDiscardService, areaLocationInfo,
         siglusPrintPalletLabelComfirmModalService, orderablesPrice,
-        SiglusIssueOrReceiveReportService
+        SiglusIssueOrReceiveReportService, siglusStockUtilsService
     ) {
-        var orderablesPriceMap = orderablesPrice.data;
-        addedLineItems.forEach(function(lineItem) {
-            var orderableId = _.get(lineItem, ['orderable', 'id']);
-            lineItem.price = orderablesPriceMap[orderableId];
-        });
         var vm = this;
+        var orderablesPriceMap = orderablesPrice.data;
         var ReportService = new SiglusIssueOrReceiveReportService();
 
         vm.areaLocationInfo = areaLocationInfo;
@@ -81,7 +77,7 @@
                 ? messageService.get('stockIssueCreation.mergedDraft')
                 : messageService.get('stockIssue.draft') + ' ' + draftInfo.draftNumber;
             vm.addedLineItems = addedLineItems || [];
-            vm.sourceName = '';
+            vm.sourceName = siglusStockUtilsService.getInitialDraftName(vm.initialDraftInfo, $stateParams.draftType);
             filterProductList();
 
             var validator = function(lineItems) {
@@ -602,43 +598,6 @@
             $state.go('^', $stateParams);
         };
 
-        function getSumQuantity(items) {
-            var total = 0;
-            _.each(items, function(item) {
-                total = total + item.quantity;
-            });
-            return total;
-        }
-        function getDownloadLineItems() {
-            var downloadLineItems = [];
-            _.each(vm.displayItems, function(orderableItems) {
-                var validItems;
-                if (orderableItems.length > 1) {
-                    validItems = orderableItems.filter(function(item) {
-                        return !item.isMainGroup;
-                    });
-                } else {
-                    validItems = orderableItems;
-                }
-                var groupByLot = _.chain(validItems)
-                    .groupBy(function(item) {
-                        return _.get(item, ['lot', 'lotCode'], '');
-                    })
-                    .values()
-                    .value();
-                _.each(groupByLot, function(lotItems) {
-                    var downloadLineItem = angular.copy(lotItems[0]);
-                    downloadLineItem.lotCode = _.get(downloadLineItem, ['lot', 'lotCode'], '');
-                    downloadLineItem.expirationDate = _.get(downloadLineItem, ['lot', 'expirationDate'], '');
-                    downloadLineItem.quantity = getSumQuantity(lotItems);
-                    var orderableId = _.get(downloadLineItem, ['orderableId']);
-                    downloadLineItem.price = orderablesPriceMap[orderableId];
-                    downloadLineItems.push(downloadLineItem);
-                });
-            });
-            return downloadLineItems;
-        }
-
         vm.submit = function() {
             if (!isTableFormValid()) {
                 alertService.error(messageService.get('openlmisForm.formInvalid'));
@@ -694,9 +653,10 @@
         }
 
         function setReceivePDFInfo(signatureInfo, momentNow) {
+            var lineItemsToPrint = getLineItemsToPrint();
             vm.reportPDFInfo = {
                 type: ReportService.REPORT_TYPE.RECEIVE,
-                addedLineItems: vm.addedLineItems,
+                addedLineItems: lineItemsToPrint,
                 documentNumber: vm.initialDraftInfo.documentNumber,
                 numberN: vm.initialDraftInfo.documentNumber,
                 supplier: vm.initialDraftInfo.sourceName === 'Outros'
@@ -708,7 +668,7 @@
                 requisitionDate: null,
                 issueVoucherDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
                 receptionDate: moment(signatureInfo.occurredDate).format('YYYY-MM-DD'),
-                totalPriceValue: _.reduce(getDownloadLineItems(), function(acc, lineItem) {
+                totalPriceValue: _.reduce(lineItemsToPrint, function(acc, lineItem) {
                     var price = lineItem.price ? lineItem.price * 100 : 0;
                     return acc + lineItem.quantity * price;
                 }, 0),
@@ -717,6 +677,52 @@
                 receivedBy: signatureInfo.signature,
                 nowTime: momentNow.format('D MMM YYYY h:mm:ss A'),
                 isSupply: true
+            };
+        }
+
+        function getLineItemsToPrint() {
+            var flattenedLineItemsToPrint = [];
+            vm.addedLineItems.forEach(function(productGroup) {
+                if (productGroup.length === 1) {
+                    var lineItemToPrint = minifyLineItemDataToPrint(productGroup[0]);
+                    flattenedLineItemsToPrint.push(lineItemToPrint);
+                } else {
+                    var lineItemsWithoutMainGroup = productGroup.filter(function(lineItem) {
+                        return !lineItem.isMainGroup;
+                    });
+                    // merge lineItems with same lot
+                    var lineItemsMapByLotId = _.groupBy(lineItemsWithoutMainGroup, function(lineItem) {
+                        return _.get(lineItem, ['lot', 'id']);
+                    });
+                    Object.keys(lineItemsMapByLotId).map(function(lotId) {
+                        var lineItemAfterMerge;
+                        var lineItemsWithSameLot = lineItemsMapByLotId[lotId];
+                        if (lineItemsWithSameLot.length === 1) {
+                            lineItemAfterMerge = lineItemsWithSameLot[0];
+                        } else {
+                            // only quantity needs merge
+                            lineItemAfterMerge = _.assign({}, lineItemsWithSameLot[0], {
+                                quantity: lineItemsWithSameLot.reduce(function(acc, lineItem) {
+                                    return acc + lineItem.quantity;
+                                }, 0)
+                            });
+                        }
+                        var lineItemToPrint = minifyLineItemDataToPrint(lineItemAfterMerge);
+                        flattenedLineItemsToPrint.push(lineItemToPrint);
+                    });
+                }
+            });
+            return flattenedLineItemsToPrint;
+        }
+
+        function minifyLineItemDataToPrint(lineItem) {
+            return {
+                productCode: lineItem.productCode,
+                productName: lineItem.productName,
+                lotCode: _.get(lineItem, ['lot', 'lotCode']),
+                expirationDate: _.get(lineItem, ['lot', 'expirationDate']),
+                quantity: lineItem.quantity,
+                price: orderablesPriceMap[_.get(lineItem, ['orderable', 'id'])] || null
             };
         }
 

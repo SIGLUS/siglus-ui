@@ -48,35 +48,60 @@
             </thead>
             <tbody>
             <tr ng-repeat="lineItem in vm.items">
+                <!-- product code -->
                 <td>{{lineItem.orderable.productCode}}</td>
+                <!-- product code end -->
+
+                <!-- product name -->
                 <td class="white-space-pre">{{lineItem.orderable | productName}}</td>
+                <!-- product name end -->
+
+                <!-- reason -->
                 <td openlmis-invalid="{{lineItem.$errors.reasonInvalid ? 'openlmisForm.required' : '' | message}}" class="digit-cell">
                     <select ng-model="lineItem.reason"
                             ng-change="vm.validateReason(lineItem);vm.clearFreeText(lineItem, 'reasonFreeText');vm.validateQuantity(lineItem);"
                             ng-options="reason as reason.name for reason in vm.filterByProgram(vm.reasons, lineItem.orderable.programs) track by reason.id" autofocus>
                     </select>
                 </td>
+                <!-- reason end -->
+
                 <!-- SIGLUS-REFACTOR: starts here -->
+                <!-- comment -->
                 <td>
                     <input type="text" ng-show="lineItem.reason.isFreeTextAllowed"
                            ng-model="lineItem.reasonFreeText" rows="1" cols="15" maxlength="100"/>
                 </td>
+                <!-- comment end -->
+
+                <!-- lot code -->
+                <td ng-if="lineItem.isKit"></td>
                 <td ng-if="!lineItem.isKit">
                     <siglus-stock-input-select line-items="vm.items" line-item="lineItem" enable-input="true"></siglus-stock-input-select>
                 </td>
+                <!-- lot code end -->
+
+                <!-- expiration date -->
                 <td ng-if="!lineItem.isKit" openlmis-invalid="{{lineItem.$errors.lotDateInvalid}}">
                     <input id="lineItem.lot.expirationDate" class="adjustment-date-input min-width-date-input" type="date" ng-model="lineItem.lot.expirationDate"
                            ng-disabled="lineItem.lot.id"/>
                 </td>
                 <td ng-if="lineItem.isKit"></td>
-                <td ng-if="lineItem.isKit"></td>
+                <!-- expiration date end -->
+
+                <!-- stock on hand -->
                 <td class="text-align-right">{{lineItem.$previewSOH}}</td>
+                <!-- stock on hand end -->
                 <!-- SIGLUS-REFACTOR: ends here -->
+
+                <!-- quantity -->
                 <td openlmis-invalid="{{lineItem.$errors.quantityInvalid}}" class="digit-cell">
                     <input class="form-control min-width-input" ng-model="lineItem.quantity"
                            ng-class="{'error': lineItem.$errors.quantityInvalid}"
                            ng-change="vm.validateQuantity(lineItem)" ng-blur="vm.validateQuantity(lineItem)" positive-integer/>
                 </td>
+                <!-- quantity end -->
+
+                <!-- vvm -->
                 <td ng-if="vm.showVVMStatusColumn">
                     <select ng-if="lineItem.orderable.extraData.useVVM == 'true'"
                             ng-model="lineItem.vvmStatus"
@@ -84,12 +109,20 @@
                             placeholder="{{'stockAdjustmentCreation.selectStatus' | message}}">
                     </select>
                 </td>
+                <!-- vvm end -->
+
+                <!-- documentation number -->
                 <td class="digit-cell">
                     <input class="form-control" ng-model="lineItem.documentationNo" maxlength="100"/>
                 </td>
+                <!-- documentation number end -->
+
+                <!-- button -->
                 <td>
                     <button type="button" class="danger" ng-click="vm.remove(lineItem)">{{vm.key('remove') | message}}</button>
                 </td>
+                <!-- button end -->
+
             </tr>
             </tbody>
         </table>

@@ -160,7 +160,7 @@
             var lineItem = data.lineItem;
 
             vm.validateLot(lineItem);
-            vm.validateLotDate(lineItem);
+            validateLotDate(lineItem);
         });
 
         function onInit() {
@@ -351,13 +351,13 @@
          *
          * @param {Object} lineItem line item to be validated.
          */
-        vm.validateAssignment = function(lineItem) {
+        function validateAssignment(lineItem) {
             if (adjustmentType.state !== ADJUSTMENT_TYPE.ADJUSTMENT.state &&
                 adjustmentType.state !== ADJUSTMENT_TYPE.KIT_UNPACK.state) {
                 lineItem.$errors.assignmentInvalid = isEmpty(lineItem.assignment);
             }
             return lineItem;
-        };
+        }
 
         /**
          * @ngdoc method
@@ -435,7 +435,7 @@
          *
          * @param {Object} lineItem line item to be validated.
          */
-        vm.validateLotDate = function(lineItem) {
+        function validateLotDate(lineItem) {
             if (!lineItem.isKit) {
                 if (lineItem.lot && lineItem.lot.expirationDate) {
                     lineItem.$errors.lotDateInvalid = false;
@@ -444,7 +444,7 @@
                 }
             }
             return lineItem;
-        };
+        }
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -712,10 +712,10 @@
 
         function validateAllAddedItems() {
             _.each(vm.allLineItemsAdded, function(item) {
-                vm.validateAssignment(item);
+                validateAssignment(item);
                 vm.validateReason(item);
                 vm.validateLot(item);
-                vm.validateLotDate(item);
+                validateLotDate(item);
                 vm.validateQuantity(item);
             });
             return _.chain(vm.allLineItemsAdded)
