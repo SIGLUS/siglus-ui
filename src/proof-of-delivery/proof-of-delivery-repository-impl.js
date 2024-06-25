@@ -62,6 +62,7 @@
         ProofOfDeliveryRepositoryImpl.prototype.removeLineItem = removeLineItem;
         ProofOfDeliveryRepositoryImpl.prototype.addLineItemWithLocation = addLineItemWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.removeLineItemWithLocation = removeLineItemWithLocation;
+        ProofOfDeliveryRepositoryImpl.prototype.getOrderableLots = getOrderableLots;
 
         return ProofOfDeliveryRepositoryImpl;
 
@@ -166,6 +167,11 @@
                         '/api/siglusapi/proofsOfDeliveryWithLocation/:podId/subDrafts/:subDraftId/lineItems/:lineItemId'
                     ),
                     method: 'DELETE'
+                },
+                getOrderableLots: {
+                    url: fulfillmentUrlFactory('/api/siglusapi/facility/:id/lots'),
+                    method: 'GET',
+                    isArray: true
                 }
             });
             // SIGLUS-REFACTOR: ends here
@@ -704,6 +710,13 @@
                 podId: podId,
                 subDraftId: subDraftId,
                 lineItemId: lineItemId
+            }).$promise;
+        }
+
+        function getOrderableLots(facilityId, orderableId) {
+            return this.resource.getOrderableLots({
+                id: facilityId,
+                orderableIds: orderableId
             }).$promise;
         }
 

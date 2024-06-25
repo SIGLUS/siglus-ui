@@ -53,6 +53,7 @@
         ProofOfDeliveryRepository.prototype.removeLineItem = removeLineItem;
         ProofOfDeliveryRepository.prototype.addLineItemWithLocation = addLineItemWithLocation;
         ProofOfDeliveryRepository.prototype.removeLineItemWithLocation = removeLineItemWithLocation;
+        ProofOfDeliveryRepository.prototype.getOrderableLots = getOrderableLots;
 
         return ProofOfDeliveryRepository;
 
@@ -171,6 +172,10 @@
 
         function removeLineItemWithLocation(podId, subDraftId, lineItemId) {
             return this.impl.removeLineItemWithLocation(podId, subDraftId, lineItemId);
+        }
+
+        function getOrderableLots(facilityId, orderableId) {
+            return this.impl.getOrderableLots(facilityId, orderableId);
         }
     }
 

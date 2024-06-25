@@ -52,10 +52,7 @@
                             // SIGLUS-REFACTOR: end here
                         },
                         facility: function(facilityFactory) {
-                            facilityFactory.getUserHomeFacility()
-                                .then(function(res) {
-                                    return res;
-                                });
+                            return facilityFactory.getUserHomeFacility();
                         },
                         // SIGLUS-REFACTOR: starts here : getSubDraftDetail if actionType is not Merge
                         user: function(authorizationService) {
@@ -75,7 +72,9 @@
                             proofOfDelivery,
                             order,
                             fulfillingLineItemFactory,
-                            orderablesPrice
+                            orderablesPrice,
+                            facility,
+                            proofOfDeliveryService
                         ) {
                             return fulfillingLineItemFactory.groupByOrderableForPod(
                                 proofOfDelivery.lineItems,
@@ -84,12 +83,34 @@
                                 var orderablesPriceMap = orderablesPrice.data;
                                 _.each(orderLineItems, function(orderLineItem) {
                                     _.each(orderLineItem.groupedLineItems, function(lineItemGroup) {
-                                        var id = lineItemGroup[0].orderable && lineItemGroup[0].orderable.id;
-                                        lineItemGroup[0].price = orderablesPriceMap[id]
-                                            ? orderablesPriceMap[id]
+                                        var orderableId = lineItemGroup[0].orderable && lineItemGroup[0].orderable.id;
+                                        // set price
+                                        lineItemGroup[0].price = orderablesPriceMap[orderableId]
+                                            ? orderablesPriceMap[orderableId]
                                             : '';
+                                        // set lotOptions
+                                        var newlyAddedLineItems = lineItemGroup.filter(function(lineItem) {
+                                            return lineItem.added;
+                                        });
+                                        if (newlyAddedLineItems.length > 0) {
+                                            proofOfDeliveryService.getOrderableLots(
+                                                facility.id, orderableId
+                                            )
+                                                .then(function(orderableLots) {
+                                                    newlyAddedLineItems.forEach(function(lineItem) {
+                                                        lineItem.lotOptions = orderableLots.map(function(lotInfo) {
+                                                            return {
+                                                                expirationDate: lotInfo.expirationDate,
+                                                                id: lotInfo.lotId,
+                                                                lotCode: lotInfo.lotCode
+                                                            };
+                                                        });
+                                                    });
+                                                });
+                                        }
                                     });
                                 });
+
                                 return orderLineItems;
                             });
                         },
