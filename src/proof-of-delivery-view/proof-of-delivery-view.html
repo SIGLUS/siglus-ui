@@ -142,6 +142,7 @@
             <input type="date"
                    ng-model="fulfillingLineItem.lot.expirationDate"
                    ng-required="true"
+                   ng-disabled="fulfillingLineItem.lot.id"
             />
           </td>
           <td ng-if="fulfillingLineItem.orderable.isKit"></td>
