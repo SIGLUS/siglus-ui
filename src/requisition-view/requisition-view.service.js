@@ -33,7 +33,9 @@
         var resource = $resource(stockmanagementUrlFactory(), {}, {
             exportExcel: {
                 method: 'GET',
-                url: stockmanagementUrlFactory('/api/siglusapi/requisitions/:id/export')
+                url: stockmanagementUrlFactory('/api/siglusapi/requisitions/:id/export'),
+                responseType: 'blob',
+                transformResponse: transExcelformResponse
             }
         });
 
@@ -42,10 +44,25 @@
         function exportExcel(requisitionId) {
             return resource.exportExcel({
                 id: requisitionId
-            }).$promise.then(function(excelDto) {
-                console.log(excelDto);
-                // TODO
             });
+        }
+
+        function transExcelformResponse(data, headers) {
+            var objectUrl = URL.createObjectURL(data);
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            a.setAttribute('style', 'display:none');
+            a.setAttribute('href', objectUrl);
+            var filename =  getFileNameFromHeader(headers);
+            a.setAttribute('download', filename);
+            a.click();
+            URL.revokeObjectURL(objectUrl);
+        }
+
+        function getFileNameFromHeader(headers) {
+            var disposition = headers('Content-Disposition');
+            var prefix = 'attachment;filename=';
+            return disposition.slice(prefix.length);
         }
     }
 })();
