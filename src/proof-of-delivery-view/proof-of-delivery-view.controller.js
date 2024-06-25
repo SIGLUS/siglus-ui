@@ -417,7 +417,7 @@
 
         function getLineItemReasonOptions(lineItem) {
             if (isCurrentItemNewlyAdded(lineItem)) {
-                lineItem.rejectionReasonId = vm.newlyAddedLotReason.id;
+                lineItem.rejectionReasonId = _.get(vm.newlyAddedLotReason, 'id');
                 return [vm.newlyAddedLotReason];
             }
             if (!isEmpty(lineItem.quantityAccepted) && lineItem.quantityAccepted > lineItem.quantityShipped) {
@@ -452,8 +452,9 @@
                         quantityAccepted: 0,
                         quantityRejected: 0,
                         isNewlyAdded: true,
-                        rejectionReasonId: vm.newlyAddedLotReason.id,
-                        lot: newlyAddedLot
+                        rejectionReasonId: _.get(vm.newlyAddedLotReason, 'id'),
+                        lot: newlyAddedLot,
+                        lotOptions: lineItemData.lots
                     }));
                     loadingModalService.close();
                 })
@@ -520,18 +521,12 @@
 
         function getPODCopyWithNewlyAddedLineItems() {
             var proofOfDeliveryCopy = angular.copy(vm.proofOfDelivery);
-            var existedLineItemIdList = proofOfDeliveryCopy.lineItems.map(function(lineItem) {
-                return lineItem.id;
-            });
-            vm.orderLineItems.forEach(function(lineItemGroup) {
-                var groupedLineItems = lineItemGroup.groupedLineItems[0];
-                groupedLineItems.forEach(function(lineItem) {
-                    if (!existedLineItemIdList.includes(lineItem.id)) {
-                        proofOfDeliveryCopy.lineItems.push(lineItem);
-                    }
-                });
-            });
-            return proofOfDeliveryCopy;
+            var flattenedLineItems = _.flatten(vm.orderLineItems.map(function(orderLineItem) {
+                return orderLineItem.groupedLineItems;
+            }));
+            return _.assign(proofOfDeliveryCopy, {
+                lineItems: flattenedLineItems
+            }) ;
         }
 
         function isCurrentItemNewlyAdded(lineItem) {

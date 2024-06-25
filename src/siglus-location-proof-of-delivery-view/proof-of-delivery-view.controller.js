@@ -449,7 +449,8 @@
         }
 
         function setDisabledReasonId(mainLine) {
-            mainLine.rejectionReasonId = isCurrentItemNewlyAdded(mainLine) ? vm.newlyAddedLotReason.id : undefined;
+            mainLine.rejectionReasonId = isCurrentItemNewlyAdded(mainLine) ?
+                _.get(vm.newlyAddedLotReason, 'id') : undefined;
             mainLine.$error.rejectionReasonIdError = '';
         }
 
@@ -722,7 +723,7 @@
 
         function getLineItemReasonOptions(lineItem, locationGroup) {
             if (isCurrentItemNewlyAdded(lineItem)) {
-                lineItem.rejectionReasonId = vm.newlyAddedLotReason.id;
+                lineItem.rejectionReasonId = _.get(vm.newlyAddedLotReason, 'id');
                 return [vm.newlyAddedLotReason];
             }
 
@@ -780,7 +781,7 @@
                         quantityShipped: 0,
                         quantityAccepted: 0,
                         quantityRejected: 0,
-                        rejectionReasonId: vm.newlyAddedLotReason.id
+                        rejectionReasonId: _.get(vm.newlyAddedLotReason, 'id')
                     });
                     lotGroupLineItems.push([lineItemToAdd]);
                     loadingModalService.close();
