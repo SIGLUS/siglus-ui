@@ -247,12 +247,12 @@
          */
         function getReasonName(id) {
             if (!id) {
-                return;
+                return '';
             }
-
-            return vm.reasons.filter(function(reason) {
+            var reason = reasons.find(function(reason) {
                 return reason.id === id;
-            })[0].name;
+            });
+            return _.get(reason, 'name', '');
         }
 
         function getSumOfLot(lineItem, groupedLineItems) {
@@ -366,7 +366,7 @@
         function validateLocationsEmptyAndDuplicated(lineItem, allLineItems) {
             lineItem.$error.moveToLocationError = undefined;
             lineItem.$error.areaError = undefined;
-            if (!isCurrentItemNewlyAdded(lineItem) || (!lineItem.isMainGroup && !lineItem.isFirst)) {
+            if (lineItem.isMainGroup) {
                 return;
             }
             // validate location empty
@@ -812,8 +812,19 @@
         function wrapGroupedLineItemsWithArray() {
             var orderLineItemsCopy = angular.copy(vm.orderLineItems);
             orderLineItemsCopy.forEach(function(orderLineItem) {
-                var locationLineItems = angular.copy(orderLineItem.groupedLineItems);
-                orderLineItem.groupedLineItems = [locationLineItems];
+                // this productGroup is 1-dimensional array, including different lot lineItems
+                var productGroup = angular.copy(orderLineItem.groupedLineItems);
+
+                // each lotGroup(lineItems with same lot & different location) should be an array
+                var lineItemsMapById = _.groupBy(productGroup, function(lineItem) {
+                    return lineItem.id;
+                });
+                orderLineItem.groupedLineItems = Object.keys(lineItemsMapById)
+                    .map(function(lineItemId) {
+                        if (!isEmpty(lineItemId)) {
+                            return lineItemsMapById[lineItemId];
+                        }
+                    });
             });
             return orderLineItemsCopy;
         }
