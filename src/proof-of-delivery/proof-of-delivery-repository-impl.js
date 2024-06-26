@@ -201,8 +201,8 @@
                     var copyProofOfDeliveryJson = angular.copy(_.get(proofOfDeliveryJson, 'podDto'));
                     copyProofOfDeliveryJson.conferredBy = _.get(proofOfDeliveryJson, 'conferredBy');
                     copyProofOfDeliveryJson.preparedBy = _.get(proofOfDeliveryJson, 'preparedBy');
-                    var lotIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'lot'),
-                        orderableIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'orderable');
+                    var lotIds = getLotIdListFromLineItems(copyProofOfDeliveryJson.lineItems);
+                    var orderableIds = getOrderableIdListFromLineItems(copyProofOfDeliveryJson.lineItems);
                     var promiseList = lotIds.length ?
                         [
                             lotRepositoryImpl.query({
@@ -223,7 +223,9 @@
                                     content: []
                                 },
                                 orderablePage = lotIds.length ? responses[1] : responses[0];
-                            return combineResponses(copyProofOfDeliveryJson, lotPage.content, orderablePage.content);
+                            return setLotAndOrderableIntoLineItems(
+                                copyProofOfDeliveryJson, lotPage.content, orderablePage.content
+                            );
                         });
                 });
         }
@@ -312,8 +314,8 @@
                 subDraftId: subDraftId,
                 expand: 'shipment.order'
             }).$promise.then(function(proofOfDeliveryJson) {
-                var lotIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'lot'),
-                    orderableIds = getIdsFromListByObjectName(proofOfDeliveryJson.lineItems, 'orderable');
+                var lotIds = getLotIdListFromLineItems(proofOfDeliveryJson.lineItems);
+                var orderableIds = getOrderableIdListFromLineItems(proofOfDeliveryJson.lineItems);
 
                 return $q.all([
                     lotRepositoryImpl.query({
@@ -326,7 +328,9 @@
                     .then(function(responses) {
                         var lotPage = responses[0],
                             orderablePage = responses[1];
-                        return combineResponses(proofOfDeliveryJson, lotPage.content, orderablePage.content);
+                        return setLotAndOrderableIntoLineItems(
+                            proofOfDeliveryJson, lotPage.content, orderablePage.content
+                        );
                     });
             });
         }
@@ -341,31 +345,30 @@
                 var podDto = podWithLocation.podDto;
                 var podLineItemLocation = podWithLocation.podLineItemLocation;
 
+                var locationInfoMap = _.groupBy(podLineItemLocation, function(lineItem) {
+                    return lineItem.podLineItemId;
+                });
+
                 // set location info from podLineItemLocation to podDto.lineItems
-                podDto.lineItems = _.flatten(podDto.lineItems.map(function(lineItem) {
-                    var targets = _.filter(podLineItemLocation, function(itemLocation) {
-                        return lineItem.id === itemLocation.podLineItemId;
-                    });
-                    if (targets && targets.length > 0) {
-                        return targets.map(function(target) {
-                            var copy = angular.copy(lineItem);
-                            copy.moveTo = {
-                                locationCode: target.locationCode,
-                                area: target.area
-                            };
-                            copy.quantityAccepted = target.quantityAccepted;
-                            return copy;
+                // return _.flatten( [[{}, {}] , [{}]] )
+                podDto.lineItems = _.flatten(_.map(podDto.lineItems, function(podLineItem) {
+                    var podLineItemId = podLineItem.id;
+                    var locationInfoList = locationInfoMap[podLineItemId];
+                    // return [{}, {}]
+                    return locationInfoList.map(function(locationInfo) {
+                        var lineItemTemplate = angular.copy(podLineItem);
+                        return _.assign(lineItemTemplate, {
+                            quantityAccepted: locationInfo.quantityAccepted,
+                            moveTo: {
+                                locationCode: locationInfo.locationCode,
+                                area: locationInfo.area
+                            }
                         });
-                    }
-                    lineItem.moveTo = {
-                        locationCode: undefined,
-                        area: undefined
-                    };
-                    return lineItem;
+                    });
                 }));
 
-                var lotIds = getIdsFromListByObjectName(podDto.lineItems, 'lot'),
-                    orderableIds = getIdsFromListByObjectName(podDto.lineItems, 'orderable');
+                var lotIds = getLotIdListFromLineItems(podDto.lineItems);
+                var orderableIds = getOrderableIdListFromLineItems(podDto.lineItems);
 
                 return $q.all([
                     lotRepositoryImpl.query({
@@ -378,7 +381,7 @@
                     .then(function(responses) {
                         var lotPage = responses[0],
                             orderablePage = responses[1];
-                        return combineResponses(podDto, lotPage.content, orderablePage.content);
+                        return setLotAndOrderableIntoLineItems(podDto, lotPage.content, orderablePage.content);
                     });
             });
         }
@@ -439,8 +442,8 @@
                         conferredBy: proofOfDeliveryJson.conferredBy,
                         preparedBy: proofOfDeliveryJson.preparedBy
                     });
-                    var lotIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'lot'),
-                        orderableIds = getIdsFromListByObjectName(copyProofOfDeliveryJson.lineItems, 'orderable');
+                    var lotIds = getLotIdListFromLineItems(copyProofOfDeliveryJson.lineItems);
+                    var orderableIds = getOrderableIdListFromLineItems(copyProofOfDeliveryJson.lineItems);
                     var promiseList = lotIds.length ?
                         [
                             lotRepositoryImpl.query({
@@ -461,7 +464,9 @@
                                     content: []
                                 },
                                 orderablePage = lotIds.length ? responses[1] : responses[0];
-                            return combineResponses(copyProofOfDeliveryJson, lotPage.content, orderablePage.content);
+                            return setLotAndOrderableIntoLineItems(
+                                copyProofOfDeliveryJson, lotPage.content, orderablePage.content
+                            );
                         });
                 });
         }
@@ -504,8 +509,8 @@
                         return lineItem;
                     }));
 
-                    var lotIds = getIdsFromListByObjectName(podDto.lineItems, 'lot'),
-                        orderableIds = getIdsFromListByObjectName(podDto.lineItems, 'orderable');
+                    var lotIds = getLotIdListFromLineItems(podDto.lineItems);
+                    var orderableIds = getOrderableIdListFromLineItems(podDto.lineItems);
                     var promiseList = lotIds.length ?
                         [
                             lotRepositoryImpl.query({
@@ -526,7 +531,7 @@
                                     content: []
                                 },
                                 orderablePage = lotIds.length ? responses[1] : responses[0];
-                            return combineResponses(podDto, lotPage.content, orderablePage.content);
+                            return setLotAndOrderableIntoLineItems(podDto, lotPage.content, orderablePage.content);
                         });
                 });
         }
@@ -568,8 +573,8 @@
                         return lineItem;
                     }));
 
-                    var lotIds = getIdsFromListByObjectName(podDto.lineItems, 'lot'),
-                        orderableIds = getIdsFromListByObjectName(podDto.lineItems, 'orderable');
+                    var lotIds = getLotIdListFromLineItems(podDto.lineItems);
+                    var orderableIds = getOrderableIdListFromLineItems(podDto.lineItems);
                     var promiseList = lotIds.length ?
                         [
                             lotRepositoryImpl.query({
@@ -590,7 +595,7 @@
                                     content: []
                                 },
                                 orderablePage = lotIds.length ? responses[1] : responses[0];
-                            return combineResponses(podDto, lotPage.content, orderablePage.content);
+                            return setLotAndOrderableIntoLineItems(podDto, lotPage.content, orderablePage.content);
                         });
                 });
         }
@@ -624,7 +629,7 @@
             ).$promise;
         }
 
-        function combineResponses(proofOfDeliveryJson, lotJsons, orderableJsons) {
+        function setLotAndOrderableIntoLineItems(proofOfDeliveryJson, lotJsons, orderableJsons) {
             proofOfDeliveryJson.lineItems.forEach(function(lineItem) {
                 lineItem.orderable = getOrderableInfoById(orderableJsons, _.get(lineItem, ['orderable', 'id']));
                 if (!lineItem.added) {
@@ -634,17 +639,27 @@
                     lineItem.lot = getLotInfoById(lotJsons, _.get(lineItem, ['lot', 'id']));
                 }
             });
-
             return proofOfDeliveryJson;
         }
 
-        function getIdsFromListByObjectName(list, objectName) {
-            return _.unique(list.reduce(function(ids, item) {
-                if (_.get(item, [objectName, 'id'])) {
-                    ids.push(item[objectName].id);
+        function getLotIdListFromLineItems(lineItems) {
+            return lineItems.reduce(function(idList, lineItem) {
+                var lotId = _.get(lineItem, ['lot', 'id']);
+                if (lotId && !idList.includes(lotId)) {
+                    idList.push(lotId);
                 }
-                return ids;
-            }, []));
+                return idList;
+            }, []);
+        }
+
+        function getOrderableIdListFromLineItems(lineItems) {
+            return lineItems.reduce(function(idList, lineItem) {
+                var orderableId = _.get(lineItem, ['orderable', 'id']);
+                if (orderableId && !idList.includes(orderableId)) {
+                    idList.push(orderableId);
+                }
+                return idList;
+            }, []);
         }
 
         function getOrderableInfoById(orderableResultList, lineItemOrderableId) {
