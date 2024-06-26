@@ -781,7 +781,8 @@
                         quantityShipped: 0,
                         quantityAccepted: 0,
                         quantityRejected: 0,
-                        rejectionReasonId: _.get(vm.newlyAddedLotReason, 'id')
+                        rejectionReasonId: _.get(vm.newlyAddedLotReason, 'id'),
+                        lotOptions: lineItemData.lots
                     });
                     lotGroupLineItems.push([lineItemToAdd]);
                     loadingModalService.close();

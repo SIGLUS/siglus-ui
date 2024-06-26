@@ -40,10 +40,8 @@
                     controllerAs: 'vm',
                     resolve: {
                         facility: function(facilityFactory, $stateParams) {
-                            if ($stateParams.facility) {
-                                return $stateParams.facility;
-                            }
-                            return facilityFactory.getUserHomeFacility();
+                            return $stateParams.facility ?
+                                $stateParams.facility : facilityFactory.getUserHomeFacility();
                         },
                         proofOfDelivery: function($stateParams, proofOfDeliveryService) {
                             if ($stateParams.actionType === 'MERGE') {
@@ -72,23 +70,39 @@
                             order,
                             fulfillingLineItemFactory,
                             addAndRemoveLineItemService,
-                            orderablesPrice
+                            orderablesPrice,
+                            facility,
+                            proofOfDeliveryService
                         ) {
                             return fulfillingLineItemFactory.groupByOrderableForPod(
                                 proofOfDelivery.lineItems,
                                 order.orderLineItems
                             ).then(function(orderLineItems) {
                                 var orderablesPriceMap = orderablesPrice.data;
-                                var result = addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
-                                _.each(result, function(orderLineItem) {
-                                    _.each(orderLineItem.groupedLineItems, function(lineItem) {
-                                        var id = lineItem.orderable && lineItem.orderable.id;
-                                        lineItem.price = orderablesPriceMap[id]
-                                            ? orderablesPriceMap[id]
-                                            : '';
-                                    });
+                                var lineItemsToSetPrice =
+                                    addAndRemoveLineItemService.prepareLineItemsForPod(orderLineItems);
+                                _.each(lineItemsToSetPrice, function(orderLineItem) {
+
+                                    var productLineItems = orderLineItem.groupedLineItems;
+                                    var orderableId = _.get(productLineItems[0], ['orderable', 'id']);
+                                    proofOfDeliveryService.getOrderableLots(facility.id, orderableId)
+                                        .then(function(orderableLots) {
+                                            _.each(productLineItems, function(lineItem) {
+                                                //set price
+                                                lineItem.price = _.get(orderablesPriceMap, orderableId, '');
+                                                //set lotOptions
+                                                lineItem.lotOptions = orderableLots.map(function(lotInfo) {
+                                                    return {
+                                                        expirationDate: lotInfo.expirationDate,
+                                                        id: lotInfo.lotId,
+                                                        lotCode: lotInfo.lotCode
+                                                    };
+                                                });
+                                            });
+                                        });
+
                                 });
-                                return result;
+                                return lineItemsToSetPrice;
                             });
                         },
                         canEdit: function($stateParams, authorizationService,
