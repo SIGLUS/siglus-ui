@@ -354,17 +354,23 @@
                 podDto.lineItems = _.flatten(_.map(podDto.lineItems, function(podLineItem) {
                     var podLineItemId = podLineItem.id;
                     var locationInfoList = locationInfoMap[podLineItemId];
-                    // return [{}, {}]
-                    return locationInfoList.map(function(locationInfo) {
-                        var lineItemTemplate = angular.copy(podLineItem);
-                        return _.assign(lineItemTemplate, {
-                            quantityAccepted: locationInfo.quantityAccepted,
-                            moveTo: {
-                                locationCode: locationInfo.locationCode,
-                                area: locationInfo.area
-                            }
-                        });
+                    var lineItemTemplate = _.assign({}, podLineItem, {
+                        moveTo: {
+                            locationCode: undefined,
+                            area: undefined
+                        }
                     });
+                    // return [{}, {}]
+                    return locationInfoList && locationInfoList.length > 0 ?
+                        locationInfoList.map(function(locationInfo) {
+                            return _.assign(lineItemTemplate, {
+                                quantityAccepted: locationInfo.quantityAccepted,
+                                moveTo: {
+                                    locationCode: locationInfo.locationCode,
+                                    area: locationInfo.area
+                                }
+                            });
+                        }) : [lineItemTemplate];
                 }));
 
                 var lotIds = getLotIdListFromLineItems(podDto.lineItems);
