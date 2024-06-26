@@ -111,10 +111,16 @@
 
           <!-- lot code -->
           <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
-          <td ng-if="!vm.canEdit || !vm.isCurrentItemNewlyAdded(fulfillingLineItem) && !fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="!fulfillingLineItem.orderable.isKit &&
+           !vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
+           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+          >
             {{fulfillingLineItem.lot | lotCode}}
           </td>
-          <td ng-if="vm.canEdit && vm.isCurrentItemNewlyAdded(fulfillingLineItem) && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="!fulfillingLineItem.orderable.isKit && vm.canEdit &&
+           vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
+           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+          >
             <siglus-stock-input-select
                     line-item="fulfillingLineItem"
                     line-items="orderLineItem.groupedLineItems"
@@ -127,11 +133,17 @@
           <!-- expiration date -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
           <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
-          <td ng-if="!vm.canEdit || !vm.isCurrentItemNewlyAdded(fulfillingLineItem) && !fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="!fulfillingLineItem.orderable.isKit &&
+          !vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
+           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+          >
             {{fulfillingLineItem.lot.expirationDate}}
           </td>
-          <td ng-if="vm.canEdit && vm.isCurrentItemNewlyAdded(fulfillingLineItem) && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
-              style="min-width: 120px;">
+          <td ng-if="!fulfillingLineItem.orderable.isKit && vm.canEdit &&
+           vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
+           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+              style="min-width: 120px;"
+          >
             <input type="date"
                    ng-model="fulfillingLineItem.lot.expirationDate"
                    ng-required="true"

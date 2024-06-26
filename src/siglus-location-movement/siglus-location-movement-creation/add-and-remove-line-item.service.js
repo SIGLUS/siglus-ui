@@ -36,7 +36,6 @@
         this.addLineItemForVirtual = addLineItemForVirtual;
         this.removeItem = removeItem;
         this.getMainGroupRow = getMainGroupRow;
-        this.getMainGroupRowForPod = getMainGroupRowForPod;
         this.getAddProductRow = getAddProductRow;
         this.prepareAddedLineItems = prepareAddedLineItems;
         this.prepareAddedLineItemsForVirtual = prepareAddedLineItemsForVirtual;
@@ -155,25 +154,14 @@
             };
         }
 
-        function getMainGroupRowForPod(lineItem) {
-            return {
+        function getMainGroupRowForPod(lineItemTemplate) {
+            return _.assign({}, lineItemTemplate,  {
                 $error: {},
-                id: lineItem.id,
-                orderable: _.clone(lineItem.orderable),
-                lot: _.clone(lineItem.lot),
-                isKit: lineItem.isKit,
                 stockOnHand: 0,
                 isMainGroup: true,
                 location: null,
-                moveTo: null,
-                notes: lineItem.notes,
-                quantityShipped: lineItem.quantityShipped,
-                quantityAccepted: lineItem.quantityAccepted,
-                quantityRejected: lineItem.quantityRejected,
-                rejectionReasonId: lineItem.rejectionReasonId,
-                useVvm: lineItem.useVvm,
-                vvmStatus: lineItem.vvmStatus
-            };
+                moveTo: null
+            });
         }
 
         function getAddProductRow(product) {
@@ -331,7 +319,6 @@
         }
 
         function prepareLineItemsForPod(orderLineItems) {
-            var that = this;
             return orderLineItems.map(function(orderLineItem) {
                 var allLineItems = _.flatten(_.get(orderLineItem, 'groupedLineItems', []));
 
@@ -341,7 +328,8 @@
 
                 Object.values(groupByLot).forEach(function(lotLineItems) {
                     if (lotLineItems.length > 1) {
-                        lotLineItems.unshift(that.getMainGroupRowForPod(lotLineItems[0]));
+                        var lineItemTemplate = angular.copy(lotLineItems[0]);
+                        lotLineItems.unshift(getMainGroupRowForPod(lineItemTemplate));
                     } else {
                         lotLineItems[0].isFirst = true;
                     }
