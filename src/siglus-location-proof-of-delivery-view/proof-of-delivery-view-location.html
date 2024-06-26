@@ -110,11 +110,11 @@
           <!-- product name end -->
 
           <!-- lot code -->
-          <td ng-if="!vm.isCurrentItemNewlyAdded(fulfillingLineItem) && !fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
+          <td ng-if="!vm.canEdit || !vm.isCurrentItemNewlyAdded(fulfillingLineItem) && !fulfillingLineItem.orderable.isKit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             {{fulfillingLineItem.lot | lotCode}}
           </td>
-          <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
-          <td ng-if="vm.isCurrentItemNewlyAdded(fulfillingLineItem) && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="vm.canEdit && vm.isCurrentItemNewlyAdded(fulfillingLineItem) && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
             <siglus-stock-input-select
                     line-item="fulfillingLineItem"
                     line-items="orderLineItem.groupedLineItems"

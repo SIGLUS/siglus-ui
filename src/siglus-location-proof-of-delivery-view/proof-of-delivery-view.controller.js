@@ -297,7 +297,7 @@
 
         vm.changeArea = function(lineItem, groupedLineItems) {
             $scope.needToConfirm = true;
-            lineItem.$error.areaError = _.isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
+            lineItem.$error.areaError = isEmpty(_.get(lineItem.moveTo, 'area')) ? 'openlmisForm.required' : '';
             lineItem.destLocationOptions = SiglusLocationCommonUtilsService
                 .getDesLocationList(lineItem, areaLocationInfo);
             // still need to verify all lines
