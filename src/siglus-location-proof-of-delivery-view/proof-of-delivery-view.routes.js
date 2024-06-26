@@ -46,7 +46,6 @@
                             return facilityFactory.getUserHomeFacility();
                         },
                         proofOfDelivery: function($stateParams, proofOfDeliveryService) {
-
                             if ($stateParams.actionType === 'MERGE') {
                                 return proofOfDeliveryService.mergeDraftWithLocation($stateParams.podId);
                             }

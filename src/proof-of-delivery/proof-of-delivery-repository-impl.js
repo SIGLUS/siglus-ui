@@ -341,6 +341,7 @@
                 var podDto = podWithLocation.podDto;
                 var podLineItemLocation = podWithLocation.podLineItemLocation;
 
+                // set location info from podLineItemLocation to podDto.lineItems
                 podDto.lineItems = _.flatten(podDto.lineItems.map(function(lineItem) {
                     var targets = _.filter(podLineItemLocation, function(itemLocation) {
                         return lineItem.id === itemLocation.podLineItemId;
@@ -625,16 +626,13 @@
 
         function combineResponses(proofOfDeliveryJson, lotJsons, orderableJsons) {
             proofOfDeliveryJson.lineItems.forEach(function(lineItem) {
-                if (lineItem.added) {
-                    return;
+                lineItem.orderable = getOrderableInfoById(orderableJsons, _.get(lineItem, ['orderable', 'id']));
+                if (!lineItem.added) {
+                    lineItem.quantityShipped = getQuantityShipped(
+                        lineItem, proofOfDeliveryJson.shipment.lineItems
+                    );
+                    lineItem.lot = getLotInfoById(lotJsons, _.get(lineItem, ['lot', 'id']));
                 }
-
-                lineItem.quantityShipped = getQuantityShipped(
-                    lineItem, proofOfDeliveryJson.shipment.lineItems
-                );
-
-                lineItem.lot = getFirstObjectFromListById(lotJsons, lineItem, 'lot');
-                lineItem.orderable = getFirstObjectFromListById(orderableJsons, lineItem, 'orderable');
             });
 
             return proofOfDeliveryJson;
@@ -649,14 +647,16 @@
             }, []));
         }
 
-        function getFirstObjectFromListById(list, object, propertyName) {
-            var filteredList;
-            if (object[propertyName] && list.length) {
-                filteredList = list.filter(function(item) {
-                    return item.id === object[propertyName].id;
-                });
-            }
-            return filteredList && filteredList.length ? filteredList[0] : undefined;
+        function getOrderableInfoById(orderableResultList, lineItemOrderableId) {
+            return orderableResultList.find(function(orderable) {
+                return orderable.id === lineItemOrderableId;
+            });
+        }
+
+        function getLotInfoById(lotResultList, lineItemLotId) {
+            return lotResultList.find(function(lot) {
+                return lot.id === lineItemLotId;
+            });
         }
 
         function getQuantityShipped(lineItem, shipmentLineItems) {
