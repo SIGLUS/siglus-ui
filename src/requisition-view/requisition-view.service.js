@@ -47,16 +47,18 @@
             });
         }
 
-        function transExcelformResponse(data, headers) {
-            var objectUrl = URL.createObjectURL(data);
-            var a = document.createElement('a');
-            document.body.appendChild(a);
-            a.setAttribute('style', 'display:none');
-            a.setAttribute('href', objectUrl);
-            var filename =  getFileNameFromHeader(headers);
-            a.setAttribute('download', filename);
-            a.click();
-            URL.revokeObjectURL(objectUrl);
+        function transExcelformResponse(data, headers, status) {
+            if (status === 200) {
+                var objectUrl = URL.createObjectURL(data);
+                var a = document.createElement('a');
+                document.body.appendChild(a);
+                a.setAttribute('style', 'display:none');
+                a.setAttribute('href', objectUrl);
+                var filename =  getFileNameFromHeader(headers);
+                a.setAttribute('download', filename);
+                a.click();
+                URL.revokeObjectURL(objectUrl);
+            }
         }
 
         function getFileNameFromHeader(headers) {
