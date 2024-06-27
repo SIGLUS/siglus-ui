@@ -47,18 +47,13 @@
             },
             resolve: {
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
-                        return facilityFactory.getUserHomeFacility();
-                    }
-                    return $stateParams.facility;
+                    return $stateParams.facility ? $stateParams.facility : facilityFactory.getUserHomeFacility();
                 },
                 program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId).then(function(programs) {
+                    return $stateParams.program ? $stateParams.program :
+                        programService.get($stateParams.programId).then(function(programs) {
                             return programs;
                         });
-                    }
-                    return $stateParams.program;
                 },
                 subDraftIds: function($stateParams) {
                     return $stateParams.subDraftIds.indexOf(',')
@@ -81,13 +76,12 @@
                     }
                     $stateParams.draft = undefined;
                     if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        if ($stateParams.subDraftIds) {
-                            var id = $stateParams.subDraftIds.length > 1
-                                ? $stateParams.subDraftIds.split(',')
-                                : [$stateParams.subDraftIds];
-                            var flag = $stateParams.isMerged === true;
+                        var idString = $stateParams.subDraftIds;
+                        if (idString) {
+                            var draftIdList = idString.split(',');
+                            var isMerged = $stateParams.isMerged === true;
                             physicalInventoryFactory.getLocationPhysicalInventorySubDraft(
-                                id, flag, locationManagementOption
+                                draftIdList, isMerged, locationManagementOption
                             )
                                 .then(function(draft) {
                                     var filterNullLineItems = _.filter(draft.lineItems, function(itm) {

@@ -205,8 +205,10 @@
                 });
         }
 
-        function getLocationPhysicalInventorySubDraft(id, flag, locationManagementOption) {
-            return physicalInventoryService.getLocationPhysicalInventorySubDraft(id, locationManagementOption)
+        function  getLocationPhysicalInventorySubDraft(subDraftIdList, isMerged, locationManagementOption) {
+            return physicalInventoryService.getLocationPhysicalInventorySubDraft(
+                subDraftIdList, locationManagementOption
+            )
                 .then(function(physicalInventory) {
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;
@@ -217,8 +219,8 @@
                     return getStockProducts(
                         physicalInventory.programId,
                         physicalInventory.facilityId,
-                        id,
-                        flag,
+                        subDraftIdList,
+                        isMerged,
                         allLineOrderableIds,
                         locationManagementOption
                     )
