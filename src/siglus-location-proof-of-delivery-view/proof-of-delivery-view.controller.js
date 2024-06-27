@@ -85,7 +85,20 @@
         vm.removeLocationItem = removeLocationItem;
         vm.addLotGroup = addLotGroup;
         vm.removeLotGroup = removeLotGroup;
+        vm.checkCellType = checkCellType;
         vm.displayOrderLineItems = undefined;
+        vm.cellType = {
+            EMPTY: 'empty',
+            PLANE_TEXT: 'planeText',
+            INPUT: 'input'
+        };
+
+        vm.cellName = {
+            LOT_CODE: 'lotCode',
+            EXPIRATION_DATE: 'expirationDate',
+            LOCATION: 'location',
+            REASON: 'reason'
+        };
 
         /**
          * @ngdoc property
@@ -889,6 +902,36 @@
         function isCurrentItemNewlyAdded(lineItem) {
             // frontend use isNewlyAddedLot to mark newlyAdded lineItem while backend use added
             return lineItem.isNewlyAddedLot || lineItem.added;
+        }
+
+        // eslint-disable-next-line complexity
+        function checkCellType(lineItem, cellName) {
+            var isKit = _.get(lineItem, ['orderable', 'isKit'], false);
+            var shouldDisplayLotOrReason = lineItem.isMainGroup || lineItem.isFirst;
+            var shouldDisplayLocation = !lineItem.isMainGroup;
+            if (vm.canEdit) {
+                if (cellName === vm.cellName.LOT_CODE || cellName === vm.cellName.EXPIRATION_DATE) {
+                    if (!shouldDisplayLotOrReason || isKit) {
+                        return vm.cellType.EMPTY;
+                    }
+                    return isCurrentItemNewlyAdded(lineItem) ? vm.cellType.INPUT : vm.cellType.PLANE_TEXT;
+                } else if (cellName === vm.cellName.REASON) {
+                    return shouldDisplayLotOrReason ? vm.cellType.INPUT : vm.cellType.EMPTY;
+                } else if (cellName === vm.cellName.LOCATION) {
+                    return shouldDisplayLocation ? vm.cellType.INPUT : vm.cellType.EMPTY;
+                }
+            }
+            // !vm.canEdit (View):
+            if (cellName === vm.cellName.LOT_CODE || cellName === vm.cellName.EXPIRATION_DATE) {
+                if (!shouldDisplayLotOrReason || isKit) {
+                    return vm.cellType.EMPTY;
+                }
+                return vm.cellType.PLANE_TEXT;
+            } else if (cellName === vm.cellName.REASON) {
+                return shouldDisplayLotOrReason ? vm.cellType.PLANE_TEXT : vm.cellType.EMPTY;
+            } else if (cellName === vm.cellName.LOCATION) {
+                return shouldDisplayLocation ? vm.cellType.PLANE_TEXT : vm.cellType.EMPTY;
+            }
         }
 
     }

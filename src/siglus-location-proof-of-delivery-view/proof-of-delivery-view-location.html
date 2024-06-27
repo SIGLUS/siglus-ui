@@ -110,17 +110,11 @@
           <!-- product name end -->
 
           <!-- lot code -->
-          <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
-          <td ng-if="!fulfillingLineItem.orderable.isKit &&
-           !vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
-           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
-          >
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.LOT_CODE) === vm.cellType.EMPTY"></td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.LOT_CODE) === vm.cellType.PLANE_TEXT">
             {{fulfillingLineItem.lot | lotCode}}
           </td>
-          <td ng-if="!fulfillingLineItem.orderable.isKit && vm.canEdit &&
-           vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
-           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
-          >
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.LOT_CODE) === vm.cellType.INPUT">
             <siglus-stock-input-select
                     line-item="fulfillingLineItem"
                     line-items="orderLineItem.groupedLineItems"
@@ -132,16 +126,11 @@
 
           <!-- expiration date -->
           <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->
-          <td ng-if="fulfillingLineItem.orderable.isKit || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
-          <td ng-if="!fulfillingLineItem.orderable.isKit &&
-          !vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
-           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
-          >
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.EXPIRATION_DATE) === vm.cellType.EMPTY"></td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.EXPIRATION_DATE) === vm.cellType.PLANE_TEXT">
             {{fulfillingLineItem.lot.expirationDate}}
           </td>
-          <td ng-if="!fulfillingLineItem.orderable.isKit && vm.canEdit &&
-           vm.isCurrentItemNewlyAdded(fulfillingLineItem) &&
-           (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)"
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.EXPIRATION_DATE) === vm.cellType.INPUT"
               style="min-width: 120px;"
           >
             <input type="date"
@@ -169,17 +158,11 @@
           <!-- shipped quantity end -->
 
           <!-- location -->
-          <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup && fulfillingLineItem.moveTo.locationCode">
-            {{fulfillingLineItem.moveTo.area}}-{{fulfillingLineItem.moveTo.locationCode}}
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.LOCATION) === vm.cellType.EMPTY"></td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.LOCATION) === vm.cellType.PLANE_TEXT">
+            {{fulfillingLineItem.moveTo.locationCode ? fulfillingLineItem.moveTo.area + '-' + fulfillingLineItem.moveTo.locationCode : 'N/A'}}
           </td>
-          <td ng-if="!vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.moveTo.locationCode">
-            N/A
-          </td>
-          <td ng-if="!vm.canEdit && fulfillingLineItem.isMainGroup">
-          </td>
-          <td ng-if="vm.canEdit && fulfillingLineItem.isMainGroup">
-          </td>
-          <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup">
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.LOCATION) === vm.cellType.INPUT">
             <div class="location-movement-area">
               <select
                   noPlaceholder
@@ -242,7 +225,11 @@
           <!-- rejected quantity end -->
 
           <!-- reason -->
-          <td ng-if="vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.REASON) === vm.cellType.EMPTY"></td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.REASON) === vm.cellType.PLANE_TEXT">
+            {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
+          </td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.REASON) === vm.cellType.INPUT">
             <select ng-model="fulfillingLineItem.rejectionReasonId"
                     ng-options="reason.id as reason.name for reason in vm.getLineItemReasonOptions(fulfillingLineItem, lotGroup)"
                     openlmis-invalid="{{fulfillingLineItem.$error.rejectionReasonIdError | message}}"
@@ -250,13 +237,7 @@
                     ng-change="vm.changeAcceptQuantity(fulfillingLineItem, lotGroup)">
             </select>
           </td>
-          <td ng-if="vm.canEdit && !fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst">
-          </td>
-          <td ng-if="!vm.canEdit && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
-            {{vm.getReasonName(fulfillingLineItem.rejectionReasonId)}}
-          </td>
-          <td ng-if="!vm.canEdit && !(fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
-          </td>
+
           <!-- reason end -->
 
           <!-- price -->
