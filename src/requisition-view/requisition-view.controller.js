@@ -307,7 +307,7 @@
             ];
             var supportPrograms = ['T', 'TR', 'VC', 'MMC', 'TB'];
             return supportStatus.includes(vm.requisition.status)
-                && supportPrograms.includes(vm.requisition.program.code);
+                && supportPrograms.includes(program.code);
         }
 
         /**
