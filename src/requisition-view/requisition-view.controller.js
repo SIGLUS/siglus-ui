@@ -361,7 +361,10 @@
         }
 
         function exportExcel() {
-            requisitionViewService.exportExcel(vm.requisition.id);
+            loadingModalService.open();
+            requisitionViewService.exportExcel(vm.requisition.id).$promise.finally(
+                loadingModalService.close
+            );
         }
 
         /**
