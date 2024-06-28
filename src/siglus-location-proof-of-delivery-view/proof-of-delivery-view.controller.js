@@ -548,7 +548,7 @@
                 validateAcceptedQuantityEmpty(lineItem);
                 validateReasonIdEmpty(lineItem, allLineItems);
                 validateLocationsEmptyAndDuplicated(lineItem, allLineItems);
-                // validateLotCodeEmptyAndDuplicate(lineItem, allLineItems);
+                validateLotCodeEmptyAndDuplicate(lineItem);
                 validateExpirationDateEmpty(lineItem);
             });
 
@@ -863,11 +863,10 @@
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
-            var productGroup = data.lineItems;
-            validateLotCodeEmptyAndDuplicate(lineItem, productGroup);
+            validateLotCodeEmptyAndDuplicate(lineItem);
         });
 
-        function validateLotCodeEmptyAndDuplicate(lineItem, productGroup) {
+        function validateLotCodeEmptyAndDuplicate(lineItem) {
             lineItem.$errors = {
                 lotCodeInvalid: ''
             };
@@ -878,21 +877,20 @@
                 lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
                 // var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
-                validateDuplicateLotCode(lineItem, productGroup);
+                validateDuplicateLotCode(lineItem);
             }
         }
 
-        function  validateDuplicateLotCode(lineItem, productGroup) {
+        function  validateDuplicateLotCode(lineItem) {
             var currentLotCode = _.get(lineItem, ['lot', 'lotCode']);
-            var duplicateLotGroup = productGroup.filter(function(locationGroup) {
-                var firstLineItem = locationGroup[0];
-                return _.get(firstLineItem, ['lot', 'lotCode']) === currentLotCode;
+            var lineItemsToCheck = getAllLineItems().filter(function(lineItem) {
+                return (lineItem.isMainGroup || lineItem.isFirst) &&
+                    _.get(lineItem, ['lot', 'lotCode']) === currentLotCode;
             });
-            if (duplicateLotGroup.length > 1) {
-                duplicateLotGroup.forEach(function(locationGroup) {
-                    var firstLineItem = locationGroup[0];
-                    if (isCurrentItemNewlyAdded(firstLineItem)) {
-                        firstLineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
+            if (lineItemsToCheck.length > 1) {
+                lineItemsToCheck.forEach(function(lineItem) {
+                    if (isCurrentItemNewlyAdded(lineItem)) {
+                        lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeDuplicate';
                     }
                 });
             }
