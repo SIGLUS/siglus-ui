@@ -361,16 +361,18 @@
                         }
                     });
                     // return [{}, {}]
-                    return locationInfoList && locationInfoList.length > 0 ?
+                    var listA = locationInfoList && locationInfoList.length > 0 ?
                         locationInfoList.map(function(locationInfo) {
-                            return _.assign(lineItemTemplate, {
+                            var obj = _.assign({}, lineItemTemplate, {
                                 quantityAccepted: locationInfo.quantityAccepted,
                                 moveTo: {
                                     locationCode: locationInfo.locationCode,
                                     area: locationInfo.area
                                 }
                             });
+                            return obj;
                         }) : [lineItemTemplate];
+                    return listA;
                 }));
 
                 var lotIds = getLotIdListFromLineItems(podDto.lineItems);
