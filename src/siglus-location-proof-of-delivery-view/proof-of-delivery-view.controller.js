@@ -73,6 +73,7 @@
         vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
         vm.changeAcceptQuantity = changeAcceptQuantity;
         vm.isCurrentItemNewlyAdded = isCurrentItemNewlyAdded;
+        vm.getSumOfQuantityShipped = getSumOfQuantityShipped;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
@@ -291,16 +292,16 @@
                 return acc + _.get(lineItem, 'quantityAccepted', 0);
             }, 0);
         };
-        vm.getSumOfQuantityShipped = function(groupedLineItems) {
-            return groupedLineItems[0].filter(function(lineItem) {
+
+        function getSumOfQuantityShipped(groupedLineItems) {
+            var mainGroupOrOnlyLineItems = _.flatten(groupedLineItems).filter(function(lineItem) {
                 return lineItem.isMainGroup || lineItem.isFirst;
-            }).map(function(line) {
-                return _.get(line, 'quantityShipped', 0);
-            })
-                .reduce(function(accumulator, a) {
-                    return accumulator + a;
-                }, 0);
-        };
+            });
+            return mainGroupOrOnlyLineItems.reduce(function(sumQuantity, lineItem) {
+                var quantityShipped = _.get(lineItem, 'quantityShipped', 0);
+                return sumQuantity + quantityShipped;
+            }, 0);
+        }
 
         function removeLocationItem(index, groupedLineItems) {
             var lineItem = groupedLineItems[index];
