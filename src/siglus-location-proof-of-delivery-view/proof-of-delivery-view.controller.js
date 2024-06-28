@@ -548,7 +548,7 @@
                 validateAcceptedQuantityEmpty(lineItem);
                 validateReasonIdEmpty(lineItem, allLineItems);
                 validateLocationsEmptyAndDuplicated(lineItem, allLineItems);
-                validateLotCodeEmptyAndDuplicate(lineItem, allLineItems);
+                // validateLotCodeEmptyAndDuplicate(lineItem, allLineItems);
                 validateExpirationDateEmpty(lineItem);
             });
 
@@ -863,11 +863,11 @@
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
-            var lotGroup = data.lineItems;
-            validateLotCodeEmptyAndDuplicate(lineItem, lotGroup);
+            var productGroup = data.lineItems;
+            validateLotCodeEmptyAndDuplicate(lineItem, productGroup);
         });
 
-        function validateLotCodeEmptyAndDuplicate(lineItem, allLineItems) {
+        function validateLotCodeEmptyAndDuplicate(lineItem, productGroup) {
             lineItem.$errors = {
                 lotCodeInvalid: ''
             };
@@ -877,14 +877,14 @@
             if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
                 lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
-                var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
-                validateDuplicateLotCode(lineItem, lotGroup);
+                // var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
+                validateDuplicateLotCode(lineItem, productGroup);
             }
         }
 
-        function validateDuplicateLotCode(lineItem, lotGroup) {
+        function  validateDuplicateLotCode(lineItem, productGroup) {
             var currentLotCode = _.get(lineItem, ['lot', 'lotCode']);
-            var duplicateLotGroup = lotGroup.filter(function(locationGroup) {
+            var duplicateLotGroup = productGroup.filter(function(locationGroup) {
                 var firstLineItem = locationGroup[0];
                 return _.get(firstLineItem, ['lot', 'lotCode']) === currentLotCode;
             });
