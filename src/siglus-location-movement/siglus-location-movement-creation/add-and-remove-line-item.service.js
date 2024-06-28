@@ -84,6 +84,7 @@
                 lot: _.clone(lineItem.lot),
                 isMainGroup: false,
                 quantityAccepted: 0,
+                quantityRejected: 0,
                 isFirst: false,
                 moveTo: {}
             });

@@ -74,6 +74,8 @@
         vm.changeAcceptQuantity = changeAcceptQuantity;
         vm.isCurrentItemNewlyAdded = isCurrentItemNewlyAdded;
         vm.getSumOfQuantityShipped = getSumOfQuantityShipped;
+        vm.getSumOfLot = getSumOfLot;
+        vm.getRejectedQuantity = getRejectedQuantity;
         vm.isMerge = undefined;
         this.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
         vm.maxDate = undefined;
@@ -269,19 +271,17 @@
             return _.get(reason, 'name', '');
         }
 
-        function getSumOfLot(lineItem, groupedLineItems) {
-            return groupedLineItems.filter(function(lineItem) {
-                return !lineItem.isMainGroup;
-            }).filter(function(line) {
-                return _.get(lineItem, ['orderable', 'id'], '') === _.get(line, ['orderable', 'id'], '') &&
-                    _.get(lineItem, ['lot', 'id'], '') === _.get(line, ['lot', 'id'], '');
-            })
-                .map(function(line) {
-                    return _.get(line, 'quantityAccepted', 0);
-                })
-                .reduce(function(accumulator, a) {
-                    return accumulator + a;
-                }, 0);
+        function getSumOfLot(currentLineItem, lotGroup) {
+            var currentOrderableId = _.get(currentLineItem, ['orderable', 'id'], '');
+            var currentLotId =  _.get(currentLineItem, ['lot', 'id'], '');
+            var lineItemsToSum = lotGroup.filter(function(lineItem) {
+                return !lineItem.isMainGroup && currentOrderableId === _.get(lineItem, ['orderable', 'id'], '') &&
+                    currentLotId === _.get(lineItem, ['lot', 'id'], '');
+            });
+            return lineItemsToSum.reduce(function(acc, lineItem) {
+                var quantityAccepted = _.get(lineItem, 'quantityAccepted', 0);
+                return acc + quantityAccepted;
+            }, 0);
         }
 
         vm.getSumOfOrderableAcceptedQuantity = function(locationGroup) {
@@ -346,10 +346,14 @@
             $scope.needToConfirm = true;
             lineItem.$error.rejectionReasonIdError = undefined;
             validateAcceptedQuantityEmpty(lineItem);
-            // update rejected quantity
-            if (lineItem.isMainGroup || lineItem.isFirst) {
-                lineItem.quantityRejected = vm.getRejectedQuantity(lineItem, groupedLineItems);
-            }
+            // update accept & reject quantity
+            var lineItemsToUpdate = groupedLineItems.filter(function(lineItem) {
+                return lineItem.isMainGroup || lineItem.isFirst;
+            });
+            lineItemsToUpdate.forEach(function(lineItem) {
+                lineItem.quantityAccepted = getSumOfLot(lineItem, groupedLineItems);
+                lineItem.quantityRejected = getRejectedQuantity(lineItem, groupedLineItems);
+            });
             // update reason id
             updateReasonIdForLocationGroup(lineItem, groupedLineItems);
         }
@@ -468,11 +472,11 @@
             mainLine.$error.rejectionReasonIdError = '';
         }
 
-        vm.getRejectedQuantity = function(fulfillingLineItem, groupedLineItems) {
+        function getRejectedQuantity(fulfillingLineItem, groupedLineItems) {
             var quantityAccepted = getSumOfLot(fulfillingLineItem, groupedLineItems);
             var diff = fulfillingLineItem.quantityShipped - quantityAccepted;
             return diff < 0 ? 0 : diff;
-        };
+        }
 
         function getPodMainOrFirstLineItems() {
             var allLineItems = getAllLineItems();
