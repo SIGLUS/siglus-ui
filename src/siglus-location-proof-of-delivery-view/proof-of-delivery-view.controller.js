@@ -876,7 +876,6 @@
             if (isEmpty(_.get(lineItem, ['lot', 'lotCode']))) {
                 lineItem.$errors.lotCodeInvalid = 'proofOfDeliveryView.lotCodeRequired';
             } else {
-                // var lotGroup = getLineItemsWithSameLot(lineItem, allLineItems);
                 validateDuplicateLotCode(lineItem);
             }
         }

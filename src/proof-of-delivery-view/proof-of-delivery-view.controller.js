@@ -292,9 +292,7 @@
                         notificationService.success(
                             'proofOfDeliveryView.proofOfDeliveryHasBeenSaved'
                         );
-                        $state.go('^', $stateParams, {
-                            reload: true
-                        });
+                        returnBack($stateParams);
                     }
                 )
                 .catch(function() {
@@ -326,12 +324,7 @@
                             notificationService.success(
                                 'proofOfDeliveryView.proofOfDeliveryHasBeenConfirmed'
                             );
-                            $state.go('openlmis.orders.podManage', {
-                                requestingFacilityId: $stateParams.requestingFacilityId,
-                                programId: $stateParams.programId
-                            }, {
-                                reload: true
-                            });
+                            backToPodList();
                         })
                         .catch(function(error) {
                             if (
@@ -362,9 +355,7 @@
                 loadingModalService.open();
                 proofOfDeliveryService.deleteSubDraft($stateParams.podId,
                     $stateParams.subDraftId).then(function() {
-                    $state.go('^', $stateParams, {
-                        reload: true
-                    });
+                    returnBack($stateParams);
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -373,8 +364,18 @@
             });
         }
 
-        function returnBack() {
-            $state.go('^', {}, {
+        function backToPodList() {
+            $scope.needToConfirm = false;
+            $state.go('openlmis.orders.podManage', {
+                requestingFacilityId: $stateParams.requestingFacilityId,
+                programId: $stateParams.programId
+            }, {
+                reload: true
+            });
+        }
+
+        function returnBack(data) {
+            $state.go('^', data, {
                 reload: true
             });
         }
@@ -401,7 +402,7 @@
 
         function calculateValueByShippedQuantityAndPrice(lineItem) {
             return _.get(lineItem, ['price']) ?
-                (lineItem.quantityShipped * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
+                (lineItem.quantityAccepted * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
 
         function onAcceptedQuantityChanged(lineItem) {
@@ -524,6 +525,10 @@
             var flattenedLineItems = _.flatten(vm.orderLineItems.map(function(orderLineItem) {
                 return orderLineItem.groupedLineItems;
             }));
+            // set legal quantityRejected
+            flattenedLineItems.forEach(function(lineItem) {
+                lineItem.quantityRejected = lineItem.quantityRejected || 0;
+            });
             return _.assign(proofOfDeliveryCopy, {
                 lineItems: flattenedLineItems
             }) ;
