@@ -100,7 +100,8 @@
             LOT_CODE: 'lotCode',
             EXPIRATION_DATE: 'expirationDate',
             LOCATION: 'location',
-            REASON: 'reason'
+            REASON: 'reason',
+            PRICE_VALUE: 'priceValue'
         };
 
         /**
@@ -742,7 +743,7 @@
 
         function calculateValueByShippedQuantityAndPrice(lineItem) {
             return _.get(lineItem, ['price']) ?
-                (lineItem.quantityShipped * (lineItem.price * 100).toFixed(2)) / 100 : '';
+                (lineItem.quantityAccepted * (lineItem.price * 100).toFixed(2)) / 100 : '';
         }
 
         function disableReasonSelect(lineItem, locationGroup) {
@@ -923,6 +924,7 @@
         function checkCellType(lineItem, cellName) {
             var isKit = _.get(lineItem, ['orderable', 'isKit'], false);
             var shouldDisplayLotOrReason = lineItem.isMainGroup || lineItem.isFirst;
+            var shouldDisplayPriceValue = lineItem.isMainGroup || lineItem.isFirst;
             var shouldDisplayLocation = !lineItem.isMainGroup;
             if (vm.canEdit) {
                 if (cellName === vm.cellName.LOT_CODE || cellName === vm.cellName.EXPIRATION_DATE) {
@@ -934,6 +936,11 @@
                     return shouldDisplayLotOrReason ? vm.cellType.INPUT : vm.cellType.EMPTY;
                 } else if (cellName === vm.cellName.LOCATION) {
                     return shouldDisplayLocation ? vm.cellType.INPUT : vm.cellType.EMPTY;
+                } else if (cellName === vm.cellName.PRICE_VALUE) {
+                    if (!shouldDisplayPriceValue || isCurrentItemNewlyAdded(lineItem)) {
+                        return vm.cellType.EMPTY;
+                    }
+                    return vm.cellType.PLANE_TEXT;
                 }
             }
             // !vm.canEdit (View):
@@ -946,6 +953,8 @@
                 return shouldDisplayLotOrReason ? vm.cellType.PLANE_TEXT : vm.cellType.EMPTY;
             } else if (cellName === vm.cellName.LOCATION) {
                 return shouldDisplayLocation ? vm.cellType.PLANE_TEXT : vm.cellType.EMPTY;
+            } else if (cellName === vm.cellName.PRICE_VALUE) {
+                return shouldDisplayPriceValue ? vm.cellType.PLANE_TEXT : vm.cellType.EMPTY;
             }
         }
 

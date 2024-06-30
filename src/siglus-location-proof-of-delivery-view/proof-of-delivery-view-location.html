@@ -241,17 +241,17 @@
           <!-- reason end -->
 
           <!-- price -->
-          <td ng-if="!vm.isCurrentItemNewlyAdded(fulfillingLineItem) && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.PLANE_TEXT">
             {{ fulfillingLineItem.price }}
           </td>
-          <td ng-if="vm.isCurrentItemNewlyAdded(fulfillingLineItem) || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.EMPTY"></td>
           <!-- price end -->
 
           <!-- value -->
-          <td ng-if="!vm.isCurrentItemNewlyAdded(fulfillingLineItem) && (fulfillingLineItem.isMainGroup || fulfillingLineItem.isFirst)">
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.PLANE_TEXT">
             {{ vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
           </td>
-          <td ng-if="vm.isCurrentItemNewlyAdded(fulfillingLineItem) || (!fulfillingLineItem.isMainGroup && !fulfillingLineItem.isFirst)"></td>
+          <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.EMPTY"></td>
           <!-- value end -->
 
           <!-- notes -->
