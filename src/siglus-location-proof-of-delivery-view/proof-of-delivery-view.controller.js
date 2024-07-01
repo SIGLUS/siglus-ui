@@ -743,7 +743,7 @@
 
         function calculateValueByShippedQuantityAndPrice(lineItem) {
             return _.get(lineItem, ['price']) ?
-                (lineItem.quantityAccepted * (lineItem.price * 100).toFixed(2)) / 100 : '';
+                (lineItem.quantityAccepted * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
 
         function disableReasonSelect(lineItem, locationGroup) {
@@ -937,7 +937,7 @@
                 } else if (cellName === vm.cellName.LOCATION) {
                     return shouldDisplayLocation ? vm.cellType.INPUT : vm.cellType.EMPTY;
                 } else if (cellName === vm.cellName.PRICE_VALUE) {
-                    if (!shouldDisplayPriceValue || isCurrentItemNewlyAdded(lineItem)) {
+                    if (!shouldDisplayPriceValue) {
                         return vm.cellType.EMPTY;
                     }
                     return vm.cellType.PLANE_TEXT;

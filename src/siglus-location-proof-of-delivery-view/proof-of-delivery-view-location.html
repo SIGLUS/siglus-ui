@@ -51,7 +51,7 @@
       <thead>
         <tr>
           <th>{{'proofOfDeliveryView.fnm' | message}}</th>
-          <th>{{'proofOfDeliveryView.productName' | message}}</th>
+          <th style="width: 20%;">{{'proofOfDeliveryView.productName' | message}}</th>
           <th>{{'proofOfDeliveryView.lotCode' | message}}</th>
           <th>{{'proofOfDeliveryView.expiringDate' | message}}</th>
           <th>{{'proofOfDeliveryView.quantityOrdered' | message}}</th>
@@ -64,8 +64,8 @@
           <th ng-if="vm.showVvmColumn">{{'proofOfDeliveryView.vvmStatus' | message}}</th>
           <th>{{'proofOfDeliveryView.quantityReturned' | message}}</th>
           <th>{{'proofOfDeliveryView.reasonForAdjustment' | message}}</th>
-          <th>{{'proofOfDeliveryView.price' | message}}</th>
-          <th>{{'proofOfDeliveryView.value' | message}}</th>
+          <th style="min-width: 100px;">{{'proofOfDeliveryView.price' | message}}</th>
+          <th style="min-width: 120px;">{{'proofOfDeliveryView.value' | message}}</th>
           <th>{{'proofOfDeliveryView.notes' | message}}</th>
           <th ng-if="vm.canEdit">{{'proofOfDeliveryView.actions' | message}}</th>
         </tr>
@@ -242,7 +242,7 @@
 
           <!-- price -->
           <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.PLANE_TEXT">
-            {{ fulfillingLineItem.price }}
+            {{ fulfillingLineItem.price + ' MZM' }}
           </td>
           <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.EMPTY"></td>
           <!-- price end -->

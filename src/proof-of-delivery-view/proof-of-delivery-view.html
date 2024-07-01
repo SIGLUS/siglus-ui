@@ -208,13 +208,13 @@
 
           <!-- cell for price -->
           <td style="white-space: nowrap">
-            {{ !vm.canEdit || (!vm.isCurrentItemNewlyAdded(fulfillingLineItem) && fulfillingLineItem.price) ? fulfillingLineItem.price + ' MZM' : ''}}
+            {{ fulfillingLineItem.price ? fulfillingLineItem.price + ' MZM' : ''}}
           </td>
           <!-- cell for price end -->
 
           <!-- cell for value -->
           <td style="white-space: nowrap">
-            {{ !vm.canEdit || !vm.isCurrentItemNewlyAdded(fulfillingLineItem) ? vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) : '' }}
+            {{ vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
           </td>
           <!-- cell for value end -->
 
