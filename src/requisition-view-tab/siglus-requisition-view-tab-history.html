@@ -15,12 +15,13 @@
             line-items="vm.requisition.consultationNumberLineItems"
             can-edit="false"
             is-emergency="vm.requisition.emergency"
-            ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency"
-    />
+            ng-if="vm.requisition.template.extension.enableConsultationNumber && !vm.requisition.emergency">
+    </siglus-consultation-number>
     <kit-usage sections="vm.requisition.usageTemplate.kitUsage"
                line-items="vm.requisition.kitUsageLineItems"
                can-edit="false"
-               ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency"/>
+               ng-if="vm.requisition.template.extension.enableKitUsage && !vm.requisition.emergency">
+    </kit-usage>
     <div class="openlmis-table-container" ng-if="vm.requisition.template.extension.enableProduct">
         <table>
             <thead>
@@ -55,7 +56,8 @@
         <openlmis-pagination
                 on-page-change="vm.replaceLocation"
                 list="vm.lineItems"
-                paged-list="vm.items"/>
+                paged-list="vm.items">
+        </openlmis-pagination>
     </div>
     <siglus-regimen sections="vm.requisition.usageTemplate.regimen"
                     regimen-line-items="vm.requisition.regimenLineItems"
@@ -70,27 +72,28 @@
                        available-products="vm.requisition.availableFullSupplyProducts"
                        added-products="vm.requisition.requisitionLineItems"
                        can-edit="false"
-                       ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency"/>
+                       ng-if="vm.requisition.template.extension.enableUsageInformation && !vm.requisition.emergency">
+    </usage-information>
     <siglus-patient sections="vm.requisition.usageTemplate.patient"
                     line-items="vm.requisition.patientLineItems"
                     can-edit="false"
-                    ng-if="vm.requisition.template.extension.enablePatient && !vm.requisition.emergency"
-    ></siglus-patient>
+                    ng-if="vm.requisition.template.extension.enablePatient && !vm.requisition.emergency">
+    </siglus-patient>
     <siglus-test-consumption
             program="vm.program"
             sections="vm.requisition.usageTemplate.rapidTestConsumption"
             line-items="vm.requisition.testConsumptionLineItems"
             can-edit="false"
-            ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency"
-    />
+            ng-if="vm.requisition.template.extension.enableRapidTestConsumption && !vm.requisition.emergency">
+    </siglus-test-consumption>
     <siglus-age-group
             program="vm.program"
             sections="vm.requisition.usageTemplate.ageGroup"
             line-items="vm.requisition.ageGroupLineItems"
             can-edit="false"
-            ng-if="vm.requisition.template.extension.enableAgeGroup && !vm.requisition.emergency"
-    />
+            ng-if="vm.requisition.template.extension.enableAgeGroup && !vm.requisition.emergency">
+    </siglus-age-group>
 </div>
 <div class="openlmis-toolbar button-group">
-    <siglus-go-back />
+    <siglus-go-back></siglus-go-back>
 </div>
