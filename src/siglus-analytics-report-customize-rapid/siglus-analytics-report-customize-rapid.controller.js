@@ -59,6 +59,7 @@
         vm.getCreationDate = getCreationDate;
         vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
+        vm.getDataFromField = getDataFromField;
         vm.requisition = {};
         vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
         function onInit() {
@@ -93,6 +94,7 @@
                 SIGLUS_SECTION_TYPES.OUTCOME
             );
             vm.services = getSortedServices(requisition.testConsumptionLineItems);
+            console.log('test');
         }
 
         function getCreationDate(date) {
@@ -165,6 +167,10 @@
 
         function hideBreadcrumb() {
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
+        }
+
+        function getDataFromField(obj, path) {
+            return  _.get(obj, path);
         }
     }
 

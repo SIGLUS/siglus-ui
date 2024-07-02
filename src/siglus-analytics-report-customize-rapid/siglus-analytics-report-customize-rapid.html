@@ -114,7 +114,7 @@
     <table cellpadding="0" cellspacing="0">
       <tr>
         <td class="background-black black-width"></td>
-        <td colspan="13" class="report--title height-50">
+        <td colspan="14" class="report--title height-50">
           <span class="report--title-font" openlmis-message="view.rnr.rapid.test.thirdTitle">
             {{ 'rapid.third_title' | message }}
           </span>
@@ -130,7 +130,7 @@
         <td rowspan="2" openlmis-message="view.rnr.rapid.test.service">
           {{ 'rapid.services' | message }}
         </td>
-        <td colspan="3" openlmis-message="view.rnr.rapid.test.hivdetermine">
+        <td colspan="4" openlmis-message="view.rnr.rapid.test.hivdetermine">
           {{ 'rapid.hiv_determine' | message }}
         </td>
         <td colspan="3" openlmis-message="view.rnr.rapid.test.hivunigold">
@@ -148,7 +148,7 @@
         <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
           {{ 'rapid.consumption' | message }}
         </td>
-        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+        <td colspan="2" class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
           {{ 'rapid.positive' | message }}
         </td>
         <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
@@ -190,7 +190,7 @@
         <td class="background-black black-width"></td>
         <td>{{service.label}}</td>
         <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td colspan="2">{{service.projects.hivDetermine.outcomes.positive.value}}</td>
         <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
         <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
@@ -210,7 +210,7 @@
         <td class="background-black black-width"></td>
         <td>{{service.label}}</td>
         <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td colspan="2">{{service.projects.hivDetermine.outcomes.positive.value}}</td>
         <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
         <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
@@ -230,7 +230,7 @@
         <td class="background-black black-width"></td>
         <td openlmis-message="label.total">{{ 'rapid.total' | message }}</td>
         <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td colspan="2">{{service.projects.hivDetermine.outcomes.positive.value}}</td>
         <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
         <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
@@ -252,7 +252,7 @@
         <td class="background-black black-width">a</td>
         <td class="table--subtitle-dark-gray">{{ 'rapid.APEs' | message }}</td>
         <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
+        <td colspan="2">{{service.projects.hivDetermine.outcomes.positive.value}}</td>
         <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
         <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
@@ -274,62 +274,65 @@
       <!-- new 4 columns: Duo-Teste HIV-sifilis(new column 3), 	Hepatite B testes(new column 4), TDR Oral de HIV(new column 5), Novo teste(new column 6) -->
       <tr class="table--title">
         <td class="background-black black-width"></td>
-        <td rowspan="2" openlmis-message="view.rnr.rapid.test.service">
+        <td rowspan="2">
           {{ 'rapid.services' | message }}
         </td>
-        <td colspan="3" openlmis-message="view.rnr.rapid.test.hivdetermine">
-          {{ 'rapid.hiv_determine' | message }}
+        <td colspan="4">
+          {{ 'rapid.duo_teste_hiv_sifilis' | message }}
         </td>
-        <td colspan="3" openlmis-message="view.rnr.rapid.test.hivunigold">
-          {{ 'rapid.hiv_unigold' | message }}
+        <td colspan="3">
+          {{ 'rapid.hepatite_B_testes' | message }}
         </td>
-        <td colspan="3" openlmis-message="view.rnr.rapid.test.syphillis">
-          {{ 'rapid.syphillis' | message }}
+        <td colspan="3">
+          {{ 'rapid.tdr_oral_de_hiv' | message }}
         </td>
-        <td colspan="3" openlmis-message="view.rnr.rapid.test.malaria">
-          {{ 'rapid.malaria' | message }}
+        <td colspan="3">
+          {{ 'rapid.novo_teste' | message }}
         </td>
       </tr>
 
       <tr>
         <td class="background-black black-width"></td>
-        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+        <td class="table--subtitle-light-gray">
           {{ 'rapid.consumption' | message }}
         </td>
-        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
-          {{ 'rapid.positive' | message }}
+        <td class="table--subtitle-middle-gray">
+          {{ 'rapid.positivo_hiv' | message }}
         </td>
-        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+        <td class="table--subtitle-middle-gray">
+          {{ 'rapid.positivo_sifilis' | message }}
+        </td>
+        <td class="table--subtitle-dark-gray">
           {{ 'rapid.unjustifiled' | message }}
         </td>
 
-        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+        <td class="table--subtitle-light-gray">
           {{ 'rapid.consumption' | message }}
         </td>
-        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+        <td class="table--subtitle-middle-gray">
           {{ 'rapid.positive' | message }}
         </td>
-        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+        <td class="table--subtitle-dark-gray">
           {{ 'rapid.unjustifiled' | message }}
         </td>
 
-        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+        <td class="table--subtitle-light-gray">
           {{ 'rapid.consumption' | message }}
         </td>
-        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+        <td class="table--subtitle-middle-gray">
           {{ 'rapid.positive' | message }}
         </td>
-        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+        <td class="table--subtitle-dark-gray">
           {{ 'rapid.unjustifiled' | message }}
         </td>
 
-        <td class="table--subtitle-light-gray" openlmis-message="view.rnr.rapid.test.consumption">
+        <td class="table--subtitle-light-gray">
           {{ 'rapid.consumption' | message }}
         </td>
-        <td class="table--subtitle-middle-gray" openlmis-message="view.rnr.rapid.test.positive">
+        <td class="table--subtitle-middle-gray">
           {{ 'rapid.positive' | message }}
         </td>
-        <td class="table--subtitle-dark-gray" openlmis-message="view.rnr.rapid.test.unjustifiled">
+        <td class="table--subtitle-dark-gray">
           {{ 'rapid.unjustifiled' | message }}
         </td>
       </tr>
@@ -337,61 +340,67 @@
       <tr ng-if="service.service == 'HF'" ng-repeat="service in vm.services">
         <td class="background-black black-width"></td>
         <td>{{service.label}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
-        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_hiv', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_syphilis', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'unjustified', 'value']) }}</td>
+
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'unjustified', 'value']) }}</td>
       </tr>
 
       <tr ng-if="service.name !== 'total' && service.name !== 'HF' && service.service !== 'APES'" ng-repeat="service in vm.services">
         <td class="background-black black-width"></td>
         <td>{{service.label}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
-        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_hiv', 'value']) }}</td>
+                <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_syphilis', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'unjustified', 'value']) }}</td>
+
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'unjustified', 'value']) }}</td>
       </tr>
 
       <tr ng-if="service.service == 'total'" ng-repeat="service in vm.services" class="table--title height-30">
         <td class="background-black black-width"></td>
         <td openlmis-message="label.total">{{ 'rapid.total' | message }}</td>
-        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
-        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_hiv', 'value']) }}</td>
+                <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_syphilis', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'unjustified', 'value']) }}</td>
+
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'unjustified', 'value']) }}</td>
       </tr>
 
       <tr class="black-tr"></tr>
@@ -399,21 +408,23 @@
       <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services">
         <td class="background-black black-width">a</td>
         <td class="table--subtitle-dark-gray">{{ 'rapid.APEs' | message }}</td>
-        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.positive.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
 
-        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_hiv', 'value']) }}</td>
+                <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_syphilis', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'unjustified', 'value']) }}</td>
 
-        <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn2.outcomes.unjustified.value}}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'unjustified', 'value']) }}</td>
+
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'consumo', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'positive', 'value']) }}</td>
+        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'unjustified', 'value']) }}</td>
       </tr>
       <!-- new 4 columns end -->
 

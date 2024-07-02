@@ -4,7 +4,6 @@
   margin: 0 auto;
   // .rapid-test-pdf-container {
   //   // padding: 60px 90px 0 90px;
-    
   // }
   .black-width {
     width: 20px;
@@ -23,6 +22,7 @@
       border: 1px solid black;
       word-wrap: break-word;
       word-break: break-all;
+      white-space: nowrap;
     }
 
     // span {
