@@ -268,7 +268,7 @@
             // SIGLUS-REFACTOR: ends here
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
-            vm.displayExportButton = showExportButton();
+            vm.displayExportButton = requisitionViewService.canExportExcel(requisition.status, program.code);
             // SIGLUS-REFACTOR: starts here
             if (!canSync) {
                 watcher.disableWatcher();
@@ -297,17 +297,6 @@
                 vm.requisitionType = 'requisitionView.regular';
                 vm.requisitionTypeClass = 'regular';
             }
-        }
-
-        function showExportButton() {
-            var supportStatus = [
-                REQUISITION_STATUS.APPROVED,
-                REQUISITION_STATUS.RELEASED,
-                REQUISITION_STATUS.RELEASED_WITHOUT_ORDER
-            ];
-            var supportPrograms = ['T', 'TR', 'VC', 'MMC', 'TB'];
-            return supportStatus.includes(vm.requisition.status)
-                && supportPrograms.includes(program.code);
         }
 
         /**

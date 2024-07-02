@@ -29,10 +29,12 @@
         .controller('SiglusHistoryViewTabController', Controller);
 
     Controller.$inject = ['requisition', 'columns', 'lineItems', 'program', 'processingPeriod', 'facility',
-        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS', 'messageService', '$q'];
+        'requisitionUrlFactory', '$window', 'accessTokenFactory', 'TEMPLATE_COLUMNS', 'messageService', '$q',
+        'loadingModalService', 'requisitionViewService'];
 
     function Controller(requisition, columns, lineItems, program, processingPeriod, facility, requisitionUrlFactory,
-                        $window, accessTokenFactory, TEMPLATE_COLUMNS, messageService, $q) {
+                        $window, accessTokenFactory, TEMPLATE_COLUMNS, messageService, $q,
+                        loadingModalService, requisitionViewService) {
         var vm = this;
         vm.program = undefined;
         vm.processingPeriod = undefined;
@@ -91,6 +93,9 @@
 
         vm.getDescriptionForColumn = getDescriptionForColumn;
 
+        vm.displayExportButton = undefined;
+        vm.exportExcel = exportExcel;
+
         function onInit() {
             vm.program = program;
             vm.processingPeriod = processingPeriod;
@@ -98,6 +103,7 @@
             vm.lineItems = lineItems;
             vm.requisition = requisition;
             vm.columns = columns;
+            vm.displayExportButton = requisitionViewService.canExportExcel(requisition.status, program.code);
             hideApprovedQuantity(vm.requisition);
             hidePacksToShip(vm.requisition);
             setTypeAndClass();
@@ -140,6 +146,13 @@
                 vm.requisitionType = 'requisitionView.regular';
                 vm.requisitionTypeClass = 'regular';
             }
+        }
+
+        function exportExcel() {
+            loadingModalService.open();
+            requisitionViewService.exportExcel(vm.requisition.id).$promise.finally(
+                loadingModalService.close
+            );
         }
 
         function print() {

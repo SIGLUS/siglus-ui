@@ -27,9 +27,9 @@
         .module('requisition-view')
         .service('requisitionViewService', RequisitionViewService);
 
-    RequisitionViewService.inject = ['$filter', '$resource', 'stockmanagementUrlFactory'];
+    RequisitionViewService.inject = ['$filter', '$resource', 'stockmanagementUrlFactory', 'REQUISITION_STATUS'];
 
-    function RequisitionViewService($resource, stockmanagementUrlFactory) {
+    function RequisitionViewService($resource, stockmanagementUrlFactory, REQUISITION_STATUS) {
         var resource = $resource(stockmanagementUrlFactory(), {}, {
             exportExcel: {
                 method: 'GET',
@@ -40,6 +40,18 @@
         });
 
         this.exportExcel = exportExcel;
+        this.canExportExcel = canExportExcel;
+
+        function canExportExcel(requisitionStatus, programCode) {
+            var supportStatus = [
+                REQUISITION_STATUS.APPROVED,
+                REQUISITION_STATUS.RELEASED,
+                REQUISITION_STATUS.RELEASED_WITHOUT_ORDER
+            ];
+            var supportPrograms = ['T', 'TR', 'VC', 'MMC', 'TB'];
+            return supportStatus.includes(requisitionStatus)
+                && supportPrograms.includes(programCode);
+        }
 
         function exportExcel(requisitionId) {
             return resource.exportExcel({
