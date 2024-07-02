@@ -47,7 +47,7 @@
         siglusDownloadLoadingModalService,
         $stateParams
     ) {
-        var vm = this, services = [];
+        var vm = this;
         vm.facility = undefined;
         vm.columns = undefined;
         vm.services = undefined;
@@ -71,7 +71,6 @@
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
                 item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
             });
-            services = requisition.testConsumptionLineItems;
             var commentsStr = _.reduce(requisition.statusHistory, function(r, c) {
                 r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
                 return r;
@@ -93,10 +92,7 @@
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.OUTCOME
             );
-            extendLineItems();
-            vm.services = _.chain(services)
-                .sortBy('displayOrder')
-                .value();
+            vm.services = getSortedServices(requisition.testConsumptionLineItems);
         }
 
         function getCreationDate(date) {
@@ -112,11 +108,12 @@
                 + '.pdf'
             );
         }
-        function extendLineItems() {
+
+        function getSortedServices() {
             var serviceColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.service);
             var testProjectColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testProject);
             var testOutcomeColumnsMap = siglusTemplateConfigureService.getSectionColumnsMap(vm.testOutcome);
-            angular.forEach(services, function(lineItem) {
+            angular.forEach(requisition.testConsumptionLineItems, function(lineItem) {
                 _.extend(lineItem, serviceColumnsMap[lineItem.service]);
                 angular.forEach(Object.keys(lineItem.projects), function(project) {
                     lineItem.projects[project] = angular.merge({},
@@ -128,10 +125,15 @@
                     });
                 });
             });
+            return _.sortBy(requisition.testConsumptionLineItems, function(service) {
+                return service.displayOrder;
+            });
         }
+
         function getMonth(date) {
             return openlmisDateFilter(date, 'MMMM');
         }
+
         vm.downloadPdf = function() {
             siglusDownloadLoadingModalService.open();
             var node = document.getElementById('test_repaid_wrap');

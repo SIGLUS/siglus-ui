@@ -24,7 +24,6 @@
     routes.$inject = ['$stateProvider', 'REQUISITION_RIGHTS', 'FULFILLMENT_RIGHTS'];
 
     function routes($stateProvider) {
-
         $stateProvider.state('openlmis.analyticsReport.requisitionAndMonthly.rapid', {
             url: '/MMIT/:rnr?showBreadCrumb',
             showInNavigation: false,
@@ -37,7 +36,6 @@
                 '@openlmis': {
                     controller: 'siglusAnalyticsReportCustomizeRapidController',
                     controllerAs: 'vm',
-                    // eslint-disable-next-line max-len
                     templateUrl: 'siglus-analytics-report-customize-rapid/siglus-analytics-report-customize-rapid.html'
                 }
             },
