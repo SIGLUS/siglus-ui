@@ -249,7 +249,7 @@
 
           <!-- value -->
           <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.PLANE_TEXT">
-            {{ vm.calculateValueByShippedQuantityAndPrice(fulfillingLineItem) }}
+            {{ vm.calculateTotalValue(fulfillingLineItem) }}
           </td>
           <td ng-if="vm.checkCellType(fulfillingLineItem, vm.cellName.PRICE_VALUE) === vm.cellType.EMPTY"></td>
           <!-- value end -->

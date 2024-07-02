@@ -70,7 +70,7 @@
         vm.submit = submit;
         vm.deleteDraft = deleteDraft;
         vm.returnBack = returnBack;
-        vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
+        vm.calculateTotalValue = calculateTotalValue;
         vm.changeAcceptQuantity = changeAcceptQuantity;
         vm.isCurrentItemNewlyAdded = isCurrentItemNewlyAdded;
         vm.getSumOfQuantityShipped = getSumOfQuantityShipped;
@@ -741,7 +741,7 @@
             }
         }
 
-        function calculateValueByShippedQuantityAndPrice(lineItem) {
+        function calculateTotalValue(lineItem) {
             return _.get(lineItem, ['price']) ?
                 (lineItem.quantityAccepted * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
@@ -937,10 +937,7 @@
                 } else if (cellName === vm.cellName.LOCATION) {
                     return shouldDisplayLocation ? vm.cellType.INPUT : vm.cellType.EMPTY;
                 } else if (cellName === vm.cellName.PRICE_VALUE) {
-                    if (!shouldDisplayPriceValue) {
-                        return vm.cellType.EMPTY;
-                    }
-                    return vm.cellType.PLANE_TEXT;
+                    return shouldDisplayPriceValue ?  vm.cellType.PLANE_TEXT : vm.cellType.EMPTY;
                 }
             }
             // !vm.canEdit (View):

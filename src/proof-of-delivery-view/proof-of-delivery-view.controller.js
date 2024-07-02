@@ -58,7 +58,7 @@
         vm.disableReasonSelect = disableReasonSelect;
         vm.onAcceptedQuantityChanged = onAcceptedQuantityChanged;
         vm.getLineItemReasonOptions = getLineItemReasonOptions;
-        vm.calculateValueByShippedQuantityAndPrice = calculateValueByShippedQuantityAndPrice;
+        vm.calculateTotalValue = calculateTotalValue;
         vm.isCurrentItemNewlyAdded = isCurrentItemNewlyAdded;
         vm.addItem = addItem;
         vm.removeItem = removeItem;
@@ -400,7 +400,7 @@
                 isCurrentItemNewlyAdded(lineItem);
         }
 
-        function calculateValueByShippedQuantityAndPrice(lineItem) {
+        function calculateTotalValue(lineItem) {
             return _.get(lineItem, ['price']) ?
                 (lineItem.quantityAccepted * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
