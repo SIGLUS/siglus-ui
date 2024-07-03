@@ -84,11 +84,9 @@
             stateParams.subDraftIds = item.subDraftId.join(',');
             stateParams.actionType = item.status;
             stateParams.draftNum = item.groupNum;
-            if (vm.isInitialInventory) {
-                return  $state.go('openlmis.stockmanagement.initialInventory.draft', stateParams);
-            }
-
-            $state.go('openlmis.stockmanagement.physicalInventory.draftList.draft', stateParams);
+            var targetStateName = vm.isInitialInventory ? 'openlmis.stockmanagement.initialInventory.draft' :
+                'openlmis.stockmanagement.physicalInventory.draftList.draft';
+            $state.go(targetStateName, stateParams);
         };
 
         vm.deleteDrafts = function() {

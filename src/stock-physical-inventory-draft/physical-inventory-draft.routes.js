@@ -47,10 +47,7 @@
             },
             resolve: {
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
-                        return facilityFactory.getUserHomeFacility();
-                    }
-                    return $stateParams.facility;
+                    return $stateParams.facility ? $stateParams.facility : facilityFactory.getUserHomeFacility();
                 },
                 program: function($stateParams, programService) {
                     if (_.isUndefined($stateParams.program)) {
@@ -61,9 +58,7 @@
                     return $stateParams.program;
                 },
                 subDraftIds: function($stateParams) {
-                    return $stateParams.subDraftIds.indexOf(',')
-                        ? $stateParams.subDraftIds.split(',')
-                        : [$stateParams.subDraftIds];
+                    return $stateParams.subDraftIds.split(',');
                 },
                 draft: function(
                     facility,
@@ -144,7 +139,6 @@
                             physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, items);
                         });
                 },
-                /*eslint-enable */
                 reasons: function(facility, program, stockReasonsFactory, physicalInventoryDataService) {
                     if (_.isUndefined(physicalInventoryDataService.getReasons(facility.id))) {
                         return stockReasonsFactory.getReasons(

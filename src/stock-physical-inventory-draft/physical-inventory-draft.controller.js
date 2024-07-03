@@ -29,30 +29,26 @@
         .controller('PhysicalInventoryDraftController', controller);
 
     controller.$inject = [
-        '$scope', '$state', '$stateParams', 'addProductsModalService',
-        'messageService', 'physicalInventoryFactory', 'notificationService', 'alertService',
-        'confirmDiscardService', 'chooseDateModalService', 'program', 'facility',
-        'confirmService', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
-        'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', '$window',
-        'stockmanagementUrlFactory', 'accessTokenFactory', 'orderableGroupService', '$filter', '$q',
-        // SIGLUS-REFACTOR: starts here
-        'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
+        '$scope', '$state', '$stateParams', 'addProductsModalService', 'messageService',
+        'physicalInventoryFactory', 'notificationService', 'alertService', 'confirmDiscardService',
+        'chooseDateModalService', 'program', 'facility', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
+        'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', 'orderableGroupService', '$filter',
+        '$q', 'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
         'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
         'siglusOrderableLotService'
-        // SIGLUS-REFACTOR: ends here
     ];
 
-    function controller($scope, $state, $stateParams, addProductsModalService, messageService,
-                        physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
-                        chooseDateModalService, program, facility,
-                        confirmService, physicalInventoryService, MAX_INTEGER_VALUE, VVM_STATUS,
-                        stockReasonsCalculations, loadingModalService, $window,
-                        stockmanagementUrlFactory, accessTokenFactory, orderableGroupService, $filter,  $q,
-                        REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
-                        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-                        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-                        siglusOrderableLotService) {
+    function controller(
+        $scope, $state, $stateParams, addProductsModalService, messageService,
+        physicalInventoryFactory, notificationService, alertService, confirmDiscardService,
+        chooseDateModalService, program, facility, physicalInventoryService, MAX_INTEGER_VALUE,
+        VVM_STATUS, stockReasonsCalculations, loadingModalService, orderableGroupService, $filter,
+        $q, REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
+        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
+        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
+        siglusOrderableLotService
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -86,11 +82,7 @@
          * Holds current display physical inventory draft line items grouped by orderable id.
          */
         vm.displayLineItemsGroup = displayLineItemsGroup;
-        vm.back = function() {
-            $state.go('^', {}, {
-                reload: true
-            });
-        };
+
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
@@ -361,7 +353,7 @@
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
-            return physicalInventoryFactory.saveDraft(_.extend({}, draft, {
+            return physicalInventoryFactory.saveDraft(_.assign({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
             })).then(function() {
@@ -426,11 +418,7 @@
 
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
-                // SIGLUS-REFACTOR: starts here: back to draftlist page whatever is physical or initial
-                $state.go('^', {}, {
-                    reload: true
-                });
-                // SIGLUS-REFACTOR: ends here
+                goBack();
                 return;
             }
 
@@ -442,14 +430,12 @@
                 loadingModalService.open();
                 physicalInventoryService.deleteDraft(subDraftIds, vm.isInitialInventory).then(function() {
                     $scope.needToConfirm = false;
-                    // SIGLUS-REFACTOR: starts here
-                    vm.isInitialInventory ?
-                        $state.go('^', {}, {
-                            reload: true
-                        }) : $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
-                            reload: true
-                        });
-                    // SIGLUS-REFACTOR: ends here
+                    if (vm.isInitialInventory) {
+                        goBack();
+                    }
+                    $state.go('openlmis.stockmanagement.physicalInventory.draftList', $stateParams, {
+                        reload: true
+                    });
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -470,20 +456,15 @@
         var subDraftSubmit = function() {
             $scope.needToConfirm = false;
             loadingModalService.open();
-            physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
+            physicalInventoryService.submitSubPhysicalInventory(_.assign({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
             }))
                 .then(function() {
-                    if (vm.isInitialInventory) {
-                        notificationService.success('stockInitialInventoryDraft.submitted');
-                    } else {
-                        notificationService.success('stockPhysicalInventoryDraft.submitted');
-                    }
-
-                    $state.go('^', {}, {
-                        reload: true
-                    });
+                    var notificationText = vm.isInitialInventory ?
+                        'stockInitialInventoryDraft.submitted' : 'stockPhysicalInventoryDraft.submitted';
+                    notificationService.success(notificationText);
+                    goBack();
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -1032,6 +1013,12 @@
                     },
                     comments: lineItem.reasonFreeText
                 };
+            });
+        }
+
+        function goBack() {
+            $state.go('^', {}, {
+                reload: true
             });
         }
     }
