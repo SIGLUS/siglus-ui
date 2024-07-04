@@ -68,51 +68,58 @@
                         orderablesPrice: function(siglusOrderableLotService) {
                             return siglusOrderableLotService.getOrderablesPrice();
                         },
-                        orderLineItems: function(
-                            proofOfDelivery,
-                            order,
-                            fulfillingLineItemFactory,
-                            orderablesPrice,
-                            facility,
-                            proofOfDeliveryService
-                        ) {
+                        rawLineItems: function(fulfillingLineItemFactory, proofOfDelivery, order) {
                             return fulfillingLineItemFactory.groupByOrderableForPod(
                                 proofOfDelivery.lineItems,
                                 order.orderLineItems
                             ).then(function(orderLineItems) {
-                                var orderablesPriceMap = orderablesPrice.data;
-                                _.each(orderLineItems, function(orderLineItem) {
-                                    _.each(orderLineItem.groupedLineItems, function(lineItemGroup) {
-                                        var orderableId = lineItemGroup[0].orderable && lineItemGroup[0].orderable.id;
-                                        // set price
-                                        lineItemGroup[0].price = orderablesPriceMap[orderableId]
-                                            ? orderablesPriceMap[orderableId]
-                                            : '';
-                                        // set lotOptions
-                                        var newlyAddedLineItems = lineItemGroup.filter(function(lineItem) {
-                                            return lineItem.added;
-                                        });
-                                        if (newlyAddedLineItems.length > 0) {
-                                            proofOfDeliveryService.getOrderableLots(
-                                                facility.id, orderableId
-                                            )
-                                                .then(function(orderableLots) {
-                                                    newlyAddedLineItems.forEach(function(lineItem) {
-                                                        lineItem.lotOptions = orderableLots.map(function(lotInfo) {
-                                                            return {
-                                                                expirationDate: lotInfo.expirationDate,
-                                                                id: lotInfo.lotId,
-                                                                lotCode: lotInfo.lotCode
-                                                            };
-                                                        });
-                                                    });
-                                                });
-                                        }
+                                return orderLineItems;
+                            });
+                        },
+                        lotsMapByOrderableId: function(rawLineItems, proofOfDeliveryService, facility) {
+                            var orderableIdList = _.flatten(rawLineItems.map(function(orderLineItem) {
+                                return orderLineItem.groupedLineItems.map(function(lineItemGroup) {
+                                    return _.get(lineItemGroup, [0, 'orderable', 'id']);
+                                });
+                            }));
+                            return proofOfDeliveryService.getOrderableLots(facility.id, orderableIdList)
+                                .then(function(lotList) {
+                                    var minifyLotList = lotList.map(function(lotInfo) {
+                                        return {
+                                            orderableId: lotInfo.orderableId,
+                                            expirationDate: lotInfo.expirationDate,
+                                            id: lotInfo.lotId,
+                                            lotCode: lotInfo.lotCode
+                                        };
+                                    });
+                                    return _.groupBy(minifyLotList, function(lotInfo) {
+                                        return _.get(lotInfo, 'orderableId');
                                     });
                                 });
 
-                                return orderLineItems;
+                        },
+                        orderLineItems: function(rawLineItems, orderablesPrice, lotsMapByOrderableId) {
+                            var orderablesPriceMap = orderablesPrice.data;
+                            _.each(rawLineItems, function(orderLineItem) {
+                                _.each(orderLineItem.groupedLineItems, function(lineItemGroup) {
+                                    var orderableId = lineItemGroup[0].orderable && lineItemGroup[0].orderable.id;
+                                    // set price
+                                    lineItemGroup[0].price = orderablesPriceMap[orderableId]
+                                        ? orderablesPriceMap[orderableId]
+                                        : '';
+                                    // set lotOptions
+                                    var newlyAddedLineItems = lineItemGroup.filter(function(lineItem) {
+                                        return lineItem.added;
+                                    });
+                                    if (newlyAddedLineItems.length > 0) {
+                                        var lotOptions = lotsMapByOrderableId[orderableId] || [];
+                                        newlyAddedLineItems.forEach(function(lineItem) {
+                                            lineItem.lotOptions = lotOptions;
+                                        });
+                                    }
+                                });
                             });
+                            return rawLineItems;
                         },
                         canEdit: function($stateParams, authorizationService,
                             permissionService, order, proofOfDelivery) {

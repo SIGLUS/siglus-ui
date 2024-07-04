@@ -209,6 +209,7 @@
         }
 
         function getOrderableLots(facilityId, orderableId) {
+            // orderableId could be a list
             return repository.getOrderableLots(facilityId, orderableId);
         }
     }
