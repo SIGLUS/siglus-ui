@@ -34,9 +34,9 @@
         'chooseDateModalService', 'program', 'facility', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', 'orderableGroupService', '$filter',
         '$q', 'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
-        'siglusArchivedProductService', 'siglusOrderableLotMapping', 'physicalInventoryDataService',
-        'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'siglusOrderableLotService'
+        'siglusArchivedProductService', 'physicalInventoryDataService', 'SIGLUS_TIME',
+        'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
+        'siglusOrderableLotService', 'draft', 'displayLineItemsGroup', 'reasons'
     ];
 
     function controller(
@@ -45,9 +45,9 @@
         chooseDateModalService, program, facility, physicalInventoryService, MAX_INTEGER_VALUE,
         VVM_STATUS, stockReasonsCalculations, loadingModalService, orderableGroupService, $filter,
         $q, REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
-        siglusArchivedProductService, siglusOrderableLotMapping, physicalInventoryDataService,
-        SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-        siglusOrderableLotService
+        siglusArchivedProductService, physicalInventoryDataService, SIGLUS_TIME,
+        siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
+        siglusOrderableLotService, draft, displayLineItemsGroup, reasons
     ) {
         var vm = this;
 
@@ -66,10 +66,6 @@
         vm.isEmpty = isEmpty;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
-        var draft = physicalInventoryDataService.getDraft(facility.id);
-        var reasons = physicalInventoryDataService.getReasons(facility.id);
-        var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
-        siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
         // SIGLUS-REFACTOR: ends here
 
         /**

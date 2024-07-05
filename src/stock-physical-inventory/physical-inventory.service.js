@@ -256,10 +256,15 @@
          * @description
          * Retrieves physical inventory by id from server.
          *
-         * @param  {String}  id  physical inventory UUID
+         * @param  {String}  programId  program id
+         * @param  {String}  facilityId  current facility id
+         * @param  {Array}  subDraftIds  subDraft id list
+         * @param  {Boolean}  flag  deprecated
+         * @param  {Array}  orderableIds  orderable id list
          * @return {Promise}     physical inventory promise
          */
 
+        // TODO: deprecated, nowhere to use
         function getStockProductsByLocation(
             programId,
             facilityId,
@@ -267,15 +272,6 @@
             flag,
             orderableIds
         ) {
-            // var repository =
-            //    $resource(stockmanagementUrlFactory('/api/siglusapi/stockCardSummariesWithLocation'), {}, {
-            //     getStockProductsByLocation: {
-            //         method: 'GET',
-            //         url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/subDraft')
-            //     }
-            // });
-            // new StockCardSummaryRepository(new FullStockCardSummaryRepositoryImpl());
-            // #225: cant view detail page when not have stock view right
             return locationResource.getProductsByLocation(flag ? {
                 programId: programId,
                 facilityId: facilityId,
@@ -301,26 +297,20 @@
                 });
         }
 
-        function getPhysicalInventorySubDraft(id) {
+        function getPhysicalInventorySubDraft(subDraftIds) {
             return resource.find({
-                subDraftIds: id
-            })
-                .$promise
-                .then(function(response) {
-                    return siglusStockEventService.formatResponse(response);
-                });
+                subDraftIds: subDraftIds
+            }).$promise;
         }
 
         function getLocationPhysicalInventorySubDraft(id, locationManagementOption) {
-            var params = {
-                subDraftIds: id
-            };
-            if (locationManagementOption === 'location') {
-                params = {
+            var params = locationManagementOption === 'location' ?
+                {
                     subDraftIds: id,
                     isByLocation: true
+                } : {
+                    subDraftIds: id
                 };
-            }
             return locationResource.find(params)
                 .$promise
                 .then(function(response) {
@@ -338,6 +328,10 @@
          *
          * @param  {String}  program  Program UUID
          * @param  {String}  facility Facility UUID
+         * @param  {Number}  splitNum subDraft number
+         * @param  {Boolean}  isInitialInventory is initial inventory
+         * @param  {String}  locationManagementOption 'location' or 'product' or undefined
+         * @param  {Boolean}  enableLocationManagement if true means with location, otherwise without location
          * @return {Promise}          physical inventory promise
          */
         function createDraft(

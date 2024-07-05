@@ -40,6 +40,7 @@
         'openlmis-modal',
         'referencedata-program',
         'ui.router',
+        'stock-orderable-group',
         // SIGLUS-REFACTOR: starts here
         'siglus-requisition-date-picker',
         'siglus-physical-inventory-creation'

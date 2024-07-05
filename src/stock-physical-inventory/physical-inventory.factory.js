@@ -49,6 +49,7 @@
             getDraftByProgramAndFacility: getDraftByProgramAndFacility,
             getPhysicalInventory: getPhysicalInventory,
             getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
+            getPhysicalInventorySubDraftNew: getPhysicalInventorySubDraftNew,
             saveDraft: saveDraft,
             getLocationPhysicalInventorySubDraft: getLocationPhysicalInventorySubDraft,
             // SIGLUS-REFACTOR: starts here
@@ -173,20 +174,22 @@
                 });
         }
 
-        function getPhysicalInventorySubDraft(id, flag) {
-            return physicalInventoryService.getPhysicalInventorySubDraft(id)
+        function getPhysicalInventorySubDraft(subDraftIds, isMerged) {
+            return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
                 .then(function(physicalInventory) {
+                    console.log('getPhysicalInventorySubDraft result:', physicalInventory);
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;
                     });
                     return getStockProducts(
                         physicalInventory.programId,
                         physicalInventory.facilityId,
-                        id,
-                        flag,
+                        subDraftIds,
+                        isMerged,
                         allLineOrderableIds
                     )
                         .then(function(summaries) {
+                            console.log('summaries', summaries);
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
                                 facilityId: physicalInventory.facilityId,
@@ -200,8 +203,40 @@
                                 'product'
                             );
                             draftToReturn.id = physicalInventory.id;
+                            console.log('draft to return result:', draftToReturn);
                             return draftToReturn;
                         });
+                });
+        }
+
+        function getPhysicalInventorySubDraftNew(subDraftIds) {
+            return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
+                .then(function(physicalInventory) {
+                    console.log('getPhysicalInventorySubDraftNew result:', physicalInventory);
+                    var sourceLineItems = angular.copy(physicalInventory.lineItems);
+                    var neededLineItems = sourceLineItems.map(function(lineItem) {
+                        return _.assign({}, lineItem, {
+                            // TODO: match with response data
+                            $errors: {},
+                            $diffMessage: {},
+                            lot: {
+                                id: lineItem.lotId,
+                                lotCode: lineItem.lotCode,
+                                expirationDate: lineItem.expirationDate
+                            },
+                            orderable: {
+                                id: lineItem.orderableId,
+                                fullProductName: 'hello world',
+                                dispensable: {
+                                    displayUnit: 'eachhhh'
+                                }
+                            },
+                            vvmStatus: _.get(lineItem, ['extraData', 'vvmStatus']),
+                            stockCardId: _.get(lineItem, ['extraData', 'stockCardId'])
+                        });
+                    });
+                    physicalInventory.lineItems = neededLineItems;
+                    return physicalInventory;
                 });
         }
 
@@ -265,12 +300,6 @@
                             locationManagementOption
                         )
                             .then(function(summaries) {
-                                // summaries = summaries.content.reduce(function(items, summary) {
-                                //     summary.canFulfillForMe.forEach(function(fulfill) {
-                                //         items.push(fulfill);
-                                //     });
-                                //     return items;
-                                // }, []);
                                 var initialInventory = {
                                     programId: draft.programId,
                                     facilityId: draft.facilityId,
@@ -410,62 +439,59 @@
             locationManagementOption
         ) {
             var draftLineItems = physicalInventory && angular.copy(physicalInventory.lineItems);
-            var stockCardLineItems = [];
-            angular.forEach(summaries, function(summary) {
-                var stockCardId = summary.stockCard && summary.stockCard.id;
-                var programId = getProgramId(physicalInventory, summary);
-                stockCardLineItems.push({
-                    stockOnHand: summary.stockOnHand,
-                    lot: summary.lot,
-                    orderable: summary.orderable,
-                    area: summary.area,
-                    locationCode: summary.locationCode,
-                    quantity: null,
-                    vvmStatus: null,
-                    stockAdjustments: [],
-                    stockCardId: stockCardId,
-                    programId: programId
-                });
-                summary.stockAdjustments = [];
-                summary.stockCardId = stockCardId;
-                summary.programId = programId;
-            });
             draftToReturn.summaries = summaries;
+
             if (!isWithLocation && _.isEmpty(draftLineItems)) {
+                var stockCardLineItems = [];
+                angular.forEach(summaries, function(summary) {
+                    var stockCardId = _.get(summary, ['stockCard', 'id']);
+                    var programId = getProgramId(physicalInventory, summary);
+                    stockCardLineItems.push({
+                        stockOnHand: summary.stockOnHand,
+                        lot: summary.lot,
+                        orderable: summary.orderable,
+                        area: summary.area,
+                        locationCode: summary.locationCode,
+                        quantity: null,
+                        vvmStatus: null,
+                        stockAdjustments: [],
+                        stockCardId: stockCardId,
+                        programId: programId
+                    });
+                    summary.stockAdjustments = [];
+                    summary.stockCardId = stockCardId;
+                    summary.programId = programId;
+                });
                 draftToReturn.lineItems = _.filter(stockCardLineItems, function(item) {
                     return item.stockCardId && !item.orderable.archived;
                 });
             } else {
                 angular.forEach(draftLineItems, function(item) {
-                    var summary = _.find(summaries, function(summary) {
+                    var summaryForCurrentLineItem = _.find(summaries, function(summary) {
                         if (item.stockCardId) {
-                            return item.stockCardId === (summary.stockCard && summary.stockCard.id);
+                            return item.stockCardId === _.get(summary, ['stockCard', 'id']);
                         } else if (item.lotId) {
-                            return item.lotId === (summary.lot && summary.lot.id) &&
-                                item.orderableId === summary.orderable.id;
+                            return item.lotId === _.get(summary, ['lot', 'id']) &&
+                                item.orderableId ===  _.get(summary, ['orderable', 'id']);
                         }
-                        return summary.orderable.id === item.orderableId;
+                        return item.orderableId === _.get(summary, ['orderable', 'id']);
                     });
-                    if ((
-                        !locationManagementOption
-                            || _.contains(['location', 'product'], locationManagementOption))
-                            && summary
-                    ) {
+                    if (summaryForCurrentLineItem) {
                         draftToReturn.lineItems.push({
-                            stockOnHand: item.stockCardId || item.lotId ? summary.stockOnHand : undefined,
-                            lot: getLot(summary, item),
-                            orderable: summary.orderable,
+                            stockOnHand: _.get(summaryForCurrentLineItem, 'stockOnHand'),
+                            lot: getLot(summaryForCurrentLineItem, item),
+                            orderable: summaryForCurrentLineItem.orderable,
                             quantity: item.quantity,
-                            vvmStatus: item.extraData ?  item.extraData.vvmStatus : null,
-                            stockAdjustments: item.stockAdjustments || [],
+                            vvmStatus: _.get(item, ['extraData', 'vvmStatus'], null),
+                            stockAdjustments: _.get(item, 'stockAdjustments', []),
                             reasonFreeText: item.reasonFreeText,
                             stockCardId: _.get(item, ['extraData', 'stockCardId'], null),
                             area: item.area,
                             id: item.id,
                             locationCode: item.locationCode,
-                            programId: getProgramId(physicalInventory, summary)
+                            programId: getProgramId(physicalInventory, summaryForCurrentLineItem)
                         });
-                    } else if (locationManagementOption === 'location' && !summary) {
+                    } else if (locationManagementOption === 'location') {
                         var newItem = angular.merge(item, {
                             stockCardId: _.get(item, ['extraData', 'stockCardId'], null),
                             extraData: {},
@@ -483,50 +509,23 @@
         }
 
         function getLot(summary, item) {
-            var draftLOt = item.lotCode || item.expirationDate ? {
+            var draftLot = item.lotCode || item.expirationDate ? {
                 lotCode: item.lotCode,
                 expirationDate: item.expirationDate
             } : null;
             if (item.extraData && item.extraData.lotCode && !item.lotId) {
-                draftLOt = item.extraData;
+                draftLot = item.extraData;
             }
             if (item.lotId) {
-                draftLOt = angular.copy(summary.lot);
+                draftLot = angular.copy(summary.lot);
             }
-            return draftLOt;
+            return draftLot;
         }
 
-        /*function identityOfLines(identifiable) {
-            return identifiable.orderableId + (identifiable.lotId ? identifiable.lotId : '');
-        }
-
-        function identityOf(identifiable) {
-            return identifiable.orderable.id + (identifiable.lot ? identifiable.lot.id : '');
-        }
-
-        function getStockAdjustments(lineItems, summary) {
-            var filtered;
-
-            if (summary.lot) {
-                filtered = $filter('filter')(lineItems, {
-                    orderableId: summary.orderable.id,
-                    lotId: summary.lot.id
-                });
-            } else {
-                filtered = $filter('filter')(lineItems, function(lineItem) {
-                    return lineItem.orderableId === summary.orderable.id && !lineItem.lotId;
-                });
-            }
-
-            if (filtered.length === 1) {
-                return filtered[0].stockAdjustments;
-            }
-
-            return [];
-        }*/
-        // SIGLUS-REFACTOR: ends here
-
-        function getStockProducts(programId, facilityId, subDraftIds, flag, orderableIds, locationManagementOption) {
+        // TODO: <isMerged> not used
+        function getStockProducts(
+            programId, facilityId, subDraftIds, isMerged, orderableIds, locationManagementOption
+        ) {
             var repository = new StockCardSummaryRepository(
                 new FullStockCardSummaryRepositoryImpl(locationManagementOption)
             );
@@ -535,13 +534,7 @@
                 programId = viaProgramId;
             }
             // #225: cant view detail page when not have stock view right
-            return repository.query(flag ? {
-                programId: programId,
-                facilityId: facilityId,
-                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
-                subDraftIds: subDraftIds,
-                orderableIds: orderableIds
-            } : {
+            return repository.query({
                 programId: programId,
                 facilityId: facilityId,
                 rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
