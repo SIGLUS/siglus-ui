@@ -76,25 +76,15 @@
                                 return orderLineItems;
                             });
                         },
-                        lotsMapByOrderableId: function(rawLineItems, proofOfDeliveryService, facility) {
+                        lotsMapByOrderableId: function(rawLineItems, siglusOrderableLotListService, facility) {
                             var orderableIdList = _.flatten(rawLineItems.map(function(orderLineItem) {
                                 return orderLineItem.groupedLineItems.map(function(lineItemGroup) {
                                     return _.get(lineItemGroup, [0, 'orderable', 'id']);
                                 });
                             }));
-                            return proofOfDeliveryService.getOrderableLots(facility.id, orderableIdList)
+                            return siglusOrderableLotListService.getOrderableLots(facility.id, orderableIdList)
                                 .then(function(lotList) {
-                                    var minifyLotList = lotList.map(function(lotInfo) {
-                                        return {
-                                            orderableId: lotInfo.orderableId,
-                                            expirationDate: lotInfo.expirationDate,
-                                            id: lotInfo.lotId,
-                                            lotCode: lotInfo.lotCode
-                                        };
-                                    });
-                                    return _.groupBy(minifyLotList, function(lotInfo) {
-                                        return _.get(lotInfo, 'orderableId');
-                                    });
+                                    return siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
                                 });
 
                         },

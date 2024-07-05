@@ -62,7 +62,6 @@
         ProofOfDeliveryRepositoryImpl.prototype.removeLineItem = removeLineItem;
         ProofOfDeliveryRepositoryImpl.prototype.addLineItemWithLocation = addLineItemWithLocation;
         ProofOfDeliveryRepositoryImpl.prototype.removeLineItemWithLocation = removeLineItemWithLocation;
-        ProofOfDeliveryRepositoryImpl.prototype.getOrderableLots = getOrderableLots;
 
         return ProofOfDeliveryRepositoryImpl;
 
@@ -731,13 +730,6 @@
                 podId: podId,
                 subDraftId: subDraftId,
                 lineItemId: lineItemId
-            }).$promise;
-        }
-
-        function getOrderableLots(facilityId, orderableId) {
-            return this.resource.getOrderableLots({
-                id: facilityId,
-                orderableIds: orderableId
             }).$promise;
         }
 

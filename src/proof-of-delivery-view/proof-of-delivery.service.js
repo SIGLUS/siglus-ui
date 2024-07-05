@@ -54,7 +54,6 @@
         proofOfDeliveryService.submitDraftWithLocation = submitDraftWithLocation;
         proofOfDeliveryService.addLineItem = addLineItem;
         proofOfDeliveryService.removeLineItem = removeLineItem;
-        proofOfDeliveryService.getOrderableLots = getOrderableLots;
 
         /**
          * @ngdoc method
@@ -206,11 +205,6 @@
                 return repository.removeLineItemWithLocation(podId, subDraftId, lineItemId);
             }
             return repository.removeLineItem(podId, subDraftId, lineItemId);
-        }
-
-        function getOrderableLots(facilityId, orderableId) {
-            // orderableId could be a list
-            return repository.getOrderableLots(facilityId, orderableId);
         }
     }
 
