@@ -84,8 +84,7 @@
                             var id = $stateParams.subDraftIds.length > 1
                                 ? $stateParams.subDraftIds.split(',')
                                 : [$stateParams.subDraftIds];
-                            var flag = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getPhysicalInventorySubDraft(id, flag)
+                            physicalInventoryFactory.getPhysicalInventorySubDraft(id)
                                 .then(function(subDraft) {
                                     physicalInventoryDataService.setDraft(facility.id, subDraft);
                                     deferred.resolve();

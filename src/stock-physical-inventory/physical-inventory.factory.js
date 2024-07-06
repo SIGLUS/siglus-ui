@@ -49,7 +49,7 @@
             getDraftByProgramAndFacility: getDraftByProgramAndFacility,
             getPhysicalInventory: getPhysicalInventory,
             getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
-            getPhysicalInventorySubDraftNew: getPhysicalInventorySubDraftNew,
+            getPhysicalInventorySubDraftWithoutSummary: getPhysicalInventorySubDraftWithoutSummary,
             saveDraft: saveDraft,
             getLocationPhysicalInventorySubDraft: getLocationPhysicalInventorySubDraft,
             // SIGLUS-REFACTOR: starts here
@@ -174,7 +174,7 @@
                 });
         }
 
-        function getPhysicalInventorySubDraft(subDraftIds, isMerged) {
+        function getPhysicalInventorySubDraft(subDraftIds) {
             return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
                 .then(function(physicalInventory) {
                     console.log('getPhysicalInventorySubDraft result:', physicalInventory);
@@ -182,11 +182,7 @@
                         return line.orderableId;
                     });
                     return getStockProducts(
-                        physicalInventory.programId,
-                        physicalInventory.facilityId,
-                        subDraftIds,
-                        isMerged,
-                        allLineOrderableIds
+                        physicalInventory.programId, physicalInventory.facilityId, subDraftIds, allLineOrderableIds
                     )
                         .then(function(summaries) {
                             console.log('summaries', summaries);
@@ -209,7 +205,7 @@
                 });
         }
 
-        function getPhysicalInventorySubDraftNew(subDraftIds) {
+        function getPhysicalInventorySubDraftWithoutSummary(subDraftIds) {
             return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
                 .then(function(physicalInventory) {
                     console.log('getPhysicalInventorySubDraftNew result:', physicalInventory);
@@ -252,12 +248,8 @@
                         return item;
                     });
                     return getStockProducts(
-                        physicalInventory.programId,
-                        physicalInventory.facilityId,
-                        subDraftIdList,
-                        isMerged,
-                        allLineOrderableIds,
-                        locationManagementOption
+                        physicalInventory.programId, physicalInventory.facilityId,
+                        subDraftIdList, allLineOrderableIds, locationManagementOption
                     )
                         .then(function(summaries) {
                             var draftToReturn = {
@@ -292,12 +284,7 @@
                             return item;
                         });
                         return getStockProducts(
-                            draft.programId,
-                            draft.facilityId,
-                            undefined,
-                            undefined,
-                            allLineOrderableIds,
-                            locationManagementOption
+                            draft.programId, draft.facilityId, undefined, allLineOrderableIds, locationManagementOption
                         )
                             .then(function(summaries) {
                                 var initialInventory = {
@@ -336,8 +323,9 @@
                         var allLineOrderableIds = draft.lineItems.map(function(line) {
                             return line.orderableId;
                         });
-                        return getStockProducts(draft.programId, draft.facilityId, undefined, undefined,
-                            allLineOrderableIds)
+                        return getStockProducts(
+                            draft.programId, draft.facilityId, undefined, allLineOrderableIds
+                        )
                             .then(function(summaries) {
                                 var initialInventory = {
                                     programId: draft.programId,
@@ -522,9 +510,8 @@
             return draftLot;
         }
 
-        // TODO: <isMerged> not used
         function getStockProducts(
-            programId, facilityId, subDraftIds, isMerged, orderableIds, locationManagementOption
+            programId, facilityId, subDraftIds, orderableIds, locationManagementOption
         ) {
             var repository = new StockCardSummaryRepository(
                 new FullStockCardSummaryRepositoryImpl(locationManagementOption)

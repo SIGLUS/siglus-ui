@@ -166,11 +166,6 @@
                         '/api/siglusapi/proofsOfDeliveryWithLocation/:podId/subDrafts/:subDraftId/lineItems/:lineItemId'
                     ),
                     method: 'DELETE'
-                },
-                getOrderableLots: {
-                    url: fulfillmentUrlFactory('/api/siglusapi/facility/:id/lots'),
-                    method: 'GET',
-                    isArray: true
                 }
             });
             // SIGLUS-REFACTOR: ends here

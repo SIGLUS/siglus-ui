@@ -63,7 +63,6 @@
                 draft: function(facility, $stateParams, physicalInventoryFactory, program) {
                     var draft = $stateParams.draft;
                     var subDraftIds = $stateParams.subDraftIds;
-                    var isMerged = $stateParams.isMerged === 'true';
                     $stateParams.draft = undefined;
                     if (draft) {
                         return draft;
@@ -71,7 +70,7 @@
                     // no existedDraft, call api to get/init draft
                     if (subDraftIds) {
                         var idList = subDraftIds.split(',');
-                        return physicalInventoryFactory.getPhysicalInventorySubDraftNew(idList, isMerged)
+                        return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(idList)
                             .then(function(draft) {
                                 return draft;
                             });
@@ -116,8 +115,7 @@
                         .values()
                         .value();
                 },
-                displayLineItemsGroup: function(paginationService, $stateParams, draft, groupedLineItems) {
-                    $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+                displayLineItemsGroup: function(paginationService, draft, groupedLineItems) {
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -130,8 +128,11 @@
                             })
                             .value();
                     };
-                    var stateParamsCopy = _.clone($stateParams);
-                    return paginationService.registerList(validator, stateParamsCopy, function() {
+                    var pageParams = {
+                        size: '@@STOCKMANAGEMENT_PAGE_SIZE',
+                        page: 0
+                    };
+                    return paginationService.registerList(validator, pageParams, function() {
                         return groupedLineItems;
                     });
                 },
