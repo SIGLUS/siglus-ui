@@ -216,6 +216,7 @@
             stateParams.programId = vm.program.id;
             stateParams.requestingFacilityId = vm.requestingFacility ? vm.requestingFacility.id : null;
             stateParams.supplyingFacilityId = vm.supplyingFacility ? vm.supplyingFacility.id : null;
+            stateParams.page = 0;
 
             $state.go('openlmis.orders.podManage', stateParams, {
                 reload: true
