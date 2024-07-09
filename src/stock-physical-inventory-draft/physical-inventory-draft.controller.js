@@ -217,6 +217,10 @@
                     });
                     addProductsModalService.show(productsToAdd, vm.hasLot, false, vm.isInitialInventory)
                         .then(function(addedItems) {
+                            if (addedItems.length === 0) {
+                                loadingModalService.close();
+                                return;
+                            }
                             var orderableIds = addedItems.map(function(item) {
                                 return _.get(item, ['orderable', 'id']);
                             });
@@ -238,7 +242,8 @@
                                     reload($state.current.name);
                                     siglusArchivedProductService.alterInfo(lineItemsToAdd);
                                 });
-                        });
+                        })
+                        .catch(loadingModalService.close);
 
                 })
                 .catch(function(error) {
@@ -319,25 +324,33 @@
         // SIGLUS-REFACTOR: starts here
         function reload(isReload) {
             loadingModalService.open();
-            return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
-                $stateParams.program = vm.program;
-                $stateParams.facility = vm.facility;
-                $stateParams.draft = draft;
-                return $state.go($state.current.name, $stateParams, {
-                    reload: isReload
-                });
+            draft.lineItems = getUpdatedLineItems();
+            // TODO: set reason & lotsMap into $stateParams
+            $stateParams.program = vm.program;
+            $stateParams.facility = vm.facility;
+            $stateParams.draft = draft;
+            $state.go($state.current.name, $stateParams, {
+                reload: isReload
             });
         }
         // SIGLUS-REFACTOR: ends here
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name saveDraft
-         *
-         * @description
-         * Save physical inventory draft.
-         */
+        function getUpdatedLineItems() {
+            var updatedLineItems = [];
+            _.forEach(draft.lineItems, function(draftLineItem) {
+                var updatedLineItem = rawLineItems.find(function(updatedLineItem) {
+                    if (draftLineItem.id) {
+                        return draftLineItem.id === updatedLineItem.id;
+                    } else if (draftLineItem.tempId) {
+                        return draftLineItem.tempId === updatedLineItem.tempId;
+                    }
+                    return false;
+                });
+                updatedLineItems.push(updatedLineItem ? updatedLineItem : draftLineItem);
+            });
+            return updatedLineItems;
+        }
+
         // SIGLUS-REFACTOR: starts here
         var openRemainingModal = function(type, data) {
             siglusRemainingProductsModalService.show(data).then(function() {
@@ -359,6 +372,14 @@
             }
         };
 
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name saveDraft
+         *
+         * @description
+         * Save physical inventory draft.
+         */
         var saveDraft = function(notReload) {
             if ($stateParams.keyword) {
                 $stateParams.keyword = null;
@@ -421,12 +442,11 @@
         /**
          * @ngdoc method
          * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name delete
+         * @name deleteDraft
          *
          * @description
          * Delete physical inventory draft.
          */
-
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
                 goBack();
@@ -456,14 +476,7 @@
         vm.delete = _.throttle(deleteDraft, SIGLUS_TIME.THROTTLE_TIME, {
             trailing: false
         });
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
-         * @name submit
-         *
-         * @description
-         * Submit physical inventory.
-         */
+
         var subDraftSubmit = function() {
             $scope.needToConfirm = false;
             loadingModalService.open();
@@ -485,6 +498,15 @@
                     }
                 });
         };
+
+        /**
+         * @ngdoc method
+         * @methodOf stock-physical-inventory-draft.controller:PhysicalInventoryDraftController
+         * @name submit
+         *
+         * @description
+         * Submit physical inventory.
+         */
         var submit = function() {
             if (validate()) {
                 // SIGLUS-REFACTOR: starts here
