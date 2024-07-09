@@ -79,8 +79,14 @@
             validateConflictProgram: {
                 method: 'GET',
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/conflict')
+            },
+            getApprovedProducts: {
+                url: stockmanagementUrlFactory('/api/siglusapi/approvedProducts'),
+                method: 'GET',
+                isArray: true
             }
         });
+
         // SIGLUS-REFACTOR: ends here
         var locationResource = $resource(stockmanagementUrlFactory('/api/siglusapi/location/physicalInventories'), {}, {
             getDraftByLocation: {
@@ -120,6 +126,7 @@
                 )
             }
         });
+
         this.getDraft = getDraft;
         this.createDraft = createDraft;
         this.createLocationDraft = createLocationDraft;
@@ -141,6 +148,7 @@
         this.validateConflictProgram = validateConflictProgram;
         this.getDraftByLocation = getDraftByLocation;
         this.getStockProductsByLocation = getStockProductsByLocation;
+        this.getApprovedProducts = getApprovedProducts;
         // SIGLUS-REFACTOR: ends here
 
         /**
@@ -556,12 +564,6 @@
             // SIGLUS-REFACTOR: ends here
         }
 
-        // function getLot(item, hasLot) {
-        //     return item.lot ?
-        //         item.lot.lotCode :
-        //         (hasLot ? messageService.get('orderableGroupService.noLotDefined') : '');
-        // }
-
         // SIGLUS-REFACTOR: starts here
         function getInitialDraft(program, facility) {
             return resource.query({
@@ -576,5 +578,12 @@
                 });
         }
         // SIGLUS-REFACTOR: ends here
+
+        function getApprovedProducts(facilityId, programId) {
+            return resource.getApprovedProducts({
+                facilityId: facilityId,
+                programId: programId
+            }).$promise;
+        }
     }
 })();

@@ -36,7 +36,8 @@
         '$q', 'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'physicalInventoryDataService', 'SIGLUS_TIME',
         'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'siglusOrderableLotService', 'draft', 'displayLineItemsGroup', 'reasons'
+        'siglusOrderableLotService', 'draft', 'displayLineItemsGroup', 'reasons', 'rawLineItems',
+        'siglusOrderableLotListService'
     ];
 
     function controller(
@@ -47,7 +48,8 @@
         $q, REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
         siglusArchivedProductService, physicalInventoryDataService, SIGLUS_TIME,
         siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-        siglusOrderableLotService, draft, displayLineItemsGroup, reasons
+        siglusOrderableLotService, draft, displayLineItemsGroup, reasons, rawLineItems,
+        siglusOrderableLotListService
     ) {
         var vm = this;
 
@@ -204,30 +206,45 @@
          */
         // SIGLUS-REFACTOR: starts here
         vm.addProducts = function() {
-            var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
-            var notYetAddedItems = _.filter(draft.summaries, function(summary) {
-                var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
-                var orderableId = summary.orderable && summary.orderable.id;
-                var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
-                    lotId: lotId,
-                    orderableId: orderableId
-                });
-                return !isInAdded;
-            });
+            loadingModalService.open();
+            physicalInventoryService.getApprovedProducts(facility.id, program.id)
+                .then(function(productsForThisProgram) {
+                    var existedProductList = _.unique(rawLineItems.map(function(lineItem) {
+                        return _.get(lineItem, ['orderable', 'id']);
+                    }));
+                    var productsToAdd = productsForThisProgram.filter(function(productInfo) {
+                        return !existedProductList.includes(_.get(productInfo, ['orderable', 'id']));
+                    });
+                    addProductsModalService.show(productsToAdd, vm.hasLot, false, vm.isInitialInventory)
+                        .then(function(addedItems) {
+                            var orderableIds = addedItems.map(function(item) {
+                                return _.get(item, ['orderable', 'id']);
+                            });
+                            // TODO: is get lotOptions necessary?
+                            siglusOrderableLotListService.getOrderableLots(facility.id, orderableIds)
+                                .then(function(lotList) {
+                                    loadingModalService.close();
+                                    var lotsMapByOrderableId =
+                                        siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
+                                    var lineItemsToAdd = addedItems.map(function(item) {
+                                        return _.assign(buildEmptyLineItem(), {
+                                            orderable: angular.copy(item.orderable),
+                                            quantity: item.quantity,
+                                            lotOptions: lotsMapByOrderableId[_.get(item, ['orderable', 'id'])]
+                                        });
+                                    });
+                                    draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
+                                    $stateParams.isAddProduct = true;
+                                    reload($state.current.name);
+                                    siglusArchivedProductService.alterInfo(lineItemsToAdd);
+                                });
+                        });
 
-            addProductsModalService.show(notYetAddedItems, vm.hasLot, undefined,
-                vm.isInitialInventory).then(function(addedItems) {
-                siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
-                    draft.lineItems = draft.lineItems.concat(addedItems);
-                    refreshLotOptions();
-                    $stateParams.isAddProduct = true;
-                    reload($state.current.name);
-
-                    // #105: activate archived product
-                    siglusArchivedProductService.alterInfo(addedItems);
-                    // #105: ends here
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    alertService.error(error);
                 });
-            });
         };
         // SIGLUS-REFACTOR: ends here
 
@@ -341,8 +358,6 @@
                 submit();
             }
         };
-
-        this.saveOrSubmit = saveOrSubmit;
 
         var saveDraft = function(notReload) {
             if ($stateParams.keyword) {
@@ -701,6 +716,7 @@
                     vm.validateReasonFreeText(item);
                 }
             });
+            // TODO: remove draft.summaries related
             _.forEach(draft.summaries, function(summary) {
                 if (!summary.$errors) {
                     summary.$errors = {};
@@ -740,19 +756,6 @@
             });
             return addedLotsId;
         }
-        // if no lot defined, then lot code is null
-        // same lot code but different lot id? is that possible?
-        function getAddedLotIdAndOrderableId() {
-            var addedlotIdAndOrderableId = [];
-            _.forEach(draft.lineItems, function(item) {
-                addedlotIdAndOrderableId.push({
-                    lotId: item.lot && item.lot.id ? item.lot.id : null,
-                    orderableId: item.orderable.id
-                });
-            });
-            return addedlotIdAndOrderableId;
-        }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method
@@ -873,20 +876,7 @@
         }
 
         function addLot(lineItem) {
-            var newLineItem = _.assign({}, lineItem, {
-                $errors: {},
-                id: null,
-                tempId: _.uniqueId(),
-                stockCardId: null,
-                quantity: undefined,
-                stockAdjustments: [],
-                stockOnHand: null,
-                reasonFreeText: undefined,
-                lot: {},
-                // deprecated: not used in anywhere
-                unaccountedQuantity: undefined
-
-            });
+            var newLineItem = buildEmptyLineItem(lineItem);
             draft.lineItems.push(newLineItem);
             $stateParams.isAddProduct = true;
             reload($state.current.name);
@@ -907,6 +897,23 @@
             draft.lineItems.splice(index, 1);
             $stateParams.isAddProduct = true;
             reload($state.current.name);
+        }
+
+        function buildEmptyLineItem(rawLineItem) {
+            return _.assign({}, rawLineItem, {
+                $errors: {},
+                $diffMessage: {},
+                id: null,
+                tempId: _.uniqueId(),
+                stockCardId: null,
+                quantity: undefined,
+                stockAdjustments: [],
+                stockOnHand: null,
+                reasonFreeText: undefined,
+                lot: {},
+                // deprecated: not used in anywhere
+                unaccountedQuantity: undefined
+            });
         }
 
         $scope.$on('lotCodeChange', function(event, data) {
