@@ -86,7 +86,8 @@
                 quantityAccepted: 0,
                 quantityRejected: 0,
                 isFirst: false,
-                moveTo: {}
+                moveTo: {},
+                destAreaOptions: undefined
             });
         }
 

@@ -54,8 +54,9 @@
         if (canEdit) {
             orderLineItems.forEach(function(orderLineItem) {
                 orderLineItem.groupedLineItems.forEach(function(fulfillingLineItem) {
-                    addAndRemoveLineItemService.fillMovementOptions(fulfillingLineItem,
-                        locations, areaLocationInfo);
+                    addAndRemoveLineItemService.fillMovementOptions(
+                        fulfillingLineItem, locations, areaLocationInfo
+                    );
                 });
             });
         }
