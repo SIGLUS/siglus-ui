@@ -31,7 +31,6 @@
     controller.$inject = [
         'facility',
         'requisition',
-        'openlmisDateFilter',
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
         '$timeout',
@@ -39,13 +38,13 @@
         'siglusDownloadLoadingModalService',
         '$filter',
         '$stateParams',
-        'messageService'
+        'messageService',
+        'moment'
     ];
 
     function controller(
         facility,
         requisition,
-        openlmisDateFilter,
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
         $timeout,
@@ -53,7 +52,8 @@
         siglusDownloadLoadingModalService,
         $filter,
         $stateParams,
-        messageService
+        messageService,
+        moment
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -64,7 +64,6 @@
         vm.$onInit = onInit;
         vm.creationDate = undefined;
         vm.getCreationDate = getCreationDate;
-        vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.requisition = {};
         vm.mergedPatientMap = {};
@@ -78,11 +77,11 @@
             if (vm.showBreadCrumb) {
                 hideBreadcrumb();
             }
-            vm.year = openlmisDateFilter(requisition.processingPeriod.startDate, 'yyyy');
+            vm.year = moment(_.get(requisition, ['processingPeriod', 'startDate'])).format('YYYY');
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.endDate);
-            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+            vm.month = moment(_.get(requisition, ['processingPeriod', 'endDate'])).format('MMMM');
+            vm.nowTime = moment().format('D MMM Y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
@@ -166,19 +165,16 @@
         }
 
         function getCreationDate(date) {
-            return openlmisDateFilter(date, 'dd')
-            + ' '
-            + openlmisDateFilter(date, 'MMM')
-            + ' '
-            + openlmisDateFilter(date, 'yyyy');
+            return moment(date)
+                .utcOffset(2)
+                .format('DD MMM YYYY HH a');
         }
 
         function getPdfName(date, facilityName, id) {
             return (
                 'MIA.' + id
-                + '.' + openlmisDateFilter(date, 'yy')
-                + openlmisDateFilter(date, 'MM') + '.'
-                + '01'
+                + '.' + moment(date).format('YY') + moment(date).format('MM')
+                + '.01'
                 + '.pdf'
             );
         }
@@ -199,10 +195,6 @@
                     });
                 });
             });
-        }
-
-        function getMonth(date) {
-            return openlmisDateFilter(date, 'MMMM');
         }
 
         vm.downloadPdf = function() {
