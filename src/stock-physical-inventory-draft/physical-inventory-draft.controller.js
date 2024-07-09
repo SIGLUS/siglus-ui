@@ -356,7 +356,7 @@
                 if (!notReload) {
                     notificationService.success('stockPhysicalInventoryDraft.saved');
                 }
-                resetWatchItems();
+                $scope.needToConfirm = false;
 
                 $stateParams.isAddProduct = false;
                 loadingModalService.close();
@@ -636,10 +636,6 @@
         }
         // SIGLUS-REFACTOR: ends here
 
-        function resetWatchItems() {
-            $scope.needToConfirm = false;
-        }
-
         function onInit() {
             // SIGLUS-REFACTOR: starts here
             updateLabel();
@@ -877,18 +873,19 @@
         }
 
         function addLot(lineItem) {
-            var newLineItem = _.assign({}, angular.copy(lineItem), {
+            var newLineItem = _.assign({}, lineItem, {
+                $errors: {},
+                id: null,
+                tempId: _.uniqueId(),
                 stockCardId: null,
-                displayLotMessage: undefined,
-                lot: null,
                 quantity: undefined,
-                shouldOpenImmediately: false,
                 stockAdjustments: [],
                 stockOnHand: null,
-                unaccountedQuantity: undefined,
-                $errors: {},
                 reasonFreeText: undefined,
-                id: null
+                lot: {},
+                // deprecated: not used in anywhere
+                unaccountedQuantity: undefined
+
             });
             draft.lineItems.push(newLineItem);
             $stateParams.isAddProduct = true;
@@ -897,9 +894,14 @@
 
         function removeLot(lineItem) {
             var index = _.findIndex(draft.lineItems, function(item) {
-                return _.isEqual(item, lineItem);
+                if (lineItem.id && item.id) {
+                    return lineItem.id === item.id;
+                } else if (lineItem.tempId && item.tempId) {
+                    return lineItem.tempId === item.tempId;
+                }
+                return false;
             });
-            if (index === -1) {
+            if (index < 0) {
                 return;
             }
             draft.lineItems.splice(index, 1);

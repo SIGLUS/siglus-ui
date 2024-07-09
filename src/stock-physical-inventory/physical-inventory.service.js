@@ -401,23 +401,6 @@
                 programId: program,
                 facilityId: facility
             }).$promise;
-            // if (isInitialInventory) {
-            //     return locationResource.save({
-            //         splitNum: Number(splitNum),
-            //         initialPhysicalInventory: true
-            //     }, {
-            //         programId: program,
-            //         facilityId: facility
-            //     }).$promise;
-            // }
-            // return locationResource.save({
-            //     splitNum: Number(splitNum),
-            //     locationManagementOption: locationManagementOption
-            // }, {
-            //     programId: program,
-            //     facilityId: facility
-            // }).$promise;
-
         }
 
         function getConflictDraft(facilityId, programId) {
@@ -441,26 +424,14 @@
          */
         function search(keyword, lineItems) {
             var result = lineItems;
-            // var hasLot = _.any(lineItems, function(item) {
-            //     return item.lot;
-            // });
 
             if (!_.isEmpty(keyword)) {
                 keyword = keyword.trim();
                 result = _.filter(lineItems, function(item) {
-                    // var hasStockOnHand = !(_.isNull(item.stockOnHand) || _.isUndefined(item.stockOnHand));
-                    // var hasQuantity = !(_.isNull(item.quantity) || _.isUndefined(item.quantity)) &&
-                    //     item.quantity !== -1;
                     var searchableFields = item.orderable.productCode ? [
                         item.orderable.productCode,
                         productNameFilter(item.orderable),
                         item.locationCode
-                        // hasStockOnHand ? item.stockOnHand.toString() : '',
-                        // hasQuantity ? item.quantity.toString() : '',
-                        // getLot(item, hasLot),
-                        // SIGLUS-REFACTOR: starts here
-                        // item.lot && item.lot.expirationDate ? openlmisDateFilter(item.lot.expirationDate) : ''
-                        // SIGLUS-REFACTOR: ends here
                     ] : [
                         item.locationCode
                     ];

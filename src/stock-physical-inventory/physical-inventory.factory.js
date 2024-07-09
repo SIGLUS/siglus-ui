@@ -177,7 +177,6 @@
         function getPhysicalInventorySubDraft(subDraftIds) {
             return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
                 .then(function(physicalInventory) {
-                    console.log('getPhysicalInventorySubDraft result:', physicalInventory);
                     var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
                         return line.orderableId;
                     });
@@ -185,7 +184,6 @@
                         physicalInventory.programId, physicalInventory.facilityId, subDraftIds, allLineOrderableIds
                     )
                         .then(function(summaries) {
-                            console.log('summaries', summaries);
                             var draftToReturn = {
                                 programId: physicalInventory.programId,
                                 facilityId: physicalInventory.facilityId,
@@ -199,7 +197,6 @@
                                 'product'
                             );
                             draftToReturn.id = physicalInventory.id;
-                            console.log('draft to return result:', draftToReturn);
                             return draftToReturn;
                         });
                 });
@@ -208,30 +205,15 @@
         function getPhysicalInventorySubDraftWithoutSummary(subDraftIds) {
             return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
                 .then(function(physicalInventory) {
-                    console.log('getPhysicalInventorySubDraftNew result:', physicalInventory);
                     var sourceLineItems = angular.copy(physicalInventory.lineItems);
-                    var neededLineItems = sourceLineItems.map(function(lineItem) {
+                    physicalInventory.lineItems = sourceLineItems.map(function(lineItem) {
                         return _.assign({}, lineItem, {
-                            // TODO: match with response data
                             $errors: {},
                             $diffMessage: {},
-                            lot: {
-                                id: lineItem.lotId,
-                                lotCode: lineItem.lotCode,
-                                expirationDate: lineItem.expirationDate
-                            },
-                            orderable: {
-                                id: lineItem.orderableId,
-                                fullProductName: 'hello world',
-                                dispensable: {
-                                    displayUnit: 'eachhhh'
-                                }
-                            },
                             vvmStatus: _.get(lineItem, ['extraData', 'vvmStatus']),
                             stockCardId: _.get(lineItem, ['extraData', 'stockCardId'])
                         });
                     });
-                    physicalInventory.lineItems = neededLineItems;
                     return physicalInventory;
                 });
         }

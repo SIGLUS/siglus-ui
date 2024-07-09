@@ -90,25 +90,27 @@
                             return siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
                         });
                 },
-                groupedLineItems: function(
-                    draft, $stateParams, physicalInventoryService, $filter, lotsMapByOrderableId
-                ) {
-                    var stateParamsCopy = angular.copy($stateParams);
+                rawLineItems: function(draft, lotsMapByOrderableId) {
                     var draftCopy = angular.copy(draft);
-                    draftCopy.lineItems = draftCopy.lineItems.filter(function(line) {
-                        return !(line.stockCardId && line.stockOnHand === 0);
+                    draftCopy.lineItems = _.filter(draftCopy.lineItems, function(item) {
+                        return !(item.stockCardId && item.stockOnHand === 0);
                     });
-                    var searchResult = physicalInventoryService.search(
-                        stateParamsCopy.keyword, draftCopy.lineItems
-                    );
-                    var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
+                    var sortedLineItems = _.sortBy(draftCopy.lineItems, function(lineItem) {
+                        return _.get(lineItem, ['orderable', 'productCode']);
+                    });
                     // set lot options
-                    lineItems.forEach(function(lineItem) {
+                    sortedLineItems.forEach(function(lineItem) {
                         var orderableId = lineItem.orderableId;
                         lineItem.lotOptions = lotsMapByOrderableId[orderableId] || [];
                     });
+                    return sortedLineItems;
+                },
+                groupedLineItems: function($stateParams, physicalInventoryService, rawLineItems) {
+                    var matchedLineItems = physicalInventoryService.search(
+                        $stateParams.keyword, rawLineItems
+                    );
                     // SIGLUS-REFACTOR: starts here
-                    return _.chain(lineItems)
+                    return _.chain(matchedLineItems)
                         .groupBy(function(lineItem) {
                             return lineItem.orderable.id;
                         })
