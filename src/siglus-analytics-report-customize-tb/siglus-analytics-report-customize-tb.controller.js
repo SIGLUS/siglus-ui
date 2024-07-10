@@ -167,7 +167,7 @@
         function getCreationDate(date) {
             return moment(date)
                 .utcOffset(2)
-                .format('DD MMM YYYY HH a');
+                .format('DD MMM YYYY');
         }
 
         function getPdfName(date, facilityName, id) {
