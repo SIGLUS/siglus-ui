@@ -529,7 +529,7 @@ describe('PhysicalInventoryDraftController', function() {
             alertConfirmModalService: alertConfirmModalService,
             subDraftIds: subDraftIds,
             draft: draft,
-            rawLineItems: [],
+            rawLineItems: [lineItem1, lineItem3],
             displayLineItemsGroup: [],
             reasons: reasons,
             siglusOrderableLotListService: siglusOrderableLotListService
