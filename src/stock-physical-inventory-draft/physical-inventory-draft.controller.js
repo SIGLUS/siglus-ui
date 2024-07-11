@@ -509,14 +509,6 @@
          */
         var submit = function() {
             if (validate()) {
-                // SIGLUS-REFACTOR: starts here
-                if ($stateParams.keyword) {
-                    $stateParams.keyword = null;
-                }
-                // SIGLUS-REFACTOR: ends here
-                $scope.$broadcast('openlmis-form-submit');
-                alertService.error('stockPhysicalInventoryDraft.submitInvalid');
-            } else {
                 if ($stateParams.draftNum) {
                     subDraftSubmit();
                     return;
@@ -556,6 +548,14 @@
 
                         });
                 });
+            } else {
+                // SIGLUS-REFACTOR: starts here
+                if ($stateParams.keyword) {
+                    $stateParams.keyword = null;
+                }
+                // SIGLUS-REFACTOR: ends here
+                $scope.$broadcast('openlmis-form-submit');
+                alertService.error('stockPhysicalInventoryDraft.submitInvalid');
             }
         };
 
@@ -650,16 +650,15 @@
 
         function validate() {
             var anyError = false;
-            _.chain(vm.draft.lineItems).flatten()
-                .each(function(item) {
-                    if (!(item.orderable && item.orderable.isKit)) {
-                        anyError = vm.validateLotCode(item) || anyError;
-                        anyError = vm.validExpirationDate(item) || anyError;
-                    }
-                    anyError = vm.validateReasonFreeText(item) || anyError;
-                    anyError = vm.validateQuantity(item) || anyError;
-                });
-            return anyError;
+            _.forEach(rawLineItems, function(lineItem) {
+                if (!(lineItem.orderable && lineItem.orderable.isKit)) {
+                    anyError = vm.validateLotCode(lineItem) || anyError;
+                    anyError = vm.validExpirationDate(lineItem) || anyError;
+                }
+                anyError = vm.validateReasonFreeText(lineItem) || anyError;
+                anyError = vm.validateQuantity(lineItem) || anyError;
+            });
+            return !anyError;
         }
 
         function getAllLotCode(orderableId) {
