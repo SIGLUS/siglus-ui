@@ -683,7 +683,6 @@
             $stateParams.facility = undefined;
             // SIGLUS-REFACTOR: starts here
             initiateLineItems();
-            refreshLotOptions();
             vm.hasLot = vm.existLotCode.length > 0;
             $scope.needToConfirm = $stateParams.isAddProduct;
             $scope.focusedRow = undefined;
@@ -746,36 +745,6 @@
                     vm.existLotCode.push(summary.lot.id);
                 }
             });
-        }
-
-        function getLotOptions() {
-            var addedLotsId = getAddedLots();
-            var notAddedLotItemGroup = _.chain(draft.summaries)
-                .filter(function(summary) {
-                    // #105: activate archived product
-                    return (!summary.stockCardId || summary.orderable.archived)
-                        && summary.lot && !_.contains(addedLotsId, summary.lot.id);
-                    // #105: ends here
-                })
-                .groupBy(function(item) {
-                    return item.orderable.id;
-                })
-                .value();
-            var lotOptions = {};
-            for (var i in notAddedLotItemGroup) {
-                lotOptions[i] = angular.copy(orderableGroupService.lotsOfWithNull(notAddedLotItemGroup[i]));
-            }
-            return lotOptions;
-        }
-
-        function getAddedLots() {
-            var addedLotsId = [];
-            _.forEach(draft.lineItems, function(item) {
-                if (item.lot && item.lot.id) {
-                    addedLotsId.push(item.lot.id);
-                }
-            });
-            return addedLotsId;
         }
 
         /**
@@ -939,21 +908,11 @@
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
-            refreshLotOptions();
             vm.validateLotCode(lineItem);
             vm.validExpirationDate(lineItem);
             vm.updateProgress();
         });
 
-        function refreshLotOptions() {
-            var lotOptions = getLotOptions();
-            _.forEach(draft.lineItems, function(displayLineItem) {
-                var orderableId = displayLineItem.orderable.id;
-                if (lotOptions[orderableId]) {
-                    displayLineItem.lotOptions = lotOptions[orderableId];
-                }
-            });
-        }
         function delayPromise(delay) {
             var deferred = $q.defer();
             setTimeout(function() {

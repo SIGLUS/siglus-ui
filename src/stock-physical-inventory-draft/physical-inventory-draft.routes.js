@@ -79,16 +79,22 @@
                         .then(function(draft) {
                             return draft;
                         });
-
                 },
                 lotsMapByOrderableId: function(draft, siglusOrderableLotListService, facility) {
-                    var orderableIds = _.uniq(draft.lineItems.map(function(lineItem) {
-                        return lineItem.orderable.id;
-                    }));
-                    return siglusOrderableLotListService.getOrderableLots(facility.id, orderableIds)
-                        .then(function(lotList) {
-                            return siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
-                        });
+                    var orderableIds = _.uniq(
+                        _.filter(draft.lineItems, function(lineItem) {
+                            return !lineItem.stockCardId;
+                        }).map(function(lineItem) {
+                            return lineItem.orderable.id;
+                        })
+                    );
+                    if (orderableIds.length > 0) {
+                        return siglusOrderableLotListService.getOrderableLots(facility.id, orderableIds)
+                            .then(function(lotList) {
+                                return siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
+                            });
+                    }
+                    return [];
                 },
                 rawLineItems: function(draft, lotsMapByOrderableId) {
                     var draftCopy = angular.copy(draft);
