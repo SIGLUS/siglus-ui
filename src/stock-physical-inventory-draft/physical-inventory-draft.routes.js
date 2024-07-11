@@ -123,7 +123,7 @@
                         .values()
                         .value();
                 },
-                displayLineItemsGroup: function(paginationService, draft, groupedLineItems) {
+                displayLineItemsGroup: function(paginationService, draft, groupedLineItems, $stateParams) {
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -138,7 +138,7 @@
                     };
                     var pageParams = {
                         size: '@@STOCKMANAGEMENT_PAGE_SIZE',
-                        page: 0
+                        page: $stateParams.page || 0
                     };
                     return paginationService.registerList(validator, pageParams, function() {
                         return groupedLineItems;
