@@ -509,6 +509,7 @@
          */
         var submit = function() {
             if (validate()) {
+                draft.lineItems = getUpdatedLineItems();
                 if ($stateParams.draftNum) {
                     subDraftSubmit();
                     return;

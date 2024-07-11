@@ -98,9 +98,6 @@
                 },
                 rawLineItems: function(draft, lotsMapByOrderableId) {
                     var draftCopy = angular.copy(draft);
-                    draftCopy.lineItems = _.filter(draftCopy.lineItems, function(item) {
-                        return !(item.stockCardId && item.stockOnHand === 0);
-                    });
                     var sortedLineItems = _.sortBy(draftCopy.lineItems, function(lineItem) {
                         return _.get(lineItem, ['orderable', 'productCode']);
                     });

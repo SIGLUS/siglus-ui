@@ -60,11 +60,13 @@
 
                 return new StockEventLineItem(
                     item.orderable.id, item.lot ? item.lot.id : null,
-                    item.quantity, physicalInventory.occurredDate,
+                    item.quantity,
+                    physicalInventory.occurredDate,
                     {
                         vvmStatus: item.vvmStatus,
                         stockCardId: item.stockCardId
-                    }, stockAdjustments,
+                    },
+                    stockAdjustments,
                     // SIGLUS-REFACTOR: starts here
                     item.reasonFreeText,
                     item.lot ? item.lot.lotCode : null,
@@ -76,7 +78,7 @@
                     // SIGLUS-REFACTOR: ends here
                 );
             });
-            return _.extend(new StockEvent(physicalInventoryCopy), {
+            return _.assign(new StockEvent(physicalInventoryCopy), {
                 subDraftIds: physicalInventoryCopy.subDraftIds
             });
         }
