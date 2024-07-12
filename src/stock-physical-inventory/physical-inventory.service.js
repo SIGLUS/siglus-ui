@@ -511,6 +511,7 @@
          * Submits physical inventory draft.
          *
          * @param  {Object} physicalInventory Draft that will be saved
+         * @param  {String} locationManagementOption Physical inventory by location or product (or undefined)
          * @return {Promise}                  Submitted Physical Inventory
          */
         function subSubmit(physicalInventory, locationManagementOption) {
@@ -519,35 +520,25 @@
             // SIGLUS-REFACTOR: Filter not added items
             draft.lineItems = _.map(physicalInventory.lineItems, function(item) {
                 return {
-                    orderableId: item.orderable.id,
-                    id: item.id ? item.id : null,
-                    lotId: item.lot ? item.lot.id : null,
-                    lotCode: item.lot ? item.lot.lotCode : null,
-                    expirationDate: item.lot ? item.lot.expirationDate : null,
+                    id: _.get(item, 'id'),
+                    orderableId: _.get(item, ['orderable', 'id']),
                     quantity: item.quantity,
-                    extraData: {
-                        vvmStatus: item.vvmStatus
-                    },
-                    stockAdjustments: item.stockAdjustments,
-                    reasonFreeText: item.reasonFreeText,
-                    stockCardId: item.stockCardId,
-                    area: item.area,
-                    locationCode: item.locationCode,
-                    programId: item.programId,
+                    extraData: _.get(item, 'extraData'),
+                    lot: _.get(item, 'lot'),
+                    stockAdjustments: _.get(item, 'stockAdjustments'),
+                    reasonFreeText: _.get(item, 'reasonFreeText'),
+                    stockCardId: _.get(item, 'stockCardId'),
+                    programId: _.get(item, 'programId'),
+                    area: _.get(item, 'area'),
+                    locationCode: _.get(item, 'locationCode'),
                     skipped: item.skipped
                 };
             });
             // SIGLUS-REFACTOR: ends here
-            var event = siglusStockEventService.formatPayload(draft);
-            // SIGLUS-REFACTOR: starts here
-            var result = '';
             if (locationManagementOption === 'location' || locationManagementOption === 'product') {
-                result = locationResource.submitSubDraftWithLocation(event).$promise;
-            } else {
-                result = resource.submit(event).$promise;
+                return locationResource.submitSubDraftWithLocation(draft).$promise;
             }
-            return result;
-            // SIGLUS-REFACTOR: ends here
+            return resource.submit(draft).$promise;
         }
 
         function submit(physicalInventory, withLocation, historyData) {
