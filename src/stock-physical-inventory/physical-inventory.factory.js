@@ -351,47 +351,21 @@
 
             // SIGLUS-REFACTOR: Filter not added items
             physicalInventory.lineItems = _.map(draft.lineItems, function(item) {
-                var result = {};
-                if (item.id) {
-                    result = {
-                        id: item.id,
-                        orderableId: item.orderable.id,
-                        lotId: item.lot ? item.lot.id : null,
-                        lotCode: item.lot ? item.lot.lotCode : null,
-                        expirationDate: item.lot ? item.lot.expirationDate : null,
-                        quantity: item.quantity,
-                        extraData: {
-                            vvmStatus: item.vvmStatus
-                        },
-                        stockAdjustments: item.stockAdjustments,
-                        reasonFreeText: item.reasonFreeText,
-                        stockCardId: item.stockCardId,
-                        programId: item.programId,
-                        area: item.area,
-                        locationCode: item.locationCode
-                    };
-                } else {
-                    result = {
-                        orderableId: item.orderable.id,
-                        lotId: item.lot ? item.lot.id : null,
-                        lotCode: item.lot ? item.lot.lotCode : null,
-                        expirationDate: item.lot ? item.lot.expirationDate : null,
-                        quantity: item.quantity,
-                        extraData: {
-                            vvmStatus: item.vvmStatus
-                        },
-                        stockAdjustments: item.stockAdjustments,
-                        reasonFreeText: item.reasonFreeText,
-                        stockCardId: item.stockCardId,
-                        programId: item.programId,
-                        area: item.area,
-                        locationCode: item.locationCode
-                    };
-                }
-                return result;
+                return {
+                    id: _.get(item, 'id'),
+                    orderableId: _.get(item, ['orderable', 'id']),
+                    quantity: item.quantity,
+                    extraData: _.get(item, 'extraData'),
+                    lot: _.get(item, 'lot'),
+                    stockAdjustments: _.get(item, 'stockAdjustments'),
+                    reasonFreeText: _.get(item, 'reasonFreeText'),
+                    stockCardId: _.get(item, 'stockCardId'),
+                    programId: _.get(item, 'programId'),
+                    area: _.get(item, 'area'),
+                    locationCode: _.get(item, 'locationCode')
+                };
             });
             // SIGLUS-REFACTOR: ends here
-
             return physicalInventoryService.saveDraft(physicalInventory);
         }
 

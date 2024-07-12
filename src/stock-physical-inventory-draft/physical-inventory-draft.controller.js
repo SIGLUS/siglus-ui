@@ -224,7 +224,6 @@
                             var orderableIds = addedItems.map(function(item) {
                                 return _.get(item, ['orderable', 'id']);
                             });
-                            // TODO: is get lotOptions necessary?
                             siglusOrderableLotListService.getOrderableLots(facility.id, orderableIds)
                                 .then(function(lotList) {
                                     loadingModalService.close();
@@ -385,6 +384,7 @@
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
+            draft.lineItems = getUpdatedLineItems();
             return physicalInventoryFactory.saveDraft(_.assign({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds

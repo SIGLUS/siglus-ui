@@ -465,7 +465,7 @@
          */
         // SIGLUS-REFACTOR: starts here
         function saveDraft(draft) {
-            return resource.update(siglusStockEventService.formatPayload(draft)).$promise;
+            return resource.update(draft).$promise;
         }
         // SIGLUS-REFACTOR: ends here
 
