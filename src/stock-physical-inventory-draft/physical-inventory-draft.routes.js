@@ -141,7 +141,10 @@
                         return groupedLineItems;
                     });
                 },
-                reasons: function(facility, program, stockReasonsFactory) {
+                reasons: function(facility, program, stockReasonsFactory, $stateParams) {
+                    if ($stateParams.reasons) {
+                        return $stateParams.reasons;
+                    }
                     return stockReasonsFactory.getReasons(program.id, facility.type.id)
                         .then(function(reasons) {
                             return _.chain(reasons).filter(function(reason) {

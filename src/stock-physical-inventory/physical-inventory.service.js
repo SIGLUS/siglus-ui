@@ -139,8 +139,8 @@
         this.deleteDraft = deleteDraft;
         this.deleteDraftList = deleteDraftList;
         this.deleteSubDraftByLocation = deleteSubDraftByLocation;
-        this.submitPhysicalInventory = submit;
-        this.submitSubPhysicalInventory = subSubmit;
+        this.submitPhysicalInventory = submitPhysicalInventory;
+        this.submitSubPhysicalInventory = submitSubPhysicalInventory;
         this.getLocationPhysicalInventorySubDraft = getLocationPhysicalInventorySubDraft;
         // SIGLUS-REFACTOR: starts here
         this.getInitialDraft = getInitialDraft;
@@ -514,7 +514,7 @@
          * @param  {String} locationManagementOption Physical inventory by location or product (or undefined)
          * @return {Promise}                  Submitted Physical Inventory
          */
-        function subSubmit(physicalInventory, locationManagementOption) {
+        function submitSubPhysicalInventory(physicalInventory, locationManagementOption) {
             var draft = angular.copy(physicalInventory);
 
             // SIGLUS-REFACTOR: Filter not added items
@@ -541,7 +541,7 @@
             return resource.submit(draft).$promise;
         }
 
-        function submit(physicalInventory, withLocation, historyData) {
+        function submitPhysicalInventory(physicalInventory, withLocation, historyData) {
             var event = stockEventFactory.createFromPhysicalInventory(physicalInventory, withLocation);
             var submitData = _.assign({}, event, {
                 historyData: JSON.stringify(historyData)

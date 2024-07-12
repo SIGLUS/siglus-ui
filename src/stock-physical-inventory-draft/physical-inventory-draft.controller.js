@@ -324,10 +324,10 @@
         function reload(isReload) {
             loadingModalService.open();
             draft.lineItems = getUpdatedLineItems();
-            // TODO: set reason & lotsMap into $stateParams
             $stateParams.program = vm.program;
             $stateParams.facility = vm.facility;
             $stateParams.draft = draft;
+            $stateParams.reasons = reasons;
             $state.go($state.current.name, $stateParams, {
                 reload: isReload
             });
@@ -520,9 +520,9 @@
                     draft.occurredDate = resolvedData.occurredDate;
                     draft.signature = resolvedData.signature;
 
-                    physicalInventoryService.submitPhysicalInventory(_.assign({}, draft, {
-                        summaries: []
-                    }), false, buildHistoryData(resolvedData))
+                    physicalInventoryService.submitPhysicalInventory(
+                        draft, false, buildHistoryData(resolvedData)
+                    )
                         .then(function() {
                             // rep logic
                             if (vm.isInitialInventory) {
