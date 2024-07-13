@@ -39,7 +39,7 @@
         'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
         'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService',
         'siglusOrderableLotService', 'siglusPrintPalletLabelComfirmModalService',
-        'siglusLocationCommonApiService'
+        'siglusLocationCommonApiService', 'reasons', 'draft', 'displayLineItemsGroup'
     ];
 
     function controller(
@@ -53,7 +53,7 @@
         siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
         allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
         siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService,
-        siglusLocationCommonApiService
+        siglusLocationCommonApiService, reasons, draft, displayLineItemsGroup
     ) {
         var vm = this;
         vm.$onInit = onInit;
@@ -72,16 +72,8 @@
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         vm.locationManagementOption = $stateParams.locationManagementOption;
-        var draft = physicalInventoryDataService.getDraft(facility.id);
-        var reasons = physicalInventoryDataService.getReasons(facility.id);
-        var displayLineItemsGroup = physicalInventoryDataService.getDisplayLineItemsGroup(facility.id);
         siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
 
-        vm.back = function() {
-            $state.go('^', {}, {
-                reload: true
-            });
-        };
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
                 return _.every(lineItems, function(lineItem) {
@@ -293,6 +285,7 @@
                 $stateParams.program = vm.program;
                 $stateParams.facility = vm.facility;
                 $stateParams.draft = draft;
+                $stateParams.reasons = reasons;
                 return $state.go($state.current.name, $stateParams, {
                     reload: isReload
                 });
@@ -334,7 +327,7 @@
                 $stateParams.keyword = null;
             }
             loadingModalService.open();
-            return physicalInventoryService.saveDraftWithLocation(_.extend({}, draft, {
+            return physicalInventoryService.saveDraftWithLocation(_.assign({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
             }), $stateParams.locationManagementOption).then(function() {
@@ -396,9 +389,7 @@
 
         var deleteDraft = function() {
             if (vm.isMergeDraft) {
-                $state.go('^', {}, {
-                    reload: true
-                });
+                goBack();
                 return;
             }
 
@@ -413,12 +404,13 @@
                     $stateParams.locationManagementOption
                 ).then(function() {
                     $scope.needToConfirm = false;
-                    vm.isInitialInventory ?
-                        $state.go('^', {}, {
-                            reload: true
-                        }) : $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
+                    if (vm.isInitialInventory) {
+                        goBack();
+                    } else {
+                        $state.go('openlmis.locationManagement.physicalInventory.draftList', $stateParams, {
                             reload: true
                         });
+                    }
                 })
                     .catch(function() {
                         loadingModalService.close();
@@ -439,7 +431,7 @@
         var subDraftSubmit = function() {
             $scope.needToConfirm = false;
             loadingModalService.open();
-            physicalInventoryService.submitSubPhysicalInventory(_.extend({}, draft, {
+            physicalInventoryService.submitSubPhysicalInventory(_.assign({}, draft, {
                 summaries: [],
                 subDraftIds: subDraftIds
             }), $stateParams.locationManagementOption)
@@ -449,10 +441,7 @@
                     } else {
                         notificationService.success('stockPhysicalInventoryDraft.submitted');
                     }
-
-                    $state.go('^', {}, {
-                        reload: true
-                    });
+                    goBack();
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -1377,13 +1366,6 @@
             }, delay);
             return deferred.promise;
         }
-
-        $scope.$on('$stateChangeStart', function(event, toState) {
-            if (toState.name !== 'openlmis.stockmanagement.initialInventory.draft'
-                && toState.name !== 'openlmis.stockmanagement.physicalInventory.draftList.draft') {
-                physicalInventoryDataService.clear();
-            }
-        });
         // SIGLUS-REFACTOR: ends here
 
         function buildHistoryData(resolvedData) {
@@ -1461,6 +1443,12 @@
                     comments: lineItem.reasonFreeText,
                     location: isByProduct ? lineItem.area + ' - ' + lineItem.locationCode : null
                 };
+            });
+        }
+
+        function goBack() {
+            $state.go('^', {}, {
+                reload: true
             });
         }
     }

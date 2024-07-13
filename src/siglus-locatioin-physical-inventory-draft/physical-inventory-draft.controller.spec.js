@@ -544,7 +544,10 @@ describe('LocationPhysicalInventoryDraftController', function() {
             confirmDiscardService: confirmDiscardService,
             alertConfirmModalService: alertConfirmModalService,
             subDraftIds: subDraftIds,
-            allLocationAreaMap: allLocationAreaMap
+            allLocationAreaMap: allLocationAreaMap,
+            reasons: reasons,
+            draft: draft,
+            displayLineItemsGroup: []
         });
     }
 
