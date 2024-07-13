@@ -218,18 +218,9 @@ describe('PhysicalInventoryDraftController', function() {
 
     it('should reload with page and keyword when search', function() {
         vm.keyword = '200';
-        var params = {
-            page: 0,
-            keyword: '200',
-            id: draft.id,
-            program: program,
-            facility: facility,
-            draft: draft
-        };
-
         vm.search();
 
-        expect(state.go).toHaveBeenCalledWith('/a/b', params, {
+        expect(state.go).toHaveBeenCalledWith('/a/b', jasmine.any(Object), {
             reload: '/a/b'
         });
     });

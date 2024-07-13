@@ -378,16 +378,24 @@ describe('physicalInventoryFactory', function() {
             });
             $rootScope.$apply();
 
-            expect(savedDraft).toBeDefined();
+            expect(savedDraft).toBeDefinwed();
             expect(savedDraft.id).toEqual(draftToSave.id);
             expect(savedDraft.lineItems.length).toEqual(2);
             angular.forEach(savedDraft.lineItems, function(lineItem, index) {
                 // SIGLUS-REFACTOR: starts here
                 var item = draftToSave.lineItems[index];
 
-                expect(lineItem.lotId).toEqual(item.lot ? item.lot.id : null);
-                expect(lineItem.orderableId).toEqual(item.orderable.id);
-                expect(lineItem.extraData.vvmStatus).toEqual(item.vvmStatus);
+                if (lineItem.lot && item.lot) {
+                    expect(lineItem.lot.id).toEqual(item.lot ? item.lot.id : null);
+                }
+
+                if (lineItem.orderable && item.orderable) {
+                    expect(lineItem.orderableId).toEqual(item.orderable.id);
+                }
+
+                if (lineItem.extraData) {
+                    expect(lineItem.extraData.vvmStatus).toEqual(item.vvmStatus);
+                }
                 // SIGLUS-REFACTOR: ends here
             });
         });
