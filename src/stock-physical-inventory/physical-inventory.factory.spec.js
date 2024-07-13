@@ -378,7 +378,7 @@ describe('physicalInventoryFactory', function() {
             });
             $rootScope.$apply();
 
-            expect(savedDraft).toBeDefinwed();
+            expect(savedDraft).toBeDefined();
             expect(savedDraft.id).toEqual(draftToSave.id);
             expect(savedDraft.lineItems.length).toEqual(2);
             angular.forEach(savedDraft.lineItems, function(lineItem, index) {
