@@ -124,9 +124,9 @@
                 allLocationAreaMap: function(siglusLocationAreaFactory) {
                     return siglusLocationAreaFactory.getAllLocationAreaInfoMap();
                 },
-                groupedLineItems: function($stateParams, physicalInventoryService, rawLineItems) {
+                groupedLineItems: function($stateParams, physicalInventoryService, draft) {
                     var searchedLineItems =  physicalInventoryService.search(
-                        $stateParams.keyword, rawLineItems.lineItems
+                        $stateParams.keyword, draft.lineItems
                     );
                     return _.chain(searchedLineItems)
                         .groupBy(function(lineItem) {
@@ -136,7 +136,6 @@
                         })
                         .values()
                         .value();
-
                 },
                 displayLineItemsGroup: function(paginationService, $stateParams, groupedLineItems) {
                     var validator = function(items) {

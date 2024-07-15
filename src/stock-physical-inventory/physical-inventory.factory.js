@@ -52,6 +52,7 @@
             getPhysicalInventorySubDraftWithoutSummary: getPhysicalInventorySubDraftWithoutSummary,
             saveDraft: saveDraft,
             getLocationPhysicalInventorySubDraft: getLocationPhysicalInventorySubDraft,
+            getLocationPhysicalInventorySubDraftWithoutSummary: getLocationPhysicalInventorySubDraftWithoutSummary,
             // SIGLUS-REFACTOR: starts here
             getInitialInventory: getInitialInventory
             // SIGLUS-REFACTOR: ends here
@@ -202,23 +203,7 @@
                 });
         }
 
-        function getPhysicalInventorySubDraftWithoutSummary(subDraftIds) {
-            return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
-                .then(function(physicalInventory) {
-                    var sourceLineItems = angular.copy(physicalInventory.lineItems);
-                    physicalInventory.lineItems = sourceLineItems.map(function(lineItem) {
-                        return _.assign({}, lineItem, {
-                            $errors: {},
-                            $diffMessage: {},
-                            vvmStatus: _.get(lineItem, ['extraData', 'vvmStatus']),
-                            stockCardId: _.get(lineItem, ['extraData', 'stockCardId'])
-                        });
-                    });
-                    return physicalInventory;
-                });
-        }
-
-        function  getLocationPhysicalInventorySubDraft(subDraftIdList, isMerged, locationManagementOption) {
+        function  getLocationPhysicalInventorySubDraft(subDraftIdList, locationManagementOption) {
             return physicalInventoryService.getLocationPhysicalInventorySubDraft(
                 subDraftIdList, locationManagementOption
             )
@@ -250,6 +235,39 @@
                             return draftToReturn;
                         });
                 });
+        }
+
+        function getPhysicalInventorySubDraftWithoutSummary(subDraftIds) {
+            return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
+                .then(function(physicalInventory) {
+                    var sourceLineItems = angular.copy(physicalInventory.lineItems);
+                    physicalInventory.lineItems = buildNeededLineItemStructure(sourceLineItems);
+                    return physicalInventory;
+                });
+        }
+
+        function  getLocationPhysicalInventorySubDraftWithoutSummary(
+            subDraftIdList, isMerged, locationManagementOption
+        ) {
+            return physicalInventoryService.getLocationPhysicalInventorySubDraft(
+                subDraftIdList, locationManagementOption
+            )
+                .then(function(physicalInventory) {
+                    var sourceLineItems = angular.copy(physicalInventory.lineItems);
+                    physicalInventory.lineItems = buildNeededLineItemStructure(sourceLineItems);
+                    return physicalInventory;
+                });
+        }
+
+        function buildNeededLineItemStructure(sourceLineItems) {
+            return sourceLineItems.map(function(lineItem) {
+                return _.assign({}, lineItem, {
+                    $errors: {},
+                    $diffMessage: {},
+                    vvmStatus: _.get(lineItem, ['extraData', 'vvmStatus']),
+                    stockCardId: _.get(lineItem, ['extraData', 'stockCardId'])
+                });
+            });
         }
 
         // SIGLUS-REFACTOR: starts here

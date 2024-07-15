@@ -312,18 +312,11 @@
         }
 
         function getLocationPhysicalInventorySubDraft(id, locationManagementOption) {
-            var params = locationManagementOption === 'location' ?
-                {
-                    subDraftIds: id,
-                    isByLocation: true
-                } : {
-                    subDraftIds: id
-                };
-            return locationResource.find(params)
-                .$promise
-                .then(function(response) {
-                    return siglusStockEventService.formatResponse(response);
-                });
+            var params = {
+                subDraftIds: id,
+                isByLocation: locationManagementOption === 'location'
+            };
+            return locationResource.find(params).$promise;
         }
 
         /**
