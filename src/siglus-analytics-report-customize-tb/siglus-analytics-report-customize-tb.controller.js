@@ -33,7 +33,6 @@
         'requisition',
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
-        '$timeout',
         '$q',
         'siglusDownloadLoadingModalService',
         '$filter',
@@ -47,7 +46,6 @@
         requisition,
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
-        $timeout,
         $q,
         siglusDownloadLoadingModalService,
         $filter,
@@ -63,8 +61,6 @@
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
-        vm.getCreationDate = getCreationDate;
-        vm.getPdfName = getPdfName;
         vm.requisition = {};
         vm.mergedPatientMap = {};
         function onInit() {
@@ -78,7 +74,7 @@
                 hideBreadcrumb();
             }
             vm.year = moment(_.get(requisition, ['processingPeriod', 'startDate'])).format('YYYY');
-            vm.signaure = getSignaure(requisition.extraData.signaure);
+            vm.signaure = getSignature(requisition.extraData.signaure);
             vm.creationDate = getCreationDate(requisition.createdDate);
             vm.month = moment(_.get(requisition, ['processingPeriod', 'endDate'])).format('MMMM');
             vm.nowTime = moment().format('D MMM Y h:mm:ss a');
@@ -103,8 +99,6 @@
             vm.quantificationPart2 =
                 $filter('orderBy')(_.get(vm.requisition.patientLineItems[0], ['columns', 'columns']), 'displayOrder');
             vm.quantificationPart3 = {};
-            vm.getValueByKey = getValueByKey;
-            vm.getSignaure = getSignaure;
             getPatientData();
             vm.draftStatusMessages =
                 getDraftStatusMessages(getHistoryComments(requisition.statusHistory));
@@ -134,18 +128,6 @@
             });
         }
 
-        function getValueByKey(key, index) {
-            if (!vm.requisition.patientLineItems.length) {
-                return '';
-            }
-            var result = '';
-            if (vm.mergedPatientMap[key]) {
-                var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
-                result = vm.mergedPatientMap[key].columns[innerKey].value;
-            }
-            return result;
-        }
-
         function getHistoryComments(statusHistory) {
             var historyCommentsStr = _.reduce(statusHistory, function(r, c) {
                 r = c.statusMessageDto ? r + c.statusMessageDto.body + '.' : r + '';
@@ -154,29 +136,20 @@
             return historyCommentsStr.substr(0, historyCommentsStr.length - 1);
         }
 
-        function getSignaure(signaure) {
-            var newSignaure = angular.copy(signaure);
-            if (newSignaure && newSignaure.approve) {
-                newSignaure.approve = newSignaure && newSignaure.approve.length
-                    ? newSignaure.approve.join(',')
+        function getSignature(signature) {
+            var newSignature = angular.copy(signature);
+            if (newSignature && newSignature.approve) {
+                newSignature.approve = newSignature && newSignature.approve.length
+                    ? newSignature.approve.join(',')
                     : '';
             }
-            return newSignaure;
+            return newSignature;
         }
 
         function getCreationDate(date) {
             return moment(date)
                 .utcOffset(2)
                 .format('DD MMM YYYY');
-        }
-
-        function getPdfName(date, facilityName, id) {
-            return (
-                'MIA.' + id
-                + '.' + moment(date).format('YY') + moment(date).format('MM')
-                + '.01'
-                + '.pdf'
-            );
         }
 
         function extendLineItems() {
