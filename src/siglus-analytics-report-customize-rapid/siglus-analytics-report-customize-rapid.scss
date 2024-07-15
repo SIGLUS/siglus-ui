@@ -25,6 +25,13 @@
       white-space: nowrap;
     }
 
+    .commit-td {
+      border: 1px solid black;
+      word-wrap: normal;
+      word-break: normal;
+      white-space: normal;
+    }
+
     // span {
     //   font-size: 16px;
     // }
