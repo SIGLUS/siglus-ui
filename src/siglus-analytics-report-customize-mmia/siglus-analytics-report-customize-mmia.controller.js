@@ -38,7 +38,8 @@
         'siglusDownloadLoadingModalService',
         '$stateParams',
         'messageService',
-        'moment'
+        'moment',
+        'siglusAnalyticsDateService'
     ];
 
     function controller(
@@ -51,7 +52,8 @@
         siglusDownloadLoadingModalService,
         $stateParams,
         messageService,
-        moment
+        moment,
+        siglusAnalyticsDateService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -80,8 +82,9 @@
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.historyComments = getHistoryComments(requisition.statusHistory);
-            vm.creationDate = moment(requisition.createdDate).format('D MMM Y');
-            vm.month = moment(requisition.processingPeriod.endDate).format('MMM');
+            vm.creationDate = siglusAnalyticsDateService.getCreationDateWithTranslatedMonth(requisition.createdDate);
+            var endDate = _.get(requisition, ['processingPeriod', 'endDate']);
+            vm.month = siglusAnalyticsDateService.getAbbrTranslatedMonthFromDateText(endDate);
             vm.nowTime = moment().format('D MMM Y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
@@ -138,6 +141,7 @@
                 getValueByKey('newSection4', 1);
             vm.adjustmentValue = (vm.totalWithTreatment / vm.totalWithInThisMonth).toFixed(2);
         }
+
         function setBarCodeDom() {
             $timeout(function() {
                 angular.forEach(vm.productLineItems, function(item) {

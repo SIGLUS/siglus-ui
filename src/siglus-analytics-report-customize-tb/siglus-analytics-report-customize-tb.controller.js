@@ -38,7 +38,8 @@
         '$filter',
         '$stateParams',
         'messageService',
-        'moment'
+        'moment',
+        'siglusAnalyticsDateService'
     ];
 
     function controller(
@@ -51,7 +52,8 @@
         $filter,
         $stateParams,
         messageService,
-        moment
+        moment,
+        siglusAnalyticsDateService
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -75,8 +77,9 @@
             }
             vm.year = moment(_.get(requisition, ['processingPeriod', 'startDate'])).format('YYYY');
             vm.signaure = getSignature(requisition.extraData.signaure);
-            vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = moment(_.get(requisition, ['processingPeriod', 'endDate'])).format('MMMM');
+            vm.creationDate = siglusAnalyticsDateService.getCreationDateWithTranslatedMonth(requisition.createdDate);
+            var endDate = _.get(requisition, ['processingPeriod', 'endDate']);
+            vm.month = siglusAnalyticsDateService.getAbbrTranslatedMonthFromDateText(endDate);
             vm.nowTime = moment().format('D MMM Y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
@@ -144,12 +147,6 @@
                     : '';
             }
             return newSignature;
-        }
-
-        function getCreationDate(date) {
-            return moment(date)
-                .utcOffset(2)
-                .format('DD MMM YYYY');
         }
 
         function extendLineItems() {
