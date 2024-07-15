@@ -884,7 +884,8 @@
                 reasonFreeText: undefined,
                 lot: {},
                 // deprecated: not used in anywhere
-                unaccountedQuantity: undefined
+                unaccountedQuantity: undefined,
+                extraData: {}
             });
         }
 
