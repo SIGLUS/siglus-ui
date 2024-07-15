@@ -54,11 +54,10 @@
 
                             newDate = angular.isDate(newDate) ? dateUtils.toStringDate(newDate) : newDate;
                             oldDate = angular.isDate(oldDate) ? dateUtils.toStringDate(oldDate) : oldDate;
-                            if (newDate && newDate !== oldDate
-                            ) {
+                            if (newDate && newDate !== oldDate) {
                                 if (!lineItem.lot.id) {
                                     if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
-                                    && moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()
+                                    && moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()
                                     ) {
                                         lineItem.lot.lotCode = lineItem.lot.lotCode
                                             .replace(SIGLUS_LOT_CODE_REGEXP_REPLACE,
@@ -149,7 +148,7 @@
                                     lineItem.isFromInput = true;
                                     $scope.hideAllSelect();
                                     if (selectedItem) {
-                                        lineItem = _.extend(lineItem, selectedItem, {
+                                        lineItem = _.assign(lineItem, selectedItem, {
                                             occurredDate: lineItem.occurredDate
                                         });
                                         lineItem.$previewSOH = selectedItem.stockOnHand;
@@ -174,7 +173,7 @@
                             var lineItem = $scope.lineItem;
                             if (_.get(lineItem, ['lot', 'lotCode'])) {
                                 if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
-                                && moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
+                                && moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
                                     lineItem.lot.lotCode = lineItem.lot.lotCode.slice(0, -11);
                                 }
                             }
@@ -187,7 +186,6 @@
                                 _.get(lineItem, ['lot', 'lotCode']) &&
                                 _.get(lineItem, ['lot', 'expirationDate']) &&
                                 !_.get(lineItem, ['lot', 'id'])
-
                             ) {
                                 if (!SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)) {
                                     lineItem.lot.lotCode = lineItem.lot.lotCode +
@@ -199,9 +197,9 @@
                                 !_.get(lineItem, ['lot', 'id'])
                             ) {
                                 if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
-                                && moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
+                                && moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
                                     lineItem.lot.expirationDate =
-                                    moment(lineItem.lot.lotCode.substr(-10), SIGLUS_LOT_CODE_DATE_ISVALID)
+                                    moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID)
                                         .format('YYYY-MM-DD');
                                 }
                             } else if (
@@ -209,13 +207,9 @@
                                 _.get(lineItem, ['lot', 'expirationDate']) &&
                                 _.get(lineItem, ['lot', 'id'])) {
                                 lineItem.lot.lotCode =
-                                lineItem.lot.lotCode
-                                +
-                                moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
+                                lineItem.lot.lotCode +
+                                        moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
                             }
-                            // setTimeout(function() {
-                            //     $scope.hideAllSelect();
-                            // }, 100);
                         };
 
                         $scope.showExpired = function() {
