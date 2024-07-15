@@ -64,6 +64,7 @@
         vm.requisition = {};
         vm.mergedPatientMap = {};
         function onInit() {
+            var currentLocale = messageService.getCurrentLocale();
             vm.facility = facility;
             vm.requisition = requisition;
             vm.productLineItems = requisition.requisitionLineItems;
@@ -76,7 +77,9 @@
             vm.year = moment(_.get(requisition, ['processingPeriod', 'startDate'])).format('YYYY');
             vm.signaure = getSignature(requisition.extraData.signaure);
             vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = moment(_.get(requisition, ['processingPeriod', 'endDate'])).format('MMMM');
+            vm.month = moment(_.get(requisition, ['processingPeriod', 'endDate']))
+                .locale(currentLocale)
+                .format('MMMM');
             vm.nowTime = moment().format('D MMM Y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
