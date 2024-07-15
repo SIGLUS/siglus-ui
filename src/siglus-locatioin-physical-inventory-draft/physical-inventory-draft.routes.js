@@ -64,24 +64,21 @@
                     var locationManagementOption = $stateParams.locationManagementOption;
                     var draft = $stateParams.draft;
                     var idString = $stateParams.subDraftIds;
-                    var isMerged = $stateParams.isMerged === true;
                     $stateParams.draft = undefined;
                     if (draft) {
                         return draft;
                     }
                     if (idString) {
                         var draftIdList = idString.split(',');
-                        return physicalInventoryFactory.getLocationPhysicalInventorySubDraft(
-                            draftIdList, isMerged, locationManagementOption
+                        return physicalInventoryFactory.getLocationPhysicalInventorySubDraftWithoutSummary(
+                            draftIdList, locationManagementOption
                         )
                             .then(function(draft) {
                                 return draft;
                             });
                     }
                     return physicalInventoryFactory.getInitialInventory(
-                        program.id,
-                        facility.id,
-                        locationManagementOption
+                        program.id, facility.id, locationManagementOption
                     )
                         .then(function(draft) {
                             return draft;
@@ -127,9 +124,21 @@
                 allLocationAreaMap: function(siglusLocationAreaFactory) {
                     return siglusLocationAreaFactory.getAllLocationAreaInfoMap();
                 },
-                displayLineItemsGroup: function(
-                    paginationService, physicalInventoryService, $stateParams, $filter, orderableGroupService, draft
-                ) {
+                groupedLineItems: function($stateParams, physicalInventoryService, rawLineItems) {
+                    var searchedLineItems =  physicalInventoryService.search(
+                        $stateParams.keyword, rawLineItems.lineItems
+                    );
+                    return _.chain(searchedLineItems)
+                        .groupBy(function(lineItem) {
+                            return $stateParams.locationManagementOption === 'product' ?
+                                lineItem.orderable.id :
+                                lineItem.locationCode;
+                        })
+                        .values()
+                        .value();
+
+                },
+                displayLineItemsGroup: function(paginationService, $stateParams, groupedLineItems) {
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -147,29 +156,8 @@
                         size: '@@STOCKMANAGEMENT_PAGE_SIZE',
                         page: $stateParams.page || 0
                     };
-                    draft.lineItems = draft.lineItems.filter(function(line) {
-                        return !(line.stockCardId && line.stockOnHand === 0);
-                    });
                     return paginationService.registerList(validator, paginationParams, function() {
-                        var searchResult = physicalInventoryService.search(
-                            $stateParams.keyword, draft.lineItems
-                        );
-                        var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
-                        // SIGLUS-REFACTOR: starts here
-                        var groups = _.chain(lineItems)
-                            .groupBy(function(lineItem) {
-                                return $stateParams.locationManagementOption === 'product' ?
-                                    lineItem.orderable.id :
-                                    lineItem.locationCode;
-                            })
-                            .values()
-                            .value();
-                        groups.forEach(function(group) {
-                            group.forEach(function(lineItem) {
-                                orderableGroupService.determineLotMessage(lineItem, group);
-                            });
-                        });
-                        return groups;
+                        return groupedLineItems;
                     });
                 },
                 reasons: function(facility, program, stockReasonsFactory, $stateParams) {

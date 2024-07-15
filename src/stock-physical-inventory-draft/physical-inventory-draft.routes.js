@@ -120,7 +120,7 @@
                         .values()
                         .value();
                 },
-                displayLineItemsGroup: function(paginationService, draft, groupedLineItems, $stateParams) {
+                displayLineItemsGroup: function(paginationService, groupedLineItems, $stateParams) {
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
