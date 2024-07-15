@@ -31,27 +31,27 @@
     controller.$inject = [
         'facility',
         'requisition',
-        'openlmisDateFilter',
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
         '$timeout',
         '$q',
         'siglusDownloadLoadingModalService',
         '$stateParams',
-        'messageService'
+        'messageService',
+        'moment'
     ];
 
     function controller(
         facility,
         requisition,
-        openlmisDateFilter,
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
         $timeout,
         $q,
         siglusDownloadLoadingModalService,
         $stateParams,
-        messageService
+        messageService,
+        moment
     ) {
         var vm = this, services = [];
         vm.facility = undefined;
@@ -61,14 +61,13 @@
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
-        vm.getCreationDate = getCreationDate;
-        vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.requisition = {};
         vm.mergedPatientMap = {};
         vm.totalWithInThisMonth = undefined;
         vm.totalWithTreatment = undefined;
         vm.adjustmentValue = undefined;
+
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -78,12 +77,12 @@
             }
             vm.productLineItems = getProductLineItems(requisition.requisitionLineItems);
             services = requisition.testConsumptionLineItems;
-            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
+            vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure = getSignaure(requisition.extraData.signaure);
             vm.historyComments = getHistoryComments(requisition.statusHistory);
-            vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.endDate);
-            vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+            vm.creationDate = moment(requisition.createdDate).format('D MMM Y');
+            vm.month = moment(requisition.processingPeriod.endDate).format('MMM');
+            vm.nowTime = moment().format('D MMM Y h:mm:ss a');
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
@@ -117,7 +116,6 @@
             vm.getHistoryComments = getHistoryComments;
             vm.getSignaure = getSignaure;
             vm.patientTemplateFactory = patientTemplateFactory;
-            vm.setBarCodeDom = setBarCodeDom;
             calculatePatientValues();
         }
 
@@ -188,7 +186,7 @@
 
         function getProductLineItems(requisitionLineItems) {
             var productLineItems = _.map(requisitionLineItems, function(item) {
-                item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
+                item.expirationDate = moment(item.expirationDate).format('DD/MM/YYYY');
                 item.showBarCode = true;
                 return item;
             });
@@ -328,17 +326,11 @@
             }, {});
         }
 
-        function getCreationDate(date) {
-            return openlmisDateFilter(date, 'd MMM y');
-
-        }
-
         function getPdfName(date, facilityName, id) {
             return (
                 'MIA.' + id
-                + '.' + openlmisDateFilter(date, 'yy')
-                + openlmisDateFilter(date, 'MM') + '.'
-                + '01'
+                + '.' + moment(date).format('YY MM')
+                + '.01'
                 + '.pdf'
             );
         }
@@ -359,10 +351,6 @@
                     });
                 });
             });
-        }
-
-        function getMonth(date) {
-            return openlmisDateFilter(date, 'MMMM');
         }
 
         vm.downloadPdf = function() {
