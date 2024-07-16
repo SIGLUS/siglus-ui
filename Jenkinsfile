@@ -59,6 +59,8 @@ pipeline {
                       echo "push latest tag for release image"
                       docker push ${IMAGE_REPO}:latest
                     fi
+
+                    docker-compose down --volumes
                 '''
             }
         }
