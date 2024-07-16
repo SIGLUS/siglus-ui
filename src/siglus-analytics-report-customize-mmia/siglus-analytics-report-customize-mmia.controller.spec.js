@@ -16,6 +16,7 @@
 describe('siglusAnalyticsReportCustomizeMMIAController', function() {
     beforeEach(function() {
         var context = this;
+        module('siglus-analytics-report');
         module('siglus-analytics-report-customize-mmia');
         module('requisition-view', function($provide) {
             context.RequisitionStockCountDateModalMock = jasmine.createSpy('RequisitionStockCountDateModal');
@@ -35,10 +36,10 @@ describe('siglusAnalyticsReportCustomizeMMIAController', function() {
             this.siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');
             this.siglusDownloadLoadingModalService = $injector.get('siglusDownloadLoadingModalService');
             this.$controller = $injector.get('$controller');
+            this.siglusAnalyticsDateService = $injector.get('siglusAnalyticsDateService');
         });
 
         this.facility = new this.FacilityDataBuilder().build();
-        // for constroller's functions
         this.requisition = {
             id: '665778fb-b690-44e1-a219-27c7efcca2b0',
             createdDate: '2022-07-29T07:37:47.937Z',
@@ -14504,7 +14505,8 @@ describe('siglusAnalyticsReportCustomizeMMIAController', function() {
             facility: this.facility,
             requisition: this.requisition,
             openlmisDateFilter: this.openlmisDateFilter,
-            siglusTemplateConfigureService: this.siglusTemplateConfigureService
+            siglusTemplateConfigureService: this.siglusTemplateConfigureService,
+            siglusAnalyticsDateService: this.siglusAnalyticsDateService
         });
         this.vm.$onInit();
     });
