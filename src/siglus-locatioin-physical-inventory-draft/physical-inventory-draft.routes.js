@@ -89,7 +89,7 @@
                         return item.orderable.id;
                     }));
                     if (orderableIds.length === 0) {
-                        return undefined;
+                        return {};
                     }
 
                     return physicalInventoryService.getSohByLocation(orderableIds)
@@ -103,21 +103,36 @@
                             });
                         }, {});
                 },
-                draft: function(rawDraft, lotsMapByLocation) {
-                    if (!lotsMapByLocation) {
-                        return rawDraft;
+                lotsMapByOrderableId: function(rawDraft, siglusOrderableLotListService, facility) {
+                    var orderableIdList = _.uniq(
+                        _.filter(rawDraft.lineItems, function(lineItem) {
+                            return !lineItem.stockCardId;
+                        }).map(function(item) {
+                            return item.orderable.id;
+                        })
+                    );
+                    if (orderableIdList.length > 0) {
+                        return siglusOrderableLotListService.getOrderableLots(facility.id, orderableIdList)
+                            .then(function(lotList) {
+                                return siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
+                            });
                     }
+                    return [];
+                },
+                draft: function(rawDraft, lotsMapByLocation, lotsMapByOrderableId) {
                     _.forEach(rawDraft.lineItems, function(lineItem) {
-                        var currentLotId = _.get(lineItem, ['orderable', 'id']);
-                        var lotsInCurrentLocation = _.get(lotsMapByLocation, [lineItem.locationCode, 'values'], []);
+                        var currentOrderableId = _.get(lineItem, ['orderable', 'id']);
+                        var currentLocationCode =  _.get(lineItem, ['locationCode']);
+                        var lotsInCurrentLocation = _.get(lotsMapByLocation, [currentLocationCode], []);
                         var currentLotInfo = _.find(lotsInCurrentLocation, function(lotInCurrentLocation) {
-                            return lotInCurrentLocation.orderableId === currentLotId &&
+                            return lotInCurrentLocation.orderableId === currentOrderableId &&
                                 lotInCurrentLocation.lotCode === _.get(lineItem, ['lot', 'lotCode']);
                         });
 
-                        lineItem.stockOnHand = _.get(currentLotInfo, 'stockOnHand', 0);
+                        lineItem.stockOnHand = _.get(currentLotInfo, ['stockOnHand'], 0);
                         lineItem.area = lineItem.area ?
                             lineItem.area : _.get(lotsMapByLocation, [lineItem.locationCode, 'area'], null);
+                        lineItem.lotOptions = lotsMapByOrderableId[currentOrderableId] || [];
                     });
                     return rawDraft;
                 },
