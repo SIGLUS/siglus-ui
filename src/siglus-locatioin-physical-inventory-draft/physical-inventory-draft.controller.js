@@ -68,6 +68,7 @@
         vm.addStockAdjustments = addStockAdjustments;
         vm.focusedRowChanged = focusedRowChanged;
         vm.addLot = addLot;
+        vm.addLotByLocation = addLotByLocation;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
         vm.print = print;
@@ -351,7 +352,6 @@
             }
             loadingModalService.open();
             return physicalInventoryService.saveDraftWithLocation(_.assign({}, draft, {
-                summaries: [],
                 subDraftIds: subDraftIds
             }), $stateParams.locationManagementOption).then(function() {
                 if (!notReload) {
@@ -455,7 +455,6 @@
             $scope.needToConfirm = false;
             loadingModalService.open();
             physicalInventoryService.submitSubPhysicalInventory(_.assign({}, draft, {
-                summaries: [],
                 subDraftIds: subDraftIds
             }), $stateParams.locationManagementOption)
                 .then(function() {
@@ -544,9 +543,9 @@
                             draft.lineItems = _.filter(draft.lineItems, function(item) {
                                 return !item.skipped;
                             });
-                            physicalInventoryService.submitPhysicalInventory(_.assign({}, draft, {
-                                summaries: []
-                            }), true, buildHistoryData(resolvedData))
+                            physicalInventoryService.submitPhysicalInventory(
+                                draft, true, buildHistoryData(resolvedData)
+                            )
                                 .then(function() {
                                     if (vm.isInitialInventory) {
                                         currentUserService.clearCache();
@@ -1195,107 +1194,28 @@
             reload($state.current.name);
         }
 
-        function getNotYetAddedItems(lineItem) {
-            return $q(function(resolve) {
-                var draftByLocationMap = _.reduce(draft.lineItems, function(r, c) {
-                    if (r[c.locationCode]) {
-                        r[c.locationCode].push(c);
-                    } else {
-                        r[c.locationCode] = [c];
-                    }
-                    return r;
-                }, {});
-                var addedLotIdAndOrderableId = [];
-                _.forEach(draftByLocationMap[lineItem.locationCode], function(item) {
-                    if (item.lot && item.lot.lotCode && !item.lot.id) {
-                        return;
-                    }
-                    addedLotIdAndOrderableId.push({
-                        lotId: item.lot && item.lot.id ? item.lot.id : null,
-                        orderableId: item.orderable.id
-                    });
+        function addLotByLocation(lineItem) {
+            physicalInventoryService.getApprovedProducts(facility.id, program.id)
+                .then(function(productsForThisProgram) {
+                    SiglusAddProductsModalWithLocationService.show(
+                        productsForThisProgram, vm.hasLot, lineItem.locationCode, []
+                    )
+                        .then(function(addedItems) {
+                            console.log('addedItems', addedItems);
+                            var lineItemsToAdd = addedItems.map(function(item) {
+                                return _.assign(generateEmptyLineItem(), {
+                                    locationCode: item.locationCode,
+                                    lot: angular.copy(item.lot),
+                                    orderable: angular.copy(item.orderable)
+                                });
+                            });
+                            draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
+                            $stateParams.isAddProduct = true;
+                            reload($state.current.name);
+                            siglusArchivedProductService.alterInfo(lineItemsToAdd);
+                        });
                 });
-                draft.summaries = Object.values(
-                    _.reduce(draft.summaries, function(r, c) {
-                        if (c.orderable.isKit) {
-                            c.lot = {};
-                        }
-                        r[c.orderable.id] = c;
-                        return r;
-                    }, {})
-                );
-                var notYetAddedItems = _.filter(draft.summaries, function(summary) {
-                    var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
-                    var orderableId = summary.orderable && summary.orderable.id;
-                    var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
-                        lotId: lotId,
-                        orderableId: orderableId
-                    });
-                    return !isInAdded;
-                });
-                resolve({
-                    notYetAddedItems: notYetAddedItems,
-                    addedLotIdAndOrderableId: addedLotIdAndOrderableId
-                });
-            });
         }
-
-        vm.addLotByLocation = function(lineItem) {
-            getNotYetAddedItems(lineItem).then(function(res) {
-                var notYetAddedItems = res.notYetAddedItems;
-                var addedLotIdAndOrderableId = res.addedLotIdAndOrderableId;
-                SiglusAddProductsModalWithLocationService.show(
-                    notYetAddedItems,
-                    vm.hasLot,
-                    lineItem.locationCode,
-                    addedLotIdAndOrderableId
-                ).then(function(addedItems) {
-                    var allLocationAreaList = _.flatten(Object.values(vm.allLocationAreaMap));
-                    _.forEach(addedItems, function(item) {
-                        item.area = _.find(allLocationAreaList, function(location) {
-                            return location.locationCode === item.locationCode;
-                        }).area;
-                    });
-                    if (lineItem.orderable.id) {
-                        draft.lineItems = draft.lineItems.concat(addedItems);
-                    }
-                    if (!lineItem.orderable.id) {
-                        if (addedItems.length > 1) {
-                            var  firstLineItem = _.first(addedItems);
-                            var index = 0;
-                            // draft.lineItems
-                            var newLineItems = _.map(draft.lineItems, function(line, i) {
-                                if (line.locationCode === firstLineItem.locationCode) {
-                                    line = firstLineItem;
-                                    index = i;
-                                }
-                                return line;
-                            });
-                            newLineItems.splice.apply(newLineItems, [index + 1, 0].concat(_.rest(addedItems)));
-                            draft.lineItems = newLineItems;
-                        } else {
-                            draft.lineItems = _.map(draft.lineItems, function(line) {
-                                if (line.locationCode === addedItems[0].locationCode) {
-                                    line = addedItems[0];
-                                }
-                                return line;
-                            });
-                        }
-                    }
-                    $stateParams.isAddProduct = true;
-                    _.each(draft.lineItems, function(item) {
-                        if (hasDuplicateLotCode(item)) {
-                            item.$errors.lotCodeInvalid = messageService
-                                .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
-                        }
-                    });
-                    reload($state.current.name);
-                    // #105: activate archived product
-                    siglusArchivedProductService.alterInfo(addedItems);
-                    // #105: ends here
-                });
-            });
-        };
 
         function removeLot(lineItem, lineItems) {
             var index = _.findIndex(draft.lineItems, function(item) {
@@ -1450,7 +1370,8 @@
                 reasonFreeText: undefined,
                 skipped: false,
                 stockAdjustments: [],
-                stockCardId: null
+                stockCardId: null,
+                vvmStatuses: undefined
             };
         }
 

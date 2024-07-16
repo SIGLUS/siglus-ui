@@ -211,10 +211,10 @@
                     var existedProductList = _.unique(rawLineItems.map(function(lineItem) {
                         return _.get(lineItem, ['orderable', 'id']);
                     }));
-                    var productsToAdd = productsForThisProgram.filter(function(productInfo) {
+                    var productsCanAdd = productsForThisProgram.filter(function(productInfo) {
                         return !existedProductList.includes(_.get(productInfo, ['orderable', 'id']));
                     });
-                    addProductsModalService.show(productsToAdd, vm.hasLot, false, vm.isInitialInventory)
+                    addProductsModalService.show(productsCanAdd, vm.hasLot, false, vm.isInitialInventory)
                         .then(function(addedItems) {
                             if (addedItems.length === 0) {
                                 loadingModalService.close();
@@ -231,7 +231,7 @@
                                     var lineItemsToAdd = addedItems.map(function(item) {
                                         return _.assign(buildEmptyLineItem(), {
                                             orderable: angular.copy(item.orderable),
-                                            quantity: item.quantity,
+                                            quantity: item.quantity || 0,
                                             lotOptions: lotsMapByOrderableId[_.get(item, ['orderable', 'id'])]
                                         });
                                     });
@@ -385,7 +385,6 @@
             loadingModalService.open();
             draft.lineItems = getUpdatedLineItems();
             return physicalInventoryFactory.saveDraft(_.assign({}, draft, {
-                summaries: [],
                 subDraftIds: subDraftIds
             })).then(function() {
                 if (!notReload) {
@@ -480,7 +479,6 @@
             $scope.needToConfirm = false;
             loadingModalService.open();
             physicalInventoryService.submitSubPhysicalInventory(_.assign({}, draft, {
-                summaries: [],
                 subDraftIds: subDraftIds
             }))
                 .then(function() {
@@ -724,15 +722,6 @@
                     var diff = stockReasonsCalculations.calculateDifference(item);
                     buildMovementMessage(item, diff);
                     vm.validateReasonFreeText(item);
-                }
-            });
-            // TODO: remove draft.summaries related
-            _.forEach(draft.summaries, function(summary) {
-                if (!summary.$errors) {
-                    summary.$errors = {};
-                }
-                if (summary.lot && summary.lot.id) {
-                    vm.existLotCode.push(summary.lot.id);
                 }
             });
         }
