@@ -56,7 +56,6 @@ pipeline {
                 println "docker: push image"
                 withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
                     sh '''
-                        set +x
                         echo $PASS | docker login -u $USER --password-stdin
                         docker push ${IMAGE_NAME}
                         if [ "$GIT_BRANCH" = "release" ]; then
