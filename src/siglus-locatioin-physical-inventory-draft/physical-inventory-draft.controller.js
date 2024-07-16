@@ -1198,7 +1198,7 @@
             physicalInventoryService.getApprovedProducts(facility.id, program.id)
                 .then(function(productsForThisProgram) {
                     SiglusAddProductsModalWithLocationService.show(
-                        productsForThisProgram, vm.hasLot, lineItem.locationCode, []
+                        productsForThisProgram, vm.hasLot, lineItem.locationCode, [], facility
                     )
                         .then(function(addedItems) {
                             console.log('addedItems', addedItems);

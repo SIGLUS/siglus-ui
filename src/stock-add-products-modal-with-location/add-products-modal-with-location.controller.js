@@ -28,15 +28,19 @@
         .module('stock-add-products-modal-with-location')
         .controller('SiglusAddProductsModalWithLocationController', controller);
 
-    controller.$inject = ['items', 'hasLot', 'messageService',
-        'modalDeferred', 'orderableGroupService', '$scope', 'MAX_INTEGER_VALUE',
-        'locationCode', 'siglusOrderableLotService', 'addedLotIdAndOrderableId',
-        'alertService'];
+    controller.$inject = [
+        'items', 'hasLot', 'messageService', 'modalDeferred', 'orderableGroupService',
+        '$scope', 'MAX_INTEGER_VALUE', 'locationCode', 'siglusOrderableLotService',
+        'addedLotIdAndOrderableId', 'alertService', 'siglusOrderableLotListService',
+        'facility'
+    ];
 
-    function controller(items, hasLot, messageService,
-                        modalDeferred, orderableGroupService, $scope, MAX_INTEGER_VALUE,
-                        locationCode, siglusOrderableLotService, addedLotIdAndOrderableId,
-                        alertService) {
+    function controller(
+        items, hasLot, messageService, modalDeferred, orderableGroupService,
+        $scope, MAX_INTEGER_VALUE, locationCode, siglusOrderableLotService,
+        addedLotIdAndOrderableId, alertService, siglusOrderableLotListService,
+        facility
+    ) {
         var vm = this;
 
         /**
@@ -99,47 +103,25 @@
         vm.expirationDateChanged = function() {
             vm.selectedItem.$errors.lotDateInvalid = '';
         };
+
         vm.orderableSelectionChanged = function() {
             //reset selected lot, so that lot field has no default value
             vm.selectedLot = null;
 
-            //same as above
-            // $scope.productForm.$setUntouched();
+            var addedLineItem = _.get(vm.selectedOrderableGroup, [0], null);
 
-            //make form good as new, so errors won't persist
-            // $scope.productForm.$setPristine();
+            vm.isKit = _.get(addedLineItem, ['orderable', 'isKit'], false);
 
-            var addedItems = vm.selectedOrderableGroup;
-            if (addedItems && addedItems[0].orderable.isKit) {
-                vm.isKit = true;
-            } else {
-                vm.isKit = false;
-            }
-            if (addedItems) {
-                siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
-                    var selectedItem = addedItems[0];
-                    selectedItem.lotOptions = _.filter(selectedItem.lotOptions, function(summary) {
-                        var lotId = summary.id ? summary.id : null;
-                        var orderableId = selectedItem.orderable && selectedItem.orderable.id;
-                        var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
-                            lotId: lotId,
-                            orderableId: orderableId
-                        });
-                        return !isInAdded;
+            if (addedLineItem) {
+                var orderableId = _.get(addedLineItem, ['orderable', 'id'], null);
+                siglusOrderableLotListService.getOrderableLots(facility.id, orderableId)
+                    .then(function(lotList) {
+                        addedLineItem.lotOptions = lotList;
+                        addedLineItem.locationCode = locationCode;
+                        addedLineItem.$errors = {};
+                        addedLineItem.lot = {};
+                        vm.selectedItem = addedLineItem;
                     });
-
-                    selectedItem.locationCode = locationCode;
-                    selectedItem.$errors = {
-                        lotDateInvalid: '',
-                        lotCodeInvalid: ''
-                    };
-                    if (selectedItem.lot && selectedItem.lot.lotCode) {
-                        selectedItem.lot.lotCode = null;
-                        selectedItem.lot.expirationDate = null;
-                        selectedItem.lot.id = null;
-                    }
-                    vm.selectedItem = selectedItem;
-                });
             } else {
                 vm.selectedItem = {};
             }

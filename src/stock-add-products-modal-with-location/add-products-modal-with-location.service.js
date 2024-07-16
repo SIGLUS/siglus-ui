@@ -43,7 +43,7 @@
          *
          * @return {Promise} resolved with selected products.
          */
-        function show(items, hasLot, locationCode, addedLotIdAndOrderableId) {
+        function show(items, hasLot, locationCode, addedLotIdAndOrderableId, facility) {
             return openlmisModalService.createDialog(
                 {
                     controller: 'SiglusAddProductsModalWithLocationController',
@@ -62,6 +62,9 @@
                         },
                         addedLotIdAndOrderableId: function() {
                             return addedLotIdAndOrderableId;
+                        },
+                        facility: function() {
+                            return facility;
                         }
                     }
                 }
