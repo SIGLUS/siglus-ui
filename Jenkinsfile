@@ -52,18 +52,14 @@ pipeline {
                     else
                       echo "Congratulations! Branch coverage is more than $coverage_threshold%."
                     fi;
+
+                    echo "docker: push image"
+                    docker push ${IMAGE_NAME}
+                    if [ "$GIT_BRANCH" = "release" ]; then
+                      echo "push latest tag for release image"
+                      docker push ${IMAGE_REPO}:latest
+                    fi
                 '''
-                println "docker: push image"
-                withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
-                    sh '''
-                        echo $PASS | docker login -u $USER --password-stdin
-                        docker push ${IMAGE_NAME}
-                        if [ "$GIT_BRANCH" = "release" ]; then
-                          echo "push latest tag for release image"
-                          docker push ${IMAGE_REPO}:latest
-                        fi
-                    '''
-                }
             }
         }
         stage('Notify to build reference-ui master') {
