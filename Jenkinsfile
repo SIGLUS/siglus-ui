@@ -57,7 +57,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: "docker-hub", usernameVariable: "USER", passwordVariable: "PASS")]) {
                     sh '''
                         set +x
-                        docker login -u $USER -p $PASS
+                        echo $PASS | docker login -u $USER --password-stdin
                         docker push ${IMAGE_NAME}
                         if [ "$GIT_BRANCH" = "release" ]; then
                           echo "push latest tag for release image"
