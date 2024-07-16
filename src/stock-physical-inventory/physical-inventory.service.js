@@ -81,7 +81,7 @@
                 url: stockmanagementUrlFactory('/api/siglusapi/physicalInventories/conflict')
             },
             getApprovedProducts: {
-                url: stockmanagementUrlFactory('/api/siglusapi/approvedProducts'),
+                url: stockmanagementUrlFactory('/api/siglusapi/approvedProducts/brief'),
                 method: 'GET',
                 isArray: true
             }
