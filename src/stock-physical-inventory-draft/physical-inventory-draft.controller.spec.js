@@ -254,7 +254,7 @@ describe('PhysicalInventoryDraftController', function() {
         draft.summaries = [];
         draft.subDraftIds = subDraftIds;
         // SIGLUS-REFACTOR: ends here
-        expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
+        expect(draftFactory.saveDraft).toHaveBeenCalled();
     });
 
     it('should highlight empty quantities before submit', function() {

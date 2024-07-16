@@ -15,11 +15,12 @@
 
 describe('SiglusAddProductsModalWithLocationController', function() {
 
-    var vm, deferred, $rootScope, scope, item1;
+    var vm, deferred, $rootScope, scope, item1, siglusOrderableLotListService;
 
     beforeEach(function() {
         module('stock-add-products-modal-with-location');
         module('referencedata');
+        module('stock-orderable-group');
 
         inject(function(_$controller_, _messageService_, _$q_,
             _$rootScope_, _orderableGroupService_) {
@@ -39,6 +40,8 @@ describe('SiglusAddProductsModalWithLocationController', function() {
             };
 
             scope.productForm = jasmine.createSpyObj('productForm', ['$setUntouched', '$setPristine']);
+            siglusOrderableLotListService =
+                jasmine.createSpyObj('siglusOrderableLotListService', ['getOrderableLots']);
 
             vm = _$controller_('SiglusAddProductsModalWithLocationController', {
                 items: [item1],
@@ -51,7 +54,9 @@ describe('SiglusAddProductsModalWithLocationController', function() {
                 addedLotIdAndOrderableId: [{
                     lotId: '123',
                     orderableId: '123'
-                }]
+                }],
+                siglusOrderableLotListService: siglusOrderableLotListService,
+                facility: {}
             });
         });
     });
