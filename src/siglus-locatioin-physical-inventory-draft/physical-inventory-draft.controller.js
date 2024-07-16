@@ -39,7 +39,8 @@
         'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
         'allLocationAreaMap', 'localStorageService', 'SiglusAddProductsModalWithLocationService',
         'siglusOrderableLotService', 'siglusPrintPalletLabelComfirmModalService',
-        'siglusLocationCommonApiService', 'reasons', 'draft', 'displayLineItemsGroup'
+        'siglusLocationCommonApiService', 'reasons', 'draft', 'displayLineItemsGroup',
+        'siglusOrderableLotListService'
     ];
 
     function controller(
@@ -53,7 +54,8 @@
         siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
         allLocationAreaMap, localStorageService, SiglusAddProductsModalWithLocationService,
         siglusOrderableLotService, siglusPrintPalletLabelComfirmModalService,
-        siglusLocationCommonApiService, reasons, draft, displayLineItemsGroup
+        siglusLocationCommonApiService, reasons, draft, displayLineItemsGroup,
+        siglusOrderableLotListService
     ) {
         var vm = this;
         vm.$onInit = onInit;
@@ -72,7 +74,6 @@
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         vm.locationManagementOption = $stateParams.locationManagementOption;
-        siglusOrderableLotMapping.setOrderableGroups(orderableGroupService.groupByOrderableId(draft.summaries));
 
         vm.updateProgress = function() {
             vm.itemsWithQuantity = _.filter(vm.displayLineItemsGroup, function(lineItems) {
@@ -195,26 +196,48 @@
          * Pops up a modal for users to add products for physical inventory.
          */
         vm.addProducts = function() {
-            var addedLotIdAndOrderableId = getAddedLotIdAndOrderableId();
-            var notYetAddedItems = _.filter(draft.summaries, function(summary) {
-                var lotId = summary.lot && summary.lot.id ? summary.lot && summary.lot.id : null;
-                var orderableId = summary.orderable && summary.orderable.id;
-                var isInAdded = _.findWhere(addedLotIdAndOrderableId, {
-                    lotId: lotId,
-                    orderableId: orderableId
+            loadingModalService.open();
+            physicalInventoryService.getApprovedProducts(facility.id, program.id)
+                .then(function(productsForThisProgram) {
+                    var existedProducts = _.unique(_.map(draft.lineItems, function(lineItem) {
+                        return _.get(lineItem, ['orderable', 'id']);
+                    }));
+                    var productsCanAdd = productsForThisProgram.filter(function(productInfo) {
+                        return !existedProducts.includes(_.get(productInfo, ['orderable', 'id']));
+                    });
+                    addProductsModalService.show(productsCanAdd, vm.hasLot, true, vm.isInitialInventory)
+                        .then(function(addedItems) {
+                            if (addedItems.length === 0) {
+                                loadingModalService.close();
+                                return;
+                            }
+                            var orderableIds = addedItems.map(function(item) {
+                                return _.get(item, ['orderable', 'id']);
+                            });
+                            siglusOrderableLotListService.getOrderableLots(facility.id, orderableIds)
+                                .then(function(lotList) {
+                                    loadingModalService.close();
+                                    var lotsMapByOrderableId =
+                                        siglusOrderableLotListService.getSimplifyLotsMapByOrderableId(lotList);
+                                    var lineItemsToAdd = addedItems.map(function(item) {
+                                        return _.assign(generateEmptyLineItem(), {
+                                            orderable: angular.copy(item.orderable),
+                                            quantity: item.quantity || 0,
+                                            lotOptions: lotsMapByOrderableId[_.get(item, ['orderable', 'id'])]
+                                        });
+                                    });
+                                    draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
+                                    $stateParams.isAddProduct = true;
+                                    reload($state.current.name);
+                                    siglusArchivedProductService.alterInfo(lineItemsToAdd);
+                                });
+                        })
+                        .catch(loadingModalService.close);
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    alertService.error(error);
                 });
-                return !isInAdded;
-            });
-            addProductsModalService.show(notYetAddedItems, vm.hasLot, true,
-                vm.isInitialInventory).then(function(addedItems) {
-                siglusOrderableLotService.fillLotsToAddedItems(addedItems).then(function() {
-                    draft.lineItems = draft.lineItems.concat(addedItems);
-                    refreshLotOptions();
-                    $stateParams.isAddProduct = true;
-                    reload($state.current.name);
-                    siglusArchivedProductService.alterInfo(addedItems);
-                });
-            });
         };
 
         /**
@@ -812,22 +835,13 @@
         }
 
         function onInit() {
-            // SIGLUS-REFACTOR: starts here
-            // $state.current.label = messageService.get('stockPhysicalInventoryDraft.title', {
-            //     facilityCode: facility.code,
-            //     facilityName: facility.name,
-            //     program: program.name
-            // });
             updateLabel();
-            // SIGLUS-REFACTOR: ends here
-
             vm.reasons = reasons;
             vm.stateParams = $stateParams;
             $stateParams.program = undefined;
             $stateParams.facility = undefined;
             // SIGLUS-REFACTOR: starts here
             initiateLineItems();
-            refreshLotOptions();
             vm.hasLot = vm.existLotCode.length > 0;
             $scope.needToConfirm = $stateParams.isAddProduct;
             $scope.focusedRow = undefined;
@@ -1007,25 +1021,6 @@
                     vm.validateReasonFreeText(item);
                 }
             });
-            _.forEach(draft.summaries, function(summary) {
-                if (!summary.$errors) {
-                    summary.$errors = {};
-                }
-                if (summary.lot && summary.lot.id && summary.lot.lotCode) {
-                    vm.existLotCode.push(summary.lot.lotCode.toUpperCase());
-                }
-            });
-        }
-
-        function getAddedLotIdAndOrderableId() {
-            var addedlotIdAndOrderableId = [];
-            _.forEach(draft.lineItems, function(item) {
-                addedlotIdAndOrderableId.push({
-                    lotId: item.lot && item.lot.id ? item.lot.id : null,
-                    orderableId: item.orderable.id
-                });
-            });
-            return addedlotIdAndOrderableId;
         }
         // SIGLUS-REFACTOR: ends here
 
@@ -1183,21 +1178,20 @@
             var areaList = vm.areaList;
             var locationList = vm.allLocationList;
             var newLineItem = _.assign({}, angular.copy(lineItem), {
-                stockCardId: null,
-                displayLotMessage: undefined,
-                lot: null,
-                quantity: undefined,
-                shouldOpenImmediately: false,
-                stockAdjustments: [],
-                stockOnHand: null,
-                unaccountedQuantity: undefined,
                 $errors: {},
-                reasonFreeText: undefined,
+                $diffMessage: {},
                 id: null,
-                areaList: areaList,
-                locationList: locationList,
                 area: null,
-                locationCode: null
+                areaList: areaList,
+                locationCode: null,
+                locationList: locationList,
+                stockCardId: null,
+                lot: {},
+                quantity: undefined,
+                stockAdjustments: [],
+                stockOnHand: 0,
+                unaccountedQuantity: undefined,
+                reasonFreeText: undefined
             });
             draft.lineItems.push(newLineItem);
             $stateParams.isAddProduct = true;
@@ -1291,7 +1285,6 @@
                             });
                         }
                     }
-                    refreshLotOptions();
                     $stateParams.isAddProduct = true;
                     _.each(draft.lineItems, function(item) {
                         if (hasDuplicateLotCode(item)) {
@@ -1339,7 +1332,6 @@
 
         $scope.$on('lotCodeChange', function(event, data) {
             var lineItem = data.lineItem;
-            refreshLotOptions();
             var relatedLineItems = getRelatedLineItems(lineItem);
             _.forEach(relatedLineItems, function(line) {
                 vm.validateDuplicateLotCode(line);
@@ -1353,11 +1345,6 @@
                 setSohForLineItem(lineItem);
             }
         });
-
-        function refreshLotOptions() {
-            // dynamicly fill lot options by sending request
-            siglusOrderableLotService.fillLotsToAddedItems(draft.lineItems);
-        }
 
         function delayPromise(delay) {
             var deferred = $q.defer();
@@ -1444,6 +1431,30 @@
                     location: isByProduct ? lineItem.area + ' - ' + lineItem.locationCode : null
                 };
             });
+        }
+
+        function generateEmptyLineItem() {
+            return {
+                $errors: {},
+                $diffMessage: {},
+                id: null,
+                area: null,
+                areaList: vm.areaList,
+                locationCode: null,
+                locationList: vm.allLocationList,
+                extraData: {},
+                lot: {},
+                lotId: null,
+                lotOptions: [],
+                orderable: {},
+                orderableId: null,
+                programId: vm.program.id,
+                quantity: null,
+                reasonFreeText: undefined,
+                skipped: false,
+                stockAdjustments: [],
+                stockCardId: null
+            };
         }
 
         function goBack() {

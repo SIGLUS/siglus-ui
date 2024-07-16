@@ -344,7 +344,7 @@
                 </td>
                 <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
                 <td ng-if="(lineItems[0].orderable && lineItems[0].orderable.isKit)"></td>
-                <td  ng-if="!vm.isInitialInventory" class="text-align-right">
+                <td ng-if="!vm.isInitialInventory" class="text-align-right">
                     {{lineItems[0].isFromSelect ? lineItems[0].$previewSOH : lineItems[0].stockOnHand}}
                 </td>
                 <td class="digit-cell" >
