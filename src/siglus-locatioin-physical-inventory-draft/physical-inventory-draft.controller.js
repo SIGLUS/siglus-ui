@@ -511,11 +511,12 @@
         }
 
         var submit = function() {
-            if (validate()) {
-                if (validate() === 'hasEmptyLocation') {
+            var anyError = validate();
+            if (anyError) {
+                if (anyError === 'hasEmptyLocation') {
                     $scope.$broadcast('openlmis-form-submit');
                     alertService.error('stockPhysicalInventoryDraft.hasEmptyLocation');
-                } else if (validate() === 'hasDuplicateLotCode') {
+                } else if (anyError === 'hasDuplicateLotCode') {
                     $scope.$broadcast('openlmis-form-submit');
                     alertService.error('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicateByLocation');
                 } else {
@@ -753,50 +754,46 @@
         function validate() {
             var anyError = false;
             var isByLocation = $stateParams.locationManagementOption;
+            var allLineItems = vm.draft.lineItems;
             // var deferredByValidate = $q.defer();
             if (isByLocation === 'location') {
                 // deferredByValidate
-                _.chain(vm.draft.lineItems).flatten()
-                    .each(function(item) {
-                        if (!item.orderable.id && !item.skipped) {
-                            item.$errors.skippedInvalid = 'hasEmptyLocation';
-                            anyError = 'hasEmptyLocation';
-                        }
-                    });
+                allLineItems.forEach(function(item) {
+                    if (!item.orderable.id && !item.skipped) {
+                        item.$errors.skippedInvalid = 'hasEmptyLocation';
+                        anyError = 'hasEmptyLocation';
+                    }
+                });
             }
             if (!anyError && isByLocation === 'location') {
-                _.chain(vm.draft.lineItems).flatten()
-                    .each(function(item) {
-                        if (hasDuplicateLotCode(item)) {
-                            item.$errors.lotCodeInvalid = messageService
-                                .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
-                            anyError = 'hasDuplicateLotCode';
-                        }
-                    });
+                allLineItems.forEach(function(item) {
+                    if (hasDuplicateLotCode(item)) {
+                        item.$errors.lotCodeInvalid = messageService
+                            .get('stockPhysicalInventoryDraft.lotCodeWithLocationDuplicate');
+                        anyError = 'hasDuplicateLotCode';
+                    }
+                });
             }
             if (!anyError && $stateParams.locationManagementOption === 'product') {
-                _.chain(vm.draft.lineItems).flatten()
-                    .each(function(item) {
-                        if (item.orderable && item.orderable.id) {
-                            if (!item.orderable.isKit) {
-                                anyError = vm.validateLotCode(item) || anyError;
-                                anyError = vm.validExpirationDate(item) || anyError;
-                            }
-
-                            anyError = vm.validateReasonFreeText(item) || anyError;
-                            anyError = vm.validateQuantity(item) || anyError;
-                            anyError = vm.validateLocation(item) || anyError;
+                allLineItems.forEach(function(item) {
+                    if (item.orderable && item.orderable.id) {
+                        if (!item.orderable.isKit) {
+                            anyError = vm.validateLotCode(item) || anyError;
+                            anyError = vm.validExpirationDate(item) || anyError;
                         }
-                    });
+                        anyError = vm.validateReasonFreeText(item) || anyError;
+                        anyError = vm.validateQuantity(item) || anyError;
+                        anyError = vm.validateLocation(item) || anyError;
+                    }
+                });
             } else if (!anyError && $stateParams.locationManagementOption === 'location') {
-                _.chain(vm.draft.lineItems).flatten()
-                    .each(function(item) {
-                        var skipped = _.get(item, 'skipped', false);
-                        if (!skipped) {
-                            anyError = vm.validateReasonFreeText(item) || anyError;
-                            anyError = vm.validateQuantity(item) || anyError;
-                        }
-                    });
+                allLineItems.forEach(function(item) {
+                    var skipped = _.get(item, 'skipped', false);
+                    if (!skipped) {
+                        anyError = vm.validateReasonFreeText(item) || anyError;
+                        anyError = vm.validateQuantity(item) || anyError;
+                    }
+                });
             }
             return anyError;
         }
