@@ -129,7 +129,9 @@
                                 lotInCurrentLocation.lotCode === _.get(lineItem, ['lot', 'lotCode']);
                         });
 
-                        lineItem.stockOnHand = _.get(currentLotInfo, ['stockOnHand'], 0);
+                        if (_.get(currentLotInfo, ['stockOnHand'])) {
+                            lineItem.stockOnHand = _.get(currentLotInfo, ['stockOnHand']);
+                        }
                         lineItem.area = lineItem.area ?
                             lineItem.area : _.get(lotsMapByLocation, [lineItem.locationCode, 'area'], null);
                         lineItem.lotOptions = lotsMapByOrderableId[currentOrderableId] || [];
