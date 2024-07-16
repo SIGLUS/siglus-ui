@@ -67,7 +67,7 @@ describe('LocationPhysicalInventoryDraftController', function() {
             spyOn(alertConfirmModalService, 'error');
 
             physicalInventoryService = jasmine.createSpyObj('physicalInventoryService', [
-                'submitPhysicalInventory', 'deleteDraft'
+                'submitPhysicalInventory', 'deleteDraft', 'getApprovedProducts'
             ]);
             // draftFactory = $injector.get('physicalInventoryFactory');
 
@@ -230,94 +230,6 @@ describe('LocationPhysicalInventoryDraftController', function() {
         });
     });
 
-    it('should only pass items not added yet to add products modal', function() {
-        var deferred = $q.defer();
-        deferred.resolve();
-        addProductsModalService.show.andReturn(deferred.promise);
-
-        // SIGLUS-REFACTOR: starts here
-        vm = initController();
-        draft.lineItems = [lineItem3];
-        draft.summaries = [lineItem3, lineItem4];
-        draft.subDraftIds = subDraftIds;
-        vm.$onInit();
-        vm.addProducts();
-
-        expect(addProductsModalService.show).toHaveBeenCalledWith([lineItem4], true, true, undefined);
-        // SIGLUS-REFACTOR: ends here
-    });
-
-    // it('should save draft', function() {
-    //     spyOn(draftFactory, 'saveDraft');
-    //     draftFactory.saveDraft.andReturn($q.defer().promise);
-    //     $rootScope.$apply();
-
-    //     vm.saveDraft();
-    //     // SIGLUS-REFACTOR: starts here
-    //     draft.summaries = [];
-    //     draft.subDraftIds = subDraftIds;
-    //     // SIGLUS-REFACTOR: ends here
-    //     expect(draftFactory.saveDraft).toHaveBeenCalledWith(draft);
-    // });
-
-    // it('should highlight empty quantities before submit', function() {
-    //     // SIGLUS-REFACTOR: ends here
-    //     lineItem1.$errors = {};
-    //     lineItem3.$errors = {};
-    //     vm.submit();
-
-    //     expect(lineItem1.$errors.quantityInvalid).toBeFalsy();
-    //     expect(lineItem3.$errors.quantityInvalid).toBeTruthy();
-    //     // SIGLUS-REFACTOR: ends here
-    // });
-
-    it('should not show modal for occurred date if any quantity missing', function() {
-        // vm.submit();
-
-        expect(chooseDateModalService.show).not.toHaveBeenCalled();
-    });
-
-    // it('should show modal for occurred date if no quantity missing', function() {
-    //     lineItem3.quantity = 123;
-    //     lineItem3.stockAdjustments = [{
-    //         quantity: 123,
-    //         reason: {
-    //             reasonType: 'CREDIT'
-    //         }
-    //     }];
-    //     // SIGLUS-REFACTOR: starts here
-    //     lineItem3.lot = {
-    //         id: 3,
-    //         lotCode: 'test3',
-    //         expirationDate: '31/08/2019'
-    //     };
-    //     lineItem1.lot = {
-    //         id: 1,
-    //         lotCode: 'test1',
-    //         expirationDate: '31/08/2019'
-    //     };
-    //     lineItem2.quantity = 456;
-    //     lineItem2.lot = {
-    //         id: 2,
-    //         lotCode: 'test2',
-    //         expirationDate: '31/08/2019'
-    //     };
-    //     lineItem4.quantity = 789;
-    //     lineItem4.lot = {
-    //         id: 4,
-    //         lotCode: 'test4',
-    //         expirationDate: '31/08/2019'
-    //     };
-    //     // SIGLUS-REFACTOR: ends here
-    //     var deferred = $q.defer();
-    //     deferred.resolve();
-    //     chooseDateModalService.show.andReturn(deferred.promise);
-
-    //     vm.submit();
-
-    //     expect(chooseDateModalService.show).not.toHaveBeenCalled();
-    // });
-
     describe('when submit pass validations', function() {
         beforeEach(function() {
             lineItem3.quantity = 123;
@@ -342,26 +254,6 @@ describe('LocationPhysicalInventoryDraftController', function() {
             spyOn($window, 'open').andCallThrough();
             chooseDateModalService.show.andReturn($q.when({}));
         });
-
-        // SIGLUS-REFACTOR: starts here
-        // it('and choose "print" should open report and change state', function() {
-        //     physicalInventoryService.submitPhysicalInventory
-        //         .andReturn($q.when());
-        //     confirmService.confirm.andReturn($q.when());
-        //     accessTokenFactory.addAccessToken.andReturn('url');
-        //     draft.id = 1;
-        //     vm.submit();
-        //     $rootScope.$apply();
-        //     expect($window.open).toHaveBeenCalledWith('url', '_blank');
-        //     expect(accessTokenFactory.addAccessToken)
-        //         .toHaveBeenCalledWith('http://some.url/api/physicalInventories/1?format=pdf');
-        //     expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-        //         {
-        //             program: program.id,
-        //             facility: facility.id
-        //         });
-        // });
-        // SIGLUS-REFACTOR: ends here
 
         it('and choose "no" should change state and not open report', function() {
             physicalInventoryService.submitPhysicalInventory
@@ -389,15 +281,6 @@ describe('LocationPhysicalInventoryDraftController', function() {
 
             expect($window.open).not.toHaveBeenCalled();
             expect(accessTokenFactory.addAccessToken).not.toHaveBeenCalled();
-            // SIGLUS-REFACTOR: starts here
-            // expect(state.go).toHaveBeenCalledWith('openlmis.stockmanagement.stockCardSummaries',
-            //     {
-            //         program: program.id,
-            //         facility: facility.id
-            //     }, {
-            //         reload: true
-            //     });
-            // SIGLUS-REFACTOR: ends here
         });
 
         it('and service call failed should not open report and not change state', function() {
@@ -491,27 +374,9 @@ describe('LocationPhysicalInventoryDraftController', function() {
 
     });
 
-    // SIGLUS-REFACTOR: starts here
-    // describe('addProduct', function() {
-    //     it('should reload current state after adding product', function() {
-    //         addProductsModalService.show.andReturn($q.resolve());
-    //         vm.addProducts();
-    //         $rootScope.$apply();
-    //         expect(state.go).toHaveBeenCalledWith(state.current.name, stateParams, {
-    //             reload: state.current.name
-    //         });
-    //     });
-    // });
-    // SIGLUS-REFACTOR: ends here
-
     describe('delete', function() {
 
         it('should open confirmation modal', function() {
-            // alertConfirmModalService.error(
-            //     'PhysicalInventoryDraftList.deleteDraftWarn',
-            //     '',
-            //     ['PhysicalInventoryDraftList.cancel', 'PhysicalInventoryDraftList.confirm']
-            // )
             alertConfirmModalService.error.andReturn($q.resolve());
 
             vm.delete();
