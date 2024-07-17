@@ -742,6 +742,9 @@
         }
 
         function hasDuplicateLotCode(lineItem) {
+            if (!_.get(lineItem, 'orderable') && !_.get(lineItem, 'orderable')) {
+                return false;
+            }
             var allLots = getAllLotCode(lineItem.orderable.id, lineItem.area, lineItem.locationCode);
             var duplicatedLineItems = hasLot(lineItem) ? _.filter(allLots, function(lot) {
                 return lot === lineItem.lot.lotCode.toUpperCase();
