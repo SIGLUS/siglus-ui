@@ -189,10 +189,10 @@
                     };
                 }
                 return {
-                    orderableId: item.orderable.id,
-                    lotId: item.lot ? item.lot.id : null,
-                    lotCode: item.lot ? item.lot.lotCode : null,
-                    expirationDate: item.lot ? item.lot.expirationDate : null,
+                    orderableId: _.get(item, ['orderable', 'id'], null),
+                    lotId: _.get(item, ['lot', 'id'], null),
+                    lotCode: _.get(item, ['lot', 'lotCode'], null),
+                    expirationDate: _.get(item, ['lot', 'expirationDate'], null),
                     quantity: item.quantity,
                     extraData: {
                         vvmStatus: item.vvmStatus

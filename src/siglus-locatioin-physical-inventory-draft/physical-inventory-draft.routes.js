@@ -86,7 +86,7 @@
                 },
                 lotsMapByLocation: function(rawDraft, physicalInventoryService) {
                     var orderableIds = _.uniq(_.map(rawDraft.lineItems, function(item) {
-                        return item.orderable.id;
+                        return _.get(item, ['orderable', 'id']);
                     }));
                     if (orderableIds.length === 0) {
                         return {};
@@ -108,8 +108,11 @@
                         _.filter(rawDraft.lineItems, function(lineItem) {
                             return !lineItem.stockCardId;
                         }).map(function(item) {
-                            return item.orderable.id;
+                            return _.get(item, ['orderable', 'id']);
                         })
+                            .filter(function(item) {
+                                return !!item;
+                            })
                     );
                     if (orderableIdList.length > 0) {
                         return siglusOrderableLotListService.getOrderableLots(facility.id, orderableIdList)
@@ -148,8 +151,7 @@
                     return _.chain(searchedLineItems)
                         .groupBy(function(lineItem) {
                             return $stateParams.locationManagementOption === 'product' ?
-                                lineItem.orderable.id :
-                                lineItem.locationCode;
+                                lineItem.orderable.id : lineItem.locationCode;
                         })
                         .values()
                         .value();

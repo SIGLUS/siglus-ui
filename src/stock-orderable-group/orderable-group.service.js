@@ -196,7 +196,7 @@
         }
 
         function filterOrderablesThatUseVvm(group) {
-            var extraData = group[0].orderable.extraData;
+            var extraData = _.get(group, [0, 'orderable', 'extraData']);
             return extraData !== null && extraData !== undefined && extraData.useVVM === 'true';
         }
 
