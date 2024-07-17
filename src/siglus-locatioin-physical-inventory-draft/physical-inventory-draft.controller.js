@@ -738,7 +738,7 @@
         }
 
         function hasLot(item) {
-            return item.lot && item.lot.lotCode;
+            return _.get(item, ['lot', 'lotCode']);
         }
 
         function hasDuplicateLotCode(lineItem) {
@@ -797,7 +797,10 @@
 
         function getAllLotCode(orderableId, area, locationCode) {
             var draftLots = [];
-            _.each(draft.lineItems, function(item) {
+            var validAllLineItems = _.filter(draft.lineItems, function(lineItem) {
+                return _.get(lineItem, 'lot') && _.get(lineItem, 'orderable');
+            });
+            _.each(validAllLineItems, function(item) {
                 if (
                     item.orderable.id === orderableId
                         && item.lot
