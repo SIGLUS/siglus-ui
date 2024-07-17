@@ -1195,6 +1195,7 @@
         }
 
         function addLotByLocation(lineItem) {
+            loadingModalService.open();
             physicalInventoryService.getApprovedProducts(facility.id, program.id)
                 .then(function(productsForThisProgram) {
                     SiglusAddProductsModalWithLocationService.show(
@@ -1209,11 +1210,14 @@
                                 });
                             });
                             draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
+                            loadingModalService.close();
                             $stateParams.isAddProduct = true;
                             reload($state.current.name);
                             siglusArchivedProductService.alterInfo(lineItemsToAdd);
-                        });
-                });
+                        })
+                        .catch(loadingModalService.close);
+                })
+                .catch(loadingModalService.close);
         }
 
         function removeLot(lineItem, lineItems) {
