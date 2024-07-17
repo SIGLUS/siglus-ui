@@ -206,13 +206,17 @@ describe('PhysicalInventoryDraftController', function() {
         it('should watch paged list to group items', function() {
             vm = initController();
             vm.$onInit();
+            var updatedLineItem1 = _.assign(angular.copy(lineItem1), {});
+            updatedLineItem1.orderable.extraData = {
+                orderableCategoryDisplayName: updatedLineItem1.orderable.programs[0].orderableCategoryDisplayName
+            };
 
-            vm.pagedLineItems = [[lineItem1]];
-            vm.program.id = lineItem1.orderable.programs[0].programId;
+            vm.pagedLineItems = [[updatedLineItem1]];
+            vm.program.id = updatedLineItem1.orderable.programs[0].programId;
             $rootScope.$apply();
 
-            expect(vm.groupedCategories[lineItem1.orderable.programs[0].orderableCategoryDisplayName])
-                .toEqual([[lineItem1]]);
+            expect(vm.groupedCategories[updatedLineItem1.orderable.programs[0].orderableCategoryDisplayName])
+                .toEqual([[updatedLineItem1]]);
         });
     });
 
